@@ -7,7 +7,6 @@ import { connect } from 'react-redux'
 class Login extends Component{
     render(){
         const { authUser , history } = this.props
-        console.log(this.props, 'PROPS LOGIN')
         if(authUser.access_token !== ''){
             history.push('/')
         }

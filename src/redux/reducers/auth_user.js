@@ -14,8 +14,7 @@ export const login = payload => ({
     payload
 })
 export const logout = () => ({
-    type: LOGOUT,
-    initialState
+    type: LOGOUT
 })
 export const register = payload => ({
     type: REGISTER,
@@ -26,17 +25,11 @@ export const register = payload => ({
 //Todos los reducer deben retornar estados inmutables
 //Pregunta si el estado cambio
 export default function(state = initialState, action){
-    console.log('Reducer auth_user')
-    console.log('-------')
-    console.log('state', state)
-    console.log('action', action)
-    console.log('-------')
     switch(action.type){
         case LOGIN:
             return action.payload
         case LOGOUT:
-            console.log('LOGOUT')
-            return action.payload
+            return initialState
         case REGISTER:
             return action.payload
         default:

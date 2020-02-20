@@ -19,25 +19,33 @@ class App extends Component{
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'user/', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                console.log(response, 'get response')
+                
             },
             (error) => {
-                const { login, logout } = this.props
-                logout()
+                this.logoutUser()
             }
         ).catch((error) => {
-            const { login } = this.props
-            console.log(error, 'catch error')
-            console.log( login )
-            login({
-                access_token: '',
-                user: {}
-            });
+            this.logoutUser()
+        })
+    }
+    async logoutUser(){
+        const { logout, access_token, history } = this.props
+        await axios.get(URL_DEV + 'user/logout', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                logout();
+                history.push('/login')
+            },
+            (error) => {
+                logout();
+                history.push('/login')
+            }
+        ).catch((error) => {
+            logout();
+            history.push('/login')
         })
     }
     render(){
         const { authUser , history } = this.props
-        console.log('authUser on App', authUser)
         if(authUser.access_token === ''){
             history.push('login')
         }
