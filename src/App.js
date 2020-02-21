@@ -14,12 +14,17 @@ const Loader = x => Loadable({
 
 const Login = Loader(() => import('./pages/Login') )
 const Home = Loader(() => import('./pages/Home') )
+const Tareas = Loader(() => import('./pages/Usuarios/Tareas') )
+const Usuarios = Loader(() => import('./pages/Usuarios/Usuarios') )
+const Normas = Loader(() => import('./pages/Normas') )
+const MiProyecto = Loader(() => import('./pages/MiProyecto') )
 class App extends Component{
     async componentDidMount(){
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'user/', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                
+                const { data } = response
+                login(data)
             },
             (error) => {
                 this.logoutUser()
@@ -51,8 +56,12 @@ class App extends Component{
         }
         return(
             <div className="App">
-                <Route path="/" exact component={Home}/>
                 <Route path="/login" exact component={Login}/>
+                <Route path="/" exact component={Home}/>
+                <Route path="/mi-proyecto" exact component={MiProyecto}/>
+                <Route path="/usuarios/usuarios" exact component={Usuarios}/>
+                <Route path="/usuarios/tareas" exact component={Tareas}/>
+                <Route path="/normas" exact component={Normas}/>
             </div>
         )
     }

@@ -11,6 +11,7 @@ export const loadState = () => {
 }
 
 export const saveState = (state) => {    
+    console.log(state, 'state on store');
     try {
         let serializedData = JSON.stringify(state)
         localStorage.setItem('state', serializedData)
