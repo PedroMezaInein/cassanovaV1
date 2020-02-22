@@ -10,7 +10,6 @@ class Home extends Component{
     componentDidMount(){
         const { user : { id: tipo} } = this.props.authUser
         const { history } = this.props
-        console.log(tipo)
         switch (tipo){
             case 1:
                 history.push('/usuarios/usuarios')

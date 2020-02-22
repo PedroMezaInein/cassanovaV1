@@ -16,7 +16,6 @@ class Sidebar extends Component{
 
     render(){
         const { location } = this.props
-        console.log( location.pathname, 'pathname' );
         return(
             <SideNav onSelect={this.handleSelectSidebar}>
                 <SideNav.Toggle />

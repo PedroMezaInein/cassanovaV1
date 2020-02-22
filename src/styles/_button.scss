@@ -1,0 +1,33 @@
+.button{
+    &__green{
+            background-color: green;
+            border-color: green;
+            color: $bone;
+        &:hover{
+            background-color: transparent;
+            border-color: green;
+            color: green;
+        }
+        &:active{
+            background-color: transparent;
+            border-color: green;
+            color: green;
+        }
+    }
+
+    &__red{
+        background-color: red;
+        border-color: red;
+        color: $bone;
+        &:hover{
+            background-color: transparent;
+            border-color: red;
+            color: red
+        }
+        &:active{
+            background-color: transparent;
+            border-color: red;
+            color: red
+        }
+    }
+}

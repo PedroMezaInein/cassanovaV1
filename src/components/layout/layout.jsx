@@ -12,9 +12,11 @@ class Layout extends Component{
     render(){
         const { children,  } = this.props
         return(
-            <div className="main py-3">
+            <div className="main-container">
                 <Sidebar {... this.props} />
-                {children}
+                <div className="main m-5 p-5">
+                    {children}
+                </div>
             </div>
         )
     }

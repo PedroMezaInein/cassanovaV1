@@ -9,6 +9,7 @@ import { createStore, applyMiddleware } from 'redux';
 import createHistory from 'history/createBrowserHistory'
 import { Router } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './styles/app.scss'
 import thunk from 'redux-thunk'
 import { loadState, saveState } from './redux/store/store'
 const history =  createHistory()
