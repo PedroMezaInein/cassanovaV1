@@ -228,7 +228,6 @@ class Empresas extends Component{
                 form,
                 img: img
             })
-            console.log('FORM IMAGE', img)
         }
         else{
             form[name] = value

@@ -3,7 +3,6 @@ import Form from 'react-bootstrap/Form'
 import { Input, Button, Select } from '../form-components'
 import { Subtitle, P } from '../texts'
 import { URL_ASSETS } from '../../constants'
-import Files from 'react-files'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 class EmpresaForm extends Component{
 
@@ -15,9 +14,7 @@ class EmpresaForm extends Component{
     }
     
     render(){
-        const { children, form, onChange, title, img, removeFile} = this.props
-        const { file } = form
-        console.log(file, 'FILE', img, 'IMG')
+        const { form, onChange, title, img, removeFile} = this.props
         return(
             <Form { ... this.props}>
                 <Subtitle color="gold">

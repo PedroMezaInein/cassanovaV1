@@ -12,8 +12,10 @@ import { RegisterUserForm, EmpleadoForm } from '../../components/forms'
 class Usuarios extends Component{
     constructor(props){
         super(props)
-        this.handleChange = this.handleChange.bind(this);
-        this.addUserAxios = this.addUserAxios.bind(this);
+        /* this.handleChangeInput = this.handleChangeInput.bind(this);
+        this.handleChangeEmpleado = this.handleChangeEmpleado.bind(this);
+        this.handleChangeDate = this.handleChangeDate.bind(this);
+        this.addUserAxios = this.addUserAxios.bind(this); */
     }
 
     state = {
@@ -24,9 +26,25 @@ class Usuarios extends Component{
         form:{
             name: '',
             email: '',
-            tipo:0
+            tipo:0,
+        },
+        empleadoForm:{
+            tipo_empleado: 'Administrativo',
+            empresa:'',
+            puesto:'',
+            fecha_inicio: new Date(),
+            estatus: 'Activo',
+            rfc: '',
+            nss: '',
+            curp: '',
+            banco: '',
+            cuenta: '',
+            clave: '',
+            nombre_emergencia: '',
+            telefono_emergencia: '',
         },
         options: [],
+        empresas_options: [],
         user_to_interact: '',
 
         // Modal
@@ -37,7 +55,6 @@ class Usuarios extends Component{
 
     componentDidMount(){
         this.getUsers();
-        console.log('PROP USUARIO PAGE', this.props)
         const { history, authUser } = this.props
         if(authUser){
             const { user: { tipo: { id: tipo_id } } } = authUser
@@ -81,6 +98,30 @@ class Usuarios extends Component{
                     this.setState({
                         ... this.state,
                         options
+                    })
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+            }
+        ).catch((error) => {
+            console.log(error, 'catch')
+        })
+
+        await axios.get(URL_DEV + 'empresa', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { data: {empresas: empresas} } = response
+                let empresas_options = []
+                empresas.map((empresa, key) => {
+                    const { id, name } = empresa
+                    
+                    empresas_options.push({
+                        value: id,
+                        text: name
+                    })
+                    this.setState({
+                        ... this.state,
+                        empresas_options
                     })
                 })
             },
@@ -143,14 +184,40 @@ class Usuarios extends Component{
 
     // Handle change on form
 
-    handleChange = (e) => {
+    handleChangeInput = (e) => {
         e.preventDefault();
         const { name, value } = e.target
         const { form }  = this.state
+        console.log('handleChangeInput')
+        console.log(this.state)
         form[name] = value
         this.setState({
             ... this.state,
             form
+        })
+    }
+
+    handleChangeEmpleado = (e) => {
+        e.preventDefault();
+        const { name, value } = e.target
+        const { empleadoForm }  = this.state
+        console.log('handleChangeInput Empleado')
+        console.log(this.state)
+        empleadoForm[name] = value
+        this.setState({
+            ... this.state,
+            empleadoForm
+        })
+    }
+
+    handleChangeDate = (date) =>{
+        console.log('handleChangeInput Date')
+        console.log(this.state)
+        const { empleadoForm }  = this.state
+        empleadoForm['fecha_inicio'] = date
+        this.setState({
+            ... this.state,
+            empleadoForm
         })
     }
 
@@ -226,7 +293,8 @@ class Usuarios extends Component{
     // Update user info
     async updateUserAxios( user ){
         const { access_token } = this.props.authUser
-        const { form } = this.state
+        const { form, empleadoForm } = this.state
+        form.empleado = empleadoForm
         await axios.put(URL_DEV + 'user/' + user, form, { headers: {Authorization:`Bearer ${access_token}`} }).then(
             (response) => {
                 const { data: {users: users} } = response
@@ -266,7 +334,7 @@ class Usuarios extends Component{
     }
 
     render(){
-        const { users, modalActive, form, options, modalSafeDeleteActive, user_to_interact, modalUpdateUser, form: { tipo : tipo_form } } = this.state;
+        const { users, modalActive, form, options, modalSafeDeleteActive, user_to_interact, modalUpdateUser, form: { tipo : tipo_form }, empleadoForm, empresas_options } = this.state;
         return(
             <Layout { ...this.props}>
                 <div className="d-flex align-items-center justify-content-between">
@@ -310,18 +378,32 @@ class Usuarios extends Component{
                     })
                 }
                 <Modal show={modalActive} handleClose={this.handleCloseModal}>
-                    <RegisterUserForm form={ form } options={options} onSubmit={ this.handleSubmitAddUser} onChange={(e) => this.handleChange(e)} title="Registrar usuario">
+                    <RegisterUserForm form={ form } options={options} onSubmit={ this.handleSubmitAddUser} 
+                        onChange={(e) => {e.preventDefault(); this.handleChangeInput(e)}} title="Registrar usuario">
                         {
                             tipo_form < 3 && tipo_form > 0 &&
-                                <EmpleadoForm title="Datos del empleado" />
+                            <EmpleadoForm 
+                                form={empleadoForm} 
+                                onChange={this.handleChangeEmpleado}
+                                options={empresas_options}
+                                title="Datos del empleado" 
+                                onChangeCalendar={this.handleChangeDate}
+                                />
                         }
                     </RegisterUserForm>
                 </Modal>
                 <Modal show={modalUpdateUser} handleClose={this.handleCloseModalUpdateUser}>
-                    <RegisterUserForm form={ form } options={options} onSubmit={ this.handleSubmitEditUser } onChange={(e) => this.handleChange(e)}  title="Editar usuario">
+                    <RegisterUserForm form={ form } options={options} onSubmit={ this.handleSubmitEditUser } 
+                        onChange={(e) => {e.preventDefault(); this.handleChangeInput(e)}} title="Editar usuario">
                         {
                             tipo_form < 3 && tipo_form > 0 &&
-                                <EmpleadoForm title="Datos del empleado" />
+                                <EmpleadoForm 
+                                    form={empleadoForm} 
+                                    onChange={this.handleChangeEmpleado}
+                                    options={empresas_options}
+                                    title="Datos del empleado" 
+                                    onChangeCalendar={this.handleChangeDate}
+                                    />
                         }
                     </RegisterUserForm>
                 </Modal>

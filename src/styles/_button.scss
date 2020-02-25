@@ -30,6 +30,17 @@
             color: red
         }
     }
+
+    &__transparent{
+        background-color: transparent!important;
+        border: 0px!important;
+        color: $blue!important;
+        &:hover{
+            background-color: transparent!important;
+            border: 0px!important;
+            color: $blue!important;
+        }
+    }
 }
 
 .small-button{

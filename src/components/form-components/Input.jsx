@@ -11,7 +11,7 @@ class Input extends Component{
         const { error, onChange } = this.props
         return(
             <div>
-                <Form.Control onChange={ onChange } className={`mt-3 ${error}`} { ... this.props}/>
+                <Form.Control onChange={ (e) => {e.preventDefault(); onChange(e)} } className={`mt-3 ${error}`} { ... this.props}/>
                 {
                     error && 
                         <label className="error-label">
