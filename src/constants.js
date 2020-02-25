@@ -217,3 +217,22 @@ export const MODULES = [
         url:'normas'
     }
 ]
+
+
+//Form
+
+export const EMPTY_EMPLEADO = {
+    tipo_empleado: '',
+    empresa:'',
+    puesto:'',
+    fecha_inicio: '',
+    estatus: '',
+    rfc: '',
+    nss: '',
+    curp: '',
+    banco: '',
+    cuenta: '',
+    clabe: '',
+    nombre_emergencia: '',
+    telefono_emergencia: '',
+}

@@ -2,12 +2,13 @@ import React, { Component } from 'react'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import {URL_DEV} from '../../constants'
+import { URL_DEV, EMPTY_EMPLEADO} from '../../constants'
 import { Title, Subtitle, P, Small } from '../../components/texts'
 import { Button } from '../../components/form-components'
 import { faUserPlus, faUserEdit, faUserSlash } from '@fortawesome/free-solid-svg-icons'
 import { Card, Modal } from '../../components/singles'
 import { RegisterUserForm, EmpleadoForm } from '../../components/forms'
+
 
 class Usuarios extends Component{
     constructor(props){
@@ -27,21 +28,10 @@ class Usuarios extends Component{
             name: '',
             email: '',
             tipo:0,
+            empleado:false
         },
         empleadoForm:{
-            tipo_empleado: 'Administrativo',
-            empresa:'',
-            puesto:'',
-            fecha_inicio: new Date(),
-            estatus: 'Activo',
-            rfc: '',
-            nss: '',
-            curp: '',
-            banco: '',
-            cuenta: '',
-            clave: '',
-            nombre_emergencia: '',
-            telefono_emergencia: '',
+            EMPTY_EMPLEADO
         },
         options: [],
         empresas_options: [],
@@ -82,54 +72,33 @@ class Usuarios extends Component{
         })
     }
 
-    async getUsers(){
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'user/users', { headers: {Authorization:`Bearer ${access_token}`}}).then(
-            (response) => {
-                const { data: {users: users} } = response
-                this.setUsers(users)
-                users.map((user, key) => {
-                    const { id, tipo } = user
-                    const { options } = this.state
-                    options.push({
-                        value: id,
-                        text: tipo
-                    })
-                    this.setState({
-                        ... this.state,
-                        options
-                    })
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-            }
-        ).catch((error) => {
-            console.log(error, 'catch')
-        })
+    setUser = (data) => {
+        console.log(data, 'setuser')
+        const { empleado } = data
+        const { empleadoForm } = this.state
 
-        await axios.get(URL_DEV + 'empresa', { headers: {Authorization:`Bearer ${access_token}`}}).then(
-            (response) => {
-                const { data: {empresas: empresas} } = response
-                let empresas_options = []
-                empresas.map((empresa, key) => {
-                    const { id, name } = empresa
-                    
-                    empresas_options.push({
-                        value: id,
-                        text: name
-                    })
-                    this.setState({
-                        ... this.state,
-                        empresas_options
-                    })
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-            }
-        ).catch((error) => {
-            console.log(error, 'catch')
+        empleadoForm['tipo_empleado'] = empleado.tipo_empleado ? empleado.tipo_empleado : ''
+        
+        empleadoForm['empresa'] = empleado.empresa.id ? empleado.empresa.id : ''
+        
+        empleadoForm['puesto'] = empleado.puesto ? empleado.puesto : ''
+        empleadoForm['fecha_inicio'] = empleado.fecha_inicio ? new Date(empleado.fecha_inicio) : ''
+        empleadoForm['estatus'] = empleado.estatus ? empleado.estatus : ''
+        
+        empleadoForm['rfc'] = empleado.rfc ? empleado.rfc : ''
+        empleadoForm['nss'] = empleado.nss ? empleado.nss : ''
+        empleadoForm['curp'] = empleado.curp ? empleado.curp : ''
+        
+        empleadoForm['banco'] = empleado.banco_deposito ? empleado.banco_deposito : ''
+        empleadoForm['cuenta'] = empleado.cuenta_deposito ? empleado.cuenta_deposito : ''
+        empleadoForm['clabe'] = empleado.clabe_deposito ? empleado.clabe_deposito : ''
+
+        empleadoForm['nombre_emergencia'] = empleado.nombre_contacto ? empleado.nombre_contacto : ''
+        empleadoForm['telefono_emergencia'] = empleado.telefono_contacto ? empleado.telefono_contacto : ''
+
+        this.setState({
+            ... this.state,
+            empleadoForm
         })
     }
 
@@ -137,12 +106,14 @@ class Usuarios extends Component{
 
     addUser = (value) => (e) => {
         this.setState({
+            ... this.state,
             modalActive: true,
             form:{
                 name: '',
                 email: '',
                 tipo: 0
-            }
+            },
+            empleadoForm: EMPTY_EMPLEADO
         })
     }
 
@@ -161,6 +132,7 @@ class Usuarios extends Component{
             user_to_interact: user,
             form
         })
+        this.getOneUser(user.id)
     }
 
     // Functions for delete user
@@ -200,24 +172,24 @@ class Usuarios extends Component{
     handleChangeEmpleado = (e) => {
         e.preventDefault();
         const { name, value } = e.target
-        const { empleadoForm }  = this.state
-        console.log('handleChangeInput Empleado')
-        console.log(this.state)
+        const { empleadoForm, form }  = this.state
         empleadoForm[name] = value
+        form['empleado'] = true
         this.setState({
             ... this.state,
-            empleadoForm
+            empleadoForm,
+            form
         })
     }
 
     handleChangeDate = (date) =>{
-        console.log('handleChangeInput Date')
-        console.log(this.state)
-        const { empleadoForm }  = this.state
+        const { empleadoForm, form }  = this.state
         empleadoForm['fecha_inicio'] = date
+        form['empleado'] = true
         this.setState({
             ... this.state,
-            empleadoForm
+            empleadoForm,
+            form
         })
     }
 
@@ -267,7 +239,8 @@ class Usuarios extends Component{
     //Add user
     async addUserAxios(){
         const { access_token } = this.props.authUser
-        const { form } = this.state
+        const { form, empleadoForm } = this.state
+        form.empleado = empleadoForm
         await axios.post(URL_DEV + 'user', form, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
                 const { data: {users: users} } = response
@@ -324,6 +297,72 @@ class Usuarios extends Component{
             (response) => {
                 const { data: {users: users} } = response
                 this.setUsers(users)
+            },
+            (error) => {
+                console.log(error, 'error')
+            }
+        ).catch((error) => {
+            console.log(error, 'catch')
+        })
+    }
+
+    async getOneUser(user){
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'user/user/' + user, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { data: {user: user} } = response
+                this.setUser(user)
+            },
+            (error) => {
+                console.log(error, 'error')
+            }
+        ).catch((error) => {
+            console.log(error, 'catch')
+        })
+    }
+
+    async getUsers(){
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'user/users', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { data: {users: users} } = response
+                this.setUsers(users)
+                users.map((user, key) => {
+                    const { id, tipo } = user
+                    const { options } = this.state
+                    options.push({
+                        value: id,
+                        text: tipo
+                    })
+                    this.setState({
+                        ... this.state,
+                        options
+                    })
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+            }
+        ).catch((error) => {
+            console.log(error, 'catch')
+        })
+
+        await axios.get(URL_DEV + 'empresa', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { data: {empresas: empresas} } = response
+                let empresas_options = []
+                empresas.map((empresa, key) => {
+                    const { id, name } = empresa
+                    
+                    empresas_options.push({
+                        value: id,
+                        text: name
+                    })
+                    this.setState({
+                        ... this.state,
+                        empresas_options
+                    })
+                })
             },
             (error) => {
                 console.log(error, 'error')
