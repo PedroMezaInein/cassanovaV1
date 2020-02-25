@@ -17,7 +17,7 @@ class EmpresaForm extends Component{
     render(){
         const { children, form, onChange, title, img, removeFile} = this.props
         const { file } = form
-        console.log('PROPS', this.props, file)
+        console.log(file, 'FILE', img, 'IMG')
         return(
             <Form { ... this.props}>
                 <Subtitle color="gold">
@@ -25,7 +25,7 @@ class EmpresaForm extends Component{
                 </Subtitle>
                 <Input onChange={ onChange } required name="name" type="text" value={ form.name } placeholder="Nombre"/>
                 {
-                    img === '' &&
+                    (img === '' ) && (form.file !== '' && form.file !== undefined && form.file !== null) &&
                         <div className="p-3 position-relative">
                             <img className='w-100' src={URL_ASSETS + form.file } />
                         </div>

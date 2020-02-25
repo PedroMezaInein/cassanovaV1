@@ -5,7 +5,7 @@ import axios from 'axios'
 import { URL_DEV, URL_ASSETS } from '../../constants'
 import { Title, Subtitle, P, Small } from '../../components/texts'
 import { EmpresasTable } from '../../components/tables'
-import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { Button } from '../../components/form-components'
 import { Modal } from '../../components/singles'
 import { EmpresaForm } from '../../components/forms'
@@ -22,7 +22,9 @@ class Empresas extends Component{
             logo: '',
             file: []
         },
-        img: ''
+        img: '',
+        formTitle: '',
+        formAction: '',
     } 
     constructor(props){
         super(props)
@@ -61,7 +63,14 @@ class Empresas extends Component{
         })
         this.setState({
             ... this.state,
-            empresas
+            empresas,
+            img: '',
+            formAction: '',
+            form:{
+                name: '',
+                logo: '',
+                file: ''
+            }
         })
     }
 
@@ -80,6 +89,7 @@ class Empresas extends Component{
             ... this.state,
             modalDelete: true,
             empresa: emp,
+            formAction: 'Delete'
         })
     }
     openModalEditEmpresa = (e) => (emp) => {
@@ -91,7 +101,25 @@ class Empresas extends Component{
                 name: emp.name,
                 logo: '',
                 file: emp.logo
-            }
+            },
+            formTitle: 'Editar la empresa',
+            formAction: 'Edit'
+        })
+    }
+
+    openModalAddEmpresa = () => {
+        this.setState({
+            ... this.state,
+            modalEdit: true,
+            empresa: {},
+            form: {
+                name: '',
+                logo: '',
+                file: ''
+            },
+            img: '',
+            formTitle: 'Nueva empresa',
+            formAction: 'Add'
         })
     }
 
@@ -100,7 +128,8 @@ class Empresas extends Component{
         this.setState({
             ... this.state,
             modalDelete: !modalDelete,
-            empresa: {}
+            empresa: {},
+            formAction: ''
         })
     }
     handleEditModal = () => {
@@ -114,7 +143,8 @@ class Empresas extends Component{
                 name: name,
                 logo: '',
                 file: logo
-            }
+            },
+            formAction: ''
         })
     }
 
@@ -124,7 +154,8 @@ class Empresas extends Component{
         this.setState({
             ... this.state,
             modalDelete: false,
-            empresa: {}
+            empresa: {},
+            formAction: ''
         })
     }
 
@@ -151,6 +182,25 @@ class Empresas extends Component{
         data.append('name', form.name)
         data.append('logo', form.file)
         await axios.post(URL_DEV + 'empresa/' +empresa, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`, } }).then(
+            (response) => {
+                const { data: {empresas: empresas} } = response
+                this.setEmpresas(empresas)
+            },
+            (error) => {
+                console.log(error, 'error')
+            }
+        ).catch((error) => {
+            console.log(error, 'catch')
+        })
+    }
+
+    async addEmpresaAxios(){
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        const data = new FormData();
+        data.append('name', form.name)
+        data.append('logo', form.file)
+        await axios.post(URL_DEV + 'empresa/', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
                 const { data: {empresas: empresas} } = response
                 this.setEmpresas(empresas)
@@ -202,6 +252,15 @@ class Empresas extends Component{
         })
     }
 
+    handleAddSubmit = (e) => {
+        e.preventDefault()
+        this.addEmpresaAxios();
+        this.setState({
+            ... this.state,
+            modalEdit: false,
+        })
+    }
+
     removeFile = (e) => {
         e.preventDefault()
         const { name, logo, file } = this.state.empresa
@@ -216,12 +275,21 @@ class Empresas extends Component{
         })
     }
     render(){
-        const { empresas, modalDelete, modalEdit, empresa, form, img } = this.state
+        const { empresas, modalDelete, modalEdit, empresa, form, img, formTitle, formAction } = this.state
         return(
             <Layout { ...this.props}>
+                <div className="text-right">
+                    <Button className="small-button ml-auto mr-4" onClick={(e) => this.openModalAddEmpresa()} text='' icon={faPlus} color="green" />
+                </div>
                 <EmpresasTable data={empresas} />
                 <Modal show={modalEdit} handleClose={this.handleEditModal}>
-                    <EmpresaForm removeFile={this.removeFile} form={ form } img={img}  onSubmit={ this.handleSubmit} onChange={(e) => this.handleChange(e)} title="Editar empresa" />
+                    <EmpresaForm 
+                        removeFile={this.removeFile} 
+                        form={ form } 
+                        img={img} 
+                        onSubmit={ formAction === 'Add' ? this.handleAddSubmit : this.handleSubmit }
+                        onChange={(e) => this.handleChange(e)} 
+                        title={formTitle} />
                 </Modal>
                 <Modal show={modalDelete} handleClose={this.handleDeleteModal}>
                     <Title>
