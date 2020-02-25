@@ -7,7 +7,7 @@ import { Title, Subtitle, P, Small } from '../../components/texts'
 import { Button } from '../../components/form-components'
 import { faUserPlus, faUserEdit, faUserSlash } from '@fortawesome/free-solid-svg-icons'
 import { Card, Modal } from '../../components/singles'
-import { RegisterUserForm } from '../../components/forms'
+import { RegisterUserForm, EmpleadoForm } from '../../components/forms'
 
 class Usuarios extends Component{
     constructor(props){
@@ -19,20 +19,44 @@ class Usuarios extends Component{
     state = {
         users: [],
         type_user: '',
-        modalActive: false,
+
+        // Form 
         form:{
             name: '',
             email: '',
-            tipo:3
+            tipo:0
         },
         options: [],
         user_to_interact: '',
+
+        // Modal
         modalSafeDeleteActive: false,
-        edit_user: false,
+        modalActive: false,
+        modalUpdateUser: false
     }
 
     componentDidMount(){
         this.getUsers();
+        console.log('PROP USUARIO PAGE', this.props)
+        const { history, authUser } = this.props
+        if(authUser){
+            const { user: { tipo: { id: tipo_id } } } = authUser
+            switch(tipo_id){
+                case 1:
+                    break;
+                case 2: 
+                    history.push('/usuarios/tareas')
+                    break;
+                case 3:
+                    history.push('/mi-proyecto')
+                    break;
+                default:
+                    console.log('logout')
+                    break;
+            }
+        }else{
+            // Logout
+        }
     }
 
     setUsers = (data) => {
@@ -68,90 +92,23 @@ class Usuarios extends Component{
         })
     }
 
+    // Functions to add users
+
     addUser = (value) => (e) => {
-        console.log('state', this.state)
-        console.log(value)
         this.setState({
-            modalActive: true
-        })
-    }
-
-    handleCloseModal = () => {
-        this.setState({
-            modalActive: !this.state.modalActive
-        })
-    }
-
-    handleCloseSafeModal = () => {
-        const { modalSafeDeleteActive, user_to_interact } = this.state
-        let old_user = user_to_interact
-        if(modalSafeDeleteActive){
-            old_user = {}
-        }
-        this.setState({
-            ... this.state,
-            modalSafeDeleteActive: !this.state.modalSafeDeleteActive,
-            old_user
-        })
-    }
-
-    handleChange = (e) => {
-        e.preventDefault();
-        const { name, value } = e.target
-        const { form }  = this.state
-        form[name] = value
-        this.setState({
-            ... this.state,
-            form
-        })
-    }
-
-    handleSubmitAddUser = (e) => {
-        e.preventDefault();
-        this.addUserAxios()
-    }
-
-    handleSubmitEditUser = (e) => {
-        e.preventDefault();
-        const { id } = this.state.user_to_interact
-        this.updateUserAxios(id)
-    }
-
-    async addUserAxios(){
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-        await axios.post(URL_DEV + 'user', form, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
-            (response) => {
-                const { data: {users: users} } = response
-                this.setUsers(users);
-                this.setState({
-                    modalActive: false,
-                    form:{
-                        name: '',
-                        email: '',
-                        tipo:3
-                    },
-                })
-                
-            },
-            (error) => {
-                console.log(error, 'error')
+            modalActive: true,
+            form:{
+                name: '',
+                email: '',
+                tipo: 0
             }
-        ).catch((error) => {
-            console.log(error, 'catch')
         })
     }
 
-    deleteuser = (e) => (user) => {
-        this.setState({
-            ... this.state,
-            modalSafeDeleteActive: true,
-            user_to_interact: user
-        })
-    }
+    // Functions to update users
 
     updateUser = (e) => (user) => {
-        const { name, email, tipo: {id: tipo}} = user
+        const { name, email, tipo} = user
         let form = {
             name: name,
             email: email,
@@ -159,36 +116,19 @@ class Usuarios extends Component{
         }
         this.setState({
             ... this.state,
-            modalActive: true,
-            edit_user: true,
+            modalUpdateUser: true,
             user_to_interact: user,
             form
         })
     }
 
-    async updateUserAxios( user ){
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-        await axios.put(URL_DEV + 'user/' + user, form, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
-            (response) => {
-                const { data: {users: users} } = response
-                this.setUsers(users);
-                this.setState({
-                    modalActive: false,
-                    edit_user: false,
-                    form:{
-                        name: '',
-                        email: '',
-                        tipo:3,
-                    },
-                })
-                
-            },
-            (error) => {
-                console.log(error, 'error')
-            }
-        ).catch((error) => {
-            console.log(error, 'catch')
+    // Functions for delete user
+
+    deleteuser = (e) => (user) => {
+        this.setState({
+            ... this.state,
+            modalSafeDeleteActive: true,
+            user_to_interact: user
         })
     }
 
@@ -201,6 +141,115 @@ class Usuarios extends Component{
         })
     }
 
+    // Handle change on form
+
+    handleChange = (e) => {
+        e.preventDefault();
+        const { name, value } = e.target
+        const { form }  = this.state
+        form[name] = value
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
+    // Submit forms handlers
+
+    handleSubmitAddUser = (e) => {
+        e.preventDefault();
+        this.addUserAxios()
+    }
+
+    handleSubmitEditUser = (e) => {
+        e.preventDefault();
+        const { id } = this.state.user_to_interact
+        this.updateUserAxios(id)
+    }
+
+    // Modal hanlders
+
+    handleCloseModal = () => {
+        this.setState({
+            ... this.state,
+            modalActive: !this.state.modalActive,
+        })
+    }
+
+    handleCloseSafeModal = () => {
+        const { modalSafeDeleteActive, user_to_interact } = this.state
+        if(modalSafeDeleteActive){
+            user_to_interact = {}
+        }
+        this.setState({
+            ... this.state,
+            modalSafeDeleteActive: !this.state.modalSafeDeleteActive,
+            user_to_interact,
+        })
+    }
+
+    handleCloseModalUpdateUser = () => {
+        this.setState({
+            ... this.state,
+            modalUpdateUser: !this.state.modalUpdateUser,
+        })
+    }
+
+    // Axios Functions
+
+    //Add user
+    async addUserAxios(){
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        await axios.post(URL_DEV + 'user', form, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
+            (response) => {
+                const { data: {users: users} } = response
+                this.setUsers(users);
+                this.setState({
+                    modalActive: false,
+                    form:{
+                        name: '',
+                        email: '',
+                        tipo:0
+                    },
+                })
+                
+            },
+            (error) => {
+                console.log(error, 'error')
+            }
+        ).catch((error) => {
+            console.log(error, 'catch')
+        })
+    }
+
+    // Update user info
+    async updateUserAxios( user ){
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        await axios.put(URL_DEV + 'user/' + user, form, { headers: {Authorization:`Bearer ${access_token}`} }).then(
+            (response) => {
+                const { data: {users: users} } = response
+                this.setUsers(users);
+                this.setState({
+                    modalUpdateUser: false,
+                    form:{
+                        name: '',
+                        email: '',
+                        tipo:0,
+                    },
+                })
+                
+            },
+            (error) => {
+                console.log(error, 'error')
+            }
+        ).catch((error) => {
+            console.log(error, 'catch')
+        })
+    }
+
+    //Delete an user with id
     async deleteUserAxios(user){
         const { access_token } = this.props.authUser
         await axios.delete(URL_DEV + 'user/' +user, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
@@ -217,14 +266,14 @@ class Usuarios extends Component{
     }
 
     render(){
-        const { users, modalActive, form, options, modalSafeDeleteActive, user_to_interact, edit_user } = this.state;
+        const { users, modalActive, form, options, modalSafeDeleteActive, user_to_interact, modalUpdateUser, form: { tipo : tipo_form } } = this.state;
         return(
             <Layout { ...this.props}>
                 <div className="d-flex align-items-center justify-content-between">
                     <Title>
                         Listado de usuarios registrados
                     </Title>
-                    <Button onClick={this.addUser('admin')} text='' icon={faUserPlus} />
+                    <Button onClick={this.addUser()} text='' icon={faUserPlus} />
                 </div>
                 {
                     users.map((tipo_users, key) => {
@@ -256,15 +305,25 @@ class Usuarios extends Component{
                                         })
                                     }
                                 </div>
-                                <div className="d-flex justify-content-end my-2">
-                                    <Button onClick={this.addUser(tipo_users.tipo)} text='' icon={faUserPlus} />
-                                </div>
                             </div>
                         )
                     })
                 }
                 <Modal show={modalActive} handleClose={this.handleCloseModal}>
-                    <RegisterUserForm form={ form } options={options} onSubmit={ edit_user ? this.handleSubmitEditUser : this.handleSubmitAddUser} onChange={(e) => this.handleChange(e)}/>
+                    <RegisterUserForm form={ form } options={options} onSubmit={ this.handleSubmitAddUser} onChange={(e) => this.handleChange(e)} title="Registrar usuario">
+                        {
+                            tipo_form < 3 && tipo_form > 0 &&
+                                <EmpleadoForm title="Datos del empleado" />
+                        }
+                    </RegisterUserForm>
+                </Modal>
+                <Modal show={modalUpdateUser} handleClose={this.handleCloseModalUpdateUser}>
+                    <RegisterUserForm form={ form } options={options} onSubmit={ this.handleSubmitEditUser } onChange={(e) => this.handleChange(e)}  title="Editar usuario">
+                        {
+                            tipo_form < 3 && tipo_form > 0 &&
+                                <EmpleadoForm title="Datos del empleado" />
+                        }
+                    </RegisterUserForm>
                 </Modal>
                 <Modal show={modalSafeDeleteActive} handleClose={this.handleCloseSafeModal}>
                     <Title>

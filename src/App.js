@@ -15,6 +15,7 @@ const Loader = x => Loadable({
 const Login = Loader(() => import('./pages/Login') )
 const Home = Loader(() => import('./pages/Home') )
 const Tareas = Loader(() => import('./pages/Usuarios/Tareas') )
+const Empresas = Loader(() => import('./pages/Usuarios/Empresas') )
 const Usuarios = Loader(() => import('./pages/Usuarios/Usuarios') )
 const Normas = Loader(() => import('./pages/Normas') )
 const MiProyecto = Loader(() => import('./pages/MiProyecto') )
@@ -61,6 +62,7 @@ class App extends Component{
                 <Route path="/mi-proyecto" exact component={MiProyecto}/>
                 <Route path="/usuarios/usuarios" exact component={Usuarios}/>
                 <Route path="/usuarios/tareas" exact component={Tareas}/>
+                <Route path="/usuarios/empresas" exact component={Empresas}/>
                 <Route path="/normas" exact component={Normas}/>
             </div>
         )

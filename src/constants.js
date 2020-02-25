@@ -1,6 +1,6 @@
 import { 
     faProjectDiagram, 
-    faUsers, faUsersCog, faTasks,
+    faUsers, faUsersCog, faTasks, faBuilding,
     faFileInvoiceDollar, faThList, faChartLine,
     faFolder, faShoppingBasket, faToolbox, faFolderOpen, faFilePrescription, faReceipt ,faFilePdf, faCoins, faHandHoldingUsd,
     faArchive, faFileSignature, faLongArrowAltRight, faSearchDollar, faFunnelDollar, faLongArrowAltLeft, faPassport, 
@@ -9,6 +9,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 export const URL_DEV = 'http://127.0.0.1:8000/api/';
+export const URL_ASSETS = 'http://127.0.0.1:8000';
 
 export const MODULES = [
     {
@@ -30,11 +31,17 @@ export const MODULES = [
                 url: 'usuarios/usuarios'
             },
             {
+                name: 'Empresas',
+                slug: 'empresas',
+                icon: faBuilding,
+                url: 'usuarios/empresas'
+            },
+            {
                 name: 'Tareas',
                 slug: 'tareas',
                 icon: faTasks,
                 url: 'usuarios/tareas'
-            }
+            },
         ]
     },
     {

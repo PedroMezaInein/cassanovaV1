@@ -31,3 +31,40 @@
         }
     }
 }
+
+.small-button{
+    max-width: 30px;
+    max-height: 30px;
+    min-width: 30px;
+    min-height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+}
+
+.delete-item{
+    border-radius: 50%;
+    right: 0rem;
+    top: 0rem;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    padding: 0;
+    color: black;
+    background-color: transparent;
+    border-color: transparent;
+    transition: all 0.5s;
+    &:hover{
+        padding: 0;
+        color: black;
+        background-color: transparent;
+        border-color: transparent;
+        width: 35px!important;
+        height: 35px!important;
+        font-size: 35px!important;
+    }
+}

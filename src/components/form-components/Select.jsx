@@ -14,6 +14,9 @@ class Select extends Component{
                     { placeholder }     
                 </Form.Label>
                 <Form.Control onChange={ onChange } name={ name } value={ value } as="select">
+                    <option value={0} disabled>
+                        {placeholder}
+                    </option>
                     {
                         options.map((option, key) => {
                             return(

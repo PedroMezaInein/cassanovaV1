@@ -10,11 +10,11 @@ class RegisterUserForm extends Component{
     }
 
     render(){
-        const { children, options, form, onChange } = this.props
+        const { children, options, form, onChange, title } = this.props
         return(
             <Form { ... this.props}>
                 <Subtitle color="gold">
-                    Llena los campos para registrar un nuevo campo.
+                    {title}
                 </Subtitle>
                 <Input onChange={ onChange } required name="name" type="text" value={ form.name } placeholder="Nombre"/>
                 <Input onChange={ onChange } required name="email" type="email" value={ form.email } placeholder="Email"/>
