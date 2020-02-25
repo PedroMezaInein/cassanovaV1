@@ -14,24 +14,10 @@ class EmpresaForm extends Component{
         }
     }
     
-    onFilesError = (error, file) => {
-        console.log('error code ' + error.code + ': ' + error.message)
-    }
-
-    filesRemoveAll = () => {
-        const { form: {file: file} } = this.props
-        console.log(file, 'remove')
-        /* file.removeFiles() */
-    }
-
-    filesRemoveOne = (_file) => {
-        const { form: {file: file} } = this.props
-        file.removeFile(_file)
-    }
     render(){
-        const { children, form, onChange, title, img} = this.props
+        const { children, form, onChange, title, img, removeFile} = this.props
         const { file } = form
-        console.log('PROPS', this.props)
+        console.log('PROPS', this.props, file)
         return(
             <Form { ... this.props}>
                 <Subtitle color="gold">
@@ -39,9 +25,9 @@ class EmpresaForm extends Component{
                 </Subtitle>
                 <Input onChange={ onChange } required name="name" type="text" value={ form.name } placeholder="Nombre"/>
                 {
-                    false &&
+                    img === '' &&
                         <div className="p-3 position-relative">
-                            <img className='w-100' src={URL_ASSETS + form.logo } />
+                            <img className='w-100' src={URL_ASSETS + form.file } />
                         </div>
                 }
                 {
@@ -49,7 +35,7 @@ class EmpresaForm extends Component{
                         <div className="p-3 position-relative">
                             <img value={img} className='w-100' src={ img } />
                             <Button className="position-absolute delete-item " 
-                                onClick={this.removeFile} text='' icon={faTimesCircle}/>
+                                onClick={removeFile} text='' icon={faTimesCircle}/>
                         </div>
                 }
                 <Input onChange={ onChange } name="logo" type="file" value={ form.logo } placeholder="File"/>

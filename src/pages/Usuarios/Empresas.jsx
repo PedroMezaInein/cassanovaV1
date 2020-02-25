@@ -89,8 +89,8 @@ class Empresas extends Component{
             empresa: emp,
             form: {
                 name: emp.name,
-                logo: emp.logo,
-                file: []
+                logo: '',
+                file: emp.logo
             }
         })
     }
@@ -112,8 +112,8 @@ class Empresas extends Component{
             empresa: {},
             form:{
                 name: name,
-                logo: logo,
-                file: []
+                logo: '',
+                file: logo
             }
         })
     }
@@ -202,13 +202,26 @@ class Empresas extends Component{
         })
     }
 
+    removeFile = (e) => {
+        e.preventDefault()
+        const { name, logo, file } = this.state.empresa
+        this.setState({
+            ... this.state,
+            form:{
+                name: name,
+                logo: '',
+                file: logo
+            },
+            img: ''
+        })
+    }
     render(){
         const { empresas, modalDelete, modalEdit, empresa, form, img } = this.state
         return(
             <Layout { ...this.props}>
                 <EmpresasTable data={empresas} />
                 <Modal show={modalEdit} handleClose={this.handleEditModal}>
-                    <EmpresaForm form={ form } img={img}  onSubmit={ this.handleSubmit} onChange={(e) => this.handleChange(e)} title="Editar empresa" />
+                    <EmpresaForm removeFile={this.removeFile} form={ form } img={img}  onSubmit={ this.handleSubmit} onChange={(e) => this.handleChange(e)} title="Editar empresa" />
                 </Modal>
                 <Modal show={modalDelete} handleClose={this.handleDeleteModal}>
                     <Title>
