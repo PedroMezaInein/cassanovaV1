@@ -43,11 +43,8 @@ class RegisterUserForm extends Component{
             <>
                 <Accordion>
                     <div className="">
-                        {/* <Accordion.Toggle as={Button} color="transparent" icon={faPlus} variant="link" eventKey="empleado">
-                            <FontAwesomeIcon icon={faPlus}/>
-                        </Accordion.Toggle> */}
                         <CustomToggle eventKey="empleado" >
-                            <Small>
+                            <Small color="gold">
                                 Aquí puedes completar la información del empleado
                             </Small>
                         </CustomToggle>
@@ -57,7 +54,7 @@ class RegisterUserForm extends Component{
                         <div>
                             <Accordion defaultActiveKey="empleadoGeneral">
                                 <CustomToggle eventKey="empleadoGeneral">
-                                    <Small>
+                                    <Small color="gold">
                                         Información general del empleado
                                     </Small>
                                 </CustomToggle>
@@ -162,7 +159,7 @@ class RegisterUserForm extends Component{
                                     </div>
                                 </Accordion.Collapse>
                                 <CustomToggle eventKey="cuentaBancaria">
-                                    <Small>
+                                    <Small color="gold">
                                         Información bancaria
                                     </Small>
                                 </CustomToggle>
@@ -195,7 +192,7 @@ class RegisterUserForm extends Component{
                                     </div>
                                 </Accordion.Collapse>
                                 <CustomToggle eventKey="contactoEmergencia">
-                                    <Small>
+                                    <Small color="gold">
                                         Contacto emergencia
                                     </Small>
                                 </CustomToggle>
