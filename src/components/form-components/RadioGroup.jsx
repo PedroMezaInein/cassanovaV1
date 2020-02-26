@@ -9,12 +9,12 @@ class RadioGroup extends Component{
     render(){
         const { options, placeholder, name, onChange, value } = this.props
         return(
-            <fieldset>
-                
-                <Form.Group>
-                    <Form.Label as="legend">
+            <div>
+                <Form.Label className="mt-2 mb-1 label-form">
                         {placeholder}
-                    </Form.Label>
+                </Form.Label>
+                <Form.Group className="radio-group d-flex mb-0">
+                    
                     {
                         options.map((option, key) => {
                             return(
@@ -31,7 +31,7 @@ class RadioGroup extends Component{
                         })
                     }
                 </Form.Group>
-            </fieldset>
+            </div>
         )
     }
 }

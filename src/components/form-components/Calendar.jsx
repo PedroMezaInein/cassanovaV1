@@ -20,9 +20,6 @@ class Calendar extends Component{
         
         return(
             <>
-                <label>
-                    {placeholder}
-                </label>
                 <DatePicker 
                     selected={value}
                     onChange={date => onChangeCalendar(date)}

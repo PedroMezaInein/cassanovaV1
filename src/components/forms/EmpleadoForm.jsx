@@ -42,11 +42,15 @@ class RegisterUserForm extends Component{
         return(
             <>
                 <Accordion>
-                    <div className="d-flex justify-content-end">
+                    <div className="">
                         {/* <Accordion.Toggle as={Button} color="transparent" icon={faPlus} variant="link" eventKey="empleado">
                             <FontAwesomeIcon icon={faPlus}/>
                         </Accordion.Toggle> */}
-                        <CustomToggle eventKey="empleado" />
+                        <CustomToggle eventKey="empleado" >
+                            <Small>
+                                Aquí puedes completar la información del empleado
+                            </Small>
+                        </CustomToggle>
                     </div>
                     
                     <Accordion.Collapse eventKey="empleado">
@@ -59,83 +63,102 @@ class RegisterUserForm extends Component{
                                 </CustomToggle>
                                 <Accordion.Collapse eventKey="empleadoGeneral">
                                     <div>
-                                    <RadioGroup
-                                        name={'tipo_empleado'}
-                                        onChange={onChange}
-                                        options={
-                                            [
-                                                {
-                                                    label: 'Administrativo',
-                                                    value: 'Administrativo'
-                                                },
-                                                {
-                                                    label: 'Obra',
-                                                    value: 'Obra'
-                                                }
-                                            ]
-                                        }
-                                        placeholder={'Selecciona el tipo de empleado'}
-                                        value={form.tipo_empleado}
-                                        />
-                                    <Select
-                                        name={'empresa'}
-                                        options={options}
-                                        onChange= { onChange }
-                                        placeholder={'Selecciona la empresa'}
-                                        value={form.empresa}
-                                        />
-                                    <Input 
-                                        onChange={ onChange } 
-                                         
-                                        name="puesto" 
-                                        type="text" 
-                                        value={ form.puesto } 
-                                        placeholder="Puesto"/>
-                                    <Calendar 
-                                        onChangeCalendar={ onChangeCalendar }
-                                        placeholder="Fecha de inicio"
-                                        name="fecha_inicio"
-                                        value={form.fecha_inicio}
-                                        />
-                                    <RadioGroup
-                                        name={'estatus'}
-                                        onChange={onChange}
-                                        options={
-                                            [
-                                                {
-                                                    label: 'Activo',
-                                                    value: 'Activo'
-                                                },
-                                                {
-                                                    label: 'Inactivo',
-                                                    value: 'Inactivo'
-                                                }
-                                            ]
-                                        }
-                                        value={form.estatus}
-                                        placeholder={'Selecciona el estatus de empleado'}
-                                        />
-                                    <Input 
-                                        onChange={ onChange } 
-                                         
-                                        name="rfc" 
-                                        type="text" 
-                                        value={ form.rfc } 
-                                        placeholder="RFC"/>
-                                    <Input 
-                                        onChange={ onChange } 
-                                         
-                                        name="nss" 
-                                        type="text" 
-                                        value={ form.nss } 
-                                        placeholder="NSS"/>
-                                    <Input 
-                                        onChange={ onChange } 
+                                        <div className="mx-0 row mt-4">
+                                            <div className="col-md-4 px-2">
+                                                <RadioGroup
+                                                    name={'tipo_empleado'}
+                                                    onChange={onChange}
+                                                    options={
+                                                        [
+                                                            {
+                                                                label: 'Administrativo',
+                                                                value: 'Administrativo'
+                                                            },
+                                                            {
+                                                                label: 'Obra',
+                                                                value: 'Obra'
+                                                            }
+                                                        ]
+                                                    }
+                                                    placeholder={'Selecciona el tipo de empleado'}
+                                                    value={form.tipo_empleado}
+                                                    />
+                                            </div>
+                                            <div className="col-md-4 px-2">
+                                                <Select
+                                                    name={'empresa'}
+                                                    options={options}
+                                                    onChange= { onChange }
+                                                    placeholder={'Selecciona la empresa'}
+                                                    value={form.empresa}
+                                                    />
+                                            </div>
+                                            <div className="col-md-4 px-2">
+                                                <Input 
+                                                    onChange={ onChange } 
+                                                    name="puesto" 
+                                                    type="text" 
+                                                    value={ form.puesto } 
+                                                    placeholder="Puesto"/>
+                                            </div>
+                                        </div>
+                                        <div className="row mt-2 mx-0">
+                                            <div className="col-md-4 px-2">
+                                                <Input 
+                                                    onChange={ onChange }         
+                                                    name="rfc" 
+                                                    type="text" 
+                                                    value={ form.rfc } 
+                                                    placeholder="RFC"/>
+                                            </div>
+                                            <div className="col-md-4 px-2">
+                                                <Input 
+                                                    onChange={ onChange }         
+                                                    name="nss" 
+                                                    type="text" 
+                                                    value={ form.nss } 
+                                                    placeholder="NSS"/>
+                                            </div>
+                                            <div className="col-md-4 px-2">
+                                                <Input 
+                                                    onChange={ onChange }         
+                                                    name="curp" 
+                                                    type="text" 
+                                                    value={ form.curp } 
+                                                    placeholder="CURP"/>
+                                            </div>
+                                        </div>
+                                        <div className="row mt-2 mb-3 mx-0">
+                                            <div className="col-md-4 px-2">
+                                                <Calendar 
+                                                    onChangeCalendar={ onChangeCalendar }
+                                                    placeholder="Fecha de inicio"
+                                                    name="fecha_inicio"
+                                                    value={form.fecha_inicio}
+                                                    />
+                                            </div>
+                                            <div className="col-md-4 px-2">
+                                                <RadioGroup
+                                                    name={'estatus'}
+                                                    onChange={onChange}
+                                                    options={
+                                                        [
+                                                            {
+                                                                label: 'Activo',
+                                                                value: 'Activo'
+                                                            },
+                                                            {
+                                                                label: 'Inactivo',
+                                                                value: 'Inactivo'
+                                                            }
+                                                        ]
+                                                    }
+                                                    value={form.estatus}
+                                                    placeholder={'Selecciona el estatus de empleado'}
+                                                    />
+                                            </div>
+                                        </div>
                                         
-                                        name="curp" 
-                                        type="text" 
-                                        value={ form.curp } 
-                                        placeholder="CURP"/>
                                     </div>
                                 </Accordion.Collapse>
                                 <CustomToggle eventKey="cuentaBancaria">
@@ -144,28 +167,31 @@ class RegisterUserForm extends Component{
                                     </Small>
                                 </CustomToggle>
                                 <Accordion.Collapse eventKey="cuentaBancaria">
-                                    <div>
-                                        <Input 
-                                            onChange={ onChange } 
-                                            
-                                            name="banco" 
-                                            type="text" 
-                                            value={ form.banco } 
-                                            placeholder="Banco"/>
-                                        <Input 
-                                            onChange={ onChange } 
-                                            
-                                            name="cuenta" 
-                                            type="text" 
-                                            value={ form.cuenta } 
-                                            placeholder="Cuenta"/>
-                                        <Input 
-                                            onChange={ onChange } 
-                                            
-                                            name="clabe" 
-                                            type="text" 
-                                            value={ form.clabe } 
-                                            placeholder="clabe"/>
+                                    <div className="row my-3 mx-0">
+                                        <div className="col-md-4 px-2">
+                                            <Input 
+                                                onChange={ onChange } 
+                                                name="banco" 
+                                                type="text" 
+                                                value={ form.banco } 
+                                                placeholder="Banco"/>
+                                        </div>
+                                        <div className="col-md-4 px-2">
+                                            <Input 
+                                                onChange={ onChange } 
+                                                name="cuenta" 
+                                                type="text" 
+                                                value={ form.cuenta } 
+                                                placeholder="Cuenta"/>
+                                        </div>
+                                        <div className="col-md-4 px-2">
+                                            <Input 
+                                                onChange={ onChange } 
+                                                name="clabe" 
+                                                type="text" 
+                                                value={ form.clabe } 
+                                                placeholder="Clabe"/>
+                                        </div>
                                     </div>
                                 </Accordion.Collapse>
                                 <CustomToggle eventKey="contactoEmergencia">
@@ -174,21 +200,24 @@ class RegisterUserForm extends Component{
                                     </Small>
                                 </CustomToggle>
                                 <Accordion.Collapse eventKey="contactoEmergencia">
-                                    <div>
-                                        <Input 
-                                            onChange={ onChange } 
-                                            
-                                            name="nombre_emergencia" 
-                                            type="text" 
-                                            value={ form.nombre_emergencia } 
-                                            placeholder="Nombre"/>
-                                        <Input 
-                                            onChange={ onChange } 
-                                            
-                                            name="telefono_emergencia" 
-                                            type="text" 
-                                            value={ form.telefono_emergencia } 
-                                            placeholder="Teléfono"/>
+                                    <div className="row mx-0 my-3">
+                                        <div className="col-md-6 px-2">
+                                            <Input 
+                                                onChange={ onChange } 
+                                                name="nombre_emergencia" 
+                                                type="text" 
+                                                value={ form.nombre_emergencia } 
+                                                placeholder="Nombre del contacto de emergencia"/>
+                                        </div>
+                                        <div className="col-md-6 px-2">
+                                            <Input 
+                                                onChange={ onChange } 
+                                                
+                                                name="telefono_emergencia" 
+                                                type="text" 
+                                                value={ form.telefono_emergencia } 
+                                                placeholder="Teléfono del contacto de emergencia"/>
+                                        </div>
                                     </div>
                                 </Accordion.Collapse>
                             </Accordion>
