@@ -32,18 +32,19 @@
     }
 
     &__red{
-        background-color: red;
-        border-color: red;
-        color: $bone;
+        background-color: transparent;
+        border-color: transparent;
+        color: red;
         &:hover{
             background-color: transparent;
-            border-color: red;
-            color: red
+            border-color: transparent;
+            color: red;
+            text-decoration: underline;
         }
         &:active{
             background-color: transparent;
-            border-color: red;
-            color: red
+            border-color: transparent;
+            text-decoration: underline;
         }
     }
 
@@ -53,6 +54,39 @@
         color: $blue!important;
         &:hover{
             background-color: transparent!important;
+            border: 0px!important;
+            color: $blue!important;
+        }
+    }
+
+    &__l-blue{
+        background-color: $l-blue!important;
+        border: 0px!important;
+        color: $gold!important;
+        &:hover{
+            background-color: $gold!important;
+            border: 0px!important;
+            color: $l-blue!important;
+        }
+    }
+
+    &__gold-no-bg{
+        background-color: transparent!important;
+        border: 0px!important;
+        color: $gold!important;
+        &:hover{
+            background-color: transparent!important;
+            border: 0px!important;
+            color: $dark-blue!important;
+        }
+    }
+
+    &__blue{
+        background-color: $blue!important;
+        border: 0px!important;
+        color: $bone!important;
+        &:hover{
+            background-color: $bone!important;
             border: 0px!important;
             color: $blue!important;
         }

@@ -3,7 +3,7 @@ import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, URL_ASSETS } from '../../constants'
-import { Title, Subtitle, P, Small } from '../../components/texts'
+import { Title, Subtitle, P, Small, B } from '../../components/texts'
 import { EmpresasTable } from '../../components/tables'
 import { faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { Button } from '../../components/form-components'
@@ -291,13 +291,11 @@ class Empresas extends Component{
                         title={formTitle} />
                 </Modal>
                 <Modal show={modalDelete} handleClose={this.handleDeleteModal}>
-                    <Title>
-                        ¿Estás seguro que deseas eliminar a <P color="red">
-                            {empresa.name}
-                        </P>
-                    </Title>
+                    <Subtitle className="my-3 text-center">
+                        ¿Estás seguro que deseas eliminar a <B color="red">{empresa.name}</B>?
+                    </Subtitle>
                     <div className="d-flex justify-content-center mt-3">
-                        <Button onClick={this.handleDeleteModal} text="Cancelar" className="mr-2" color="green"/>
+                        <Button onClick={this.handleDeleteModal} text="Cancelar" className="mr-3" color="green"/>
                         <Button onClick={(e) => { this.safeDeleteEmpresa(e)(empresa.id) }} text="Continuar" color="red"/>
                     </div>
                 </Modal>

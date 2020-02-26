@@ -9,12 +9,27 @@
     &__container{
         width: 100%;
         border-spacing: 0;
+        tbody{
+            tr{
+                &:not(:last-child){
+                    border: solid;
+                    border-width: 0 0 2px 0;
+                    border-color: $dark-blue;
+                }
+            }
+        }
         th{
-            border: solid 1px;
+            background-color: $dark-blue-80;
+            color: #fafafa;
+            &:not(:first-child):not(:last-child){
+                border: solid;
+                border-width: 0 2px;
+                border-color: $bone;
+            }
         }
         td{
-            border: solid 0.75px;
             width: auto;
+            color: $dark-blue;
             &:first-child{
                 width: 1%;
             }
