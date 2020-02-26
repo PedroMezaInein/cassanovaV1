@@ -29,3 +29,14 @@
 .react-datepicker-wrapper{
     width: 100%;
 }
+
+.image-upload  input{
+    display: none;
+}
+
+.image-upload svg{
+    padding: 0.5rem 0.25rem 0.35rem;
+    color: $dark-blue;
+    font-size: calc( 0.5rem + 30px );
+    cursor: pointer;
+}
