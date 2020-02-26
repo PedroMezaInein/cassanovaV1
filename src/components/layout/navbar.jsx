@@ -11,14 +11,16 @@ const CustomToggle = React.forwardRef(({ children, onClick, drop }, ref) => (
         >
         <Button text=''
             icon={faUserCircle}
-            color="transparent" />
+            color="transparent" 
+            className="icon"
+            />
     </div>
 ));
 class navbar extends Component{
     render(){
         const { children, clickLogout } = this.props
         return(
-            <div className="navbar__container">
+            <div className="navbar__container ">
                 <Navbar>
                     <Navbar.Brand className="ml-auto">
                         <Dropdown>

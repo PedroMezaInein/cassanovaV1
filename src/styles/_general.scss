@@ -1,7 +1,51 @@
 // Colores
 $dark-blue: #325693;
 $blue: #7096c1;
-$light-blue: #c7d0df;
+$l-blue: #c7d0df;
 $bone: #ecedef;
 $gold: #b4a26d;
+$gold-20: #b4a26d20;
+$gold-40: #b4a26d40;
+$gold-60: #b4a26d60;
+$gold-80: #b4a26d80;
+$bone-20: #ecedef20;
+$bone-40: #ecedef40;
+$bone-60: #ecedef60;
+$bone-80: #ecedef80;
+$dark-blue-20: #32569320;
+$dark-blue-40: #32569340;
+$dark-blue-60: #32569360;
+$dark-blue-80: #32569380;
+$blue-20: #7096c120;
+$blue-40: #7096c140;
+$blue-60: #7096c160;
+$blue-80: #7096c180;
+$l-blue-20: #c7d0df20;
+$l-blue-40: #c7d0df40;
+$l-blue-60: #c7d0df60;
+$l-blue-80: #c7d0df80;
 
+// Fuentes
+@font-face {
+    font-family: 'Oswaldo';
+    src:    url('./fonts/Oswald-VariableFont:wght.ttf')  format('truetype')
+            url('./fonts/Oswald-VariableFont_wght.woff') format('woff')
+}
+body {
+    font-family: 'Oswaldo';
+}
+
+
+// General
+
+body{
+    min-height: 100vh;
+    background-color: #fafafa60;
+}
+
+.contenedor{
+    &__full-height{
+        min-height: 100vh;
+    }
+    border-bottom: 1px solid transparent;
+}

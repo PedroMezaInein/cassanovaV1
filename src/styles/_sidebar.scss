@@ -1,0 +1,22 @@
+.sidebar{
+    &__container{
+        background-color: $dark-blue!important;
+        color: $gold;
+    }
+    &__icon{
+        color: $l-blue!important;
+    }
+    &__text{
+        color: #fff!important;
+    }
+}
+
+.subnav{
+    background-color: $dark-blue!important;
+    &__icon{
+        color: #fff!important;
+    }
+    &__text{
+        color: #fff!important;
+    }
+}

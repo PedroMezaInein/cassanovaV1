@@ -3,6 +3,7 @@ import LoginForm from '../components/forms/LoginForm'
 import Card from 'react-bootstrap/Card'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { Title } from '../components/texts'
 
 class Login extends Component{
     render(){
@@ -12,15 +13,12 @@ class Login extends Component{
         }
         return(
             <div className="vh-100 d-flex align-items-center justify-content-center">
-                <Card className="card-form">
+                <Card className="card__form">
                     <Card.Body>
-                        <h1 className="text-center mb-4">
+                        <Title className="text-center mb-4">
                             Inicia sesión
-                        </h1>
+                        </Title>
                         <LoginForm { ... this.props} />
-                        <Link to="/">
-                            Go Home
-                        </Link>
                     </Card.Body>
                 </Card>             
             </div>

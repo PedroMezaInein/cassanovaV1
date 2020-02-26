@@ -6,9 +6,9 @@ export default class Subtitle extends Component{
     }
 
     render(){
-        const { color, children } = this.props
+        const { color, children, className } = this.props
         return(
-            <h3 className={`text-color__${color}`}>
+            <h3 className={`text-color__${color} subtitle ${className}`}>
                 {children}
             </h3>
         )

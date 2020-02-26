@@ -56,7 +56,7 @@ class App extends Component{
             history.push('login')
         }
         return(
-            <div className="App">
+            <div className="">
                 <Route path="/login" exact component={Login}/>
                 <Route path="/" exact component={Home}/>
                 <Route path="/mi-proyecto" exact component={MiProyecto}/>

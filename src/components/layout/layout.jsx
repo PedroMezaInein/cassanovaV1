@@ -48,10 +48,10 @@ class Layout extends Component{
     render(){
         const { children,  } = this.props
         return(
-            <div className="main-container">
+            <div className="contenedor__full-height position-relative">
                 <Sidebar {... this.props} />
                 <Navbar clickLogout={ this.logoutUser } {... this.props} />
-                <div className="main m-5 p-5">
+                <div className="mx-5 px-5 pt-5 contenedor">
                     {children}
                 </div>
             </div>

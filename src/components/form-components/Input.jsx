@@ -8,10 +8,13 @@ class Input extends Component{
     }
 
     render(){
-        const { error, onChange } = this.props
+        const { error, onChange, placeholder  } = this.props
         return(
             <div>
-                <Form.Control onChange={ (e) => {e.preventDefault(); onChange(e)} } className={`mt-3 ${error}`} { ... this.props}/>
+                <Form.Label className="mt-2 mb-1 label-form">
+                    {placeholder}
+                </Form.Label>
+                <Form.Control onChange={ (e) => {e.preventDefault(); onChange(e)} } className={`${error}`} { ... this.props}/>
                 {
                     error && 
                         <label className="error-label">

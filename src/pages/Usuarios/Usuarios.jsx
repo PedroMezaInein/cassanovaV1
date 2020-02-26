@@ -217,13 +217,10 @@ class Usuarios extends Component{
 
     handleCloseSafeModal = () => {
         const { modalSafeDeleteActive, user_to_interact } = this.state
-        if(modalSafeDeleteActive){
-            user_to_interact = {}
-        }
         this.setState({
             ... this.state,
+            user_to_interact: modalSafeDeleteActive ? {} : user_to_interact,
             modalSafeDeleteActive: !this.state.modalSafeDeleteActive,
-            user_to_interact,
         })
     }
 
@@ -376,7 +373,7 @@ class Usuarios extends Component{
         const { users, modalActive, form, options, modalSafeDeleteActive, user_to_interact, modalUpdateUser, form: { tipo : tipo_form }, empleadoForm, empresas_options } = this.state;
         return(
             <Layout { ...this.props}>
-                <div className="d-flex align-items-center justify-content-between">
+                <div className="d-flex align-items-center mb-2 justify-content-between">
                     <Title>
                         Listado de usuarios registrados
                     </Title>
@@ -385,29 +382,31 @@ class Usuarios extends Component{
                 {
                     users.map((tipo_users, key) => {
                         return(
-                            <div key={key} className="my-5">
+                            <div key={key} className="my-4">
                                 <Subtitle>
-                                    Usuarios {tipo_users.tipo}
+                                    {tipo_users.tipo}
                                 </Subtitle>
-                                <div className="d-flex border py-3">
+                                <div className="row py-3 mx-0">
                                     {
                                         tipo_users.usuarios.map((user, _key) => {
                                             return(
-                                                <Card className="mx-3" key={_key}>
-                                                    <div className="text-center">
-                                                        <P>
-                                                            {user.name}
-                                                        </P>
+                                                <div className="col-md-4 col-xl-3 col-6 px-0" key={_key}>
+                                                    <Card className="mx-3" >
+                                                        <div className="text-center">
+                                                            <P>
+                                                                {user.name}
+                                                            </P>
 
-                                                        <Small>
-                                                            {user.email}
-                                                        </Small>
-                                                    </div>
-                                                    <div className="d-flex justify-content-between mt-3">
-                                                        <Button onClick={(e) => { this.updateUser(e)(user) }} icon={faUserEdit} className="mr-2" color="green"/>
-                                                        <Button onClick={(e) => { this.deleteuser(e)(user) }} icon={faUserSlash} color="red"/>
-                                                    </div>
-                                                </Card>
+                                                            <Small>
+                                                                {user.email}
+                                                            </Small>
+                                                        </div>
+                                                        <div className="d-flex justify-content-between mt-3">
+                                                            <Button onClick={(e) => { this.updateUser(e)(user) }} icon={faUserEdit} className="mr-2" color="green"/>
+                                                            <Button onClick={(e) => { this.deleteuser(e)(user) }} icon={faUserSlash} color="red"/>
+                                                        </div>
+                                                    </Card>
+                                                </div>
                                             )
                                         })
                                     }
@@ -417,7 +416,7 @@ class Usuarios extends Component{
                     })
                 }
                 <Modal show={modalActive} handleClose={this.handleCloseModal}>
-                    <RegisterUserForm form={ form } options={options} onSubmit={ this.handleSubmitAddUser} 
+                    <RegisterUserForm className="px-3" form={ form } options={options} onSubmit={ this.handleSubmitAddUser} 
                         onChange={(e) => {e.preventDefault(); this.handleChangeInput(e)}} title="Registrar usuario">
                         {
                             tipo_form < 3 && tipo_form > 0 &&
@@ -432,7 +431,7 @@ class Usuarios extends Component{
                     </RegisterUserForm>
                 </Modal>
                 <Modal show={modalUpdateUser} handleClose={this.handleCloseModalUpdateUser}>
-                    <RegisterUserForm form={ form } options={options} onSubmit={ this.handleSubmitEditUser } 
+                    <RegisterUserForm form={ form } options={options} className="px-3" onSubmit={ this.handleSubmitEditUser } 
                         onChange={(e) => {e.preventDefault(); this.handleChangeInput(e)}} title="Editar usuario">
                         {
                             tipo_form < 3 && tipo_form > 0 &&

@@ -8,13 +8,14 @@ export default class button extends Component{
     }
 
     render(){
-        const { color, text, icon, onClick, className, type, ...props } = this.props
+        const { children, color, text, icon, onClick, className, type, ...props } = this.props
         return(
             <Button type={type} onClick={onClick} className={`button__${color} ${className}` } { ... props }>
                 {
                     icon && <FontAwesomeIcon icon={icon} />
                 }
                 {text}
+                {children}
             </Button>
         )
     }

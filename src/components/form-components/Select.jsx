@@ -10,11 +10,11 @@ class Select extends Component{
         const { options, placeholder, value, name, onChange } = this.props
         return(
             <>
-                <Form.Label>
+                <Form.Label className="mt-2 mb-1 label-form">
                     { placeholder }     
                 </Form.Label>
                 <Form.Control onChange={ onChange } name={ name } value={ value } as="select">
-                    <option value={0} disabled>
+                    <option value={0} disabled hidden>
                         {placeholder}
                     </option>
                     {
