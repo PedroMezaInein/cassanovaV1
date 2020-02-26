@@ -73,7 +73,7 @@ class Usuarios extends Component{
     }
 
     setUser = (data) => {
-        console.log(data, 'setuser')
+        
         const { empleado } = data
         const { empleadoForm } = this.state
 
@@ -160,8 +160,6 @@ class Usuarios extends Component{
         e.preventDefault();
         const { name, value } = e.target
         const { form }  = this.state
-        console.log('handleChangeInput')
-        console.log(this.state)
         form[name] = value
         this.setState({
             ... this.state,

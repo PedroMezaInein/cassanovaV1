@@ -17,7 +17,6 @@ function CustomToggle({ children, eventKey }) {
         }else{
             variable = true
         }
-        console.log(e.target, 'e')
     },);
 
     
