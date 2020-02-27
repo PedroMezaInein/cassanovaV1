@@ -28,25 +28,25 @@ class App extends Component{
                 login(data)
             },
             (error) => {
-                /* this.logoutUser() */
+                this.logoutUser()
             }
         ).catch((error) => {
-            /* this.logoutUser() */
+            this.logoutUser()
         })
     }
     async logoutUser(){
         const { logout, access_token, history } = this.props
         await axios.get(URL_DEV + 'user/logout', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                /* logout(); */
+                logout();
                 history.push('/login')
             },
             (error) => {
-                /* logout(); */
+                logout();
                 history.push('/login')
             }
         ).catch((error) => {
-            /* logout(); */
+            logout();
             history.push('/login')
         })
     }

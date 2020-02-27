@@ -12,7 +12,7 @@ class Layout extends Component{
     }
 
     logoutUser = () =>{
-        /* this.logoutUserAxios(); */
+        this.logoutUserAxios();
     }
     async componentDidMount(){
         const { access_token } = this.props.authUser
@@ -22,25 +22,25 @@ class Layout extends Component{
                 login(data)
             },
             (error) => {
-                /* this.logoutUser() */
+                this.logoutUser()
             }
         ).catch((error) => {
-            /* this.logoutUser() */
+            this.logoutUser()
         })
     }
     async logoutUserAxios(){
         const { logout, access_token, history } = this.props
         await axios.get(URL_DEV + 'user/logout', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                /* logout(); */
+                logout();
                 history.push('/login')
             },
             (error) => {
-                /* logout(); */
+                logout();
                 history.push('/login')
             }
         ).catch((error) => {
-            /* logout(); */
+            logout();
             history.push('/login')
         })
     }
