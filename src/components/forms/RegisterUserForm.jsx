@@ -16,14 +16,14 @@ class RegisterUserForm extends Component{
                 <Subtitle className="text-center" color="gold">
                     {title}
                 </Subtitle>
-                <div class="row mx-0 mt-3 ,b-2">
-                    <div class="col-md-4 px-2">
+                <div className="row mx-0 mt-3 ,b-2">
+                    <div className="col-md-4 px-2">
                         <Input onChange={ onChange } required name="name" type="text" value={ form.name } placeholder="Nombre"/>
                     </div>
-                    <div class="col-md-4 px-2">
+                    <div className="col-md-4 px-2">
                         <Input onChange={ onChange } required name="email" type="email" value={ form.email } placeholder="Email"/>
                     </div>
-                    <div class="col-md-4 px-2">
+                    <div className="col-md-4 px-2">
                         <Select onChange={ onChange } name="tipo" value={ form.tipo } placeholder="Selecciona el tipo de usuario" options={options} />
                     </div>
                 </div>

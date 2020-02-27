@@ -30,9 +30,7 @@ class Usuarios extends Component{
             tipo:0,
             empleado:false
         },
-        empleadoForm:{
-            EMPTY_EMPLEADO
-        },
+        empleadoForm:EMPTY_EMPLEADO,
         options: [],
         empresas_options: [],
         user_to_interact: '',
@@ -46,6 +44,7 @@ class Usuarios extends Component{
     componentDidMount(){
         this.getUsers();
         const { history, authUser } = this.props
+        console.log('state', this.state)
         if(authUser){
             const { user: { tipo: { id: tipo_id } } } = authUser
             switch(tipo_id){
@@ -77,24 +76,31 @@ class Usuarios extends Component{
         const { empleado } = data
         const { empleadoForm } = this.state
 
-        empleadoForm['tipo_empleado'] = empleado.tipo_empleado ? empleado.tipo_empleado : ''
+        console.log(data, 'data usuarios set user')
         
-        empleadoForm['empresa'] = empleado.empresa.id ? empleado.empresa.id : ''
-        
-        empleadoForm['puesto'] = empleado.puesto ? empleado.puesto : ''
-        empleadoForm['fecha_inicio'] = empleado.fecha_inicio ? new Date(empleado.fecha_inicio) : ''
-        empleadoForm['estatus'] = empleado.estatus ? empleado.estatus : ''
-        
-        empleadoForm['rfc'] = empleado.rfc ? empleado.rfc : ''
-        empleadoForm['nss'] = empleado.nss ? empleado.nss : ''
-        empleadoForm['curp'] = empleado.curp ? empleado.curp : ''
-        
-        empleadoForm['banco'] = empleado.banco_deposito ? empleado.banco_deposito : ''
-        empleadoForm['cuenta'] = empleado.cuenta_deposito ? empleado.cuenta_deposito : ''
-        empleadoForm['clabe'] = empleado.clabe_deposito ? empleado.clabe_deposito : ''
+        if(empleado){
 
-        empleadoForm['nombre_emergencia'] = empleado.nombre_contacto ? empleado.nombre_contacto : ''
-        empleadoForm['telefono_emergencia'] = empleado.telefono_contacto ? empleado.telefono_contacto : ''
+            empleadoForm['tipo_empleado'] = empleado.tipo_empleado ? empleado.tipo_empleado : ''
+        
+            empleadoForm['empresa'] = empleado.empresa ? (empleado.empresa.id ? empleado.empresa.id : '') : ''
+            
+            empleadoForm['puesto'] = empleado.puesto ? empleado.puesto : ''
+            empleadoForm['fecha_inicio'] = empleado.fecha_inicio ? new Date(empleado.fecha_inicio) : ''
+            empleadoForm['estatus'] = empleado.estatus ? empleado.estatus : ''
+            
+            empleadoForm['rfc'] = empleado.rfc ? empleado.rfc : ''
+            empleadoForm['nss'] = empleado.nss ? empleado.nss : ''
+            empleadoForm['curp'] = empleado.curp ? empleado.curp : ''
+            
+            empleadoForm['banco'] = empleado.banco_deposito ? empleado.banco_deposito : ''
+            empleadoForm['cuenta'] = empleado.cuenta_deposito ? empleado.cuenta_deposito : ''
+            empleadoForm['clabe'] = empleado.clabe_deposito ? empleado.clabe_deposito : ''
+    
+            empleadoForm['nombre_emergencia'] = empleado.nombre_contacto ? empleado.nombre_contacto : ''
+            empleadoForm['telefono_emergencia'] = empleado.telefono_contacto ? empleado.telefono_contacto : ''
+
+        }
+        
 
         this.setState({
             ... this.state,

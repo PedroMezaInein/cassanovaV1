@@ -9,8 +9,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 // DEV
-/* export const URL_DEV = 'http://127.0.0.1:8000/api/'; */
-/* export const URL_ASSETS = 'http://127.0.0.1:8000'; */
+/* export const URL_DEV = 'http://127.0.0.1:8000/api/';
+export const URL_ASSETS = 'http://127.0.0.1:8000'; */
 
 // PROD / DEV
 export const URL_DEV = 'https://api-app1.herokuapp.com/api/';
