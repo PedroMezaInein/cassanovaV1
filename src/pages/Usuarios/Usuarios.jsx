@@ -43,27 +43,16 @@ class Usuarios extends Component{
     }
 
     componentDidMount(){
+        const { authUser: { user : { permisos : permisos } } } = this.props
+        const { history : { location: { pathname: pathname } } } = this.props
+        const { history } = this.props
+        const usuarios = permisos.find(function(element, index) {
+            const { modulo: { url: url } } = element
+            return  pathname === '/' + url
+        });
+        if(!usuarios)
+            history.push('/')
         this.getUsers();
-        const { history, authUser } = this.props
-        
-        if(authUser){
-            const { user: { tipo: { id: tipo_id } } } = authUser
-            switch(tipo_id){
-                case 1:
-                    break;
-                case 2: 
-                    history.push('/usuarios/tareas')
-                    break;
-                case 3:
-                    history.push('/mi-proyecto')
-                    break;
-                default:
-                    console.log('logout')
-                    break;
-            }
-        }else{
-            // Logout
-        }
     }
 
     setUsers = (data) => {

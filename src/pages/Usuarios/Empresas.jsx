@@ -32,7 +32,17 @@ class Empresas extends Component{
     }
 
     componentDidMount(){
+        const { authUser: { user : { permisos : permisos } } } = this.props
+        const { history : { location: { pathname: pathname } } } = this.props
+        const { history } = this.props
+        const empresas = permisos.find(function(element, index) {
+            const { modulo: { url: url } } = element
+            return  pathname === '/' + url
+        });
+        if(!empresas)
+            history.push('/')
         this.getEmpresas()
+
     }
 
     // Get Empresas
