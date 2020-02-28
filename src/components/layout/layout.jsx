@@ -9,7 +9,27 @@ class Layout extends Component{
 
     constructor(props){
         super(props)
-        console.log(props, 'PROPS LAYOUT')
+    }
+
+    logoutUser = () =>{
+        this.logoutUserAxios();
+    }
+    
+    async logoutUserAxios(){
+        const { logout, authUser : {access_token: access_token}, history } = this.props
+        await axios.get(URL_DEV + 'user/logout', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                logout();
+                history.push('/login')
+            },
+            (error) => {
+                logout();
+                history.push('/login')
+            }
+        ).catch((error) => {
+            logout();
+            history.push('/login')
+        })
     }
 
     render(){

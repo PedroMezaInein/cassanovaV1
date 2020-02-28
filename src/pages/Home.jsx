@@ -9,20 +9,34 @@ class Home extends Component{
 
     componentDidMount(){
         const { user : { id: tipo} } = this.props.authUser
+        const { user : { permisos: permisos } } = this.props.authUser
         const { history } = this.props
-        switch (tipo){
-            case 1:
-                history.push('/usuarios/usuarios')
-                break;
-            case 2:
+        let auxRoute = null
+        
+        const usuarios = permisos.find(function(element, index) {
+            return element.modulo.slug === 'usuarios'
+        });
+        const tareas = permisos.find(function(element, index) {
+            return element.modulo.slug === 'tareas'
+        });
+        const proyecto = permisos.find(function(element, index) {
+            return element.modulo.slug === 'mi-proyecto'
+        });
+        
+        if(usuarios){
+            history.push('/usuarios/usuarios')
+        }
+        else{
+            if(tareas){
                 history.push('/usuarios/tareas')
-                break;
-            case 3:
-                history.push('/mi-proyecto')
-                break;
-            default:
-                history.push('/mi-proyecto')
-                break;
+            }
+            else{
+                if(proyecto){
+                    history.push('/mi-proyecto')
+                }else{
+                    history.push(permisos[0].modulo.url)
+                }
+            }
         }
     }
 

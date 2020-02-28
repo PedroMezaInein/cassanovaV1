@@ -68,7 +68,7 @@ class PermisosForm extends Component{
         const { padre, name, checked } = module
         
         let { grupos } = this.state
-        console.log(grupos)
+        
         grupos.find(function(element, index) {
             if(element.name === padre){
                 let aux = false;
@@ -218,7 +218,6 @@ class PermisosForm extends Component{
                                                             </div>
                                                             <div className="d-flex justify-content-center">
                                                                 <Form.Check name={modulo.name} type="checkbox" checked={modulo.checked} onChange={ this.handleCheckbox(modulo) }/>
-                                                                {/* <ToggleButton value={modulo.checked} ref={modulo.slug} checked={modulo.checked} name={modulo.name} onToggle={e => console.log('onToggle', e.target, e.target.checked)}/> */}
                                                             </div>                                                
                                                         </div>
                                                     )

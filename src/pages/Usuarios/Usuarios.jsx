@@ -45,7 +45,7 @@ class Usuarios extends Component{
     componentDidMount(){
         this.getUsers();
         const { history, authUser } = this.props
-        console.log('state', this.state)
+        
         if(authUser){
             const { user: { tipo: { id: tipo_id } } } = authUser
             switch(tipo_id){

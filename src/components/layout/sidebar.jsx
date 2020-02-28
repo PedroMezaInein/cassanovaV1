@@ -17,7 +17,6 @@ class Sidebar extends Component{
     render(){
         const { location, authUser: { modulos: modulos} } = this.props
         
-        console.log('sidebar props', this.props)
         return(
             <SideNav onSelect={this.handleSelectSidebar} className="sidebar__container">
                 <SideNav.Toggle />
