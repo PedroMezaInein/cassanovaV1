@@ -278,6 +278,9 @@ class Usuarios extends Component{
             },
             (error) => {
                 console.log(error, 'error')
+                if(error.response.status === 401){
+                    console.log('No fue posible iniciar sesión')
+                }
             }
         ).catch((error) => {
             console.log(error, 'catch')
@@ -305,6 +308,9 @@ class Usuarios extends Component{
             },
             (error) => {
                 console.log(error, 'error')
+                if(error.response.status === 401){
+                    console.log('No fue posible iniciar sesión')
+                }
             }
         ).catch((error) => {
             console.log(error, 'catch')
@@ -321,6 +327,9 @@ class Usuarios extends Component{
             },
             (error) => {
                 console.log(error, 'error')
+                if(error.response.status === 401){
+                    console.log('No fue posible iniciar sesión')
+                }
             }
         ).catch((error) => {
             console.log(error, 'catch')
@@ -336,6 +345,9 @@ class Usuarios extends Component{
             },
             (error) => {
                 console.log(error, 'error')
+                if(error.response.status === 401){
+                    console.log('No fue posible iniciar sesión')
+                }
             }
         ).catch((error) => {
             console.log(error, 'catch')
@@ -363,6 +375,9 @@ class Usuarios extends Component{
             },
             (error) => {
                 console.log(error, 'error')
+                if(error.response.status === 401){
+                    console.log('No fue posible iniciar sesión')
+                }
             }
         ).catch((error) => {
             console.log(error, 'catch')
@@ -387,6 +402,9 @@ class Usuarios extends Component{
             },
             (error) => {
                 console.log(error, 'error')
+                if(error.response.status === 401){
+                    console.log('No fue posible iniciar sesión')
+                }
             }
         ).catch((error) => {
             console.log(error, 'catch')
@@ -480,7 +498,7 @@ class Usuarios extends Component{
                     </div>
                 </Modal>
                 <Modal show={modalPermisos} handleClose={this.handleCloseModalPermisos}>
-                    <PermisosForm {... this.props} user={user_to_interact.id}/>
+                    <PermisosForm {... this.props} handleClose={this.handleCloseModalPermisos} user={user_to_interact.id}/>
                 </Modal>
             </Layout>
         )

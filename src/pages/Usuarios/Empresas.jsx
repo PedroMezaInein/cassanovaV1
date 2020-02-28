@@ -45,6 +45,9 @@ class Empresas extends Component{
             },
             (error) => {
                 console.log(error, 'error')
+                if(error.response.status === 401){
+                    console.log('No fue posible iniciar sesión')
+                }
             }
         ).catch((error) => {
             console.log(error, 'catch')
@@ -169,6 +172,9 @@ class Empresas extends Component{
             },
             (error) => {
                 console.log(error, 'error')
+                if(error.response.status === 401){
+                    console.log('No fue posible iniciar sesión')
+                }
             }
         ).catch((error) => {
             console.log(error, 'catch')
@@ -188,6 +194,9 @@ class Empresas extends Component{
             },
             (error) => {
                 console.log(error, 'error')
+                if(error.response.status === 401){
+                    console.log('No fue posible iniciar sesión')
+                }
             }
         ).catch((error) => {
             console.log(error, 'catch')
@@ -207,6 +216,9 @@ class Empresas extends Component{
             },
             (error) => {
                 console.log(error, 'error')
+                if(error.response.status === 401){
+                    console.log('No fue posible iniciar sesión')
+                }
             }
         ).catch((error) => {
             console.log(error, 'catch')

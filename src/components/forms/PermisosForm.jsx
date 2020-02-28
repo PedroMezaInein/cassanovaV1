@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import { URL_DEV, ICONS_MODULES } from '../../constants'
+import { URL_DEV, ICONS_MODULES, DARK_BLUE, L_BLUE, BONE } from '../../constants'
 import { ToggleButton, Button } from '../form-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Subtitle, Small } from '../texts'
@@ -88,57 +88,94 @@ class PermisosForm extends Component{
         })
     }
 
+    setGrupos = grupos => {
+        let { activeKey } = this.state
+        activeKey = grupos[0].slug
+        let auxActive = null
+        let gruposObject = Array()
+        grupos.map((grupo, key) => {            
+            let aux = true
+            
+            const { slug: slugGrupo, name: nombre, icon } = grupo
+            let modulosObject = Array()
+            grupo.modulos.map((modulo, key) => {
+                const { slug, name: nombre, icon } = modulo
+                if(modulo.permisos.length){
+                    modulosObject.push( { checked: true, padre: slugGrupo, name: slug, nombre: nombre, icon: icon} )
+                    aux = aux && true
+                }else{
+                    modulosObject.push(  { checked: false, padre: slugGrupo, name: slug, nombre: nombre, icon: icon} )
+                    aux = aux && false
+                }
+            }) 
+            if((auxActive === null && aux)){
+                if(auxActive === null){
+                    auxActive = key
+                }
+            }
+            gruposObject.push({checked: aux, modulos: modulosObject, name: slugGrupo, nombre: nombre, icon: icon})
+        })
+
+        this.setState({
+            ... this.state,
+            grupos: gruposObject,
+            activeKey: auxActive ? grupos[auxActive].slug : activeKey
+        })
+    }
+
     async componentDidMount(){
         const { authUser: {access_token: access_token}, history, user } = this.props
         if(!access_token)
             history.push('/login')
         await axios.get(URL_DEV + 'modulos/user/'+user, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
-                const { data: {modulos: grupos} } = response
-                let { activeKey } = this.state
-                activeKey = grupos[0].slug
-                let gruposObject = Array()
-                grupos.map((grupo, key) => {
-                    
-                    let aux = true
-                    const { slug: slugGrupo, name: nombre, icon } = grupo
-                
-                    let modulosObject = Array()
-                    grupo.modulos.map((modulo, key) => {
-                        const { slug, name: nombre, icon } = modulo
-
-                        if(modulo.permisos.length){
-                            modulosObject.push( { checked: true, padre: slugGrupo, name: slug, nombre: nombre, icon: icon} )
-                            aux = aux && true
-                        }else{
-                            modulosObject.push(  { checked: false, padre: slugGrupo, name: slug, nombre: nombre, icon: icon} )
-                            aux = aux && false
-                        }
-                    })
-                    
-                    gruposObject.push({checked: aux, modulos: modulosObject, name: slugGrupo, nombre: nombre, icon: icon})
-                })
-
-                this.setState({
-                    ... this.state,
-                    grupos: gruposObject,
-                    activeKey
-                })
-                
+                const { data: {modulos:  grupos} } = response
+                this.setGrupos(grupos);
             },
             (error) => {
                 console.log(error, 'error')
+                if(error.response.status === 401){
+                    console.log('No fue posible iniciar sesión')
+                }
             }
         ).catch((error) => {
             console.log(error, 'catch')
         })
     }
+    handleSubmit = e => {
+        e.preventDefault();
+        const { grupos } = this.state
+        const { user } = this.props
+        this.setPermisosAxios(user, grupos);
+    }
+
+    async setPermisosAxios(user, data){
+        const { authUser: {access_token: access_token}, history, handleClose } = this.props
+        if(!access_token)
+            history.push('/login')
+        await axios.put(URL_DEV + 'modulos/user/'+user, {grupos: data}, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
+            (response) => {
+                const { data: {modulos:  grupos} } = response
+                this.setGrupos(grupos);
+                handleClose();
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    console.log('No fue posible iniciar sesión')
+                }
+            }
+        ).catch((error) => {
+            console.log(error, 'catch')
+        })
+    }
+    
 
     render(){
         const { grupos, activeKey } = this.state
         
         return(
-            <div>
+            <form onSubmit={this.handleSubmit}>
                 <Accordion activeKey={activeKey}>
                     {
                         grupos !== null && grupos.map((grupo, key) => {
@@ -148,11 +185,18 @@ class PermisosForm extends Component{
                                     <div className="d-flex justify-content-between">
                                         <div>
                                             <div className="d-flex align-items-center">
-                                                <FontAwesomeIcon className="mx-2 text-color__gold" icon={ICONS_MODULES[grupo.icon]} />
-                                                <Subtitle className="mb-0 mx-2 " color="dark-blue"> 
+                                                <ToggleButton  
+                                                    { ...grupo} 
+                                                    onToggle={(e) => this.handleGroupToggler(e)}
+                                                    leftBG={BONE}
+                                                    rightBG={L_BLUE}
+                                                    borderColor={DARK_BLUE}
+                                                    knobColor={DARK_BLUE}
+                                                    />
+                                                <FontAwesomeIcon className="mx-4 text-color__gold" icon={ICONS_MODULES[grupo.icon]} />
+                                                <Subtitle className="mb-0 mx-2 " > 
                                                     { grupo.nombre }    
                                                 </Subtitle>
-                                                <ToggleButton { ...grupo} onToggle={(e) => this.handleGroupToggler(e)}/>
                                             </div>
                                         </div>
                                         {
@@ -188,7 +232,10 @@ class PermisosForm extends Component{
                         })
                     }
                 </Accordion>
-            </div>
+                <div className="d-flex justify-content-center my-3">
+                    <Button type="submit" className="text-center mx-auto" text='Confirmar' />
+                </div>
+            </form>
         )
     }
 }

@@ -29,7 +29,7 @@ function CustomToggle({ children, eventKey }) {
         </div>
     );
 }
-class RegisterUserForm extends Component{
+class EmpleadoForm extends Component{
 
     constructor(props){
         super(props)
@@ -227,4 +227,4 @@ class RegisterUserForm extends Component{
     }
 }
 
-export default RegisterUserForm
+export default EmpleadoForm

@@ -51,3 +51,35 @@ export const EMPTY_EMPLEADO = {
     nombre_emergencia: '',
     telefono_emergencia: '',
 }
+
+//Colors
+export const DARK_BLUE = "#325693"
+export const DARK_BLUE_20 = "#32569320"
+export const DARK_BLUE_40 = "#32569340"
+export const DARK_BLUE_60 = "#32569360"
+export const DARK_BLUE_80 = "#32569380"
+export const DARK_BLUE_90 = "#32569390"
+
+export const BLUE = "#7096c1"
+export const BLUE_20 = "#7096c120"
+export const BLUE_40 = "#7096c140"
+export const BLUE_60 = "#7096c160"
+export const BLUE_80 = "#7096c180"
+
+export const L_BLUE = "#c7d0df"
+export const L_BLUE_20 = "#c7d0df20"
+export const L_BLUE_40 = "#c7d0df40"
+export const L_BLUE_60 = "#c7d0df60"
+export const L_BLUE_80 = "#c7d0df80"
+
+export const BONE = "#ecedef"
+export const BONE_20 = "#ecedef20"
+export const BONE_40 = "#ecedef40"
+export const BONE_60 = "#ecedef60"
+export const BONE_80 = "#ecedef80"
+
+export const GOLD = '#b4a26d'
+export const GOLD_20 = '#b4a26d20'
+export const GOLD_40 = '#b4a26d40'
+export const GOLD_60 = '#b4a26d60'
+export const GOLD_80 = '#b4a26d80'

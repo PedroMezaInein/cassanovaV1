@@ -52,6 +52,9 @@ class LoginForm extends React.Component {
                 this.setState({
                     error: error
                 });
+                if(error.response.status === 401){
+                    console.log('No fue posible iniciar sesión')
+                }
             }
         ).catch((error) => {
             error['password'] = 'Ingresaste un correo o contraseña equivocado catch. Intenta de nuevo'

@@ -28,6 +28,10 @@ class App extends Component{
                 login(data)
             },
             (error) => {
+                if(error.response.status === 401){
+                    this.logoutUser()    
+                }
+                console.log(error.response, 'response')
                 /* this.logoutUser() */
             }
         ).catch((error) => {
@@ -43,12 +47,14 @@ class App extends Component{
                 history.push('/login')
             },
             (error) => {
-                logout();
-                history.push('/login')
+                if(error.response.status === 401){
+                    logout();
+                    history.push('/login')
+                }
             }
         ).catch((error) => {
-            logout();
-            history.push('/login')
+            /* logout();
+            history.push('/login') */
         })
     }
     render(){

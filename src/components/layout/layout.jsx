@@ -12,40 +12,6 @@ class Layout extends Component{
         console.log(props, 'PROPS LAYOUT')
     }
 
-    logoutUser = () =>{
-        this.logoutUserAxios();
-    }
-    /* async componentDidMount(){
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'user/', { headers: {Authorization:`Bearer ${access_token}`}}).then(
-            (response) => {
-                const { data } = response
-                login(data)
-            },
-            (error) => {
-                this.logoutUser()
-            }
-        ).catch((error) => {
-            this.logoutUser()
-        })
-    } */
-    async logoutUserAxios(){
-        const { logout, authUser : {access_token: access_token}, history } = this.props
-        await axios.get(URL_DEV + 'user/logout', { headers: {Authorization:`Bearer ${access_token}`}}).then(
-            (response) => {
-                logout();
-                history.push('/login')
-            },
-            (error) => {
-                logout();
-                history.push('/login')
-            }
-        ).catch((error) => {
-            logout();
-            history.push('/login')
-        })
-    }
-
     render(){
         const { children,  } = this.props
         return(
