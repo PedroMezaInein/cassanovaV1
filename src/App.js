@@ -28,10 +28,10 @@ class App extends Component{
                 login(data)
             },
             (error) => {
-                this.logoutUser()
+                /* this.logoutUser() */
             }
         ).catch((error) => {
-            this.logoutUser()
+            /* this.logoutUser() */
         })
     }
     async logoutUser(){

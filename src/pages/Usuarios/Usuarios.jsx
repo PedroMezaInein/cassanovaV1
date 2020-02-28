@@ -7,7 +7,7 @@ import { Title, Subtitle, P, Small, B } from '../../components/texts'
 import { Button } from '../../components/form-components'
 import { faUserPlus, faUserEdit, faUserSlash, faKey } from '@fortawesome/free-solid-svg-icons'
 import { Card, Modal } from '../../components/singles'
-import { RegisterUserForm, EmpleadoForm } from '../../components/forms'
+import { RegisterUserForm, EmpleadoForm, PermisosForm } from '../../components/forms'
 
 
 class Usuarios extends Component{
@@ -38,7 +38,8 @@ class Usuarios extends Component{
         // Modal
         modalSafeDeleteActive: false,
         modalActive: false,
-        modalUpdateUser: false
+        modalUpdateUser: false,
+        modalPermisos: false
     }
 
     componentDidMount(){
@@ -160,6 +161,16 @@ class Usuarios extends Component{
         })
     }
 
+    // 
+
+    changePermisos = (e) => (user) => {
+        this.setState({
+            ... this.state,
+            modalPermisos: true,
+            user_to_interact: user
+        })
+    }
+
     // Handle change on form
 
     handleChangeInput = (e) => {
@@ -232,6 +243,15 @@ class Usuarios extends Component{
         this.setState({
             ... this.state,
             modalUpdateUser: !this.state.modalUpdateUser,
+        })
+    }
+
+    handleCloseModalPermisos = () => {
+        const { modalPermisos, user_to_interact } = this.state
+        this.setState({
+            ... this.state,
+            user_to_interact: modalPermisos ? {} : user_to_interact,
+            modalPermisos: !this.state.modalPermisos,
         })
     }
 
@@ -374,7 +394,7 @@ class Usuarios extends Component{
     }
 
     render(){
-        const { users, modalActive, form, options, modalSafeDeleteActive, user_to_interact, modalUpdateUser, form: { tipo : tipo_form }, empleadoForm, empresas_options } = this.state;
+        const { users, modalActive, form, options, modalSafeDeleteActive, user_to_interact, modalUpdateUser, form: { tipo : tipo_form }, empleadoForm, empresas_options, modalPermisos } = this.state;
         return(
             <Layout { ...this.props}>
                 <div className="d-flex align-items-center mb-2 justify-content-between">
@@ -396,7 +416,7 @@ class Usuarios extends Component{
                                             return(
                                                 <div className="col-md-4 col-xl-3 col-6 px-0" key={_key}>
                                                     <Card className="mx-3" >
-                                                        <Button onClick={(e) => { this.updateUser(e)(user) }} icon={faKey} className="mr-2" color="gold-no-bg"/>
+                                                        <Button onClick={(e) => { this.changePermisos(e)(user) }} icon={faKey} className="mr-2" color="gold-no-bg"/>
                                                         <div className="text-center">
                                                             <P>
                                                                 {user.name}
@@ -458,6 +478,9 @@ class Usuarios extends Component{
                         <Button onClick={this.handleCloseSafeModal} text="Cancelar" className="mr-3" color="green"/>
                         <Button onClick={(e) => { this.deleteSafeUser(e)(user_to_interact.id) }} text="Continuar" color="red"/>
                     </div>
+                </Modal>
+                <Modal show={modalPermisos} handleClose={this.handleCloseModalPermisos}>
+                    <PermisosForm {... this.props} user={user_to_interact.id}/>
                 </Modal>
             </Layout>
         )

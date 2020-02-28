@@ -42,7 +42,8 @@ class LoginForm extends React.Component {
                 const { history, login } = this.props
                 login({
                     access_token: response.data.access_token,
-                    user: response.data.user
+                    user: response.data.user,
+                    modulos: response.data.modulos
                 })
                 history.push('/');
             },
