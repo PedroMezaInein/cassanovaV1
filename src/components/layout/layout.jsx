@@ -38,7 +38,7 @@ class Layout extends Component{
             <div className="contenedor__full-height position-relative">
                 <Sidebar {... this.props} />
                 <Navbar clickLogout={ this.logoutUser } {... this.props} />
-                <div className="mx-5 px-5 pt-5 contenedor">
+                <div className="mx-5 px-5 pt-2 contenedor">
                     {children}
                 </div>
             </div>

@@ -6,9 +6,9 @@ export default class Small extends Component{
     }
 
     render(){
-        const { color, children } = this.props
+        const { color, children, className } = this.props
         return(
-            <p className={`text-color__${color} mb-0`}>
+            <p className={`text-color__${color} mb-0 ${className}`}>
                 { children }
             </p>
         )
