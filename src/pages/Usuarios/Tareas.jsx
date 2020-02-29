@@ -3,9 +3,15 @@ import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, URL_ASSETS } from '../../constants'
+import { Column } from '../../components/draggable'
+import { DragDropContext } from 'react-beautiful-dnd'
 class Tareas extends Component{
     constructor(props){
         super(props)
+    }
+
+    state = {
+        columns:[]
     }
 
     componentDidMount(){
@@ -21,12 +27,30 @@ class Tareas extends Component{
         this.getTareasAxios()
     }
 
+    // Sets
+
+    setTareas = columns => {
+        this.setState({
+            ... this.state,
+            columns
+        })
+    }
+
+    // Dragable
+    onDragEnd = result => {
+        const { destination, source, draggableId } = result
+        console.log('destination',destination)
+        console.log('source',source)
+        console.log('draggableId',draggableId)
+    }
+
     // Axios
     async getTareasAxios(){
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'user/tareas', { headers: {Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
-                console.log(response.data, 'tareas')
+                const { data : { tareas : columns } } = response
+                this.setTareas(columns)
             },
             (error) => {
                 console.log(error, 'error')
@@ -40,9 +64,23 @@ class Tareas extends Component{
     }
 
     render(){
+        const { columns } = this.state
         return(
             <Layout { ...this.props}>
-                Tareas
+                <DragDropContext onDragEnd={this.onDragEnd}>
+                    <div className="row mx-0">
+                        {
+                            columns.map((column) => {
+                                return(
+                                    <div key={column.id} className="col-md-4 px-3">
+                                        <Column column={column} tareas={column.tareas} />
+                                    </div>
+                                )
+                                
+                            })
+                        }
+                    </div>
+                </DragDropContext>
             </Layout>
         )
     }
