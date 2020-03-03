@@ -16,6 +16,7 @@ class Column extends Component{
                     {
                         provided => (
                             <div 
+                                className="border border-white border-left-0 border-right-0"
                                 ref={provided.innerRef}
                                 { ...provided.droppableProps}>
                                 {
