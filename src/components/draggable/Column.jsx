@@ -6,7 +6,7 @@ import { Droppable } from 'react-beautiful-dnd'
 class Column extends Component{
 
     render(){
-        const { column } = this.props
+        const { column, id } = this.props
         return(
             <div className="border my-3 p-2">
                 <Subtitle className="mb-0 text-center">
@@ -19,7 +19,12 @@ class Column extends Component{
                                 ref={provided.innerRef}
                                 { ...provided.droppableProps}>
                                 {
-                                    column.tareas.map((tarea, index) => <Task key={tarea.id} tarea={tarea} index={index} />)
+                                    column.tareas.map((tarea, index) => 
+                                        /* console.log('tarea', tarea)
+                                        return( */
+                                            <Task id={id} key={tarea.id} tarea={tarea} index={index} />
+                                        /* ) */
+                                    )
                                 }
                                 {provided.placeholder}
                             </div>

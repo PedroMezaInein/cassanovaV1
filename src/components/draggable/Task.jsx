@@ -5,12 +5,17 @@ import { Draggable } from 'react-beautiful-dnd'
 class Task extends Component{
 
     render(){
-        const { tarea, index } = this.props
+        const { tarea, index, id } = this.props
+        let new_index = index
+        if(tarea){
+            new_index = tarea.index
+        }
+        
         return(
             tarea ?
             <Draggable 
                 draggableId={tarea.id.toString()}
-                index={index}
+                index={new_index}
                 >
                 { (provided) => (
                     <div

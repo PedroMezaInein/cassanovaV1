@@ -65,8 +65,6 @@ class Usuarios extends Component{
         
         const { empleado } = data
         const { empleadoForm } = this.state
-
-        console.log(data, 'data usuarios set user')
         
         if(empleado){
 
