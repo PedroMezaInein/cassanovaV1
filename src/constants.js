@@ -16,6 +16,7 @@ import {
 export const URL_ASSETS = 'http://127.0.0.1:8000'; */
 
 // PROD / DEV
+
 export const URL_DEV = 'http://demo.proyectosadmin.com/api/';
 export const URL_ASSETS = 'http://demo.proyectosadmin.com';
 
