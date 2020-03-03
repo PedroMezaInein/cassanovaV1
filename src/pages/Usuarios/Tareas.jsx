@@ -5,6 +5,7 @@ import axios from 'axios'
 import { URL_DEV, URL_ASSETS } from '../../constants'
 import { Column } from '../../components/draggable'
 import { DragDropContext } from 'react-beautiful-dnd'
+import { Modal } from '../../components/singles'
 class Tareas extends Component{
     constructor(props){
         super(props)
@@ -68,6 +69,13 @@ class Tareas extends Component{
 
     }
 
+    // Handle Buttons
+
+    // Handle add Button
+    handleAddButton = id => {
+        
+    }
+
     // Axios
     async getTareasAxios(){
         const { access_token } = this.props.authUser
@@ -123,7 +131,7 @@ class Tareas extends Component{
                             columns.map((column) => {
                                 return(
                                     <div key={column.id} className="col-md-3 px-3">
-                                        <Column column={column} id={user.id} tareas={column.tareas} />
+                                        <Column handleAddButton={this.handleAddButton} column={column} id={user.id} tareas={column.tareas} />
                                     </div>
                                 )
                                 
@@ -131,6 +139,9 @@ class Tareas extends Component{
                         }
                     </div>
                 </DragDropContext>
+                <Modal>
+                    
+                </Modal>
             </Layout>
         )
     }

@@ -5,7 +5,9 @@ import {
     faFolder, faShoppingBasket, faToolbox, faFolderOpen, faFilePrescription, faReceipt ,faFilePdf, faCoins, faHandHoldingUsd,
     faArchive, faFileSignature, faLongArrowAltRight, faSearchDollar, faFunnelDollar, faLongArrowAltLeft, faPassport, 
     faPiggyBank, faExchangeAlt, faBalanceScale, faWallet, 
-    faUserTie, faSitemap, faHospitalAlt, faUserFriends, faUserShield, faCalendarCheck, faHandsHelping, faGavel
+    faUserTie, faSitemap, faHospitalAlt, faUserFriends, faUserShield, faCalendarCheck, faHandsHelping, 
+    faMailBulk,
+    faGavel
 } from '@fortawesome/free-solid-svg-icons'
 
 
@@ -31,7 +33,8 @@ export const ICONS_MODULES = {
     'faPiggyBank': faPiggyBank, 'faExchangeAlt':faExchangeAlt, 'faBalanceScale':faBalanceScale, 'faWallet':faWallet, 
     'faUserTie':faUserTie, 'faSitemap':faSitemap, 'faHospitalAlt':faHospitalAlt, 'faUserFriends':faUserFriends, 'faUserShield':faUserShield, 
         'faCalendarCheck':faCalendarCheck, 'faHandsHelping':faHandsHelping, 
-    'faGavel':faGavel
+    'faMailBulk':faMailBulk,
+    'faGavel':faGavel,
 }
 
 //Form
