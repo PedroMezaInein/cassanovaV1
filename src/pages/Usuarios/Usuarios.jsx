@@ -8,7 +8,7 @@ import { Button } from '../../components/form-components'
 import { faUserPlus, faUserEdit, faUserSlash, faKey } from '@fortawesome/free-solid-svg-icons'
 import { Card, Modal } from '../../components/singles'
 import { RegisterUserForm, EmpleadoForm, PermisosForm } from '../../components/forms'
-
+import swal from 'sweetalert'
 
 class Usuarios extends Component{
     constructor(props){
@@ -261,16 +261,40 @@ class Usuarios extends Component{
                         tipo:0
                     },
                 })
+                swal({
+                    title: '¡Listo!',
+                    text: 'Agregaste con éxito al usuario.',
+                    icon: 'success',
+                    buttons: false,
+                    timer: 1500
+                })
                 
             },
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    console.log('No fue posible iniciar sesión')
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    })
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
                 }
             }
         ).catch((error) => {
-            console.log(error, 'catch')
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
         })
     }
 
@@ -291,16 +315,40 @@ class Usuarios extends Component{
                         tipo:0,
                     },
                 })
+                swal({
+                    title: '¡Listo!',
+                    text: 'Actualizaste con éxito al usuario.',
+                    icon: 'success',
+                    buttons: false,
+                    timer: 1500
+                })
                 
             },
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    console.log('No fue posible iniciar sesión')
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    })
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
                 }
             }
         ).catch((error) => {
-            console.log(error, 'catch')
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
         })
     }
 
@@ -311,15 +359,39 @@ class Usuarios extends Component{
             (response) => {
                 const { data: {users: users} } = response
                 this.setUsers(users)
+                swal({
+                    title: '¡Listo!',
+                    text: 'Eliminaste con éxito al usuario.',
+                    icon: 'success',
+                    buttons: false,
+                    timer: 1500
+                })
             },
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    console.log('No fue posible iniciar sesión')
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    })
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
                 }
             }
         ).catch((error) => {
-            console.log(error, 'catch')
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
         })
     }
 
@@ -333,11 +405,28 @@ class Usuarios extends Component{
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    console.log('No fue posible iniciar sesión')
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    })
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
                 }
             }
         ).catch((error) => {
-            console.log(error, 'catch')
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
         })
     }
 
@@ -363,11 +452,28 @@ class Usuarios extends Component{
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    console.log('No fue posible iniciar sesión')
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    })
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
                 }
             }
         ).catch((error) => {
-            console.log(error, 'catch')
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
         })
 
         await axios.get(URL_DEV + 'empresa', { headers: {Authorization:`Bearer ${access_token}`}}).then(
@@ -390,11 +496,28 @@ class Usuarios extends Component{
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    console.log('No fue posible iniciar sesión')
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    })
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
                 }
             }
         ).catch((error) => {
-            console.log(error, 'catch')
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
         })
     }
 

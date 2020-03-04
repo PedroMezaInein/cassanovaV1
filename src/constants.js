@@ -6,7 +6,7 @@ import {
     faArchive, faFileSignature, faLongArrowAltRight, faSearchDollar, faFunnelDollar, faLongArrowAltLeft, faPassport, 
     faPiggyBank, faExchangeAlt, faBalanceScale, faWallet, 
     faUserTie, faSitemap, faHospitalAlt, faUserFriends, faUserShield, faCalendarCheck, faHandsHelping, 
-    faMailBulk,
+    faMailBulk, faSearch, faComments, faAddressCard,
     faGavel
 } from '@fortawesome/free-solid-svg-icons'
 
@@ -33,7 +33,7 @@ export const ICONS_MODULES = {
     'faPiggyBank': faPiggyBank, 'faExchangeAlt':faExchangeAlt, 'faBalanceScale':faBalanceScale, 'faWallet':faWallet, 
     'faUserTie':faUserTie, 'faSitemap':faSitemap, 'faHospitalAlt':faHospitalAlt, 'faUserFriends':faUserFriends, 'faUserShield':faUserShield, 
         'faCalendarCheck':faCalendarCheck, 'faHandsHelping':faHandsHelping, 
-    'faMailBulk':faMailBulk,
+    'faMailBulk':faMailBulk, 'faSearch':faSearch, 'faComments':faComments, 'faAddressCard':faAddressCard,
     'faGavel':faGavel,
 }
 

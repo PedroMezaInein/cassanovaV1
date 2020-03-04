@@ -7,7 +7,7 @@ import { Subtitle, Small } from '../texts'
 import Accordion from 'react-bootstrap/Accordion'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import Form from 'react-bootstrap/Form'
-
+import swal from 'sweetalert'
 class PermisosForm extends Component{
 
     state = {
@@ -135,11 +135,31 @@ class PermisosForm extends Component{
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    console.log('No fue posible iniciar sesión')
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    }).then((result) => {
+                        if(result.value)
+                            history.push('/login')
+                    })
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
                 }
             }
         ).catch((error) => {
-            console.log(error, 'catch')
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
         })
     }
     handleSubmit = e => {
@@ -158,15 +178,39 @@ class PermisosForm extends Component{
                 const { data: {modulos:  grupos} } = response
                 this.setGrupos(grupos);
                 handleClose();
+                swal({
+                    title: '¡Listo!',
+                    text: 'Actualizaste los permisos.',
+                    icon: 'success',
+                    buttons: false,
+                    timer: 1500
+                })
             },
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    console.log('No fue posible iniciar sesión')
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    })
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
                 }
             }
         ).catch((error) => {
-            console.log(error, 'catch')
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
         })
     }
     

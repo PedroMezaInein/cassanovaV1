@@ -9,7 +9,7 @@ import { faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { Button } from '../../components/form-components'
 import { Modal } from '../../components/singles'
 import { EmpresaForm } from '../../components/forms'
-
+import swal from 'sweetalert'
 class Empresas extends Component{
 
     state= {
@@ -56,11 +56,28 @@ class Empresas extends Component{
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    console.log('No fue posible iniciar sesión')
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
                 }
             }
         ).catch((error) => {
-            console.log(error, 'catch')
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
         })
     }
 
@@ -179,15 +196,39 @@ class Empresas extends Component{
             (response) => {
                 const { data: {empresas: empresas} } = response
                 this.setEmpresas(empresas)
+                swal({
+                    title: '¡Listo!',
+                    text: 'Eliminaste con éxito la empresa.',
+                    icon: 'success',
+                    buttons: false,
+                    timer: 1500
+                })
             },
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    console.log('No fue posible iniciar sesión')
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    })
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
                 }
             }
         ).catch((error) => {
-            console.log(error, 'catch')
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
         })
     }
 
@@ -201,15 +242,39 @@ class Empresas extends Component{
             (response) => {
                 const { data: {empresas: empresas} } = response
                 this.setEmpresas(empresas)
+                swal({
+                    title: '¡Listo!',
+                    text: 'Actualizaste con éxito la empresa.',
+                    icon: 'success',
+                    buttons: false,
+                    timer: 1500
+                })
             },
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    console.log('No fue posible iniciar sesión')
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    })
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
                 }
             }
         ).catch((error) => {
-            console.log(error, 'catch')
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
         })
     }
 
@@ -223,15 +288,39 @@ class Empresas extends Component{
             (response) => {
                 const { data: {empresas: empresas} } = response
                 this.setEmpresas(empresas)
+                swal({
+                    title: '¡Listo!',
+                    text: 'Agregaste con éxito la empresa.',
+                    icon: 'success',
+                    buttons: false,
+                    timer: 1500
+                })
             },
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    console.log('No fue posible iniciar sesión')
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    })
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
                 }
             }
         ).catch((error) => {
-            console.log(error, 'catch')
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
         })
     }
 

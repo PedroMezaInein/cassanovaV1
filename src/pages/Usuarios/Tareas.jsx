@@ -6,6 +6,7 @@ import { URL_DEV, URL_ASSETS } from '../../constants'
 import { Column } from '../../components/draggable'
 import { DragDropContext } from 'react-beautiful-dnd'
 import { Modal } from '../../components/singles'
+import swal from 'sweetalert'
 class Tareas extends Component{
     constructor(props){
         super(props)
@@ -91,11 +92,28 @@ class Tareas extends Component{
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    console.log('No fue posible iniciar sesión')
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    })
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
                 }
             }
         ).catch((error) => {
-            console.log(error, 'catch')
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
         })
     }
 
@@ -113,11 +131,28 @@ class Tareas extends Component{
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    console.log('No fue posible iniciar sesión')
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    })
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
                 }
             }
         ).catch((error) => {
-            console.log(error, 'catch')
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
         })
     }
 

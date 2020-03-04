@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import { URL_DEV } from './constants';
 import { logout, login } from './redux/reducers/auth_user'
+import swal from 'sweetalert'
 
 const Loader = x => Loadable({
     loading: Loading,
@@ -20,6 +21,7 @@ const Usuarios = Loader(() => import('./pages/Usuarios/Usuarios') )
 const Normas = Loader(() => import('./pages/Normas') )
 const Leads = Loader(() => import('./pages/Leads') )
 const MiProyecto = Loader(() => import('./pages/MiProyecto') )
+
 class App extends Component{
     async componentDidMount(){
         const { access_token } = this.props.authUser
@@ -32,11 +34,25 @@ class App extends Component{
                 if(error.response.status === 401){
                     this.logoutUser()    
                 }
+                else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
+                }
                 console.log(error.response, 'response')
                 /* this.logoutUser() */
             }
         ).catch((error) => {
             /* this.logoutUser() */
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
         })
     }
     async logoutUser(){

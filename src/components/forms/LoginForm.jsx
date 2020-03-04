@@ -8,6 +8,7 @@ import axios from 'axios';
 import {URL_DEV} from '../../constants'
 import { connect } from 'react-redux'
 import { login } from '../../redux/reducers/auth_user'
+import swal from 'sweetalert'
 
 class LoginForm extends React.Component {
     constructor(props) {
@@ -53,7 +54,14 @@ class LoginForm extends React.Component {
                     error: error
                 });
                 if(error.response.status === 401){
-                    console.log('No fue posible iniciar sesión')
+                    
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
                 }
             }
         ).catch((error) => {
@@ -61,6 +69,12 @@ class LoginForm extends React.Component {
             this.setState({
                 error: error
             });
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
         })
     }
 
