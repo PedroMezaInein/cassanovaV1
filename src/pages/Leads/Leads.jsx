@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Layout from '../components/layout/layout'
+import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 
 class Leads extends Component{
@@ -13,7 +13,7 @@ class Leads extends Component{
         const { history } = this.props
         const leads = permisos.find(function(element, index) {
             const { modulo: { url: url } } = element
-            return  pathname === url
+            return  pathname === '/' + url
         });
         if(!leads)
             history.push('/')
