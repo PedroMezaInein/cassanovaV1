@@ -524,7 +524,7 @@ class Usuarios extends Component{
     render(){
         const { users, modalActive, form, options, modalSafeDeleteActive, user_to_interact, modalUpdateUser, form: { tipo : tipo_form }, empleadoForm, empresas_options, modalPermisos } = this.state;
         return(
-            <Layout { ...this.props}>
+            <Layout active={'usuarios'}  { ...this.props}>
                 <div className="d-flex align-items-center mb-2 flex-column flex-md-row justify-content-md-between">
                     <Title className="text-center">
                         Listado de usuarios registrados

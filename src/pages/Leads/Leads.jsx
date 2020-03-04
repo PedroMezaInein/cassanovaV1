@@ -21,7 +21,7 @@ class Leads extends Component{
 
     render(){
         return(
-            <Layout { ...this.props}>
+            <Layout active={'leads'}  { ...this.props}>
                 Leads
             </Layout>
         )

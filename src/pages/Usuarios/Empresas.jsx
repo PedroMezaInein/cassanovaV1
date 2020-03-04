@@ -387,7 +387,7 @@ class Empresas extends Component{
     render(){
         const { empresas, modalDelete, modalEdit, empresa, form, img, formTitle, formAction } = this.state
         return(
-            <Layout { ...this.props}>
+            <Layout active={'usuarios'} { ...this.props}>
                 <div className="text-right">
                     <Button className="small-button ml-auto mr-4" onClick={(e) => this.openModalAddEmpresa()} text='' icon={faPlus} color="green" />
                 </div>

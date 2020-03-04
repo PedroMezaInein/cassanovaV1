@@ -27,15 +27,14 @@ class MenuResponsive extends Component{
     }
 
     render(){
-        const { location, authUser: { modulos: modulos}, expanded, clickResponsiveMenu } = this.props
-        
+        const { location, authUser: { modulos: modulos}, expanded, clickResponsiveMenu , active} = this.props
         
         return(
             <div className={`position-fixed d-md-none menu-responsive ${expanded}`}>
                 <div className="text-right">
                     <Button icon={faTimes} text='' color="transparent" onClick={clickResponsiveMenu} />
                 </div>
-                <Accordion>
+                <Accordion defaultActiveKey={active}>
                     {
                         modulos.map((modulo, key) => {
                             if(modulo.url){
@@ -48,6 +47,7 @@ class MenuResponsive extends Component{
                                     </div>
                                 )
                             }else{
+                                console.log(modulo, 'modulo', key, 'active', active)
                                 return(
                                     <div key={modulo.id}>
                                         <CustomToggle eventKey={modulo.slug}>

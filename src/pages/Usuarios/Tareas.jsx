@@ -159,7 +159,7 @@ class Tareas extends Component{
     render(){
         const { columns, user } = this.state
         return(
-            <Layout { ...this.props}>
+            <Layout active={'usuarios'} { ...this.props}>
                 <DragDropContext onDragEnd={this.onDragEnd}>
                     <div className="row mx-0">
                         {
