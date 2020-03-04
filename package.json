@@ -34,6 +34,7 @@
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "redux-thunks": "^1.0.0",
+    "rfs": "^9.0.2",
     "styled-components": "^5.0.1",
     "sweetalert": "^2.1.2"
   },

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Navbar from 'react-bootstrap/Navbar'
 import Dropdown from 'react-bootstrap/Dropdown'
 import Button from '../form-components/Button';
-import { faUserCircle } from '@fortawesome/free-solid-svg-icons'
+import { faUserCircle, faBars } from '@fortawesome/free-solid-svg-icons'
 import { Small } from '../texts'
 
 const CustomToggle = React.forwardRef(({ children, onClick, drop, userName }, ref) => (
@@ -25,12 +25,19 @@ const CustomToggle = React.forwardRef(({ children, onClick, drop, userName }, re
 ));
 class navbar extends Component{
     render(){
-        const { children, clickLogout, authUser: { user: { name: userName } } } = this.props
+        const { children, clickLogout, authUser: { user: { name: userName } }, clickResponsiveMenu } = this.props
         return(
             <div className="navbar__container ">
                 <Navbar>
+                    <Button text=''
+                        icon={faBars}
+                        color="transparent" 
+                        className="icon d-md-none"
+                        onClick={clickResponsiveMenu}
+                        />
                     <Navbar.Brand className="ml-auto">
                         <Dropdown>
+                        
                             <Dropdown.Toggle 
                                 as={CustomToggle} 
                                 drop={'right'}

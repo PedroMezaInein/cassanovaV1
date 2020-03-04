@@ -18,7 +18,7 @@ class Sidebar extends Component{
         const { location, authUser: { modulos: modulos} } = this.props
         
         return(
-            <SideNav onSelect={this.handleSelectSidebar} className="sidebar__container">
+            <SideNav onSelect={this.handleSelectSidebar} className="sidebar__container d-none d-lg-block">
                 <SideNav.Toggle />
                 <SideNav.Nav defaultSelected={location.pathname.slice(1)}>
                     {

@@ -130,7 +130,7 @@ class Tareas extends Component{
                         {
                             columns.map((column) => {
                                 return(
-                                    <div key={column.id} className="col-md-3 px-3">
+                                    <div key={column.id} className="col-md-6 col-lg-3 px-3">
                                         <Column handleAddButton={this.handleAddButton} column={column} id={user.id} tareas={column.tareas} />
                                     </div>
                                 )

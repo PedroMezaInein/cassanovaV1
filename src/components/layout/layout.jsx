@@ -1,11 +1,16 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import Sidebar from './sidebar';
+import Sidebar from './sidebar'
 import Navbar from './navbar'
+import MenuResponsive from './menuResponsive'
 import { logout, login } from '../../redux/reducers/auth_user'
 import axios from 'axios'
 import { URL_DEV } from '../../constants'
 class Layout extends Component{
+
+    state = {
+        menu: false
+    }
 
     constructor(props){
         super(props)
@@ -13,6 +18,13 @@ class Layout extends Component{
 
     logoutUser = () =>{
         this.logoutUserAxios();
+    }
+
+    clickResponsiveMenu = () => {
+        this.setState({
+            menu: !this.state.menu
+        })
+        console.log(this.state, 'STATE')
     }
     
     async logoutUserAxios(){
@@ -34,11 +46,13 @@ class Layout extends Component{
 
     render(){
         const { children,  } = this.props
+        const { menu } = this.state
         return(
             <div className="contenedor__full-height position-relative">
                 <Sidebar {... this.props} />
-                <Navbar clickLogout={ this.logoutUser } {... this.props} />
-                <div className="mx-5 px-5 pt-2 contenedor">
+                <MenuResponsive expanded={menu ? 'expanded' : ''} clickResponsiveMenu={ this.clickResponsiveMenu } {... this.props} />
+                <Navbar clickResponsiveMenu={ this.clickResponsiveMenu } clickLogout={ this.logoutUser } {... this.props} />
+                <div className="mx-md-5 px-md-5 mx-4 pt-2 contenedor">
                     {children}
                 </div>
             </div>

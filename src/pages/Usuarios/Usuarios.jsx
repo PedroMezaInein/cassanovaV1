@@ -402,11 +402,14 @@ class Usuarios extends Component{
         const { users, modalActive, form, options, modalSafeDeleteActive, user_to_interact, modalUpdateUser, form: { tipo : tipo_form }, empleadoForm, empresas_options, modalPermisos } = this.state;
         return(
             <Layout { ...this.props}>
-                <div className="d-flex align-items-center mb-2 justify-content-between">
-                    <Title>
+                <div className="d-flex align-items-center mb-2 flex-column flex-md-row justify-content-md-between">
+                    <Title className="text-center">
                         Listado de usuarios registrados
                     </Title>
-                    <Button onClick={this.addUser()} text='' icon={faUserPlus} />
+                    <div className="mt-3 mt-md-0 ml-auto">
+                        <Button onClick={this.addUser()} text='' className="" icon={faUserPlus} />
+                    </div>
+                    
                 </div>
                 {
                     users.map((tipo_users, key) => {
@@ -419,7 +422,7 @@ class Usuarios extends Component{
                                     {
                                         tipo_users.usuarios.map((user, _key) => {
                                             return(
-                                                <div className="col-md-4 col-xl-3 col-6 px-0" key={_key}>
+                                                <div className="col-md-4 col-xl-3 col-12 mb-2 px-0" key={_key}>
                                                     <Card className="mx-3" >
                                                         <Button onClick={(e) => { this.changePermisos(e)(user) }} icon={faKey} className="mr-2" color="gold-no-bg"/>
                                                         <div className="text-center">
