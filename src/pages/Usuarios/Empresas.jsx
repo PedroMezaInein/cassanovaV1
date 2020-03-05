@@ -48,7 +48,7 @@ class Empresas extends Component{
     // Get Empresas
     async getEmpresas(){
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'empresa/', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'empresa', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { data: {empresas: empresas} } = response
                 this.setEmpresas(empresas)
@@ -284,7 +284,7 @@ class Empresas extends Component{
         const data = new FormData();
         data.append('name', form.name)
         data.append('logo', form.file)
-        await axios.post(URL_DEV + 'empresa/', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`, } }).then(
+        await axios.post(URL_DEV + 'empresa', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
                 const { data: {empresas: empresas} } = response
                 this.setEmpresas(empresas)
