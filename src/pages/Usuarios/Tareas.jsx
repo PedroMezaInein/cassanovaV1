@@ -42,10 +42,6 @@ class Tareas extends Component{
     // Dragable
     onDragEnd = result => {
         const { destination, source, draggableId } = result
-        
-        console.log('destination',destination)
-        console.log('source',source)
-        console.log('draggableId',draggableId)
 
         if(!destination)
             return;

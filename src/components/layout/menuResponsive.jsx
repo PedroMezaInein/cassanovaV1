@@ -47,7 +47,6 @@ class MenuResponsive extends Component{
                                     </div>
                                 )
                             }else{
-                                console.log(modulo, 'modulo', key, 'active', active)
                                 return(
                                     <div key={modulo.id}>
                                         <CustomToggle eventKey={modulo.slug}>

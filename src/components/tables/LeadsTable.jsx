@@ -147,11 +147,27 @@ class EmpresasTable extends Component{
             },
             {
                 Header: 'Nombre',
-                accessor: 'name',
+                accessor: 'nombre',
             },
             {
-                Header: 'Logo',
-                accessor: 'logo',
+                Header: 'Contacto',
+                accessor: 'contacto',
+            },
+            {
+                Header: 'Comentario',
+                accessor: 'comentario',
+            },
+            {
+                Header: 'Empresa',
+                accessor: 'empresa',
+            },
+            {
+                Header: 'Origen',
+                accessor: 'origen',
+            },
+            {
+                Header: 'Fecha',
+                accessor: 'fecha',
             },
         ]
         const { data } = this.props
@@ -167,3 +183,35 @@ class EmpresasTable extends Component{
 }
 
 export default EmpresasTable;
+
+
+const columns = [                
+    {
+        Header: ' ',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Nombre',
+        accessor: 'nombre',
+    },
+    {
+        Header: 'Contacto',
+        accessor: 'contacto',
+    },
+    {
+        Header: 'Comentario',
+        accessor: 'comentario',
+    },
+    {
+        Header: 'Empresa',
+        accessor: 'empresa',
+    },
+    {
+        Header: 'Origen',
+        accessor: 'origen',
+    },
+    {
+        Header: 'Fecha',
+        accessor: 'fecha',
+    },
+]

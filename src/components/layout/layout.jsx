@@ -24,7 +24,6 @@ class Layout extends Component{
         this.setState({
             menu: !this.state.menu
         })
-        console.log(this.state, 'STATE')
     }
     
     async logoutUserAxios(){

@@ -112,7 +112,7 @@ function Table({ columns, data }){
 
 }
 
-class EmpresasTable extends Component{
+class DataTable extends Component{
     constructor(props){
         super(props)
     }
@@ -122,40 +122,7 @@ class EmpresasTable extends Component{
     }
 
     render(){
-        /* const data = [
-            {
-                actions: '1',
-                name: 'Rocco',
-                logo: 'logo'
-            },
-            {
-                actions: '2',
-                name: 'Inein',
-                logo: 'logo'
-            },
-            {
-                actions: '3',
-                name: 'JOCAHEGA',
-                logo: 'logo'
-            }
-            
-        ] */
-        const columns = [                
-            {
-                Header: ' ',
-                accessor: 'actions',
-            },
-            {
-                Header: 'Nombre',
-                accessor: 'name',
-            },
-            {
-                Header: 'Logo',
-                accessor: 'logo',
-            },
-        ]
-        const { data } = this.props
-        console.log(data, 'data table')
+        const { data, columns } = this.props
         return(
             <div>
                 <Table columns={columns} data={data} />
@@ -166,4 +133,4 @@ class EmpresasTable extends Component{
 
 }
 
-export default EmpresasTable;
+export default DataTable;

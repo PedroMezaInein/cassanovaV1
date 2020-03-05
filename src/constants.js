@@ -12,12 +12,12 @@ import {
 
 
 // DEV
-/* export const URL_DEV = 'http://127.0.0.1:8000/api/';
+export const URL_DEV = 'http://127.0.0.1:8000/api/';
 export const URL_ASSETS = 'http://127.0.0.1:8000';
- */
+
 // PROD / DEV
-export const URL_DEV = 'https://demo.proyectosadmin.com/api/';
-export const URL_ASSETS = 'https://demo.proyectosadmin.com';
+/* export const URL_DEV = 'https://demo.proyectosadmin.com/api/';
+export const URL_ASSETS = 'https://demo.proyectosadmin.com'; */
 
 //Icons
 
@@ -85,3 +85,36 @@ export const GOLD_20 = '#b4a26d20'
 export const GOLD_40 = '#b4a26d40'
 export const GOLD_60 = '#b4a26d60'
 export const GOLD_80 = '#b4a26d80'
+
+// Columns table
+// Leads
+export const LEADS_COLUMNS = [                
+    {
+        Header: ' ',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Nombre',
+        accessor: 'nombre',
+    },
+    {
+        Header: 'Contacto',
+        accessor: 'contacto',
+    },
+    {
+        Header: 'Comentario',
+        accessor: 'comentario',
+    },
+    {
+        Header: 'Empresa',
+        accessor: 'empresa',
+    },
+    {
+        Header: 'Origen',
+        accessor: 'origen',
+    },
+    {
+        Header: 'Fecha',
+        accessor: 'fecha',
+    },
+]
