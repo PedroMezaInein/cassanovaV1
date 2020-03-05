@@ -4,13 +4,22 @@ import Card from 'react-bootstrap/Card'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Title } from '../components/texts'
+import { logout } from '../redux/reducers/auth_user'
 
 class Login extends Component{
-    render(){
-        const { authUser , history } = this.props
+    
+    componentDidMount(){
+        const { logout, authUser , history } = this.props
+        logout()
         if(authUser.access_token !== ''){
             history.push('/')
+        }else{
+            logout();
         }
+    }
+    
+    render(){
+        
         return(
             <div className="vh-100 d-flex align-items-center justify-content-center">
                 <Card className="card__form">
@@ -34,6 +43,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => ({
+    logout: () => dispatch(logout())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
