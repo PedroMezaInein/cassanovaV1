@@ -16,9 +16,8 @@ export const URL_DEV = 'http://127.0.0.1:8000/api/';
 export const URL_ASSETS = 'http://127.0.0.1:8000';
 
 // PROD / DEV
-/* export const URL_DEV = 'http://demo.proyectosadmin.com/api/';
-export const URL_ASSETS = 'http://demo.proyectosadmin.com';
- */
+export const URL_DEV = 'https://demo.proyectosadmin.com/api/';
+export const URL_ASSETS = 'https://demo.proyectosadmin.com';
 
 //Icons
 
