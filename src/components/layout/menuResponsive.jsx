@@ -36,7 +36,7 @@ class MenuResponsive extends Component{
                 </div>
                 <Accordion defaultActiveKey={active}>
                     {
-                        modulos.map((modulo, key) => {
+                        modulos && modulos.map((modulo, key) => {
                             if(modulo.url){
                                 return(
                                     <div className="menu-item" key={modulo.id}>
