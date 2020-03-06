@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Moment from 'react-moment'
 import { Modal } from '../../components/singles'
 import { LeadForm } from '../../components/forms'
+import { Subtitle, B } from '../../components/texts'
 
 class Leads extends Component{
 
@@ -20,6 +21,9 @@ class Leads extends Component{
         origenes: '',
         servicios: '',
         modalAdd: false,
+        modalDelete: false,
+        title: '',
+        tipoForm: '',
         form: {
             nombre: '',
             telefono: '',
@@ -29,7 +33,8 @@ class Leads extends Component{
             empresa: '',
             origen: '',
             servicios: []
-        }
+        },
+        leadId : ''
     }
     constructor(props){
         super(props)
@@ -67,8 +72,8 @@ class Leads extends Component{
     setActions = (lead) => {
         return(
             <div className="d-flex align-items-center">
-                <Button className="mx-2 small-button" onClick={(e) => console.log(lead)} text='' icon={faEdit} color="yellow" />
-                <Button className="mx-2 small-button" onClick={(e) => console.log(lead)} text='' icon={faTrash} color="red" />
+                <Button className="mx-2 small-button" onClick={(e) => this.openModalEditLead(e)(lead)} text='' icon={faEdit} color="yellow" />
+                <Button className="mx-2 small-button" onClick={(e) => this.openModalSafeDelete(e)(lead)} text='' icon={faTrash} color="red" />
             </div>
         )
     }
@@ -156,31 +161,130 @@ class Leads extends Component{
         form['servicios'] = _servicios
         this.setState({
             ... this.state,
-            form
+            form,
+            servicios: _servicios,
         })
     }
 
+    
     // Modals
 
     openModalAddLead = () => {
         this.setState({
             ... this.state,
-            modalAdd: !this.state.modalAdd
+            modalAdd: !this.state.modalAdd,
+            title: 'Registrar nuevo lead',
+            tipoForm: 'Add'
         })
+    }
+
+    openModalEditLead = (e) => (lead) => {
+        let { form, leadId } = this.state
+        
+        form['nombre'] = lead.nombre
+        form['email'] = lead.email
+        form['telefono'] = lead.telefono
+        
+        form['comentario'] = lead.comentario
+        
+        form['empresa'] = lead.empresa_id
+        form['origen'] = lead.tipo_id
+
+        let _servicios = []
+        let servicios = form['servicios']
+
+        servicios.map((_form, key) => {
+            const aux = lead.servicios.find( function(element, index){
+                if(element.id === _form.id)
+                    return true
+                else{
+                    return false
+                }
+            })
+            console.log(aux, 'AUX')
+            if(aux){
+                _servicios.push( { checked: true, text: _form.text, id: _form.id })
+            }else{
+                _servicios.push( { checked: false, text: _form.text, id: _form.id })
+            }
+        })
+
+        form['servicios'] = _servicios;
+
+        form['fecha'] = new Date(lead.created_at);
+
+        leadId = lead
+
+        this.setState({
+            ... this.state,
+            modalAdd: true,
+            form,
+            title: 'Editar lead',
+            tipoForm: 'Edit',
+            leadId
+        })
+    }
+
+    openModalSafeDelete = (e) => (lead) => {
+        let { leadId } = this.state
+
+        leadId = lead
+
+        this.setState({
+            ... this.state,
+            modalDelete: true,
+            leadId
+        })
+
     }
 
     handleCloseModal = () => {
         this.setState({
             ... this.state,
-            modalAdd: !this.state.modalAdd
+            modalAdd: !this.state.modalAdd,
+            form: {
+                nombre: '',
+                telefono: '',
+                email: '',
+                comentario: '',
+                fecha: new Date(),
+                empresa: '',
+                origen: '',
+                servicios: this.state.servicios
+            },
+            title: '',
+            tipoForm: '',
+            leadId : ''
         })
     }
 
+    handleCloseDeleteModal = () => {
+        this.setState({
+            ... this.state,
+            modalDelete: !this.state.modalDelete,
+            leadId : ''
+        })
+    }
+    
     // Forms
 
-    handleSubmitAddUser = (e) => {
+    handleSubmitAddLead = (e) => {
         e.preventDefault();
         this.addLeadAxios()
+    }
+
+    handleSubmitEditLead = (e) => {
+        e.preventDefault();
+        this.editLeadAxios()
+    }
+
+    safeDeleteLead = (e) => (lead) => {
+        this.deleteLeadAxios(lead);
+        this.setState({
+            ... this.state,
+            modalDelete: false,
+            leadId: ''
+        })
     }
 
     handleChangeInput = (e) => {
@@ -274,10 +378,101 @@ class Leads extends Component{
                         fecha: new Date(),
                         empresa: '',
                         origen: '',
-                        servicios: []
+                        servicios: this.state.servicios
                     },
                     modalAdd: false
                 })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
+        })
+    }
+
+    async editLeadAxios (){
+        const { access_token } = this.props.authUser
+        const { form: data, leadId } = this.state
+        await axios.put(URL_DEV + 'lead/' + leadId.id, data, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { empresas, leads, origenes, servicios } = response.data
+                this.setLeads(leads)
+                this.setOrigenes(origenes)
+                this.setServicios(servicios)
+                this.setEmpresas(empresas)
+                this.setState({
+                    ... this.state,
+                    form: {
+                        nombre: '',
+                        telefono: '',
+                        email: '',
+                        comentario: '',
+                        fecha: new Date(),
+                        empresa: '',
+                        origen: '',
+                        servicios: this.state.servicios
+                    },
+                    modalAdd: false
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
+        })
+    }
+
+    async deleteLeadAxios (lead){
+        const { access_token } = this.props.authUser
+        await axios.delete(URL_DEV + 'lead/' + lead, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { empresas, leads, origenes, servicios } = response.data
+                this.setLeads(leads)
+                this.setOrigenes(origenes)
+                this.setServicios(servicios)
+                this.setEmpresas(empresas)
             },
             (error) => {
                 console.log(error, 'error')
@@ -321,7 +516,7 @@ class Leads extends Component{
     }
 
     render(){
-        const { leads, modalAdd, form, origenes, empresas, servicios } = this.state
+        const { leads, modalAdd, form, origenes, empresas, servicios, title, tipoForm, modalDelete, leadId } = this.state
         return(
             <Layout active={'leads'}  { ...this.props}>
                 <div className="text-right">
@@ -335,13 +530,22 @@ class Leads extends Component{
                         origenes = { origenes }
                         empresas = { empresas }
                         servicios = { servicios }
-                        onSubmit ={ this.handleSubmitAddUser }
+                        onSubmit ={ tipoForm === 'Add' ? this.handleSubmitAddLead : this.handleSubmitEditLead }
                         onChange = { (e) => { e.preventDefault(); this.handleChangeInput(e) } } 
-                        title =  "Registrar nuevo lead"
+                        title = { title }
                         onChangeCalendar = { this.handleChangeDate }
                         onChangeCheckboxes = { this.handleChangeCheckbox }
                         >
                     </LeadForm>
+                </Modal>
+                <Modal show={modalDelete} handleClose={this.handleCloseDeleteModal}>
+                    <Subtitle className="my-3 text-center">
+                        ¿Estás seguro que deseas eliminar el lead <B color="red">{leadId.nombre}</B>?
+                    </Subtitle>
+                    <div className="d-flex justify-content-center mt-3">
+                        <Button onClick={this.handleCloseDeleteModal} text="Cancelar" className="mr-3" color="green"/>
+                        <Button onClick={(e) => { this.safeDeleteLead(e)(leadId.id) }} text="Continuar" color="red"/>
+                    </div>
                 </Modal>
             </Layout>
         )
