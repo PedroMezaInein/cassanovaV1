@@ -9,6 +9,8 @@ import swal from 'sweetalert'
 import { URL_DEV, LEADS_COLUMNS } from '../../constants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Moment from 'react-moment'
+import { Modal } from '../../components/singles'
+import { LeadForm } from '../../components/forms'
 
 class Leads extends Component{
 
@@ -16,7 +18,18 @@ class Leads extends Component{
         leads: '',
         empresas: '',
         origenes: '',
-        servicios: ''
+        servicios: '',
+        modalAdd: false,
+        form: {
+            nombre: '',
+            telefono: '',
+            email: '',
+            comentario: '',
+            fecha: new Date(),
+            empresa: '',
+            origen: '',
+            servicios: []
+        }
     }
     constructor(props){
         super(props)
@@ -25,7 +38,6 @@ class Leads extends Component{
     // Setters
     setLeads = leads => {
         let _leads = []
-        console.log(leads, 'leads')
         leads.map((lead, key) => {
             _leads[key] = {
                 actions: this.setActions(lead),
@@ -51,8 +63,8 @@ class Leads extends Component{
             </Moment>
         )
     }
+
     setActions = (lead) => {
-        console.log(lead, 'lead')
         return(
             <div className="d-flex align-items-center">
                 <Button className="mx-2 small-button" onClick={(e) => console.log(lead)} text='' icon={faEdit} color="yellow" />
@@ -60,6 +72,7 @@ class Leads extends Component{
             </div>
         )
     }
+
     setContacto = (lead) => {
         return(
             <div>
@@ -84,8 +97,8 @@ class Leads extends Component{
             </div>
         )
     }
+
     setServiciosData = (servicios) => {
-        console.log(servicios, 'serviciso')
         if(servicios.length)
             return(
                 <ul>
@@ -112,23 +125,92 @@ class Leads extends Component{
     }
 
     setEmpresas = empresas => {
+        let _empresas = []
+        empresas.map((empresa, key) => {
+            _empresas.push( { value: empresa.id, text: empresa.name })
+        })
         this.setState({
             ... this.state,
-            empresas
+            empresas: _empresas
         })
     }
 
     setOrigenes = origenes =>  {
+        let _origenes = []
+        origenes.map((origen, key) => {
+            _origenes.push( { value: origen.id, text: origen.origen })
+        })
         this.setState({
             ... this.state,
-            origenes
+            origenes: _origenes
         })
     }
 
     setServicios = servicios => {
+        let _servicios = []
+        const { form } = this.state
+
+        servicios.map((servicio, key) => {
+            _servicios.push( { checked: false, text: servicio.servicio, id: servicio.id })
+        })
+        form['servicios'] = _servicios
         this.setState({
             ... this.state,
-            servicios
+            form
+        })
+    }
+
+    // Modals
+
+    openModalAddLead = () => {
+        this.setState({
+            ... this.state,
+            modalAdd: !this.state.modalAdd
+        })
+    }
+
+    handleCloseModal = () => {
+        this.setState({
+            ... this.state,
+            modalAdd: !this.state.modalAdd
+        })
+    }
+
+    // Forms
+
+    handleSubmitAddUser = (e) => {
+        e.preventDefault();
+        this.addLeadAxios()
+    }
+
+    handleChangeInput = (e) => {
+        e.preventDefault();
+        const { name, value } = e.target
+        console.log(name, value)
+        const { form }  = this.state
+        form[name] = value
+        console.log(form[name], 'FORM NAME', name)
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
+    handleChangeDate = (date) =>{
+        const { form }  = this.state
+        form['fecha'] = date
+        this.setState({
+            ... this.state,
+            form: form
+        })
+    }
+
+    handleChangeCheckbox = (array) => {
+        const { form }  = this.state
+        form['servicios'] = array
+        this.setState({
+            ... this.state,
+            form: form
         })
     }
 
@@ -172,6 +254,59 @@ class Leads extends Component{
         })
     }
 
+    async addLeadAxios (){
+        const { access_token } = this.props.authUser
+        const { form: data } = this.state
+        await axios.post(URL_DEV + 'lead', data, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { empresas, leads, origenes, servicios } = response.data
+                this.setLeads(leads)
+                this.setOrigenes(origenes)
+                this.setServicios(servicios)
+                this.setEmpresas(empresas)
+                this.setState({
+                    ... this.state,
+                    form: {
+                        nombre: '',
+                        telefono: '',
+                        email: '',
+                        comentario: '',
+                        fecha: new Date(),
+                        empresa: '',
+                        origen: '',
+                        servicios: []
+                    },
+                    modalAdd: false
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
+        })
+    }
+
     componentDidMount(){
         const { authUser: { user : { permisos : permisos } } } = this.props
         const { history : { location: { pathname: pathname } } } = this.props
@@ -186,14 +321,28 @@ class Leads extends Component{
     }
 
     render(){
-        const { leads } = this.state
-        console.log(leads, 'leads before table')
+        const { leads, modalAdd, form, origenes, empresas, servicios } = this.state
         return(
             <Layout active={'leads'}  { ...this.props}>
                 <div className="text-right">
-                    <Button className="small-button ml-auto mr-4" onClick={(e) => console.log('HOLA')} text='' icon={faPlus} color="green" />
+                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModalAddLead() } } text='' icon={faPlus} color="green" />
                 </div>
                 { leads && <DataTable columns={LEADS_COLUMNS} data={leads}/>}
+                <Modal show = { modalAdd } handleClose = { this.handleCloseModal } >
+                    <LeadForm 
+                        className = " px-3 "
+                        form = { form } 
+                        origenes = { origenes }
+                        empresas = { empresas }
+                        servicios = { servicios }
+                        onSubmit ={ this.handleSubmitAddUser }
+                        onChange = { (e) => { e.preventDefault(); this.handleChangeInput(e) } } 
+                        title =  "Registrar nuevo lead"
+                        onChangeCalendar = { this.handleChangeDate }
+                        onChangeCheckboxes = { this.handleChangeCheckbox }
+                        >
+                    </LeadForm>
+                </Modal>
             </Layout>
         )
     }

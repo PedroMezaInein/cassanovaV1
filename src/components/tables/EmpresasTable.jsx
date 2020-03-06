@@ -155,7 +155,6 @@ class EmpresasTable extends Component{
             },
         ]
         const { data } = this.props
-        console.log(data, 'data table')
         return(
             <div>
                 <Table columns={columns} data={data} />

@@ -26,11 +26,11 @@ class Calendar extends Component{
                     locale={'es'}
                     isClearable
                     filterDate={this.isWeekday}
-                    placeholderText="Fecha de inicio"
+                    placeholderText={placeholder}
                     customInput={
                         <Input
                             value={value}
-                            placeholder="Fecha de inicio"
+                            placeholder={placeholder}
                             name={name} 
                             type="text"
                             onChange= { onChangeCalendar }

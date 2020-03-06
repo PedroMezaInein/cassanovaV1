@@ -36,7 +36,7 @@ function Table({ columns, data }){
     } = useTable({ 
         columns, 
         data,
-        initialState: { pageIndex: 0, pageSize: 15 }
+        initialState: { pageIndex: 0, pageSize: 30 }
     }, useSortBy, usePagination );
     return(
         <>
