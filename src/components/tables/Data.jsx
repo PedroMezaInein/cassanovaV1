@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { useTable, usePagination, useSortBy } from 'react-table'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons'
+import { faSort, faSortDown, faSortUp, faStepForward, faStepBackward } from '@fortawesome/free-solid-svg-icons'
+import { Button } from '../form-components'
+import { TABLE_SIZE } from '../../constants'
 
 
 const IndeterminateCheckbox = React.forwardRef(
@@ -36,7 +38,7 @@ function Table({ columns, data }){
     } = useTable({ 
         columns, 
         data,
-        initialState: { pageIndex: 0, pageSize: 30 }
+        initialState: { pageIndex: 0, pageSize: TABLE_SIZE }
     }, useSortBy, usePagination );
     return(
         <>
@@ -107,6 +109,22 @@ function Table({ columns, data }){
                     </tbody>
                 </table>
             </div>
+            {
+                (canNextPage || canPreviousPage) &&
+                <div className="pagination my-3 d-flex justify-content-center">
+                    <Button color="transparent" onClick={previousPage} disabled={!canPreviousPage} icon={faStepBackward} className="mx-2" />
+                    <div className="d-flex align-items-center">
+                        <span>
+                            Página 
+                            <strong className="mx-1">
+                                {pageIndex + 1} de {pageOptions.length}
+                            </strong>
+                        </span>
+                    </div>
+                    
+                    <Button color="transparent" onClick={nextPage} disabled={!canNextPage} icon={faStepForward} className="mx-2" />
+                </div>
+            }
         </>
     )
 

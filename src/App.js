@@ -20,6 +20,7 @@ const Empresas = Loader(() => import('./pages/Usuarios/Empresas') )
 const Usuarios = Loader(() => import('./pages/Usuarios/Usuarios') )
 const Normas = Loader(() => import('./pages/Normas') )
 const Leads = Loader(() => import('./pages/Leads/Leads') )
+const Prospectos = Loader(() => import('./pages/Leads/Prospectos') )
 const MiProyecto = Loader(() => import('./pages/MiProyecto') )
 
 class App extends Component{
@@ -81,14 +82,15 @@ class App extends Component{
         }
         return(
             <div className="">
-                <Route path="/login" exact component={Login}/>
-                <Route path="/" exact component={Home}/>
-                <Route path="/mi-proyecto" exact component={MiProyecto}/>
-                <Route path="/usuarios/usuarios" exact component={Usuarios}/>
-                <Route path="/usuarios/tareas" exact component={Tareas}/>
-                <Route path="/usuarios/empresas" exact component={Empresas}/>
-                <Route path="/leads/leads" exact component={Leads}/>
-                <Route path="/normas" exact component={Normas}/>
+                <Route path = "/login" exact component = { Login } />
+                <Route path = "/" exact component= { Home } />
+                <Route path = "/mi-proyecto" exact component = { MiProyecto } />
+                <Route path = "/usuarios/usuarios" exact component = { Usuarios } />
+                <Route path = "/usuarios/tareas" exact component = { Tareas } />
+                <Route path = "/usuarios/empresas" exact component ={ Empresas } />
+                <Route path = "/leads/leads" exact component ={ Leads } />
+                <Route path = "/leads/prospectos" exact component = { Prospectos } />
+                <Route path = "/normas" exact component ={ Normas } />
             </div>
         )
     }

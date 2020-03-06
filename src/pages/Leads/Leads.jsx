@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { DataTable } from '../../components/tables'
-import { faPlus, faEdit, faTrash, faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faEdit, faTrash, faPhone, faEnvelope, faSync} from '@fortawesome/free-solid-svg-icons'
 import { Button } from '../../components/form-components'
 import axios from 'axios'
 import swal from 'sweetalert'
@@ -22,6 +22,7 @@ class Leads extends Component{
         servicios: '',
         modalAdd: false,
         modalDelete: false,
+        modalConvert: false,
         title: '',
         tipoForm: '',
         form: {
@@ -74,6 +75,7 @@ class Leads extends Component{
             <div className="d-flex align-items-center">
                 <Button className="mx-2 small-button" onClick={(e) => this.openModalEditLead(e)(lead)} text='' icon={faEdit} color="yellow" />
                 <Button className="mx-2 small-button" onClick={(e) => this.openModalSafeDelete(e)(lead)} text='' icon={faTrash} color="red" />
+                <Button className="mx-2 small-button" onClick={(e) => this.openModalSafeConvert(e)(lead)} text='' icon={faSync} color="transparent" />
             </div>
         )
     }
@@ -238,6 +240,16 @@ class Leads extends Component{
 
     }
 
+    openModalSafeConvert = (e) => (lead) => {
+        let { leadId } = this.state
+        leadId = lead
+        this.setState({
+            ... this.state,
+            modalConvert: true,
+            leadId
+        })
+    }
+
     handleCloseModal = () => {
         this.setState({
             ... this.state,
@@ -265,6 +277,14 @@ class Leads extends Component{
             leadId : ''
         })
     }
+
+    handleCloseConvertModal = () => {
+        this.setState({
+            ... this.state,
+            modalConvert: !this.state.modalConvert,
+            leadId : ''
+        })
+    }
     
     // Forms
 
@@ -285,6 +305,14 @@ class Leads extends Component{
             modalDelete: false,
             leadId: ''
         })
+    }
+
+    safeConvertLead = (e) => (lead) => {
+        const { history } = this.props
+        history.push({
+            pathname: '/leads/prospectos',
+            state: { lead: lead}
+        });
     }
 
     handleChangeInput = (e) => {
@@ -516,7 +544,7 @@ class Leads extends Component{
     }
 
     render(){
-        const { leads, modalAdd, form, origenes, empresas, servicios, title, tipoForm, modalDelete, leadId } = this.state
+        const { leads, modalAdd, form, origenes, empresas, servicios, title, tipoForm, modalDelete, leadId, modalConvert } = this.state
         return(
             <Layout active={'leads'}  { ...this.props}>
                 <div className="text-right">
@@ -545,6 +573,15 @@ class Leads extends Component{
                     <div className="d-flex justify-content-center mt-3">
                         <Button onClick={this.handleCloseDeleteModal} text="Cancelar" className="mr-3" color="green"/>
                         <Button onClick={(e) => { this.safeDeleteLead(e)(leadId.id) }} text="Continuar" color="red"/>
+                    </div>
+                </Modal>
+                <Modal show={modalConvert} handleClose={this.handleCloseConvertModal}>
+                    <Subtitle className="my-3 text-center">
+                        ¿Estás seguro que deseas convertir el lead <B color="red">{leadId.nombre}</B>?
+                    </Subtitle>
+                    <div className="d-flex justify-content-center mt-3">
+                        <Button onClick={this.handleCloseConvertModal} text="Cancelar" className="mr-3" color="red"/>
+                        <Button onClick={(e) => { this.safeConvertLead(e)(leadId.id) }} text="Continuar" />
                     </div>
                 </Modal>
             </Layout>

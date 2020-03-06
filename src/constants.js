@@ -86,6 +86,9 @@ export const GOLD_40 = '#b4a26d40'
 export const GOLD_60 = '#b4a26d60'
 export const GOLD_80 = '#b4a26d80'
 
+// Table
+export const TABLE_SIZE = 20
+
 // Columns table
 // Leads
 export const LEADS_COLUMNS = [                

@@ -7,7 +7,14 @@
     }
 
     &__dark-blue{
-        color: $dark-blue
+        color: $dark-blue;
+        a{
+            color: $dark-blue;
+            &:hover{
+                color: $gold;
+                text-decoration: none;
+            }
+        }
     }
     &__dark-blue-80{
         color: $dark-blue-80
