@@ -106,6 +106,10 @@ export const LEADS_COLUMNS = [
         accessor: 'comentario',
     },
     {
+        Header: 'Servicios',
+        accessor: 'servicios',
+    },
+    {
         Header: 'Empresa',
         accessor: 'empresa',
     },

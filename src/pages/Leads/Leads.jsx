@@ -32,6 +32,7 @@ class Leads extends Component{
                 nombre: lead.nombre,
                 contacto: this.setContacto(lead),
                 comentario: lead.comentario,
+                servicios: this.setServiciosData(lead.servicios),
                 empresa: lead.empresa.name,
                 origen: lead.origen.origen,
                 fecha: this.setDate(lead.created_at)
@@ -59,7 +60,6 @@ class Leads extends Component{
             </div>
         )
     }
-
     setContacto = (lead) => {
         return(
             <div>
@@ -83,6 +83,32 @@ class Leads extends Component{
                 }
             </div>
         )
+    }
+    setServiciosData = (servicios) => {
+        console.log(servicios, 'serviciso')
+        if(servicios.length)
+            return(
+                <ul>
+                    {
+                        servicios.map((servicio, key) => {
+                            return(
+                                <li key={key}>
+                                    {servicio.servicio}
+                                </li>
+                            )
+                        })
+                    }
+                </ul>
+            )
+        else{
+            return(
+                <ul>
+                    <li>
+                        Sin información
+                    </li>
+                </ul>
+            )
+        }
     }
 
     setEmpresas = empresas => {
