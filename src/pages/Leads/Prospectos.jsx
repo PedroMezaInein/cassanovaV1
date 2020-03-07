@@ -107,8 +107,8 @@ class Leads extends Component{
                                 <div className="d-flex justify-content-end">
                                     <Accordion.Toggle as = { Button } icon={ faEye } color="transparent" eventKey={0} />
                                 </div>
-                                <Accordion.Collapse eventKey = { 0 } className="px-5" >
-                                    <Card className="mx-5 my-3">
+                                <Accordion.Collapse eventKey = { 0 } className="px-md-5 px-2" >
+                                    <Card className="mx-md-5 my-3">
                                         <div className="row mx-0">
                                             <div className="col-md-6 mb-3">
                                                 <P color="dark-blue">

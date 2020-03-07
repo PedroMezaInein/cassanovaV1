@@ -72,10 +72,10 @@ class Leads extends Component{
 
     setActions = (lead) => {
         return(
-            <div className="d-flex align-items-center">
-                <Button className="mx-2 small-button" onClick={(e) => this.openModalEditLead(e)(lead)} text='' icon={faEdit} color="yellow" />
-                <Button className="mx-2 small-button" onClick={(e) => this.openModalSafeDelete(e)(lead)} text='' icon={faTrash} color="red" />
-                <Button className="mx-2 small-button" onClick={(e) => this.openModalSafeConvert(e)(lead)} text='' icon={faSync} color="transparent" />
+            <div className="d-flex align-items-center flex-column flex-md-row">
+                <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalEditLead(e)(lead)} text='' icon={faEdit} color="yellow" />
+                <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalSafeDelete(e)(lead)} text='' icon={faTrash} color="red" />
+                <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalSafeConvert(e)(lead)} text='' icon={faSync} color="transparent" />
             </div>
         )
     }
