@@ -20,6 +20,7 @@ class Leads extends Component{
         modal: false,
         modalHistoryContact: false,
         modalContactForm: false,
+        modalDelete: false,
         title: '',
         lead: '',
         prospecto: '',
@@ -122,6 +123,55 @@ class Leads extends Component{
         })
     }
 
+    handleDeleteModal = () => {
+        this.setState({
+            ... this.state,
+            modalDelete: false,
+            prospecto: ''
+        })
+    }
+
+    openSafeDelete = e => (prospecto) => {
+        this.setState({
+            ... this.state,
+            modalDelete: true,
+            prospecto
+        })
+    }
+
+    openEdit = e => (prospecto) => {
+        const { form } = this.state
+        form['descripcion'] = prospecto.descripcion 
+        form['preferencia'] = prospecto.preferencia 
+        form['motivo'] = prospecto.motivo
+        if(prospecto.vendedor){
+            form['vendedor'] = prospecto.vendedor.id
+        }
+        if(prospecto.estatus_prospecto){
+            form['estatusProspecto'] = prospecto.estatus_prospecto.id
+        }
+        if(prospecto.cliente){
+            form['cliente'] = prospecto.cliente.id
+        }
+        if(prospecto.tipo_proyecto){
+            form['tipoProyecto'] = prospecto.tipo_proyecto.id
+        }
+        if(prospecto.estatus_contratacion){
+            form['estatusContratacion'] = prospecto.estatus_contratacion.id
+        }
+        
+        this.setState({
+            ... this.state,
+            modal: true,
+            prospecto,
+            title: 'Editar prospecto',
+            form
+        })
+    }
+
+    safeDelete = (e) => prospecto => {
+        this.deleteProspectoAxios(prospecto)
+    }
     // Setters
 
     setTipos = (list, name) => {
@@ -195,8 +245,8 @@ class Leads extends Component{
         return(
             <>
                 <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => console.log(e)} text='' icon={faEdit} color="transparent" />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => console.log(e)} text='' icon={faTrash} color="red" />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openEdit(e)(prospecto) } text='' icon={faEdit} color="transparent" />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openSafeDelete(e)(prospecto) } text='' icon={faTrash} color="red" />
                 </div>
                 <div className="d-flex align-items-center flex-column flex-md-row my-2">
                     <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.activeFormContact(e)(prospecto.id)} text='' icon={faPhoneVolume} color="transparent" />
@@ -247,18 +297,24 @@ class Leads extends Component{
         )
     }
     setClienteTable = cliente => {
+        console.log(cliente, 'CLIENTE ')
         return(
-            <div>
-                <Small>
-                    { cliente.empresa }
-                </Small>
-                <Small>
-                    { cliente.nombre }
-                </Small>
-                <Small>
-                    { cliente.puesto }
-                </Small>
-            </div>
+            <>
+                {
+                    cliente &&
+                    <div>
+                        <Small className="mr-1">
+                            { cliente.empresa }
+                        </Small>
+                        <Small className="mr-1">
+                            { cliente.nombre }
+                        </Small>
+                        <Small className="mr-1">
+                            { cliente.puesto }
+                        </Small>
+                    </div>
+                }
+            </>
         )
     }
     setDateTable = date => {
@@ -310,6 +366,14 @@ class Leads extends Component{
         form['lead'] = lead;
         form['formContacto'] = formContacto;
         this.addProspectoAxios(form);
+    }
+
+    submitEditForm = (e) => {
+        e.preventDefault();
+        const { form, formCliente, lead, prospecto } = this.state
+        form['lead'] = lead;
+        form['formCliente'] = formCliente;
+        this.editProspectoAxios(form, prospecto.id);
     }
 
     submitContactForm = e => {  
@@ -416,6 +480,114 @@ class Leads extends Component{
         })
     }
 
+    async deleteProspectoAxios(id){
+        const { access_token } = this.props.authUser
+        await axios.delete(URL_DEV + 'prospecto/' + id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { prospectos } = response.data
+                this.setProspectos(prospectos)
+                this.setState({
+                    ... this.state,
+                    modalDelete: false,
+                    title: '',
+                    form: EMPTY_PROSPECTO,
+                    formCliente: EMPTY_CLIENTE,
+                    formContacto: EMPTY_CONTACTO,
+                    prospecto: ''
+                })
+                swal({
+                    title: '¡Listo!',
+                    text: 'Eliminaste el lead con éxito.',
+                    icon: 'success',
+                    buttons: false,
+                    timer: 1500
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
+        })
+    }
+
+    async editProspectoAxios(data, id){
+        const { access_token } = this.props.authUser
+        await axios.put(URL_DEV + 'prospecto/' + id,data, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { prospectos, tipoProyectos, estatusContratacion, estatusProspectos, vendedores, tiposContactos, clientes } = response.data
+                this.setTipos(tipoProyectos, 'tipoProyectos')
+                this.setEstatus(estatusContratacion,'estatusContratacion')
+                this.setEstatus(estatusProspectos,'estatusProspectos')
+                this.setVendedores(vendedores)
+                this.setClientes(clientes)
+                this.setTipos(tiposContactos,'tiposContactos')
+                this.setProspectos(prospectos)
+                this.setState({
+                    ... this.state,
+                    modal: false,
+                    title: '',
+                    form: EMPTY_PROSPECTO,
+                    formCliente: EMPTY_CLIENTE,
+                    formContacto: EMPTY_CONTACTO
+                })
+                swal({
+                    title: '¡Listo!',
+                    text: 'Editaste el prospecto con éxito.',
+                    icon: 'success',
+                    buttons: false,
+                    timer: 1500
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
+        })
+    }
+
+
     async addContactoAxios(form, id){
         const { access_token } = this.props.authUser
         await axios.post(URL_DEV + 'prospecto/'+id+'/contacto', form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
@@ -508,13 +680,10 @@ class Leads extends Component{
 
     render(){
         const { modal, title, lead, vendedores, estatusProspectos, clientes, tipoProyectos, estatusContratacion, tiposContactos, form, formCliente, formContacto, 
-                prospectos, modalHistoryContact, contactHistory, modalContactForm } = this.state
+                prospectos, modalHistoryContact, contactHistory, modalContactForm, modalDelete, prospecto } = this.state
         
         return(
             <Layout active={'leads'}  { ...this.props}>
-                {/* <div className="text-right">
-                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModalAddLead() } } text='' icon={faPlus} color="green" />
-                </div> */}
                 {
                     prospectos &&
                         <DataTable columns = { PROSPECTOS_COLUMNS } data = { prospectos }/>
@@ -533,7 +702,7 @@ class Leads extends Component{
                         formContacto = { formContacto }
                         onChange = {this.onChange}
                         onChangeCliente = {this.onChangeCliente}
-                        onSubmit = { this.submitForm }
+                        onSubmit = { title === 'Lead a convertir' ? this.submitForm : this.submitEditForm }
                         tiposContactos = { tiposContactos }
                         onChangeContacto = { this.onChangeContacto }
                         >
@@ -655,6 +824,15 @@ class Leads extends Component{
                             <Button icon='' className="mx-auto" type="submit" text="Enviar" />
                         </div>
                     </Form>
+                </Modal>
+                <Modal show = { modalDelete } handleClose = { this.handleDeleteModal } >
+                    <Subtitle className="my-3 text-center">
+                        ¿Estás seguro que deseas eliminarel prospecto?
+                    </Subtitle>
+                    <div className="d-flex justify-content-center mt-3">
+                        <Button icon='' onClick = { this.handleDeleteModal } text="Cancelar" className="mr-3" color="green"/>
+                        <Button icon='' onClick = { (e) => { this.safeDelete(e)(prospecto.id) }} text="Continuar" color="red"/>
+                    </div>
                 </Modal>
             </Layout>
         )

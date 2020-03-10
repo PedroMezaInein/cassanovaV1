@@ -91,8 +91,11 @@ class ProspectoForm extends Component{
     }
 
     changeCP = event => {
-        if(event.target.value.length === 5)
-            this.cpAxios(event.target.value)
+        const { value, name } = event.target
+        const { onChangeCliente } = this.props
+        onChangeCliente( { target: { name: name, value: value } } )
+        if(value.length === 5)
+            this.cpAxios(value)
     }
 
     async cpAxios(value){
@@ -210,15 +213,19 @@ class ProspectoForm extends Component{
                                 updateColonia = { this.updateColonia }
                                 />
                     }
-                    <div className="col-md-12">
-                        <Subtitle className="text-left my-3" color="gold">
-                            Información del contacto
-                        </Subtitle>
-                    </div>
-                    <div className="col-md-12 p-0">
-                        <ContactoLeadForm tiposContactos = { tiposContactos } form = { formContacto } onChange = { onChangeContacto } />
-                    </div>
-                    
+                    {
+                        title !== 'Editar prospecto' &&
+                        <>
+                            <div className="col-md-12">
+                                <Subtitle className="text-left my-3" color="gold">
+                                    Información del contacto
+                                </Subtitle>
+                            </div>
+                            <div className="col-md-12 p-0">
+                                <ContactoLeadForm tiposContactos = { tiposContactos } form = { formContacto } onChange = { onChangeContacto } />
+                            </div>
+                        </>
+                    }
                 </div>   
                 
                 <div className="mt-3 text-center">
