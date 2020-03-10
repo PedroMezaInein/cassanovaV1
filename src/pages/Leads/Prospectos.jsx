@@ -79,7 +79,7 @@ class Leads extends Component{
                     usuario: this.setText(contacto.user.name),
                     fecha: this.setDateTable(contacto.created_at),
                     medio: this.setText(contacto.tipo_contacto.tipo),
-                    estado: contacto.success ? this.setText('Contactado') : this.setText('No contestó'),
+                    estado: contacto.success ? this.setText('Contactado') : this.setText('Sin respuesta'),
                     comentario: this.setText(contacto.comentario)
                 }
             )
