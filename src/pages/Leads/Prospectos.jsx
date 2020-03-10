@@ -1,24 +1,28 @@
 import React, { Component } from 'react'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
-import { faPlus, faPhone, faEnvelope, faEye } from '@fortawesome/free-solid-svg-icons'
-import { Button, SelectSearch } from '../../components/form-components'
+import { faPlus, faPhone, faEnvelope, faEye, faEdit, faTrash, faCalendarAlt, faPhoneVolume } from '@fortawesome/free-solid-svg-icons'
+import { Button } from '../../components/form-components'
 import { Modal, Card } from '../../components/singles'
-import { ProspectoForm } from '../../components/forms'
+import { ProspectoForm, ContactoLeadForm } from '../../components/forms'
 import axios from 'axios'
-import { URL_DEV } from '../../constants'
+import { URL_DEV, PROSPECTOS_COLUMNS, CONTACTO_COLUMNS, EMPTY_PROSPECTO, EMPTY_CONTACTO, EMPTY_CLIENTE } from '../../constants'
 import swal from 'sweetalert'
-import { P } from '../../components/texts'
+import { P, Small, Subtitle } from '../../components/texts'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Accordion } from 'react-bootstrap'
+import { Accordion, Form } from 'react-bootstrap'
 import Moment from 'react-moment'
+import { DataTable } from '../../components/tables'
 
 class Leads extends Component{
 
     state = {
         modal: false,
+        modalHistoryContact: false,
+        modalContactForm: false,
         title: '',
         lead: '',
+        prospecto: '',
         prospectos: '',
         clientes: '',
         tiposContactos: '',
@@ -26,31 +30,10 @@ class Leads extends Component{
         estatusContratacion: '',
         estatusProspectos: '',
         tipoProyectos: '',
-        form:{
-            descripcion: '',
-            vendedor: '',
-            preferencia: '',
-            motivo: '',
-            cliente: '',
-            tipoProyecto: '',
-            estatusContratacion: '',
-            estatusProspecto: '',
-            newEstatusProspecto: '',
-            newTipoProyecto: '',
-            newEstatusContratacion: ''
-        },
-        formCliente:{
-            empresa: '',
-            nombre:'',
-            puesto: '',
-            cp: '',
-            estado: '',
-            municipio: '',
-            colonia: '',
-            calle: '',
-            perfil: ''
-        }
-
+        form: EMPTY_PROSPECTO,
+        formCliente: EMPTY_CLIENTE,
+        formContacto:EMPTY_CONTACTO,
+        contactHistory: []
     }
 
     constructor(props){
@@ -80,7 +63,61 @@ class Leads extends Component{
     handleCloseModal = () => {
         this.setState({
             ... this.state,
-            modal: !this.state.modal
+            modal: !this.state.modal,
+            form: EMPTY_PROSPECTO,
+            formCliente: EMPTY_CLIENTE,
+            formContacto: EMPTY_CONTACTO
+        })
+    }
+
+    activeModalHistory = e => contactos => {
+        let aux = []
+        /* console.log(contactos, 'contactos') */
+        contactos.map((contacto) => {
+            aux.push(
+                {
+                    usuario: this.setText(contacto.user.name),
+                    fecha: this.setDateTable(contacto.created_at),
+                    medio: this.setText(contacto.tipo_contacto.tipo),
+                    estado: contacto.success ? this.setText('Contactado') : this.setText('No contestó'),
+                    comentario: this.setText(contacto.comentario)
+                }
+            )
+        })
+        this.setState({
+            ... this.state,
+            modalHistoryContact: true,
+            contactHistory: aux
+        })
+    }
+
+    activeFormContact = e => prospecto => {
+        this.setState({
+            ... this.state,
+            prospecto,
+            modalContactForm: true
+        })
+    }
+
+    handleCloseFormContact = () => {
+        this.setState({
+            ... this.state,
+            prospecto: '',
+            modalContactForm: false,
+            form: EMPTY_PROSPECTO,
+            formCliente: EMPTY_CLIENTE,
+            formContacto: EMPTY_CONTACTO
+        })
+    }
+
+    handleCloseHistoryModal = () => {
+        this.setState({
+            ... this.state,
+            modalHistoryContact: false,
+            contactHistory: [],
+            form: EMPTY_PROSPECTO,
+            formCliente: EMPTY_CLIENTE,
+            formContacto: EMPTY_CONTACTO
         })
     }
 
@@ -128,7 +165,108 @@ class Leads extends Component{
             clientes: aux
         })
     }
+    setProspectos = prospectos => {
+        let _prospectos = []
+        console.log(prospectos, 'prospectos')
+        prospectos.map((prospecto, key) => {
+            _prospectos.push( {
+                actions: this.setActions(prospecto),
+                lead: this.setLeadTable(prospecto.lead),
+                empresa: this.setText(prospecto.lead.empresa.name),
+                cliente: this.setClienteTable(prospecto.cliente),
+                tipoProyecto: this.setText(prospecto.tipo_proyecto.tipo),
+                descripcion: this.setText(prospecto.descripcion),
+                vendedor: this.setText(prospecto.vendedor.name),
+                preferencia: this.setText(prospecto.preferencia),
+                estatusProspecto: this.setText(prospecto.estatus_prospecto.estatus),
+                motivo: this.setText(prospecto.motivo),
+                estatusContratacion: this.setText(prospecto.estatus_contratacion.estatus),
+                fechaConversion: this.setDateTable(prospecto.created_at)
+            } )
+        })
+        this.setState({
+            ... this.state,
+            prospectos: _prospectos
+        })
+    }
 
+    setActions = prospecto => {
+        return(
+            <>
+                <div className="d-flex align-items-center flex-column flex-md-row">
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => console.log(e)} text='' icon={faEdit} color="transparent" />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => console.log(e)} text='' icon={faTrash} color="red" />
+                </div>
+                <div className="d-flex align-items-center flex-column flex-md-row my-2">
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.activeFormContact(e)(prospecto.id)} text='' icon={faPhoneVolume} color="transparent" />
+                    {
+                        prospecto.contactos.length > 0 && 
+                            <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.activeModalHistory(e)(prospecto.contactos)} text='' icon={faCalendarAlt} color="transparent" />
+                    }
+                </div>
+            </>
+        )
+    }
+    setLeadTable = lead => {
+        return(
+            <div>
+                <Small>
+                    { lead.nombre }
+                </Small>
+                {
+                    lead.telefono &&
+                    <div className="my-2">
+                        <a target="_blank" href={`tel:+${lead.telefono}`}>
+                            <Small>
+                                <FontAwesomeIcon className="mx-3" icon={faPhone} />
+                                {lead.telefono}
+                            </Small>
+                        </a>
+                    </div>
+                }
+                {
+                    lead.email &&
+                    <div className="my-2">
+                        <a target="_blank" href={`mailto:+${lead.email}`}>
+                            <Small>
+                                <FontAwesomeIcon className="mx-3"  icon={faEnvelope} />
+                                {lead.email}
+                            </Small>
+                        </a>
+                    </div>
+                }
+            </div>
+        )
+    }
+    setText = text => {
+        return(
+            <Small className="">
+                { text }
+            </Small>
+        )
+    }
+    setClienteTable = cliente => {
+        return(
+            <div>
+                <Small>
+                    { cliente.empresa }
+                </Small>
+                <Small>
+                    { cliente.nombre }
+                </Small>
+                <Small>
+                    { cliente.puesto }
+                </Small>
+            </div>
+        )
+    }
+    setDateTable = date => {
+        return(
+            <Moment format="DD/MM/YYYY">
+                {date}
+            </Moment>
+        )
+    }
     // Form
     onChange = event => {
         console.log(event.target.value, 'event')
@@ -152,15 +290,32 @@ class Leads extends Component{
             })
         })
     }
+    onChangeContacto = event => {
+        console.log(event.target.value, 'event copntacto', event.target.name)
+        const { name, value } = event.target
+        const { formContacto } = this.state
+        formContacto[name] = value
+        this.setState({
+            ... this.setState({
+                formContacto
+            })
+        })
+    }
 
     submitForm = (e) => {
         e.preventDefault();
-        const { form, formCliente, lead } = this.state
+        const { form, formCliente, formContacto, lead } = this.state
         form['formCliente'] = formCliente;
         form['lead'] = lead;
+        form['formContacto'] = formContacto;
         this.addProspectoAxios(form);
     }
 
+    submitContactForm = e => {  
+        e.preventDefault();
+        const { formContacto, prospecto } = this.state
+        this.addContactoAxios(formContacto, prospecto)
+    }
     // Axios
 
     async getProspectos(){
@@ -174,10 +329,7 @@ class Leads extends Component{
                 this.setVendedores(vendedores)
                 this.setClientes(clientes)
                 this.setTipos(tiposContactos,'tiposContactos')
-                this.setState({
-                    ... this.state,
-                    prospectos
-                })
+                this.setProspectos(prospectos)
             },
             (error) => {
                 console.log(error, 'error')
@@ -218,11 +370,65 @@ class Leads extends Component{
                 this.setVendedores(vendedores)
                 this.setClientes(clientes)
                 this.setTipos(tiposContactos,'tiposContactos')
+                this.setProspectos(prospectos)
                 this.setState({
                     ... this.state,
-                    prospectos,
                     modal: false,
-                    title: ''
+                    title: '',
+                    form: EMPTY_PROSPECTO,
+                    formCliente: EMPTY_CLIENTE,
+                    formContacto: EMPTY_CONTACTO
+                })
+                swal({
+                    title: '¡Listo!',
+                    text: 'Convertiste con éxisto el lead.',
+                    icon: 'success',
+                    buttons: false,
+                    timer: 1500
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
+        })
+    }
+
+    async addContactoAxios(form, id){
+        const { access_token } = this.props.authUser
+        await axios.post(URL_DEV + 'prospecto/'+id+'/contacto', form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { prospectos, tiposContactos } = response.data
+                this.setTipos(tiposContactos,'tiposContactos')
+                this.setProspectos(prospectos)
+                this.setState({
+                    ... this.state,
+                    modalContactForm: false,
+                    prospecto: '',
+                    form: EMPTY_PROSPECTO,
+                    formCliente: EMPTY_CLIENTE,
+                    formContacto: EMPTY_CONTACTO
                 })
                 swal({
                     title: '¡Listo!',
@@ -298,13 +504,20 @@ class Leads extends Component{
         })
     }
 
+
     render(){
-        const { modal, title, lead, vendedores, estatusProspectos, clientes, tipoProyectos, estatusContratacion, form, formCliente } = this.state
+        const { modal, title, lead, vendedores, estatusProspectos, clientes, tipoProyectos, estatusContratacion, tiposContactos, form, formCliente, formContacto, 
+                prospectos, modalHistoryContact, contactHistory, modalContactForm } = this.state
+        
         return(
             <Layout active={'leads'}  { ...this.props}>
                 <div className="text-right">
                     <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModalAddLead() } } text='' icon={faPlus} color="green" />
                 </div>
+                {
+                    prospectos &&
+                        <DataTable columns = { PROSPECTOS_COLUMNS } data = { prospectos }/>
+                }
                 <Modal show = { modal } handleClose = { this.handleCloseModal } >
                     <ProspectoForm 
                         className = " px-3 "
@@ -316,9 +529,12 @@ class Leads extends Component{
                         estatusContratacion = { estatusContratacion }
                         form = { form }
                         formCliente = { formCliente }
+                        formContacto = { formContacto }
                         onChange = {this.onChange}
                         onChangeCliente = {this.onChangeCliente}
                         onSubmit = { this.submitForm }
+                        tiposContactos = { tiposContactos }
+                        onChangeContacto = { this.onChangeContacto }
                         >
                         {
                             lead &&
@@ -418,6 +634,23 @@ class Leads extends Component{
                             </Accordion>
                         }
                     </ProspectoForm>
+                </Modal>
+                <Modal show = { modalHistoryContact } handleClose = { this.handleCloseHistoryModal }>
+                    {
+                        contactHistory &&
+                            <DataTable columns = { CONTACTO_COLUMNS } data = { contactHistory } />
+                    }
+                </Modal>
+                <Modal show = { modalContactForm } handleClose = { this.handleCloseFormContact }>
+                    <Form className="mx-3" onSubmit={this.submitContactForm}>
+                        <Subtitle className="mb-3">
+                            Agregar un nuevo contacto
+                        </Subtitle>
+                        <ContactoLeadForm tiposContactos = { tiposContactos } form = { formContacto } onChange = { this.onChangeContacto } />
+                        <div className="mt-3 text-center">
+                            <Button className="mx-auto" type="submit" text="Enviar" />
+                        </div>
+                    </Form>
                 </Modal>
             </Layout>
         )

@@ -55,6 +55,40 @@ export const EMPTY_EMPLEADO = {
     telefono_emergencia: '',
 }
 
+export const EMPTY_CONTACTO = {
+    comentario: '',
+    fechaContacto: '',
+    success: 'Contactado',
+    tipoContacto: '',
+    newTipoContacto: ''
+}
+
+export const EMPTY_CLIENTE = {
+    empresa: '',
+    nombre:'',
+    puesto: '',
+    cp: '',
+    estado: '',
+    municipio: '',
+    colonia: '',
+    calle: '',
+    perfil: ''
+}
+
+export const EMPTY_PROSPECTO = {
+    descripcion: '',
+    vendedor: '',
+    preferencia: '',
+    motivo: '',
+    cliente: '',
+    tipoProyecto: '',
+    estatusContratacion: '',
+    estatusProspecto: '',
+    newEstatusProspecto: '',
+    newTipoProyecto: '',
+    newEstatusContratacion: ''
+}
+
 //Colors
 export const DARK_BLUE = "#325693"
 export const DARK_BLUE_20 = "#32569320"
@@ -120,6 +154,80 @@ export const LEADS_COLUMNS = [
     {
         Header: 'Origen',
         accessor: 'origen',
+    },
+    {
+        Header: 'Fecha',
+        accessor: 'fecha',
+    },
+]
+
+export const PROSPECTOS_COLUMNS = [                
+    {
+        Header: ' ',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Lead',
+        accessor: 'lead',
+    },
+    {
+        Header: 'Empresa',
+        accessor: 'empresa',
+    },
+    {
+        Header: 'Cliente',
+        accessor: 'cliente',
+    },
+    {
+        Header: 'Tipo Proyecto',
+        accessor: 'tipoProyecto',
+    },
+    {
+        Header: 'Descripción del prospecto',
+        accessor: 'descripcion',
+    },
+    {
+        Header: 'Vendedor',
+        accessor: 'vendedor',
+    },
+    {
+        Header: 'Preferencia de contacto',
+        accessor: 'preferencia',
+    },
+    {
+        Header: 'Estatus del prospecto',
+        accessor: 'estatusProspecto',
+    },
+    {
+        Header: 'Motivo contratación o cancelación',
+        accessor: 'motivo',
+    },
+    {
+        Header: 'Estatus contratación',
+        accessor: 'estatusContratacion',
+    },
+    {
+        Header: 'Fecha de conversión',
+        accessor: 'fechaConversion',
+    },
+]
+
+export const CONTACTO_COLUMNS = [
+    {
+        Header: 'Usuario',
+        accessor: 'usuario',
+    },
+    {
+        Header: 'Medio Contacto',
+        accessor: 'medio',
+    },
+    {
+        Header: 'Estado',
+        accessor: 'estado',
+    },
+    {
+        Header: 'Comentario',
+        accessor: 'comentario',
     },
     {
         Header: 'Fecha',

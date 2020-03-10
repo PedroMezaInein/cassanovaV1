@@ -5,6 +5,7 @@ import { Subtitle } from '../texts'
 import axios from 'axios'
 import { CP_URL } from '../../constants'
 import swal from 'sweetalert'
+import { ContactoLeadForm } from '../forms'
 class ProspectoForm extends Component{
 
     constructor(props){
@@ -122,7 +123,7 @@ class ProspectoForm extends Component{
     }
 
     render(){
-        const { title, form, formCliente, children, vendedores, estatusProspectos, clientes, tipoProyecto, estatusContratacion, onChange, onChangeCliente, ...props } = this.props
+        const { title, form, formCliente, children, vendedores, estatusProspectos, clientes, tipoProyecto, estatusContratacion, tiposContactos, onChange, onChangeCliente, onChangeContacto, formContacto, ...props } = this.props
         const { newClient, newEstatusProspectos, newTipoProyecto, newEstatusContratacion, municipio, estado, colonias } = this.state
         return(
             <Form { ... props}>
@@ -233,6 +234,14 @@ class ProspectoForm extends Component{
                                 </div>
                             </>
                     }
+                    <div className="col-md-12">
+                        <Subtitle className="text-left my-3" color="gold">
+                            Información del contacto
+                        </Subtitle>
+                    </div>
+                    <div className="col-md-12 p-0">
+                        <ContactoLeadForm tiposContactos = { tiposContactos } form = { formContacto } onChange = { onChangeContacto } />
+                    </div>
                     
                 </div>   
                 
