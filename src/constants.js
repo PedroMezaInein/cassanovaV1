@@ -234,3 +234,35 @@ export const CONTACTO_COLUMNS = [
         accessor: 'fecha',
     },
 ]
+
+export const CLIENTES_COLUMNS = [
+    {
+        Header: ' ',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Empresa',
+        accessor: 'empresa',
+    },
+    {
+        Header: 'Dirección',
+        accessor: 'direccion',
+    },
+    {
+        Header: 'Perfil',
+        accessor: 'perfil',
+    },
+    {
+        Header: 'Nombre',
+        accessor: 'nombre',
+    },
+    {
+        Header: 'Puesto',
+        accessor: 'puesto',
+    },
+    {
+        Header: 'Fecha',
+        accessor: 'fecha',
+    },
+]
+

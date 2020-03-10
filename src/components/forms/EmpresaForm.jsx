@@ -55,7 +55,7 @@ class EmpresaForm extends Component{
                     </div>
                 </div>
                 <div className="mt-3 text-center">
-                    <Button className="mx-auto" type="submit" text="Enviar" />
+                    <Button icon='' className="mx-auto" type="submit" text="Enviar" />
                 </div>
             </Form>
         )

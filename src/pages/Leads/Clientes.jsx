@@ -1,0 +1,508 @@
+import React, { Component } from 'react'
+import Layout from '../../components/layout/layout'
+import { connect } from 'react-redux'
+import { faPlus, faPhone, faEnvelope, faEye, faEdit, faTrash, faCalendarAlt, faPhoneVolume } from '@fortawesome/free-solid-svg-icons'
+import { Button } from '../../components/form-components'
+import axios from 'axios'
+import { URL_DEV, CLIENTES_COLUMNS, EMPTY_CLIENTE, CP_URL } from '../../constants'
+import swal from 'sweetalert'
+import Moment from 'react-moment'
+import { DataTable } from '../../components/tables'
+import { Small, Subtitle, B } from '../../components/texts'
+import { Form } from 'react-bootstrap'
+import { ClienteForm } from '../../components/forms'
+import { Modal } from '../../components/singles'
+
+class Leads extends Component{
+
+    state = {
+        clientes: [],
+        modal: false,
+        modalDelete: false,
+        cliente: '',
+        form: EMPTY_CLIENTE,
+        typeForm: 'Add',
+        estado: '',
+        municipio: '',
+        colonias: []
+    }
+
+    constructor(props){
+        super(props);
+        const { state } = props.location
+    }
+
+    componentDidMount(){
+        const { authUser: { user : { permisos : permisos } } } = this.props
+        const { history : { location: { pathname: pathname } } } = this.props
+        const { history } = this.props
+        const leads = permisos.find(function(element, index) {
+            const { modulo: { url: url } } = element
+            return  pathname === '/' + url
+        });
+        if(!leads)
+            history.push('/')
+        this.getClientesAxios();
+    }
+
+    // Form
+
+    clearForm = ( name, empty ) => {
+        let aux = Object.keys(empty)
+        let _form = this.state[name]
+        aux.map((element) => {
+            _form[element] = '';
+        })
+        this.setState({
+            [name]: _form
+        })
+    }
+
+    updateColonia = value => {
+        console.log(value, 'value')
+        this.onChange({target:{name:'colonia', value: value.value}})
+    }
+
+    changeCP = event => {
+        const { value, name } = event.target
+        this.onChange({target:{name: name, value: value}})
+        if(value.length === 5)
+            this.cpAxios(value)
+    }
+
+    onChange = event => {
+        console.log(event.target.name, event.target.value, 'TARGET')
+        const { form } = this.state
+        const { name, value } = event.target
+        form[name] = value
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
+    submitForm = (event) => {
+        event.preventDefault();
+        this.addClienteAxios();
+    }
+
+    submitEditForm = (event) => {
+        event.preventDefault();
+        this.editClienteAxios();
+    }
+
+    safeDelete = e => id => {
+        this.deleteClienteAxios()
+    }
+
+    // Modal
+    handleCloseModal = () => {
+        this.setState({
+            ... this.state,
+            modal: !this.state.modal,
+            typeForm: ''
+        })
+        this.clearForm('form', EMPTY_CLIENTE)
+    }
+
+    handleDeleteModal = () => {
+        this.setState({
+            ... this.state,
+            modalDelete: !this.state.modalDelete,
+            cliente: ''
+        })
+        this.clearForm('form', EMPTY_CLIENTE)
+    }
+
+    activeModal = () => {
+        this.setState({
+            ... this.state,
+            modal: true,
+            typeForm: 'Add'
+        })
+        this.clearForm('form', EMPTY_CLIENTE)
+    }
+
+    openModalDelete = e => cliente => {
+        this.setState({
+            ... this.state,
+            modalDelete: true,
+            cliente
+        })
+        
+    }
+
+    openModalEdit = e => cliente => {
+
+        const { form, colonias } = this.state
+
+        if(cliente.cp){
+            this.cpAxios(cliente.cp)
+            form['cp'] = cliente.cp
+        }
+
+        if(cliente.colonia){
+            form['colonia'] = cliente.colonia
+        }
+
+        form['empresa'] = cliente.empresa
+        form['nombre'] = cliente.nombre
+        form['puesto'] = cliente.puesto
+        form['calle'] = cliente.calle
+        form['perfil'] = cliente.perfil
+
+        this.setState({
+            ... this.state,
+            modal: true,
+            typeForm: 'Edit',
+            form,
+            cliente
+        })
+    }
+
+    // Setters
+
+    setTableClientes = clientes => {
+        let aux = [];
+        clientes.map((cliente) => {
+            aux.push(
+                {
+                    actions: this.setActions(cliente),
+                    empresa: this.setText(cliente.empresa),
+                    direccion: this.setDireccion(cliente),
+                    perfil: this.setText(cliente.perfil),
+                    nombre: this.setText(cliente.nombre),
+                    puesto: this.setText(cliente.puesto),
+                    fecha: this.setDate(cliente.created_at)
+                }
+            )
+        })
+        this.setState({
+            ... this.state,
+            clientes: aux
+        })
+    }
+
+    setActions = cliente => {
+        return(
+            <>
+                <div className="d-flex align-items-center flex-column flex-md-row">
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalEdit(e)(cliente)} text='' icon={faEdit} color="transparent" />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalDelete(e)(cliente)} text='' icon={faTrash} color="red" />
+                </div>
+            </>
+        )
+    }
+
+    setText = text => {
+        return(
+            <Small>
+                { text }
+            </Small>
+        )
+    }
+
+    setDireccion = cliente => {
+        return(
+            <>
+                <Small className="mr-1">
+                    { cliente.calle }, colonia
+                </Small>
+                <Small className="mr-1">
+                    { cliente.colonia },
+                </Small>
+                <Small className="mr-1">
+                    { cliente.municipio },
+                </Small>
+                <Small className="mr-1">
+                    { cliente.estado }. CP: 
+                </Small>
+                <Small className="mr-1">
+                    { cliente.cp }
+                </Small>
+            </>
+        )
+    }
+
+    setDate = date => {
+        return(
+            <Small>
+                <Moment format="DD/MM/YYYY">
+                    { date }
+                </Moment>
+            </Small>
+        )
+    }
+    
+    // Axios
+
+    async getClientesAxios(){
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'cliente', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { clientes } = response.data
+                this.setTableClientes(clientes)
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
+        })
+    }
+
+    async addClienteAxios(){
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        await axios.post(URL_DEV + 'cliente', form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { clientes } = response.data
+                this.setTableClientes(clientes)
+                swal({
+                    title: '¡Listo!',
+                    text: 'Creaste con éxito un nuevo cliente.',
+                    icon: 'success',
+                    buttons: false,
+                    timer: 1500
+                })
+                this.setState({
+                    ... this.state,
+                    modal: false,
+                    typeForm: ''
+                })
+                this.clearForm('form', EMPTY_CLIENTE)
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
+        })
+    }
+
+    async editClienteAxios(){
+        const { access_token } = this.props.authUser
+        const { form, cliente } = this.state
+        await axios.put(URL_DEV + 'cliente/' + cliente.id, form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { clientes } = response.data
+                this.setTableClientes(clientes)
+                swal({
+                    title: '¡Listo!',
+                    text: 'Editaste con éxito al cliente.',
+                    icon: 'success',
+                    buttons: false,
+                    timer: 1500
+                })
+                this.setState({
+                    ... this.state,
+                    modal: false,
+                    cliente: ''
+                })
+                this.clearForm('form', EMPTY_CLIENTE)
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
+        })
+    }
+
+    async deleteClienteAxios(){
+        const { access_token } = this.props.authUser
+        const { form, cliente } = this.state
+        await axios.delete(URL_DEV + 'cliente/' + cliente.id,{ headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { clientes } = response.data
+                this.setTableClientes(clientes)
+                swal({
+                    title: '¡Listo!',
+                    text: 'Eliminaste con éxito al cliente.',
+                    icon: 'success',
+                    buttons: false,
+                    timer: 1500
+                })
+                this.setState({
+                    ... this.state,
+                    modalDelete: false,
+                    cliente: ''
+                })
+                this.clearForm('form', EMPTY_CLIENTE)
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
+        })
+    }
+
+    async cpAxios(value){
+        await axios.get(CP_URL + value + '?type=simplified').then(
+            (response) => {
+                const { municipio, estado, asentamiento } = response.data.response
+                const { cliente } = this.state
+                let aux = [];
+                asentamiento.map((colonia, key) => {
+                    aux.push({value: colonia, name: colonia})
+                })
+                this.setState({
+                    ... this.state,
+                    municipio,
+                    estado,
+                    colonias: aux
+                })
+                if(cliente.colonia){
+                    aux.find( function(element, index){
+                        if(element.name === cliente.colonia){
+                            this.updateColonia(element)
+                            console.log(element, 'element')
+                        }
+                    })
+                }
+                this.onChange({target:{name:'cp', value: value}})
+                this.onChange({target:{name:'municipio', value: municipio}})
+                this.onChange({target:{name:'estado', value: estado}})
+                console.log(this.state.colonias, 'colonias axios')
+            },
+            (error) => {
+               
+            }
+        ).catch((error) => {
+           
+        })
+    }
+
+    render(){
+        const { clientes, modal, typeForm, form, estado, municipio, colonias, modalDelete, cliente } = this.state
+        return(
+            <Layout active={'leads'}  { ...this.props}>
+                <div className="text-right">
+                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.activeModal() } } text='' icon={faPlus} color="green" />
+                </div>
+                <DataTable columns = { CLIENTES_COLUMNS } data = { clientes } />
+                <Modal show = { modal } handleClose = { this.handleCloseModal }>
+                    <Form onSubmit = { typeForm === 'Add' ? this.submitForm : this.submitEditForm } className="m-4">
+                        <div className="row mx-0">
+                            <ClienteForm 
+                                onChange = { this.onChange } 
+                                title = { typeForm === 'Add' ? 'Registrar nuevo cliente' : 'Editar usuario' }
+                                form = { form }
+                                changeCP = { this.changeCP }
+                                estado = { estado }
+                                municipio = { municipio }
+                                colonias = { colonias }
+                                updateColonia = { this.updateColonia }
+                                />
+                        </div>
+                        <div className="mt-3 text-center">
+                            <Button icon='' className="mx-auto" type="submit" text="Enviar" />
+                        </div>
+                    </Form>
+                </Modal>
+                <Modal show = { modalDelete } handleClose = { this.handleDeleteModal } >
+                    <Subtitle className="my-3 text-center">
+                        ¿Estás seguro que deseas eliminar a <B color="red">{cliente.empresa}</B>?
+                    </Subtitle>
+                    <div className="d-flex justify-content-center mt-3">
+                        <Button icon='' onClick = { this.handleDeleteModal } text="Cancelar" className="mr-3" color="green"/>
+                        <Button icon='' onClick = { (e) => { this.safeDelete(e)(cliente.id) }} text="Continuar" color="red"/>
+                    </div>
+                </Modal>
+            </Layout>
+        )
+    }
+}
+
+
+const mapStateToProps = state => {
+    return{
+        authUser: state.authUser
+    }
+}
+
+const mapDispatchToProps = dispatch => ({
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Leads);

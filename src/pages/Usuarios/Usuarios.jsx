@@ -558,8 +558,8 @@ class Usuarios extends Component{
                                                             </Small>
                                                         </div>
                                                         <div className="d-flex justify-content-between mt-3">
-                                                            <Button onClick={(e) => { this.updateUser(e)(user) }} icon={faUserEdit} className="mr-2" color="blue"/>
-                                                            <Button onClick={(e) => { this.deleteuser(e)(user) }} icon={faUserSlash} color="red"/>
+                                                            <Button icon='' onClick={(e) => { this.updateUser(e)(user) }} icon={faUserEdit} className="mr-2" color="blue"/>
+                                                            <Button icon='' onClick={(e) => { this.deleteuser(e)(user) }} icon={faUserSlash} color="red"/>
                                                         </div>
                                                     </Card>
                                                 </div>
@@ -606,8 +606,8 @@ class Usuarios extends Component{
                         ¿Estás seguro que deseas eliminar a <B color="red">{user_to_interact.name}</B>
                     </Subtitle>
                     <div className="d-flex justify-content-center mt-3">
-                        <Button onClick={this.handleCloseSafeModal} text="Cancelar" className="mr-3" color="green"/>
-                        <Button onClick={(e) => { this.deleteSafeUser(e)(user_to_interact.id) }} text="Continuar" color="red"/>
+                        <Button icon='' onClick={this.handleCloseSafeModal} text="Cancelar" className="mr-3" color="green"/>
+                        <Button icon='' onClick={(e) => { this.deleteSafeUser(e)(user_to_interact.id) }} text="Continuar" color="red"/>
                     </div>
                 </Modal>
                 <Modal show={modalPermisos} handleClose={this.handleCloseModalPermisos}>

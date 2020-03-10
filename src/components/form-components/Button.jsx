@@ -12,7 +12,7 @@ export default class button extends Component{
         return(
             <Button type={type} onClick={onClick} className={`button__${color} ${className}` } { ... props }>
                 {
-                    icon && <FontAwesomeIcon icon={icon} />
+                    icon !== ''  && <FontAwesomeIcon icon={icon} />
                 }
                 {text}
                 {children}

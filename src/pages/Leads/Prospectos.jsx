@@ -93,15 +93,16 @@ class Leads extends Component{
 
     activeFormContact = e => prospecto => {
         this.setState({
-            ... this.state,
             prospecto,
-            modalContactForm: true
+            modalContactForm: true,
+            form: EMPTY_PROSPECTO,
+            formCliente: EMPTY_CLIENTE,
+            formContacto: EMPTY_CONTACTO
         })
     }
 
     handleCloseFormContact = () => {
         this.setState({
-            ... this.state,
             prospecto: '',
             modalContactForm: false,
             form: EMPTY_PROSPECTO,
@@ -636,6 +637,9 @@ class Leads extends Component{
                     </ProspectoForm>
                 </Modal>
                 <Modal show = { modalHistoryContact } handleClose = { this.handleCloseHistoryModal }>
+                    <Subtitle className="my-3">
+                        Historial de contacto
+                    </Subtitle>
                     {
                         contactHistory &&
                             <DataTable columns = { CONTACTO_COLUMNS } data = { contactHistory } />
@@ -648,7 +652,7 @@ class Leads extends Component{
                         </Subtitle>
                         <ContactoLeadForm tiposContactos = { tiposContactos } form = { formContacto } onChange = { this.onChangeContacto } />
                         <div className="mt-3 text-center">
-                            <Button className="mx-auto" type="submit" text="Enviar" />
+                            <Button icon='' className="mx-auto" type="submit" text="Enviar" />
                         </div>
                     </Form>
                 </Modal>

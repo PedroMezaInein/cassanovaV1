@@ -5,7 +5,7 @@ import { Subtitle } from '../texts'
 import axios from 'axios'
 import { CP_URL } from '../../constants'
 import swal from 'sweetalert'
-import { ContactoLeadForm } from '../forms'
+import { ContactoLeadForm, ClienteForm } from '../forms'
 class ProspectoForm extends Component{
 
     constructor(props){
@@ -199,40 +199,16 @@ class ProspectoForm extends Component{
                     </div>
                     {
                         newClient &&
-                            <>
-                                <div className="col-md-12">
-                                    <Subtitle className="text-left my-3" color="gold">
-                                        Información del cliente
-                                    </Subtitle>
-                                </div>
-                                <div className="px-2 col-md-4">
-                                    <Input name="empresa" value={formCliente.empresa} onChange={onChangeCliente} type="text" placeholder="Nombre empresa"/>
-                                </div>
-                                <div className="px-2 col-md-4">
-                                    <Input name="nombre" value={formCliente.nombre} onChange={onChangeCliente} type="text" placeholder="Nombre del empleado"/>
-                                </div>
-                                <div className="px-2 col-md-4">
-                                    <Input name="puesto" value={formCliente.puesto} onChange={onChangeCliente} type="text" placeholder="Puesto del empleado"/>
-                                </div>
-                                <div className="px-2 col-md-4">
-                                    <Input name="cp" onChange={this.changeCP} type="text" placeholder="Código postal"/>
-                                </div>
-                                <div className="px-2 col-md-4">
-                                    <Input value={estado} name="estado" type="text" placeholder="Estado"/>
-                                </div>
-                                <div className="px-2 col-md-4">
-                                    <Input value={municipio} name="municipio" type="text" placeholder="Municipio/Delegación"/>
-                                </div>
-                                <div className="px-2 col-md-4">
-                                    <SelectSearch options = { colonias } placeholder = "Selecciona la colonia" name="colonia" value={formCliente.colonia} onChange={this.updateColonia}/>
-                                </div>
-                                <div className="px-2 col-md-8">
-                                    <Input name="calle" value={formCliente.calle} onChange={onChangeCliente} type="text" placeholder="Calle y número"/>
-                                </div>
-                                <div className="px-2 col-md-12">
-                                    <Input rows="3" as="textarea" placeholder="Perfil" name="perfil" value={formCliente.perfil} onChange={onChangeCliente}/>
-                                </div>
-                            </>
+                            <ClienteForm 
+                                onChange = { onChangeCliente } 
+                                title = 'Información del cliente'
+                                form = { formCliente }
+                                changeCP = { this.changeCP }
+                                estado = { estado }
+                                municipio = { municipio }
+                                colonias = { colonias }
+                                updateColonia = { this.updateColonia }
+                                />
                     }
                     <div className="col-md-12">
                         <Subtitle className="text-left my-3" color="gold">
@@ -246,7 +222,7 @@ class ProspectoForm extends Component{
                 </div>   
                 
                 <div className="mt-3 text-center">
-                    <Button className="mx-auto" type="submit" text="Enviar" />
+                    <Button icon='' className="mx-auto" type="submit" text="Enviar" />
                 </div>
 
             </Form>

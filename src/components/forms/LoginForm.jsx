@@ -183,7 +183,7 @@ class LoginForm extends React.Component {
                         </label>
                 }
                 <div className="d-flex justify-content-center">
-                    <Button type="submit"
+                    <Button icon='' type="submit"
                         className="mt-4 mx-auto px-4 button-enviar"
                         disabled={
                             this.state.form.email === '' ||

@@ -589,8 +589,8 @@ class Leads extends Component{
                         ¿Estás seguro que deseas eliminar el lead <B color="red">{leadId.nombre}</B>?
                     </Subtitle>
                     <div className="d-flex justify-content-center mt-3">
-                        <Button onClick={this.handleCloseDeleteModal} text="Cancelar" className="mr-3" color="green"/>
-                        <Button onClick={(e) => { this.safeDeleteLead(e)(leadId.id) }} text="Continuar" color="red"/>
+                        <Button icon='' onClick={this.handleCloseDeleteModal} text="Cancelar" className="mr-3" color="green"/>
+                        <Button icon='' onClick={(e) => { this.safeDeleteLead(e)(leadId.id) }} text="Continuar" color="red"/>
                     </div>
                 </Modal>
                 <Modal show={modalConvert} handleClose={this.handleCloseConvertModal}>
@@ -598,8 +598,8 @@ class Leads extends Component{
                         ¿Estás seguro que deseas convertir el lead <B color="red">{leadId.nombre}</B>?
                     </Subtitle>
                     <div className="d-flex justify-content-center mt-3">
-                        <Button onClick={this.handleCloseConvertModal} text="Cancelar" className="mr-3" color="red"/>
-                        <Button onClick={(e) => { this.safeConvertLead(e)(leadId.id) }} text="Continuar" />
+                        <Button icon='' onClick={this.handleCloseConvertModal} text="Cancelar" className="mr-3" color="red"/>
+                        <Button icon='' onClick={(e) => { this.safeConvertLead(e)(leadId.id) }} text="Continuar" />
                     </div>
                 </Modal>
             </Layout>

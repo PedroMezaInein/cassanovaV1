@@ -21,6 +21,7 @@ const Usuarios = Loader(() => import('./pages/Usuarios/Usuarios') )
 const Normas = Loader(() => import('./pages/Normas') )
 const Leads = Loader(() => import('./pages/Leads/Leads') )
 const Prospectos = Loader(() => import('./pages/Leads/Prospectos') )
+const Clientes = Loader(() => import('./pages/Leads/Clientes') )
 const MiProyecto = Loader(() => import('./pages/MiProyecto') )
 
 class App extends Component{
@@ -90,6 +91,7 @@ class App extends Component{
                 <Route path = "/usuarios/empresas" exact component ={ Empresas } />
                 <Route path = "/leads/leads" exact component ={ Leads } />
                 <Route path = "/leads/prospectos" exact component = { Prospectos } />
+                <Route path = "/leads/clientes" exact component = { Clientes } />
                 <Route path = "/normas" exact component ={ Normas } />
             </div>
         )

@@ -406,8 +406,8 @@ class Empresas extends Component{
                         ¿Estás seguro que deseas eliminar a <B color="red">{empresa.name}</B>?
                     </Subtitle>
                     <div className="d-flex justify-content-center mt-3">
-                        <Button onClick={this.handleDeleteModal} text="Cancelar" className="mr-3" color="green"/>
-                        <Button onClick={(e) => { this.safeDeleteEmpresa(e)(empresa.id) }} text="Continuar" color="red"/>
+                        <Button icon='' onClick={this.handleDeleteModal} text="Cancelar" className="mr-3" color="green"/>
+                        <Button icon='' onClick={(e) => { this.safeDeleteEmpresa(e)(empresa.id) }} text="Continuar" color="red"/>
                     </div>
                 </Modal>
             </Layout>
