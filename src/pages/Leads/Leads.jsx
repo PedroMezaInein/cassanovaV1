@@ -203,7 +203,6 @@ class Leads extends Component{
                     return false
                 }
             })
-            console.log(aux, 'AUX')
             if(aux){
                 _servicios.push( { checked: true, text: _form.text, id: _form.id })
             }else{
@@ -318,10 +317,8 @@ class Leads extends Component{
     handleChangeInput = (e) => {
         e.preventDefault();
         const { name, value } = e.target
-        console.log(name, value)
         const { form }  = this.state
         form[name] = value
-        console.log(form[name], 'FORM NAME', name)
         this.setState({
             ... this.state,
             form
@@ -410,6 +407,13 @@ class Leads extends Component{
                     },
                     modalAdd: false
                 })
+                swal({
+                    title: '¡Listo!',
+                    text: 'Agregaste con éxito el lead.',
+                    icon: 'success',
+                    buttons: false,
+                    timer: 1500
+                })
             },
             (error) => {
                 console.log(error, 'error')
@@ -463,6 +467,13 @@ class Leads extends Component{
                     },
                     modalAdd: false
                 })
+                swal({
+                    title: '¡Listo!',
+                    text: 'Editaste con éxito el lead.',
+                    icon: 'success',
+                    buttons: false,
+                    timer: 1500
+                })
             },
             (error) => {
                 console.log(error, 'error')
@@ -501,6 +512,13 @@ class Leads extends Component{
                 this.setOrigenes(origenes)
                 this.setServicios(servicios)
                 this.setEmpresas(empresas)
+                swal({
+                    title: '¡Listo!',
+                    text: 'Eliminaste con éxito el lead.',
+                    icon: 'success',
+                    buttons: false,
+                    timer: 1500
+                })
             },
             (error) => {
                 console.log(error, 'error')

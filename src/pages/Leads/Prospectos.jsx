@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { faPlus, faPhone, faEnvelope, faEye } from '@fortawesome/free-solid-svg-icons'
-import { Button } from '../../components/form-components'
+import { Button, SelectSearch } from '../../components/form-components'
 import { Modal, Card } from '../../components/singles'
 import { ProspectoForm } from '../../components/forms'
 import axios from 'axios'
@@ -18,7 +18,39 @@ class Leads extends Component{
     state = {
         modal: false,
         title: '',
-        lead: ''
+        lead: '',
+        prospectos: '',
+        clientes: '',
+        tiposContactos: '',
+        vendedores: '',
+        estatusContratacion: '',
+        estatusProspectos: '',
+        tipoProyectos: '',
+        form:{
+            descripcion: '',
+            vendedor: '',
+            preferencia: '',
+            motivo: '',
+            cliente: '',
+            tipoProyecto: '',
+            estatusContratacion: '',
+            estatusProspecto: '',
+            newEstatusProspecto: '',
+            newTipoProyecto: '',
+            newEstatusContratacion: ''
+        },
+        formCliente:{
+            empresa: '',
+            nombre:'',
+            puesto: '',
+            cp: '',
+            estado: '',
+            municipio: '',
+            colonia: '',
+            calle: '',
+            perfil: ''
+        }
+
     }
 
     constructor(props){
@@ -42,6 +74,7 @@ class Leads extends Component{
         });
         if(!leads)
             history.push('/')
+        this.getProspectos();
     }
 
     handleCloseModal = () => {
@@ -51,7 +84,182 @@ class Leads extends Component{
         })
     }
 
+    // Setters
+
+    setTipos = (list, name) => {
+        let aux = [{ value: 'New', name: '+ Agregar nuevo'}]
+        list && list.map((element, key) => {
+            aux.push({ value: element.id, name: element.tipo })
+        })
+        this.setState({
+            ... this.state,
+            [name]: aux
+        })
+        
+    }
+    setEstatus = (list, name) => {
+        let aux = [{ value: 'New', name: '+ Agregar nuevo'}]
+        list && list.map((element, key) => {
+            aux.push({ value: element.id, name: element.estatus })
+        })
+        this.setState({
+            ... this.state,
+            [name]: aux
+        })
+        
+    }
+    setVendedores = vendedores => {
+        let aux = []
+        vendedores && vendedores.map((element, key) => {
+            aux.push({ value: element.id, name: element.name })
+        })
+        this.setState({
+            ... this.state,
+            vendedores: aux
+        })
+    }
+    setClientes = clientes => {
+        let aux = [{ value: 'New', name: '+ Agregar nuevo'}]
+        clientes && clientes.map((element, key) => {
+            aux.push({ value: element.id, name: element.empresa })
+        })
+        this.setState({
+            ... this.state,
+            clientes: aux
+        })
+    }
+
+    // Form
+    onChange = event => {
+        console.log(event.target.value, 'event')
+        const { name, value } = event.target
+        const { form } = this.state
+        form[name] = value
+        this.setState({
+            ... this.setState({
+                form
+            })
+        })
+    }
+    onChangeCliente = event => {
+        console.log(event.target.value, 'event')
+        const { name, value } = event.target
+        const { formCliente } = this.state
+        formCliente[name] = value
+        this.setState({
+            ... this.setState({
+                formCliente
+            })
+        })
+    }
+
+    submitForm = (e) => {
+        e.preventDefault();
+        const { form, formCliente, lead } = this.state
+        form['formCliente'] = formCliente;
+        form['lead'] = lead;
+        this.addProspectoAxios(form);
+    }
+
     // Axios
+
+    async getProspectos(){
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'prospecto', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { prospectos, tipoProyectos, estatusContratacion, estatusProspectos, vendedores, tiposContactos, clientes } = response.data
+                this.setTipos(tipoProyectos, 'tipoProyectos')
+                this.setEstatus(estatusContratacion,'estatusContratacion')
+                this.setEstatus(estatusProspectos,'estatusProspectos')
+                this.setVendedores(vendedores)
+                this.setClientes(clientes)
+                this.setTipos(tiposContactos,'tiposContactos')
+                this.setState({
+                    ... this.state,
+                    prospectos
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
+        })
+    }
+
+    async addProspectoAxios(data){
+        const { access_token } = this.props.authUser
+        await axios.post(URL_DEV + 'prospecto', data, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { prospectos, tipoProyectos, estatusContratacion, estatusProspectos, vendedores, tiposContactos, clientes } = response.data
+                this.setTipos(tipoProyectos, 'tipoProyectos')
+                this.setEstatus(estatusContratacion,'estatusContratacion')
+                this.setEstatus(estatusProspectos,'estatusProspectos')
+                this.setVendedores(vendedores)
+                this.setClientes(clientes)
+                this.setTipos(tiposContactos,'tiposContactos')
+                this.setState({
+                    ... this.state,
+                    prospectos,
+                    modal: false,
+                    title: ''
+                })
+                swal({
+                    title: '¡Listo!',
+                    text: 'Convertiste con éxisto el lead.',
+                    icon: 'success',
+                    buttons: false,
+                    timer: 1500
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
+        })
+    }
+
     async getLeadAxios(lead){
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'lead/' + lead, { headers: {Authorization:`Bearer ${access_token}`}}).then(
@@ -91,7 +299,7 @@ class Leads extends Component{
     }
 
     render(){
-        const { modal, title, lead } = this.state
+        const { modal, title, lead, vendedores, estatusProspectos, clientes, tipoProyectos, estatusContratacion, form, formCliente } = this.state
         return(
             <Layout active={'leads'}  { ...this.props}>
                 <div className="text-right">
@@ -100,7 +308,18 @@ class Leads extends Component{
                 <Modal show = { modal } handleClose = { this.handleCloseModal } >
                     <ProspectoForm 
                         className = " px-3 "
-                        title = { title }>
+                        title = { title }
+                        vendedores = { vendedores }
+                        estatusProspectos = { estatusProspectos }
+                        clientes = { clientes }
+                        tipoProyecto = { tipoProyectos }
+                        estatusContratacion = { estatusContratacion }
+                        form = { form }
+                        formCliente = { formCliente }
+                        onChange = {this.onChange}
+                        onChangeCliente = {this.onChangeCliente}
+                        onSubmit = { this.submitForm }
+                        >
                         {
                             lead &&
                             <Accordion>

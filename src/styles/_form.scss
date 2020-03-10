@@ -1,42 +1,105 @@
-.form-control{
+.form-control {
     border-width: 0 0 2px 0!important;
-    border-radius: 0px;
+    border-radius: 0;
     background-color: transparent;
     border-color: $dark-blue;
     color: $blue;
-    &::placeholder{
+    &::placeholder {
         color: $blue!important;
     }
     margin-bottom: 1rem;
 }
 
-.label-form{
+.label-form {
     color: $dark-blue;
     font-size: 1rem;
 }
 
-.radio-group{
-    .form-check{
-        padding-left: 2rem;
-        padding: 0.5rem 0rem 0.5rem 2rem;
-        .form-check-label{
+.radio-group {
+    .form-check {
+        padding: 0.5rem 0 0.5rem 2rem;
+        .form-check-label {
             color: $dark-blue;
             font-size: 1rem;
         }
     }
 }
 
-.react-datepicker-wrapper{
+.react-datepicker-wrapper {
     width: 100%;
 }
 
-.image-upload  input{
+.image-upload input {
     display: none;
 }
 
-.image-upload svg{
+.image-upload svg {
     padding: 0.5rem 0.25rem 0.35rem;
     color: $dark-blue;
-    font-size: calc( 0.5rem + 30px );
+    font-size: calc(0.5rem + 30px);
     cursor: pointer;
+}
+
+.select-search {
+    width: auto;
+    position: relative;
+    box-sizing: border-box;
+    input{
+        border-width: 0 0 2px 0!important;
+        border-radius: 0;
+        background-color: transparent;
+        border-color: $dark-blue;
+        color: $blue;
+        &::placeholder {
+            color: $blue!important;
+        }
+        margin-bottom: 1rem;
+        width: 100%;
+        padding: 0.4rem;
+    }
+    &__select{
+        &:not(.select-search__select--display){
+            display: none;
+        }
+        background: #fff;
+        box-shadow: 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.15);
+        position: absolute;
+        z-index: 2;
+        top: 3.25rem;
+        right: 0;
+        left: 0;
+        border-radius: 3px;
+        overflow: auto;
+        max-height: 250px!important;
+    }
+    &__options{
+        margin-bottom: 0px;
+        margin-block-start: 0px!important;
+        padding-inline-start: 0px;
+        list-style: none;
+    }
+    &__option{
+        display: block;
+        padding: 0.40rem 0.30rem;
+        transition: all 0.5s;
+        color: $dark-blue!important;
+        &:hover{
+            background-color: #fafafa!important;
+        }
+    }
+    &__row{
+        &:not(:first-child) {
+            border-top: 1px solid #eee;
+        }
+    }
+}
+
+.select-search *,
+.select-search *::after,
+.select-search *::before {
+    box-sizing: inherit;
+}
+
+.select-search.is-disabled {
+    opacity: 0.5;
 }
