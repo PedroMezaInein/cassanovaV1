@@ -511,9 +511,9 @@ class Leads extends Component{
         
         return(
             <Layout active={'leads'}  { ...this.props}>
-                <div className="text-right">
+                {/* <div className="text-right">
                     <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModalAddLead() } } text='' icon={faPlus} color="green" />
-                </div>
+                </div> */}
                 {
                     prospectos &&
                         <DataTable columns = { PROSPECTOS_COLUMNS } data = { prospectos }/>
