@@ -59,7 +59,6 @@ class Leads extends Component{
     }
 
     updateColonia = value => {
-        console.log(value, 'value')
         this.onChange({target:{name:'colonia', value: value.value}})
     }
 
@@ -71,7 +70,6 @@ class Leads extends Component{
     }
 
     onChange = event => {
-        console.log(event.target.name, event.target.value, 'TARGET')
         const { form } = this.state
         const { name, value } = event.target
         form[name] = value
@@ -437,14 +435,12 @@ class Leads extends Component{
                     aux.find( function(element, index){
                         if(element.name === cliente.colonia){
                             this.updateColonia(element)
-                            console.log(element, 'element')
                         }
                     })
                 }
                 this.onChange({target:{name:'cp', value: value}})
                 this.onChange({target:{name:'municipio', value: municipio}})
                 this.onChange({target:{name:'estado', value: estado}})
-                console.log(this.state.colonias, 'colonias axios')
             },
             (error) => {
                

@@ -33,14 +33,13 @@ class Leads extends Component{
         tipoProyectos: '',
         form: EMPTY_PROSPECTO,
         formCliente: EMPTY_CLIENTE,
-        formContacto:EMPTY_CONTACTO,
+        formContacto: EMPTY_CONTACTO,
         contactHistory: []
     }
 
     constructor(props){
         super(props);
         const { state } = props.location
-        console.log(state);
         if(state){
             this.state.modal = true
             this.state.title = 'Lead a convertir'
@@ -62,18 +61,18 @@ class Leads extends Component{
     }
 
     handleCloseModal = () => {
+        this.clearForm('form', EMPTY_PROSPECTO)
+        this.clearForm('formCliente', EMPTY_CLIENTE)
+        this.clearForm('formContacto', EMPTY_CONTACTO)
         this.setState({
             ... this.state,
             modal: !this.state.modal,
-            form: EMPTY_PROSPECTO,
-            formCliente: EMPTY_CLIENTE,
-            formContacto: EMPTY_CONTACTO
+            
         })
     }
 
     activeModalHistory = e => contactos => {
         let aux = []
-        /* console.log(contactos, 'contactos') */
         contactos.map((contacto) => {
             aux.push(
                 {
@@ -93,22 +92,18 @@ class Leads extends Component{
     }
 
     activeFormContact = e => prospecto => {
+        this.clearForm('formContacto', EMPTY_CONTACTO)
         this.setState({
             prospecto,
             modalContactForm: true,
-            form: EMPTY_PROSPECTO,
-            formCliente: EMPTY_CLIENTE,
-            formContacto: EMPTY_CONTACTO
         })
     }
 
     handleCloseFormContact = () => {
+        this.clearForm('formContacto', EMPTY_CONTACTO)
         this.setState({
             prospecto: '',
             modalContactForm: false,
-            form: EMPTY_PROSPECTO,
-            formCliente: EMPTY_CLIENTE,
-            formContacto: EMPTY_CONTACTO
         })
     }
 
@@ -116,10 +111,7 @@ class Leads extends Component{
         this.setState({
             ... this.state,
             modalHistoryContact: false,
-            contactHistory: [],
-            form: EMPTY_PROSPECTO,
-            formCliente: EMPTY_CLIENTE,
-            formContacto: EMPTY_CONTACTO
+            contactHistory: []
         })
     }
 
@@ -145,19 +137,19 @@ class Leads extends Component{
         form['preferencia'] = prospecto.preferencia 
         form['motivo'] = prospecto.motivo
         if(prospecto.vendedor){
-            form['vendedor'] = prospecto.vendedor.id
+            form['vendedor'] = prospecto.vendedor.email
         }
         if(prospecto.estatus_prospecto){
-            form['estatusProspecto'] = prospecto.estatus_prospecto.id
+            form['estatusProspecto'] = prospecto.estatus_prospecto.estatus
         }
         if(prospecto.cliente){
-            form['cliente'] = prospecto.cliente.id
+            form['cliente'] = prospecto.cliente.empresa
         }
         if(prospecto.tipo_proyecto){
-            form['tipoProyecto'] = prospecto.tipo_proyecto.id
+            form['tipoProyecto'] = prospecto.tipo_proyecto.tipo
         }
         if(prospecto.estatus_contratacion){
-            form['estatusContratacion'] = prospecto.estatus_contratacion.id
+            form['estatusContratacion'] = prospecto.estatus_contratacion.estatus
         }
         
         this.setState({
@@ -177,7 +169,7 @@ class Leads extends Component{
     setTipos = (list, name) => {
         let aux = [{ value: 'New', name: '+ Agregar nuevo'}]
         list && list.map((element, key) => {
-            aux.push({ value: element.id, name: element.tipo })
+            aux.push({ value: element.tipo, name: element.tipo })
         })
         this.setState({
             ... this.state,
@@ -188,7 +180,7 @@ class Leads extends Component{
     setEstatus = (list, name) => {
         let aux = [{ value: 'New', name: '+ Agregar nuevo'}]
         list && list.map((element, key) => {
-            aux.push({ value: element.id, name: element.estatus })
+            aux.push({ value: element.estatus, name: element.estatus })
         })
         this.setState({
             ... this.state,
@@ -199,7 +191,7 @@ class Leads extends Component{
     setVendedores = vendedores => {
         let aux = []
         vendedores && vendedores.map((element, key) => {
-            aux.push({ value: element.id, name: element.name })
+            aux.push({ value: element.email, name: element.name })
         })
         this.setState({
             ... this.state,
@@ -209,7 +201,7 @@ class Leads extends Component{
     setClientes = clientes => {
         let aux = [{ value: 'New', name: '+ Agregar nuevo'}]
         clientes && clientes.map((element, key) => {
-            aux.push({ value: element.id, name: element.empresa })
+            aux.push({ value: element.empresa, name: element.empresa })
         })
         this.setState({
             ... this.state,
@@ -218,7 +210,6 @@ class Leads extends Component{
     }
     setProspectos = prospectos => {
         let _prospectos = []
-        console.log(prospectos, 'prospectos')
         prospectos.map((prospecto, key) => {
             _prospectos.push( {
                 actions: this.setActions(prospecto),
@@ -297,7 +288,6 @@ class Leads extends Component{
         )
     }
     setClienteTable = cliente => {
-        console.log(cliente, 'CLIENTE ')
         return(
             <>
                 {
@@ -325,8 +315,22 @@ class Leads extends Component{
         )
     }
     // Form
+
+    clearForm = ( name, empty ) => {
+        let aux = Object.keys(empty)
+        let _form = this.state[name]
+        aux.map((element) => {
+            if(element === 'Success')
+                _form[element] = 'Contactado'
+            else
+                _form[element] = ''
+        })
+        this.setState({
+            [name]: _form
+        })
+    }
+
     onChange = event => {
-        console.log(event.target.value, 'event')
         const { name, value } = event.target
         const { form } = this.state
         form[name] = value
@@ -337,7 +341,6 @@ class Leads extends Component{
         })
     }
     onChangeCliente = event => {
-        console.log(event.target.value, 'event')
         const { name, value } = event.target
         const { formCliente } = this.state
         formCliente[name] = value
@@ -348,14 +351,12 @@ class Leads extends Component{
         })
     }
     onChangeContacto = event => {
-        console.log(event.target.value, 'event copntacto', event.target.name)
-        const { name, value } = event.target
         const { formContacto } = this.state
-        formContacto[name] = value
+        const { name, value } = event.target
+        formContacto[name] = event.target.value
         this.setState({
-            ... this.setState({
-                formContacto
-            })
+            ... this.state,
+            formContacto
         })
     }
 
@@ -436,13 +437,13 @@ class Leads extends Component{
                 this.setClientes(clientes)
                 this.setTipos(tiposContactos,'tiposContactos')
                 this.setProspectos(prospectos)
+                this.clearForm('form', EMPTY_PROSPECTO)
+                this.clearForm('formCliente', EMPTY_CLIENTE)
+                this.clearForm('formContacto', EMPTY_CONTACTO)
                 this.setState({
                     ... this.state,
                     modal: false,
                     title: '',
-                    form: EMPTY_PROSPECTO,
-                    formCliente: EMPTY_CLIENTE,
-                    formContacto: EMPTY_CONTACTO
                 })
                 swal({
                     title: '¡Listo!',
@@ -490,9 +491,6 @@ class Leads extends Component{
                     ... this.state,
                     modalDelete: false,
                     title: '',
-                    form: EMPTY_PROSPECTO,
-                    formCliente: EMPTY_CLIENTE,
-                    formContacto: EMPTY_CONTACTO,
                     prospecto: ''
                 })
                 swal({
@@ -543,13 +541,13 @@ class Leads extends Component{
                 this.setClientes(clientes)
                 this.setTipos(tiposContactos,'tiposContactos')
                 this.setProspectos(prospectos)
+                this.clearForm('form', EMPTY_PROSPECTO)
+                this.clearForm('formCliente', EMPTY_CLIENTE)
+                this.clearForm('formContacto', EMPTY_CONTACTO)
                 this.setState({
                     ... this.state,
                     modal: false,
                     title: '',
-                    form: EMPTY_PROSPECTO,
-                    formCliente: EMPTY_CLIENTE,
-                    formContacto: EMPTY_CONTACTO
                 })
                 swal({
                     title: '¡Listo!',
@@ -595,13 +593,11 @@ class Leads extends Component{
                 const { prospectos, tiposContactos } = response.data
                 this.setTipos(tiposContactos,'tiposContactos')
                 this.setProspectos(prospectos)
+                this.clearForm('formContacto', EMPTY_CONTACTO)
                 this.setState({
                     ... this.state,
                     modalContactForm: false,
                     prospecto: '',
-                    form: EMPTY_PROSPECTO,
-                    formCliente: EMPTY_CLIENTE,
-                    formContacto: EMPTY_CONTACTO
                 })
                 swal({
                     title: '¡Listo!',
@@ -819,7 +815,7 @@ class Leads extends Component{
                         <Subtitle className="mb-3">
                             Agregar un nuevo contacto
                         </Subtitle>
-                        <ContactoLeadForm tiposContactos = { tiposContactos } form = { formContacto } onChange = { this.onChangeContacto } />
+                        <ContactoLeadForm tiposContactos = { tiposContactos } formContacto = { formContacto } onChangeContacto = { this.onChangeContacto } />
                         <div className="mt-3 text-center">
                             <Button icon='' className="mx-auto" type="submit" text="Enviar" />
                         </div>

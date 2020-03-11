@@ -8,11 +8,7 @@ import swal from 'sweetalert'
 import { ContactoLeadForm, ClienteForm } from '../forms'
 class ProspectoForm extends Component{
 
-    constructor(props){
-        super(props)
-        
-    }
-    
+ 
     state = {
         newClient: false,
         newEstatusProspectos: false,
@@ -222,7 +218,7 @@ class ProspectoForm extends Component{
                                 </Subtitle>
                             </div>
                             <div className="col-md-12 p-0">
-                                <ContactoLeadForm tiposContactos = { tiposContactos } form = { formContacto } onChange = { onChangeContacto } />
+                                <ContactoLeadForm tiposContactos = { tiposContactos } formContacto = { formContacto } onChangeContacto = { onChangeContacto } />
                             </div>
                         </>
                     }

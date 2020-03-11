@@ -13,7 +13,6 @@ class ClienteForm extends Component{
     render(){
 
         const { title, form, onChange, changeCP, estado, municipio, colonias, updateColonia } = this.props
-        console.log(this.props, 'CLIENTE FORM')
         return(
             <>
                 <div className="col-md-12">

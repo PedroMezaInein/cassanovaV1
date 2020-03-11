@@ -6,9 +6,10 @@ class ContactoLeadForm extends Component{
     state = {
         newTipoContacto: false
     }
+
     updateTipoContacto = value => {
-        const { onChange } = this.props
-        onChange({target:{name:'tipoContacto', value: value.value}})
+        const { onChangeContacto } = this.props
+        onChangeContacto( { target: { name: 'tipoContacto', value: value.value } } )
         if( value.value === 'New' ){
             this.setState({
                 newTipoContacto: true
@@ -21,37 +22,40 @@ class ContactoLeadForm extends Component{
     }
 
     handleChangeDate = (date) =>{
-        const { onChange }  = this.props
-        onChange( { target: { name: 'fechaContacto', value: date } } )
+        const { onChangeContacto }  = this.props
+        onChangeContacto( { target: { name: 'fechaContacto', value: date } } )
     }
 
     render(){
-        const { tiposContactos, form, onChange } = this.props
+        const { tiposContactos, formContacto, onChangeContacto } = this.props
         const { newTipoContacto } = this.state
         return(
             <div className="row mx-0">
                 <div className="col-md-4 px-2">
-                    { tiposContactos && 
-                        <SelectSearch options={tiposContactos} 
+                    
+                        <SelectSearch 
+                            options={tiposContactos} 
                             placeholder = "Selecciona el medio de contacto" 
                             name = "tipoContacto" 
-                            value = { form.tipoContacto } 
+                            value = { formContacto.tipoContacto } 
+                            /* defaultValue = { formContacto.tipoContacto }  */
                             onChange = { this.updateTipoContacto }
                             />
-                    } 
+                        
+                    
                 </div>
                 <div className="col-md-4 px-2">
                     <Calendar 
                         onChangeCalendar = { this.handleChangeDate }
                         placeholder = "Fecha de contacto"
                         name = "fechaContacto"
-                        value = { form.fechaContacto }
+                        value = { formContacto.fechaContacto }
                         />
                 </div>
                 <div className="col-md-4 px-2">
                     <RadioGroup
                         name = { 'success' }
-                        onChange = { onChange }
+                        onChange = { onChangeContacto }
                         options = {
                             [
                                 {
@@ -65,17 +69,17 @@ class ContactoLeadForm extends Component{
                             ]
                         }
                         placeholder = { ' Selecciona el estatus del intento de contacto ' }
-                        value = { form.success }
+                        value = { formContacto.success }
                         />
                 </div>
                 {
                     newTipoContacto &&
                         <div className="col-md-4 px-2">
                             <Input 
-                                onChange={ onChange } 
+                                onChange={ onChangeContacto } 
                                 name="newTipoContacto" 
                                 type="text" 
-                                value={ form.newTipoContacto } 
+                                value={ formContacto.newTipoContacto } 
                                 placeholder="Nuevo tipo de contacto"/>
                         </div>
                 }
@@ -84,8 +88,8 @@ class ContactoLeadForm extends Component{
                         as = 'textarea'
                         name = 'descripcion'
                         placeholder = 'Descripción del contacto'
-                        onChange = { onChange }
-                        value = { form.descripcion }
+                        onChange = { onChangeContacto }
+                        value = { formContacto.descripcion }
                         rows = '3'
                         />
                 </div>
