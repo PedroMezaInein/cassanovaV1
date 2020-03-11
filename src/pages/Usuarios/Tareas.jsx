@@ -14,7 +14,12 @@ class Tareas extends Component{
 
     state = {
         columns:[],
-        user : ''
+        user : '',
+        activeKey: '',
+        form:{
+            titulo: '',
+            grupo: ''
+        }
     }
 
     componentDidMount(){
@@ -68,9 +73,30 @@ class Tareas extends Component{
 
     // Handle Buttons
 
+    handleAccordion = activeKey => {
+        const { form } = this.state
+        form['titulo'] = '';
+        this.setState({
+            ... this.state,
+            activeKey: activeKey,
+            form
+        })
+    }
+
     // Handle add Button
-    handleAddButton = id => {
-        
+    submitAdd = () => {
+        const { form } = this.state
+        this.addTaskAxios();
+    }
+
+    onChange = event => {
+        const { name, value } = event.target
+        const { form } = this.state
+        form[name] = value
+        this.setState({
+            ... this.state,
+            form
+        })
     }
 
     // Axios
@@ -82,6 +108,52 @@ class Tareas extends Component{
                 const { data : { user : user } } = response
                 this.setState({
                     user: user
+                })
+                this.setTareas(columns)
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    })
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
+        })
+    }
+
+    async addTaskAxios(){
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        await axios.post(URL_DEV + 'user/tareas', form, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
+            (response) => {
+                const { data : { tareas : columns } } = response
+                const { data : { user : user } } = response
+                const { form } = this.state
+                form['titulo'] = ''
+                form['grupo'] = ''
+                this.setState({
+                    ... this.state,
+                    user: user,
+                    form,
+                    activeKey: ''
                 })
                 this.setTareas(columns)
             },
@@ -153,7 +225,7 @@ class Tareas extends Component{
     }
 
     render(){
-        const { columns, user } = this.state
+        const { columns, user, form, activeKey } = this.state
         return(
             <Layout active={'usuarios'} { ...this.props}>
                 <DragDropContext onDragEnd={this.onDragEnd}>
@@ -162,7 +234,8 @@ class Tareas extends Component{
                             columns.map((column) => {
                                 return(
                                     <div key={column.id} className="col-md-6 col-lg-3 px-3">
-                                        <Column handleAddButton={this.handleAddButton} column={column} id={user.id} tareas={column.tareas} />
+                                        <Column form={ form } submit = { this.submitAdd } onChange = { this.onChange } column = { column }
+                                            id = { user.id } tareas = { column.tareas } activeKey = {activeKey} handleAccordion = {this.handleAccordion} />
                                     </div>
                                 )
                                 

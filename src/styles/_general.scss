@@ -25,6 +25,31 @@ $l-blue-40: #c7d0df40;
 $l-blue-60: #c7d0df60;
 $l-blue-80: #c7d0df80;
 
+$white-bone: #fdfdfd;
+$white-l-blue: #f9fafc;
+$white-blue: #f2f5f9;
+$white-dark-blue: #eceff5;
+$white-gold: #f8f6f1;
+
+$d-white-bone: #F8F8F9;
+$d-white-l-blue: #eaedf3;
+$d-white-blue: #cbd8e8;
+$d-white-dark-blue: #b4c1d7;
+$d-white-gold: #e3ddc9;
+
+$black-bone: #161616;
+$black-l-blue: #131315;
+$black-blue: #0B0E12;
+$black-dark-blue: #05080E;
+$black-gold: #110F0A;
+
+$l-black-bone: #565757;
+$l-black-l-blue: #494c52;
+$l-black-blue: #293747;
+$l-black-dark-blue: #132036;
+$l-black-gold: #423b28;
+
+
 // Fuentes
 @font-face {
     font-family: 'Oswaldo';
@@ -50,4 +75,170 @@ body{
         max-width: 100vw;
     }
     border-bottom: 1px solid transparent;
+}
+
+.background{
+    &__bone{
+        background-color: $bone;
+    }
+    &__l-blue{
+        background-color: $l-blue;
+    }
+    &__blue{
+        background-color: $blue;
+    }
+    &__dark-blue{
+        background-color: $dark-blue;
+    }
+    &__gold{
+        background-color: $gold;
+    }
+
+    &__white-bone{
+        background-color: $white-bone;
+    }
+    &__white-l-blue{
+        background-color: $white-l-blue;
+    }
+    &__white-blue{
+        background-color: $white-blue;
+    }
+    &__white-dark-blue{
+        background-color: $white-dark-blue;
+    }
+    &__white-gold{
+        background-color: $white-gold;
+    }
+
+    &__d-white-bone{
+        background-color: $d-white-bone;
+    }
+    &__d-white-l-blue{
+        background-color: $d-white-l-blue;
+    }
+    &__d-white-blue{
+        background-color: $d-white-blue;
+    }
+    &__d-white-dark-blue{
+        background-color: $d-white-dark-blue;
+    }
+    &__d-white-gold{
+        background-color: $d-white-gold;
+    }
+
+    &__black-bone{
+        background-color: $black-bone;
+    }
+    &__black-l-blue{
+        background-color: $black-l-blue;
+    }
+    &__black-blue{
+        background-color: $black-blue;
+    }
+    &__black-dark-blue{
+        background-color: $black-dark-blue;
+    }
+    &__black-gold{
+        background-color: $black-gold;
+    }
+
+    &__l-black-bone{
+        background-color: $l-black-bone;
+    }
+    &__l-black-l-blue{
+        background-color: $l-black-l-blue;
+    }
+    &__l-black-blue{
+        background-color: $l-black-blue;
+    }
+    &__l-black-dark-blue{
+        background-color: $l-black-dark-blue;
+    }
+    &__l-black-gold{
+        background-color: $l-black-gold;
+    }
+}
+
+
+.border{
+
+    &__bone{
+        border: solid 1px $bone;
+    }
+    &__l-blue{
+        border: solid 1px $l-blue;
+    }
+    &__blue{
+        border: solid 1px $blue;
+    }
+    &__dark-blue{
+        border: solid 1px $dark-blue;
+    }
+    &__gold{
+        border: solid 1px $gold;
+    }
+
+    &__white-bone{
+        border: solid 1px $white-bone;
+    }
+    &__white-l-blue{
+        border: solid 1px $white-l-blue;
+    }
+    &__white-blue{
+        border: solid 1px $white-blue;
+    }
+    &__white-dark-blue{
+        border: solid 1px $white-dark-blue;
+    }
+    &__white-gold{
+        border: solid 1px $white-gold;
+    }
+
+    &__d-white-bone{
+        border: solid 1px $d-white-bone;
+    }
+    &__d-white-l-blue{
+        border: solid 1px $d-white-l-blue;
+    }
+    &__d-white-blue{
+        border: solid 1px $d-white-blue;
+    }
+    &__d-white-dark-blue{
+        border: solid 1px $d-white-dark-blue;
+    }
+    &__d-white-gold{
+        border: solid 1px $d-white-gold;
+    }
+
+    &__black-bone{
+        border: solid 1px $black-bone;
+    }
+    &__black-l-blue{
+        border: solid 1px $black-l-blue;
+    }
+    &__black-blue{
+        border: solid 1px $black-blue;
+    }
+    &__black-dark-blue{
+        border: solid 1px $black-dark-blue;
+    }
+    &__black-gold{
+        border: solid 1px $black-gold;
+    }
+
+    &__l-black-bone{
+        border: solid 1px $l-black-bone;
+    }
+    &__l-black-l-blue{
+        border: solid 1px $l-black-l-blue;
+    }
+    &__l-black-blue{
+        border: solid 1px $l-black-blue;
+    }
+    &__l-black-dark-blue{
+        border: solid 1px $l-black-dark-blue;
+    }
+    &__l-black-gold{
+        border: solid 1px $l-black-gold;
+    }
 }

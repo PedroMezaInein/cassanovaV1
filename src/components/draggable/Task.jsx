@@ -3,6 +3,8 @@ import { P, Subtitle } from '../texts'
 import { Draggable } from 'react-beautiful-dnd'
 import { Button } from '../form-components'
 import { faEdit, faTrash, faPlus, faEye } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { GOLD } from '../../constants'
 
 class Task extends Component{
 
@@ -27,15 +29,13 @@ class Task extends Component{
                         { ...provided.draggableProps} 
                         { ...provided.dragHandleProps}
                         ref={provided.innerRef}
-                        className="border p-2 my-3 mx-1"
+                        className="background__white-bone tarea px-3 py-2 my-3 d-flex justify-content-around align-items-center"
+                        
                         >
-                        <P className="mb-0 mt-2 text-center w-100">
+                        <P className="my-1 text-left w-100">
                             {tarea.titulo}
                         </P>
-                        <div className=" d-flex justify-content-around mt-2 align-items-center">
-                            <Button text='' icon={faTrash} color="red" onClick={this.handleClick}/>
-                            <Button text='' icon={faEye} color="transparent" onClick={this.handleClick}/>
-                        </div>
+                        <FontAwesomeIcon icon={faEye} color={GOLD} onClick = { (e) => { e.preventDefault(); console.log('click')} }/>
                     </div>
                 )}
                 

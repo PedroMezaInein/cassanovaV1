@@ -1,0 +1,12 @@
+.column{
+    border-radius: 20px;
+    &__task{
+        label{
+            display: none;
+        }
+    }
+}
+
+.tarea{
+    border-radius: 5px;
+}

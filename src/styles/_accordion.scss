@@ -1,0 +1,7 @@
+.accordion{
+    &__toggler{
+        &:hover{
+            cursor: pointer;
+        }
+    }
+}
