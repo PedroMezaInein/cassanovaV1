@@ -2,11 +2,17 @@ import React, { Component } from 'react'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import { URL_DEV, URL_ASSETS } from '../../constants'
+import { URL_DEV, URL_ASSETS, DARK_BLUE, GOLD } from '../../constants'
 import { Column } from '../../components/draggable'
 import { DragDropContext } from 'react-beautiful-dnd'
 import { Modal } from '../../components/singles'
 import swal from 'sweetalert'
+import { Subtitle, P, Small } from '../../components/texts'
+import { TareaForm } from '../../components/forms'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faComments, faCheck } from '@fortawesome/free-solid-svg-icons'
+import Input from '../../components/form-components/Input'
+
 class Tareas extends Component{
     constructor(props){
         super(props)
@@ -19,7 +25,10 @@ class Tareas extends Component{
         form:{
             titulo: '',
             grupo: ''
-        }
+        },
+        tarea: '',
+        modal: false,
+        comentario: '',
     }
 
     componentDidMount(){
@@ -33,6 +42,23 @@ class Tareas extends Component{
         if(!tareas)
             history.push('/')
         this.getTareasAxios()
+    }
+
+    // Modals
+    handleCloseModal = () => {
+        this.setState({
+            ... this.state,
+            modal: !this.state.modal,
+            tarea: ''
+        })
+    }
+
+    handleClickTask = tarea => {
+        this.setState({
+            ... this.state,
+            tarea: tarea,
+            modal: true
+        })
     }
 
     // Sets
@@ -96,6 +122,14 @@ class Tareas extends Component{
         this.setState({
             ... this.state,
             form
+        })
+    }
+
+    onChangeComentario = (e) => {
+        const { value } = e.target
+        this.setState({
+            ... this.state,
+            comentario: value
         })
     }
 
@@ -185,6 +219,52 @@ class Tareas extends Component{
         })
     }
 
+    addComentario = () => {
+        this.addComentarioAxios()
+    }
+
+    async addComentarioAxios(){
+        const { access_token } = this.props.authUser
+        const { comentario, tarea } = this.state
+        await axios.put(URL_DEV + 'user/tareas/'+tarea.id+'/comentario', {comentario: comentario}, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
+            (response) => {
+                const { data : { tareas : columns } } = response
+                const { data : { user : user } } = response
+                this.setState({
+                    ... this.state,
+                    user: user,
+                    comentario: '',
+                })
+                this.setTareas(columns)
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    })
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
+        })
+    }
+
     async reordeingTasksAxios(source, destination, task){
         const { access_token } = this.props.authUser
         await axios.put(URL_DEV + 'user/tareas/order', {source, destination, task}, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
@@ -225,7 +305,7 @@ class Tareas extends Component{
     }
 
     render(){
-        const { columns, user, form, activeKey } = this.state
+        const { columns, user, form, activeKey, modal, tarea, comentario } = this.state
         return(
             <Layout active={'usuarios'} { ...this.props}>
                 <DragDropContext onDragEnd={this.onDragEnd}>
@@ -234,8 +314,8 @@ class Tareas extends Component{
                             columns.map((column) => {
                                 return(
                                     <div key={column.id} className="col-md-6 col-lg-3 px-3">
-                                        <Column form={ form } submit = { this.submitAdd } onChange = { this.onChange } column = { column }
-                                            id = { user.id } tareas = { column.tareas } activeKey = {activeKey} handleAccordion = {this.handleAccordion} />
+                                        <Column form={ form } submit = { this.submitAdd } onChange = { this.onChange } column = { column } clickTask = { this.handleClickTask }
+                                            id = { user.id } tareas = { column.tareas } activeKey = {activeKey} handleAccordion = {this.handleAccordion}  />
                                     </div>
                                 )
                                 
@@ -243,9 +323,49 @@ class Tareas extends Component{
                         }
                     </div>
                 </DragDropContext>
-                <Modal>
-                    
+                <Modal show = { modal } handleClose = { this.handleCloseModal } >
+                    <TareaForm user = { user } form = { tarea } />
+                    <div className="d-flex align-items-center px-3 py-2">
+                        <FontAwesomeIcon icon = { faComments } color = { GOLD } className = " mr-4 " />
+                        <P className="w-100" color="dark-blue">
+                            <hr />
+                        </P>
+                    </div>
+                    <div className="d-flex px-3 py-2 no-label ">
+                        <Small className="mr-2" color="gold">
+                            { user.name }
+                        </Small>
+                        <div className="mr-2 w-100" >
+                            <Input placeholder = 'Comentario' value = { comentario } onChange = {this.onChangeComentario} name = 'comentario' as="textarea" rows="3"/>
+                        </div>
+                        
+                        <FontAwesomeIcon color={GOLD} icon = {faCheck} onClick = { this.addComentario } />
+                    </div>
+                    {   tarea && 
+                        <div className="px-5 my-2">
+                            {
+                                tarea.comentarios.length > 0 &&
+                                    tarea.comentarios.map((comentario, key) => {
+                                        return(
+                                            <P className="p-3 background__white-blue">
+                                                {
+                                                    comentario.comentario
+                                                }
+                                                <br />
+                                                <div className="text-right">
+                                                    <Small className="ml-auto text-right" color="gold">
+                                                        { comentario.user.name }
+                                                    </Small>
+                                                </div>
+                                                
+                                            </P>
+                                        )
+                                    })
+                            }
+                        </div>
+                    }
                 </Modal>
+                
             </Layout>
         )
     }

@@ -103,3 +103,9 @@
 .select-search.is-disabled {
     opacity: 0.5;
 }
+
+.no-label{
+    label{
+        display: none;
+    }
+}

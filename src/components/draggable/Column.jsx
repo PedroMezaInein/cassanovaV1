@@ -21,7 +21,7 @@ class Column extends Component{
     }
 
     render(){
-        const { column, id, form, onChange, activeKey, handleAccordion } = this.props
+        const { column, id, form, onChange, activeKey, handleAccordion, clickTask } = this.props
         return(
             <div className="column background__d-white-bone  my-3 px-4 py-3">
                 
@@ -39,7 +39,7 @@ class Column extends Component{
                                 { ...provided.droppableProps}>
                                 {
                                     column.tareas.map((tarea, index) => 
-                                        <Task id={id} key={tarea.id} tarea={tarea} index={index} />
+                                        <Task id={id} key={tarea.id} tarea={tarea} index={index} clickTask = {clickTask} />
                                     )
                                 }
                                 {provided.placeholder}

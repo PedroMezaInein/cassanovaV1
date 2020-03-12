@@ -12,7 +12,7 @@ class Task extends Component{
         alert('pushado')
     }
     render(){
-        const { tarea, index, id } = this.props
+        const { tarea, index, id, clickTask } = this.props
         let new_index = index
         if(tarea){
             new_index = tarea.index
@@ -35,7 +35,7 @@ class Task extends Component{
                         <P className="my-1 text-left w-100">
                             {tarea.titulo}
                         </P>
-                        <FontAwesomeIcon icon={faEye} color={GOLD} onClick = { (e) => { e.preventDefault(); console.log('click')} }/>
+                        <FontAwesomeIcon icon={faEye} color={GOLD} onClick = { (e) => { e.preventDefault(); clickTask(tarea)} }/>
                     </div>
                 )}
                 
