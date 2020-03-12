@@ -22,11 +22,15 @@ class Tareas extends Component{
     state = {
         columns:[],
         user : '',
+        users: '',
         activeKey: '',
         form:{
             titulo: '',
-            grupo: ''
+            grupo: '',
+            participantes: []
         },
+        participantes: [],
+        participantesTask: [],
         tarea: '',
         modal: false,
         comentario: '',
@@ -50,11 +54,12 @@ class Tareas extends Component{
         var then = new Date(comentario.created_at);
 
         var diff = moment.duration(moment(now).diff(moment(then)));
-        console.log('Diff', diff)
+        
         var months = parseInt(diff.asMonths());
         var days = parseInt(diff.asDays());
         var hours = parseInt(diff.asHours());
         var minutes = parseInt(diff.asMinutes());
+
         if(months)
         {
             if(months === 1)
@@ -103,14 +108,73 @@ class Tareas extends Component{
     }
 
     handleClickTask = tarea => {
+    
+        const { users } = this.state
+
+        let aux = []
+        tarea.participantes.map( ( participante, key ) => {
+            aux.push( {name: participante.name, value:participante.email, identificador: participante.id} )
+        })
+
+        let _aux = []
+        users.map( ( participante, key ) => {
+            _aux.push( {name: participante.name, value:participante.email, identificador: participante.id} )
+        })
+
+        let _index = []
+        
+        _aux.map((element, index) => {
+            let validador = false
+            aux.map((_element, key) => {
+                if(element.identificador === _element.identificador)
+                    validador = true
+            })
+            if(!validador)
+                _index.push(element)
+        })
+
         this.setState({
             ... this.state,
             tarea: tarea,
-            modal: true
+            modal: true,
+            participantesTask: aux,
+            participantes: _index
         })
     }
 
     // Sets
+
+    setOptions = tarea => {
+        const { users } = this.state
+
+        let aux = []
+        tarea.participantes.map( ( participante, key ) => {
+            aux.push( {name: participante.name, value:participante.email, identificador: participante.id} )
+        })
+
+        let _aux = []
+        users.map( ( participante, key ) => {
+            _aux.push( {name: participante.name, value:participante.email, identificador: participante.id} )
+        })
+
+        let _index = []
+        
+        _aux.map((element, index) => {
+            let validador = false
+            aux.map((_element, key) => {
+                if(element.identificador === _element.identificador)
+                    validador = true
+            })
+            if(!validador)
+                _index.push(element)
+        })
+
+        this.setState({
+            ... this.state,
+            participantesTask: aux,
+            participantes: _index
+        })
+    }
 
     setTareas = columns => {
         this.setState({
@@ -182,6 +246,14 @@ class Tareas extends Component{
         })
     }
 
+    onChangeParticipantes = (value) => {
+        const { tarea: { id: id } } = this.state
+        this.addParticipanteAxios(id, value.identificador);
+    }
+
+    deleteParticipante = value => {
+        this.deleteParticipanteAxios(value);
+    }
     // Axios
     async getTareasAxios(){
         const { access_token } = this.props.authUser
@@ -189,8 +261,11 @@ class Tareas extends Component{
             (response) => {
                 const { data : { tareas : columns } } = response
                 const { data : { user : user } } = response
+                const { data : { users : users } } = response
                 this.setState({
-                    user: user
+                    ... this.state,
+                    user: user,
+                    users: users
                 })
                 this.setTareas(columns)
             },
@@ -318,6 +393,97 @@ class Tareas extends Component{
         })
     }
 
+    async deleteParticipanteAxios(id_user){
+        const { access_token } = this.props.authUser
+        const { tarea: { id: id } } = this.state
+        await axios.delete(URL_DEV + `user/tareas/${id}/participante/${id_user}`, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
+            (response) => {
+                const { data : { tareas : columns } } = response
+                const { data : { user : user } } = response
+                const { data : { users : users } } = response
+                const { data : { tarea : tarea } } = response
+                this.setState({
+                    user: user
+                })
+                this.setTareas(columns)
+                this.setOptions(tarea)
+                if( user.id === id_user){
+                    this.setState({
+                        modal: false,
+                        tarea: ''
+                    })
+                }
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    })
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
+        })
+    }
+
+    async addParticipanteAxios(tarea_id, user_id){
+        const { access_token } = this.props.authUser
+        await axios.put(URL_DEV + `user/tareas/${tarea_id}/participante/${user_id}`, {}, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
+            (response) => {
+                const { data : { tareas : columns } } = response
+                const { data : { user : user } } = response
+                const { data : { users : users } } = response
+                const { data : { tarea : tarea } } = response
+                this.setState({
+                    user: user
+                })
+                this.setTareas(columns)
+                this.setOptions(tarea)
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    })
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
+        })
+    }
+
     async reordeingTasksAxios(source, destination, task){
         const { access_token } = this.props.authUser
         await axios.put(URL_DEV + 'user/tareas/order', {source, destination, task}, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
@@ -358,7 +524,7 @@ class Tareas extends Component{
     }
 
     render(){
-        const { columns, user, form, activeKey, modal, tarea, comentario } = this.state
+        const { columns, user, form, activeKey, modal, tarea, comentario, users, participantesTask, participantes } = this.state
         return(
             <Layout active={'usuarios'} { ...this.props}>
                 <DragDropContext onDragEnd={this.onDragEnd}>
@@ -377,26 +543,30 @@ class Tareas extends Component{
                     </div>
                 </DragDropContext>
                 <Modal show = { modal } handleClose = { this.handleCloseModal } >
-                    <TareaForm user = { user } form = { tarea } />
-                    <div className="d-flex align-items-center px-3 py-2">
+                    <TareaForm participantes = { participantes } user = { user } form = { tarea } update = { this.onChangeParticipantes } 
+                        participantesTask = { participantesTask } deleteParticipante = { this.deleteParticipante }  />
+                    <div className="d-flex align-items-center px-3 py-2 flex-column-reverse flex-md-row ">
                         <FontAwesomeIcon icon = { faComments } color = { GOLD } className = " mr-4 " />
                         <P className="w-100" color="dark-blue">
                             <hr />
                         </P>
                     </div>
-                    <div className="d-flex px-3 py-2 no-label ">
-                        <div>
-                            <Small className="mr-2" color="gold">
+                    <div className="d-flex px-3 py-2 no-label flex-column flex-md-row">
+                        <div className='mb-2 mb-md-0'>
+                            <Small className="mr-2 " color="gold">
                                 { user.name }
                             </Small>
                         </div>
-                        <div className="mr-2 w-100" >
-                            <Input placeholder = 'Comentario' value = { comentario } onChange = {this.onChangeComentario} name = 'comentario' as="textarea" rows="3"/>
+                        <div className="mr-2 w-100 d-flex" >
+                            <div className="w-100">
+                                <Input placeholder = 'Comentario' value = { comentario } onChange = {this.onChangeComentario} name = 'comentario' as="textarea" rows="3" />
+                            </div>
+                            <FontAwesomeIcon color={GOLD} icon = {faCheck} onClick = { this.addComentario } className ='ml-2'/>
                         </div>
-                        <FontAwesomeIcon color={GOLD} icon = {faCheck} onClick = { this.addComentario } />
+                        
                     </div>
                     {   tarea && 
-                        <div className="px-5 my-2">
+                        <div className="px-md-5 my-2">
                             {
                                 tarea.comentarios.length > 0 &&
                                     tarea.comentarios.map((comentario, key) => {

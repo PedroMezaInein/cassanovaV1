@@ -57,7 +57,11 @@
         width: 100%;
         padding: 0.4rem;
     }
+    select{
+        display: none;
+    }
     &__select{
+        height: auto!important;
         &:not(.select-search__select--display){
             display: none;
         }
@@ -86,6 +90,9 @@
         &:hover{
             background-color: #fafafa!important;
         }
+        &--selected{
+            background-color: $white-dark-blue;
+        }
     }
     &__row{
         &:not(:first-child) {
@@ -107,5 +114,14 @@
 .no-label{
     label{
         display: none;
+    }
+}
+
+.button-hover{
+    width: 0.7rem;
+    transition: all 0.5s;
+    &:hover{
+        cursor: pointer;
+        width: 1rem;
     }
 }
