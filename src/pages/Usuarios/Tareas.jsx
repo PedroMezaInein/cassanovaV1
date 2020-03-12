@@ -7,11 +7,12 @@ import { Column } from '../../components/draggable'
 import { DragDropContext } from 'react-beautiful-dnd'
 import { Modal } from '../../components/singles'
 import swal from 'sweetalert'
-import { Subtitle, P, Small } from '../../components/texts'
+import { Subtitle, P, Small, B } from '../../components/texts'
 import { TareaForm } from '../../components/forms'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComments, faCheck } from '@fortawesome/free-solid-svg-icons'
 import Input from '../../components/form-components/Input'
+import moment from 'moment'
 
 class Tareas extends Component{
     constructor(props){
@@ -42,6 +43,54 @@ class Tareas extends Component{
         if(!tareas)
             history.push('/')
         this.getTareasAxios()
+    }
+
+    diffCommentDate = ( comentario ) => {
+        var now  = new Date();
+        var then = new Date(comentario.created_at);
+
+        var diff = moment.duration(moment(now).diff(moment(then)));
+        console.log('Diff', diff)
+        var months = parseInt(diff.asMonths());
+        var days = parseInt(diff.asDays());
+        var hours = parseInt(diff.asHours());
+        var minutes = parseInt(diff.asMinutes());
+        if(months)
+        {
+            if(months === 1)
+                return 'Hace un mes'
+            else
+                return `Hace ${months} meses`
+        }
+        else{
+            if(days){
+                if(days === 1)
+                    return 'Hace un día'
+                else
+                    return `Hace ${days} días`
+            }
+            else{
+                if(hours){
+                    if(hours === 1)
+                        return 'Hace una hora'
+                    else
+                        return `Hace ${hours} horas`
+                }
+                else{
+                    if(minutes){
+                        if(minutes === 1)
+                            return 'Hace un minuto'
+                        else
+                            return `Hace ${minutes} minutos`
+                    }
+                    else{
+                        return 'Hace un momento'
+                    }   
+                }
+            }
+        }
+        hours = hours - days*24;
+        minutes = minutes - (days*24*60 + hours*60);
     }
 
     // Modals
@@ -220,7 +269,9 @@ class Tareas extends Component{
     }
 
     addComentario = () => {
-        this.addComentarioAxios()
+        const { comentario } = this.state
+        if(comentario !== '')
+            this.addComentarioAxios()
     }
 
     async addComentarioAxios(){
@@ -230,10 +281,12 @@ class Tareas extends Component{
             (response) => {
                 const { data : { tareas : columns } } = response
                 const { data : { user : user } } = response
+                const { data : { tarea : tarea } } = response
                 this.setState({
                     ... this.state,
                     user: user,
                     comentario: '',
+                    tarea: tarea
                 })
                 this.setTareas(columns)
             },
@@ -332,13 +385,14 @@ class Tareas extends Component{
                         </P>
                     </div>
                     <div className="d-flex px-3 py-2 no-label ">
-                        <Small className="mr-2" color="gold">
-                            { user.name }
-                        </Small>
+                        <div>
+                            <Small className="mr-2" color="gold">
+                                { user.name }
+                            </Small>
+                        </div>
                         <div className="mr-2 w-100" >
                             <Input placeholder = 'Comentario' value = { comentario } onChange = {this.onChangeComentario} name = 'comentario' as="textarea" rows="3"/>
                         </div>
-                        
                         <FontAwesomeIcon color={GOLD} icon = {faCheck} onClick = { this.addComentario } />
                     </div>
                     {   tarea && 
@@ -347,18 +401,21 @@ class Tareas extends Component{
                                 tarea.comentarios.length > 0 &&
                                     tarea.comentarios.map((comentario, key) => {
                                         return(
-                                            <P className="p-3 background__white-blue">
+                                            <div  key={key} className="px-3 py-2 mb-4 background__white-blue">
+                                                <B className="mr-2" color="gold">{ comentario.user.name }: </B>
                                                 {
                                                     comentario.comentario
                                                 }
                                                 <br />
                                                 <div className="text-right">
-                                                    <Small className="ml-auto text-right" color="gold">
-                                                        { comentario.user.name }
+                                                    <Small className="ml-2" color="dark-blue">
+                                                        {
+                                                            this.diffCommentDate(comentario)
+                                                        }
                                                     </Small>
                                                 </div>
                                                 
-                                            </P>
+                                            </div>
                                         )
                                     })
                             }
