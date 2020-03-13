@@ -49,6 +49,18 @@ class Tareas extends Component{
         this.getTareasAxios()
     }
 
+    diffDate = date => {
+        var now  = new Date();
+        var then = new Date(date);
+
+        var diff = moment.duration(moment(now).diff(moment(then)));
+        
+        var days = parseInt(diff.asDays());
+
+        return days
+
+    }
+
     diffCommentDate = ( comentario ) => {
         var now  = new Date();
         var then = new Date(comentario.created_at);
@@ -102,8 +114,7 @@ class Tareas extends Component{
                 }
             }
         }
-        hours = hours - days*24;
-        minutes = minutes - (days*24*60 + hours*60);
+    
     }
 
     // Modals
