@@ -242,3 +242,7 @@ body{
         border: solid 1px $l-black-gold;
     }
 }
+
+.transition-all{
+    transition: all 0.5s;
+}

@@ -49,18 +49,6 @@ class Tareas extends Component{
         this.getTareasAxios()
     }
 
-    diffDate = date => {
-        var now  = new Date();
-        var then = new Date(date);
-
-        var diff = moment.duration(moment(now).diff(moment(then)));
-        
-        var days = parseInt(diff.asDays());
-
-        return days
-
-    }
-
     diffCommentDate = ( comentario ) => {
         var now  = new Date();
         var then = new Date(comentario.created_at);
@@ -554,6 +542,93 @@ class Tareas extends Component{
         })
     }
 
+    deleteTarea = (id) => {
+        this.deleteTareaAxios(id)
+    }
+
+    endTarea = (id) => {
+        this.endTareaAxios(id)
+    }
+
+    async deleteTareaAxios(id){
+        const { access_token } = this.props.authUser
+        await axios.delete(URL_DEV + 'user/tareas/' + id, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
+            (response) => {
+                const { data : { tareas : columns } } = response
+                this.setTareas(columns)
+                this.setState({
+                    ... this.state,
+                    modal: false,
+                    tarea: ''
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    })
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
+        })
+    }
+    async endTareaAxios(id){
+        const { access_token } = this.props.authUser
+        await axios.put(URL_DEV + 'user/tareas/' + id + '/end', {}, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
+            (response) => {
+                const { data : { tareas : columns } } = response
+                this.setTareas(columns)
+                this.setState({
+                    ... this.state,
+                    modal: false,
+                    tarea: ''
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    })
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
+        })
+    }
+
     async reordeingTasksAxios(source, destination, task){
         const { access_token } = this.props.authUser
         await axios.put(URL_DEV + 'user/tareas/order', {source, destination, task}, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
@@ -615,7 +690,9 @@ class Tareas extends Component{
                 <Modal show = { modal } handleClose = { this.handleCloseModal } >
                     <TareaForm participantes = { participantes } user = { user } form = { tarea } update = { this.onChangeParticipantes } 
                         participantesTask = { participantesTask } deleteParticipante = { this.deleteParticipante } 
-                        changeValue = { this.changeValue } changeValueSend = { this.changeValueSend  } />
+                        changeValue = { this.changeValue } changeValueSend = { this.changeValueSend  } 
+                        deleteTarea = { this.deleteTarea } endTarea = { (value) => this.endTareaAxios(value) }
+                        />
                     <div className="d-flex align-items-center px-3 py-2 flex-column-reverse flex-md-row ">
                         <FontAwesomeIcon icon = { faComments } color = { GOLD } className = " mr-4 " />
                         <P className="w-100" color="dark-blue">

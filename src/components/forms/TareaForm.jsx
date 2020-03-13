@@ -1,16 +1,19 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { Input, SelectSearch } from '../form-components'
+import { Input, SelectSearch, Button } from '../form-components'
 import { Badge } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faTimes, faTrashAlt, faCheck, faTrash, faCalendarCheck } from '@fortawesome/free-solid-svg-icons'
 import Calendar from '../form-components/Calendar'
+import { Small } from '../texts'
+import { GOLD, DARK_BLUE } from '../../constants'
 
 class TareaForm extends Component{
 
 
     state = {
-        part: []
+        activeEnd: '',
+        activeDelete: ''
     }
 
     updateParticipantes = value => {
@@ -24,16 +27,79 @@ class TareaForm extends Component{
         changeValueSend( { target: { name: 'fecha_limite', value: date } } )
     }
 
+    onClickEnd = () => {
+        const { activeEnd } = this.state
+        if(activeEnd === ''){
+            this.setState({
+                activeEnd: 'active',
+                activeDelete: ''
+            })
+        }else{
+            this.setState({
+                activeEnd: '',
+                activeDelete: ''
+            })
+        }
+    }
+
+    onClickDelete = () => {
+        const { activeDelete } = this.state
+        if(activeDelete === ''){
+            this.setState({
+                activeDelete: 'active',
+                activeEnd: ''
+            })
+        }else{
+            this.setState({
+                activeDelete: '',
+                activeEnd: ''
+            })
+        }
+    }
+
+    onClickClose = () => {
+        this.setState({
+            activeDelete: '',
+            activeEnd: ''
+        })
+    }
+
     render(){
-        const { form, participantes, participantesTask, deleteParticipante, changeValue, changeValueSend} = this.props
-        const { part } = this.state
-        console.log( 'FORM', form)
+        const { form, participantes, participantesTask, deleteParticipante, changeValue, changeValueSend, deleteTarea, endTarea} = this.props
+        const { activeEnd, activeDelete } = this.state
         return(
             <Form { ... this.props}>
                 <div className="row mx-0">
                     <div className="col-md-4 mx-auto no-label">
                         <Input className=" no-label " placeholder = 'Título' value = { form.titulo } name = 'titulo' 
                             onBlur = { (e) => { e.preventDefault(); changeValueSend(e) } } onChange = { (e) => { e.preventDefault(); changeValue(e)} }/>
+                    </div>
+
+                    <div className="col-md-12 d-flex justify-content-end">
+                        <div className="d-flex align-items-center px-2">
+                            <FontAwesomeIcon icon = { faCalendarCheck } color = { DARK_BLUE } className = "mr-2 button-hover" onClick = { () => this.onClickEnd() } />
+                            <div className = { `${activeEnd} transition-all hidden` }>
+                                <Small className="d-flex align-items-center">
+                                    ¿Das por terminada la tarea?
+                                    <Button icon = { faTimes } color = "transparent"  text = "" className = "small-button mx-1" onClick = { () => this.onClickClose() } />
+                                    <Button color = "transparent" className = "small-button" onClick={() => endTarea(form.id)}>
+                                        <FontAwesomeIcon color = { GOLD } icon = { faCheck } />
+                                    </Button>
+                                </Small>
+                            </div>
+                        </div>
+                        <div className="d-flex align-items-center px-2">
+                            <FontAwesomeIcon icon={faTrashAlt} color="red" className="mr-2 button-hover" onClick = { () => this.onClickDelete() }/>
+                            <div className = { `${activeDelete} transition-all hidden` }>
+                                <Small className="d-flex align-items-center">
+                                    ¿Estás seguro? 
+                                    <Button color="transparent" className="small-button mx-1"  onClick = { () => this.onClickClose() }>
+                                        <FontAwesomeIcon color={GOLD} icon={faTimes} />
+                                    </Button>
+                                    <Button icon={faCheck} color="transparent"  text="" className="small-button"  onClick={() => deleteTarea(form.id)}/>
+                                </Small>
+                            </div>
+                        </div>
                     </div>
 
                     <div className="col-md-12">
