@@ -41,7 +41,7 @@ class EmpresaForm extends Component{
                         {
                             (img === '' ) && (form.file !== '' && form.file !== undefined && form.file !== null) &&
                                 <div className="p-3 position-relative">
-                                    <img className='w-100' src={URL_ASSETS + form.file } />
+                                    <img className='w-100' src={form.file } />
                                 </div>
                         }
                         {

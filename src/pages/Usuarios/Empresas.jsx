@@ -88,7 +88,7 @@ class Empresas extends Component{
             empresas[key] = {
                 actions: this.setActions(empresa),
                 name: empresa.name,
-                logo: empresa.logo !== null ? <img className="logo" src={URL_ASSETS + empresa.logo} alt={empresa.name} /> : 'No hay logo'
+                logo: empresa.logo !== null ? <img className="logo" src={empresa.logo} alt={empresa.name} /> : 'No hay logo'
             }
         })
         this.setState({

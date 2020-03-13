@@ -14,16 +14,22 @@ const Loader = x => Loadable({
 })
 
 const Login = Loader(() => import('./pages/Login') )
+
 const Home = Loader(() => import('./pages/Home') )
+
 const Tareas = Loader(() => import('./pages/Usuarios/Tareas') )
 const Empresas = Loader(() => import('./pages/Usuarios/Empresas') )
 const Usuarios = Loader(() => import('./pages/Usuarios/Usuarios') )
+
 const Normas = Loader(() => import('./pages/Normas') )
+
 const Leads = Loader(() => import('./pages/Leads/Leads') )
 const Prospectos = Loader(() => import('./pages/Leads/Prospectos') )
 const Clientes = Loader(() => import('./pages/Leads/Clientes') )
+
 const MiProyecto = Loader(() => import('./pages/MiProyecto') )
 
+/* const Cuentas = Loader(() => import('./pages/Bancos/Cuenta') ) */
 class App extends Component{
     async componentDidMount(){
         const { access_token } = this.props.authUser
