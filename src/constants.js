@@ -15,9 +15,12 @@ import {
 /* export const URL_DEV = 'http://127.0.0.1:8000/api/';
 export const URL_ASSETS = 'http://127.0.0.1:8000'; */
 
+export const URL_DEV = process.env.NODE_ENV === 'production' ? 'https://demo.proyectosadmin.com/api/' : 'http://127.0.0.1:8000/api/'
+export const URL_ASSETS = process.env.NODE_ENV === 'production' ? 'https://demo.proyectosadmin.com' : 'http://127.0.0.1:8000'
+
 // PROD / DEV
-export const URL_DEV = 'https://demo.proyectosadmin.com/api/';
-export const URL_ASSETS = 'https://demo.proyectosadmin.com';
+/* export const URL_DEV = 'https://demo.proyectosadmin.com/api/';
+export const URL_ASSETS = 'https://demo.proyectosadmin.com'; */
 
 export const CP_URL = 'https://api-sepomex.hckdrk.mx/query/info_cp/'
 //Icons
