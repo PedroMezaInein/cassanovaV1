@@ -32,7 +32,6 @@ class Task extends Component{
         let _fecha_limite = null
         if( tarea ){
             _fecha_limite = this.diffDate(tarea.fecha_limite)
-            console.log(_fecha_limite, '_FECHA_LIMITE_', tarea.titulo)
         }
         if(tarea){
             new_index = tarea.index

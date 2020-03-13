@@ -61,12 +61,6 @@ class Tareas extends Component{
         var days = parseInt(diff.asDays());
         var hours = parseInt(diff.asHours());
         var minutes = parseInt(diff.asMinutes());
-        console.log('Now', now)
-        console.log('Created at', then)
-        console.log('Months', months)
-        console.log('Days', days)
-        console.log('Hours', hours)
-        console.log('Minutes', minutes)
         
         if(months)
         {
