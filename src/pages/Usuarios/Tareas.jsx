@@ -55,11 +55,19 @@ class Tareas extends Component{
 
         var diff = moment.duration(moment(now).diff(moment(then)));
         
-        var months = parseInt(diff.asMonths());
+        /* var months = parseInt(diff.asMonths()); */
+        var months = parseInt( moment(now).diff(moment(then), 'month' ) )
+        
         var days = parseInt(diff.asDays());
         var hours = parseInt(diff.asHours());
         var minutes = parseInt(diff.asMinutes());
-
+        console.log('Now', now)
+        console.log('Created at', then)
+        console.log('Months', months)
+        console.log('Days', days)
+        console.log('Hours', hours)
+        console.log('Minutes', minutes)
+        
         if(months)
         {
             if(months === 1)
@@ -254,6 +262,23 @@ class Tareas extends Component{
     deleteParticipante = value => {
         this.deleteParticipanteAxios(value);
     }
+
+    changeValue = event => {
+        const { name, value } = event.target
+        const { tarea } = this.state
+        tarea[name] = value
+        this.setState({
+            ... this.state,
+            tarea: tarea
+        })
+    }
+
+    changeValueSend = event => {
+        const { name, value } = event.target
+        const { tarea } = this.state
+        this.editTaskAxios({[name]: value})
+    }
+
     // Axios
     async getTareasAxios(){
         const { access_token } = this.props.authUser
@@ -364,6 +389,40 @@ class Tareas extends Component{
                     tarea: tarea
                 })
                 this.setTareas(columns)
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    })
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
+        })
+    }
+
+    async editTaskAxios(data){
+        const { access_token } = this.props.authUser
+        const { tarea } = this.state
+        await axios.put(URL_DEV + 'user/tareas/'+tarea.id, data, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
+            (response) => {
             },
             (error) => {
                 console.log(error, 'error')
@@ -544,7 +603,8 @@ class Tareas extends Component{
                 </DragDropContext>
                 <Modal show = { modal } handleClose = { this.handleCloseModal } >
                     <TareaForm participantes = { participantes } user = { user } form = { tarea } update = { this.onChangeParticipantes } 
-                        participantesTask = { participantesTask } deleteParticipante = { this.deleteParticipante }  />
+                        participantesTask = { participantesTask } deleteParticipante = { this.deleteParticipante } 
+                        changeValue = { this.changeValue } changeValueSend = { this.changeValueSend  } />
                     <div className="d-flex align-items-center px-3 py-2 flex-column-reverse flex-md-row ">
                         <FontAwesomeIcon icon = { faComments } color = { GOLD } className = " mr-4 " />
                         <P className="w-100" color="dark-blue">
