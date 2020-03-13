@@ -421,7 +421,7 @@ class Tareas extends Component{
     async editTaskAxios(data){
         const { access_token } = this.props.authUser
         const { tarea } = this.state
-        await axios.put(URL_DEV + 'user/tareas/'+tarea.id, data, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
+        await axios.put(URL_DEV + 'user/tareas/edit/'+tarea.id, data, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
             },
             (error) => {
