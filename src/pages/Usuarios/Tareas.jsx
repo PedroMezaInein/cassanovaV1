@@ -391,16 +391,22 @@ class Tareas extends Component{
 
     addComentario = () => {
         const { comentario } = this.state
+        swal({
+            title: '¡Un momento!',
+            text: 'Se está enviando tu mensaje.',
+            buttons: false
+        })
         if(comentario !== '')
             this.addComentarioAxios()
     }
 
     async addComentarioAxios(){
         const { access_token } = this.props.authUser
-        const { comentario, tarea, adjuntoFile } = this.state
+        const { comentario, tarea, adjuntoFile, adjuntoName } = this.state
         const data = new FormData();
         data.append('comentario', comentario)
         data.append('adjunto', adjuntoFile)
+        data.append('adjuntoName', adjuntoName)
         data.append('id', tarea.id)
         await axios.post(URL_DEV + 'user/tareas/comentario', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
@@ -417,6 +423,7 @@ class Tareas extends Component{
                     adjuntoName: ''
                 })
                 this.setTareas(columns)
+                swal.close()
             },
             (error) => {
                 console.log(error, 'error')
@@ -748,7 +755,7 @@ class Tareas extends Component{
                                 <div className="no-label">
                                     <Input placeholder = 'Comentario' value = { comentario } onChange = {this.onChangeComentario} name = 'comentario' as="textarea" rows="3" />
                                 </div>
-                                <div className="image-upload">
+                                <div className="image-upload d-flex align-items-center">
                                     <div className="no-label">
                                         <Input
                                             onChange = {this.onChangeComentario}
@@ -795,7 +802,10 @@ class Tareas extends Component{
                                                         <div className="text-left mb-0">
                                                             <a href={comentario.adjunto.url} target="_blank">
                                                                 <Small className="ml-2" color="dark-blue">
-                                                                    <FontAwesomeIcon icon={faFileAlt} color={DARK_BLUE}/>
+                                                                    <FontAwesomeIcon icon={faFileAlt} color={DARK_BLUE} className="mr-1"/>
+                                                                    {
+                                                                        comentario.adjunto.name
+                                                                    }
                                                                 </Small>
                                                             </a>
                                                         </div>
