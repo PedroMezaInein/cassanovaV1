@@ -246,3 +246,11 @@ body{
 .transition-all{
     transition: all 0.5s;
 }
+
+.font-unset{
+    font-size: unset!important;
+}
+
+.w-fit-content{
+    width: fit-content;
+}

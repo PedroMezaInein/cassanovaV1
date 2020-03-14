@@ -10,9 +10,10 @@ import swal from 'sweetalert'
 import { Subtitle, P, Small, B } from '../../components/texts'
 import { TareaForm } from '../../components/forms'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faComments, faCheck } from '@fortawesome/free-solid-svg-icons'
+import { faComments, faCheck, faPaperclip, faTimes, faFileAlt } from '@fortawesome/free-solid-svg-icons'
 import Input from '../../components/form-components/Input'
 import moment from 'moment'
+import { Badge } from 'react-bootstrap'
 
 class Tareas extends Component{
     constructor(props){
@@ -34,6 +35,9 @@ class Tareas extends Component{
         tarea: '',
         modal: false,
         comentario: '',
+        adjunto: '',
+        adjuntoFile: '',
+        adjuntoName: ''
     }
 
     componentDidMount(){
@@ -104,7 +108,10 @@ class Tareas extends Component{
         this.setState({
             ... this.state,
             modal: !this.state.modal,
-            tarea: ''
+            tarea: '',
+            adjuntoName: '',
+            adjuntoFile: '',
+            adjunto: ''
         })
     }
 
@@ -138,6 +145,9 @@ class Tareas extends Component{
             ... this.state,
             tarea: tarea,
             modal: true,
+            adjuntoName: '',
+            adjuntoFile: '',
+            adjunto: '',
             participantesTask: aux,
             participantes: _index
         })
@@ -240,11 +250,21 @@ class Tareas extends Component{
     }
 
     onChangeComentario = (e) => {
-        const { value } = e.target
-        this.setState({
-            ... this.state,
-            comentario: value
-        })
+        const { value, name } = e.target
+        if( name === 'adjunto'){
+            this.setState({
+                ... this.state,
+                adjuntoFile: e.target.files[0],
+                adjunto: e.target.value,
+                adjuntoName: e.target.files[0].name
+            })
+        }else{
+            this.setState({
+                ... this.state,
+                comentario: value
+            })
+        }
+        
     }
 
     onChangeParticipantes = (value) => {
@@ -270,6 +290,14 @@ class Tareas extends Component{
         const { name, value } = event.target
         const { tarea } = this.state
         this.editTaskAxios({[name]: value})
+    }
+
+    deleteAdjunto = () => {
+        this.setState({
+            adjunto: '',
+            adjuntoFile: '',
+            adjuntoName: ''
+        })
     }
 
     // Axios
@@ -369,8 +397,12 @@ class Tareas extends Component{
 
     async addComentarioAxios(){
         const { access_token } = this.props.authUser
-        const { comentario, tarea } = this.state
-        await axios.put(URL_DEV + 'user/tareas/'+tarea.id+'/comentario', {comentario: comentario}, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
+        const { comentario, tarea, adjuntoFile } = this.state
+        const data = new FormData();
+        data.append('comentario', comentario)
+        data.append('adjunto', adjuntoFile)
+        data.append('id', tarea.id)
+        await axios.post(URL_DEV + 'user/tareas/comentario', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
                 const { data : { tareas : columns } } = response
                 const { data : { user : user } } = response
@@ -379,7 +411,10 @@ class Tareas extends Component{
                     ... this.state,
                     user: user,
                     comentario: '',
-                    tarea: tarea
+                    tarea: tarea,
+                    adjunto: '',
+                    adjuntoFile: '',
+                    adjuntoName: ''
                 })
                 this.setTareas(columns)
             },
@@ -462,7 +497,10 @@ class Tareas extends Component{
                 if( user.id === id_user){
                     this.setState({
                         modal: false,
-                        tarea: ''
+                        tarea: '',
+                        adjuntoName: '',
+                        adjuntoFile: '',
+                        adjunto: ''
                     })
                 }
             },
@@ -553,7 +591,10 @@ class Tareas extends Component{
                 this.setState({
                     ... this.state,
                     modal: false,
-                    tarea: ''
+                    tarea: '',
+                    adjuntoName: '',
+                    adjuntoFile: '',
+                    adjunto: ''
                 })
             },
             (error) => {
@@ -592,7 +633,10 @@ class Tareas extends Component{
                 this.setState({
                     ... this.state,
                     modal: false,
-                    tarea: ''
+                    tarea: '',
+                    adjuntoName: '',
+                    adjuntoFile: '',
+                    adjunto: ''
                 })
             },
             (error) => {
@@ -663,7 +707,7 @@ class Tareas extends Component{
     }
 
     render(){
-        const { columns, user, form, activeKey, modal, tarea, comentario, users, participantesTask, participantes } = this.state
+        const { columns, user, form, activeKey, modal, tarea, comentario, adjunto,adjuntoName, users, participantesTask, participantes } = this.state
         return(
             <Layout active={'usuarios'} { ...this.props}>
                 <DragDropContext onDragEnd={this.onDragEnd}>
@@ -693,7 +737,7 @@ class Tareas extends Component{
                             <hr />
                         </P>
                     </div>
-                    <div className="d-flex px-3 py-2 no-label flex-column flex-md-row">
+                    <div className="d-flex px-3 py-2 flex-column flex-md-row">
                         <div className='mb-2 mb-md-0'>
                             <Small className="mr-2 " color="gold">
                                 { user.name }
@@ -701,10 +745,37 @@ class Tareas extends Component{
                         </div>
                         <div className="mr-2 w-100 d-flex" >
                             <div className="w-100">
-                                <Input placeholder = 'Comentario' value = { comentario } onChange = {this.onChangeComentario} name = 'comentario' as="textarea" rows="3" />
+                                <div className="no-label">
+                                    <Input placeholder = 'Comentario' value = { comentario } onChange = {this.onChangeComentario} name = 'comentario' as="textarea" rows="3" />
+                                </div>
+                                <div className="image-upload">
+                                    <div className="no-label">
+                                        <Input
+                                            onChange = {this.onChangeComentario}
+                                            value = {adjunto}
+                                            name="adjunto" 
+                                            type="file" 
+                                            id="adjunto"/>
+                                    </div>
+                                    <label for="adjunto">
+                                        <FontAwesomeIcon  className="p-0 font-unset mr-2" icon={faPaperclip} color={DARK_BLUE} />
+                                    </label>
+                                    {
+                                        adjuntoName &&
+                                            <Badge variant="light" className="d-flex px-3 w-fit-content align-items-center" pill>
+                                                <FontAwesomeIcon icon={faTimes} onClick={ (e) => { e.preventDefault(); this.deleteAdjunto() } } className=" small-button mr-2" />
+                                                {
+                                                    adjuntoName
+                                                }
+                                            </Badge>
+                                    }
+                                </div>
                             </div>
+                            
                             <FontAwesomeIcon color={GOLD} icon = {faCheck} onClick = { this.addComentario } className ='ml-2'/>
                         </div>
+                    </div>
+                    <div className="d-flex px-3 py-2">
                         
                     </div>
                     {   tarea && 
@@ -719,6 +790,17 @@ class Tareas extends Component{
                                                     comentario.comentario
                                                 }
                                                 <br />
+                                                {
+                                                    comentario.adjunto &&
+                                                        <div className="text-left mb-0">
+                                                            <a href={comentario.adjunto.url} target="_blank">
+                                                                <Small className="ml-2" color="dark-blue">
+                                                                    <FontAwesomeIcon icon={faFileAlt} color={DARK_BLUE}/>
+                                                                </Small>
+                                                            </a>
+                                                        </div>
+                                                }
+                                                
                                                 <div className="text-right">
                                                     <Small className="ml-2" color="dark-blue">
                                                         {
