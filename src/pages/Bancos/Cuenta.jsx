@@ -35,7 +35,7 @@ class Cuentas extends Component{
             banco: '',
             tipo: '',
             estatus: '',
-            empresa: ''
+            empresa: 0
         },
         cuentas: [],
         cuenta: null,
@@ -136,7 +136,7 @@ class Cuentas extends Component{
             banco: '',
             tipo: '',
             estatus: '',
-            empresa: ''
+            empresa: 0
         }
     }
 
