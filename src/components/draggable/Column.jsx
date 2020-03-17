@@ -43,12 +43,6 @@ class Column extends Component{
                                     )
                                 }
                                 {provided.placeholder}
-                                {
-                                    isMobile && <span>Is Mobile</span>
-                                }
-                                {
-                                    !isMobile && <span>No Mobile</span>
-                                }
                             </div>
                             
                         )
