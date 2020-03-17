@@ -2,14 +2,10 @@ import React, { Component } from 'react'
 import Task from './Task'
 import { Droppable } from 'react-beautiful-dnd'
 import Accordion from 'react-bootstrap/Accordion'
-import Form from 'react-bootstrap/Form'
-import { CustomToggle } from '../singles'
 import { Small, Subtitle, P } from '../texts'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { Input, Button } from '../form-components'
-import { GOLD } from '../../constants'
-import { useAccordionToggle } from 'react-bootstrap/AccordionToggle'
 import { isMobile } from "react-device-detect"
 class Column extends Component{
 
@@ -52,7 +48,7 @@ class Column extends Component{
                                                 return(
                                                     <>
                                                         {
-                                                            index < 3 && <Task id={id} key={tarea.id} tarea={tarea} index={index} clickTask = {clickTask} />
+                                                            index < 5 && <Task id={id} key={tarea.id} tarea={tarea} index={index} clickTask = {clickTask} />
                                                         }
                                                     </>         
                                                 )
@@ -66,7 +62,7 @@ class Column extends Component{
                     }
                 </Droppable>
                 {
-                    column.tareas.length > 3 && isMobile && mobileState &&
+                    column.tareas.length > 5 && isMobile && mobileState &&
                         <div onClick = {(e) => {e.preventDefault(); this.setState({
                                 mobileState: false
                             })}} 
@@ -78,7 +74,7 @@ class Column extends Component{
                         </div>
                 }
                 {
-                    column.tareas.length > 3 && isMobile && !mobileState &&
+                    column.tareas.length > 5 && isMobile && !mobileState &&
                         <div onClick = {(e) => {e.preventDefault(); this.setState({
                                 mobileState: true
                             })}} 
