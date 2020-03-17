@@ -47,7 +47,7 @@ class App extends Component{
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
                 console.log(error.response, 'response')
@@ -59,7 +59,7 @@ class App extends Component{
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
     }

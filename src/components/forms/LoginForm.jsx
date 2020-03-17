@@ -60,7 +60,7 @@ class LoginForm extends React.Component {
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
             }
@@ -73,7 +73,7 @@ class LoginForm extends React.Component {
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
     }

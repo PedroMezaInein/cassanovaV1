@@ -284,7 +284,7 @@ class Usuarios extends Component{
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
             }
@@ -293,7 +293,7 @@ class Usuarios extends Component{
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
     }
@@ -338,7 +338,7 @@ class Usuarios extends Component{
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
             }
@@ -347,7 +347,7 @@ class Usuarios extends Component{
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
     }
@@ -381,7 +381,7 @@ class Usuarios extends Component{
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
             }
@@ -390,7 +390,7 @@ class Usuarios extends Component{
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
     }
@@ -416,7 +416,7 @@ class Usuarios extends Component{
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
             }
@@ -425,7 +425,7 @@ class Usuarios extends Component{
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
     }
@@ -463,7 +463,7 @@ class Usuarios extends Component{
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
             }
@@ -472,7 +472,7 @@ class Usuarios extends Component{
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
 
@@ -507,7 +507,7 @@ class Usuarios extends Component{
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
             }
@@ -516,7 +516,7 @@ class Usuarios extends Component{
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
     }

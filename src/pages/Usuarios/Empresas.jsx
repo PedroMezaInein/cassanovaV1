@@ -67,7 +67,7 @@ class Empresas extends Component{
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
             }
@@ -76,7 +76,7 @@ class Empresas extends Component{
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
     }
@@ -218,7 +218,7 @@ class Empresas extends Component{
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
             }
@@ -227,7 +227,7 @@ class Empresas extends Component{
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
     }
@@ -264,7 +264,7 @@ class Empresas extends Component{
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
             }
@@ -273,7 +273,7 @@ class Empresas extends Component{
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
     }
@@ -310,7 +310,7 @@ class Empresas extends Component{
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
             }
@@ -319,7 +319,7 @@ class Empresas extends Component{
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
     }

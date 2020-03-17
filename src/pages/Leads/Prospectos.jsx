@@ -411,7 +411,7 @@ class Leads extends Component{
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
             }
@@ -420,7 +420,7 @@ class Leads extends Component{
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
     }
@@ -467,7 +467,7 @@ class Leads extends Component{
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
             }
@@ -476,7 +476,7 @@ class Leads extends Component{
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
     }
@@ -515,7 +515,7 @@ class Leads extends Component{
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
             }
@@ -524,7 +524,7 @@ class Leads extends Component{
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
     }
@@ -571,7 +571,7 @@ class Leads extends Component{
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
             }
@@ -580,7 +580,7 @@ class Leads extends Component{
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
     }
@@ -621,7 +621,7 @@ class Leads extends Component{
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
             }
@@ -630,7 +630,7 @@ class Leads extends Component{
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
     }
@@ -659,7 +659,7 @@ class Leads extends Component{
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
             }
@@ -668,7 +668,7 @@ class Leads extends Component{
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
     }

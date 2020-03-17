@@ -329,7 +329,7 @@ class Tareas extends Component{
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
             }
@@ -338,7 +338,7 @@ class Tareas extends Component{
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
     }
@@ -375,7 +375,7 @@ class Tareas extends Component{
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
             }
@@ -384,7 +384,7 @@ class Tareas extends Component{
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
     }
@@ -439,7 +439,7 @@ class Tareas extends Component{
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
             }
@@ -448,7 +448,7 @@ class Tareas extends Component{
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
     }
@@ -473,7 +473,7 @@ class Tareas extends Component{
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
             }
@@ -482,7 +482,7 @@ class Tareas extends Component{
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
     }
@@ -525,7 +525,7 @@ class Tareas extends Component{
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
             }
@@ -534,7 +534,7 @@ class Tareas extends Component{
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
     }
@@ -567,7 +567,7 @@ class Tareas extends Component{
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
             }
@@ -576,7 +576,7 @@ class Tareas extends Component{
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
     }
@@ -618,7 +618,7 @@ class Tareas extends Component{
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
             }
@@ -627,7 +627,7 @@ class Tareas extends Component{
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
     }
@@ -660,7 +660,7 @@ class Tareas extends Component{
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
             }
@@ -669,7 +669,7 @@ class Tareas extends Component{
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
     }
@@ -699,7 +699,7 @@ class Tareas extends Component{
                         title: '¡Ups!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        confirmButtonText: 'Aceptar'
+                        
                     })
                 }
             }
@@ -708,7 +708,7 @@ class Tareas extends Component{
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido, intenta de nuevo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                
             })
         })
     }
