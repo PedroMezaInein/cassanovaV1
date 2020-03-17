@@ -272,3 +272,42 @@ export const CLIENTES_COLUMNS = [
     },
 ]
 
+export const CUENTAS_COLUMNS = [
+    {
+        Header: ' ',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Nombre',
+        accessor: 'nombre',
+    },
+    {
+        Header: 'Banco',
+        accessor: 'banco',
+    },
+    {
+        Header: 'Número de cuenta',
+        accessor: 'numero',
+    },
+    {
+        Header: 'Balance',
+        accessor: 'balance',
+    },
+    {
+        Header: 'Descripción',
+        accessor: 'descripcion',
+    },
+    {
+        Header: 'Estatus',
+        accessor: 'estatus',
+    },
+    {
+        Header: 'Tipo',
+        accessor: 'tipo',
+    },
+    {
+        Header: 'Fecha',
+        accessor: 'fecha',
+    },
+]
+
