@@ -13,6 +13,10 @@ import { useAccordionToggle } from 'react-bootstrap/AccordionToggle'
 import { isMobile } from "react-device-detect"
 class Column extends Component{
 
+    state = {
+        mobileState: false,
+    }
+
     submit = () => {
         const { submit, onChange, column, form } = this.props
         onChange( { target:{ name: 'grupo', value: column.id } } )
@@ -22,6 +26,7 @@ class Column extends Component{
 
     render(){
         const { column, id, form, onChange, activeKey, handleAccordion, clickTask } = this.props
+        const { mobileState } = this.state
         return(
             <div className="column background__d-white-bone  my-3 px-4 py-3">
                 
@@ -38,9 +43,21 @@ class Column extends Component{
                                 ref={provided.innerRef}
                                 { ...provided.droppableProps}>
                                 {
-                                    column.tareas.map((tarea, index) => 
-                                        <Task id={id} key={tarea.id} tarea={tarea} index={index} clickTask = {clickTask} />
-                                    )
+                                    (!isMobile || mobileState)  ? 
+                                        column.tareas.map((tarea, index) => 
+                                            <Task id={id} key={tarea.id} tarea={tarea} index={index} clickTask = {clickTask} />
+                                        )
+                                    :
+                                        column.tareas.map((tarea, index) => {
+                                                return(
+                                                    <>
+                                                        {
+                                                            index < 3 && <Task id={id} key={tarea.id} tarea={tarea} index={index} clickTask = {clickTask} />
+                                                        }
+                                                    </>         
+                                                )
+                                            }
+                                        )
                                 }
                                 {provided.placeholder}
                             </div>
@@ -48,25 +65,42 @@ class Column extends Component{
                         )
                     }
                 </Droppable>
-                <Task>
-
-                </Task>
-                <Accordion activeKey = {activeKey} >
-                    {/* <CustomToggle eventKey="Add"> */}
-                        <div onClick = {(e) => {e.preventDefault(); handleAccordion(column.id)}} >
-                            <Small className="px-3" color="gold">
-                                <FontAwesomeIcon className="mr-1" icon={faPlus} />
-                                Añadir otra tarea
+                {
+                    column.tareas.length > 3 && isMobile && mobileState &&
+                        <div onClick = {(e) => {e.preventDefault(); this.setState({
+                                mobileState: false
+                            })}} 
+                            className="text-right mb-2"
+                            >
+                            <Small className="px-3" color="dark-blue">
+                                Mostrar menos
                             </Small>
                         </div>
-                    {/* </CustomToggle> */}
+                }
+                {
+                    column.tareas.length > 3 && isMobile && !mobileState &&
+                        <div onClick = {(e) => {e.preventDefault(); this.setState({
+                                mobileState: true
+                            })}} 
+                            className="text-right mb-2"
+                            >
+                            <Small className="px-3" color="dark-blue">
+                                Mostrar más
+                            </Small>
+                        </div>
+                }
+                <Accordion activeKey = {activeKey} >
+                    <div onClick = {(e) => {e.preventDefault(); handleAccordion(column.id)}} >
+                        <Small className="px-3" color="gold">
+                            <FontAwesomeIcon className="mr-1" icon={faPlus} />
+                            Añadir otra tarea
+                        </Small>
+                    </div>
                     <Accordion.Collapse eventKey={column.id}>
-                        {/* <Form onSubmit = { submit }> */}
-                            <div className="background__white-bone tarea px-1 py-2 my-3 column__task d-flex justify-content-around align-items-center">
-                                <Input className="border-0 mb-0" placeholder="Tarea nueva" value = { form.titulo } name = 'titulo' onChange = { onChange } />
-                                <Button icon = { faCheck } text = '' onClick = { this.submit } color = "transparent" /* type = "submit" */ />
-                            </div>
-                        {/* </Form> */}
+                        <div className="background__white-bone tarea px-1 py-2 my-3 column__task d-flex justify-content-around align-items-center">
+                            <Input className="border-0 mb-0" placeholder="Tarea nueva" value = { form.titulo } name = 'titulo' onChange = { onChange } />
+                            <Button icon = { faCheck } text = '' onClick = { this.submit } color = "transparent" />
+                        </div>
                     </Accordion.Collapse>
                 </Accordion>
             </div>
