@@ -158,7 +158,7 @@ class Cuentas extends Component{
                 banco: this.setText( cuenta.banco.nombre ),
                 tipo: this.setText( cuenta.tipo.tipo ),
                 estatus: this.setText( cuenta.estatus.estatus ),
-                empresa: this.setText( cuenta.empresa.name ),
+                empresa: this.setText(  cuenta.empresa ? cuenta.empresa.name : '' ),
 
                 fecha: this.setDateTable( cuenta.created_at )
             } )
