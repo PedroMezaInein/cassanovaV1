@@ -9,8 +9,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { Input, Button } from '../form-components'
 import { GOLD } from '../../constants'
-import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
-
+import { useAccordionToggle } from 'react-bootstrap/AccordionToggle'
+import { isMobile } from "react-device-detect"
 class Column extends Component{
 
     submit = () => {
@@ -43,6 +43,12 @@ class Column extends Component{
                                     )
                                 }
                                 {provided.placeholder}
+                                {
+                                    isMobile && <span>Is Mobile</span>
+                                }
+                                {
+                                    !isMobile && <span>No Mobile</span>
+                                }
                             </div>
                             
                         )
