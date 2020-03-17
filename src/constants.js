@@ -15,7 +15,10 @@ import {
 /* export const URL_DEV = 'http://127.0.0.1:8000/api/';
 export const URL_ASSETS = 'http://127.0.0.1:8000'; */
 
-export const URL_DEV = process.env.NODE_ENV === 'production' ? 'https://demo.proyectosadmin.com/api/' : 'http://127.0.0.1:8000/api/'
+export const PROD_LINK = 'https://demo.proyectosadmin.com/api/'
+export const DEV_LINK = 'http://127.0.0.1:8000/api/'
+
+export const URL_DEV = process.env.NODE_ENV === 'production' ? PROD_LINK : DEV_LINK
 export const URL_ASSETS = process.env.NODE_ENV === 'production' ? 'https://demo.proyectosadmin.com' : 'http://127.0.0.1:8000'
 
 // PROD / DEV

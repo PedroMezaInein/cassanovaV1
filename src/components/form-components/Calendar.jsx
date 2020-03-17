@@ -25,7 +25,7 @@ class Calendar extends Component{
                     onChange={date => onChangeCalendar(date)}
                     locale={'es'}
                     isClearable
-                    filterDate={this.isWeekday}
+                    /* filterDate={this.isWeekday} */
                     placeholderText={placeholder}
                     customInput={
                         <Input

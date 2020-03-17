@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 import { Input, Button, Select } from '../form-components'
 import { Subtitle, P } from '../texts'
-import { URL_ASSETS } from '../../constants'
 import { faTimesCircle, faClipboard, faCameraRetro, faCamera } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 class EmpresaForm extends Component{
