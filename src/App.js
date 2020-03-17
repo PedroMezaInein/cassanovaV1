@@ -30,6 +30,7 @@ const Clientes = Loader(() => import('./pages/Leads/Clientes') )
 const MiProyecto = Loader(() => import('./pages/MiProyecto') )
 
 const Cuentas = Loader(() => import('./pages/Bancos/Cuenta') )
+const EstadosCuenta = Loader(() => import('./pages/Bancos/EstadosCuenta') )
 class App extends Component{
     async componentDidMount(){
         const { access_token } = this.props.authUser
@@ -101,6 +102,7 @@ class App extends Component{
                 <Route path = "/usuarios/empresas" exact component ={ Empresas } />
 
                 <Route path = "/bancos/cuentas" exact component ={ Cuentas } />
+                <Route path = "/bancos/estados-cuenta" exact component ={ EstadosCuenta } />
                 
                 <Route path = "/leads/leads" exact component ={ Leads } />
                 <Route path = "/leads/prospectos" exact component = { Prospectos } />

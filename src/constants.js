@@ -282,6 +282,10 @@ export const CUENTAS_COLUMNS = [
         accessor: 'nombre',
     },
     {
+        Header: 'Empresa',
+        accessor: 'empresa',
+    },
+    {
         Header: 'Banco',
         accessor: 'banco',
     },
@@ -311,3 +315,17 @@ export const CUENTAS_COLUMNS = [
     },
 ]
 
+export const EDOS_CUENTAS_COLUMNS = [
+    {
+        Header: ' ',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Estado de cuenta',
+        accessor: 'estado',
+    },
+    {
+        Header: 'Fecha',
+        accessor: 'fecha',
+    },
+]

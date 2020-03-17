@@ -10,7 +10,7 @@ class LeadForm extends Component{
     }
     
     render(){
-        const { bancos, estatus, tipos, title, form, onChange, ...props } = this.props
+        const { bancos, estatus, tipos, title, form, onChange, empresas, ...props } = this.props
         return(
             <Form { ... props}>
                 <Subtitle className = "text-center" color = "gold">
@@ -19,6 +19,10 @@ class LeadForm extends Component{
                 <div className="row mx-0">
                     <div className="col-md-4">
                         <Input required placeholder = "Ingresa el nombre de la cuenta" type = "text" name = "nombre" value = { form.nombre } 
+                            onChange = { onChange } />
+                    </div>
+                    <div className="col-md-4">
+                        <Select required name = 'empresa' options = { empresas } placeholder = 'Selecciona la empresa' value = { form.empresa }
                             onChange = { onChange } />
                     </div>
                     <div className="col-md-4">

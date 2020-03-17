@@ -33,7 +33,7 @@ class EmpresaForm extends Component{
                                 value={ form.logo }
                                 id="logo"
                                 placeholder="Logo de la empresa"/>
-                            <label for="logo">
+                            <label htmlFor="logo">
                                 <FontAwesomeIcon icon={faCamera} />
                             </label>
                         </div>

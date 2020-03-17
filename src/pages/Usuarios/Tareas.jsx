@@ -264,7 +264,6 @@ class Tareas extends Component{
                 comentario: value
             })
         }
-        
     }
 
     onChangeParticipantes = (value) => {
@@ -764,7 +763,7 @@ class Tareas extends Component{
                                             type="file" 
                                             id="adjunto"/>
                                     </div>
-                                    <label for="adjunto">
+                                    <label htmlFor="adjunto">
                                         <FontAwesomeIcon  className="p-0 font-unset mr-2" icon={faPaperclip} color={DARK_BLUE} />
                                     </label>
                                     {
@@ -778,7 +777,6 @@ class Tareas extends Component{
                                     }
                                 </div>
                             </div>
-                            
                             <FontAwesomeIcon color={GOLD} icon = {faCheck} onClick = { this.addComentario } className ='ml-2'/>
                         </div>
                     </div>

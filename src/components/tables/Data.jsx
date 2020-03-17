@@ -109,12 +109,11 @@ function Table({ columns, data }){
                                 })
                             :
                                 <tr>
-                                    <td colspan={columns.length}>
+                                    <td colsPan={columns.length}>
                                         <Subtitle className="text-center py-3" color="gold">
                                             No hay datos ☹
                                         </Subtitle>
                                     </td>
-                                    
                                 </tr>
                         }
                     </tbody>
