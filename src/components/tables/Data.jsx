@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSort, faSortDown, faSortUp, faStepForward, faStepBackward } from '@fortawesome/free-solid-svg-icons'
 import { Button } from '../form-components'
 import { TABLE_SIZE } from '../../constants'
+import { Subtitle } from '../texts'
 
 
 const IndeterminateCheckbox = React.forwardRef(
@@ -95,16 +96,26 @@ function Table({ columns, data }){
                     </thead>
                     <tbody {...getTableBodyProps()}>
                         {
-                            page.map((row, i) => {
-                                prepareRow(row)
-                                return (
-                                    <tr {...row.getRowProps()}>
-                                        {row.cells.map(cell => {
-                                            return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                                        })}
-                                    </tr>
-                                )
-                            })
+                            data.length > 0 ?
+                                page.map((row, i) => {
+                                    prepareRow(row)
+                                    return (
+                                        <tr {...row.getRowProps()}>
+                                            {row.cells.map(cell => {
+                                                return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                                            })}
+                                        </tr>
+                                    )
+                                })
+                            :
+                                <tr>
+                                    <td colspan={columns.length}>
+                                        <Subtitle className="text-center py-3" color="gold">
+                                            No hay datos ☹
+                                        </Subtitle>
+                                    </td>
+                                    
+                                </tr>
                         }
                     </tbody>
                 </table>
