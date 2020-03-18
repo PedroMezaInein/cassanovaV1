@@ -537,7 +537,8 @@ class Cuentas extends Component{
                     title: '¡Felicidades!',
                     text: 'Cuenta editada con éxito',
                     icon: 'success',
-                    timer: 1500
+                    timer: 1500,
+                    buttons: false
                 })
             },
             (error) => {

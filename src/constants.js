@@ -329,3 +329,22 @@ export const EDOS_CUENTAS_COLUMNS = [
         accessor: 'fecha',
     },
 ]
+
+export const EDOS_CUENTAS_COLUMNS_2 = [
+    {
+        Header: ' ',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Cuenta',
+        accessor: 'cuenta',
+    },
+    {
+        Header: 'Estado de cuenta',
+        accessor: 'estado',
+    },
+    {
+        Header: 'Fecha',
+        accessor: 'fecha',
+    },
+]
