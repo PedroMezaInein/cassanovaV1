@@ -31,8 +31,8 @@ class Leads extends Component{
             email: '',
             comentario: '',
             fecha: new Date(),
-            empresa: '',
-            origen: '',
+            empresa: 0,
+            origen: 0,
             servicios: []
         },
         leadId : ''
