@@ -653,7 +653,7 @@ class Cuentas extends Component{
     render(){
         const { modal, modalDelete, modalEstado, bancos, estatus, tipos, form, cuentas, cuenta, empresas, estados, adjunto, adjuntoName, fecha } = this.state
         return(
-            <Layout active={'leads'}  { ...this.props}>
+            <Layout active={'bancos'}  { ...this.props}>
                 <div className="text-right">
                     <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon={faPlus} color="green" />
                 </div>

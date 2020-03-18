@@ -21,7 +21,7 @@ class InputMoney extends Component{
                     {placeholder}
                 </Form.Label><br />
                 <NumberFormat value = { value } displayType = { 'input' } thousandSeparator = { true } prefix = { '$' } className="form-control w-100"
-                    renderText = { value => <div> { value } </div> } onValueChange = { (values) => this.onChange(values) } />
+                    renderText = { value => <div> { value } </div> } onValueChange = { (values) => this.onChange(values) } placeholder = {placeholder} />
             </div>
         )
     }

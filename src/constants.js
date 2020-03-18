@@ -348,3 +348,35 @@ export const EDOS_CUENTAS_COLUMNS_2 = [
         accessor: 'fecha',
     },
 ]
+
+export const TRASPASOS_COLUMNS = [
+    {
+        Header: ' ',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Origen',
+        accessor: 'origen',
+    },
+    {
+        Header: 'Destino',
+        accessor: 'destino',
+    },
+    {
+        Header: 'Monto',
+        accessor: 'monto',
+    },
+    {
+        Header: 'Comentario',
+        accessor: 'comentario',
+    },
+    {
+        Header: 'Usuario',
+        accessor: 'usuario',
+    },
+
+    {
+        Header: 'Fecha',
+        accessor: 'fecha',
+    },
+]

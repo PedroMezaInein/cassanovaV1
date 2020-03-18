@@ -351,12 +351,15 @@ class EstadosCuenta extends Component{
     render(){
         const { modal, adjunto, adjuntoName, adjuntoFile, cuentas, cuenta, estados } = this.state
         return(
-            <Layout active={'leads'}  { ...this.props}>
+            <Layout active={'bancos'}  { ...this.props}>
                 <div className="text-right">
                     <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon={faPlus} color="green" />
                 </div>
                 <DataTable columns = { EDOS_CUENTAS_COLUMNS_2 } data = { estados } />
                 <Modal show = { modal } handleClose={ this.handleClose } >
+                    <Subtitle className="text-center" color="gold">
+                        Agregar estado de cuenta
+                    </Subtitle>
                     <Form onSubmit = { this.submitForm }>
                         <div className="row mx-0">
                             <div className="col-md-4 px-2">

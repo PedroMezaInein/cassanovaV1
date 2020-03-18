@@ -31,6 +31,7 @@ const MiProyecto = Loader(() => import('./pages/MiProyecto') )
 
 const Cuentas = Loader(() => import('./pages/Bancos/Cuenta') )
 const EstadosCuenta = Loader(() => import('./pages/Bancos/EstadosCuenta') )
+const Traspasos = Loader(() => import('./pages/Bancos/Traspasos') )
 class App extends Component{
     async componentDidMount(){
         const { access_token } = this.props.authUser
@@ -103,6 +104,7 @@ class App extends Component{
 
                 <Route path = "/bancos/cuentas" exact component ={ Cuentas } />
                 <Route path = "/bancos/estados-cuenta" exact component ={ EstadosCuenta } />
+                <Route path = "/bancos/traspasos" exact component ={ Traspasos } />
                 
                 <Route path = "/leads/leads" exact component ={ Leads } />
                 <Route path = "/leads/prospectos" exact component = { Prospectos } />
