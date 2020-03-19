@@ -20,6 +20,7 @@ class Traspasos extends Component{
 
     state = {
         modal: false,
+        modalDelete: false,
         cuentas: [],
         form:{
             cantidad: '',
@@ -123,6 +124,25 @@ class Traspasos extends Component{
             
     }
 
+    safeDelete = e => () =>{
+        this.deleteTraspasoAxios()
+    }
+
+
+    cleanForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.map( (element) => {
+            switch(element){
+                case 'fecha':
+                    form[element] = new Date()
+                default:
+                    form[element] = ''
+                    break;
+            }
+        })
+        return form
+    }
 
     // Modal
 
@@ -130,7 +150,21 @@ class Traspasos extends Component{
         const { modal } = this.state
         this.setState({
             ... this.state,
-            modal: !modal
+            modal: !modal,
+            traspaso: '',
+            form: this.cleanForm()
+
+        })
+    }
+
+    handleCloseDelete = () => {
+        const { modalDelete } = this.state
+        this.setState({
+            ... this.state,
+            modalDelete: !modalDelete,
+            traspaso: '',
+            form: this.cleanForm()
+
         })
     }
 
@@ -141,7 +175,7 @@ class Traspasos extends Component{
         })
     }
 
-    openEdit = e => (traspaso) => {
+    openEdit = e => traspaso => {
         e.preventDefault();
         const { form } = this.state
         let aux = Object.keys(form)
@@ -157,19 +191,35 @@ class Traspasos extends Component{
                     form[element] = {value: traspaso[element].numero, name: traspaso[element].nombre}
                     form[element] = traspaso[element].nombre
                     console.log(form[element], 'form element')
+                    break;
                 case 'fecha':
+                    console.log('?FEHCA', element)
                     form[element] = new Date(traspaso['created_at'])
+                    break;
                 case 'adjunto':
                     form['adjuntoName'] = traspaso['adjunto'] && traspaso['adjunto'].name
+                    break;
                 default:
+                    form[element] = traspaso[element]
                     break;
             }
         })
+        form['origen'] = traspaso['origen'].numero
+        form['destino'] = traspaso['destino'].numero
         this.setState({
             ... this.state,
             modal: true,
             traspaso: traspaso,
             form
+        })
+    }
+
+    openDelete = e => (traspaso) => {
+        e.preventDefault();
+        this.setState({
+            ... this.state,
+            modalDelete: true,
+            traspaso: traspaso
         })
     }
 
@@ -199,7 +249,7 @@ class Traspasos extends Component{
                 <div className="d-flex align-items-center flex-column flex-md-row">
                     <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openEdit(e)(traspaso)}  text='' icon={faEdit} 
                         color="transparent" />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => console.log(traspaso) } text='' icon={faTrash} color="red" />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openDelete(e)(traspaso) } text='' icon={faTrash} color="red" />
                 </div>
                 <div className="d-flex align-items-center flex-column flex-md-row">
                     {
@@ -332,9 +382,63 @@ class Traspasos extends Component{
                 this.setState({
                     ... this.state,
                     modal: false,
-                    cuentas: aux
+                    cuentas: aux,
+                    form: this.cleanForm,
+                    traspaso: ''
                 })
                 swal.close()
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error'
+            })
+        })
+    }
+
+    async deleteTraspasoAxios(){
+        const { access_token } = this.props.authUser
+        const { traspaso } = this.state
+        await axios.delete(URL_DEV + 'traspasos/' + traspaso.id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { cuentas, traspasos } = response.data
+                this.setTraspasos(traspasos)
+                let aux =  []
+                cuentas.map((cuenta) => {
+                    aux.push({value: cuenta.numero, name: cuenta.nombre})
+                })
+                this.setState({
+                    ... this.state,
+                    modalDelete: false,
+                    cuentas: aux,
+                    form: this.cleanForm,
+                    traspaso: ''
+                })
+                swal({
+                    title: '¡Felicidades!',
+                    text: 'Eliminaste el traspaso con éxito',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
             },
             (error) => {
                 console.log(error, 'error')
@@ -374,7 +478,7 @@ class Traspasos extends Component{
                 data.append(element, form[element])
             }
         })
-        await axios.put(URL_DEV + 'traspasos/' + traspaso.id, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`, } }).then(
+        await axios.post(URL_DEV + 'traspasos/' + traspaso.id, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
                 const { cuentas, traspasos } = response.data
                 this.setTraspasos(traspasos)
@@ -385,7 +489,9 @@ class Traspasos extends Component{
                 this.setState({
                     ... this.state,
                     modal: false,
-                    cuentas: aux
+                    cuentas: aux,
+                    form: this.cleanForm,
+                    traspaso: ''
                 })
                 swal.close()
             },
@@ -417,7 +523,7 @@ class Traspasos extends Component{
 
     render(){
 
-        const { modal, cuentas, form, traspasos, traspaso } = this.state
+        const { modal, modalDelete, cuentas, form, traspasos, traspaso } = this.state
 
         return(
             <Layout active={'bancos'}  { ...this.props}>
@@ -427,8 +533,17 @@ class Traspasos extends Component{
                 <DataTable columns = { TRASPASOS_COLUMNS } data = { traspasos } />
                 <Modal show = { modal } handleClose={ this.handleClose } >
                     <TraspasoForm cuentas = { cuentas } form = { form } onChange = { this.onchange } onChangeAdjunto = { this.onChangeAdjunto } 
-                        deleteAdjunto = { this.deleteAdjunto } title = { traspaso.length > 0 ? "Nuevo traspaso" : 'Editar traspaso'} 
-                        onSubmit = { traspaso.length > 0 ? this.onSubmit : this.onSubmitEdit } />
+                        deleteAdjunto = { this.deleteAdjunto } title = { traspaso === '' ? "Nuevo traspaso" : 'Editar traspaso'} 
+                        onSubmit = { traspaso === '' ? this.onSubmit : this.onSubmitEdit } />
+                </Modal>
+                <Modal show = { modalDelete } handleClose={ this.handleCloseDelete } >
+                    <Subtitle className="my-3 text-center">
+                        ¿Estás seguro que deseas eliminar el traspaso?
+                    </Subtitle>
+                    <div className="d-flex justify-content-center mt-3">
+                        <Button icon='' onClick = { this.handleCloseDelete } text="Cancelar" className="mr-3" color="green"/>
+                        <Button icon='' onClick = { (e) => { this.safeDelete(e)() }} text="Continuar" color="red"/>
+                    </div>
                 </Modal>
             </Layout>
         )
