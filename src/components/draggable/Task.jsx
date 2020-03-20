@@ -52,21 +52,23 @@ class Task extends Component{
                         >
                             <div>
                                 {
-                                    _fecha_limite && _fecha_limite < 1 &&
+                                    _fecha_limite && _fecha_limite < 1 ?
                                         <div className="text-right">
                                             <Badge pill variant="danger" >
                                                 Tarea caducada
                                             </Badge>
                                         </div>
+                                        : ''
                                 }
                                 {
-                                    _fecha_limite && _fecha_limite >= 0 && _fecha_limite < 7 &&
+                                    (_fecha_limite && _fecha_limite >= 0 && _fecha_limite < 7) ?
                                         <div className="text-right">
                                             <Badge pill variant="warning" className="text-white">
                                                 <FontAwesomeIcon icon={faCalendarCheck} color="white" className="mr-2" />
                                                 Restan { _fecha_limite } días
                                             </Badge>
                                         </div>
+                                    : ''
                                 }
                             </div>
                             

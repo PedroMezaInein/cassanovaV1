@@ -9,6 +9,7 @@ import { Badge, Form } from 'react-bootstrap'
 class TareaForm extends Component{
 
     updateOrigen = value => {
+        console.log(value, 'select search update origen')
         const { onChange } = this.props
         onChange( { target: { name: 'origen', value: value.value } } )
     }
@@ -26,7 +27,7 @@ class TareaForm extends Component{
     render(){
 
         const { title, cuentas, form, onChange, onChangeAdjunto, deleteAdjunto, ... props } = this.props
-
+        console.log(cuentas, 'Cuentas')
         return(
             <Form { ... props}>
                 

@@ -59,6 +59,7 @@ class Traspasos extends Component{
             ... this.state,
             form
         })
+        console.log(name, value, 'Traspaso on change')
     }
 
     onChangeAdjunto = e => {

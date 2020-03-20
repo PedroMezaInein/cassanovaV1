@@ -32,6 +32,9 @@ const MiProyecto = Loader(() => import('./pages/MiProyecto') )
 const Cuentas = Loader(() => import('./pages/Bancos/Cuenta') )
 const EstadosCuenta = Loader(() => import('./pages/Bancos/EstadosCuenta') )
 const Traspasos = Loader(() => import('./pages/Bancos/Traspasos') )
+
+const Ingresos = Loader(() => import('./pages/Administracion/Ingresos') )
+
 class App extends Component{
     async componentDidMount(){
         const { access_token } = this.props.authUser
@@ -101,6 +104,8 @@ class App extends Component{
                 <Route path = "/usuarios/usuarios" exact component = { Usuarios } />
                 <Route path = "/usuarios/tareas" exact component = { Tareas } />
                 <Route path = "/usuarios/empresas" exact component ={ Empresas } />
+
+                <Route path = "/administracion/ingresos" exact component ={ Ingresos } />
 
                 <Route path = "/bancos/cuentas" exact component ={ Cuentas } />
                 <Route path = "/bancos/estados-cuenta" exact component ={ EstadosCuenta } />

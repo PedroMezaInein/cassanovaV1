@@ -9,6 +9,7 @@ import contactoLeadForm from './ContactoLeadForm'
 import clienteForm from './ClienteForm'
 import cuentaForm from './CuentaForm'
 import traspasoForm from './TraspasoForm'
+import ingresosForm from './administracion/IngresosForm'
 
 export const RegisterUserForm = registerUserForm
 export const EmpleadoForm = empleadoForm
@@ -21,3 +22,4 @@ export const ContactoLeadForm = contactoLeadForm
 export const ClienteForm = clienteForm
 export const CuentaForm = cuentaForm
 export const TraspasoForm = traspasoForm
+export const IngresosForm = ingresosForm
