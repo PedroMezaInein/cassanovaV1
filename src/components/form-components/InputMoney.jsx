@@ -14,13 +14,13 @@ class InputMoney extends Component{
     }
 
     render(){
-        const { error, onChange, placeholder, value  } = this.props
+        const { error, onChange, placeholder, value, prefix  } = this.props
         return(
             <div>
                 <Form.Label className="mt-2 mb-1 label-form">
                     {placeholder}
                 </Form.Label><br />
-                <NumberFormat value = { value } displayType = { 'input' } thousandSeparator = { true } prefix = { '$' } className="form-control w-100"
+                <NumberFormat value = { value } displayType = { 'input' } thousandSeparator = { true } prefix = { prefix } className="form-control w-100"
                     renderText = { value => <div> { value } </div> } onValueChange = { (values) => this.onChange(values) } placeholder = {placeholder} />
             </div>
         )

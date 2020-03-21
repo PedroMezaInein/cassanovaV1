@@ -109,7 +109,7 @@ function Table({ columns, data }){
                                 })
                             :
                                 <tr>
-                                    <td colsPan={columns.length}>
+                                    <td colSpan={columns.length}>
                                         <Subtitle className="text-center py-3" color="gold">
                                             No hay datos ☹
                                         </Subtitle>

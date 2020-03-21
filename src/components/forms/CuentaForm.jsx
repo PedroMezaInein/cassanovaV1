@@ -36,7 +36,7 @@ class LeadForm extends Component{
                     <div className="col-md-4">
                         {/* <Input required placeholder = "Ingresa el balance" type = "text" name = "balance" value = { form.balance }
                             onChange = { onChange } /> */}
-                        <InputMoney placeholder = "Ingresa el balance" value = { form.balance } name = "balance" onChange = { onChange }/>
+                        <InputMoney prefix = { '$' } placeholder = "Ingresa el balance" value = { form.balance } name = "balance" onChange = { onChange }/>
                     </div>
                     <div className="col-md-4">
                         <Select required name = 'tipo' options = { tipos } placeholder = 'Selecciona el tipo' value = { form.tipo }

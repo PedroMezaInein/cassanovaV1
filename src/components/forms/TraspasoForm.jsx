@@ -37,7 +37,7 @@ class TareaForm extends Component{
 
                 <div className="row mx-0">
                     <div className="col-md-4 px-2">
-                        <InputMoney name = "cantidad" value = { form.cantidad } onChange = { onChange } placeholder="Ingrese el monto de traspaso" />
+                        <InputMoney prefix = { '$' } name = "cantidad" value = { form.cantidad } onChange = { onChange } placeholder="Ingrese el monto de traspaso" />
                     </div>
                     <div className="col-md-4 px-2">
                         <SelectSearch options = { cuentas } value = { form.origen } onChange = { this.updateOrigen } placeholder="Cuenta origen"/>
