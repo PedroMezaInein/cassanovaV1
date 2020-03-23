@@ -403,10 +403,6 @@ export const INGRESOS_COLUMNS = [
         accessor: 'monto'
     },
     {
-        Header: 'Comisión',
-        accessor: 'comision'
-    },
-    {
         Header: 'Impuesto',
         accessor: 'impuesto'
     },

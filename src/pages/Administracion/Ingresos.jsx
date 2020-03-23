@@ -3,7 +3,7 @@ import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { Modal } from '../../components/singles'
 import { Button } from '../../components/form-components'
-import { faPlus, faTrash, faEdit } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faTrash, faEdit, faMoneyBill } from '@fortawesome/free-solid-svg-icons'
 import { IngresosForm } from '../../components/forms'
 import axios from 'axios'
 import { URL_DEV, INGRESOS_COLUMNS } from '../../constants'
@@ -38,7 +38,7 @@ class Ingresos extends Component{
             descripcion: '',
             numeroFactura: '',
             monto: '',
-            comision: '',
+            /* comision: '', */
             tipoImpuesto: 0,
             tipoPago: 0,
             estatusCompra: 0,
@@ -61,7 +61,7 @@ class Ingresos extends Component{
                 case 'descripcion':
                 case 'numeroFactura':
                 case 'monto':
-                case 'comision':
+                /* case 'comision': */
                     form[element] = ''
                     break;
                 case 'tipoImpuesto':
@@ -155,7 +155,6 @@ class Ingresos extends Component{
                     cliente: this.setTextTable(ingreso.cliente.empresa),
                     factura: this.setFacturaTable(ingreso),
                     monto: this.setMoneyTable(ingreso.monto),
-                    comision: this.setTextTable(ingreso.comision + ' %'),
                     impuesto: this.setTextTable(ingreso.tipo_impuesto.tipo),
                     tipoPago: this.setTextTable(ingreso.tipo_pago.tipo),
                     descripcion: this.setTextTable(ingreso.descripcion),
@@ -174,7 +173,7 @@ class Ingresos extends Component{
         return(
             <>
                 <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" /* onClick={(e) => this.openModalEdit(e)(cuenta)} */  text='' icon={faEdit} 
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalEdit(e)(ingreso)}  text='' icon={faEdit} 
                         color="transparent" />
                 </div>
                 <div className="d-flex align-items-center flex-column flex-md-row">
@@ -182,6 +181,14 @@ class Ingresos extends Component{
                          onClick={(e) => this.openModalDelete(e)(ingreso) } 
                         text='' icon={faTrash} color="red" />
                 </div>
+                {
+                    ingreso.factura ?
+                    <div className="d-flex align-items-center flex-column flex-md-row">
+                        <Button className="mx-2 my-2 my-md-0 small-button" 
+                            onClick={(e) => this.openModalDelete(e)(ingreso) } 
+                            text='' icon={faMoneyBill} color="transparent" />
+                    </div> : ''
+                }
             </>
         )
     }
@@ -290,10 +297,16 @@ class Ingresos extends Component{
         this.addIngresos()
     }
 
+    onSubmitEdit = e => {
+        e.preventDefault()
+        this.editIngreso()
+    }
+
     openModal = () => {
         this.clearForm()
         this.setState({
-            modal: true
+            modal: true,
+            ingreso: ''
         })
     }
 
@@ -301,7 +314,10 @@ class Ingresos extends Component{
         const { modal } = this.state
         this.clearForm()
         this.setState({
-            modal: !modal
+            modal: !modal,
+            ingreso: '',
+            subareas: [],
+            cuentas: []
         })
     }
 
@@ -325,6 +341,70 @@ class Ingresos extends Component{
     safeDelete = (e) => () => {
         e.preventDefault();
         this.deleteIngreso();
+    }
+
+    openModalEdit = (e) => ingreso => {
+        const { form } = this.state
+        let {cuentas, subareas} = this.state
+
+        console.log(form, 'BEFORE')
+        console.log(ingreso, 'INGRESO')
+
+        if(ingreso.cliente)
+            form.cliente =  ingreso.cliente.id.toString()
+        
+        if(ingreso.subarea){
+            let aux = []
+            ingreso.subarea.area.subareas.map((subarea) => {
+                aux.push( { value: subarea.id.toString(), name: subarea.nombre } )
+            })
+            subareas = aux
+            form.area = ingreso.subarea.area.id.toString()
+            form.subarea = ingreso.subarea.id.toString()
+            
+        }
+
+        if(ingreso.cuenta){
+            let aux = []
+            ingreso.cuenta.empresa.cuentas.map((cuenta) => {
+                aux.push( { value: cuenta.id.toString(), name: cuenta.nombre } )
+            })
+            cuentas = aux
+            form.empresa = ingreso.cuenta.empresa.id.toString()
+            form.cuenta = ingreso.cuenta.id.toString()
+            
+        }
+
+        form.rfc = ingreso.rfc
+        form.descripcion = ingreso.descripcion
+        form.numeroFactura = ingreso.numero_factura
+        form.monto = ingreso.monto
+        form.comision = ingreso.comision
+        form.fecha = new Date(ingreso.created_at)
+
+        if(ingreso.factura)
+            form.factura = 'Con factura'
+        else
+            form.factura = 'Sin factura'
+
+        if(ingreso.tipo_pago)
+            form.tipoPago = ingreso.tipo_pago.id
+
+        if(ingreso.tipo_impuesto)
+            form.tipoImpuesto = ingreso.tipo_impuesto.id
+
+        if(ingreso.estatus_compra)
+            form.estatusCompra = ingreso.estatus_compra.id
+
+        console.log(form, 'AFTER')
+        
+        this.setState({
+            ingreso: ingreso,
+            form,
+            modal: true,
+            cuentas,
+            subareas
+        })
     }
 
     async getIngresos(){
@@ -374,7 +454,13 @@ class Ingresos extends Component{
         const { form } = this.state
         await axios.post(URL_DEV + 'ingresos', form,  { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                
+                const { ingresos } = response.data
+                this.clearForm()
+                this.setState({
+                    ... this.state,
+                    ingresos: this.setIngresos(ingresos),
+                    modal: false
+                })
             },
             (error) => {
                 console.log(error, 'error')
@@ -441,8 +527,49 @@ class Ingresos extends Component{
         })
     }
 
+    async editIngreso(){
+        const { access_token } = this.props.authUser
+        const { ingreso, form } = this.state
+        await axios.put(URL_DEV + 'ingresos/' + ingreso.id, form,  { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { ingresos } = response.data
+                this.setState({
+                    ... this.state,
+                    modal: false,
+                    ingreso: '',
+                    ingresos: this.setIngresos(ingresos),
+                    cuentas: [],
+                    subareas: []
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error'
+            })
+        })
+    }
+
     render(){
-        const { modal, modalDelete, ingresos, empresas, cuentas, clientes, areas, subareas, tiposImpuestos, tiposPagos, estatusCompras, form } = this.state
+        const { modal, modalDelete, ingresos, empresas, cuentas, clientes, areas, subareas, tiposImpuestos, tiposPagos, estatusCompras, form, ingreso } = this.state
         return(
             <Layout active={'administracion'}  { ...this.props}>
                 <div className="text-right">
@@ -450,10 +577,10 @@ class Ingresos extends Component{
                 </div>
                 <DataTable columns = { INGRESOS_COLUMNS } data = { ingresos } />
                 <Modal show = { modal } handleClose = { this.handleClose }>
-                    <IngresosForm title = "Agregar un ingreso" empresas = { empresas } cuentas = { cuentas } clientes = { clientes } 
+                    <IngresosForm title = { ingreso === '' ? "Agregar un ingreso" : "Editar el ingreso" } empresas = { empresas } cuentas = { cuentas } clientes = { clientes } 
                         areas = { areas } subareas = { subareas } form = { form } onChange = {this.onChange} setCuentas = { this.setCuentas }
                         setSubareas = { this.setSubareas } tiposImpuestos = { tiposImpuestos }
-                        tiposPagos = { tiposPagos } estatusCompras = { estatusCompras } onSubmit = { this.onSubmit } />
+                        tiposPagos = { tiposPagos } estatusCompras = { estatusCompras } onSubmit = { ingreso === '' ? this.onSubmit : this.onSubmitEdit } />
                 </Modal>
                 <Modal show = { modalDelete } handleClose={ this.handleCloseDelete } >
                     <Subtitle className="my-3 text-center">

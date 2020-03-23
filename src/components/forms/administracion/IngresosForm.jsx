@@ -120,9 +120,9 @@ class IngresosForm extends Component{
                     <div className = "col-md-6 col-lg-4 px-2">
                         <InputMoney prefix = { '$' } name = "monto" value = { form.monto } onChange = { onChange } placeholder="Ingrese el monto" />
                     </div>
-                    <div className = "col-md-6 col-lg-4 px-2">
+                    {/* <div className = "col-md-6 col-lg-4 px-2">
                         <InputMoney prefix = { '%' } name = "comision" value = { form.comision } onChange = { onChange } placeholder="Ingrese el porcentaje de comisión" />
-                    </div>
+                    </div> */}
                     <div className = "col-md-6 col-lg-4 px-2">
                         <Select required name = 'estatusCompra' options = { estatusCompras } 
                             placeholder = 'Selecciona el estatus de la compra' value = { form.estatusCompra }
