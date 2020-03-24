@@ -34,11 +34,8 @@ class Ingresos extends Component{
             subarea: '',
             cliente: '',
             cuenta: '',
-            rfc: '',
-            descripcion: '',
             numeroFactura: '',
             monto: '',
-            /* comision: '', */
             tipoImpuesto: 0,
             tipoPago: 0,
             estatusCompra: 0,
@@ -57,11 +54,8 @@ class Ingresos extends Component{
                 case 'subarea':
                 case 'cliente':
                 case 'cuenta':
-                case 'rfc':
                 case 'descripcion':
-                case 'numeroFactura':
                 case 'monto':
-                /* case 'comision': */
                     form[element] = ''
                     break;
                 case 'tipoImpuesto':
@@ -155,13 +149,13 @@ class Ingresos extends Component{
                     cliente: this.setTextTable(ingreso.cliente.empresa),
                     factura: this.setFacturaTable(ingreso),
                     monto: this.setMoneyTable(ingreso.monto),
-                    impuesto: this.setTextTable(ingreso.tipo_impuesto.tipo),
+                    impuesto: this.setTextTable( ingreso.tipo_impuesto ? ingreso.tipo_impuesto.tipo : 'Sin definir'),
                     tipoPago: this.setTextTable(ingreso.tipo_pago.tipo),
                     descripcion: this.setTextTable(ingreso.descripcion),
                     area: this.setTextTable(ingreso.subarea.area.nombre),
                     subarea: this.setTextTable(ingreso.subarea.nombre),
                     estatusCompra: this.setTextTable(ingreso.estatus_compra.estatus),
-                    total: this.setMoneyTable(ingreso.total),
+                    total: this.setMoneyTable(ingreso.total), 
                     fecha: this.setDateTable(ingreso.created_at)
                 }
             )
@@ -235,34 +229,13 @@ class Ingresos extends Component{
     }
 
     setFacturaTable = ingreso => {
-        if(ingreso.factura)
-            return(
-                <div>
-                    <Small className = "mr-1" >
-                        <B color = "gold">
-                            RFC: 
-                        </B>
-                    </Small>
-                    <Small>
-                        {ingreso.rfc}
-                    </Small>
-                    <br />
-                    <Small className = "mr-2" >
-                        <B color = "gold">
-                            # de factura: 
-                        </B>
-                    </Small>
-                    <Small>
-                        {ingreso.numero_factura}
-                    </Small>
-                </div>
-            )
-        else
-            return(
-                <Small>
-                    No requiere factura
-                </Small>
-            )
+        return(
+            <Small>
+                {
+                    ingreso.factura ? 'Con factura' : 'Sin factura'
+                }
+            </Small>
+        )
     }
 
     setMoneyTable = value => {
@@ -537,7 +510,7 @@ class Ingresos extends Component{
                     ... this.state,
                     modal: false,
                     ingreso: '',
-                    ingresos: this.setIngresos(ingresos),
+                    /* ingresos: this.setIngresos(ingresos), */
                     cuentas: [],
                     subareas: []
                 })

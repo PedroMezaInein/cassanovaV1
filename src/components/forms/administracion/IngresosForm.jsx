@@ -84,19 +84,20 @@ class IngresosForm extends Component{
                     {
                         form.factura === 'Con factura' &&
                             <>
-                                <div className = "col-md-6 col-lg-4 px-2">
+                                {/* <div className = "col-md-6 col-lg-4 px-2">
                                     <Input value = { form.rfc } name = "rfc" placeholder = "RFC" onChange = { onChange } />
                                 </div>
                                 <div className = "col-md-6 col-lg-4 px-2">
                                     <Input value = { form.numeroFactura } name = "numeroFactura" placeholder = "Número de factura" onChange = { onChange } />
+                                </div> */}
+                                <div className = "col-md-6 col-lg-4 px-2">
+                                    <Select required name = 'tipoImpuesto' options = { tiposImpuestos } 
+                                        placeholder = 'Selecciona la tasa de impuestos' value = { form.tipoImpuesto }
+                                        onChange = { onChange } />
                                 </div>
                             </>
                     }
-                    <div className = "col-md-6 col-lg-4 px-2">
-                        <Select required name = 'tipoImpuesto' options = { tiposImpuestos } 
-                            placeholder = 'Selecciona la tasa de impuestos' value = { form.tipoImpuesto }
-                            onChange = { onChange } />
-                    </div>
+                    
                     <div className = "col-md-6 col-lg-4 px-2">
                         <Select required name = 'tipoPago' options = { tiposPagos } 
                             placeholder = 'Selecciona el tipo de pago' value = { form.tipoPago }
