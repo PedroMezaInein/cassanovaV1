@@ -431,6 +431,10 @@ export const INGRESOS_COLUMNS = [
         accessor: 'estatusCompra'
     },
     {
+        Header: 'Adjuntos',
+        accessor: 'adjuntos',
+    },
+    {
         Header: 'Fecha',
         accessor: 'fecha',
     },

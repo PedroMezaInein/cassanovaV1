@@ -171,7 +171,8 @@ class Ingresos extends Component{
                     area: this.setTextTable(ingreso.subarea.area.nombre),
                     subarea: this.setTextTable(ingreso.subarea.nombre),
                     estatusCompra: this.setTextTable(ingreso.estatus_compra.estatus),
-                    total: this.setMoneyTable(ingreso.total), 
+                    total: this.setMoneyTable(ingreso.total),
+                    adjuntos: this.setAdjuntosTable(ingreso),
                     fecha: this.setDateTable(ingreso.created_at)
                 }
             )
@@ -203,6 +204,45 @@ class Ingresos extends Component{
         )
     }
 
+    setAdjuntosTable = ingreso => {
+        
+        return(
+            <ul>
+                {
+                    ingreso.pago === null && ingreso.presupuesto === null ?
+                        <li>
+                            <Small>
+                                Sin adjuntos
+                            </Small>
+                        </li>
+                    : ''
+                }
+                {
+                    ingreso.pago !== null ?
+                        <li>
+                            <a href={ingreso.pago.url} target="_blank">
+                                <Small>
+                                    Pago
+                                </Small>
+                            </a>
+                        </li>
+                    : ''
+                }
+                {
+                    ingreso.presupuesto !== null ?
+                        <li>
+                            <a href={ingreso.presupuesto.url} target="_blank">
+                                <Small>
+                                    Presupuesto
+                                </Small>
+                            </a>
+                        </li>
+                    : ''
+                }
+            </ul>
+        )
+    }
+    
     setCuentaTable = (cuenta) => {
         return(
             <div>
@@ -557,7 +597,24 @@ class Ingresos extends Component{
     async editIngreso(){
         const { access_token } = this.props.authUser
         const { ingreso, form } = this.state
-        await axios.put(URL_DEV + 'ingresos/' + ingreso.id, form,  { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        const data = new FormData();
+        let aux = Object.keys(form)
+        aux.map( (element) => {
+            if(element === 'fecha')
+                data.append(element, (new Date(form[element])).toDateString())
+            else{
+                if(element === 'presupuesto' || element === 'pago')
+                {
+                    data.append(element.toString() +'_file' , form[element].file)
+                    data.append(element.toString() +'_name' , form[element].name)
+                    data.append(element.toString() +'_value' , form[element].value)
+                }
+                else
+                    data.append(element, form[element])
+            }
+        })
+        data.append('id', ingreso.id)
+        await axios.post(URL_DEV + 'ingresos/edit', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { ingresos } = response.data
                 this.setState({
