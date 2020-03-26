@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { Subtitle } from '../../texts'
-import { SelectSearch, Select, Button, RadioGroup, Input, Calendar, InputMoney } from '../../form-components'
+import { SelectSearch, Select, Button, RadioGroup, Input, Calendar, InputMoney, FileInput } from '../../form-components'
 
 class IngresosForm extends Component{
 
@@ -38,7 +38,8 @@ class IngresosForm extends Component{
     }
 
     render(){
-        const { title, empresas, cuentas, areas, subareas, clientes, tiposImpuestos, tiposPagos, estatusCompras, form, onChange, ... props} = this.props
+        const { title, empresas, cuentas, areas, subareas, clientes, tiposImpuestos, tiposPagos,
+            estatusCompras, form, onChange, onChangeFile, clearAdjunto, ... props} = this.props
         console.log(empresas, 'empresas')
         return(
             <Form { ... props}>
@@ -128,6 +129,30 @@ class IngresosForm extends Component{
                         <Select required name = 'estatusCompra' options = { estatusCompras } 
                             placeholder = 'Selecciona el estatus de la compra' value = { form.estatusCompra }
                             onChange = { onChange } />
+                    </div>
+                    <div className = "col-md-4 px-2 ">
+                        <FileInput 
+                            onChangeAdjunto = { onChangeFile } 
+                            placeholder = "Presupuesto"
+                            value = {form.presupuesto.value}
+                            name = "presupuesto"
+                            id = "presupuesto"
+                            accept = "application/pdf, image/*" 
+                            files = { form.presupuesto.name === '' ? [] : [ {name: form.presupuesto.name, key: 1}] }
+                            deleteAdjunto = { (e) => { clearAdjunto('presupuesto') }}
+                            />
+                    </div>
+                    <div className = "col-md-4 px-2 ">
+                        <FileInput 
+                            onChangeAdjunto = { onChangeFile } 
+                            placeholder = "Pago"
+                            value = {form.pago.value}
+                            name = "pago"
+                            id = "pago"
+                            accept = "application/pdf, image/*" 
+                            files = { form.pago.name === '' ? [] : [ {name: form.pago.name, key: 1}] }
+                            deleteAdjunto = { (e) => { clearAdjunto('pago') }}
+                            />
                     </div>
                     <div className = " col-md-12 px-2">
                         <Input as = "textarea" placeholder = "Descripción" rows = "3" value = { form.descripcion }

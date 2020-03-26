@@ -7,6 +7,7 @@ import calendar from './Calendar'
 import toggleButton from './ToggleButton'
 import optionsCheckbox from './OptionsCheckbox'
 import selectSearch from './SelectSearch'
+import fileInput from './FileInput'
 
 export const Button = button
 export const Input = input
@@ -17,3 +18,4 @@ export const Calendar = calendar
 export const ToggleButton = toggleButton
 export const OptionsCheckbox = optionsCheckbox
 export const SelectSearch = selectSearch
+export const FileInput = fileInput

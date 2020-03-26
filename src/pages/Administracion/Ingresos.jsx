@@ -40,7 +40,17 @@ class Ingresos extends Component{
             tipoPago: 0,
             estatusCompra: 0,
             factura: 'Sin factura',
-            fecha: new Date()
+            fecha: new Date(),
+            presupuesto:{
+                name: '',
+                file: '',
+                value: ''
+            },
+            pago:{
+                name: '',
+                file: '',
+                value: ''
+            }
         }
     }
 
@@ -68,6 +78,12 @@ class Ingresos extends Component{
                     break;
                 case 'fecha':
                     form[element] = new Date()
+                    break;
+                case 'presupuesto':
+                case 'pago':
+                    form[element].file = ''
+                    form[element].name = ''
+                    form[element].value = ''
                     break;
                 default:
                     break;
@@ -262,7 +278,29 @@ class Ingresos extends Component{
             ... this.state,
             form
         })
-        console.log(name, value, 'Ingresos on change')
+    }
+
+    onChangeFile = e => {
+        const { form } = this.state
+        const { files, value, name } = e.target
+        form[name].file = files[0]
+        form[name].value = value
+        form[name].name = files[0].name
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
+    clearAdjunto = name => {
+        const { form } = this.state
+        form[name].file = ''
+        form[name].name = ''
+        form[name].value = ''
+        this.setState({
+            ... this.state,
+            form
+        })
     }
 
     onSubmit = e => {
@@ -425,7 +463,23 @@ class Ingresos extends Component{
     async addIngresos(){
         const { access_token } = this.props.authUser
         const { form } = this.state
-        await axios.post(URL_DEV + 'ingresos', form,  { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        const data = new FormData();
+        let aux = Object.keys(form)
+        aux.map( (element) => {
+            if(element === 'fecha')
+                data.append(element, (new Date(form[element])).toDateString())
+            else{
+                if(element === 'presupuesto' || element === 'pago')
+                {
+                    data.append(element.toString() +'_file' , form[element].file)
+                    data.append(element.toString() +'_name' , form[element].name)
+                    data.append(element.toString() +'_value' , form[element].value)
+                }
+                else
+                    data.append(element, form[element])
+            }
+        })
+        await axios.post(URL_DEV + 'ingresos', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { ingresos } = response.data
                 this.clearForm()
@@ -552,7 +606,7 @@ class Ingresos extends Component{
                 <Modal show = { modal } handleClose = { this.handleClose }>
                     <IngresosForm title = { ingreso === '' ? "Agregar un ingreso" : "Editar el ingreso" } empresas = { empresas } cuentas = { cuentas } clientes = { clientes } 
                         areas = { areas } subareas = { subareas } form = { form } onChange = {this.onChange} setCuentas = { this.setCuentas }
-                        setSubareas = { this.setSubareas } tiposImpuestos = { tiposImpuestos }
+                        setSubareas = { this.setSubareas } tiposImpuestos = { tiposImpuestos } onChangeFile = { this.onChangeFile } clearAdjunto = { this.clearAdjunto }
                         tiposPagos = { tiposPagos } estatusCompras = { estatusCompras } onSubmit = { ingreso === '' ? this.onSubmit : this.onSubmitEdit } />
                 </Modal>
                 <Modal show = { modalDelete } handleClose={ this.handleCloseDelete } >
