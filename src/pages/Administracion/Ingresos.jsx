@@ -3,21 +3,26 @@ import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { Modal } from '../../components/singles'
 import { Button } from '../../components/form-components'
-import { faPlus, faTrash, faEdit, faMoneyBill } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faTrash, faEdit, faMoneyBill, faFileAlt } from '@fortawesome/free-solid-svg-icons'
 import { IngresosForm } from '../../components/forms'
 import axios from 'axios'
-import { URL_DEV, INGRESOS_COLUMNS } from '../../constants'
+import { URL_DEV, INGRESOS_COLUMNS, GOLD } from '../../constants'
 import { DataTable } from '../../components/tables'
 import { Small, B, Subtitle } from '../../components/texts'
+import { FileInput } from '../../components/form-components'
 import Moment from 'react-moment'
 import NumberFormat from 'react-number-format';
 import swal from 'sweetalert'
+import { Form } from 'react-bootstrap'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
 
 class Ingresos extends Component{
 
     state = {
         modal: false,
         modalDelete: false,
+        modalFactura: false,
         empresas: [],
         clientes: [],
         areas: [],
@@ -47,6 +52,11 @@ class Ingresos extends Component{
                 value: ''
             },
             pago:{
+                name: '',
+                file: '',
+                value: ''
+            },
+            facturas:{
                 name: '',
                 file: '',
                 value: ''
@@ -81,6 +91,7 @@ class Ingresos extends Component{
                     break;
                 case 'presupuesto':
                 case 'pago':
+                case 'facturas':
                     form[element].file = ''
                     form[element].name = ''
                     form[element].value = ''
@@ -189,14 +200,14 @@ class Ingresos extends Component{
                 </div>
                 <div className="d-flex align-items-center flex-column flex-md-row">
                     <Button className="mx-2 my-2 my-md-0 small-button" 
-                         onClick={(e) => this.openModalDelete(e)(ingreso) } 
+                        onClick={(e) => this.openModalDelete(e)(ingreso) } 
                         text='' icon={faTrash} color="red" />
                 </div>
                 {
                     ingreso.factura ?
                     <div className="d-flex align-items-center flex-column flex-md-row">
                         <Button className="mx-2 my-2 my-md-0 small-button" 
-                            onClick={(e) => this.openModalDelete(e)(ingreso) } 
+                            onClick={(e) => this.openModalFacturar(e)(ingreso) } 
                             text='' icon={faMoneyBill} color="transparent" />
                     </div> : ''
                 }
@@ -285,13 +296,30 @@ class Ingresos extends Component{
     }
 
     setFacturaTable = ingreso => {
-        return(
-            <Small>
-                {
-                    ingreso.factura ? 'Con factura' : 'Sin factura'
-                }
-            </Small>
-        )
+        if(ingreso.factura){
+            console.log('SI')
+            return(
+                <Small>
+                    {
+                        ingreso.facturas ? 
+                            <a href={ingreso.facturas.adjunto.url} target="_blank">
+                                <Small>
+                                    <FontAwesomeIcon color = { GOLD } icon = { faFileAlt } className="mr-2" />
+                                    Factura
+                                </Small>
+                            </a>
+                            : ''
+                    }
+                </Small>
+            )
+        }
+        else{
+            return(
+                <Small>
+                    Sin factura
+                </Small>
+            )
+        }
     }
 
     setMoneyTable = value => {
@@ -345,12 +373,32 @@ class Ingresos extends Component{
 
     onSubmit = e => {
         e.preventDefault()
+        swal({
+            title: '¡Un momento!',
+            text: 'La información está siendo procesada.',
+            buttons: false
+        })
         this.addIngresos()
     }
 
     onSubmitEdit = e => {
+        swal({
+            title: '¡Un momento!',
+            text: 'La información está siendo procesada.',
+            buttons: false
+        })
         e.preventDefault()
         this.editIngreso()
+    }
+
+    onSaveFactura = e => {
+        e.preventDefault()
+        swal({
+            title: '¡Un momento!',
+            text: 'La información está siendo procesada.',
+            buttons: false
+        })
+        this.saveFactura()
     }
 
     openModal = () => {
@@ -389,6 +437,30 @@ class Ingresos extends Component{
         })
     }
 
+    openModalFacturar = e => ingreso =>{
+        const {form} = this.state
+        if(ingreso.facturas){
+            if(ingreso.facturas.adjunto)
+                form.facturas.name = 'Factura.xml'
+        }
+        this.setState({
+            ... this.state,
+            ingreso: ingreso,
+            modalFactura: true,
+            form
+        })
+    }
+
+    handleCloseFactura = () => {
+        this.clearForm()
+        const { modalFactura } = this.state
+        this.setState({
+            ... this.state,
+            ingreso: '',
+            modalFactura: !modalFactura
+        })
+    }
+
     safeDelete = (e) => () => {
         e.preventDefault();
         this.deleteIngreso();
@@ -397,9 +469,6 @@ class Ingresos extends Component{
     openModalEdit = (e) => ingreso => {
         const { form } = this.state
         let {cuentas, subareas} = this.state
-
-        console.log(form, 'BEFORE')
-        console.log(ingreso, 'INGRESO')
 
         if(ingreso.cliente)
             form.cliente =  ingreso.cliente.id.toString()
@@ -447,7 +516,15 @@ class Ingresos extends Component{
         if(ingreso.estatus_compra)
             form.estatusCompra = ingreso.estatus_compra.id
 
-        console.log(form, 'AFTER')
+        if(ingreso.presupuesto)
+        {
+            form.presupuesto.name = ingreso.presupuesto.name
+        }
+
+        if(ingreso.pago)
+        {
+            form.pago.name = ingreso.pago.name
+        }
         
         this.setState({
             ingreso: ingreso,
@@ -528,6 +605,64 @@ class Ingresos extends Component{
                     ingresos: this.setIngresos(ingresos),
                     modal: false
                 })
+                swal({
+                    title: '¡Felicidades!',
+                    text: 'El ingreso fue registrado con éxito',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error'
+            })
+        })
+    }
+
+    async saveFactura(){
+        const { access_token } = this.props.authUser
+        const { form, ingreso } = this.state
+        const data = new FormData();
+        data.append('factura_file' , form['facturas'].file)
+        data.append('factura_name' , form['facturas'].name)
+        data.append('factura_value' , form['facturas'].value)
+        data.append('id' , ingreso.id)
+        await axios.post(URL_DEV + 'ingresos/factura', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { ingresos } = response.data
+                this.clearForm()
+                this.setState({
+                    ... this.state,
+                    ingresos: this.setIngresos(ingresos),
+                    modalFactura: false
+                })
+                swal({
+                    title: '¡Felicidades!',
+                    text: 'La factura fue registrado con éxito',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
             },
             (error) => {
                 console.log(error, 'error')
@@ -566,6 +701,13 @@ class Ingresos extends Component{
                     modalDelete: false,
                     ingreso: '',
                     ingresos: this.setIngresos(ingresos)
+                })
+                swal({
+                    title: '¡Felicidades!',
+                    text: 'El ingreso fue eliminado con éxito',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
                 })
             },
             (error) => {
@@ -625,6 +767,13 @@ class Ingresos extends Component{
                     cuentas: [],
                     subareas: []
                 })
+                swal({
+                    title: '¡Felicidades!',
+                    text: 'El ingreso fue editado con éxito',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
             },
             (error) => {
                 console.log(error, 'error')
@@ -653,7 +802,7 @@ class Ingresos extends Component{
     }
 
     render(){
-        const { modal, modalDelete, ingresos, empresas, cuentas, clientes, areas, subareas, tiposImpuestos, tiposPagos, estatusCompras, form, ingreso } = this.state
+        const { modal, modalDelete, modalFactura, ingresos, empresas, cuentas, clientes, areas, subareas, tiposImpuestos, tiposPagos, estatusCompras, form, ingreso } = this.state
         return(
             <Layout active={'administracion'}  { ...this.props}>
                 <div className="text-right">
@@ -674,6 +823,29 @@ class Ingresos extends Component{
                         <Button icon='' onClick = { this.handleCloseDelete } text="Cancelar" className="mr-3" color="green"/>
                         <Button icon='' onClick = { (e) => { this.safeDelete(e)() }} text="Continuar" color="red"/>
                     </div>
+                </Modal>
+                <Modal show = { modalFactura } handleClose={ this.handleCloseFactura } >
+                    <Form onSubmit = { this.onSaveFactura } >
+                        <Subtitle className="text-center" color="gold">
+                            Facturación
+                        </Subtitle>
+                        <div className = "px-2 ">
+                            <FileInput 
+                                onChangeAdjunto = { this.onChangeFile } 
+                                placeholder = "Factura"
+                                value = {form.facturas.value}
+                                name = "facturas"
+                                id = "factura"
+                                accept = "application/xml" 
+                                files = { form.facturas.name === '' ? [] : [ {name: form.facturas.name, key: 1}] }
+                                deleteAdjunto = { (e) => { this.clearAdjunto('facturas') }}
+                                />
+                        </div>
+                
+                        <div className="mt-3 text-center">
+                            <Button icon='' className="mx-auto" type="submit" text="Enviar" />
+                        </div>
+                    </Form>
                 </Modal>
             </Layout>
         )

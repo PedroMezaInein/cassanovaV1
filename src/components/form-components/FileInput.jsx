@@ -7,7 +7,7 @@ import { Badge } from 'react-bootstrap';
 
 class FileInput extends Component{
     render(){
-        const { onChangeAdjunto, placeholder, value, name, id, accept, files, deleteAdjunto } = this.props
+        const { onChangeAdjunto, placeholder, value, name, id, accept, files, deleteAdjunto, ... props} = this.props
         return(
             <>
                 <label className = "mt-2 mb-1 label-form form-label">
@@ -16,7 +16,7 @@ class FileInput extends Component{
                 <div className="image-upload d-flex align-items-center">
                     <div className={'no-label'}>
                         <Input onChange = { onChangeAdjunto } value = { value } name = { name } type = "file" id = { id }
-                            accept = { accept } />
+                            accept = { accept } { ... props} />
                     </div>
                     <label htmlFor = {id}>
                         <FontAwesomeIcon className = "p-0 font-unset mr-2" icon={  faPaperclip } color={ DARK_BLUE } />

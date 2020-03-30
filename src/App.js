@@ -34,6 +34,7 @@ const EstadosCuenta = Loader(() => import('./pages/Bancos/EstadosCuenta') )
 const Traspasos = Loader(() => import('./pages/Bancos/Traspasos') )
 
 const Ingresos = Loader(() => import('./pages/Administracion/Ingresos') )
+const Facturacion = Loader(() => import('./pages/Administracion/Facturacion') )
 
 class App extends Component{
     async componentDidMount(){
@@ -106,6 +107,7 @@ class App extends Component{
                 <Route path = "/usuarios/empresas" exact component ={ Empresas } />
 
                 <Route path = "/administracion/ingresos" exact component ={ Ingresos } />
+                <Route path = "/administracion/facturacion" exact component ={ Facturacion } />
 
                 <Route path = "/bancos/cuentas" exact component ={ Cuentas } />
                 <Route path = "/bancos/estados-cuenta" exact component ={ EstadosCuenta } />
