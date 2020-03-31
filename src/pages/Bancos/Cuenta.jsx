@@ -480,6 +480,7 @@ class Cuentas extends Component{
         data.append('adjunto', adjuntoFile)
         data.append('adjuntoName', adjuntoName)
         data.append('id', cuenta.id)
+        data.append('fecha', (new Date(fecha)).toDateString())
         await axios.post(URL_DEV + 'cuentas/estado', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { cuentas, cuenta } = response.data
@@ -677,39 +678,53 @@ class Cuentas extends Component{
                         Estados de cuenta para <B color="gold">{cuenta && cuenta.nombre}</B>
                     </Subtitle>
                     <Form onSubmit = { this.onSubmitEstado } >
-                        <div className="d-flex px-md-4">
-                            <div className="d-flex align-items-center">
-                                <div className="image-upload d-flex align-items-center">
-                                    <div className="no-label">
-                                        <Input
-                                            onChange = {this.onChangeAdjunto}
-                                            value = {adjunto}
-                                            name="adjunto" 
-                                            type="file" 
-                                            id="adjunto"
-                                            accept="application/pdf"/>
-                                    </div>
-                                    <label htmlFor="adjunto">
-                                        <FontAwesomeIcon className = "p-0 font-unset mr-2" icon={ faPaperclip } color={ DARK_BLUE } />
-                                    </label>
-                                    {
-                                        adjuntoName &&
-                                            <Badge variant="light" className="d-flex px-3 align-items-center" pill>
-                                                <FontAwesomeIcon icon={faTimes} onClick={ (e) => { e.preventDefault(); this.deleteAdjunto() } } className=" small-button mr-2" />
-                                                {
-                                                    adjuntoName
-                                                }
-                                            </Badge>
-                                    }
-                                </div>
+                        <div className="row mx-0">
+                            <div className="col-md-6 px-2">
+                                <Calendar 
+                                    onChangeCalendar = { this.onChangeCalendar }
+                                    placeholder = "Fecha"
+                                    name = "fecha"
+                                    value = { fecha }
+                                    />
                             </div>
-                            {
-                                adjuntoName && 
-                                <div className="d-flex align-items-center justify-content-center">
-                                    <Button className="ml-4" type="submit" text="Enviar" />
+                            <div className="col-md-6 px-2">
+                                <div className="d-flex align-items-center">
+                                    <div className="image-upload d-flex align-items-center">
+                                        <div className="no-label">
+                                            <Input
+                                                onChange = {this.onChangeAdjunto}
+                                                value = {adjunto}
+                                                name="adjunto" 
+                                                type="file" 
+                                                id="adjunto"
+                                                accept="application/pdf"/>
+                                        </div>
+                                        <label htmlFor="adjunto">
+                                            <FontAwesomeIcon className = "p-0 font-unset mr-2" icon={ faPaperclip } color={ DARK_BLUE } />
+                                        </label>
+                                        {
+                                            adjuntoName &&
+                                                <Badge variant="light" className="d-flex px-3 align-items-center" pill>
+                                                    <FontAwesomeIcon icon={faTimes} onClick={ (e) => { e.preventDefault(); this.deleteAdjunto() } } className=" small-button mr-2" />
+                                                    {
+                                                        adjuntoName
+                                                    }
+                                                </Badge>
+                                        }
+                                    </div>
                                 </div>
-                            }
                                 
+                            </div>
+                        </div>
+                        <div className="row mx-0">
+                            <div className="col-12 px-2 text-center">
+                                {
+                                    adjuntoName && 
+                                    <div className="d-flex align-items-center justify-content-center">
+                                        <Button className="ml-4" type="submit" text="Enviar" />
+                                    </div>
+                                }
+                            </div>
                         </div>
                     </Form>
                     {

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { faPlus, faTrash, faEdit, faPaperclip, faTimes } from '@fortawesome/free-solid-svg-icons'
-import { Button, Select, SelectSearch } from '../../components/form-components'
+import { Button, Select, SelectSearch, Calendar } from '../../components/form-components'
 import { Modal } from '../../components/singles'
 import axios from 'axios'
 import swal from 'sweetalert'
@@ -25,6 +25,7 @@ class EstadosCuenta extends Component{
         adjuntoFile: '',
         cuentas: [],
         cuenta: '',
+        fecha: new Date(),
         estados: []
     }
 
@@ -197,13 +198,22 @@ class EstadosCuenta extends Component{
             adjuntoName: '',
             adjuntoFile: '',
             adjunto: '',
-            cuenta: ''
+            cuenta: '',
+            fecha: new Date()
         })
     }
 
     openModal = () => {
         this.setState({
-            modal: true
+            modal: true,
+            fecha: new Date()
+        })
+    }
+
+    handleChangeDate = date => {
+        this.setState({
+            ... this.state,
+            fecha: date
         })
     }
 
@@ -255,11 +265,12 @@ class EstadosCuenta extends Component{
 
     async addEstadoAxios(){
         const { access_token } = this.props.authUser
-        const { adjunto, adjuntoName, adjuntoFile, cuenta } = this.state
+        const { adjunto, adjuntoName, adjuntoFile, cuenta, fecha } = this.state
         const data = new FormData();
         data.append('adjunto', adjuntoFile)
         data.append('adjuntoName', adjuntoName)
         data.append('cuenta', cuenta)
+        data.append('fecha', (new Date(fecha)).toDateString())
         await axios.post(URL_DEV + 'estados-cuentas', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { estados } = response.data
@@ -349,7 +360,7 @@ class EstadosCuenta extends Component{
 
 
     render(){
-        const { modal, adjunto, adjuntoName, adjuntoFile, cuentas, cuenta, estados } = this.state
+        const { modal, adjunto, adjuntoName, adjuntoFile, cuentas, cuenta, estados, fecha } = this.state
         return(
             <Layout active={'bancos'}  { ...this.props}>
                 <div className="text-right">
@@ -371,7 +382,15 @@ class EstadosCuenta extends Component{
                                     onChange = { this.updateCuenta }
                                     />
                             </div>
-                            <div className="col-md-8 px-2 d-flex align-items-center">
+                            <div className="col-md-4 px-2">
+                            <Calendar 
+                                onChangeCalendar = { this.handleChangeDate }
+                                placeholder = "Fecha"
+                                name = "fecha"
+                                value = { fecha }
+                                />
+                            </div>
+                            <div className="col-md-4 px-2 d-flex align-items-center">
                                 <div className="image-upload d-flex align-items-center">
                                     <div className="no-label">
                                         <Input

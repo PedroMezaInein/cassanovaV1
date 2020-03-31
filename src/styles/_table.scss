@@ -13,7 +13,7 @@
             tr{
                 &:not(:last-child){
                     border: solid;
-                    border-width: 0 0 2px 0;
+                    border-width: 0 0 0.5px 0;
                     border-color: $dark-blue;
                 }
             }
@@ -40,6 +40,8 @@
         th, td{
             padding: 0.25rem 1rem;
         }
+        tr:nth-child(odd) {background: #F0F0F0}
+        tr:nth-child(even) {background: #FFFFFF}
         .logo{
             max-width: 200px;
             height: auto;

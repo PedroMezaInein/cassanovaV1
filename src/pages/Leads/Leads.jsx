@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { DataTable } from '../../components/tables'
-import { faPlus, faEdit, faTrash, faPhone, faEnvelope, faSync} from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faEdit, faTrash, faPhone, faEnvelope, faSync, faTruckLoading} from '@fortawesome/free-solid-svg-icons'
 import { Button } from '../../components/form-components'
 import axios from 'axios'
 import swal from 'sweetalert'
@@ -35,7 +35,8 @@ class Leads extends Component{
             origen: 0,
             servicios: []
         },
-        leadId : ''
+        leadId : '',
+        convertir: ''
     }
     constructor(props){
         super(props)
@@ -72,11 +73,16 @@ class Leads extends Component{
 
     setActions = (lead) => {
         return(
-            <div className="d-flex align-items-center flex-column flex-md-row">
-                <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalEditLead(e)(lead)} text='' icon={faEdit} color="yellow" />
-                <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalSafeDelete(e)(lead)} text='' icon={faTrash} color="red" />
-                <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalSafeConvert(e)(lead)} text='' icon={faSync} color="transparent" />
-            </div>
+            <>
+                <div className="d-flex align-items-center flex-column flex-md-row">
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalEditLead(e)(lead)} text='' icon={faEdit} color="yellow" />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalSafeDelete(e)(lead)} text='' icon={faTrash} color="red" />
+                </div>
+                <div className="d-flex align-items-center flex-column flex-md-row">
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalSafeConvert(e)(lead)} text='' icon={faSync} color="transparent" />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalSafeConvertProveedor(e)(lead)} text='' icon={faTruckLoading} color="transparent" />
+                </div>
+            </>
         )
     }
 
@@ -245,6 +251,18 @@ class Leads extends Component{
         this.setState({
             ... this.state,
             modalConvert: true,
+            convertir: 'Prospecto',
+            leadId
+        })
+    }
+
+    openModalSafeConvertProveedor = (e) => (lead) => {
+        let { leadId } = this.state
+        leadId = lead
+        this.setState({
+            ... this.state,
+            modalConvert: true,
+            convertir: 'Proveedor',
             leadId
         })
     }
@@ -281,7 +299,8 @@ class Leads extends Component{
         this.setState({
             ... this.state,
             modalConvert: !this.state.modalConvert,
-            leadId : ''
+            convertir: '',
+            leadId: ''
         })
     }
     
@@ -562,7 +581,7 @@ class Leads extends Component{
     }
 
     render(){
-        const { leads, modalAdd, form, origenes, empresas, servicios, title, tipoForm, modalDelete, leadId, modalConvert } = this.state
+        const { leads, modalAdd, form, origenes, empresas, servicios, title, tipoForm, modalDelete, leadId, modalConvert, convertir } = this.state
         return(
             <Layout active={'leads'}  { ...this.props}>
                 <div className="text-right">
@@ -595,7 +614,7 @@ class Leads extends Component{
                 </Modal>
                 <Modal show={modalConvert} handleClose={this.handleCloseConvertModal}>
                     <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas convertir el lead <B color="red">{leadId.nombre}</B>?
+        ¿Estás seguro que deseas convertir el lead <B color="red">{leadId.nombre}</B> en un {convertir}?
                     </Subtitle>
                     <div className="d-flex justify-content-center mt-3">
                         <Button icon='' onClick={this.handleCloseConvertModal} text="Cancelar" className="mr-3" color="red"/>
