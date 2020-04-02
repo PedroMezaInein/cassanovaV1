@@ -487,3 +487,38 @@ export const FACTURAS_COLUMNS = [
         accessor: 'fecha',
     },
 ]
+
+export const PROVEEDORES_COLUMNS = [
+    {
+        Header: ' ',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Nombre',
+        accessor: 'nombre'
+    },
+    {
+        Header: 'Contacto',
+        accessor: 'contacto'
+    },
+    {
+        Header: 'Cuenta',
+        accessor: 'cuenta'
+    },
+    {
+        Header: 'Area',
+        accessor: 'area'
+    },
+    {
+        Header: 'Subarea',
+        accessor: 'subarea'
+    },
+    {
+        Header: 'Total de compras',
+        accessor: 'total'
+    },
+    {
+        Header: 'Fecha',
+        accessor: 'fecha',
+    },
+]

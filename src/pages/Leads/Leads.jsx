@@ -327,10 +327,19 @@ class Leads extends Component{
 
     safeConvertLead = (e) => (lead) => {
         const { history } = this.props
-        history.push({
-            pathname: '/leads/prospectos',
-            state: { lead: lead}
-        });
+        const { convertir } = this.state
+        if(convertir === 'Proveedor'){
+            history.push({
+                pathname: '/administracion/proveedores',
+                state: { lead: lead}
+            });
+        }else{
+            history.push({
+                pathname: '/leads/prospectos',
+                state: { lead: lead}
+            });
+        }
+        
     }
 
     handleChangeInput = (e) => {
@@ -614,7 +623,7 @@ class Leads extends Component{
                 </Modal>
                 <Modal show={modalConvert} handleClose={this.handleCloseConvertModal}>
                     <Subtitle className="my-3 text-center">
-        ¿Estás seguro que deseas convertir el lead <B color="red">{leadId.nombre}</B> en un {convertir}?
+                        ¿Estás seguro que deseas convertir el lead <B color="red">{leadId.nombre}</B> en un {convertir}?
                     </Subtitle>
                     <div className="d-flex justify-content-center mt-3">
                         <Button icon='' onClick={this.handleCloseConvertModal} text="Cancelar" className="mr-3" color="red"/>
