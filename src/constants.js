@@ -440,6 +440,69 @@ export const INGRESOS_COLUMNS = [
     },
 ]
 
+export const EGRESOS_COLUMNS = [
+    {
+        Header: ' ',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Cuenta',
+        accessor: 'cuenta'
+    },
+    {
+        Header: 'Cliente',
+        accessor: 'cliente'
+    },
+    {
+        Header: 'Factura',
+        accessor: 'factura'
+    },
+    {
+        Header: 'Monto',
+        accessor: 'monto'
+    },
+    {
+        Header: 'Comisión',
+        accessor: 'comision'
+    },
+    {
+        Header: 'Impuesto',
+        accessor: 'impuesto'
+    },
+    {
+        Header: 'Total',
+        accessor: 'total'
+    },
+    {
+        Header: 'Tipo de pago',
+        accessor: 'tipoPago'
+    },
+    {
+        Header: 'Descripción',
+        accessor: 'descripcion'
+    },
+    {
+        Header: 'Área',
+        accessor: 'area'
+    },
+    {
+        Header: 'Sub-Área',
+        accessor: 'subarea'
+    },
+    {
+        Header: 'Estatus compra',
+        accessor: 'estatusCompra'
+    },
+    {
+        Header: 'Adjuntos',
+        accessor: 'adjuntos',
+    },
+    {
+        Header: 'Fecha',
+        accessor: 'fecha',
+    },
+]
+
 
 export const FACTURAS_COLUMNS = [
     {

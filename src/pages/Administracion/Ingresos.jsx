@@ -302,11 +302,25 @@ class Ingresos extends Component{
                 <Small>
                     {
                         ingreso.facturas ? 
-                            <a href={ingreso.facturas.adjunto.url} target="_blank">
+                            ingreso.facturas.xml
+                            && <a href={ingreso.facturas.xml.url} target="_blank">
                                 <Small>
                                     <FontAwesomeIcon color = { GOLD } icon = { faFileAlt } className="mr-2" />
-                                    Factura
+                                    Factura.xml
+                                    <br/>
                                 </Small>
+                                </a>
+                            : ''
+                    }
+                    {
+                        ingreso.facturas ? 
+                            ingreso.facturas.pdf
+                            && <a href={ingreso.facturas.pdf.url} target="_blank">
+                                <Small>
+                                    <FontAwesomeIcon color = { GOLD } icon = { faFileAlt } className="mr-2" />
+                                    Factura.pdf
+                                </Small>
+                                <br />
                             </a>
                             : ''
                     }

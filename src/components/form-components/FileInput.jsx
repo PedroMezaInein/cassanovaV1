@@ -27,7 +27,7 @@ class FileInput extends Component{
                                 <Badge variant = "light" key = { key } className="d-flex px-3 align-items-center" pill>
                                     <FontAwesomeIcon
                                         icon = { faTimes }
-                                        onClick = { (e) => { e.preventDefault(); deleteAdjunto() }}
+                                        onClick = { (e) => { e.preventDefault(); deleteAdjunto(name, key) }}
                                         className = "small-button mr-2" />
                                         {
                                             file.name

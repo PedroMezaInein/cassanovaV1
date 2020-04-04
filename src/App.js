@@ -34,6 +34,7 @@ const EstadosCuenta = Loader(() => import('./pages/Bancos/EstadosCuenta') )
 const Traspasos = Loader(() => import('./pages/Bancos/Traspasos') )
 
 const Ingresos = Loader(() => import('./pages/Administracion/Ingresos') )
+const Egresos = Loader(() => import('./pages/Administracion/Egresos') )
 const Facturacion = Loader(() => import('./pages/Administracion/Facturacion') )
 const Proveedores = Loader(() => import('./pages/Administracion/Proveedor') )
 
@@ -108,6 +109,7 @@ class App extends Component{
                 <Route path = "/usuarios/empresas" exact component ={ Empresas } />
 
                 <Route path = "/administracion/ingresos" exact component ={ Ingresos } />
+                <Route path = "/administracion/egresos" exact component ={ Egresos } />
                 <Route path = "/administracion/facturacion" exact component ={ Facturacion } />
                 <Route path = "/administracion/proveedores" exact component ={ Proveedores } />
 

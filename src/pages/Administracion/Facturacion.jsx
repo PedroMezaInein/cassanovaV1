@@ -96,8 +96,8 @@ class Facturacion extends Component{
         return(
             <div>
                 {
-                    factura.adjunto ?
-                        <a href={factura.adjunto.url} target="_blank">
+                    factura.xml ?
+                        <a href={factura.xml.url} target="_blank">
                             <Small>
                                 factura.xml
                             </Small>
@@ -105,6 +105,15 @@ class Facturacion extends Component{
                     : ''
                 }
                 <br />
+                {
+                    factura.pdf ?
+                        <a href={factura.pdf.url} target="_blank">
+                            <Small>
+                                factura.pdf
+                            </Small>
+                        </a>
+                    : ''
+                }
             </div>
         )
     }
