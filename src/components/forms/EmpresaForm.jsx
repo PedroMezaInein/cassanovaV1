@@ -21,10 +21,13 @@ class EmpresaForm extends Component{
                     {title}
                 </Subtitle>
                 <div className="row my-3 mx-auto">
-                    <div className="col-md-6">
+                    <div className="col-md-4">
                         <Input onChange={ onChange } required name="name" type="text" value={ form.name } placeholder="Nombre"/>
                     </div>
-                    <div className="col-md-6 ">
+                    <div className="col-md-4">
+                        <Input onChange={ onChange } required name="razonSocial" type="text" value={ form.razonSocial } placeholder="Razón Social"/>
+                    </div>
+                    <div className="col-md-4 ">
                         <div className="image-upload">
                             <Input
                                 onChange={ onChange }

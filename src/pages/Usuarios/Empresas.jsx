@@ -19,6 +19,7 @@ class Empresas extends Component{
         empresa: {},
         form:{
             name: '',
+            razonSocial: '',
             logo: '',
             file: []
         },
@@ -88,6 +89,7 @@ class Empresas extends Component{
             empresas[key] = {
                 actions: this.setActions(empresa),
                 name: empresa.name,
+                razonSocial: empresa.razon_social,
                 logo: empresa.logo !== null ? <img className="logo" src={empresa.logo} alt={empresa.name} /> : 'No hay logo'
             }
         })
@@ -98,6 +100,7 @@ class Empresas extends Component{
             formAction: '',
             form:{
                 name: '',
+                razonSocial: '',
                 logo: '',
                 file: ''
             }
@@ -129,6 +132,7 @@ class Empresas extends Component{
             empresa: emp,
             form: {
                 name: emp.name,
+                razonSocial: emp.razon_social,
                 logo: '',
                 file: emp.logo
             },
@@ -144,6 +148,7 @@ class Empresas extends Component{
             empresa: {},
             form: {
                 name: '',
+                razonSocial: '',
                 logo: '',
                 file: ''
             },
@@ -164,13 +169,14 @@ class Empresas extends Component{
     }
     handleEditModal = () => {
         const { modalEdit } = this.state
-        const { name, logo, file } = this.state.empresa
+        const { name, logo, file, razon_social } = this.state.empresa
         this.setState({
             ... this.state,
             modalEdit: !modalEdit,
             empresa: {},
             form:{
                 name: name,
+                razonSocial: razon_social,
                 logo: '',
                 file: logo
             },
@@ -237,6 +243,7 @@ class Empresas extends Component{
         const { form } = this.state
         const data = new FormData();
         data.append('name', form.name)
+        data.append('razonSocial', form.razonSocial)
         data.append('logo', form.file)
         await axios.post(URL_DEV + 'empresa/' +empresa, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
@@ -283,6 +290,7 @@ class Empresas extends Component{
         const { form } = this.state
         const data = new FormData();
         data.append('name', form.name)
+        data.append('razonSocial', form.razonSocial)
         data.append('logo', form.file)
         await axios.post(URL_DEV + 'empresa', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
@@ -373,11 +381,12 @@ class Empresas extends Component{
 
     removeFile = (e) => {
         e.preventDefault()
-        const { name, logo, file } = this.state.empresa
+        const { name, logo, file, razon_social } = this.state.empresa
         this.setState({
             ... this.state,
             form:{
                 name: name,
+                razonSocial: razon_social,
                 logo: '',
                 file: logo
             },

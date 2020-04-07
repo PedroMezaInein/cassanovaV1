@@ -150,6 +150,10 @@ class EmpresasTable extends Component{
                 accessor: 'name',
             },
             {
+                Header: 'Razón social',
+                accessor: 'razonSocial',
+            },
+            {
                 Header: 'Logo',
                 accessor: 'logo',
             },
