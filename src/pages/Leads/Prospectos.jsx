@@ -409,7 +409,7 @@ class Leads extends Component{
                 }else{
                     swal({
                         title: '¡Ups!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                         
                     })
@@ -465,7 +465,7 @@ class Leads extends Component{
                 }else{
                     swal({
                         title: '¡Ups!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                         
                     })
@@ -513,7 +513,7 @@ class Leads extends Component{
                 }else{
                     swal({
                         title: '¡Ups!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                         
                     })
@@ -569,7 +569,7 @@ class Leads extends Component{
                 }else{
                     swal({
                         title: '¡Ups!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                         
                     })
@@ -619,7 +619,7 @@ class Leads extends Component{
                 }else{
                     swal({
                         title: '¡Ups!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                         
                     })
@@ -657,7 +657,7 @@ class Leads extends Component{
                 }else{
                     swal({
                         title: '¡Ups!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                         
                     })

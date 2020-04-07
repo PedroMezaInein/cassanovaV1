@@ -30,6 +30,9 @@ class ProveedorForm extends Component{
                         <Input name="nombre" value={form.nombre} placeholder="Nombre" onChange={onChangeForm} />
                     </div>
                     <div className="col-md-4 px-2">
+                        <Input name="razonSocial" value={form.razonSocial} placeholder="Razón Social" onChange={onChangeForm} />
+                    </div>
+                    <div className="col-md-4 px-2">
                         <Input name="correo" value={form.correo} placeholder="Correo" type="email" onChange={onChangeForm} />
                     </div>
                     <div className="col-md-4 px-2">

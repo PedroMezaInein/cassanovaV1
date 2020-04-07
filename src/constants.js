@@ -450,7 +450,7 @@ export const EGRESOS_COLUMNS = [
         accessor: 'cuenta'
     },
     {
-        Header: 'Cliente',
+        Header: 'Proveedor',
         accessor: 'cliente'
     },
     {
@@ -559,6 +559,10 @@ export const PROVEEDORES_COLUMNS = [
     {
         Header: 'Nombre',
         accessor: 'nombre'
+    },
+    {
+        Header: 'Razón Social',
+        accessor: 'razonSocial'
     },
     {
         Header: 'Contacto',

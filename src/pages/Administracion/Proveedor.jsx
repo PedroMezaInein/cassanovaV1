@@ -22,11 +22,13 @@ class Proveedor extends Component{
 
     state = {
         modal: false,
+        modalDelete: false,
         title: '',
         lead: '',
         proveedor: '',
         form:{
             nombre: '',
+            razonSocial: '',
             correo: '',
             telefono: '',
             cuenta: '',
@@ -84,6 +86,7 @@ class Proveedor extends Component{
         let {subareas} = this.state
 
         form['nombre'] = proveedor.nombre
+        form['razonSocial'] = proveedor.razon_social
         form['correo'] = proveedor.email
         form['telefono'] = proveedor.telefono
 
@@ -108,6 +111,16 @@ class Proveedor extends Component{
             form,
             modal: true,
             subareas,
+            proveedor: proveedor
+        })
+    }
+
+    openModalDelete = (e) => proveedor => {
+        const { form } = this.state
+        
+        this.setState({
+            ... this.state,
+            modalDelete: true,
             proveedor: proveedor
         })
     }
@@ -160,6 +173,7 @@ class Proveedor extends Component{
                 {
                     actions: this.setActionsTable(proveedor),
                     nombre: this.setTextTable(proveedor.nombre),
+                    razonSocial: this.setTextTable(proveedor.razon_social),
                     contacto: this.setLinksTable(
                         [
                             {'link': `tel:+${proveedor.telefono}`, 'value': proveedor.telefono},
@@ -189,7 +203,7 @@ class Proveedor extends Component{
                 <div className="d-flex align-items-center flex-column flex-md-row">
                     <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalEdit(e)(proveedor)}  text='' icon={faEdit} 
                         color="transparent" />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => alert('borra') } text='' icon={faTrash} color="red" />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalDelete(e)(proveedor) } text='' icon={faTrash} color="red" />
                 </div>
             </>
         )
@@ -315,6 +329,18 @@ class Proveedor extends Component{
         })
     }
 
+    handleCloseDelete = () => {
+        this.setState({
+            modalDelete: false,
+            proveedor: ''
+        })
+    }
+
+    safeDelete = (e) => () => {
+        e.preventDefault();
+        this.deleteProveedor();
+    }
+
     async getProveedoresAxios(){
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'proveedores', { headers: {Authorization:`Bearer ${access_token}`}}).then(
@@ -340,7 +366,7 @@ class Proveedor extends Component{
                 }else{
                     swal({
                         title: '¡Ups!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                         
                     })
@@ -381,7 +407,7 @@ class Proveedor extends Component{
                 })
             },
             (error) => {
-                console.log(error, 'error')
+                console.log(error.response.data.message, 'error')
                 if(error.response.status === 401){
                     swal({
                         title: '¡Ups!',
@@ -392,7 +418,7 @@ class Proveedor extends Component{
                 }else{
                     swal({
                         title: '¡Ups!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                         
                     })
@@ -442,7 +468,56 @@ class Proveedor extends Component{
                 }else{
                     swal({
                         title: '¡Ups!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
+                        icon: 'error',
+                        
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error',
+                
+            })
+        })
+    }
+
+    async deleteProveedor(){
+        const { access_token } = this.props.authUser
+        const { proveedor } = this.state
+        await axios.delete(URL_DEV + 'proveedores/' + proveedor.id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { proveedores } = response.data
+                this.setState({
+                    ... this.state,
+                    proveedores: this.setProveedores(proveedores),
+                    form: this.clearForm(),
+                    modalDelete: false,
+                    proveedor: ''
+                })
+                swal({
+                    title: '¡Felicidades!',
+                    text: 'El provedor fue eliminado con éxito',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                         
                     })
@@ -480,7 +555,7 @@ class Proveedor extends Component{
                 }else{
                     swal({
                         title: '¡Ups!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                         
                     })
@@ -499,7 +574,7 @@ class Proveedor extends Component{
 
     render(){
         
-        const { modal, form, title, tipos, areas, subareas, bancos, proveedores } = this.state
+        const { modal, modalDelete, form, title, tipos, areas, subareas, bancos, proveedores } = this.state
 
         return(
             <Layout active={'administracion'}  { ...this.props}>
@@ -514,6 +589,15 @@ class Proveedor extends Component{
                     <ProveedorForm form = {form} onChangeForm = {this.onChange} title = {title} tipos={tipos} 
                         areas = {areas} subareas = {subareas} setSubareas = {this.setSubareas} bancos = {bancos}
                         onSubmit = {this.onSubmit}/>
+                </Modal>
+                <Modal show = { modalDelete } handleClose={ this.handleCloseDelete } >
+                    <Subtitle className="my-3 text-center">
+                        ¿Estás seguro que deseas eliminar el proveedor?
+                    </Subtitle>
+                    <div className="d-flex justify-content-center mt-3">
+                        <Button icon='' onClick = { this.handleCloseDelete } text="Cancelar" className="mr-3" color="green"/>
+                        <Button icon='' onClick = { (e) => { this.safeDelete(e)() }} text="Continuar" color="red"/>
+                    </div>
                 </Modal>
                 
             </Layout>
