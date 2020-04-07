@@ -172,7 +172,7 @@ class Ingresos extends Component{
             aux.push(
                 {
                     actions: this.setActions(ingreso),
-                    cuenta: this.setCuentaTable(ingreso.cuenta),
+                    cuenta: this.setCuentaTable(ingreso.cuenta, ingreso.empresa),
                     cliente: this.setTextTable(ingreso.cliente.empresa),
                     factura: this.setFacturaTable(ingreso),
                     monto: this.setMoneyTable(ingreso.monto),
@@ -254,7 +254,7 @@ class Ingresos extends Component{
         )
     }
     
-    setCuentaTable = (cuenta) => {
+    setCuentaTable = (cuenta,empresa) => {
         return(
             <div>
                 <Small className = "mr-1" >
@@ -263,7 +263,7 @@ class Ingresos extends Component{
                     </B>
                 </Small>
                 <Small>
-                    {cuenta.empresa.name}
+                    {empresa.name}
                 </Small>
                 <br />
                 <Small className = "mr-1" >

@@ -90,16 +90,17 @@ class Proveedor extends Component{
         form['cuenta'] = proveedor.cuenta
         form['numCuenta'] = proveedor.numCuenta
 
-        form['banco'] = proveedor.banco.id
-        form['tipo'] = proveedor.tipo_cuenta.id
+        form['banco'] = proveedor.banco ? proveedor.banco.id : 0
+        form['tipo'] = proveedor.tipo_cuenta ? proveedor.tipo_cuenta.id : 0
 
         let aux = []
-        proveedor.subarea.area.subareas.map((subarea) => {
-            aux.push( { value: subarea.id.toString(), name: subarea.nombre } )
-        })
+        if(proveedor.subarea)
+            proveedor.subarea.area.subareas.map((subarea) => {
+                aux.push( { value: subarea.id.toString(), name: subarea.nombre } )
+            })
         subareas = aux
-        form.area = proveedor.subarea.area.id.toString()
-        form.subarea = proveedor.subarea.id.toString()
+        form.area = proveedor.subarea ? proveedor.subarea.area.id.toString() : ''
+        form.subarea = proveedor.subarea ? proveedor.subarea.id.toString() : ''
 
         this.setState({
             ... this.state,
@@ -167,14 +168,14 @@ class Proveedor extends Component{
                     ),
                     cuenta: this.setArrayTextTable(
                         [
-                            {'text': 'Cuenta', 'value': proveedor.cuenta},
-                            {'text': 'No. Cuenta', 'value': proveedor.numero_cuenta},
-                            {'text': 'Banco', 'value': proveedor.banco.nombre},,
-                            {'text': 'Tipo Cuenta', 'value': proveedor.tipo_cuenta.tipo},
+                            {'text': 'Cuenta', 'value': proveedor.cuenta ? proveedor.cuenta: 'Sin definir'},
+                            {'text': 'No. Cuenta', 'value': proveedor.numero_cuenta ? proveedor.numero_cuenta : 'Sin definir'},
+                            {'text': 'Banco', 'value': proveedor.banco ? proveedor.banco.nombre: 'Sin definir'},
+                            {'text': 'Tipo Cuenta', 'value': proveedor.tipo_cuenta? proveedor.tipo_cuenta.tipo: 'Sin definir'},
                         ]
                         ),
-                    area: this.setTextTable(proveedor.subarea.area.nombre),
-                    subarea: this.setTextTable(proveedor.subarea.nombre),
+                    area: this.setTextTable(proveedor.subarea ? proveedor.subarea.area.nombre: 'Sin definir'),
+                    subarea: this.setTextTable(proveedor.subarea ? proveedor.subarea.nombre : 'Sin definir'),
                     total: this.setMoneyTable(proveedor.total),
                     fecha: this.setDateTable(proveedor.created_at)
                 }
@@ -346,6 +347,8 @@ class Proveedor extends Component{
                 }
             }
         ).catch((error) => {
+            console.log('Catch error')
+            console.log(error)
             swal({
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',

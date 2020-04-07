@@ -7,14 +7,14 @@ class Select extends Component{
     } */
 
     render(){
-        const { options, placeholder, value, name, onChange } = this.props
+        const { options, placeholder, value, name, onChange, ...props } = this.props
         return(
             <>
                 <Form.Label className="mt-2 mb-1 label-form">
                     { placeholder }     
                 </Form.Label>
-                <Form.Control onChange={ onChange } name={ name } value={ value } as="select">
-                    <option value={0} disabled hidden>
+                <Form.Control onChange={ onChange } name={ name } value={ value } as="select" {... props}>
+                    <option value={0} disabled>
                         {placeholder}
                     </option>
                     {

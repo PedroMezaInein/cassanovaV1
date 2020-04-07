@@ -27,6 +27,7 @@ class Cuentas extends Component{
         estatus: [],
         estados: [],
         empresas: [],
+        empresasOptions: [],
         form:{
             nombre: '',
             numero: '',
@@ -35,7 +36,8 @@ class Cuentas extends Component{
             banco: '',
             tipo: '',
             estatus: '',
-            empresa: 0
+            empresa: 0,
+            empresas: []
         },
         cuentas: [],
         cuenta: null,
@@ -61,12 +63,49 @@ class Cuentas extends Component{
     //
     onChange = e => {
         const { name, value } = e.target
-        console.log('Name', name)
-        console.log('Value', value)
         const { form } = this.state
         form[name] = value
         this.setState({
             ... this.state,
+            form
+        })
+    }
+
+    onChangeEmpresa = e => {
+        const { name, value } = e.target
+        const { empresas, form } = this.state
+        let auxEmpresa = form.empresas
+        let aux = []
+        empresas.find(function(_aux) {
+            if(_aux.value.toString() === value.toString()){
+                auxEmpresa.push(_aux)
+            }else{
+                aux.push(_aux)
+            }
+        })
+
+        form['empresas'] = auxEmpresa
+        this.setState({
+            ... this.state,
+            form,
+            empresas: aux
+        })
+    }
+
+    updateEmpresa = empresa => {
+        const { form, empresas } = this.state
+        let aux = []
+        form.empresas.map((element, key)=>{
+            if(empresa.value.toString() !== element.value.toString()){
+                aux.push(element)
+            }else{
+                empresas.push(element)
+            }
+        })
+        form.empresas = aux
+        this.setState({
+            ... this.state,
+            empresas,
             form
         })
     }
@@ -133,10 +172,11 @@ class Cuentas extends Component{
             descripcion: '',
             empresa: '',
             balance: 0.0,
-            banco: '',
-            tipo: '',
-            estatus: '',
-            empresa: 0
+            banco: 0,
+            tipo: 0,
+            estatus: 0,
+            empresa: 0,
+            empresas: []
         }
     }
 
@@ -158,7 +198,7 @@ class Cuentas extends Component{
                 banco: this.setText( cuenta.banco.nombre ),
                 tipo: this.setText( cuenta.tipo.tipo ),
                 estatus: this.setText( cuenta.estatus.estatus ),
-                empresa: this.setText(  cuenta.empresa ? cuenta.empresa.name : '' ),
+                empresa: this.setEmpresasTable(cuenta.empresa),
 
                 fecha: this.setDateTable( cuenta.created_at )
             } )
@@ -183,6 +223,25 @@ class Cuentas extends Component{
             ... this.state,
             estados: aux
         })
+    }
+
+    setEmpresasTable = arreglo => {
+        return(
+            <Small>
+                {
+                    arreglo.map((element) => {
+                        return(
+                            <>
+                                {
+                                    element.name
+                                }
+                                <br />
+                            </>
+                        )
+                    })
+                }
+            </Small>
+        )
     }
 
     setDateTable = date => {
@@ -307,7 +366,8 @@ class Cuentas extends Component{
         const { modal } = this.state
         this.setState({
             modal: !modal,
-            cuenta: null
+            cuenta: null,
+            form: this.setEmptyForm()
         })
     }
 
@@ -333,28 +393,57 @@ class Cuentas extends Component{
     }
 
     openModal = () => {
+        const { empresasOptions } = this.state
+        let aux = []
+        empresasOptions.map((option) => {
+            aux.push(option)
+        })
         this.setState({
             modal: true,
-            cuenta: null
+            cuenta: null,
+            form: this.setEmptyForm(),
+            empresas: aux
         })
     }
 
     openModalEdit = e => cuenta => {
+        const {empresasOptions} = this.state
+        
+        let empresaFormAux = []
+        cuenta.empresa.map((empresa, key) => {
+            empresaFormAux.push({value:empresa.id, text:empresa.name})
+        })
+
+        let empresaOptionsAux = []
+
+        empresasOptions.map((option) => {
+            let aux = true
+            cuenta.empresa.map((empresa) => {
+                if(empresa.id.toString() === option.value.toString()){
+                    aux = false
+                }
+            })
+            if(aux)
+                empresaOptionsAux.push(option)
+        })
+
         let aux = {
             nombre: cuenta.nombre,
             numero: cuenta.numero,
             descripcion: cuenta.descripcion,
             balance: cuenta.balance,
-            banco: cuenta.banco ? cuenta.banco.id : '',
-            tipo: cuenta.tipo ? cuenta.tipo.id : '',
-            estatus: cuenta.estatus ? cuenta.estatus.id : '',
-            empresa: cuenta.empresa ? cuenta.empresa.id : '',
+            banco: cuenta.banco ? cuenta.banco.id : 0,
+            tipo: cuenta.tipo ? cuenta.tipo.id : 0,
+            estatus: cuenta.estatus ? cuenta.estatus.id : 0,
+            empresa: 0,
+            empresas: empresaFormAux
         }
         
         this.setState({
             modal: true,
             cuenta:cuenta,
-            form: aux
+            form: aux,
+            empresas: empresaOptionsAux
         })
     }
 
@@ -397,6 +486,7 @@ class Cuentas extends Component{
                     estatus: this.setOptions(estatus, 'estatus'),
                     tipos: this.setOptions(tipo, 'tipo'),
                     empresas: this.setOptions(empresas, 'name'),
+                    empresasOptions: this.setOptions(empresas, 'name'),
                 })
                 
                 console.log('state', this.state)
@@ -438,7 +528,7 @@ class Cuentas extends Component{
                 this.setCuentas(cuentas)
                 this.setState({
                     modal: false,
-                    form: this.setEmptyForm
+                    form: this.setEmptyForm()
                 })
                 swal({
                     title: '¡Felicidades!',
@@ -531,7 +621,7 @@ class Cuentas extends Component{
                 this.setCuentas(cuentas)
                 this.setState({
                     modal: false,
-                    form: this.setEmptyForm,
+                    form: this.setEmptyForm(),
                     cuenta: null
                 })
                 swal({
@@ -662,7 +752,8 @@ class Cuentas extends Component{
                 
                 <Modal show = { modal } handleClose={ this.handleClose } >
                     <CuentaForm title = { cuenta === null ? "Nueva cuenta" : 'Editar cuenta'} bancos = { bancos } estatus = { estatus } tipos = { tipos } 
-                        empresas = { empresas } form = { form } onChange = { this.onChange } onSubmit = { cuenta === null ? this.onSubmit : this.onEditSubmit } />
+                        empresas = { empresas } form = { form } onChange = { this.onChange } onChangeEmpresa = { this.onChangeEmpresa } 
+                        updateEmpresa = { this.updateEmpresa } onSubmit = { cuenta === null ? this.onSubmit : this.onEditSubmit } />
                 </Modal>
                 <Modal show = { modalDelete } handleClose = { this.handleDeleteModal } >
                     <Subtitle className="my-3 text-center">
