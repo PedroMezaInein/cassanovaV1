@@ -3,66 +3,50 @@ import { Form } from 'react-bootstrap'
 import { Subtitle } from '../../texts'
 import { SelectSearch, Select, Button, RadioGroup, Input, Calendar, InputMoney, FileInput } from '../../form-components'
 
-class IngresosForm extends Component{
+class EgresosForm extends Component{
+
+    handleChangeDate = date => {
+        const { onChange } = this.props
+        onChange({target:{value: date, name:'fecha'}})
+    }
 
     updateEmpresa = value => {
         const { onChange, setCuentas } = this.props
-        onChange( { target: { name: 'empresa', value: value.value } } )
-        setCuentas( value.cuentas )
+        onChange({target:{value: value.value, name:'empresa'}})
+        setCuentas(value.cuentas)
     }
 
     updateCuenta = value => {
         const { onChange } = this.props
-        onChange( { target: { name: 'cuenta', value: value.value } } )
+        onChange({target:{value: value.value, name:'cuenta'}})
     }
 
-    updateAreas = value => {
+    updateCliente = value => {
+        const { onChange } = this.props
+        onChange({target:{value: value.value, name:'cliente'}})
+    }
+
+    updateArea = value => {
         const { onChange, setSubareas } = this.props
-        onChange( { target: { name: 'area', value: value.value } } )
+        onChange({target:{value: value.value, name:'area'}})
         setSubareas(value.subareas)
     }
 
-    updateSubareas = value => {
+    updateSubarea = value => {
         const { onChange } = this.props
-        onChange( { target: { name: 'subarea', value: value.value } } )
-    }
-
-    updateClientes = value => {
-        const { onChange } = this.props
-        onChange( { target: { name: 'cliente', value: value.value } } )
-    }
-    
-    updateCalendar = date => {
-        const { onChange } = this.props
-        onChange( { target: { name: 'fecha', value:  date } } )
+        onChange({target:{value: value.value, name:'subarea'}})
     }
 
     render(){
-        const { title, empresas, cuentas, areas, subareas, clientes, tiposImpuestos, tiposPagos,
-            estatusCompras, form, onChange, onChangeFile, clearAdjunto, ... props} = this.props
-        console.log(empresas, 'empresas')
+        const { onChange, onChangeFile, onChangeAdjunto, sendFactura, clearAdjunto, clearFile, form, title, options, ... props } = this.props
         return(
             <Form { ... props}>
                 <Subtitle className="text-center" color="gold">
                     { title }
                 </Subtitle>
-                <div className = "row mx-0">
-                    <div className = "col-md-6 col-lg-4 px-2">
-                        <SelectSearch options = { empresas } value = { form.empresa } 
-                            onChange = { this.updateEmpresa } placeholder="Selecciona la empresa"/>
-                    </div>
-                    {
-                        form.empresa && 
-                            <div className = 'col-md-6 col-lg-4 px-2'>
-                                <SelectSearch options = { cuentas } value = { form.cuenta }
-                                    onChange = { this.updateCuenta } placeholder = "Selecciona la cuenta" />
-                            </div>
-                    }
-                    <div className = "col-md-6 col-lg-4 px-2">
-                        <SelectSearch options = { clientes } value = { form.cliente } 
-                            onChange = { this.updateClientes } placeholder="Selecciona el cliente"/>
-                    </div>
-                    <div className = "col-md-6 col-lg-4 px-2">
+                
+                <div className="row mx-0">
+                    <div className="col-md-4 px-2">
                         <RadioGroup
                             name = 'factura'
                             onChange = { onChange }
@@ -83,56 +67,97 @@ class IngresosForm extends Component{
                             />
                     </div>
                     {
-                        form.factura === 'Con factura' &&
-                            <>
-                                {/* <div className = "col-md-6 col-lg-4 px-2">
-                                    <Input value = { form.rfc } name = "rfc" placeholder = "RFC" onChange = { onChange } />
-                                </div>
-                                <div className = "col-md-6 col-lg-4 px-2">
-                                    <Input value = { form.numeroFactura } name = "numeroFactura" placeholder = "Número de factura" onChange = { onChange } />
-                                </div> */}
-                                <div className = "col-md-6 col-lg-4 px-2">
-                                    <Select required name = 'tipoImpuesto' options = { tiposImpuestos } 
-                                        placeholder = 'Selecciona la tasa de impuestos' value = { form.tipoImpuesto }
-                                        onChange = { onChange } />
-                                </div>
-                            </>
+                        form.factura === 'Con factura' ?        
+                            <div className="col-md-4 px-2">
+                                <FileInput 
+                                    onChangeAdjunto = { onChangeFile } 
+                                    placeholder = "Factura"
+                                    value = {form.fileFactura.value}
+                                    name = "fileFactura"
+                                    id = "fileFactura"
+                                    accept = "application/pdf, text/xml"
+                                    files = { form.fileFactura.adjuntos }
+                                    deleteAdjunto = { clearFile }
+                                    multiple
+                                    />
+                            </div>
+                        : ''
                     }
-                    
-                    <div className = "col-md-6 col-lg-4 px-2">
-                        <Select required name = 'tipoPago' options = { tiposPagos } 
-                            placeholder = 'Selecciona el tipo de pago' value = { form.tipoPago }
-                            onChange = { onChange } />
-                    </div>
-                    <div className = "col-md-6 col-lg-4 px-2">
-                        <SelectSearch options = { areas } value = { form.area } 
-                            onChange = { this.updateAreas } placeholder="Selecciona el area"/>
+                    {
+                        form.factura === 'Con factura' && form.fileFactura.adjuntos.length > 0 ?
+                            <div className="col-md-4 d-flex align-items-center justify-content-md-end justify-content-center">
+                                <Button icon='' className="mx-auto" onClick={sendFactura} text="Enviar Factura" />
+                            </div>
+                        : ''
+                    }
+                    <div className="col-md-4 px-2">
+                        {
+                            form.facturaObject ?
+                                <Input placeholder="Cliente" readOnly name="cliente" value={form.cliente} onChange={onChange}/>
+                            :
+                                <SelectSearch options={options.clientes} placeholder = "Selecciona el cliente" 
+                                    name = "cliente" value = { form.cliente } onChange = { this.updateCliente }/>
+                        }
                     </div>
                     {
-                        form.area && 
-                            <div className = 'col-md-6 col-lg-4 px-2'>
-                                <SelectSearch options = { subareas } value = { form.subarea }
-                                    onChange = { this.updateSubareas } placeholder = "Selecciona el sub-área" />
+                        form.factura === 'Con factura' ?
+                            <div className="col-md-4 px-2">
+                                <Input placeholder="RFC" name="rfc" value={form.rfc} onChange={onChange}/>
                             </div>
+                        : ''
                     }
-                    <div className = "col-md-6 col-lg-4 px-2">
-                        <Calendar name = "fecha" placeholder = "Fecha" value = { form.fecha }
-                            onChangeCalendar = { this.updateCalendar } />
+                    <div className="col-md-4 px-2">
+                        {
+                            form.facturaObject ?
+                                <Input placeholder="Empresa" name="empresa" readOnly value={form.empresa} onChange={onChange}/>
+                            :
+                                <SelectSearch options={options.empresas} placeholder = "Selecciona la empresa" 
+                                    name = "empresa" value = { form.empresa } onChange = { this.updateEmpresa }/>
+                        }
                     </div>
-                    <div className = "col-md-6 col-lg-4 px-2">
-                        <InputMoney prefix = { '$' } name = "monto" value = { form.monto } onChange = { onChange } placeholder="Ingrese el monto" />
+                    {
+                        options.cuentas.length > 0 ?
+                            <div className="col-md-4 px-2">
+                                <SelectSearch options={options.cuentas} placeholder = "Selecciona la cuenta" 
+                                    name = "cuenta" value = { form.cuenta } onChange = { this.updateCuenta }/>
+                            </div>
+                        : ''
+                    }
+                    <div className="col-md-4 px-2">
+                        <Select placeholder="Selecciona el tipo de pago" options = { options.tiposPagos } 
+                            name="tipoPago" value = { form.tipoPago } onChange = { onChange } />
                     </div>
-                    {/* <div className = "col-md-6 col-lg-4 px-2">
-                        <InputMoney prefix = { '%' } name = "comision" value = { form.comision } onChange = { onChange } placeholder="Ingrese el porcentaje de comisión" />
-                    </div> */}
-                    <div className = "col-md-6 col-lg-4 px-2">
-                        <Select required name = 'estatusCompra' options = { estatusCompras } 
-                            placeholder = 'Selecciona el estatus de la compra' value = { form.estatusCompra }
-                            onChange = { onChange } />
+                    <div className="col-md-4 px-2">
+                        <Select placeholder="Selecciona el impuesto" options = { options.tiposImpuestos } 
+                            name="tipoImpuesto" value = { form.tipoImpuesto } onChange = { onChange } />
+                    </div>
+                    <div className="col-md-4 px-2">
+                        <Select placeholder="Selecciona el estatus de compra" options = { options.estatusCompras } 
+                            name="estatusCompra" value = { form.estatusCompra } onChange = { onChange } />
+                    </div>
+                    <div className="col-md-4 px-2">
+                        <SelectSearch options={options.areas} placeholder = "Selecciona el área" 
+                            name = "area" value = { form.area } onChange = { this.updateArea }/>
+                    </div>
+                    {
+                        options.subareas.length > 0 ?
+                            <div className="col-md-4 px-2">
+                                <SelectSearch options={options.subareas} placeholder = "Selecciona el subárea" 
+                                    name = "subarea" value = { form.subarea } onChange = { this.updateSubarea }/>
+                            </div>
+                        : ''
+                    }
+                    <div className="col-md-4 px-2">
+                        <InputMoney placeholder = "Monto" value = { form.total } name = "total" onChange = { onChange }/>
+                    </div>
+                    <div className="col-md-4 px-2">
+                        <Calendar 
+                            onChangeCalendar = { this.handleChangeDate } placeholder = "Fecha"
+                            name = "fecha" value = { form.fecha }/>
                     </div>
                     <div className = "col-md-4 px-2 ">
                         <FileInput 
-                            onChangeAdjunto = { onChangeFile } 
+                            onChangeAdjunto = { onChangeAdjunto } 
                             placeholder = "Presupuesto"
                             value = {form.presupuesto.value}
                             name = "presupuesto"
@@ -144,7 +169,7 @@ class IngresosForm extends Component{
                     </div>
                     <div className = "col-md-4 px-2 ">
                         <FileInput 
-                            onChangeAdjunto = { onChangeFile } 
+                            onChangeAdjunto = { onChangeAdjunto } 
                             placeholder = "Pago"
                             value = {form.pago.value}
                             name = "pago"
@@ -159,6 +184,7 @@ class IngresosForm extends Component{
                             name = "descripcion" onChange = { onChange } />
                     </div>
                 </div>
+
                 <div className="mt-3 text-center">
                     <Button icon='' className="mx-auto" type="submit" text="Enviar" />
                 </div>
@@ -167,4 +193,4 @@ class IngresosForm extends Component{
     }
 }
 
-export default IngresosForm
+export default EgresosForm

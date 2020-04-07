@@ -6,7 +6,7 @@ import { Button } from '../../components/form-components'
 import { faPlus, faTrash, faEdit, faMoneyBill, faFileAlt } from '@fortawesome/free-solid-svg-icons'
 import { IngresosForm } from '../../components/forms'
 import axios from 'axios'
-import { URL_DEV, INGRESOS_COLUMNS, GOLD } from '../../constants'
+import { URL_DEV, GOLD, INGRESOS_COLUMNS } from '../../constants'
 import { DataTable } from '../../components/tables'
 import { Small, B, Subtitle } from '../../components/texts'
 import { FileInput } from '../../components/form-components'
@@ -20,32 +20,33 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 class Ingresos extends Component{
 
     state = {
-        modal: false,
-        modalDelete: false,
-        modalFactura: false,
-        empresas: [],
-        clientes: [],
-        areas: [],
-        subareas: [],
-        cuentas: [],
-        tiposImpuestos: [],
-        tiposPagos: [],
-        estatusCompras: [],
         ingresos: [],
-        ingreso:'',
+        modal: false,
+        clientes: [],
         form:{
-            empresa: '',
-            area: '',
-            subarea: '',
-            cliente: '',
-            cuenta: '',
-            numeroFactura: '',
-            monto: '',
-            tipoImpuesto: 0,
-            tipoPago: 0,
-            estatusCompra: 0,
             factura: 'Sin factura',
+            
+            rfc: '',
+            cliente: '',
+            empresa: '',
+            cuenta: '',
+            area:'',
+            subarea: '',
+            total: '',
+            descripcion: '',
+            facturaObject: '',
+
+            fileFactura: {
+                value: '',
+                adjuntos: [],
+            },
+
+            tipoPago: 0,
+            tipoImpuesto: 0,
+            estatusCompra: 0,
+            
             fecha: new Date(),
+            
             presupuesto:{
                 name: '',
                 file: '',
@@ -56,116 +57,33 @@ class Ingresos extends Component{
                 file: '',
                 value: ''
             },
-            facturas:{
-                name: '',
-                file: '',
-                value: ''
-            }
+        },
+        options:{
+            empresas:[],
+            cuentas:[],
+            areas:[],
+            subareas:[],
+            tiposPagos:[],
+            tiposImpuestos:[],
+            estatusCompras:[],
+            clientes: [],
         }
-    }
-
-    clearForm = () => {
-        const { form } = this.state
-        let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
-                case 'empresa':
-                case 'area':
-                case 'subarea':
-                case 'cliente':
-                case 'cuenta':
-                case 'descripcion':
-                case 'monto':
-                    form[element] = ''
-                    break;
-                case 'tipoImpuesto':
-                case 'tipoPago':
-                case 'estatusCompra':
-                    form[element] = 0
-                    break;
-                case 'factura':
-                    form[element] = 'Sin factura'
-                    break;
-                case 'fecha':
-                    form[element] = new Date()
-                    break;
-                case 'presupuesto':
-                case 'pago':
-                case 'facturas':
-                    form[element].file = ''
-                    form[element].name = ''
-                    form[element].value = ''
-                    break;
-                default:
-                    break;
-            }
-        })
-        this.setState({
-            ... this.state,
-            form
-        })
     }
 
     componentDidMount(){
         const { authUser: { user : { permisos : permisos } } } = this.props
         const { history : { location: { pathname: pathname } } } = this.props
         const { history } = this.props
-        const ingresos = permisos.find(function(element, index) {
+        const egresos = permisos.find(function(element, index) {
             const { modulo: { url: url } } = element
             return  pathname === '/' + url
         });
-        if(!ingresos)
+        if(!egresos)
             history.push('/')
-        this.getIngresos()
+        this.getIngresosAxios()
     }
 
-    setSelectOptions = (arreglo, value, name) => {
-        let aux = []
-        arreglo.map( (element) => {
-            if( element.hasOwnProperty('cuentas') ){
-                aux.push({ name: element[name], value: element[value].toString(), cuentas: element['cuentas'] } )
-            }else
-            {
-                if(element.hasOwnProperty('subareas')){
-                    aux.push({ name: element[name], value: element[value].toString(), subareas: element['subareas'] } )
-                }else
-                    aux.push({ name: element[name], value: element[value].toString() } )
-            }
-        })
-        return aux
-    }
-
-    setOptions = (arreglo, name) => {
-        let aux = []
-        arreglo.map((element) => {
-            aux.push({
-                value: element.id,
-                text: element[name]
-            })
-        })
-        return aux
-    }
-
-    setCuentas = (cuentas) => {
-        let aux = []
-        cuentas.map( (element) => {
-            aux.push({ name: element['nombre'], value: element['id'].toString() } )
-        })
-        this.setState({
-            ... this.state,
-            cuentas: aux
-        })
-    }
-    setSubareas = (subareas) => {
-        let aux = []
-        subareas.map( (element) => {
-            aux.push({ name: element['nombre'], value: element['id'].toString() } )
-        })
-        this.setState({
-            ... this.state,
-            subareas: aux
-        })
-    }
+    // TABLA
     setIngresos = ingresos => {
         let aux = []
         ingresos.map( (ingreso) => {
@@ -173,7 +91,7 @@ class Ingresos extends Component{
                 {
                     actions: this.setActions(ingreso),
                     cuenta: this.setCuentaTable(ingreso.cuenta, ingreso.empresa),
-                    cliente: this.setTextTable(ingreso.cliente.empresa),
+                    cliente: this.setTextTable(ingreso.cliente.nombre),
                     factura: this.setFacturaTable(ingreso),
                     monto: this.setMoneyTable(ingreso.monto),
                     impuesto: this.setTextTable( ingreso.tipo_impuesto ? ingreso.tipo_impuesto.tipo : 'Sin definir'),
@@ -194,23 +112,7 @@ class Ingresos extends Component{
     setActions = ingreso => {
         return(
             <>
-                <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalEdit(e)(ingreso)}  text='' icon={faEdit} 
-                        color="transparent" />
-                </div>
-                <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" 
-                        onClick={(e) => this.openModalDelete(e)(ingreso) } 
-                        text='' icon={faTrash} color="red" />
-                </div>
-                {
-                    ingreso.factura ?
-                    <div className="d-flex align-items-center flex-column flex-md-row">
-                        <Button className="mx-2 my-2 my-md-0 small-button" 
-                            onClick={(e) => this.openModalFacturar(e)(ingreso) } 
-                            text='' icon={faMoneyBill} color="transparent" />
-                    </div> : ''
-                }
+                
             </>
         )
     }
@@ -254,7 +156,7 @@ class Ingresos extends Component{
         )
     }
     
-    setCuentaTable = (cuenta,empresa) => {
+    setCuentaTable = (cuenta, empresa) => {
         return(
             <div>
                 <Small className = "mr-1" >
@@ -297,7 +199,6 @@ class Ingresos extends Component{
 
     setFacturaTable = ingreso => {
         if(ingreso.factura){
-            console.log('SI')
             return(
                 <Small>
                     {
@@ -352,9 +253,70 @@ class Ingresos extends Component{
         )
     }
 
-    onChange = e => {
+    clearForm = () => {
         const { form } = this.state
-        const { value, name } = e.target
+        let aux = Object.keys(form)
+        aux.map( (element) => {
+            switch(element){
+                case 'rfc':
+                case 'cliente':
+                case 'empresa':
+                case 'cuenta':
+                case 'area':
+                case 'subarea':
+                case 'total':
+                case 'descripcion':
+                case 'facturaObject':
+                    form[element] = ''
+                    break;
+                case 'tipoImpuesto':
+                case 'tipoPago':
+                case 'estatusCompra':
+                    form[element] = 0
+                    break;
+                case 'factura':
+                    form[element] = 'Sin factura'
+                    break;
+                case 'fecha':
+                    form[element] = new Date()
+                    break;
+                case 'presupuesto':
+                case 'pago':
+                    form[element].file = ''
+                    form[element].name = ''
+                    form[element].value = ''
+                    break;
+                case 'fileFactura':
+                    form[element].value = ''
+                    form[element].adjuntos = []
+                    break;
+                default:
+                    break;
+            }
+        })
+        return form;
+    }
+
+    openModal = () => {
+        this.setState({
+            ... this.state,
+            modal: true,
+            form: this.clearForm()
+        })
+    }
+
+    handleClose = () => {
+        const { modal } = this.state
+        this.setState({
+            ... this.state,
+            modal: !modal,
+            form: this.clearForm()
+        })
+    }
+
+    onChange = e => {
+        const {name, value} = e.target
+        const {form} = this.state
         form[name] = value
         this.setState({
             ... this.state,
@@ -365,9 +327,55 @@ class Ingresos extends Component{
     onChangeFile = e => {
         const { form } = this.state
         const { files, value, name } = e.target
+        let aux = []
+        for(let counter = 0; counter < files.length; counter ++){
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    key: counter
+                }
+            )
+        }
+        form[name].value = value
+        form[name].adjuntos = aux
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
+    onChangeAdjunto = e => {
+        const { form } = this.state
+        const { files, value, name } = e.target
         form[name].file = files[0]
         form[name].value = value
         form[name].name = files[0].name
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
+    onSubmit = e => {
+        e.preventDefault()
+        swal({
+            title: '¡Un momento!',
+            text: 'La información está siendo procesada.',
+            buttons: false
+        })
+        this.addIngresosAxios()
+    }
+
+    clearFile = (name, key) => {
+        const { form } = this.state
+        let aux = []
+        for(let counter = 0; counter < form[name].adjuntos.length; counter ++){
+            if(counter !== key){
+                aux.push(form[name].adjuntos[counter])
+            }
+        }
+        form[name].adjuntos = aux
         this.setState({
             ... this.state,
             form
@@ -385,184 +393,81 @@ class Ingresos extends Component{
         })
     }
 
-    onSubmit = e => {
-        e.preventDefault()
-        swal({
-            title: '¡Un momento!',
-            text: 'La información está siendo procesada.',
-            buttons: false
-        })
-        this.addIngresos()
-    }
-
-    onSubmitEdit = e => {
-        swal({
-            title: '¡Un momento!',
-            text: 'La información está siendo procesada.',
-            buttons: false
-        })
-        e.preventDefault()
-        this.editIngreso()
-    }
-
-    onSaveFactura = e => {
-        e.preventDefault()
-        swal({
-            title: '¡Un momento!',
-            text: 'La información está siendo procesada.',
-            buttons: false
-        })
-        this.saveFactura()
-    }
-
-    openModal = () => {
-        this.clearForm()
-        this.setState({
-            modal: true,
-            ingreso: ''
-        })
-    }
-
-    handleClose = () => {
-        const { modal } = this.state
-        this.clearForm()
-        this.setState({
-            modal: !modal,
-            ingreso: '',
-            subareas: [],
-            cuentas: []
-        })
-    }
-
-    openModalDelete = e => ingreso =>{
-        this.setState({
-            ... this.state,
-            ingreso: ingreso,
-            modalDelete: true
-        })
-    }
-
-    handleCloseDelete = () => {
-        const { modalDelete } = this.state
-        this.setState({
-            ... this.state,
-            modalDelete: !modalDelete,
-            ingreso: ''
-        })
-    }
-
-    openModalFacturar = e => ingreso =>{
+    setFactura = factura => {
         const {form} = this.state
-        if(ingreso.facturas){
-            if(ingreso.facturas.adjunto)
-                form.facturas.name = 'Factura.xml'
-        }
+        form['rfc'] = factura.rfc_emisor[0]
+        form['cliente'] = factura.nombre_emisor[0]
+        form['empresa'] = factura.nombre_receptor[0]
+        form['fecha'] =  new Date(factura.fecha[0])
+        form['total'] = factura.subtotal[0]
+        form['facturaObject'] = factura
         this.setState({
             ... this.state,
-            ingreso: ingreso,
-            modalFactura: true,
             form
         })
     }
 
-    handleCloseFactura = () => {
-        this.clearForm()
-        const { modalFactura } = this.state
+    setCuentas = cuentas => {
+        const { options  } = this.state
+        options['cuentas'] = this.setOptions(cuentas, 'nombre', 'id')
         this.setState({
             ... this.state,
-            ingreso: '',
-            modalFactura: !modalFactura
+            options
         })
     }
 
-    safeDelete = (e) => () => {
-        e.preventDefault();
-        this.deleteIngreso();
-    }
-
-    openModalEdit = (e) => ingreso => {
-        const { form } = this.state
-        let {cuentas, subareas} = this.state
-
-        if(ingreso.cliente)
-            form.cliente =  ingreso.cliente.id.toString()
-        
-        if(ingreso.subarea){
-            let aux = []
-            ingreso.subarea.area.subareas.map((subarea) => {
-                aux.push( { value: subarea.id.toString(), name: subarea.nombre } )
-            })
-            subareas = aux
-            form.area = ingreso.subarea.area.id.toString()
-            form.subarea = ingreso.subarea.id.toString()
-            
-        }
-
-        if(ingreso.cuenta){
-            let aux = []
-            ingreso.cuenta.empresa.cuentas.map((cuenta) => {
-                aux.push( { value: cuenta.id.toString(), name: cuenta.nombre } )
-            })
-            cuentas = aux
-            form.empresa = ingreso.cuenta.empresa.id.toString()
-            form.cuenta = ingreso.cuenta.id.toString()
-            
-        }
-
-        form.rfc = ingreso.rfc
-        form.descripcion = ingreso.descripcion
-        form.numeroFactura = ingreso.numero_factura
-        form.monto = ingreso.monto
-        form.comision = ingreso.comision
-        form.fecha = new Date(ingreso.created_at)
-
-        if(ingreso.factura)
-            form.factura = 'Con factura'
-        else
-            form.factura = 'Sin factura'
-
-        if(ingreso.tipo_pago)
-            form.tipoPago = ingreso.tipo_pago.id
-
-        if(ingreso.tipo_impuesto)
-            form.tipoImpuesto = ingreso.tipo_impuesto.id
-
-        if(ingreso.estatus_compra)
-            form.estatusCompra = ingreso.estatus_compra.id
-
-        if(ingreso.presupuesto)
-        {
-            form.presupuesto.name = ingreso.presupuesto.name
-        }
-
-        if(ingreso.pago)
-        {
-            form.pago.name = ingreso.pago.name
-        }
-        
+    setSubareas = subareas => {
+        const { options  } = this.state
+        options['subareas'] = this.setOptions(subareas, 'nombre', 'id')
         this.setState({
-            ingreso: ingreso,
-            form,
-            modal: true,
-            cuentas,
-            subareas
+            ... this.state,
+            options
         })
     }
 
-    async getIngresos(){
+    setOptions = ( arreglo, name, value ) => {
+        let aux = []
+        arreglo.map( (element) => {
+            if( element.hasOwnProperty('cuentas') ){
+                aux.push({ name: element[name], value: element[value].toString(), cuentas: element['cuentas'] } )
+            }else
+            {
+                if(element.hasOwnProperty('subareas')){
+                    aux.push({ name: element[name], value: element[value].toString(), subareas: element['subareas'] } )
+                }else
+                    aux.push({ name: element[name], value: element[value].toString() } )
+            }
+        })
+        return aux
+    }
+
+    setSelectOptions = (arreglo, name) => {
+        let aux = []
+        arreglo.map((element) => {
+            aux.push({
+                value: element.id,
+                text: element[name]
+            })
+        })
+        return aux
+    }
+
+    async getIngresosAxios(){
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'ingresos', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { clientes, areas, empresas, tiposImpuestos, tiposPagos, estatusCompras, ingresos } = response.data
+                const { clientes, ingresos, empresas, areas, tiposPagos, tiposImpuestos, estatusCompras } = response.data
+                const { options } = this.state
+                options['empresas'] = this.setOptions(empresas, 'name', 'name')
+                options['areas'] = this.setOptions(areas, 'nombre', 'id')
+                options['clientes'] = this.setOptions(clientes, 'nombre', 'id')
+                options['tiposPagos'] = this.setSelectOptions( tiposPagos, 'tipo' )
+                options['tiposImpuestos'] = this.setSelectOptions( tiposImpuestos, 'tipo' )
+                options['estatusCompras'] = this.setSelectOptions( estatusCompras, 'estatus' )
                 this.setState({
                     ... this.state,
-                    areas: this.setSelectOptions(areas, 'id', 'nombre'),
-                    clientes: this.setSelectOptions(clientes, 'id', 'empresa'),
-                    empresas: this.setSelectOptions(empresas, 'id', 'name'),
-                    tiposImpuestos: this.setOptions( tiposImpuestos, 'tipo' ),
-                    tiposPagos: this.setOptions( tiposPagos, 'tipo' ),
-                    estatusCompras: this.setOptions( estatusCompras, 'estatus' ),
-                    ingresos: this.setIngresos(ingresos)
+                    ingresos: this.setIngresos(ingresos),
+                    options
                 })
             },
             (error) => {
@@ -583,6 +488,7 @@ class Ingresos extends Component{
                 }
             }
         ).catch((error) => {
+            console.log('Catch error', error)
             swal({
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
@@ -591,7 +497,7 @@ class Ingresos extends Component{
         })
     }
 
-    async addIngresos(){
+    async addIngresosAxios(){
         const { access_token } = this.props.authUser
         const { form } = this.state
         const data = new FormData();
@@ -606,18 +512,25 @@ class Ingresos extends Component{
                     data.append(element.toString() +'_name' , form[element].name)
                     data.append(element.toString() +'_value' , form[element].value)
                 }
-                else
-                    data.append(element, form[element])
+                else{
+                    if(element === 'fileFactura'){
+                        for (var i = 0; i < form.fileFactura.adjuntos.length; i++) {
+                            data.append('filesName[]', form.fileFactura.adjuntos[i].name)
+                            data.append('files[]', form.fileFactura.adjuntos[i].file)
+                        }
+                    }else
+                        data.append(element, form[element])
+                }
             }
         })
         await axios.post(URL_DEV + 'ingresos', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { ingresos } = response.data
-                this.clearForm()
                 this.setState({
                     ... this.state,
                     ingresos: this.setIngresos(ingresos),
-                    modal: false
+                    modal: false,
+                    form: this.clearForm()
                 })
                 swal({
                     title: '¡Felicidades!',
@@ -653,30 +566,38 @@ class Ingresos extends Component{
         })
     }
 
-    async saveFactura(){
+
+    async readFactura(){
+
         const { access_token } = this.props.authUser
-        const { form, ingreso } = this.state
-        const data = new FormData();
-        data.append('factura_file' , form['facturas'].file)
-        data.append('factura_name' , form['facturas'].name)
-        data.append('factura_value' , form['facturas'].value)
-        data.append('id' , ingreso.id)
-        await axios.post(URL_DEV + 'ingresos/factura', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+        const {form} = this.state
+        
+        const data = new FormData()
+        
+        for (var i = 0; i < form.fileFactura.adjuntos.length; i++) {
+            data.append('filesName[]', form.fileFactura.adjuntos[i].name)
+            data.append('files[]', form.fileFactura.adjuntos[i].file)
+        }
+
+        swal({
+            title: '¡Un momento!',
+            text: 'Se está enviando tu mensaje.',
+            buttons: false
+        })
+
+        await axios.post(URL_DEV + 'facturas/read/ingresos', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { ingresos } = response.data
-                this.clearForm()
+                const { factura, empresa, clientes } = response.data
+                const { options } = this.state
+                options['cuentas'] = this.setOptions(empresa.cuentas, 'nombre', 'id')
+                options['clientes'] = this.setOptions(clientes, 'nombre', 'id')
+                this.setFactura(factura)
+                swal.close();
                 this.setState({
                     ... this.state,
-                    ingresos: this.setIngresos(ingresos),
-                    modalFactura: false
+                    options
                 })
-                swal({
-                    title: '¡Felicidades!',
-                    text: 'La factura fue registrado con éxito',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+                
             },
             (error) => {
                 console.log(error, 'error')
@@ -696,6 +617,7 @@ class Ingresos extends Component{
                 }
             }
         ).catch((error) => {
+            console.log('Catch error', error)
             swal({
                 title: '¡Ups!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
@@ -704,163 +626,22 @@ class Ingresos extends Component{
         })
     }
 
-    async deleteIngreso(){
-        const { access_token } = this.props.authUser
-        const { ingreso } = this.state
-        await axios.delete(URL_DEV + 'ingresos/' + ingreso.id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
-            (response) => {
-                const { ingresos } = response.data
-                this.setState({
-                    ... this.state,
-                    modalDelete: false,
-                    ingreso: '',
-                    ingresos: this.setIngresos(ingresos)
-                })
-                swal({
-                    title: '¡Felicidades!',
-                    text: 'El ingreso fue eliminado con éxito',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    swal({
-                        title: '¡Ups!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                }else{
-                    swal({
-                        title: '¡Ups!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
-                        icon: 'error',
-                    })
-                }
-            }
-        ).catch((error) => {
-            swal({
-                title: '¡Ups!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error'
-            })
-        })
-    }
-
-    async editIngreso(){
-        const { access_token } = this.props.authUser
-        const { ingreso, form } = this.state
-        const data = new FormData();
-        let aux = Object.keys(form)
-        aux.map( (element) => {
-            if(element === 'fecha')
-                data.append(element, (new Date(form[element])).toDateString())
-            else{
-                if(element === 'presupuesto' || element === 'pago')
-                {
-                    data.append(element.toString() +'_file' , form[element].file)
-                    data.append(element.toString() +'_name' , form[element].name)
-                    data.append(element.toString() +'_value' , form[element].value)
-                }
-                else
-                    data.append(element, form[element])
-            }
-        })
-        data.append('id', ingreso.id)
-        await axios.post(URL_DEV + 'ingresos/edit', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
-            (response) => {
-                const { ingresos } = response.data
-                this.setState({
-                    ... this.state,
-                    modal: false,
-                    ingreso: '',
-                    /* ingresos: this.setIngresos(ingresos), */
-                    cuentas: [],
-                    subareas: []
-                })
-                swal({
-                    title: '¡Felicidades!',
-                    text: 'El ingreso fue editado con éxito',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    swal({
-                        title: '¡Ups!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                }else{
-                    swal({
-                        title: '¡Ups!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
-                        icon: 'error',
-                    })
-                }
-            }
-        ).catch((error) => {
-            swal({
-                title: '¡Ups!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error'
-            })
-        })
-    }
+    
 
     render(){
-        const { modal, modalDelete, modalFactura, ingresos, empresas, cuentas, clientes, areas, subareas, tiposImpuestos, tiposPagos, estatusCompras, form, ingreso } = this.state
+        const { ingresos, form, options,modal } = this.state
         return(
             <Layout active={'administracion'}  { ...this.props}>
                 <div className="text-right">
                     <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon = { faPlus } color="green" />
                 </div>
-                <DataTable columns = { INGRESOS_COLUMNS } data = { ingresos } />
-                <Modal show = { modal } handleClose = { this.handleClose }>
-                    <IngresosForm title = { ingreso === '' ? "Agregar un ingreso" : "Editar el ingreso" } empresas = { empresas } cuentas = { cuentas } clientes = { clientes } 
-                        areas = { areas } subareas = { subareas } form = { form } onChange = {this.onChange} setCuentas = { this.setCuentas }
-                        setSubareas = { this.setSubareas } tiposImpuestos = { tiposImpuestos } onChangeFile = { this.onChangeFile } clearAdjunto = { this.clearAdjunto }
-                        tiposPagos = { tiposPagos } estatusCompras = { estatusCompras } onSubmit = { ingreso === '' ? this.onSubmit : this.onSubmitEdit } />
+                <DataTable columns = {INGRESOS_COLUMNS} data= {ingresos}/>
+                <Modal show = {modal} handleClose = {this.handleClose}>
+                    <IngresosForm title="Nuevo ingreso" form={form} onChange={this.onChange} sendFactura = { () => {this.readFactura() }}
+                        onChangeFile = {this.onChangeFile} onChangeAdjunto = {this.onChangeAdjunto} clearAdjunto = {this.clearAdjunto} clearFile = {this.clearFile} 
+                        options={options} setCuentas = { this.setCuentas } setSubareas = { this.setSubareas } onSubmit = {this.onSubmit}/>
                 </Modal>
-                <Modal show = { modalDelete } handleClose={ this.handleCloseDelete } >
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas eliminar el ingreso?
-                    </Subtitle>
-                    <div className="d-flex justify-content-center mt-3">
-                        <Button icon='' onClick = { this.handleCloseDelete } text="Cancelar" className="mr-3" color="green"/>
-                        <Button icon='' onClick = { (e) => { this.safeDelete(e)() }} text="Continuar" color="red"/>
-                    </div>
-                </Modal>
-                <Modal show = { modalFactura } handleClose={ this.handleCloseFactura } >
-                    <Form onSubmit = { this.onSaveFactura } >
-                        <Subtitle className="text-center" color="gold">
-                            Facturación
-                        </Subtitle>
-                        <div className = "px-2 ">
-                            <FileInput 
-                                onChangeAdjunto = { this.onChangeFile } 
-                                placeholder = "Factura"
-                                value = {form.facturas.value}
-                                name = "facturas"
-                                id = "factura"
-                                accept = "application/xml" 
-                                files = { form.facturas.name === '' ? [] : [ {name: form.facturas.name, key: 1}] }
-                                deleteAdjunto = { (e) => { this.clearAdjunto('facturas') }}
-                                />
-                        </div>
-                
-                        <div className="mt-3 text-center">
-                            <Button icon='' className="mx-auto" type="submit" text="Enviar" />
-                        </div>
-                    </Form>
-                </Modal>
+
             </Layout>
         )
     }
