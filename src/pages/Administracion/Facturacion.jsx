@@ -170,14 +170,14 @@ class Facturacion extends Component{
                 console.log(error, 'error')
                 if(error.response.status === 401){
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
                 }else{
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                     })
@@ -185,7 +185,7 @@ class Facturacion extends Component{
             }
         ).catch((error) => {
             swal({
-                title: '¡Ups!',
+                title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error'
             })

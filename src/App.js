@@ -52,7 +52,7 @@ class App extends Component{
                 }
                 else{
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                         
@@ -64,7 +64,7 @@ class App extends Component{
         ).catch((error) => {
             /* this.logoutUser() */
             swal({
-                title: '¡Ups!',
+                title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                 icon: 'error',
                 

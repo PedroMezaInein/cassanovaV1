@@ -57,7 +57,7 @@ class LoginForm extends React.Component {
                     
                 }else{
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                         
@@ -70,7 +70,7 @@ class LoginForm extends React.Component {
                 error: error
             });
             swal({
-                title: '¡Ups!',
+                title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                 icon: 'error',
                 

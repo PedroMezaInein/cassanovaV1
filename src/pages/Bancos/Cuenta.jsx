@@ -495,14 +495,14 @@ class Cuentas extends Component{
                 console.log(error, 'error')
                 if(error.response.status === 401){
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
                 }else{
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                     })
@@ -510,7 +510,7 @@ class Cuentas extends Component{
             }
         ).catch((error) => {
             swal({
-                title: '¡Ups!',
+                title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error'
             })
@@ -531,7 +531,7 @@ class Cuentas extends Component{
                     form: this.setEmptyForm()
                 })
                 swal({
-                    title: '¡Felicidades!',
+                    title: '¡Felicidades 🥳!',
                     text: 'Cuenta agregada con éxito',
                     icon: 'success',
                     timer: 1500
@@ -541,14 +541,14 @@ class Cuentas extends Component{
                 console.log(error, 'error')
                 if(error.response.status === 401){
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
                 }else{
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                     })
@@ -556,7 +556,7 @@ class Cuentas extends Component{
             }
         ).catch((error) => {
             swal({
-                title: '¡Ups!',
+                title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error'
             })
@@ -588,14 +588,14 @@ class Cuentas extends Component{
                 console.log(error, 'error')
                 if(error.response.status === 401){
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
                 }else{
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                     })
@@ -603,7 +603,7 @@ class Cuentas extends Component{
             }
         ).catch((error) => {
             swal({
-                title: '¡Ups!',
+                title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error'
             })
@@ -625,7 +625,7 @@ class Cuentas extends Component{
                     cuenta: null
                 })
                 swal({
-                    title: '¡Felicidades!',
+                    title: '¡Felicidades 🥳!',
                     text: 'Cuenta editada con éxito',
                     icon: 'success',
                     timer: 1500,
@@ -636,14 +636,14 @@ class Cuentas extends Component{
                 console.log(error, 'error')
                 if(error.response.status === 401){
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
                 }else{
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                     })
@@ -651,7 +651,7 @@ class Cuentas extends Component{
             }
         ).catch((error) => {
             swal({
-                title: '¡Ups!',
+                title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error'
             })
@@ -671,7 +671,7 @@ class Cuentas extends Component{
                     cuenta: null
                 })
                 swal({
-                    title: '¡Felicidades!',
+                    title: '¡Felicidades 🥳!',
                     text: 'Cuenta eliminada con éxito',
                     icon: 'success',
                     timer: 1500
@@ -681,14 +681,14 @@ class Cuentas extends Component{
                 console.log(error, 'error')
                 if(error.response.status === 401){
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
                 }else{
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                     })
@@ -696,7 +696,7 @@ class Cuentas extends Component{
             }
         ).catch((error) => {
             swal({
-                title: '¡Ups!',
+                title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error'
             })
@@ -718,14 +718,14 @@ class Cuentas extends Component{
                 console.log(error, 'error')
                 if(error.response.status === 401){
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
                 }else{
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                     })
@@ -733,7 +733,7 @@ class Cuentas extends Component{
             }
         ).catch((error) => {
             swal({
-                title: '¡Ups!',
+                title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error'
             })

@@ -21,7 +21,9 @@ class Ingresos extends Component{
 
     state = {
         ingresos: [],
+        ingreso: '',
         modal: false,
+        modalDelete: false,
         clientes: [],
         form:{
             factura: 'Sin factura',
@@ -109,10 +111,14 @@ class Ingresos extends Component{
         return aux
     }
 
-    setActions = ingreso => {
+    setActions= ingreso => {
         return(
             <>
-                
+                <div className="d-flex align-items-center flex-column flex-md-row">
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => alert('Eliminar')}  text='' icon={faEdit} 
+                        color="transparent" />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalDelete(e)(ingreso) } text='' icon={faTrash} color="red" />
+                </div>
             </>
         )
     }
@@ -314,6 +320,23 @@ class Ingresos extends Component{
         })
     }
 
+    openModalDelete = e => (ingreso) => {
+        this.setState({
+            ... this.state,
+            modalDelete: true,
+            ingreso: ingreso
+        })
+    }
+
+    handleCloseDelete = () => {
+        const { modalDelete } = this.state
+        this.setState({
+            ... this.state,
+            modalDelete: !modalDelete,
+            ingreso: ''
+        })
+    }
+
     onChange = e => {
         const {name, value} = e.target
         const {form} = this.state
@@ -365,6 +388,11 @@ class Ingresos extends Component{
             buttons: false
         })
         this.addIngresosAxios()
+    }
+
+    safeDelete = (e) => () => {
+        e.preventDefault();
+        this.deleteIngresoAxios();
     }
 
     clearFile = (name, key) => {
@@ -474,14 +502,14 @@ class Ingresos extends Component{
                 console.log(error, 'error')
                 if(error.response.status === 401){
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
                 }else{
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                     })
@@ -490,7 +518,7 @@ class Ingresos extends Component{
         ).catch((error) => {
             console.log('Catch error', error)
             swal({
-                title: '¡Ups!',
+                title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error'
             })
@@ -533,7 +561,7 @@ class Ingresos extends Component{
                     form: this.clearForm()
                 })
                 swal({
-                    title: '¡Felicidades!',
+                    title: '¡Felicidades 🥳!',
                     text: 'El ingreso fue registrado con éxito',
                     icon: 'success',
                     timer: 1500,
@@ -544,14 +572,14 @@ class Ingresos extends Component{
                 console.log(error, 'error')
                 if(error.response.status === 401){
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
                 }else{
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                     })
@@ -559,13 +587,58 @@ class Ingresos extends Component{
             }
         ).catch((error) => {
             swal({
-                title: '¡Ups!',
+                title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error'
             })
         })
     }
 
+    async deleteIngresoAxios(){
+        const { access_token } = this.props.authUser
+        const { ingreso } = this.state
+        await axios.delete(URL_DEV + 'ingresos/' + ingreso.id, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { ingresos } = response.data
+                this.setState({
+                    ... this.state,
+                    ingresos: this.setIngresos(ingresos),
+                    modalDelete: false,
+                    ingreso: ''
+                })
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: 'El ingreso fue eliminado con éxito',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
+                        icon: 'error',
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups 😕!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error'
+            })
+        })
+    }
 
     async readFactura(){
 
@@ -603,14 +676,14 @@ class Ingresos extends Component{
                 console.log(error, 'error')
                 if(error.response.status === 401){
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
                 }else{
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                     })
@@ -619,7 +692,7 @@ class Ingresos extends Component{
         ).catch((error) => {
             console.log('Catch error', error)
             swal({
-                title: '¡Ups!',
+                title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error'
             })
@@ -629,7 +702,7 @@ class Ingresos extends Component{
     
 
     render(){
-        const { ingresos, form, options,modal } = this.state
+        const { ingresos, form, options,modal, modalDelete } = this.state
         return(
             <Layout active={'administracion'}  { ...this.props}>
                 <div className="text-right">
@@ -641,7 +714,15 @@ class Ingresos extends Component{
                         onChangeFile = {this.onChangeFile} onChangeAdjunto = {this.onChangeAdjunto} clearAdjunto = {this.clearAdjunto} clearFile = {this.clearFile} 
                         options={options} setCuentas = { this.setCuentas } setSubareas = { this.setSubareas } onSubmit = {this.onSubmit}/>
                 </Modal>
-
+                <Modal show = { modalDelete } handleClose={ this.handleCloseDelete } >
+                    <Subtitle className="my-3 text-center">
+                        ¿Estás seguro que deseas eliminar el ingreso?
+                    </Subtitle>
+                    <div className="d-flex justify-content-center mt-3">
+                        <Button icon='' onClick = { this.handleCloseDelete } text="Cancelar" className="mr-3" color="green"/>
+                        <Button icon='' onClick = { (e) => { this.safeDelete(e)() }} text="Continuar" color="red"/>
+                    </div>
+                </Modal>
             </Layout>
         )
     }

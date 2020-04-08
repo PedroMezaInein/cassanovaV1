@@ -358,14 +358,14 @@ class Proveedor extends Component{
                 console.log(error, 'error')
                 if(error.response.status === 401){
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
                 }else{
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                         
@@ -376,7 +376,7 @@ class Proveedor extends Component{
             console.log('Catch error')
             console.log(error)
             swal({
-                title: '¡Ups!',
+                title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
                 
@@ -399,7 +399,7 @@ class Proveedor extends Component{
                     lead: ''
                 })
                 swal({
-                    title: '¡Felicidades!',
+                    title: '¡Felicidades 🥳!',
                     text: 'El provedor fue registrado con éxito',
                     icon: 'success',
                     timer: 1500,
@@ -410,14 +410,14 @@ class Proveedor extends Component{
                 console.log(error.response.data.message, 'error')
                 if(error.response.status === 401){
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
                 }else{
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                         
@@ -426,7 +426,7 @@ class Proveedor extends Component{
             }
         ).catch((error) => {
             swal({
-                title: '¡Ups!',
+                title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
                 
@@ -449,7 +449,7 @@ class Proveedor extends Component{
                     lead: ''
                 })
                 swal({
-                    title: '¡Felicidades!',
+                    title: '¡Felicidades 🥳!',
                     text: 'El provedor fue registrado con éxito',
                     icon: 'success',
                     timer: 1500,
@@ -460,14 +460,14 @@ class Proveedor extends Component{
                 console.log(error, 'error')
                 if(error.response.status === 401){
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
                 }else{
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                         
@@ -476,7 +476,7 @@ class Proveedor extends Component{
             }
         ).catch((error) => {
             swal({
-                title: '¡Ups!',
+                title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
                 
@@ -498,7 +498,7 @@ class Proveedor extends Component{
                     proveedor: ''
                 })
                 swal({
-                    title: '¡Felicidades!',
+                    title: '¡Felicidades 🥳!',
                     text: 'El provedor fue eliminado con éxito',
                     icon: 'success',
                     timer: 1500,
@@ -509,14 +509,14 @@ class Proveedor extends Component{
                 console.log(error, 'error')
                 if(error.response.status === 401){
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
                 }else{
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                         
@@ -525,7 +525,7 @@ class Proveedor extends Component{
             }
         ).catch((error) => {
             swal({
-                title: '¡Ups!',
+                title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
                 
@@ -547,14 +547,14 @@ class Proveedor extends Component{
                 console.log(error, 'error')
                 if(error.response.status === 401){
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
                 }else{
                     swal({
-                        title: '¡Ups!',
+                        title: '¡Ups 😕!',
                         text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
                         icon: 'error',
                         
@@ -563,7 +563,7 @@ class Proveedor extends Component{
             }
         ).catch((error) => {
             swal({
-                title: '¡Ups!',
+                title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
                 
