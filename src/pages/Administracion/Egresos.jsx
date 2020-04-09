@@ -3,7 +3,7 @@ import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { Modal } from '../../components/singles'
 import { Button } from '../../components/form-components'
-import { faPlus, faTrash, faEdit, faMoneyBill, faFileAlt } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faTrash, faEdit, faMoneyBill, faFileAlt, faFileArchive } from '@fortawesome/free-solid-svg-icons'
 import { EgresosForm } from '../../components/forms'
 import axios from 'axios'
 import { URL_DEV, GOLD, PROVEEDORES_COLUMNS, EGRESOS_COLUMNS } from '../../constants'
@@ -24,6 +24,7 @@ class Ingresos extends Component{
         egreso: '',
         modal: false,
         modalDelete: false,
+        ModalFile: false,
         proveedores: [],
         form:{
             factura: 'Sin factura',
@@ -117,9 +118,10 @@ class Ingresos extends Component{
         return(
             <>
                 <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => alert('EDIT')}  text='' icon={faEdit} 
-                        color="transparent" />
                     <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalDelete(e)(egreso) } text='' icon={faTrash} color="red" />
+                </div>
+                <div className="d-flex align-items-center flex-column flex-md-row">
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalFile(e)(egreso) } text='' icon={faFileArchive} color="transparent" />
                 </div>
             </>
         )
@@ -322,6 +324,22 @@ class Ingresos extends Component{
         })
     }
 
+    openModalFile = e => egreso => {
+        const { form } = this.state
+        if(egreso.pago){
+            form['pago']['name'] = egreso.pago.name
+        }
+        if(egreso.presupuesto){
+            form['presupuesto']['name'] = egreso.presupuesto.name
+        }
+        this.setState({
+            ... this.state,
+            modalFile: true,
+            egreso: egreso,
+            form
+        })
+    }
+
     handleClose = () => {
         const { modal } = this.state
         this.setState({
@@ -337,6 +355,16 @@ class Ingresos extends Component{
             ... this.state,
             modalDelete: !modalDelete,
             egreso: ''
+        })
+    }
+
+    handleCloseFile = () => {
+        const { modalFile } = this.state
+        this.setState({
+            ... this.state,
+            modalFile: !modalFile,
+            egreso: '',
+            form: this.clearForm()
         })
     }
 
@@ -391,6 +419,16 @@ class Ingresos extends Component{
             buttons: false
         })
         this.addEgresosAxios()
+    }
+
+    onSubmitFile = e => {
+        e.preventDefault()
+        swal({
+            title: '¡Un momento!',
+            text: 'La información está siendo procesada.',
+            buttons: false
+        })
+        this.updateEgresosFile()
     }
 
     safeDelete = e => () => {
@@ -654,6 +692,63 @@ class Ingresos extends Component{
         })
     }
 
+    async updateEgresosFile(){
+        const { access_token } = this.props.authUser
+        const { form,egreso } = this.state
+        const data = new FormData();
+        let aux = Object.keys(form)
+        aux.map( (element) => {
+            if(element === 'presupuesto' || element === 'pago')
+            {
+                data.append(element.toString() +'_file' , form[element].file)
+                data.append(element.toString() +'_name' , form[element].name)
+                data.append(element.toString() +'_value' , form[element].value)
+            }
+        })
+        await axios.post(URL_DEV + 'egresos/files/' +egreso.id, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { egresos } = response.data
+                this.setState({
+                    ... this.state,
+                    egresos: this.setEgresos(egresos),
+                    modalFile: false,
+                    egreso: '',
+                    form: this.clearForm()
+                })
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: 'Los archivos fueron adjuntados con éxito',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
+                        icon: 'error',
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups 😕!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error'
+            })
+        })
+    }
+
     async deleteEgresoAxios(){
         const { access_token } = this.props.authUser
         const { egreso } = this.state
@@ -701,7 +796,7 @@ class Ingresos extends Component{
     }
 
     render(){
-        const { egresos, form, options,modal, modalDelete } = this.state
+        const { egresos, form, options,modal, modalDelete, modalFile } = this.state
         return(
             <Layout active={'administracion'}  { ...this.props}>
                 <div className="text-right">
@@ -721,6 +816,42 @@ class Ingresos extends Component{
                         <Button icon='' onClick = { this.handleCloseDelete } text="Cancelar" className="mr-3" color="green"/>
                         <Button icon='' onClick = { (e) => { this.safeDelete(e)() }} text="Continuar" color="red"/>
                     </div>
+                </Modal>
+                <Modal show = {modalFile} handleClose = {this.handleCloseFile}>
+                    <Subtitle className="my-3 text-center" color ="gold">
+                        Edita o agrega adjuntos
+                    </Subtitle>
+                    <Form onSubmit = {this.onSubmitFile}>
+                        <div className="row mx-0">
+                            <div className="col-md-6">
+                                <FileInput 
+                                    onChangeAdjunto = { this.onChangeAdjunto } 
+                                    placeholder = "Presupuesto"
+                                    value = {form.presupuesto.value}
+                                    name = "presupuesto"
+                                    id = "presupuesto"
+                                    accept = "application/pdf, image/*" 
+                                    files = { form.presupuesto.name === '' ? [] : [ {name: form.presupuesto.name, key: 1}] }
+                                    deleteAdjunto = { (e) => { this.clearAdjunto('presupuesto') }}
+                                    />
+                            </div>
+                            <div className="col-md-6">
+                                <FileInput 
+                                    onChangeAdjunto = { this.onChangeAdjunto } 
+                                    placeholder = "Pago"
+                                    value = {form.pago.value}
+                                    name = "pago"
+                                    id = "pago"
+                                    accept = "application/pdf, image/*" 
+                                    files = { form.pago.name === '' ? [] : [ {name: form.pago.name, key: 1}] }
+                                    deleteAdjunto = { (e) => { this.clearAdjunto('pago') }}
+                                    />
+                            </div>
+                        </div>
+                        <div className="mt-3 text-center">
+                            <Button icon='' className="mx-auto" type="submit" text="Enviar" />
+                        </div>
+                    </Form>
                 </Modal>
             </Layout>
         )
