@@ -17,10 +17,11 @@ import { Form } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 
-class Ingresos extends Component{
+class egresos extends Component{
 
     state = {
         egresos: [],
+        title: 'Nuevo egreso',
         egreso: '',
         modal: false,
         modalDelete: false,
@@ -117,6 +118,9 @@ class Ingresos extends Component{
     setActions= egreso => {
         return(
             <>
+                <div className="d-flex align-items-center flex-column flex-md-row">
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalEdit(e)(egreso) } text='' icon={faEdit} color="transparent" />
+                </div>
                 <div className="d-flex align-items-center flex-column flex-md-row">
                     <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalDelete(e)(egreso) } text='' icon={faTrash} color="red" />
                 </div>
@@ -312,7 +316,109 @@ class Ingresos extends Component{
         this.setState({
             ... this.state,
             modal: true,
+            title: 'Nuevo egreso',
             form: this.clearForm()
+        })
+    }
+
+    openModalEdit = e => (egreso) => {
+        const { form, options } = this.state
+        console.log(egreso, 'egreso')
+        if(egreso.factura){
+            form.factura = 'Con factura'
+            if(egreso.facturas){
+        
+                form['rfc'] = egreso.facturas.rfc_receptor
+                form['proveedor'] = egreso.facturas.nombre_receptor
+                form['empresa'] = egreso.facturas.serie
+                form['fecha'] =  new Date(egreso.facturas.fecha)
+                form['total'] = egreso.facturas.subtotal
+                form['facturaObject'] = egreso.facturas
+
+                let aux = []
+                if(egreso.facturas.xml){
+                    aux.push({
+                        name: 'factura.xml',
+                        file: '',
+                        key: aux.length + 1
+                    })
+                }
+                if(egreso.facturas.pdf){
+                    aux.push({
+                        name: 'factura.pdf',
+                        file: '',
+                        key: aux.length + 1
+                    })
+                }
+                form['fileFactura'] = {
+                    value: '',
+                    adjuntos: aux
+                }
+            }else{
+                if(egreso.empresa){
+                    form.empresa = egreso.empresa.name
+                }
+                if(egreso.proveedor){
+                    form.proveedor = egreso.proveedor.id.toString()
+                }
+                form.total = egreso.monto
+            }
+        }else{
+            form.factura = 'Sin factura'
+            if(egreso.empresa){
+                form.empresa = egreso.empresa.name
+            }
+            if(egreso.proveedor){
+                form.proveedor = egreso.proveedor.id.toString()
+            }
+            form.total = egreso.monto
+        }
+        if(egreso.tipo_pago){
+            form.tipoPago = egreso.tipo_pago.id.toString()
+        }
+        if(egreso.tipo_impuesto){
+            form.tipoImpuesto = egreso.tipo_impuesto.id.toString()
+        }
+        if(egreso.estatus_compra){
+            form.estatusCompra = egreso.estatus_compra.id.toString()
+        }
+        if(egreso.subarea){
+            if(egreso.subarea.area){
+                form.area = egreso.subarea.area.id.toString()
+                options['subareas'] = this.setOptions(egreso.subarea.area.subareas, 'nombre', 'id')
+            }
+            form.subarea = egreso.subarea.id.toString()
+        }
+        if(egreso.empresa){
+            if(egreso.empresa.cuentas){
+                options['cuentas'] = this.setOptions(egreso.empresa.cuentas, 'nombre', 'id')
+            }
+        }
+        if(egreso.cuenta){
+            form.cuenta = egreso.cuenta.id.toString()
+        }
+        if(egreso.pago){
+            form.pago.name = egreso.pago.name
+        }
+        if(egreso.presupuesto){
+            form.presupuesto.name = egreso.presupuesto.name
+        }
+        if(egreso.descripcion){
+            form.descripcion = egreso.descripcion
+        }
+        
+        form.comision = egreso.comision
+
+        if(egreso.created_at){
+            form.fecha = new Date(egreso.created_at)
+        }
+        this.setState({
+            ... this.state,
+            title: 'Editar egreso',
+            modal: true,
+            egreso: egreso,
+            options,
+            form
         })
     }
 
@@ -345,7 +451,8 @@ class Ingresos extends Component{
         this.setState({
             ... this.state,
             modal: !modal,
-            form: this.clearForm()
+            form: this.clearForm(),
+            egreso: ''
         })
     }
 
@@ -413,12 +520,16 @@ class Ingresos extends Component{
 
     onSubmit = e => {
         e.preventDefault()
+        const{ title } = this.state
         swal({
             title: '¡Un momento!',
             text: 'La información está siendo procesada.',
             buttons: false
         })
-        this.addEgresosAxios()
+        if(title === 'Editar egreso'){
+            alert('EDITAR FALT')
+        }else
+            this.addEgresosAxios()
     }
 
     onSubmitFile = e => {
@@ -443,6 +554,9 @@ class Ingresos extends Component{
             if(counter !== key){
                 aux.push(form[name].adjuntos[counter])
             }
+        }
+        if(aux.length === 0){
+            form['facturaObject'] = ''
         }
         form[name].adjuntos = aux
         this.setState({
@@ -551,7 +665,7 @@ class Ingresos extends Component{
                 }else{
                     swal({
                         title: '¡Ups 😕!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
                         icon: 'error',
                     })
                 }
@@ -609,7 +723,7 @@ class Ingresos extends Component{
                 }else{
                     swal({
                         title: '¡Ups 😕!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
                         icon: 'error',
                     })
                 }
@@ -678,7 +792,7 @@ class Ingresos extends Component{
                 }else{
                     swal({
                         title: '¡Ups 😕!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
                         icon: 'error',
                     })
                 }
@@ -735,7 +849,7 @@ class Ingresos extends Component{
                 }else{
                     swal({
                         title: '¡Ups 😕!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
                         icon: 'error',
                     })
                 }
@@ -781,7 +895,7 @@ class Ingresos extends Component{
                 }else{
                     swal({
                         title: '¡Ups 😕!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
                         icon: 'error',
                     })
                 }
@@ -796,7 +910,7 @@ class Ingresos extends Component{
     }
 
     render(){
-        const { egresos, form, options,modal, modalDelete, modalFile } = this.state
+        const { egresos, form, options,modal, modalDelete, modalFile, title } = this.state
         return(
             <Layout active={'administracion'}  { ...this.props}>
                 <div className="text-right">
@@ -804,7 +918,7 @@ class Ingresos extends Component{
                 </div>
                 <DataTable columns = {EGRESOS_COLUMNS} data= {egresos}/>
                 <Modal show = {modal} handleClose = {this.handleClose}>
-                    <EgresosForm title="Nuevo egreso" form={form} onChange={this.onChange} sendFactura = { () => {this.readFactura() }}
+                    <EgresosForm title={title} form={form} onChange={this.onChange} sendFactura = { () => {this.readFactura() }}
                         onChangeFile = {this.onChangeFile} onChangeAdjunto = {this.onChangeAdjunto} clearAdjunto = {this.clearAdjunto} clearFile = {this.clearFile} 
                         options={options} setCuentas = { this.setCuentas } setSubareas = { this.setSubareas } onSubmit = {this.onSubmit}/>
                 </Modal>
@@ -868,4 +982,4 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Ingresos);
+export default connect(mapStateToProps, mapDispatchToProps)(egresos);

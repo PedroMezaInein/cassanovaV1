@@ -503,7 +503,7 @@ class Cuentas extends Component{
                 }else{
                     swal({
                         title: '¡Ups 😕!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
                         icon: 'error',
                     })
                 }
@@ -549,7 +549,7 @@ class Cuentas extends Component{
                 }else{
                     swal({
                         title: '¡Ups 😕!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
                         icon: 'error',
                     })
                 }
@@ -596,7 +596,7 @@ class Cuentas extends Component{
                 }else{
                     swal({
                         title: '¡Ups 😕!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
                         icon: 'error',
                     })
                 }
@@ -644,7 +644,7 @@ class Cuentas extends Component{
                 }else{
                     swal({
                         title: '¡Ups 😕!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
                         icon: 'error',
                     })
                 }
@@ -689,7 +689,7 @@ class Cuentas extends Component{
                 }else{
                     swal({
                         title: '¡Ups 😕!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
                         icon: 'error',
                     })
                 }
@@ -726,7 +726,7 @@ class Cuentas extends Component{
                 }else{
                     swal({
                         title: '¡Ups 😕!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
                         icon: 'error',
                     })
                 }

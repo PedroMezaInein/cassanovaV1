@@ -38,7 +38,7 @@ class EgresosForm extends Component{
     }
 
     render(){
-        const { onChange, onChangeFile, onChangeAdjunto, sendFactura, clearAdjunto, clearFile, form, title, options, ... props } = this.props
+        const { onChange, onChangeFile, onChangeAdjunto, sendFactura, clearAdjunto, clearFile, form, title, options, setSubareas, setCuentas, ... props } = this.props
         return(
             <Form { ... props}>
                 <Subtitle className="text-center" color="gold">
@@ -84,7 +84,7 @@ class EgresosForm extends Component{
                         : ''
                     }
                     {
-                        form.factura === 'Con factura' && form.fileFactura.adjuntos.length > 0 ?
+                        form.factura === 'Con factura' && form.fileFactura.value ?
                             <div className="col-md-4 d-flex align-items-center justify-content-md-end justify-content-center">
                                 <Button icon='' className="mx-auto" onClick={sendFactura} text="Enviar Factura" />
                             </div>
@@ -100,7 +100,7 @@ class EgresosForm extends Component{
                         }
                     </div>
                     {
-                        form.factura === 'Con factura' ?
+                        form.factura === 'Con factura' && form.facturaObject ?
                             <div className="col-md-4 px-2">
                                 <Input placeholder="RFC" name="rfc" value={form.rfc} onChange={onChange}/>
                             </div>
@@ -127,10 +127,14 @@ class EgresosForm extends Component{
                         <Select placeholder="Selecciona el tipo de pago" options = { options.tiposPagos } 
                             name="tipoPago" value = { form.tipoPago } onChange = { onChange } />
                     </div>
-                    <div className="col-md-4 px-2">
-                        <Select placeholder="Selecciona el impuesto" options = { options.tiposImpuestos } 
-                            name="tipoImpuesto" value = { form.tipoImpuesto } onChange = { onChange } />
-                    </div>
+                    {
+                        form.factura === 'Con factura' ?
+                            <div className="col-md-4 px-2">
+                                <Select placeholder="Selecciona el impuesto" options = { options.tiposImpuestos } 
+                                    name="tipoImpuesto" value = { form.tipoImpuesto } onChange = { onChange } />
+                            </div>
+                        : ''
+                    }
                     <div className="col-md-4 px-2">
                         <Select placeholder="Selecciona el estatus de compra" options = { options.estatusCompras } 
                             name="estatusCompra" value = { form.estatusCompra } onChange = { onChange } />
@@ -151,7 +155,7 @@ class EgresosForm extends Component{
                         <InputMoney placeholder = "Monto" value = { form.total } name = "total" onChange = { onChange }/>
                     </div>
                     <div className="col-md-4 px-2">
-                        <InputMoney placeholder = "Comisión" value = { form.comisión } name = "comision" onChange = { onChange }/>
+                        <InputMoney placeholder = "Comisión" value = { form.comision } name = "comision" onChange = { onChange }/>
                     </div>
                     <div className="col-md-4 px-2">
                         <Calendar 

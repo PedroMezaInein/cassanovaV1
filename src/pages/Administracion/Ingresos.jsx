@@ -3,7 +3,7 @@ import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { Modal } from '../../components/singles'
 import { Button } from '../../components/form-components'
-import { faPlus, faTrash, faEdit, faMoneyBill, faFileAlt, faFileArchive } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faTrash, faEdit, faMoneyBill, faFileAlt, faFileArchive, faMoneyBillWave } from '@fortawesome/free-solid-svg-icons'
 import { IngresosForm } from '../../components/forms'
 import axios from 'axios'
 import { URL_DEV, GOLD, INGRESOS_COLUMNS } from '../../constants'
@@ -21,6 +21,7 @@ class Ingresos extends Component{
 
     state = {
         ingresos: [],
+        title: 'Nuevo ingreso',
         ingreso: '',
         modal: false,
         modalDelete: false,
@@ -115,6 +116,9 @@ class Ingresos extends Component{
     setActions= ingreso => {
         return(
             <>
+                <div className="d-flex align-items-center flex-column flex-md-row">
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalEdit(e)(ingreso) } text='' icon={faEdit} color="transparent" />
+                </div>
                 <div className="d-flex align-items-center flex-column flex-md-row">
                     <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalDelete(e)(ingreso) } text='' icon={faTrash} color="red" />
                 </div>
@@ -308,6 +312,7 @@ class Ingresos extends Component{
     openModal = () => {
         this.setState({
             ... this.state,
+            title: 'Nuevo ingreso',
             modal: true,
             form: this.clearForm()
         })
@@ -318,7 +323,8 @@ class Ingresos extends Component{
         this.setState({
             ... this.state,
             modal: !modal,
-            form: this.clearForm()
+            form: this.clearForm(),
+            ingreso: ''
         })
     }
 
@@ -327,6 +333,101 @@ class Ingresos extends Component{
             ... this.state,
             modalDelete: true,
             ingreso: ingreso
+        })
+    }
+
+    openModalEdit = e => (ingreso) => {
+        const { form, options } = this.state
+        if(ingreso.factura){
+            form.factura = 'Con factura'
+            if(ingreso.facturas){
+                form['rfc'] = ingreso.facturas.rfc_emisor
+                form['cliente'] = ingreso.facturas.nombre_emisor
+                form['empresa'] = ingreso.facturas.nombre_receptor
+                form['fecha'] =  new Date(ingreso.facturas.fecha)
+                form['total'] = ingreso.facturas.subtotal
+                form['facturaObject'] = ingreso.facturas
+                let aux = []
+                if(ingreso.facturas.xml){
+                    aux.push({
+                        name: 'factura.xml',
+                        file: '',
+                        key: aux.length + 1
+                    })
+                }
+                if(ingreso.facturas.pdf){
+                    aux.push({
+                        name: 'factura.pdf',
+                        file: '',
+                        key: aux.length + 1
+                    })
+                }
+                form['fileFactura'] = {
+                    value: '',
+                    adjuntos: aux
+                }
+            }else{
+                if(ingreso.empresa){
+                    form.empresa = ingreso.empresa.name
+                }
+                if(ingreso.cliente){
+                    form.cliente = ingreso.cliente.id.toString()
+                }
+                form.total = ingreso.monto
+            }
+        }else{
+            form.factura = 'Sin factura'
+            if(ingreso.empresa){
+                form.empresa = ingreso.empresa.name
+            }
+            if(ingreso.cliente){
+                form.cliente = ingreso.cliente.id.toString()
+            }
+            form.total = ingreso.monto
+        }
+        if(ingreso.tipo_pago){
+            form.tipoPago = ingreso.tipo_pago.id.toString()
+        }
+        if(ingreso.tipo_impuesto){
+            form.tipoImpuesto = ingreso.tipo_impuesto.id.toString()
+        }
+        if(ingreso.estatus_compra){
+            form.estatusCompra = ingreso.estatus_compra.id.toString()
+        }
+        if(ingreso.subarea){
+            if(ingreso.subarea.area){
+                form.area = ingreso.subarea.area.id.toString()
+                options['subareas'] = this.setOptions(ingreso.subarea.area.subareas, 'nombre', 'id')
+            }
+            form.subarea = ingreso.subarea.id.toString()
+        }
+        if(ingreso.empresa){
+            if(ingreso.empresa.cuentas){
+                options['cuentas'] = this.setOptions(ingreso.empresa.cuentas, 'nombre', 'id')
+            }
+        }
+        if(ingreso.cuenta){
+            form.cuenta = ingreso.cuenta.id.toString()
+        }
+        if(ingreso.pago){
+            form.pago.name = ingreso.pago.name
+        }
+        if(ingreso.presupuesto){
+            form.presupuesto.name = ingreso.presupuesto.name
+        }
+        if(ingreso.descripcion){
+            form.descripcion = ingreso.descripcion
+        }
+        if(ingreso.created_at){
+            form.fecha = new Date(ingreso.created_at)
+        }
+        this.setState({
+            ... this.state,
+            title: 'Editar ingreso',
+            modal: true,
+            ingreso: ingreso,
+            options,
+            form
         })
     }
 
@@ -410,12 +511,17 @@ class Ingresos extends Component{
 
     onSubmit = e => {
         e.preventDefault()
+        const{ title } = this.state
         swal({
             title: '¡Un momento!',
             text: 'La información está siendo procesada.',
             buttons: false
         })
-        this.addIngresosAxios()
+        if(title === 'Editar ingreso'){
+            /* this.editIngresosAxios() */
+            alert('EDITAR FALT')
+        }else
+            this.addIngresosAxios()
     }
 
     onSubmitFile = e => {
@@ -440,6 +546,9 @@ class Ingresos extends Component{
             if(counter !== key){
                 aux.push(form[name].adjuntos[counter])
             }
+        }
+        if(aux.length === 0){
+            form['facturaObject'] = ''
         }
         form[name].adjuntos = aux
         this.setState({
@@ -548,7 +657,7 @@ class Ingresos extends Component{
                 }else{
                     swal({
                         title: '¡Ups 😕!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
                         icon: 'error',
                     })
                 }
@@ -618,7 +727,76 @@ class Ingresos extends Component{
                 }else{
                     swal({
                         title: '¡Ups 😕!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        icon: 'error',
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups 😕!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error'
+            })
+        })
+    }
+
+    async editIngresosAxios(){
+        const { access_token } = this.props.authUser
+        const { form,ingreso } = this.state
+        const data = new FormData();
+        let aux = Object.keys(form)
+        aux.map( (element) => {
+            if(element === 'fecha')
+                data.append(element, (new Date(form[element])).toDateString())
+            else{
+                if(element === 'presupuesto' || element === 'pago')
+                {
+                    data.append(element.toString() +'_file' , form[element].file)
+                    data.append(element.toString() +'_name' , form[element].name)
+                    data.append(element.toString() +'_value' , form[element].value)
+                }
+                else{
+                    if(element === 'fileFactura'){
+                        for (var i = 0; i < form.fileFactura.adjuntos.length; i++) {
+                            data.append('filesName[]', form.fileFactura.adjuntos[i].name)
+                            data.append('files[]', form.fileFactura.adjuntos[i].file)
+                        }
+                    }else
+                        data.append(element, form[element])
+                }
+            }
+        })
+        await axios.post(URL_DEV + 'ingresos/edit/'+ingreso.id, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { ingresos } = response.data
+                this.setState({
+                    ... this.state,
+                    ingresos: this.setIngresos(ingresos),
+                    modal: false,
+                    form: this.clearForm()
+                })
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: 'El ingreso fue registrado con éxito',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
                         icon: 'error',
                     })
                 }
@@ -675,7 +853,7 @@ class Ingresos extends Component{
                 }else{
                     swal({
                         title: '¡Ups 😕!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
                         icon: 'error',
                     })
                 }
@@ -721,7 +899,7 @@ class Ingresos extends Component{
                 }else{
                     swal({
                         title: '¡Ups 😕!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
                         icon: 'error',
                     })
                 }
@@ -779,7 +957,7 @@ class Ingresos extends Component{
                 }else{
                     swal({
                         title: '¡Ups 😕!',
-                        text: 'Ocurrió un error desconocido, intenta de nuevo.' + error.response.data.message,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
                         icon: 'error',
                     })
                 }
@@ -797,7 +975,7 @@ class Ingresos extends Component{
     
 
     render(){
-        const { ingresos, form, options,modal, modalDelete, modalFile } = this.state
+        const { ingresos, form, options,modal, modalDelete, modalFile, title } = this.state
         return(
             <Layout active={'administracion'}  { ...this.props}>
                 <div className="text-right">
@@ -805,7 +983,7 @@ class Ingresos extends Component{
                 </div>
                 <DataTable columns = {INGRESOS_COLUMNS} data= {ingresos}/>
                 <Modal show = {modal} handleClose = {this.handleClose}>
-                    <IngresosForm title="Nuevo ingreso" form={form} onChange={this.onChange} sendFactura = { () => {this.readFactura() }}
+                    <IngresosForm title={title} form={form} onChange={this.onChange} sendFactura = { () => {this.readFactura() }}
                         onChangeFile = {this.onChangeFile} onChangeAdjunto = {this.onChangeAdjunto} clearAdjunto = {this.clearAdjunto} clearFile = {this.clearFile} 
                         options={options} setCuentas = { this.setCuentas } setSubareas = { this.setSubareas } onSubmit = {this.onSubmit}/>
                 </Modal>
