@@ -434,8 +434,8 @@ class Traspasos extends Component{
                     traspaso: ''
                 })
                 swal({
-                    title: '¡Felicidades 🥳!',
-                    text: 'Eliminaste el traspaso con éxito',
+                    title: '¡Listo 👋!',
+                    text: response.data.message !== undefined ? response.data.message : 'Eliminaste el traspaso con éxito',
                     icon: 'success',
                     timer: 1500,
                     buttons: false

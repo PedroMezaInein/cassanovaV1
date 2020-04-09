@@ -446,8 +446,8 @@ class Leads extends Component{
                     title: '',
                 })
                 swal({
-                    title: '¡Listo!',
-                    text: 'Convertiste con éxisto el lead.',
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'Convertiste con éxisto el lead.',
                     icon: 'success',
                     buttons: false,
                     timer: 1500
@@ -494,8 +494,8 @@ class Leads extends Component{
                     prospecto: ''
                 })
                 swal({
-                    title: '¡Listo!',
-                    text: 'Eliminaste el lead con éxito.',
+                    title: '¡Listo 👋!',
+                    text: response.data.message !== undefined ? response.data.message : 'Eliminaste el lead con éxito.',
                     icon: 'success',
                     buttons: false,
                     timer: 1500
@@ -550,8 +550,8 @@ class Leads extends Component{
                     title: '',
                 })
                 swal({
-                    title: '¡Listo!',
-                    text: 'Editaste el prospecto con éxito.',
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'Editaste el prospecto con éxito.',
                     icon: 'success',
                     buttons: false,
                     timer: 1500
@@ -600,8 +600,8 @@ class Leads extends Component{
                     prospecto: '',
                 })
                 swal({
-                    title: '¡Listo!',
-                    text: 'Convertiste con éxisto el lead.',
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'Convertiste con éxisto el lead.',
                     icon: 'success',
                     buttons: false,
                     timer: 1500

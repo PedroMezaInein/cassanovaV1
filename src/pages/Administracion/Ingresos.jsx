@@ -709,7 +709,7 @@ class Ingresos extends Component{
                 })
                 swal({
                     title: '¡Felicidades 🥳!',
-                    text: 'El ingreso fue registrado con éxito',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito',
                     icon: 'success',
                     timer: 1500,
                     buttons: false
@@ -778,7 +778,7 @@ class Ingresos extends Component{
                 })
                 swal({
                     title: '¡Felicidades 🥳!',
-                    text: 'El ingreso fue registrado con éxito',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito',
                     icon: 'success',
                     timer: 1500,
                     buttons: false
@@ -835,7 +835,7 @@ class Ingresos extends Component{
                 })
                 swal({
                     title: '¡Felicidades 🥳!',
-                    text: 'Los archivos fueron adjuntados con éxito',
+                    text: response.data.message !== undefined ? response.data.message : 'Los archivos fueron adjuntados con éxito',
                     icon: 'success',
                     timer: 1500,
                     buttons: false
@@ -880,8 +880,8 @@ class Ingresos extends Component{
                     ingreso: ''
                 })
                 swal({
-                    title: '¡Felicidades 🥳!',
-                    text: 'El ingreso fue eliminado con éxito',
+                    title: '¡Listo 👋!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue eliminado con éxito',
                     icon: 'success',
                     timer: 1500,
                     buttons: false

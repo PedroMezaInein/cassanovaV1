@@ -203,8 +203,8 @@ class Empresas extends Component{
                 const { data: {empresas: empresas} } = response
                 this.setEmpresas(empresas)
                 swal({
-                    title: '¡Listo!',
-                    text: 'Eliminaste con éxito la empresa.',
+                    title: '¡Listo 👋!',
+                    text: response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito la empresa.',
                     icon: 'success',
                     buttons: false,
                     timer: 1500
@@ -250,8 +250,8 @@ class Empresas extends Component{
                 const { data: {empresas: empresas} } = response
                 this.setEmpresas(empresas)
                 swal({
-                    title: '¡Listo!',
-                    text: 'Actualizaste con éxito la empresa.',
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'Actualizaste con éxito la empresa.',
                     icon: 'success',
                     buttons: false,
                     timer: 1500
@@ -297,8 +297,8 @@ class Empresas extends Component{
                 const { data: {empresas: empresas} } = response
                 this.setEmpresas(empresas)
                 swal({
-                    title: '¡Listo!',
-                    text: 'Agregaste con éxito la empresa.',
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'Agregaste con éxito la empresa.',
                     icon: 'success',
                     buttons: false,
                     timer: 1500

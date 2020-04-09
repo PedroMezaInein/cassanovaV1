@@ -262,8 +262,8 @@ class Usuarios extends Component{
                     },
                 })
                 swal({
-                    title: '¡Listo!',
-                    text: 'Agregaste con éxito al usuario.',
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'Agregaste con éxito al usuario.',
                     icon: 'success',
                     buttons: false,
                     timer: 1500
@@ -316,8 +316,8 @@ class Usuarios extends Component{
                     },
                 })
                 swal({
-                    title: '¡Listo!',
-                    text: 'Actualizaste con éxito al usuario.',
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'Actualizaste con éxito al usuario.',
                     icon: 'success',
                     buttons: false,
                     timer: 1500
@@ -360,8 +360,8 @@ class Usuarios extends Component{
                 const { data: {users: users} } = response
                 this.setUsers(users)
                 swal({
-                    title: '¡Listo!',
-                    text: 'Eliminaste con éxito al usuario.',
+                    title: '¡Listo 👋!',
+                    text: response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito al usuario.',
                     icon: 'success',
                     buttons: false,
                     timer: 1500

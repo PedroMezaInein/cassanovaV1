@@ -277,8 +277,8 @@ class Leads extends Component{
                 const { clientes } = response.data
                 this.setTableClientes(clientes)
                 swal({
-                    title: '¡Listo!',
-                    text: 'Creaste con éxito un nuevo cliente.',
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'Creaste con éxito un nuevo cliente.',
                     icon: 'success',
                     buttons: false,
                     timer: 1500
@@ -323,11 +323,11 @@ class Leads extends Component{
         const { form, cliente } = this.state
         await axios.put(URL_DEV + 'cliente/' + cliente.id, form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { clientes } = response.data
+                const { clientes, message } = response.data
                 this.setTableClientes(clientes)
                 swal({
-                    title: '¡Listo!',
-                    text: 'Editaste con éxito al cliente.',
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'Editaste con éxito al cliente.',
                     icon: 'success',
                     buttons: false,
                     timer: 1500
@@ -375,8 +375,8 @@ class Leads extends Component{
                 const { clientes } = response.data
                 this.setTableClientes(clientes)
                 swal({
-                    title: '¡Listo!',
-                    text: 'Eliminaste con éxito al cliente.',
+                    title: '¡Listo 👋!',
+                    text: response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito al cliente.',
                     icon: 'success',
                     buttons: false,
                     timer: 1500

@@ -774,7 +774,7 @@ class egresos extends Component{
                 })
                 swal({
                     title: '¡Felicidades 🥳!',
-                    text: 'El egreso fue registrado con éxito',
+                    text: response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito',
                     icon: 'success',
                     timer: 1500,
                     buttons: false
@@ -831,7 +831,7 @@ class egresos extends Component{
                 })
                 swal({
                     title: '¡Felicidades 🥳!',
-                    text: 'Los archivos fueron adjuntados con éxito',
+                    text: response.data.message !== undefined ? response.data.message : 'Los archivos fueron adjuntados con éxito',
                     icon: 'success',
                     timer: 1500,
                     buttons: false
@@ -876,8 +876,8 @@ class egresos extends Component{
                     egreso: ''
                 })
                 swal({
-                    title: '¡Felicidades 🥳!',
-                    text: 'El egreso fue eliminado con éxito',
+                    title: '¡Listo 👋!',
+                    text: response.data.message !== undefined ? response.data.message : 'El egreso fue eliminado con éxito',
                     icon: 'success',
                     timer: 1500,
                     buttons: false

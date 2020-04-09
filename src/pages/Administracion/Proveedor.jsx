@@ -400,7 +400,7 @@ class Proveedor extends Component{
                 })
                 swal({
                     title: '¡Felicidades 🥳!',
-                    text: 'El provedor fue registrado con éxito',
+                    text: response.data.message !== undefined ? response.data.message : 'El provedor fue registrado con éxito',
                     icon: 'success',
                     timer: 1500,
                     buttons: false
@@ -450,7 +450,7 @@ class Proveedor extends Component{
                 })
                 swal({
                     title: '¡Felicidades 🥳!',
-                    text: 'El provedor fue registrado con éxito',
+                    text: response.data.message !== undefined ? response.data.message : 'El provedor fue registrado con éxito',
                     icon: 'success',
                     timer: 1500,
                     buttons: false
@@ -498,8 +498,8 @@ class Proveedor extends Component{
                     proveedor: ''
                 })
                 swal({
-                    title: '¡Felicidades 🥳!',
-                    text: 'El provedor fue eliminado con éxito',
+                    title: '¡Listo 👋!',
+                    text: response.data.message !== undefined ? response.data.message : 'El provedor fue eliminado con éxito',
                     icon: 'success',
                     timer: 1500,
                     buttons: false

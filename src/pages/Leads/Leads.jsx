@@ -436,8 +436,8 @@ class Leads extends Component{
                     modalAdd: false
                 })
                 swal({
-                    title: '¡Listo!',
-                    text: 'Agregaste con éxito el lead.',
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'Agregaste con éxito el lead.',
                     icon: 'success',
                     buttons: false,
                     timer: 1500
@@ -496,8 +496,8 @@ class Leads extends Component{
                     modalAdd: false
                 })
                 swal({
-                    title: '¡Listo!',
-                    text: 'Editaste con éxito el lead.',
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'Editaste con éxito el lead.',
                     icon: 'success',
                     buttons: false,
                     timer: 1500
@@ -541,8 +541,8 @@ class Leads extends Component{
                 this.setServicios(servicios)
                 this.setEmpresas(empresas)
                 swal({
-                    title: '¡Listo!',
-                    text: 'Eliminaste con éxito el lead.',
+                    title: '¡Listo 👋!',
+                    text: response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito el lead.',
                     icon: 'success',
                     buttons: false,
                     timer: 1500

@@ -179,8 +179,8 @@ class PermisosForm extends Component{
                 this.setGrupos(grupos);
                 handleClose();
                 swal({
-                    title: '¡Listo!',
-                    text: 'Actualizaste los permisos.',
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'Actualizaste los permisos.',
                     icon: 'success',
                     buttons: false,
                     timer: 1500

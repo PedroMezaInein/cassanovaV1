@@ -285,7 +285,7 @@ class EstadosCuenta extends Component{
                 })
                 swal({
                     title: '¡Felicidades 🥳!',
-                    text: 'Estado de cuenta agregado con éxito',
+                    text: response.data.message !== undefined ? response.data.message : 'Estado de cuenta agregado con éxito',
                     icon: 'success',
                     timer: 1500,
                     buttons: false
@@ -324,8 +324,8 @@ class EstadosCuenta extends Component{
                 const { estados } = response.data
                 this.setEstados(estados)
                 swal({
-                    title: '¡Felicidades 🥳!',
-                    text: 'Eliminaste el estado de cuenta',
+                    title: '¡Listo 👋!',
+                    text: response.data.message !== undefined ? response.data.message : 'Eliminaste el estado de cuenta',
                     icon: 'success',
                     timer: 1500,
                     buttons: false
