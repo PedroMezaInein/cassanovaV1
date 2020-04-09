@@ -285,7 +285,7 @@ class EstadosCuenta extends Component{
                 })
                 swal({
                     title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Estado de cuenta agregado con éxito',
+                    text: response.data.message !== undefined ? response.data.message : 'Estado de cuenta agregado con éxito.',
                     icon: 'success',
                     timer: 1500,
                     buttons: false

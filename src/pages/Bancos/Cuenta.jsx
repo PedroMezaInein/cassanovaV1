@@ -532,7 +532,7 @@ class Cuentas extends Component{
                 })
                 swal({
                     title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Cuenta agregada con éxito',
+                    text: response.data.message !== undefined ? response.data.message : 'Cuenta agregada con éxito.',
                     icon: 'success',
                     timer: 1500
                 })
@@ -626,7 +626,7 @@ class Cuentas extends Component{
                 })
                 swal({
                     title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Cuenta editada con éxito',
+                    text: response.data.message !== undefined ? response.data.message : 'Cuenta editada con éxito.',
                     icon: 'success',
                     timer: 1500,
                     buttons: false
@@ -672,7 +672,7 @@ class Cuentas extends Component{
                 })
                 swal({
                     title: '¡Listo 👋!',
-                    text: response.data.message !== undefined ? response.data.message : 'Cuenta eliminada con éxito',
+                    text: response.data.message !== undefined ? response.data.message : 'Cuenta eliminada con éxito.',
                     icon: 'success',
                     timer: 1500
                 })
@@ -714,7 +714,7 @@ class Cuentas extends Component{
                 this.setEstados(cuenta.estados)
                 swal({
                     title: '¡Listo 👋!',
-                    text: response.data.message !== undefined ? response.data.message : 'Estado de cuenta eliminado con éxito',
+                    text: response.data.message !== undefined ? response.data.message : 'Estado de cuenta eliminado con éxito.',
                     icon: 'success',
                     timer: 1500
                 })
