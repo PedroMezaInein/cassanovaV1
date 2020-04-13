@@ -78,11 +78,11 @@ class Ingresos extends Component{
         const { authUser: { user : { permisos : permisos } } } = this.props
         const { history : { location: { pathname: pathname } } } = this.props
         const { history } = this.props
-        const egresos = permisos.find(function(element, index) {
+        const ingresos = permisos.find(function(element, index) {
             const { modulo: { url: url } } = element
             return  pathname === '/' + url
         });
-        if(!egresos)
+        if(!ingresos)
             history.push('/')
         this.getIngresosAxios()
     }
@@ -470,6 +470,11 @@ class Ingresos extends Component{
         const {name, value} = e.target
         const {form} = this.state
         form[name] = value
+        if(name === 'factura' && value === 'Sin factura'){
+            form['facturaObject'] = ''
+            form['fileFactura'].value = ''
+            form['fileFactura'].adjuntos = []
+        }
         this.setState({
             ... this.state,
             form
@@ -518,8 +523,7 @@ class Ingresos extends Component{
             buttons: false
         })
         if(title === 'Editar ingreso'){
-            /* this.editIngresosAxios() */
-            alert('EDITAR FALT')
+            this.editIngresosAxios()
         }else
             this.addIngresosAxios()
     }
@@ -743,7 +747,7 @@ class Ingresos extends Component{
 
     async editIngresosAxios(){
         const { access_token } = this.props.authUser
-        const { form,ingreso } = this.state
+        const { form, ingreso } = this.state
         const data = new FormData();
         let aux = Object.keys(form)
         aux.map( (element) => {
@@ -767,7 +771,7 @@ class Ingresos extends Component{
                 }
             }
         })
-        await axios.post(URL_DEV + 'ingresos/edit/'+ingreso.id, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'ingresos/' + ingreso.id, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { ingresos } = response.data
                 this.setState({

@@ -479,6 +479,11 @@ class egresos extends Component{
         const {name, value} = e.target
         const {form} = this.state
         form[name] = value
+        if(name === 'factura' && value === 'Sin factura'){
+            form['facturaObject'] = ''
+            form['fileFactura'].value = ''
+            form['fileFactura'].adjuntos = []
+        }
         this.setState({
             ... this.state,
             form
@@ -527,7 +532,7 @@ class egresos extends Component{
             buttons: false
         })
         if(title === 'Editar egreso'){
-            alert('EDITAR FALT')
+            this.updateEgresosAxios()
         }else
             this.addEgresosAxios()
     }
@@ -764,6 +769,75 @@ class egresos extends Component{
             }
         })
         await axios.post(URL_DEV + 'egresos', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { egresos } = response.data
+                this.setState({
+                    ... this.state,
+                    egresos: this.setEgresos(egresos),
+                    modal: false,
+                    form: this.clearForm()
+                })
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        icon: 'error',
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups 😕!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error'
+            })
+        })
+    }
+
+    async updateEgresosAxios(){
+        const { access_token } = this.props.authUser
+        const { form, egreso } = this.state
+        const data = new FormData();
+        let aux = Object.keys(form)
+        aux.map( (element) => {
+            if(element === 'fecha')
+                data.append(element, (new Date(form[element])).toDateString())
+            else{
+                if(element === 'presupuesto' || element === 'pago')
+                {
+                    data.append(element.toString() +'_file' , form[element].file)
+                    data.append(element.toString() +'_name' , form[element].name)
+                    data.append(element.toString() +'_value' , form[element].value)
+                }
+                else{
+                    if(element === 'fileFactura'){
+                        for (var i = 0; i < form.fileFactura.adjuntos.length; i++) {
+                            data.append('filesName[]', form.fileFactura.adjuntos[i].name)
+                            data.append('files[]', form.fileFactura.adjuntos[i].file)
+                        }
+                    }else
+                        data.append(element, form[element])
+                }
+            }
+        })
+        await axios.post(URL_DEV + 'egresos/' + egreso.id, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { egresos } = response.data
                 this.setState({
