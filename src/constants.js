@@ -7,7 +7,8 @@ import {
     faPiggyBank, faExchangeAlt, faBalanceScale, faWallet, 
     faUserTie, faSitemap, faHospitalAlt, faUserFriends, faUserShield, faCalendarCheck, faHandsHelping, 
     faMailBulk, faSearch, faComments, faAddressCard,
-    faGavel
+    faGavel,
+    faAtlas, faCubes
 } from '@fortawesome/free-solid-svg-icons'
 
 
@@ -41,6 +42,7 @@ export const ICONS_MODULES = {
         'faCalendarCheck':faCalendarCheck, 'faHandsHelping':faHandsHelping, 
     'faMailBulk':faMailBulk, 'faSearch':faSearch, 'faComments':faComments, 'faAddressCard':faAddressCard,
     'faGavel':faGavel,
+    'faAtlas':faAtlas, 'faCubes':faCubes
 }
 
 //Form
@@ -588,4 +590,19 @@ export const PROVEEDORES_COLUMNS = [
         Header: 'Fecha',
         accessor: 'fecha',
     },
+]
+
+export const AREAS_COLUMNS = [
+    {
+        Header: ' ',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Área',
+        accessor: 'area'
+    },
+    {
+        Header: 'Subáreas',
+        accessor: 'subareas'
+    }
 ]

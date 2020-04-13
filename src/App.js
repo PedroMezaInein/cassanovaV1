@@ -38,6 +38,8 @@ const Egresos = Loader(() => import('./pages/Administracion/Egresos') )
 const Facturacion = Loader(() => import('./pages/Administracion/Facturacion') )
 const Proveedores = Loader(() => import('./pages/Administracion/Proveedor') )
 
+const Areas = Loader( () => import('./pages/Catalogos/Areas') )
+
 class App extends Component{
     async componentDidMount(){
         const { access_token } = this.props.authUser
@@ -122,6 +124,8 @@ class App extends Component{
                 <Route path = "/leads/clientes" exact component = { Clientes } />
 
                 <Route path = "/normas" exact component ={ Normas } />
+
+                <Route path = "/catalogos/areas" exact component ={ Areas } />
             </div>
         )
     }
