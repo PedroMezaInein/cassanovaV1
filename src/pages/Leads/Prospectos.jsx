@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
-import { faPlus, faPhone, faEnvelope, faEye, faEdit, faTrash, faCalendarAlt, faPhoneVolume } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faPhone, faEnvelope, faEye, faEdit, faTrash, faCalendarAlt, faPhoneVolume, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
 import { Button } from '../../components/form-components'
 import { Modal, Card } from '../../components/singles'
 import { ProspectoForm, ContactoLeadForm } from '../../components/forms'
 import axios from 'axios'
 import { URL_DEV, PROSPECTOS_COLUMNS, CONTACTO_COLUMNS, EMPTY_PROSPECTO, EMPTY_CONTACTO, EMPTY_CLIENTE } from '../../constants'
 import swal from 'sweetalert'
-import { P, Small, Subtitle } from '../../components/texts'
+import { P, Small, Subtitle, B } from '../../components/texts'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Accordion, Form } from 'react-bootstrap'
 import Moment from 'react-moment'
@@ -21,6 +21,7 @@ class Leads extends Component{
         modalHistoryContact: false,
         modalContactForm: false,
         modalDelete: false,
+        modalConvert: false,
         title: '',
         lead: '',
         prospecto: '',
@@ -68,6 +69,15 @@ class Leads extends Component{
             ... this.state,
             modal: !this.state.modal,
             
+        })
+    }
+
+    handleCloseConvertModal = () => {
+        const { modalConvert } = this.state
+        this.setState({
+            ... this.state,
+            prospecto: '',
+            modalConvert: !modalConvert
         })
     }
 
@@ -161,9 +171,26 @@ class Leads extends Component{
         })
     }
 
+    openConvert = e => (prospecto) => {
+        console.log('Prospecto', prospecto)
+        this.setState({
+            modalConvert: true,
+            prospecto: prospecto
+        })
+    }
+
     safeDelete = (e) => prospecto => {
         this.deleteProspectoAxios(prospecto)
     }
+
+    safaConvert = e => prospecto => {
+        const { history } = this.props
+        history.push({
+            pathname: '/proyectos/proyectos',
+            state: { prospectos: prospecto}
+        });
+    }
+    
     // Setters
 
     setTipos = (list, name) => {
@@ -245,6 +272,9 @@ class Leads extends Component{
                         prospecto.contactos.length > 0 && 
                             <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.activeModalHistory(e)(prospecto.contactos)} text='' icon={faCalendarAlt} color="transparent" />
                     }
+                </div>
+                <div className="d-flex align-items-center flex-column flex-md-row">
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openConvert(e)(prospecto) } text='' icon={faSyncAlt} color="transparent" />
                 </div>
             </>
         )
@@ -675,7 +705,7 @@ class Leads extends Component{
 
 
     render(){
-        const { modal, title, lead, vendedores, estatusProspectos, clientes, tipoProyectos, estatusContratacion, tiposContactos, form, formCliente, formContacto, 
+        const { modal, modalConvert, title, lead, vendedores, estatusProspectos, clientes, tipoProyectos, estatusContratacion, tiposContactos, form, formCliente, formContacto, 
                 prospectos, modalHistoryContact, contactHistory, modalContactForm, modalDelete, prospecto } = this.state
         
         return(
@@ -828,6 +858,15 @@ class Leads extends Component{
                     <div className="d-flex justify-content-center mt-3">
                         <Button icon='' onClick = { this.handleDeleteModal } text="Cancelar" className="mr-3" color="green"/>
                         <Button icon='' onClick = { (e) => { this.safeDelete(e)(prospecto.id) }} text="Continuar" color="red"/>
+                    </div>
+                </Modal>
+                <Modal show={modalConvert} handleClose={this.handleCloseConvertModal}>
+                    <Subtitle className="my-3 text-center">
+                        ¿Estás seguro que deseas convertir el prospecto en un proyecto?
+                    </Subtitle>
+                    <div className="d-flex justify-content-center mt-3">
+                        <Button icon='' onClick={this.handleCloseConvertModal} text="Cancelar" className="mr-3" color="red"/>
+                        <Button icon='' onClick={(e) => { this.safeConvert(e)(prospecto) }} text="Continuar" />
                     </div>
                 </Modal>
             </Layout>
