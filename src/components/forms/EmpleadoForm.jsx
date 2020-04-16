@@ -60,7 +60,7 @@ class EmpleadoForm extends Component{
                                 <Accordion.Collapse eventKey="empleadoGeneral">
                                     <div>
                                         <div className="mx-0 row mt-4">
-                                            <div className="col-md-4 px-2">
+                                            <div className="col-md-6 px-2">
                                                 <RadioGroup
                                                     name={'tipo_empleado'}
                                                     onChange={onChange}
@@ -80,7 +80,7 @@ class EmpleadoForm extends Component{
                                                     value={form.tipo_empleado}
                                                     />
                                             </div>
-                                            <div className="col-md-4 px-2">
+                                            <div className="col-md-6 px-2">
                                                 <Select
                                                     name={'empresa'}
                                                     options={options}
@@ -89,7 +89,7 @@ class EmpleadoForm extends Component{
                                                     value={form.empresa}
                                                     />
                                             </div>
-                                            <div className="col-md-4 px-2">
+                                            <div className="col-md-6 px-2">
                                                 <Input 
                                                     onChange={ onChange } 
                                                     name="puesto" 
@@ -97,9 +97,7 @@ class EmpleadoForm extends Component{
                                                     value={ form.puesto } 
                                                     placeholder="Puesto"/>
                                             </div>
-                                        </div>
-                                        <div className="row mt-2 mx-0">
-                                            <div className="col-md-4 px-2">
+                                            <div className="col-md-6 px-2">
                                                 <Input 
                                                     onChange={ onChange }         
                                                     name="rfc" 
@@ -107,7 +105,7 @@ class EmpleadoForm extends Component{
                                                     value={ form.rfc } 
                                                     placeholder="RFC"/>
                                             </div>
-                                            <div className="col-md-4 px-2">
+                                            <div className="col-md-6 px-2">
                                                 <Input 
                                                     onChange={ onChange }         
                                                     name="nss" 
@@ -115,7 +113,7 @@ class EmpleadoForm extends Component{
                                                     value={ form.nss } 
                                                     placeholder="NSS"/>
                                             </div>
-                                            <div className="col-md-4 px-2">
+                                            <div className="col-md-6 px-2">
                                                 <Input 
                                                     onChange={ onChange }         
                                                     name="curp" 
@@ -123,9 +121,7 @@ class EmpleadoForm extends Component{
                                                     value={ form.curp } 
                                                     placeholder="CURP"/>
                                             </div>
-                                        </div>
-                                        <div className="row mt-2 mb-3 mx-0">
-                                            <div className="col-md-4 px-2">
+                                            <div className="col-md-6 px-2">
                                                 <Calendar 
                                                     onChangeCalendar={ onChangeCalendar }
                                                     placeholder="Fecha de inicio"
@@ -133,7 +129,7 @@ class EmpleadoForm extends Component{
                                                     value={form.fecha_inicio}
                                                     />
                                             </div>
-                                            <div className="col-md-4 px-2">
+                                            <div className="col-md-6 px-2">
                                                 <RadioGroup
                                                     name={'estatus'}
                                                     onChange={onChange}
@@ -154,7 +150,6 @@ class EmpleadoForm extends Component{
                                                     />
                                             </div>
                                         </div>
-                                        
                                     </div>
                                 </Accordion.Collapse>
                                 <CustomToggle eventKey="cuentaBancaria">
@@ -164,7 +159,7 @@ class EmpleadoForm extends Component{
                                 </CustomToggle>
                                 <Accordion.Collapse eventKey="cuentaBancaria">
                                     <div className="row my-3 mx-0">
-                                        <div className="col-md-4 px-2">
+                                        <div className="col-md-6 px-2">
                                             <Input 
                                                 onChange={ onChange } 
                                                 name="banco" 
@@ -172,7 +167,7 @@ class EmpleadoForm extends Component{
                                                 value={ form.banco } 
                                                 placeholder="Banco"/>
                                         </div>
-                                        <div className="col-md-4 px-2">
+                                        <div className="col-md-6 px-2">
                                             <Input 
                                                 onChange={ onChange } 
                                                 name="cuenta" 
@@ -180,7 +175,7 @@ class EmpleadoForm extends Component{
                                                 value={ form.cuenta } 
                                                 placeholder="Cuenta"/>
                                         </div>
-                                        <div className="col-md-4 px-2">
+                                        <div className="col-md-6 px-2">
                                             <Input 
                                                 onChange={ onChange } 
                                                 name="clabe" 

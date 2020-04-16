@@ -183,7 +183,7 @@ class Leads extends Component{
         this.deleteProspectoAxios(prospecto)
     }
 
-    safaConvert = e => prospecto => {
+    safeConvert = e => prospecto => {
         const { history } = this.props
         history.push({
             pathname: '/proyectos/proyectos',
@@ -263,18 +263,23 @@ class Leads extends Component{
         return(
             <>
                 <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openEdit(e)(prospecto) } text='' icon={faEdit} color="transparent" />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openSafeDelete(e)(prospecto) } text='' icon={faTrash} color="red" />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openEdit(e)(prospecto) } text='' icon={faEdit} color="transparent" 
+                        tooltip={{id:'edit', text:'Editar'}} />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openSafeDelete(e)(prospecto) } text='' icon={faTrash} color="red" 
+                        tooltip={{id:'delete', text:'Eliminar', type: 'error'}} />
                 </div>
                 <div className="d-flex align-items-center flex-column flex-md-row my-2">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.activeFormContact(e)(prospecto.id)} text='' icon={faPhoneVolume} color="transparent" />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.activeFormContact(e)(prospecto.id)} text='' icon={faPhoneVolume} color="transparent" 
+                        tooltip={{id:'contacto', text:'Contacto', type:'success'}} />
                     {
                         prospecto.contactos.length > 0 && 
-                            <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.activeModalHistory(e)(prospecto.contactos)} text='' icon={faCalendarAlt} color="transparent" />
+                            <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.activeModalHistory(e)(prospecto.contactos)} text='' icon={faCalendarAlt} color="transparent" 
+                                tooltip={{id:'historial', text:'Historial de contacto'}} />
                     }
                 </div>
                 <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openConvert(e)(prospecto) } text='' icon={faSyncAlt} color="transparent" />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openConvert(e)(prospecto) } text='' icon={faSyncAlt} color="transparent"
+                        tooltip={{id:'convert', text:'Convertir en proyecto', type:'success'}} />
                 </div>
             </>
         )

@@ -12,6 +12,7 @@ import traspasoForm from './TraspasoForm'
 import ingresosForm from './administracion/IngresosForm'
 import egresosForm from './administracion/EgresosForm'
 import areasForm from './catalogos/AreaForm'
+import proyectosForm from './proyectos/ProyectosForm'
 
 export const RegisterUserForm = registerUserForm
 export const EmpleadoForm = empleadoForm
@@ -27,3 +28,4 @@ export const TraspasoForm = traspasoForm
 export const IngresosForm = ingresosForm
 export const EgresosForm = egresosForm
 export const AreasForm = areasForm
+export const ProyectosForm = proyectosForm

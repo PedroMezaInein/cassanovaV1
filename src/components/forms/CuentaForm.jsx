@@ -20,28 +20,28 @@ class LeadForm extends Component{
                     {title}
                 </Subtitle>
                 <div className="row mx-0">
-                    <div className="col-md-4">
+                    <div className="col-md-6">
                         <Input required placeholder = "Ingresa el nombre de la cuenta" type = "text" name = "nombre" value = { form.nombre } 
                             onChange = { onChange } />
                     </div>
                     
-                    <div className="col-md-4">
+                    <div className="col-md-6">
                         <Select required name = 'banco' options = { bancos } placeholder = 'Selecciona el banco' value = { form.banco }
                             onChange = { onChange } />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-6">
                         <Input required placeholder = "Ingresa el número de cuenta" type = "text" name = "numero" value = { form.numero }
                             onChange = { onChange } />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-6">
                         <Select required name = 'tipo' options = { tipos } placeholder = 'Selecciona el tipo' value = { form.tipo }
                             onChange = { onChange } />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-6">
                         <Select required name = 'estatus' options = { estatus } placeholder = 'Selecciona el estatus' value = { form.estatus }
                             onChange = { onChange } />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-6">
                         <Select required name = 'empresa' options = { empresas } placeholder = 'Selecciona la(s) empresa(s)' value = { form.empresa }
                             onChange = { onChangeEmpresa } />
                     </div>

@@ -322,12 +322,13 @@ class Cuentas extends Component{
             <>
                 <div className="d-flex align-items-center flex-column flex-md-row">
                     <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalEdit(e)(cuenta)}  text='' icon={faEdit} 
-                        color="transparent" />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalDelete(e)(cuenta) } text='' icon={faTrash} color="red" />
+                        color="transparent" tooltip={{id:'edit', text:'Editar'}} />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalDelete(e)(cuenta) } text='' icon={faTrash} color="red" 
+                        tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
                 </div>
                 <div className="d-flex align-items-center flex-column flex-md-row">
                     <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalAddEstado(e)(cuenta)}  text='' icon={faFolderPlus} 
-                        color="transparent" />
+                        color="transparent" tooltip={{id:'estado', text:'Agregar estados de cuenta'}} />
                 </div>
             </>
         )
@@ -751,7 +752,8 @@ class Cuentas extends Component{
         return(
             <Layout active={'bancos'}  { ...this.props}>
                 <div className="text-right">
-                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon={faPlus} color="green" />
+                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon={faPlus} color="green"
+                        tooltip={{id:'add', text:'Nuevo'}} />
                 </div>
                 <DataTable columns = { CUENTAS_COLUMNS } data = { cuentas } />
                 

@@ -36,6 +36,7 @@
     "react-select-search": "^0.10.2",
     "react-table": "^7.0.0",
     "react-toggle-component": "^3.0.8",
+    "react-tooltip": "^4.2.3",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "redux-thunks": "^1.0.0",

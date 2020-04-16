@@ -530,7 +530,8 @@ class Usuarios extends Component{
                         Listado de usuarios registrados
                     </Title>
                     <div className="mt-3 mt-md-0 ml-auto">
-                        <Button onClick={this.addUser()} text='' className="" icon={faUserPlus} />
+                        <Button onClick={this.addUser()} text='' className="" icon={faUserPlus}
+                            tooltip={{id:'add', text:'Nuevo'}} />
                     </div>
                     
                 </div>
@@ -545,9 +546,10 @@ class Usuarios extends Component{
                                     {
                                         tipo_users.usuarios.map((user, _key) => {
                                             return(
-                                                <div className="col-md-4 col-xl-3 col-12 mb-2 px-0" key={_key}>
+                                                <div className="col-md-6 col-xl-3 col-12 mb-2 px-0" key={_key}>
                                                     <Card className="mx-3" >
-                                                        <Button onClick={(e) => { this.changePermisos(e)(user) }} icon={faKey} className="mr-2" color="gold-no-bg"/>
+                                                        <Button onClick={(e) => { this.changePermisos(e)(user) }} icon={faKey} className="mr-2" color="gold-no-bg"
+                                                            tooltip={{id:'permisos', text:'Permisos de usuario'}} />
                                                         <div className="text-center">
                                                             <P>
                                                                 {user.name}
@@ -558,8 +560,10 @@ class Usuarios extends Component{
                                                             </Small>
                                                         </div>
                                                         <div className="d-flex justify-content-between mt-3">
-                                                            <Button icon='' onClick={(e) => { this.updateUser(e)(user) }} icon={faUserEdit} className="mr-2" color="blue"/>
-                                                            <Button icon='' onClick={(e) => { this.deleteuser(e)(user) }} icon={faUserSlash} color="red"/>
+                                                            <Button icon='' onClick={(e) => { this.updateUser(e)(user) }} icon={faUserEdit} className="mr-2" color="blue"
+                                                                tooltip={{id:'edit', text:'Editar'}} />
+                                                            <Button icon='' onClick={(e) => { this.deleteuser(e)(user) }} icon={faUserSlash} color="red"
+                                                                tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
                                                         </div>
                                                     </Card>
                                                 </div>

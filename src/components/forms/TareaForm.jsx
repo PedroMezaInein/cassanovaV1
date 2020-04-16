@@ -7,6 +7,7 @@ import { faTimes, faTrashAlt, faCheck, faTrash, faCalendarCheck } from '@fortawe
 import Calendar from '../form-components/Calendar'
 import { Small } from '../texts'
 import { GOLD, DARK_BLUE } from '../../constants'
+import ReactTooltip from "react-tooltip";
 
 class TareaForm extends Component{
 
@@ -70,14 +71,17 @@ class TareaForm extends Component{
         return(
             <Form { ... this.props}>
                 <div className="row mx-0">
-                    <div className="col-md-4 mx-auto no-label">
+                    <div className="col-md-6 mx-auto no-label">
                         <Input className=" no-label " placeholder = 'Título' value = { form.titulo } name = 'titulo' 
                             onBlur = { (e) => { e.preventDefault(); changeValueSend(e) } } onChange = { (e) => { e.preventDefault(); changeValue(e)} }/>
                     </div>
 
                     <div className="col-md-12 d-flex justify-content-end">
                         <div className="d-flex align-items-center px-2">
-                            <FontAwesomeIcon icon = { faCalendarCheck } color = { DARK_BLUE } className = "mr-2 button-hover" onClick = { () => this.onClickEnd() } />
+                            <FontAwesomeIcon data-tip data-for="end" icon = { faCalendarCheck } color = { DARK_BLUE } className = "mr-2 button-hover" onClick = { () => this.onClickEnd() } />
+                            <ReactTooltip id='end' place="top" type='success' effect="solid">
+                                Terminar
+                            </ReactTooltip>
                             <div className = { `${activeEnd} transition-all hidden` }>
                                 <Small className="d-flex align-items-center">
                                     ¿Das por terminada la tarea?
@@ -89,7 +93,10 @@ class TareaForm extends Component{
                             </div>
                         </div>
                         <div className="d-flex align-items-center px-2">
-                            <FontAwesomeIcon icon={faTrashAlt} color="red" className="mr-2 button-hover" onClick = { () => this.onClickDelete() }/>
+                            <FontAwesomeIcon data-tip data-for="delete" icon={faTrashAlt} color="red" className="mr-2 button-hover" onClick = { () => this.onClickDelete() }/>
+                            <ReactTooltip id='delete' place="top" type='error' effect="solid">
+                                Eliminar
+                            </ReactTooltip>
                             <div className = { `${activeDelete} transition-all hidden` }>
                                 <Small className="d-flex align-items-center">
                                     ¿Estás seguro? 
@@ -107,7 +114,7 @@ class TareaForm extends Component{
                             onBlur = { (e) => { e.preventDefault(); changeValueSend(e) } } onChange = { (e) => { e.preventDefault(); changeValue(e)} }/>
                     </div>
 
-                    <div className={participantes.length > 0 ? "col-md-4 px-2" : "col-md-8 px-2"}>
+                    <div className={participantes.length > 0 ? "col-md-6 px-2" : "col-md-8 px-2"}>
                         {
                             participantesTask.map( ( participante, key ) => {
                                 return(
@@ -126,7 +133,7 @@ class TareaForm extends Component{
 
                     {
                         participantes.length > 0 &&
-                            <div className="col-md-4 px-2">
+                            <div className="col-md-6 px-2">
                                 <SelectSearch 
                                     search
                                     options = { participantes }
@@ -137,7 +144,7 @@ class TareaForm extends Component{
                             </div>
                     }
 
-                    <div className="col-md-4">
+                    <div className="col-md-6">
                         <Calendar 
                             onChangeCalendar={ this.onChangeCalendar }
                             placeholder="Fecha límite"

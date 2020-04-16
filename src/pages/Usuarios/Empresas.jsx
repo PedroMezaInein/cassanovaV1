@@ -110,8 +110,10 @@ class Empresas extends Component{
     setActions = (empresa) => {
         return(
             <div className="d-flex align-items-center">
-                <Button className="mx-2 small-button" onClick={(e) => this.openModalEditEmpresa(e)(empresa)} text='' icon={faEdit} color="yellow" />
-                <Button className="mx-2 small-button" onClick={(e) => this.openModalDeleteEmpresa(e)(empresa)} text='' icon={faTrash} color="red" />
+                <Button className="mx-2 small-button" onClick={(e) => this.openModalEditEmpresa(e)(empresa)} text='' icon={faEdit} color="yellow"
+                    tooltip={{id:'edit', text:'Editar'}} />
+                <Button className="mx-2 small-button" onClick={(e) => this.openModalDeleteEmpresa(e)(empresa)} text='' icon={faTrash} color="red" 
+                    tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
             </div>
         )
     }
@@ -398,7 +400,8 @@ class Empresas extends Component{
         return(
             <Layout active={'usuarios'} { ...this.props}>
                 <div className="text-right">
-                    <Button className="small-button ml-auto mr-4" onClick={(e) => this.openModalAddEmpresa()} text='' icon={faPlus} color="green" />
+                    <Button className="small-button ml-auto mr-4" onClick={(e) => this.openModalAddEmpresa()} text='' icon={faPlus} color="green"
+                        tooltip={{id:'add', text:'Nuevo'}} />
                 </div>
                 <EmpresasTable data={empresas} />
                 <Modal show={modalEdit} handleClose={this.handleEditModal}>

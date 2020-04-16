@@ -36,16 +36,16 @@ class TareaForm extends Component{
                 </Subtitle>
 
                 <div className="row mx-0">
-                    <div className="col-md-4 px-2">
+                    <div className="col-md-6 px-2">
                         <InputMoney prefix = { '$' } name = "cantidad" value = { form.cantidad } onChange = { onChange } placeholder="Ingrese el monto de traspaso" />
                     </div>
-                    <div className="col-md-4 px-2">
+                    <div className="col-md-6 px-2">
                         <SelectSearch options = { cuentas } value = { form.origen } onChange = { this.updateOrigen } placeholder="Cuenta origen"/>
                     </div>
-                    <div className="col-md-4 px-2">
+                    <div className="col-md-6 px-2">
                         <SelectSearch options = { cuentas } value = { form.destino } onChange = { this.updateDestino } placeholder="Cuenta destino"/>
                     </div>
-                    <div className="col-md-4 px-2">
+                    <div className="col-md-6 px-2">
                         <Calendar onChangeCalendar = { this.changeDate } name = "fecha" value = { form.fecha } placeholder="Fecha de traspaso"/>
                     </div>
                     <div className="col-md-8 px-2 d-flex">

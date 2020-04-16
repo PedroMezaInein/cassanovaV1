@@ -202,8 +202,9 @@ class Proveedor extends Component{
             <>
                 <div className="d-flex align-items-center flex-column flex-md-row">
                     <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalEdit(e)(proveedor)}  text='' icon={faEdit} 
-                        color="transparent" />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalDelete(e)(proveedor) } text='' icon={faTrash} color="red" />
+                        color="transparent" tooltip={{id:'edit', text:'Editar'}} />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalDelete(e)(proveedor) } text='' icon={faTrash} color="red"
+                        tooltip={{id:'delete', text:'Eliminar', type: 'error'}} />
                 </div>
             </>
         )
@@ -580,7 +581,8 @@ class Proveedor extends Component{
             <Layout active={'administracion'}  { ...this.props}>
                 
                 <div className="text-right">
-                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon = { faPlus } color="green" />
+                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon = { faPlus } color="green"
+                        tooltip={{id:'add', text:'Nuevo'}} />
                 </div>
                 
                 <DataTable columns = { PROVEEDORES_COLUMNS } data = { proveedores } />

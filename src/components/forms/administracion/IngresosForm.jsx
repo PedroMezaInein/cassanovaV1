@@ -46,7 +46,7 @@ class EgresosForm extends Component{
                 </Subtitle>
                 
                 <div className="row mx-0">
-                    <div className="col-md-4 px-2">
+                    <div className="col-md-6 px-2">
                         <RadioGroup
                             name = 'factura'
                             onChange = { onChange }
@@ -68,7 +68,7 @@ class EgresosForm extends Component{
                     </div>
                     {
                         form.factura === 'Con factura' ?        
-                            <div className="col-md-4 px-2">
+                            <div className="col-md-6 px-2">
                                 <FileInput 
                                     onChangeAdjunto = { onChangeFile } 
                                     placeholder = "Factura"
@@ -85,12 +85,12 @@ class EgresosForm extends Component{
                     }
                     {
                         form.factura === 'Con factura' && form.fileFactura.value ?
-                            <div className="col-md-4 d-flex align-items-center justify-content-md-end justify-content-center">
+                            <div className="col-md-6 d-flex align-items-center justify-content-md-end justify-content-center">
                                 <Button icon='' className="mx-auto" onClick={sendFactura} text="Enviar Factura" />
                             </div>
                         : ''
                     }
-                    <div className="col-md-4 px-2">
+                    <div className="col-md-6 px-2">
                         {
                             form.facturaObject ?
                                 <Input placeholder="Cliente" readOnly name="cliente" value={form.cliente} onChange={onChange}/>
@@ -101,12 +101,12 @@ class EgresosForm extends Component{
                     </div>
                     {
                         form.factura === 'Con factura' && form.facturaObject ?
-                            <div className="col-md-4 px-2">
+                            <div className="col-md-6 px-2">
                                 <Input placeholder="RFC" name="rfc" value={form.rfc} onChange={onChange}/>
                             </div>
                         : ''
                     }
-                    <div className="col-md-4 px-2">
+                    <div className="col-md-6 px-2">
                         {
                             form.facturaObject ?
                                 <Input placeholder="Empresa" name="empresa" readOnly value={form.empresa} onChange={onChange}/>
@@ -117,49 +117,49 @@ class EgresosForm extends Component{
                     </div>
                     {
                         options.cuentas.length > 0 ?
-                            <div className="col-md-4 px-2">
+                            <div className="col-md-6 px-2">
                                 <SelectSearch options={options.cuentas} placeholder = "Selecciona la cuenta" 
                                     name = "cuenta" value = { form.cuenta } onChange = { this.updateCuenta }/>
                             </div>
                         : ''
                     }
-                    <div className="col-md-4 px-2">
+                    <div className="col-md-6 px-2">
                         <Select placeholder="Selecciona el tipo de pago" options = { options.tiposPagos } 
                             name="tipoPago" value = { form.tipoPago } onChange = { onChange } />
                     </div>
                     {
                         form.factura === 'Con factura' ?
-                            <div className="col-md-4 px-2">
+                            <div className="col-md-6 px-2">
                                 <Select placeholder="Selecciona el impuesto" options = { options.tiposImpuestos } 
                                     name="tipoImpuesto" value = { form.tipoImpuesto } onChange = { onChange } />
                             </div>
                         : ''
                     }
-                    <div className="col-md-4 px-2">
+                    <div className="col-md-6 px-2">
                         <Select placeholder="Selecciona el estatus de compra" options = { options.estatusCompras } 
                             name="estatusCompra" value = { form.estatusCompra } onChange = { onChange } />
                     </div>
-                    <div className="col-md-4 px-2">
+                    <div className="col-md-6 px-2">
                         <SelectSearch options={options.areas} placeholder = "Selecciona el área" 
                             name = "area" value = { form.area } onChange = { this.updateArea }/>
                     </div>
                     {
                         options.subareas.length > 0 ?
-                            <div className="col-md-4 px-2">
+                            <div className="col-md-6 px-2">
                                 <SelectSearch options={options.subareas} placeholder = "Selecciona el subárea" 
                                     name = "subarea" value = { form.subarea } onChange = { this.updateSubarea }/>
                             </div>
                         : ''
                     }
-                    <div className="col-md-4 px-2">
+                    <div className="col-md-6 px-2">
                         <InputMoney placeholder = "Monto" value = { form.total } name = "total" onChange = { onChange }/>
                     </div>
-                    <div className="col-md-4 px-2">
+                    <div className="col-md-6 px-2">
                         <Calendar 
                             onChangeCalendar = { this.handleChangeDate } placeholder = "Fecha"
                             name = "fecha" value = { form.fecha }/>
                     </div>
-                    <div className = "col-md-4 px-2 ">
+                    <div className = "col-md-6 px-2 ">
                         <FileInput 
                             onChangeAdjunto = { onChangeAdjunto } 
                             placeholder = "Presupuesto"
@@ -171,7 +171,7 @@ class EgresosForm extends Component{
                             deleteAdjunto = { (e) => { clearAdjunto('presupuesto') }}
                             />
                     </div>
-                    <div className = "col-md-4 px-2 ">
+                    <div className = "col-md-6 px-2 ">
                         <FileInput 
                             onChangeAdjunto = { onChangeAdjunto } 
                             placeholder = "Pago"

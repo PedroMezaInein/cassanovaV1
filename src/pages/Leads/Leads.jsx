@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Moment from 'react-moment'
 import { Modal } from '../../components/singles'
 import { LeadForm } from '../../components/forms'
-import { Subtitle, B } from '../../components/texts'
+import { Subtitle, B, Small } from '../../components/texts'
 
 class Leads extends Component{
 
@@ -48,12 +48,12 @@ class Leads extends Component{
         leads.map((lead, key) => {
             _leads[key] = {
                 actions: this.setActions(lead),
-                nombre: lead.nombre,
+                nombre: this.setTextTable(lead.nombre),
                 contacto: this.setContacto(lead),
-                comentario: lead.comentario,
+                comentario: this.setTextTable(lead.comentario),
                 servicios: this.setServiciosData(lead.servicios),
-                empresa: lead.empresa.name,
-                origen: lead.origen.origen,
+                empresa: this.setTextTable(lead.empresa.name),
+                origen: this.setTextTable(lead.origen.origen),
                 fecha: this.setDate(lead.created_at)
             }
         })
@@ -63,11 +63,22 @@ class Leads extends Component{
         })
     }
 
+    setTextTable = text => {
+        return(
+            <Small>
+                {text}
+            </Small>
+        )
+    }
+
     setDate = date => {
         return(
-            <Moment format="DD/MM/YYYY">
-                {date}
-            </Moment>
+            <Small>
+                <Moment format="DD/MM/YYYY">
+                    <Small>{date}</Small>
+                </Moment>
+            </Small>
+            
         )
     }
 
@@ -75,12 +86,16 @@ class Leads extends Component{
         return(
             <>
                 <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalEditLead(e)(lead)} text='' icon={faEdit} color="yellow" />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalSafeDelete(e)(lead)} text='' icon={faTrash} color="red" />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalEditLead(e)(lead)} text='' icon={faEdit} color="yellow" 
+                        tooltip={{id:'edit', text:'Editar'}}/>
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalSafeDelete(e)(lead)} text='' icon={faTrash} color="red" 
+                        tooltip={{id:'delete', text:'Eliminar', type: 'error'}}/>
                 </div>
                 <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalSafeConvert(e)(lead)} text='' icon={faSync} color="transparent" />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalSafeConvertProveedor(e)(lead)} text='' icon={faTruckLoading} color="transparent" />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalSafeConvert(e)(lead)} text='' icon={faSync} color="transparent"
+                        tooltip={{id:'prospecto', text:'Convertir en prospecto', type: 'success'}} />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalSafeConvertProveedor(e)(lead)} text='' icon={faTruckLoading} color="transparent"
+                        tooltip={{id:'proveedor', text:'Convertir en proveedor', type: 'success'}} />
                 </div>
             </>
         )
@@ -93,8 +108,11 @@ class Leads extends Component{
                     lead.telefono &&
                     <div className="my-2">
                         <a target="_blank" href={`tel:+${lead.telefono}`}>
-                            <FontAwesomeIcon className="mx-3" icon={faPhone} />
-                            {lead.telefono}
+                            <Small>
+                                <FontAwesomeIcon className="mx-3" icon={faPhone} />
+                                {lead.telefono}
+                            </Small>
+                            
                         </a>
                     </div>
                 }
@@ -102,8 +120,10 @@ class Leads extends Component{
                     lead.email &&
                     <div className="my-2">
                         <a target="_blank" href={`mailto:+${lead.email}`}>
-                            <FontAwesomeIcon className="mx-3"  icon={faEnvelope} />
-                            {lead.email}
+                            <Small>
+                                <FontAwesomeIcon className="mx-3"  icon={faEnvelope} />
+                                {lead.email}
+                            </Small>
                         </a>
                     </div>
                 }
@@ -119,7 +139,9 @@ class Leads extends Component{
                         servicios.map((servicio, key) => {
                             return(
                                 <li key={key}>
-                                    {servicio.servicio}
+                                    <Small>
+                                        {servicio.servicio}
+                                    </Small>
                                 </li>
                             )
                         })
@@ -130,7 +152,9 @@ class Leads extends Component{
             return(
                 <ul>
                     <li>
+                        <Small>
                         Sin información
+                        </Small>
                     </li>
                 </ul>
             )
@@ -594,7 +618,8 @@ class Leads extends Component{
         return(
             <Layout active={'leads'}  { ...this.props}>
                 <div className="text-right">
-                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModalAddLead() } } text='' icon={faPlus} color="green" />
+                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModalAddLead() } } text='' icon={faPlus} color="green"
+                        tooltip={{id:'add', text:'Nuevo'}} /> 
                 </div>
                 { leads && <DataTable columns={LEADS_COLUMNS} data={leads}/>}
                 <Modal show = { modalAdd } handleClose = { this.handleCloseModal } >

@@ -70,6 +70,7 @@ class EstadosCuenta extends Component{
             <>
                 <div className="d-flex align-items-center flex-column flex-md-row">
                     <Button className="mx-2 my-2 my-md-0 small-button" text='' icon={faTrash} color="red" 
+                        tooltip={{id:'delete', text:'Eliminar', type:'error'}}
                         onClick = { () => {
                             swal({
                                 title: '¿Estás seguro?',
@@ -364,7 +365,8 @@ class EstadosCuenta extends Component{
         return(
             <Layout active={'bancos'}  { ...this.props}>
                 <div className="text-right">
-                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon={faPlus} color="green" />
+                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon={faPlus} color="green" 
+                        tooltip={{id:'add', text:'Nuevo'}} />
                 </div>
                 <DataTable columns = { EDOS_CUENTAS_COLUMNS_2 } data = { estados } />
                 <Modal show = { modal } handleClose={ this.handleClose } >
@@ -373,7 +375,7 @@ class EstadosCuenta extends Component{
                     </Subtitle>
                     <Form onSubmit = { this.submitForm }>
                         <div className="row mx-0">
-                            <div className="col-md-4 px-2">
+                            <div className="col-md-6 px-2">
                                 <SelectSearch 
                                     options = {cuentas} 
                                     placeholder = "Selecciona la cuenta" 
@@ -382,7 +384,7 @@ class EstadosCuenta extends Component{
                                     onChange = { this.updateCuenta }
                                     />
                             </div>
-                            <div className="col-md-4 px-2">
+                            <div className="col-md-6 px-2">
                             <Calendar 
                                 onChangeCalendar = { this.handleChangeDate }
                                 placeholder = "Fecha"
@@ -390,7 +392,7 @@ class EstadosCuenta extends Component{
                                 value = { fecha }
                                 />
                             </div>
-                            <div className="col-md-4 px-2 d-flex align-items-center">
+                            <div className="col-md-6 px-2 d-flex align-items-center">
                                 <div className="image-upload d-flex align-items-center">
                                     <div className="no-label">
                                         <Input

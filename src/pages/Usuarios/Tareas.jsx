@@ -14,6 +14,7 @@ import { faComments, faCheck, faPaperclip, faTimes, faFileAlt } from '@fortaweso
 import Input from '../../components/form-components/Input'
 import moment from 'moment'
 import { Badge } from 'react-bootstrap'
+import ReactTooltip from "react-tooltip";
 
 class Tareas extends Component{
     constructor(props){
@@ -777,7 +778,10 @@ class Tareas extends Component{
                                     }
                                 </div>
                             </div>
-                            <FontAwesomeIcon color={GOLD} icon = {faCheck} onClick = { this.addComentario } className ='ml-2'/>
+                            <FontAwesomeIcon data-tip data-for="send" color={GOLD} icon = {faCheck} onClick = { this.addComentario } className ='ml-2'/>
+                            <ReactTooltip id='send' place="top" type='dark' effect="solid">
+                                Enviar
+                            </ReactTooltip>
                         </div>
                     </div>
                     <div className="d-flex px-3 py-2">

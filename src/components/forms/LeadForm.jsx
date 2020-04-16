@@ -33,17 +33,17 @@ class LeadForm extends Component{
 
                 <div className="row mx-0">
                     
-                    <div className="col-md-4 px-2">
+                    <div className="col-md-12 px-2">
                         <Input required type="text" placeholder="Nombre"
                             name="nombre" value={ form.nombre } onChange = { onChange }
                             />
                     </div>
-                    <div className="col-md-4 px-2">
+                    <div className="col-md-6 px-2">
                         <Input required type="email" placeholder="Correo electrónico"
                             name="email" value={ form.email } onChange = { onChange }
                             />
                     </div>
-                    <div className="col-md-4 px-2">
+                    <div className="col-md-6 px-2">
                         <Input required type="text" placeholder="Teléfono"
                             name="telefono" value={ form.telefono } onChange = { onChange }/>
                     </div>
@@ -53,7 +53,7 @@ class LeadForm extends Component{
                             name="comentario"  value = { form.comentario } onChange = { onChange } />
                     </div>
 
-                    <div className="col-md-4 px-2">
+                    <div className="col-md-6 px-2">
                         <Calendar 
                             onChangeCalendar ={ onChangeCalendar }    
                             placeholder="Fecha de ingreso"
@@ -61,12 +61,12 @@ class LeadForm extends Component{
                             value={form.fecha}
                             />
                     </div>
-                    <div className="col-md-4 px-2">
+                    <div className="col-md-6 px-2">
                         <Select placeholder="Selecciona la empresa para el lead" options = { empresas } 
                             name="empresa" value = { form.empresa } onChange = { onChange } 
                             />
                     </div>
-                    <div className="col-md-4 px-2">
+                    <div className="col-md-12 px-2">
                         <Select placeholder="Selecciona el origen para el lead" options = { origenes } 
                             name="origen" value = { form.origen } onChange = { onChange } 
                             />

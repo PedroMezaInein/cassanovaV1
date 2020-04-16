@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button } from 'react-bootstrap'
+import ReactTooltip from "react-tooltip";
 
 export default class button extends Component{
     constructor(props){
@@ -8,11 +9,20 @@ export default class button extends Component{
     }
 
     render(){
-        const { children, color, text, icon, onClick, className, type, ...props } = this.props
+        const { children, color, text, icon, onClick, className, type, tooltip, ...props } = this.props
         return(
-            <Button type={type} onClick={onClick} className={`button__${color} ${className}` } { ... props }>
+            <Button data-tip data-for={tooltip ? tooltip.id : 'undefined'} type={type} onClick={onClick} className={`button__${color} ${className}` } { ... props }>
                 {
                     icon !== ''  && <FontAwesomeIcon icon={icon} />
+                }
+                {
+                    tooltip ? 
+                        <ReactTooltip id={tooltip.id} place="top" type={tooltip.type ? tooltip.type : 'dark'} effect="solid">
+                            {
+                                tooltip.text
+                            }
+                        </ReactTooltip>
+                    : ''
                 }
                 {text}
                 {children}

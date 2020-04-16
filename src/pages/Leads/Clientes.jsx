@@ -185,8 +185,10 @@ class Leads extends Component{
         return(
             <>
                 <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalEdit(e)(cliente)} text='' icon={faEdit} color="transparent" />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalDelete(e)(cliente)} text='' icon={faTrash} color="red" />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalEdit(e)(cliente)} text='' icon={faEdit} color="transparent" 
+                        tooltip={{id:'edit', text:'Editar'}} />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalDelete(e)(cliente)} text='' icon={faTrash} color="red" 
+                        tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
                 </div>
             </>
         )
@@ -455,7 +457,8 @@ class Leads extends Component{
         return(
             <Layout active={'leads'}  { ...this.props}>
                 <div className="text-right">
-                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.activeModal() } } text='' icon={faPlus} color="green" />
+                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.activeModal() } } text='' icon={faPlus} color="green" 
+                        tooltip={{id:'add', text:'Nuevo'}} />
                 </div>
                 <DataTable columns = { CLIENTES_COLUMNS } data = { clientes } />
                 <Modal show = { modal } handleClose = { this.handleCloseModal }>

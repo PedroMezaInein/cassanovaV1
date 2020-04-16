@@ -31,7 +31,7 @@ class ContactoLeadForm extends Component{
         const { newTipoContacto } = this.state
         return(
             <div className="row mx-0">
-                <div className="col-md-4 px-2">
+                <div className="col-md-6 px-2">
                     
                         <SelectSearch 
                             options={tiposContactos} 
@@ -44,7 +44,7 @@ class ContactoLeadForm extends Component{
                         
                     
                 </div>
-                <div className="col-md-4 px-2">
+                <div className="col-md-6 px-2">
                     <Calendar 
                         onChangeCalendar = { this.handleChangeDate }
                         placeholder = "Fecha de contacto"
@@ -52,7 +52,7 @@ class ContactoLeadForm extends Component{
                         value = { formContacto.fechaContacto }
                         />
                 </div>
-                <div className="col-md-4 px-2">
+                <div className="col-md-6 px-2">
                     <RadioGroup
                         name = { 'success' }
                         onChange = { onChangeContacto }
@@ -74,7 +74,7 @@ class ContactoLeadForm extends Component{
                 </div>
                 {
                     newTipoContacto &&
-                        <div className="col-md-4 px-2">
+                        <div className="col-md-6 px-2">
                             <Input 
                                 onChange={ onChangeContacto } 
                                 name="newTipoContacto" 

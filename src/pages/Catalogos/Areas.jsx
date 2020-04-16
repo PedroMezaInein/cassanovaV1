@@ -99,8 +99,10 @@ class Areas extends Component{
         return(
             <>
                 <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalEdit(e)(area) } text='' icon={faEdit} color="transparent" />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalDelete(e)(area) } text='' icon={faTrash} color="red" />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalEdit(e)(area) } text='' icon={faEdit} color="transparent" 
+                        tooltip={{id:'edit', text:'Editar'}} />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalDelete(e)(area) } text='' icon={faTrash} color="red"
+                        tooltip={{id:'delete', text:'Eliminar', type: 'error'}} />
                 </div>
             </>
         )
@@ -410,7 +412,8 @@ class Areas extends Component{
         return(
             <Layout active={'catalogos'}  { ...this.props}>
                 <div className="text-right">
-                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon = { faPlus } color="green" />
+                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon = { faPlus } color="green" 
+                        tooltip={{id:'add', text:'Nuevo'}} />
                 </div>área
                 <DataTable columns = {AREAS_COLUMNS} data= {areas}/>
                 <Modal show = {modal} handleClose = {this.handleClose}>

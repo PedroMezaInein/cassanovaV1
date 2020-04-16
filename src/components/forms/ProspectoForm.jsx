@@ -136,14 +136,14 @@ class ProspectoForm extends Component{
                         <Input rows="3" as="textarea" placeholder="Descripción del prospecto" name="descripcion"
                             onChange={onChange} value={form.descripcion} />
                     </div>
-                    <div className="px-2 col-md-4">
+                    <div className="px-2 col-md-6">
                         { 
                             vendedores && 
                                 <SelectSearch options = { vendedores } placeholder = "Selecciona al vendedor"
                                     name="vendedor" value={form.vendedor} onChange={this.updateVendedor}/> 
                         }
                     </div>
-                    <div className="px-2 col-md-4">
+                    <div className="px-2 col-md-6">
                         { 
                             estatusProspectos && 
                                 <SelectSearch options = { estatusProspectos } placeholder = "Selecciona el estatus del prospecto" onChange={this.updateEstatusProspectos}
@@ -152,18 +152,18 @@ class ProspectoForm extends Component{
                     </div>
                     {
                         newEstatusProspectos && 
-                            <div className="px-2 col-md-4">
+                            <div className="px-2 col-md-6">
                                 <Input name="newEstatusProspecto" type="text" placeholder="Nuevo estatus prospecto" onChange={onChange} value={form.newEstatusProspectos} />
                             </div>
                     }
-                    <div className="px-2 col-md-4">
+                    <div className="px-2 col-md-6">
                         { 
                             clientes && 
                                 <SelectSearch options = { clientes } placeholder = "Selecciona el cliente" onChange={this.updateCliente}
                                     name="cliente" value={form.cliente} /> 
                         }
                     </div>
-                    <div className="col-md-4 px-2">
+                    <div className="col-md-6 px-2">
                         { 
                             tipoProyecto && 
                                 <SelectSearch options = { tipoProyecto } placeholder = "Selecciona el tipo de proyecto" onChange={this.updateTipoProyecto} 
@@ -173,15 +173,15 @@ class ProspectoForm extends Component{
                     
                     { 
                         newTipoProyecto && 
-                            <div className="col-md-4 px-2">
+                            <div className="col-md-6 px-2">
                                 <Input name="newTipoProyecto" onChange={onChange} value={form.newTipoProyecto} type="text" placeholder="Nuevo tipo de proyecto"/> 
                             </div>
                     }
-                    <div className="px-2 col-md-4">
+                    <div className="px-2 col-md-6">
                         <Input name="preferencia" type="text" placeholder="Perefencia de contacto"
                             onChange={onChange} value={form.preferencia} />
                     </div>
-                    <div className="px-2 col-md-4">
+                    <div className="px-2 col-md-6">
                         { 
                             estatusContratacion && 
                                 <SelectSearch options = { estatusContratacion } placeholder = "Selecciona el estatus de contratación" 
@@ -189,7 +189,7 @@ class ProspectoForm extends Component{
                     </div>
                     {
                         newEstatusContratacion && 
-                            <div className="col-md-4">
+                            <div className="col-md-6">
                                 <Input name="newEstatusContratacion" onChange={onChange} value={form.newEstatusContratacion} type="text" placeholder="Nuevo estatus de contratacion"/>
                             </div>
                     }

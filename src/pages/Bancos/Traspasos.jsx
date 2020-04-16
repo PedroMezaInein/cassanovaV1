@@ -249,15 +249,16 @@ class Traspasos extends Component{
             <>
                 <div className="d-flex align-items-center flex-column flex-md-row">
                     <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openEdit(e)(traspaso)}  text='' icon={faEdit} 
-                        color="transparent" />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openDelete(e)(traspaso) } text='' icon={faTrash} color="red" />
+                        color="transparent" tooltip={{id:'edit', text:'Editar'}} />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openDelete(e)(traspaso) } text='' icon={faTrash} 
+                        color="red" tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
                 </div>
                 <div className="d-flex align-items-center flex-column flex-md-row">
                     {
                         traspaso.adjunto && 
                         <a href={traspaso.adjunto.url} target="_blank" className="">
                             <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => console.log(traspaso)}  text='' icon={faPaperclip} 
-                                color="transparent" />
+                                color="transparent" tooltip={{id:'adjuntos', text:'Mostrar adjunto'}} />
                         </a>
                     }
                 </div>
