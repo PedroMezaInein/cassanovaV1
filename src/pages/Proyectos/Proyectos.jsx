@@ -329,10 +329,10 @@ class Proyectos extends Component{
             text: 'La información está siendo procesada.',
             buttons: false
         })
-        if(title === 'Nuevo proyecto')
-            this.addProyectoAxios()
-        else
+        if(title === 'Editar proyecto')
             this.editProyectoAxios()
+        else
+            this.addProyectoAxios()
     }
 
     safeDelete = (e) => () => {
