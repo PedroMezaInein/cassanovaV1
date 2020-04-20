@@ -59,7 +59,6 @@ class Traspasos extends Component{
             ... this.state,
             form
         })
-        console.log(name, value, 'Traspaso on change')
     }
 
     onChangeAdjunto = e => {
@@ -188,13 +187,10 @@ class Traspasos extends Component{
                     break;
                 case 'origen':
                 case 'destino':
-                    console.log(traspaso[element], 'cuenta element')
                     form[element] = {value: traspaso[element].numero, name: traspaso[element].nombre}
                     form[element] = traspaso[element].nombre
-                    console.log(form[element], 'form element')
                     break;
                 case 'fecha':
-                    console.log('?FEHCA', element)
                     form[element] = new Date(traspaso['created_at'])
                     break;
                 case 'adjunto':

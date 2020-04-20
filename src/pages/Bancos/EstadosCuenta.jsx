@@ -47,7 +47,6 @@ class EstadosCuenta extends Component{
     setEstados = estados => {
         let aux = []
         estados.map( (estado, key) => {
-            console.log(key, ' => ', estado)
             aux.push( {
                 
                 actions: this.setAction( estado.id, estado.cuentas ),

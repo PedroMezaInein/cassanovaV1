@@ -15,7 +15,7 @@ class LeadForm extends Component{
         const { form, onChangeCheckboxes } = this.props
         let aux = form['servicios']
         aux.find(function(_aux, index) {
-            if(_aux.id == name){
+            if(_aux.id.toString() === name.toString()){
                 _aux.checked = checked
             }
         });

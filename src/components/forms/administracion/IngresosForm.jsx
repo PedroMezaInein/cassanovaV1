@@ -152,7 +152,7 @@ class EgresosForm extends Component{
                         : ''
                     }
                     <div className="col-md-6 px-2">
-                        <InputMoney placeholder = "Monto" value = { form.total } name = "total" onChange = { onChange }/>
+                        <InputMoney thousandSeparator={true}  placeholder = "Monto" value = { form.total } name = "total" onChange = { onChange }/>
                     </div>
                     <div className="col-md-6 px-2">
                         <Calendar 

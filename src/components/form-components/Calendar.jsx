@@ -16,11 +16,11 @@ class Calendar extends Component{
     }
 
     render(){
-        const { placeholder, onChangeCalendar, name, value } = this.props
-        
+        const { placeholder, onChangeCalendar, name, value, ...props } = this.props
         return(
             <>
-                <DatePicker 
+                <DatePicker
+                    { ...props }
                     selected={value}
                     onChange={date => onChangeCalendar(date)}
                     locale={'es'}

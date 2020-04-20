@@ -606,3 +606,46 @@ export const AREAS_COLUMNS = [
         accessor: 'subareas'
     }
 ]
+
+export const PROYECTOS_COLUMNS = [
+    {
+        Header: ' ',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Nombre',
+        accessor: 'nombre'
+    },
+    {
+        Header: 'Cliente',
+        accessor: 'cliente'
+    },
+    {
+        Header: 'Dirección',
+        accessor: 'direccion'
+    },
+    {
+        Header: 'Contacto',
+        accessor: 'contacto'
+    },
+    {
+        Header: 'Empresa',
+        accessor: 'empresa'
+    },
+    {
+        Header: 'Porcentaje',
+        accessor: 'porcentaje'
+    },
+    {
+        Header: 'Fecha inicio',
+        accessor: 'fechaInicio'
+    },
+    {
+        Header: 'Fecha fin',
+        accessor: 'fechaFin'
+    },
+    {
+        Header: 'Adjuntos',
+        accessor: 'adjuntos'
+    }
+]

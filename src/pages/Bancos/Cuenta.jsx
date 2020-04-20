@@ -489,8 +489,6 @@ class Cuentas extends Component{
                     empresas: this.setOptions(empresas, 'name'),
                     empresasOptions: this.setOptions(empresas, 'name'),
                 })
-                
-                console.log('state', this.state)
             },
             (error) => {
                 console.log(error, 'error')

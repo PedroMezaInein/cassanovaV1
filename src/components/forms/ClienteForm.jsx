@@ -43,7 +43,7 @@ class ClienteForm extends Component{
                         value = { form.colonia } defaultValue = { form.colonia } onChange = { updateColonia }/>}
                     { colonias.length <= 0 && <Input readOnly value={form.colonia} name="colonia" type="text" placeholder="Selecciona la colonia"/>}
                 </div>
-                <div className="px-2 col-md-8">
+                <div className="px-2 col-md-6">
                     <Input name="calle" value={form.calle} onChange={onChange} type="text" placeholder="Calle y número"/>
                 </div>
                 <div className="px-2 col-md-12">

@@ -85,7 +85,6 @@ class Areas extends Component{
     setAreas = areas => {
         let aux = []
         areas.map((area) => {
-            console.log(area, 'Area')
             aux.push({
                 actions: this.setActions(area),
                 area: this.setTextTable(area.nombre),

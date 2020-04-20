@@ -326,7 +326,6 @@ class egresos extends Component{
 
     openModalEdit = e => (egreso) => {
         const { form, options } = this.state
-        console.log(egreso, 'egreso')
         if(egreso.factura){
             form.factura = 'Con factura'
             if(egreso.facturas){

@@ -9,7 +9,6 @@ import { Badge, Form } from 'react-bootstrap'
 class TareaForm extends Component{
 
     updateOrigen = value => {
-        console.log(value, 'select search update origen')
         const { onChange } = this.props
         onChange( { target: { name: 'origen', value: value.value } } )
     }
@@ -27,7 +26,6 @@ class TareaForm extends Component{
     render(){
 
         const { title, cuentas, form, onChange, onChangeAdjunto, deleteAdjunto, ... props } = this.props
-        console.log(cuentas, 'Cuentas')
         return(
             <Form { ... props}>
                 
@@ -37,7 +35,7 @@ class TareaForm extends Component{
 
                 <div className="row mx-0">
                     <div className="col-md-6 px-2">
-                        <InputMoney prefix = { '$' } name = "cantidad" value = { form.cantidad } onChange = { onChange } placeholder="Ingrese el monto de traspaso" />
+                        <InputMoney thousandSeparator={true}  prefix = { '$' } name = "cantidad" value = { form.cantidad } onChange = { onChange } placeholder="Ingrese el monto de traspaso" />
                     </div>
                     <div className="col-md-6 px-2">
                         <SelectSearch options = { cuentas } value = { form.origen } onChange = { this.updateOrigen } placeholder="Cuenta origen"/>

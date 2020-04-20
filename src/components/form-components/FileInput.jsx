@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperclip, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { DARK_BLUE } from '../../constants';
 import { Badge } from 'react-bootstrap';
+import {  Small } from '../texts'
 
 class FileInput extends Component{
     render(){
@@ -21,6 +22,7 @@ class FileInput extends Component{
                     <label htmlFor = {id}>
                         <FontAwesomeIcon className = "p-0 font-unset mr-2" icon={  faPaperclip } color={ DARK_BLUE } />
                     </label>
+                    <div className="flex-wrap d-flex">
                     {
                         files.map((file, key) => {
                             return(
@@ -30,12 +32,25 @@ class FileInput extends Component{
                                         onClick = { (e) => { e.preventDefault(); deleteAdjunto(name, key) }}
                                         className = "small-button mr-2" />
                                         {
-                                            file.name
+                                            file.url ? 
+                                                <a href={file.url} target="_blank">
+                                                    <Small>
+                                                        {
+                                                            file.name
+                                                        }
+                                                    </Small>
+                                                </a>
+                                            :
+                                                <Small>
+                                                    {
+                                                        file.name
+                                                    }
+                                                </Small>
                                         }
                                 </Badge>
                             )
                         })
-                    }
+                    }</div>
                 </div>
             </>
         )

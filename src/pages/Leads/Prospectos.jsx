@@ -172,7 +172,6 @@ class Leads extends Component{
     }
 
     openConvert = e => (prospecto) => {
-        console.log('Prospecto', prospecto)
         this.setState({
             modalConvert: true,
             prospecto: prospecto
