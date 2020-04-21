@@ -159,7 +159,7 @@ class ProyectosForm extends Component{
                         <Input rows="3" as="textarea" placeholder="Descripción" name="descripcion" onChange={onChange} value={form.descripcion}/>
                     </div>
                 </div>
-                <Accordion className="d-none">
+                <Accordion>
                     <div className="px-3 pt-2">
                         <CustomToggle eventKey="adjuntos" >
                             <Small color="gold" className="label-form">

@@ -579,7 +579,8 @@ class Proyectos extends Component{
                     data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
                     data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
                 }
-                data.append('adjuntos[]', element)
+                if(element.toString() !== 'image')
+                    data.append('adjuntos[]', element)
             }
         })
         if(prospecto){
@@ -658,7 +659,8 @@ class Proyectos extends Component{
                     data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
                     data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
                 }
-                data.append('adjuntos[]', element)
+                if(element.toString() !== 'image')
+                    data.append('adjuntos[]', element)
             }
         })
         if(prospecto){
