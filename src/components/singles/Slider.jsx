@@ -2,8 +2,6 @@ import React, {Component} from 'react'
 import { faCaretSquareLeft, faCaretSquareRight } from '@fortawesome/free-solid-svg-icons'
 import { Small, P } from '../texts'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import ImageSlider from './ImageSlider'
-import PDFViewer from 'pdf-viewer-reactjs'
 
 class Slider extends Component{
 
@@ -77,11 +75,11 @@ class Slider extends Component{
                     {
                         active.name && active.url ?
                             active.name.substr(active.name.length, -3) === 'pdf' ?
-                                <PDFViewer
-                                    document={{
-                                        url: active.url
-                                    }}
-                                    />
+                                <Small>
+                                    {
+                                        active.url
+                                    }
+                                </Small>
                             : <img src={active.url} />
                         : ''
                     }
