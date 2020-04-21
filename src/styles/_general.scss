@@ -254,3 +254,9 @@ body{
 .w-fit-content{
     width: fit-content;
 }
+
+.cursor{
+    &:hover{
+        cursor: pointer;
+    }
+}

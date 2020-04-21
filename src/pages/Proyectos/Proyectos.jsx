@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
-import { Modal, Card } from '../../components/singles'
+import { Modal, Card, Slider } from '../../components/singles'
 import { Button } from '../../components/form-components'
-import { faPlus, faTrash, faEdit, faMoneyBill, faFileAlt, faFileArchive, faEye, faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faTrash, faEdit, faMoneyBill, faFileAlt, faFileArchive, faEye, faPhone, faEnvelope, faLink } from '@fortawesome/free-solid-svg-icons'
 import { ProyectosForm } from '../../components/forms'
 import axios from 'axios'
 import { URL_DEV, CP_URL, GOLD, PROYECTOS_COLUMNS } from '../../constants'
@@ -26,6 +26,11 @@ class Proyectos extends Component{
         proyecto: '',
         modal: false,
         modalDelete: false,
+        modalAdjuntos: false,
+        adjuntos:{
+            active: '',
+            headers:[]
+        },
         form:{
             fechaInicio: new Date(),
             fechaFin: new Date(),
@@ -54,7 +59,7 @@ class Proyectos extends Component{
                 },
                 comprobantePagos:{
                     value: '',
-                    placeholder: 'Comprabante de pagos',
+                    placeholder: 'Comprobante de pagos',
                     files: []
                 },
                 catalogoConceptos:{
@@ -202,8 +207,6 @@ class Proyectos extends Component{
         form.empresa = proyecto.empresa.id.toString()
         form.colonia = proyecto.colonia
 
-        console.log('form', form)
-
         if(proyecto.imagen)
         {
             form.adjuntos.image.files = [{name: proyecto.imagen.name, file: '', url: proyecto.imagen.url, key: 0}]
@@ -216,6 +219,52 @@ class Proyectos extends Component{
             modal: true,
             title: 'Editar proyecto',
             form
+        })
+    }
+
+    openModalAdjuntos = proyecto => {
+        const { adjuntos } = this.state
+        
+        let auxheaders = [ 
+            {name: 'cotizaciones', placeholder: 'Cotización'},
+            {name: 'comprobante_pagos', placeholder: 'Comprobante de pagos'},
+            {name: 'catalogo_conceptos', placeholder: 'Catálogo de conceptos'},
+            {name: 'programas_obra', placeholder: 'Programas de obra'},
+            {name: 'descripcion', placeholder: 'Descripción de los trabajos'},
+            {name: 'levantamientos', placeholder: 'Levantamiento'},
+            {name: 'fotos_durante', placeholder: 'Fotos durante'},
+            {name: 'fotos_fin', placeholder: 'Fotos fin'},
+            {name: 'planos', placeholder: 'Planos'},
+            {name: 'renders', placeholder: 'Renders'},
+            {name: 'fichas_tecnicas', placeholder: 'Fichas técnicas'},
+            {name: 'dictamenes', placeholder: 'Dictámenes y memorias de cálculo'},
+            {name: 'mantenimiento', placeholder: 'Consignas de mantenimiento'},
+            {name: 'moodboard', placeholder: 'Moodboard'},
+            {name: 'diseños_aprobados', placeholder: 'Diseños aprobados por cliente'},
+            {name: 'garantia', placeholder: 'Garantía de vicios ocultos'},
+            {name: 'contratos', placeholder: 'Contratos'}
+        ]
+
+        let aux = []
+
+        auxheaders.map( (element) => {
+            aux.push({
+                id: element.name,
+                text: element.placeholder,
+                files: proyecto[element.name],
+                url: ''
+            })
+        })
+
+        adjuntos.headers = aux;
+
+        console.log(adjuntos, 'ADJUNTOS')
+
+        this.setState({
+            ... this.state,
+            modalAdjuntos: true,
+            adjuntos,
+            proyecto: proyecto
         })
     }
 
@@ -235,6 +284,16 @@ class Proyectos extends Component{
         this.setState({
             ... this.state,
             modalDelete: !modalDelete,
+            proyecto: '',
+            prospecto: ''
+        })
+    }
+
+    handleCloseAdjuntos = () => {
+        const { modalAdjuntos } = this.state
+        this.setState({
+            ... this.state,
+            modalAdjuntos: !modalAdjuntos,
             proyecto: '',
             prospecto: ''
         })
@@ -364,14 +423,83 @@ class Proyectos extends Component{
                 porcentaje: this.setTextTable(proyecto.porcentaje + '%'),
                 fechaInicio: this.setDateTable(proyecto.fecha_inicio),
                 fechaFin: this.setDateTable(proyecto.fecha_fin),
-                adjuntos: proyecto.imagen !== null ? this.setArrayTable(
-                    [
-                        {name:'Imagen', text:proyecto.imagen.name, url:proyecto.imagen.url}
-                    ]
-                ): ''
+                adjuntos: this.setAdjuntosTable(proyecto)
             })
         })
         return aux
+    }
+
+    setAdjuntosTable = proyecto => {
+        return(
+            <>
+                {
+                    proyecto.imagen ?
+                        this.setArrayTable(
+                            [
+                                {name:'Imagen', text:proyecto.imagen.name, url:proyecto.imagen.url}
+                            ]
+                        )
+                    : ''
+                }
+                {
+                    proyecto.adjuntos.length > 0 ?
+                        <div className="cursor mt-2" onClick = { (e) => { e.preventDefault(); this.openModalAdjuntos(proyecto)} }>
+                            <Small>
+                                <FontAwesomeIcon icon={faLink} className="mr-2" />
+                                Adjuntos
+                            </Small>
+                        </div>
+                    : ''
+                }
+                {
+                    proyecto.adjuntos.length === 0 && !proyecto.imagen ?
+                        <Small>
+                            Sin adjuntos 
+                        </Small>
+                    : ''
+                }
+            </>
+        )
+    }
+
+    setAdjuntos = adjuntos => {
+        let aux = [ 
+                    {name: 'cotizaciones', placeholder: 'Cotización'},
+                    {name: 'comprobante_pagos', placeholder: 'Comprobante de pagos'},
+                    {name: 'catalogo_conceptos', placeholder: 'Catálogo de conceptos'},
+                    {name: 'programas_obra', placeholder: 'Programas de obra'},
+                    {name: 'descripcion', placeholder: 'Descripción de los trabajos'},
+                    {name: 'levantamientos', placeholder: 'Levantamiento'},
+                    {name: 'fotos_durante', placeholder: 'Fotos durante'},
+                    {name: 'fotos_fin', placeholder: 'Fotos fin'},
+                    {name: 'planos', placeholder: 'Planos'},
+                    {name: 'renders', placeholder: 'Renders'},
+                    {name: 'fichas_tecnicas', placeholder: 'Fichas técnicas'},
+                    {name: 'dictamenes', placeholder: 'Dictámenes y memorias de cálculo'},
+                    {name: 'mantenimiento', placeholder: 'Consignas de mantenimiento'},
+                    {name: 'moodboard', placeholder: 'Moodboard'},
+                    {name: 'diseños_aprobados', placeholder: 'Diseños aprobados por cliente'},
+                    {name: 'garantia', placeholder: 'Garantía de vicios ocultos'},
+                    {name: 'contratos', placeholder: 'Contratos'}
+                ]
+        return(
+            <>
+                {
+                    aux.map( (element) => {
+                        if(adjuntos[element.name].length)
+                            return(
+                                <div className="border cursor mb-1" onClick = { (e) => { e.preventDefault(); alert(element.name)}}>
+                                    <Small>
+                                        {
+                                            element.placeholder
+                                        }
+                                    </Small>
+                                </div>
+                            )
+                    })
+                }
+            </>
+        )
     }
 
     setActionsTable = proyecto => {
@@ -797,7 +925,7 @@ class Proyectos extends Component{
     }
 
     render(){
-        const { modal, modalDelete, title, prospecto, form, options, proyectos } = this.state
+        const { modal, modalDelete, modalAdjuntos, title, prospecto, form, options, proyectos } = this.state
         return(
             <Layout active={'proyectos'}  { ...this.props}>
                 <div className="text-right">
@@ -1011,6 +1139,11 @@ class Proyectos extends Component{
                     <div className="d-flex justify-content-center mt-3">
                         <Button icon='' onClick = { this.handleCloseDelete } text="Cancelar" className="mr-3" color="green"/>
                         <Button icon='' onClick = { (e) => { this.safeDelete(e)() }} text="Continuar" color="red"/>
+                    </div>
+                </Modal>
+                <Modal show = { modalAdjuntos } handleClose={ this.handleCloseAdjuntos } >
+                    <div className="p-2">
+                        <Slider elements = {this.state.adjuntos.headers.length > 0 ? this.state.adjuntos.headers : [] } />
                     </div>
                 </Modal>
             </Layout>
