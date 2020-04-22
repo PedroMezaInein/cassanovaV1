@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import { faCaretSquareLeft, faCaretSquareRight } from '@fortawesome/free-solid-svg-icons'
 import { Small, P } from '../texts'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { ItemSlider } from './'
 
 class Slider extends Component{
 
@@ -28,6 +29,7 @@ class Slider extends Component{
             index = elements.length - 1 
         else
             index = index - 1
+        console.log('element index back', elements[index])
         this.setState({
             ... this.state,
             index: index,
@@ -41,6 +43,7 @@ class Slider extends Component{
             index = 0
         else
             index = index + 1
+        console.log('element index next', elements[index])
         this.setState({
             ... this.state,
             index: index,
@@ -51,52 +54,34 @@ class Slider extends Component{
     render(){
         const { active } = this.state
         return(
-            <div className="d-flex w-100">
-                <div className="cursor" onClick={ (e) => { e.preventDefault(); this.sliderBack();} }>
-                    <FontAwesomeIcon icon={faCaretSquareLeft} className="mr-2 text-color__dark-blue" />
+            <>
+                <div className="d-flex w-100 align-items-center">
+                    <div className="cursor" onClick={ (e) => { e.preventDefault(); this.sliderBack();} }>
+                        <FontAwesomeIcon icon={faCaretSquareLeft} className="mr-2 text-color__dark-blue" />
+                    </div>
+                    <div className="w-100 text-center px-2">
+                        {
+                            active.text ?
+                                <P color="dark-blue">
+                                    {
+                                        active.text
+                                    }
+                                </P>
+                            : ''
+                        }
+                    </div>
+                    <div className="cursor" onClick={ (e) => { e.preventDefault(); this.sliderNext();} }>
+                        <FontAwesomeIcon icon={faCaretSquareRight} className="mr-2 text-color__dark-blue" />
+                    </div>
                 </div>
-                <div className="w-100 text-center align-items-center">
-                    {
-                        active.text ?
-                            <P color="dark-blue">
-                                {
-                                    active.text
-                                }
-                            </P>
-                        : ''
-                    }
+                <div>
                     {
                         active.files ?
-                            active.files.length > 0 ?
-                                <Slider elements = { active.files } />
-                            : ''
-                        : ''
-                    }
-                    {
-                        active.name && active.url ?
-                            active.name.substr(active.name.length, -3) === 'pdf' ?
-                                <Small>
-                                    {
-                                        active.url
-                                    }
-                                </Small>
-                            : <img src={active.url} />
-                        : ''
-                    }
-                    {
-                        active.name ?
-                            <Small color="gold">
-                                {
-                                    active.name
-                                }
-                            </Small>
+                            <ItemSlider items = {active.files} id = { active.id ? active.id : ''} />
                         : ''
                     }
                 </div>
-                <div className="cursor" onClick={ (e) => { e.preventDefault(); this.sliderNext();} }>
-                    <FontAwesomeIcon icon={faCaretSquareRight} className="mr-2 text-color__dark-blue" />
-                </div>
-            </div>
+            </>
         )
     }
 }
