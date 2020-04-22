@@ -8,6 +8,7 @@ import toggleButton from './ToggleButton'
 import optionsCheckbox from './OptionsCheckbox'
 import selectSearch from './SelectSearch'
 import fileInput from './FileInput'
+import dropZone from './DropZone'
 
 export const Button = button
 export const Input = input
@@ -19,3 +20,4 @@ export const ToggleButton = toggleButton
 export const OptionsCheckbox = optionsCheckbox
 export const SelectSearch = selectSearch
 export const FileInput = fileInput
+export const DropZone = dropZone

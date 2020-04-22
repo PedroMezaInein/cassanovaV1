@@ -77,7 +77,7 @@ class Slider extends Component{
                 <div>
                     {
                         active.files ?
-                            <ItemSlider items = {active.files} id = { active.id ? active.id : ''} />
+                            <ItemSlider items = {active.files} item = { active } />
                         : ''
                     }
                 </div>

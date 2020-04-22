@@ -241,6 +241,10 @@ body{
     &__l-black-gold{
         border: solid 1px $l-black-gold;
     }
+
+    &__dashed{
+        border-style: dashed!important;
+    }
 }
 
 .transition-all{
