@@ -7,52 +7,38 @@ import { ItemSlider } from './'
 class Slider extends Component{
 
     state = {
-        active: '',
-        index: 0,
-        elements: []
-    }
-
-    componentDidMount(){
-        const { elements } = this.props
-        if(elements.length > 0){
-            this.setState({
-                ... this.state,
-                active: elements[0],
-                elements: elements
-            })
-        }
+        active: 0
     }
 
     sliderBack = () => {
-        let { index, elements } = this.state
-        if(index === 0)
-            index = elements.length - 1 
+        const { elements } = this.props
+        let { active } = this.state
+        if(active === 0)
+            active = elements.length - 1 
         else
-            index = index - 1
-        console.log('element index back', elements[index])
+            active = active - 1
         this.setState({
             ... this.state,
-            index: index,
-            active: elements[index]
+            active
         })
     }
 
     sliderNext = () => {
-        let { index, elements } = this.state
-        if(index === elements.length - 1)
-            index = 0
+        const { elements } = this.props
+        let { active } = this.state
+        if(active === elements.length - 1)
+            active = 0 
         else
-            index = index + 1
-        console.log('element index next', elements[index])
+            active = active + 1
         this.setState({
             ... this.state,
-            index: index,
-            active: elements[index]
+            active
         })
     }
 
     render(){
         const { active } = this.state
+        const { elements, ... props } = this.props
         return(
             <>
                 <div className="d-flex w-100 align-items-center">
@@ -61,10 +47,10 @@ class Slider extends Component{
                     </div>
                     <div className="w-100 text-center px-2">
                         {
-                            active.text ?
+                            elements[active].text ?
                                 <P color="dark-blue">
                                     {
-                                        active.text
+                                        elements[active].text
                                     }
                                 </P>
                             : ''
@@ -76,8 +62,8 @@ class Slider extends Component{
                 </div>
                 <div>
                     {
-                        active.files ?
-                            <ItemSlider items = {active.files} item = { active } {... this.props} />
+                        elements[active].files ?
+                            <ItemSlider {... props} items = {elements[active].files} item = { elements[active] } />
                         : ''
                     }
                 </div>

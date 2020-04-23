@@ -27,10 +27,7 @@ class Proyectos extends Component{
         modal: false,
         modalDelete: false,
         modalAdjuntos: false,
-        adjuntos:{
-            active: '',
-            headers:[]
-        },
+        adjuntos:[],
         form:{
             fechaInicio: new Date(),
             fechaFin: new Date(),
@@ -223,7 +220,8 @@ class Proyectos extends Component{
     }
 
     openModalAdjuntos = proyecto => {
-        const { adjuntos } = this.state
+        
+        let { adjuntos } = this.state
         
         let auxheaders = [ 
             {name: 'cotizaciones', placeholder: 'Cotización', form: 'cotizacion'},
@@ -257,15 +255,52 @@ class Proyectos extends Component{
             })
         })
 
-        adjuntos.headers = aux;
+        adjuntos = aux;
 
         this.setState({
             ... this.state,
             modalAdjuntos: true,
-            adjuntos,
+            adjuntos: this.setAdjuntosSlider(proyecto),
             proyecto: proyecto,
             form: this.clearForm()
         })
+    }
+
+    setAdjuntosSlider = proyecto => {
+    
+        let auxheaders = [ 
+            {name: 'cotizaciones', placeholder: 'Cotización', form: 'cotizacion'},
+            {name: 'comprobante_pagos', placeholder: 'Comprobante de pagos', form: 'comprobantePagos'},
+            {name: 'catalogo_conceptos', placeholder: 'Catálogo de conceptos', form: 'catalogoConceptos'},
+            {name: 'programas_obra', placeholder: 'Programas de obra', form: 'programasObra'},
+            {name: 'descripcion', placeholder: 'Descripción de los trabajos', form: 'descripcion'},
+            {name: 'levantamientos', placeholder: 'Levantamiento', form: 'levantamientos'},
+            {name: 'fotos_durante', placeholder: 'Fotos durante', form: 'fotosDurante'},
+            {name: 'fotos_fin', placeholder: 'Fotos fin', form: 'fotosFin'},
+            {name: 'planos', placeholder: 'Planos', form: 'planos'},
+            {name: 'renders', placeholder: 'Renders', form: 'renders'},
+            {name: 'fichas_tecnicas', placeholder: 'Fichas técnicas', form: 'fichasTecnicas'},
+            {name: 'dictamenes', placeholder: 'Dictámenes y memorias de cálculo', form: 'dictamenes'},
+            {name: 'mantenimiento', placeholder: 'Consignas de mantenimiento', form: 'mantenimiento'},
+            {name: 'moodboard', placeholder: 'Moodboard', form: 'moodboard'},
+            {name: 'diseños_aprobados', placeholder: 'Diseños aprobados por cliente', form:'diseñosAprobados'},
+            {name: 'garantia', placeholder: 'Garantía de vicios ocultos', form:'garantia'},
+            {name: 'contratos', placeholder: 'Contratos', form:'contratos'}
+        ]
+
+        let aux = []
+
+        auxheaders.map( (element) => {
+            aux.push({
+                id: element.name,
+                text: element.placeholder,
+                files: proyecto[element.name],
+                form: element.form,
+                url: ''
+            })
+        })
+
+        return aux
     }
 
     handleClose = () => {
@@ -408,7 +443,6 @@ class Proyectos extends Component{
     }
 
     handleChange = (files, item) => {
-        alert(item.form)
         this.onChangeAdjunto( { target: { name: item.form, value: files, files:files } } )
         swal({
             title: '¿Confirmas el envio de adjuntos?',
@@ -706,18 +740,21 @@ class Proyectos extends Component{
         const { proyecto } = this.state
         await axios.delete(URL_DEV + 'proyectos/'+proyecto.id+'/adjunto/' + id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { proyectos, proyecto } = response.data
-                this.openModalAdjuntos(proyecto)
+                const { proyecto, proyectos } = response.data
+                
                 swal({
                     title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El adjunto fue eliminado con éxito.',
+                    text: response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.',
                     icon: 'success',
                     timer: 1500,
                     buttons: false
                 })
+
                 this.setState({
-                    ...this.state,
+                    ... this.state,
+                    proyecto: proyecto,
                     proyectos: this.setProyectos(proyectos),
+                    adjuntos: this.setAdjuntosSlider(proyecto)
                 })
             },
             (error) => {
@@ -840,12 +877,22 @@ class Proyectos extends Component{
 
         await axios.post(URL_DEV + 'proyectos/'+proyecto.id+'/adjuntos', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
+                
+                const { proyecto, proyectos } = response.data
+                
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.',
                     icon: 'success',
                     timer: 1500,
                     buttons: false
+                })
+
+                this.setState({
+                    ... this.state,
+                    proyecto: proyecto,
+                    proyectos: this.setProyectos(proyectos),
+                    adjuntos: this.setAdjuntosSlider(proyecto)
                 })
             },
             (error) => {
@@ -1038,7 +1085,7 @@ class Proyectos extends Component{
     }
 
     render(){
-        const { modal, modalDelete, modalAdjuntos, title, prospecto, form, options, proyectos } = this.state
+        const { modal, modalDelete, modalAdjuntos, title, adjuntos, prospecto, form, options, proyectos } = this.state
         return(
             <Layout active={'proyectos'}  { ...this.props}>
                 <div className="text-right">
@@ -1256,7 +1303,7 @@ class Proyectos extends Component{
                 </Modal>
                 <Modal show = { modalAdjuntos } handleClose={ this.handleCloseAdjuntos } >
                     <div className="p-2">
-                        <Slider elements = {this.state.adjuntos.headers.length > 0 ? this.state.adjuntos.headers : [] }
+                        <Slider elements = {adjuntos.length > 0 ? adjuntos : [] }
                             deleteFile = { this.deleteFile } handleChange = {this.handleChange} />
                     </div>
                 </Modal>
