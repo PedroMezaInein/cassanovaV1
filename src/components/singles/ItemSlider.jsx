@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretSquareLeft, faCaretSquareRight } from '@fortawesome/free-regular-svg-icons'
 import {DropZone} from '../form-components'
-import { faImages } from '@fortawesome/free-solid-svg-icons'
+import { faImages, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { Subtitle, Small } from '../texts'
+import { Button } from '../form-components'
 
 class ItemSlider extends Component{
 
@@ -46,11 +47,12 @@ class ItemSlider extends Component{
     }
 
     handleChange = files => {
-        console.log(files, 'FILES')
+        const {item, handleChange} = this.props
+        handleChange(files, item)
     }
 
     render(){
-        const { item, items } = this.props
+        const { item, items, deleteFile } = this.props
         const { active } = this.state
         console.log('items', 'slider', items)
         return(
@@ -79,27 +81,35 @@ class ItemSlider extends Component{
                                 </div>
                             :
                                 items.length > 0 ?
-                                    items[active].name.substring(items[active].name.length - 3) === 'pdf' ?
-                                        <div className="pdf-viewer w-100">
-                                            <iframe src={items[active].url} className="w-100 h-100" />
+                                    <>
+                                        <div>
+                                            {items[active].name.substring(items[active].name.length - 3) === 'pdf' ?
+                                                <div className="pdf-viewer w-100">
+                                                    <iframe src={items[active].url} className="w-100 h-100" />
+                                                </div>
+                                            :
+                                                <img className="p-2 w-100" src={items[active].url} />}
                                         </div>
-                                    :
-                                        <img className="p-2 w-100" src={items[active].url} />
+                                        <div className="d-flex justify-content-center">
+                                            <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => { e.preventDefault(); deleteFile(items[active]) } } 
+                                                text='' icon={faTrash} color="red" tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
+                                        </div>
+                                    </>
                                 : ''
                         }
                     </div>
                     {
-                        items.length > 0 ?
+                        items.length > 0  ?
                             <div className="cursor" onClick={ (e) => { e.preventDefault(); this.sliderNext();} }>
                                 <FontAwesomeIcon icon={faCaretSquareRight} className="mr-2 text-color__dark-blue" />
                             </div>
                         : ''
                     }
                 </div>
-                <div>
+                <div className="text-center">
                     {
-                        items.length > 0 ?
-                            <Small>
+                        items.length > 0 && active !== items.length ?
+                            <Small className="text-center" color="gold">
                                 {
                                     items[active].name
                                 }

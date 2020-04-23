@@ -226,23 +226,23 @@ class Proyectos extends Component{
         const { adjuntos } = this.state
         
         let auxheaders = [ 
-            {name: 'cotizaciones', placeholder: 'Cotización'},
-            {name: 'comprobante_pagos', placeholder: 'Comprobante de pagos'},
-            {name: 'catalogo_conceptos', placeholder: 'Catálogo de conceptos'},
-            {name: 'programas_obra', placeholder: 'Programas de obra'},
-            {name: 'descripcion', placeholder: 'Descripción de los trabajos'},
-            {name: 'levantamientos', placeholder: 'Levantamiento'},
-            {name: 'fotos_durante', placeholder: 'Fotos durante'},
-            {name: 'fotos_fin', placeholder: 'Fotos fin'},
-            {name: 'planos', placeholder: 'Planos'},
-            {name: 'renders', placeholder: 'Renders'},
-            {name: 'fichas_tecnicas', placeholder: 'Fichas técnicas'},
-            {name: 'dictamenes', placeholder: 'Dictámenes y memorias de cálculo'},
-            {name: 'mantenimiento', placeholder: 'Consignas de mantenimiento'},
-            {name: 'moodboard', placeholder: 'Moodboard'},
-            {name: 'diseños_aprobados', placeholder: 'Diseños aprobados por cliente'},
-            {name: 'garantia', placeholder: 'Garantía de vicios ocultos'},
-            {name: 'contratos', placeholder: 'Contratos'}
+            {name: 'cotizaciones', placeholder: 'Cotización', form: 'cotizacion'},
+            {name: 'comprobante_pagos', placeholder: 'Comprobante de pagos', form: 'comprobantePagos'},
+            {name: 'catalogo_conceptos', placeholder: 'Catálogo de conceptos', form: 'catalogoConceptos'},
+            {name: 'programas_obra', placeholder: 'Programas de obra', form: 'programasObra'},
+            {name: 'descripcion', placeholder: 'Descripción de los trabajos', form: 'descripcion'},
+            {name: 'levantamientos', placeholder: 'Levantamiento', form: 'levantamientos'},
+            {name: 'fotos_durante', placeholder: 'Fotos durante', form: 'fotosDurante'},
+            {name: 'fotos_fin', placeholder: 'Fotos fin', form: 'fotosFin'},
+            {name: 'planos', placeholder: 'Planos', form: 'planos'},
+            {name: 'renders', placeholder: 'Renders', form: 'renders'},
+            {name: 'fichas_tecnicas', placeholder: 'Fichas técnicas', form: 'fichasTecnicas'},
+            {name: 'dictamenes', placeholder: 'Dictámenes y memorias de cálculo', form: 'dictamenes'},
+            {name: 'mantenimiento', placeholder: 'Consignas de mantenimiento', form: 'mantenimiento'},
+            {name: 'moodboard', placeholder: 'Moodboard', form: 'moodboard'},
+            {name: 'diseños_aprobados', placeholder: 'Diseños aprobados por cliente', form:'diseñosAprobados'},
+            {name: 'garantia', placeholder: 'Garantía de vicios ocultos', form:'garantia'},
+            {name: 'contratos', placeholder: 'Contratos', form:'contratos'}
         ]
 
         let aux = []
@@ -252,19 +252,19 @@ class Proyectos extends Component{
                 id: element.name,
                 text: element.placeholder,
                 files: proyecto[element.name],
+                form: element.form,
                 url: ''
             })
         })
 
         adjuntos.headers = aux;
 
-        console.log(adjuntos, 'ADJUNTOS')
-
         this.setState({
             ... this.state,
             modalAdjuntos: true,
             adjuntos,
-            proyecto: proyecto
+            proyecto: proyecto,
+            form: this.clearForm()
         })
     }
 
@@ -295,7 +295,8 @@ class Proyectos extends Component{
             ... this.state,
             modalAdjuntos: !modalAdjuntos,
             proyecto: '',
-            prospecto: ''
+            prospecto: '',
+            form: this.clearForm()
         })
     }
 
@@ -380,6 +381,38 @@ class Proyectos extends Component{
         return form
     }
 
+    deleteFile = element => {
+        this.deleteAdjuntoAxios(element.id)
+    }
+
+    handleChange = (files, item) => {
+        alert(item.form)
+        this.onChangeAdjunto( { target: { name: item.form, value: files, files:files } } )
+        swal({
+            title: '¿Confirmas el envio de adjuntos?',
+            buttons: {
+                cancel: {
+                    text: "Cancelar",
+                    value: null,
+                    visible: true,
+                    className: "button__red btn-primary cancel",
+                    closeModal: true,
+                },
+                confirm: {
+                    text: "Aceptar",
+                    value: true,
+                    visible: true,
+                    className: "button__green btn-primary",
+                    closeModal: true
+                }
+            }
+        }).then((result) => {
+            if(result){
+                this.addProyectoAdjuntoAxios(item.form)
+            }
+        })
+    }
+
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
@@ -462,46 +495,6 @@ class Proyectos extends Component{
         )
     }
 
-    setAdjuntos = adjuntos => {
-        let aux = [ 
-                    {name: 'cotizaciones', placeholder: 'Cotización'},
-                    {name: 'comprobante_pagos', placeholder: 'Comprobante de pagos'},
-                    {name: 'catalogo_conceptos', placeholder: 'Catálogo de conceptos'},
-                    {name: 'programas_obra', placeholder: 'Programas de obra'},
-                    {name: 'descripcion', placeholder: 'Descripción de los trabajos'},
-                    {name: 'levantamientos', placeholder: 'Levantamiento'},
-                    {name: 'fotos_durante', placeholder: 'Fotos durante'},
-                    {name: 'fotos_fin', placeholder: 'Fotos fin'},
-                    {name: 'planos', placeholder: 'Planos'},
-                    {name: 'renders', placeholder: 'Renders'},
-                    {name: 'fichas_tecnicas', placeholder: 'Fichas técnicas'},
-                    {name: 'dictamenes', placeholder: 'Dictámenes y memorias de cálculo'},
-                    {name: 'mantenimiento', placeholder: 'Consignas de mantenimiento'},
-                    {name: 'moodboard', placeholder: 'Moodboard'},
-                    {name: 'diseños_aprobados', placeholder: 'Diseños aprobados por cliente'},
-                    {name: 'garantia', placeholder: 'Garantía de vicios ocultos'},
-                    {name: 'contratos', placeholder: 'Contratos'}
-                ]
-        return(
-            <>
-                {
-                    aux.map( (element) => {
-                        if(adjuntos[element.name].length)
-                            return(
-                                <div className="border cursor mb-1" onClick = { (e) => { e.preventDefault(); alert(element.name)}}>
-                                    <Small>
-                                        {
-                                            element.placeholder
-                                        }
-                                    </Small>
-                                </div>
-                            )
-                    })
-                }
-            </>
-        )
-    }
-
     setActionsTable = proyecto => {
         return(
             <>
@@ -510,6 +503,10 @@ class Proyectos extends Component{
                         tooltip={{id:'edit', text:'Editar'}} />
                     <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalDelete(e)(proyecto) } text='' icon={faTrash} color="red" 
                         tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
+                </div>
+                <div className="d-flex align-items-center flex-column flex-md-row">
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => { e.preventDefault(); this.openModalAdjuntos(proyecto)} } text='' icon={faLink} 
+                        color="transparent" tooltip={{id:'adjuntos', text:'Adjuntos'}} />
                 </div>
             </>
         )
@@ -682,6 +679,53 @@ class Proyectos extends Component{
         })
     }
 
+    async deleteAdjuntoAxios(id){
+        const { access_token } = this.props.authUser
+        const { proyecto } = this.state
+        await axios.delete(URL_DEV + 'proyectos/'+proyecto.id+'/adjunto/' + id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { proyectos, proyecto } = response.data
+                this.openModalAdjuntos(proyecto)
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El adjunto fue eliminado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+                this.setState({
+                    ...this.state,
+                    proyectos: this.setProyectos(proyectos),
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        icon: 'error'
+                    })
+                }
+            }
+        ).catch((error) => {
+            console.log('error catch', error)
+            swal({
+                title: '¡Ups 😕!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error',
+                
+            })
+        })
+    }
+
     async addProyectoAxios(){
         const { access_token } = this.props.authUser
         const { form, prospecto } = this.state
@@ -733,6 +777,53 @@ class Proyectos extends Component{
                     options,
                     proyecto: '',
                     modal: false
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        icon: 'error'
+                    })
+                }
+            }
+        ).catch((error) => {
+            console.log('error catch', error)
+            swal({
+                title: '¡Ups 😕!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error',                
+            })
+        })
+    }
+
+    async addProyectoAdjuntoAxios(name){
+        const { access_token } = this.props.authUser
+        const { form, proyecto } = this.state
+        const data = new FormData();
+        data.append('tipo', name)
+        for (var i = 0; i < form.adjuntos[name].files.length; i++) {
+            data.append(`files_name_${name}[]`, form.adjuntos[name].files[i].name)
+            data.append(`files_${name}[]`, form.adjuntos[name].files[i].file)
+        }
+
+        await axios.post(URL_DEV + 'proyectos/'+proyecto.id+'/adjuntos', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
                 })
             },
             (error) => {
@@ -1143,7 +1234,8 @@ class Proyectos extends Component{
                 </Modal>
                 <Modal show = { modalAdjuntos } handleClose={ this.handleCloseAdjuntos } >
                     <div className="p-2">
-                        <Slider elements = {this.state.adjuntos.headers.length > 0 ? this.state.adjuntos.headers : [] } />
+                        <Slider elements = {this.state.adjuntos.headers.length > 0 ? this.state.adjuntos.headers : [] }
+                            deleteFile = { this.deleteFile } handleChange = {this.handleChange} />
                     </div>
                 </Modal>
             </Layout>

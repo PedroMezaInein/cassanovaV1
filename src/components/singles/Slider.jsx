@@ -77,7 +77,7 @@ class Slider extends Component{
                 <div>
                     {
                         active.files ?
-                            <ItemSlider items = {active.files} item = { active } />
+                            <ItemSlider items = {active.files} item = { active } {... this.props} />
                         : ''
                     }
                 </div>
