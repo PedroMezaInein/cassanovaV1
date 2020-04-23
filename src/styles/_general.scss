@@ -50,14 +50,11 @@ $l-black-dark-blue: #132036;
 $l-black-gold: #423b28;
 
 
-// Fuentes
-@font-face {
-    font-family: 'Oswaldo';
-    src:    url('./fonts/Oswald-VariableFont:wght.ttf')  format('truetype')
-            url('./fonts/Oswald-VariableFont_wght.woff') format('woff')
-}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;531;600;700;800;900&family=Oswald:wght@200;300;400;469;500;600;700&display=swap');
+
 body {
-    font-family: 'Oswaldo';
+    /* font-family: 'Inter'; */
+    font-family: 'Inter','Oswald';
 }
 
 

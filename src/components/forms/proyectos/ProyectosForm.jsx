@@ -159,44 +159,48 @@ class ProyectosForm extends Component{
                         <Input rows="3" as="textarea" placeholder="Descripción" name="descripcion" onChange={onChange} value={form.descripcion}/>
                     </div>
                 </div>
-                <Accordion>
-                    <div className="px-3 pt-2">
-                        <CustomToggle eventKey="adjuntos" >
-                            <Small color="gold" className="label-form">
-                                Aquí puedes adjuntar los archivos
-                            </Small>
-                        </CustomToggle>
-                    </div>
-                    
-                    <Accordion.Collapse eventKey="adjuntos">
-                        <div className="row mx-0">
-                            {
-                                Object.keys(form.adjuntos).map((adjunto, key)=>{
-                                    
-                                    if(adjunto.toString() !== 'image'){
-                                        let aux = adjunto.toString()
-                                        return(
-                                            <div className="col-md-6" key = { key } >
-                                                <FileInput 
-                                                    onChangeAdjunto = { onChangeAdjunto } 
-                                                    placeholder = { form['adjuntos'][aux]['placeholder'] }
-                                                    value = { form['adjuntos'][aux]['value'] }
-                                                    name = { aux }
-                                                    id = { aux }
-                                                    accept = "image/*, application/pdf" 
-                                                    files = { form['adjuntos'][aux]['files'] }
-                                                    deleteAdjunto = { clearFiles }
-                                                    multiple
-                                                    />
-                                            </div>
-                                            
-                                        )
-                                    }
-                                })
-                            }
+                {
+                    title !== 'Editar proyecto' ?
+                    <Accordion>
+                        <div className="px-3 pt-2">
+                            <CustomToggle eventKey="adjuntos" >
+                                <Small color="gold" className="label-form">
+                                    Aquí puedes adjuntar los archivos
+                                </Small>
+                            </CustomToggle>
                         </div>
-                    </Accordion.Collapse>
-                </Accordion>
+                        
+                        <Accordion.Collapse eventKey="adjuntos">
+                            <div className="row mx-0">
+                                {
+                                    Object.keys(form.adjuntos).map((adjunto, key)=>{
+                                        
+                                        if(adjunto.toString() !== 'image'){
+                                            let aux = adjunto.toString()
+                                            return(
+                                                <div className="col-md-6" key = { key } >
+                                                    <FileInput 
+                                                        onChangeAdjunto = { onChangeAdjunto } 
+                                                        placeholder = { form['adjuntos'][aux]['placeholder'] }
+                                                        value = { form['adjuntos'][aux]['value'] }
+                                                        name = { aux }
+                                                        id = { aux }
+                                                        accept = "image/*, application/pdf" 
+                                                        files = { form['adjuntos'][aux]['files'] }
+                                                        deleteAdjunto = { clearFiles }
+                                                        multiple
+                                                        />
+                                                </div>
+                                                
+                                            )
+                                        }
+                                    })
+                                }
+                            </div>
+                        </Accordion.Collapse>
+                    </Accordion>
+                    : ''
+                }
                 <div className="d-flex justify-content-center my-3">
                     <Button  icon='' type="submit" className="text-center mx-auto" text='Enviar' />
                 </div>

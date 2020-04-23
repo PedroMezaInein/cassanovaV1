@@ -44,7 +44,8 @@
     "redux-thunks": "^1.0.0",
     "rfs": "^9.0.2",
     "styled-components": "^5.0.1",
-    "sweetalert": "^2.1.2"
+    "sweetalert": "^2.1.2",
+    "webfontloader": "^1.6.28"
   },
   "scripts": {
     "start": "react-scripts start",
