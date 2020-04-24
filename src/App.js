@@ -39,6 +39,8 @@ const Facturacion = Loader(() => import('./pages/Administracion/Facturacion') )
 const Proveedores = Loader(() => import('./pages/Administracion/Proveedor') )
 
 const Proyectos = Loader(() => import('./pages/Proyectos/Proyectos') )
+const Ventas = Loader(() => import('./pages/Proyectos/Ventas') )
+const Compras = Loader(() => import('./pages/Proyectos/Compras') )
 
 const Areas = Loader( () => import('./pages/Catalogos/Areas') )
 
@@ -113,7 +115,9 @@ class App extends Component{
                 <Route path = "/usuarios/empresas" exact component ={ Empresas } />
 
                 <Route path = "/proyectos/proyectos" exact component ={ Proyectos } />
-
+                <Route path = "/proyectos/ventas" exact component ={ Ventas } />
+                <Route path = "/proyectos/compras" exact component ={ Compras } />
+                
                 <Route path = "/administracion/ingresos" exact component ={ Ingresos } />
                 <Route path = "/administracion/egresos" exact component ={ Egresos } />
                 <Route path = "/administracion/facturacion" exact component ={ Facturacion } />

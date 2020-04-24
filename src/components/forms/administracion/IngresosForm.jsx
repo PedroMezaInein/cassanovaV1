@@ -127,14 +127,10 @@ class EgresosForm extends Component{
                         <Select placeholder="Selecciona el tipo de pago" options = { options.tiposPagos } 
                             name="tipoPago" value = { form.tipoPago } onChange = { onChange } />
                     </div>
-                    {
-                        form.factura === 'Con factura' ?
-                            <div className="col-md-6 px-2">
-                                <Select placeholder="Selecciona el impuesto" options = { options.tiposImpuestos } 
-                                    name="tipoImpuesto" value = { form.tipoImpuesto } onChange = { onChange } />
-                            </div>
-                        : ''
-                    }
+                    <div className="col-md-6 px-2">
+                        <Select placeholder="Selecciona el impuesto" options = { options.tiposImpuestos } 
+                            name="tipoImpuesto" value = { form.tipoImpuesto } onChange = { onChange } />
+                    </div>
                     <div className="col-md-6 px-2">
                         <Select placeholder="Selecciona el estatus de compra" options = { options.estatusCompras } 
                             name="estatusCompra" value = { form.estatusCompra } onChange = { onChange } />
