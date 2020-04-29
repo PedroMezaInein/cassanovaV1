@@ -92,7 +92,67 @@ class Ventas extends Component{
     }
 
     openModalEdit = (venta) => {
-        alert('EDIT')
+        console.log('Venta - ', venta, ' - ')
+        const { form, options } = this.state
+        form.factura = venta.factura ? 'Con factura' : 'Sin factura'
+        if(venta.cliente){
+            form.cliente = venta.cliente.id.toString()
+            options['proyectos'] = setOptions(venta.cliente.proyectos, 'nombre', 'id')
+            form.proyecto = venta.proyecto.id.toString()
+        }
+        if(venta.empresa){
+            form.empresa = venta.empresa.id.toString()
+            options['cuentas'] = setOptions(venta.empresa.cuentas, 'nombre', 'id')
+            form.cuenta = venta.cuenta.id.toString()
+        }
+        if(venta.subarea){
+            form.area = venta.subarea.area.id.toString()
+            options['subareas'] = setOptions(venta.subarea.area.subareas, 'nombre', 'id')
+            form.subarea = venta.subarea.id.toString()
+        }
+        
+        form.tipoPago = venta.tipo_pago ? venta.tipo_pago.id : 0
+        form.tipoImpuesto = venta.tipo_impuesto ? venta.tipo_impuesto.id : 0
+        form.estatusCompra = venta.estatus_compra ? venta.estatus_compra.id : 0
+        form.total = venta.monto
+        form.fecha = new Date(venta.created_at)
+        form.descripcion = venta.descripcion
+        if(venta.pago){
+            form.adjuntos.pago.files = [{
+                name: venta.pago.name, url: venta.pago.url
+            }]
+        }
+        if(venta.presupuesto){
+            form.adjuntos.presupuesto.files = [{
+                name: venta.presupuesto.name, url: venta.presupuesto.url
+            }]
+        }
+        if(venta.facturas){
+            form.facturaObject = venta.facturas
+            let aux = []
+            if(venta.facturas.xml){
+                aux.push({
+                    name: 'factura.xml', url: venta.facturas.xml.url
+                })
+            }
+            if(venta.facturas.pdf){
+                aux.push({
+                    name: 'factura.pdf', url: venta.facturas.pdf.url
+                })
+            }
+            form.adjuntos.factura.files = aux
+            form.rfc = venta.facturas.rfc_emisor
+            form.cliente = venta.cliente.nombre
+            form.empresa = venta.empresa.name
+        }
+        this.setState({
+            ... this.state,
+            modal: true,
+            venta: venta,
+            form,
+            options,
+            title: 'Editar venta'
+        })
     }
 
     openModalDelete = (venta) => {
@@ -112,7 +172,8 @@ class Ventas extends Component{
         this.setState({
             ... this.state,
             modal: !modal,
-            form: this.clearForm()
+            form: this.clearForm(),
+            title: 'Nueva venta'
         })
     }
 
@@ -231,12 +292,16 @@ class Ventas extends Component{
 
     onSubmit = e => {
         e.preventDefault()
+        const { title } = this.state
         swal({
             title: '¡Un momento!',
             text: 'La información está siendo procesada.',
             buttons: false
         })
-        this.addVentaAxios()
+        if(title === 'Editar venta')
+            this.editVentaAxios()
+        else
+            this.addVentaAxios()
     }
 
     // Setters
@@ -395,6 +460,81 @@ class Ventas extends Component{
         })
         
         await axios.post(URL_DEV + 'ventas', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+
+                const { ventas } = response.data
+                this.setState({
+                    ... this.state,
+                    form: this.clearForm(),
+                    modal: false,
+                    ventas: this.setVentas(ventas)
+                })
+                
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        icon: 'error',
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups 😕!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error'
+            })
+        })
+    }
+
+    async editVentaAxios(){
+
+        const { access_token } = this.props.authUser
+        const { form, venta } = this.state
+        const data = new FormData();
+        
+        let aux = Object.keys(form)
+        aux.map( (element) => {
+            switch(element){
+                case 'fecha':
+                    data.append(element, (new Date(form[element])).toDateString())
+                    break
+                case 'adjuntos':
+                case 'facturaObject':
+                    break;
+                default:
+                    data.append(element, form[element])
+                    break
+            }
+        })
+        aux = Object.keys(form.adjuntos)
+        aux.map( (element) => {
+            for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+            }
+            data.append('adjuntos[]', element)
+        })
+        
+        await axios.post(URL_DEV + 'ventas/update/' + venta.id, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
 
                 const { ventas } = response.data
