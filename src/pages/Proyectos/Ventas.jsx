@@ -163,10 +163,6 @@ class Ventas extends Component{
         })
     }
 
-    openModalAdjuntos = (venta) => {
-        alert('Adjuntos')
-    }
-
     handleClose = () => {
         const { modal } = this.state
         this.setState({
@@ -372,10 +368,6 @@ class Ventas extends Component{
                         tooltip={{id:'edit', text:'Editar'}} />
                     <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalDelete(venta)} } text='' icon={faTrash} color="red" 
                         tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
-                </div>
-                <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => { e.preventDefault(); this.openModalAdjuntos(venta)} } text='' icon={faLink} 
-                        color="transparent" tooltip={{id:'adjuntos', text:'Adjuntos'}} />
                 </div>
             </>
         )

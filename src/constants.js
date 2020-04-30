@@ -713,3 +713,70 @@ export const VENTAS_COLUMNS = [
         accessor: 'fecha',
     },
 ]
+
+export const COMPRAS_COLUMNS = [
+    {
+        Header: ' ',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Proyecto',
+        accessor: 'proyecto'
+    },
+    {
+        Header: 'Proveedor',
+        accessor: 'proveedor'
+    },
+    {
+        Header: 'Cuenta',
+        accessor: 'cuenta'
+    },
+    {
+        Header: 'Factura',
+        accessor: 'factura'
+    },
+    {
+        Header: 'Monto',
+        accessor: 'monto'
+    },
+    {
+        Header: 'Comisión',
+        accessor: 'comision'
+    },
+    {
+        Header: 'Impuesto',
+        accessor: 'impuesto'
+    },
+    {
+        Header: 'Total',
+        accessor: 'total'
+    },
+    {
+        Header: 'Tipo de pago',
+        accessor: 'tipoPago'
+    },
+    {
+        Header: 'Descripción',
+        accessor: 'descripcion'
+    },
+    {
+        Header: 'Área',
+        accessor: 'area'
+    },
+    {
+        Header: 'Sub-Área',
+        accessor: 'subarea'
+    },
+    {
+        Header: 'Estatus compra',
+        accessor: 'estatusCompra'
+    },
+    {
+        Header: 'Adjuntos',
+        accessor: 'adjuntos',
+    },
+    {
+        Header: 'Fecha',
+        accessor: 'fecha',
+    },
+]
