@@ -780,3 +780,50 @@ export const COMPRAS_COLUMNS = [
         accessor: 'fecha',
     },
 ]
+
+export const SOLICITUD_COMPRA_COLUMNS = [
+    {
+        Header: ' ',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Proyecto',
+        accessor: 'proyecto'
+    },
+    {
+        Header: 'Proveedor',
+        accessor: 'proveedor'
+    },
+    {
+        Header: 'Empresa',
+        accessor: 'empresa'
+    },
+    {
+        Header: 'Monto',
+        accessor: 'monto'
+    },
+    {
+        Header: 'Factura',
+        accessor: 'factura'
+    },
+    {
+        Header: 'Tipo de pago',
+        accessor: 'tipoPago'
+    },
+    {
+        Header: 'Descripción',
+        accessor: 'descripcion'
+    },
+    {
+        Header: 'Área',
+        accessor: 'area'
+    },
+    {
+        Header: 'Sub-Área',
+        accessor: 'subarea'
+    },
+    {
+        Header: 'Fecha',
+        accessor: 'fecha',
+    },
+]
