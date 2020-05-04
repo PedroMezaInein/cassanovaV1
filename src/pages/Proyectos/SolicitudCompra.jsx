@@ -22,7 +22,9 @@ class SolicitudCompra extends Component{
 
     state = {
         modal: false,
+        modalDelete: false,
         title: 'Nueva solicitud de compra',
+        solicitudes: [],
         form:{
             proveedor: '',
             proyecto: '',
@@ -67,12 +69,70 @@ class SolicitudCompra extends Component{
         })
     }
 
+    openModalEdit = ( solicitud ) => {
+        console.log(solicitud, 'SOLICITUD')
+        const {form, options} = this.state
+        if(solicitud.empresa)
+            form.empresa = solicitud.empresa.id.toString()
+        if(solicitud.tipo_pago)
+            form.tipoPago = solicitud.tipo_pago.id
+        if(solicitud.proveedor)
+            form.proveedor = solicitud.proveedor.id.toString()
+        if(solicitud.proyecto)
+            form.proyecto = solicitud.proyecto.id.toString()
+        if(solicitud.subarea){
+            if(solicitud.subarea.area){
+                form.area = solicitud.subarea.area.id.toString()
+                if(solicitud.subarea.area.subareas){
+                    options['subareas'] = setOptions(solicitud.subarea.area.subareas, 'nombre', 'id')
+                    form.subarea = solicitud.subarea.id.toString()
+                }
+            }
+        }
+        if(solicitud.factura)
+            form.factura = 'Con factura'
+        else
+            form.factura = 'Sin factura'
+        form.descripcion = solicitud.descripcion
+        form.fecha = new Date(solicitud.created_at)
+        form.total = solicitud.monto
+        this.setState({
+            ... this.state,
+            modal: true,
+            title: 'Editar solicitud de compra',
+            solicitud: solicitud,
+            form,
+            options
+        })
+    }
+
+    openModalDelete = ( solicitud ) => {
+        this.setState({
+            ... this.state,
+            modalDelete: true,
+            title: 'Nueva solicitud de compra',
+            form: this.clearForm(),
+            solicitud: solicitud
+        })
+    }
+
     handleClose = () => {
         const { modal } = this.state
         this.setState({
             ... this.state,
             modal: !modal,
-            form: this.clearForm()
+            form: this.clearForm(),
+            solicitud: ''
+        })
+    }
+
+    handleCloseDelete = () => {
+        const { modal } = this.state
+        this.setState({
+            ... this.state,
+            modal: !modal,
+            form: this.clearForm(),
+            solicitud: ''
         })
     }
 
@@ -118,7 +178,7 @@ class SolicitudCompra extends Component{
             buttons: false
         })
         if(title === 'Editar solicitud de compra')
-            this.addSolicitudCompraAxios()
+            this.editSolicitudCompraAxios()
         else
             this.addSolicitudCompraAxios()
     }
@@ -133,12 +193,47 @@ class SolicitudCompra extends Component{
         })
     }
 
+    setSolicitudes = solicitudes => {
+        let aux = []
+        solicitudes.map( (solicitud) => {
+            aux.push(
+                {
+                    actions: this.setActions(solicitud),
+                    proyecto: setTextTable(solicitud.proyecto.nombre),
+                    empresa: setTextTable(solicitud.empresa.name),
+                    proveedor: setTextTable(solicitud.proveedor.nombre),
+                    factura: setTextTable(solicitud.factura ? 'Con factura' : 'Sin factura'),
+                    monto: setMoneyTable(solicitud.monto),
+                    tipoPago: setTextTable(solicitud.tipo_pago.tipo),
+                    descripcion: setTextTable(solicitud.descripcion),
+                    area: setTextTable(solicitud.subarea.area.nombre),
+                    subarea: setTextTable(solicitud.subarea.nombre),
+                    fecha: setDateTable(solicitud.created_at)
+                }
+            )
+        })
+        return aux
+    }
+
+    setActions = solicitud => {
+        return(
+            <>
+                <div className="d-flex align-items-center flex-column flex-md-row">
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalEdit(solicitud)} } text='' icon={faEdit} color="transparent" 
+                        tooltip={{id:'edit', text:'Editar'}} />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalDelete(solicitud)} } text='' icon={faTrash} color="red" 
+                        tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
+                </div>
+            </>
+        )
+    }
+
     //Async
     async getSolicitudesCompraAxios(){
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'solicitud-compra', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { empresas, areas, tiposPagos, proveedores, proyectos } = response.data
+                const { empresas, areas, tiposPagos, proveedores, proyectos, solicitudes } = response.data
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['proveedores'] = setOptions(proveedores, 'nombre', 'id')
@@ -147,7 +242,8 @@ class SolicitudCompra extends Component{
                 options['tiposPagos'] = setSelectOptions( tiposPagos, 'tipo' )
                 this.setState({
                     ... this.state,
-                    options
+                    options,
+                    solicitudes: this.setSolicitudes(solicitudes)
                 })
             },
             (error) => {
@@ -182,11 +278,113 @@ class SolicitudCompra extends Component{
         await axios.post(URL_DEV + 'solicitud-compra', form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 swal({
-                    title: '¡FeliaddCcidades 🥳!',
+                    title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'La solicitud fue registrado con éxito.',
                     icon: 'success',
                     timer: 1500,
                     buttons: false
+                })
+                this.setState({
+                    ... this.state,
+                    modal: false,
+                    form: this.clearForm(),
+                    title: 'Nueva solicitud de compra'
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        icon: 'error',
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups 😕!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.' + error,
+                icon: 'error'
+            })
+        })
+    }
+
+    async editSolicitudCompraAxios(){
+        const { access_token } = this.props.authUser
+        const { form, solicitud } = this.state
+        await axios.put(URL_DEV + 'solicitud-compra/' + solicitud.id, form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { solicitudes } = response.data
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'La solicitud fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+                this.setState({
+                    ... this.state,
+                    modal: false,
+                    form: this.clearForm(),
+                    title: 'Nueva solicitud de compra',
+                    solicitud: '',
+                    solicitudes: this.setSolicitudes(solicitudes)
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        icon: 'error',
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups 😕!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.' + error,
+                icon: 'error'
+            })
+        })
+    }
+
+    async deleteSolicitudAxios(){
+        const { access_token } = this.props.authUser
+        const { solicitud } = this.state
+        await axios.delete(URL_DEV + 'solicitud-compra/' + solicitud.id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { solicitudes } = response.data
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'La solicitud fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+                this.setState({
+                    ... this.state,
+                    modalDelete: false,
+                    form: this.clearForm(),
+                    title: 'Nueva solicitud de compra',
+                    solicitud: '',
+                    solicitudes: this.setSolicitudes(solicitudes)
                 })
             },
             (error) => {
@@ -217,19 +415,24 @@ class SolicitudCompra extends Component{
 
     render(){
 
-        const { modal, title, form, options } = this.state
+        const { modal, modalDelete, title, form, options, solicitudes } = this.state
 
         return(
             <Layout active={'proyectos'}  { ...this.props}>
                 <div className="text-right">
                     <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon = { faPlus } color="green" />
                 </div>
-                <DataTable columns = { SOLICITUD_COMPRA_COLUMNS } data= { [] }/>
+                <DataTable columns = { SOLICITUD_COMPRA_COLUMNS } data= { solicitudes }/>
                 <Modal show = {modal} handleClose = { this.handleClose } >
                     <SolicitudCompraForm title = { title } form = { form } options = { options } 
                         setOptions = {this.setOptions}  onChange = { this.onChange }
                         onSubmit = { this.onSubmit } />
                 </Modal>
+                <ModalDelete show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteSolicitudAxios() }}>
+                    <Subtitle className="my-3 text-center">
+                        ¿Estás seguro que deseas eliminar la solicitud de compra?
+                    </Subtitle>
+                </ModalDelete>
             </Layout>
         )
     }
