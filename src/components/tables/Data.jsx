@@ -5,6 +5,7 @@ import { faSort, faSortDown, faSortUp, faStepForward, faStepBackward } from '@fo
 import { Button } from '../form-components'
 import { TABLE_SIZE } from '../../constants'
 import { Subtitle } from '../texts'
+import Small from '../texts/Small'
 
 
 const IndeterminateCheckbox = React.forwardRef(
@@ -73,9 +74,12 @@ function Table({ columns, data }){
                                         headerGroup.headers.map((column, i) => (
                                             <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                                                 <div className="d-flex justify-content-between align-items-center">
-                                                    {
-                                                        column.render('Header')
-                                                    }
+                                                    <Small color="bone">
+                                                        {
+                                                            column.render('Header')
+                                                        }
+                                                    </Small>
+                                                    
                                                     <FontAwesomeIcon 
                                                         icon={
                                                             i === 0 ? ''
@@ -85,6 +89,7 @@ function Table({ columns, data }){
                                                                         : faSortDown
                                                                     : faSort
                                                         }
+                                                        className="ml-2"
                                                     />
                                                 </div>
                                             </th>

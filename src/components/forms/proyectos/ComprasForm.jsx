@@ -177,10 +177,14 @@ class ComprasForm extends Component{
                             </div>
                         : ''
                     }
-                    <div className="col-md-6 px-2">
-                        <Select placeholder="Selecciona el tipo de pago" options = { options.tiposPagos } 
-                            name="tipoPago" value = { form.tipoPago } onChange = { onChange } />
-                    </div>
+                    {
+                        options.tiposPagos.length > 0 ?
+                            <div className="col-md-6 px-2">
+                                <Select placeholder="Selecciona el tipo de pago" options = { options.tiposPagos } 
+                                    name="tipoPago" value = { form.tipoPago } onChange = { onChange } />
+                            </div>
+                        : ''
+                    }
                     <div className="col-md-6 px-2">
                         <Select placeholder="Selecciona el impuesto" options = { options.tiposImpuestos } 
                             name="tipoImpuesto" value = { form.tipoImpuesto } onChange = { onChange } />

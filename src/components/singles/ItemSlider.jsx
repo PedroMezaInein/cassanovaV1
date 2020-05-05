@@ -54,7 +54,6 @@ class ItemSlider extends Component{
     render(){
         const { item, items, deleteFile } = this.props
         const { active } = this.state
-        console.log('items', 'slider', items)
         return(
             <>
                 <div className="d-flex w-100 align-items-center">

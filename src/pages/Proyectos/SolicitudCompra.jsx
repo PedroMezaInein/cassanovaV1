@@ -13,17 +13,21 @@ import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable
 import Layout from '../../components/layout/layout'
 import { Button } from '../../components/form-components'
 import { Modal, ModalDelete } from '../../components/singles'
-import { faPlus, faLink, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faLink, faEdit, faTrash, faSync } from '@fortawesome/free-solid-svg-icons'
 import { DataTable } from '../../components/tables'
 import Subtitle from '../../components/texts/Subtitle'
-import SolicitudCompraForm from '../../components/forms/proyectos/SolicitudCompraForm'
+import { SolicitudCompraForm } from '../../components/forms'
+import { SolicitudCompraCard } from '../../components/cards'
+import { Small } from '../../components/texts'
 
 class SolicitudCompra extends Component{
 
     state = {
         modal: false,
         modalDelete: false,
+        modalSingle: false,
         title: 'Nueva solicitud de compra',
+        solicitud: '',
         solicitudes: [],
         form:{
             proveedor: '',
@@ -57,6 +61,19 @@ class SolicitudCompra extends Component{
         });
         if(!solicitud)
             history.push('/')
+        let queryString = this.props.history.location.search
+        if(queryString){
+            let params = new URLSearchParams(queryString)
+            let id = parseInt(params.get("id"))
+            if(id){
+                
+                this.setState({
+                    ... this.state,
+                    modalSingle: true
+                })
+                this.getSolicitudCompraAxios(id)
+            }
+        }
         this.getSolicitudesCompraAxios()
     }
 
@@ -70,7 +87,6 @@ class SolicitudCompra extends Component{
     }
 
     openModalEdit = ( solicitud ) => {
-        console.log(solicitud, 'SOLICITUD')
         const {form, options} = this.state
         if(solicitud.empresa)
             form.empresa = solicitud.empresa.id.toString()
@@ -132,6 +148,15 @@ class SolicitudCompra extends Component{
             ... this.state,
             modal: !modal,
             form: this.clearForm(),
+            solicitud: ''
+        })
+    }
+
+    handleCloseSingle = () => {
+        const { modalSingle } = this.state
+        this.setState({
+            ... this.state,
+            modalSingle: !modalSingle,
             solicitud: ''
         })
     }
@@ -224,8 +249,20 @@ class SolicitudCompra extends Component{
                     <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalDelete(solicitud)} } text='' icon={faTrash} color="red" 
                         tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
                 </div>
+                <div className="d-flex align-items-center flex-column flex-md-row">
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.convertirSolicitud(solicitud)} } text='' icon={faSync} color="transparent" 
+                        tooltip={{id:'convertir', text:'Comprar', type:'success'}} />
+                </div>
             </>
         )
+    }
+
+    convertirSolicitud = solicitud => {
+        const { history } = this.props
+        history.push({
+            pathname: '/proyectos/compras',
+            state: { solicitud: solicitud}
+        });
     }
 
     //Async
@@ -244,6 +281,42 @@ class SolicitudCompra extends Component{
                     ... this.state,
                     options,
                     solicitudes: this.setSolicitudes(solicitudes)
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        icon: 'error',
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups 😕!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.' + error,
+                icon: 'error'
+            })
+        })
+    }
+
+    async getSolicitudCompraAxios(id){
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'solicitud-compra/'+id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { solicitud } = response.data
+                this.setState({
+                    ... this.state,
+                    solicitud: solicitud
                 })
             },
             (error) => {
@@ -415,7 +488,7 @@ class SolicitudCompra extends Component{
 
     render(){
 
-        const { modal, modalDelete, title, form, options, solicitudes } = this.state
+        const { modal, modalDelete, modalSingle, title, form, options, solicitudes, solicitud } = this.state
 
         return(
             <Layout active={'proyectos'}  { ...this.props}>
@@ -433,6 +506,18 @@ class SolicitudCompra extends Component{
                         ¿Estás seguro que deseas eliminar la solicitud de compra?
                     </Subtitle>
                 </ModalDelete>
+                <Modal show = { modalSingle } handleClose = { this.handleCloseSingle } >
+                    <SolicitudCompraCard data = { solicitud }>
+                        {
+                            solicitud.convertido ? '' :
+                                <div className="col-md-12 mb-3 d-flex justify-content-end">
+                                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.convertirSolicitud(solicitud)} } text='' icon={faSync} color="transparent" 
+                                        tooltip={{id:'convertir', text:'Comprar', type:'success'}} />
+                                </div>
+                        }
+                        
+                    </SolicitudCompraCard>
+                </Modal>
             </Layout>
         )
     }

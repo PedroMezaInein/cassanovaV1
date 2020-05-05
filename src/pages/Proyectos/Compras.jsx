@@ -17,6 +17,7 @@ import { faPlus, faLink, faEdit, faTrash } from '@fortawesome/free-solid-svg-ico
 import { ComprasForm } from '../../components/forms'
 import { DataTable } from '../../components/tables'
 import Subtitle from '../../components/texts/Subtitle'
+import SolicitudCompraCard from '../../components/cards/Administracion/SolicitudCompraCard'
 
 class Compras extends Component{
 
@@ -26,6 +27,7 @@ class Compras extends Component{
         title: 'Nueva compra',
         compras: [],
         compra: '',
+        solicitud: '',
         options:{
             empresas:[],
             cuentas:[],
@@ -33,7 +35,10 @@ class Compras extends Component{
             subareas:[],
             clientes: [],
             proyectos: [],
-            proveedores: []
+            proveedores: [],
+            tiposImpuestos: [],
+            tiposPagos: [],
+            estatusCompras: []
         },
         form:{
             factura: 'Sin factura',
@@ -48,6 +53,7 @@ class Compras extends Component{
             area: '',
             subarea: '',
             comision: '',
+            solicitud: '',
             tipoImpuesto: 0,
             tipoPago: 0,
             estatusCompra: 0,
@@ -83,6 +89,12 @@ class Compras extends Component{
         if(!egresos)
             history.push('/')
         this.getComprasAxios()
+        const { state } = this.props.location
+        if(state){
+            if(state.solicitud){
+                this.getSolicitudCompraAxios(state.solicitud.id)
+            }
+        }
     }
 
     openModal = () => {
@@ -95,7 +107,6 @@ class Compras extends Component{
     }
 
     openModalEdit = (compra) => {
-        console.log('Compra - ', compra, ' - ')
         const { form, options } = this.state
         form.factura = compra.factura ? 'Con factura' : 'Sin factura'
         if(compra.proyecto){
@@ -256,6 +267,7 @@ class Compras extends Component{
                 case 'total':
                 case 'descripcion':
                 case 'facturaObject':
+                case 'solicitud':
                     form[element] = ''
                     break;
                 case 'tipoImpuesto':
@@ -310,7 +322,6 @@ class Compras extends Component{
 
     // Setters
     setOptions = (name, array) => {
-        console.log(name, array, 'set options')
         const {options} = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
@@ -331,6 +342,13 @@ class Compras extends Component{
             ... this.state,
             form
         })
+    }
+
+    setSolicitud = solicitud => {
+        /* const { form } = this.state
+        form.factura = solicitud.factura ? 'Con factura' : 'Sin factura'
+        form.descripcion = solicitud.descripcion */
+        /* return form */
     }
 
     setCompras = compras => {
@@ -383,6 +401,93 @@ class Compras extends Component{
     }
 
     // Async
+    async getSolicitudCompraAxios(id){
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'solicitud-compra/'+id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { solicitud } = response.data
+                const { form, options } = this.state
+                form.solicitud = solicitud.id
+                form.factura = solicitud.factura ? 'Con factura' : 'Sin factura'
+                if(solicitud.factura){
+                    let aux = ''
+                    options.tiposImpuestos.find(function(element, index) {        
+                        if(element.text === 'IVA')
+                            aux = element.value
+                    });
+                    form.tipoImpuesto = aux
+                }
+                if(solicitud.proveedor){
+                    form.proveedor = solicitud.proveedor.id.toString()
+                }
+                if(solicitud.proyecto){
+                    if(solicitud.proyecto.cliente){
+                        if(solicitud.proyecto.cliente.proyectos){
+                            options['proyectos'] = setOptions(solicitud.proyecto.cliente.proyectos, 'nombre', 'id')
+                            form.cliente = solicitud.proyecto.cliente.id.toString()
+                            form.proyecto = solicitud.proyecto.id.toString()
+                        }
+                    }
+                }
+                if(solicitud.empresa){
+                    if(solicitud.empresa.cuentas){
+                        options['cuentas'] = setOptions(solicitud.empresa.cuentas, 'nombre', 'id')
+                        form.empresa = solicitud.empresa.id.toString()
+                    }
+                }
+                if(solicitud.subarea){
+                    if(solicitud.subarea.area){
+                        if(solicitud.subarea.area.subareas){
+                            options['subareas'] = setOptions(solicitud.subarea.area.subareas, 'nombre', 'id')
+                            form.area = solicitud.subarea.area.id.toString()
+                            form.subarea = solicitud.subarea.id.toString()
+                        }
+                    }
+                }
+                if(solicitud.tipo_pago){
+                    form.tipoPago = solicitud.tipo_pago.id
+                }
+                if(solicitud.monto){
+                    form.total = solicitud.monto
+                }
+                if(solicitud.descripcion){
+                    form.descripcion = solicitud.descripcion
+                }
+                this.setState({
+                    ... this.state,
+                    title: 'Convierte la solicitud de compra',
+                    solicitud: solicitud,
+                    modal: true,
+                    form
+                })
+                console.log('STATE', this.state)
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        icon: 'error',
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups 😕!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.' + error,
+                icon: 'error'
+            })
+        })
+    }
+
     async getComprasAxios(){
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'compras', { headers: {Authorization:`Bearer ${access_token}`}}).then(
@@ -396,7 +501,6 @@ class Compras extends Component{
                 options['tiposPagos'] = setSelectOptions( tiposPagos, 'tipo' )
                 options['tiposImpuestos'] = setSelectOptions( tiposImpuestos, 'tipo' )
                 options['estatusCompras'] = setSelectOptions( estatusCompras, 'estatus' )
-                console.log('-OPTIONS-', options)
                 this.setState({
                     ... this.state,
                     options,
@@ -704,7 +808,7 @@ class Compras extends Component{
 
     render(){
 
-        const { modal, modalDelete, title, options, form, compras } = this.state
+        const { modal, modalDelete, title, options, form, compras, solicitud } = this.state
 
         return(
             <Layout active={'proyectos'}  { ...this.props}>
@@ -715,7 +819,13 @@ class Compras extends Component{
                 <Modal show = {modal} handleClose = { this.handleClose } >
                     <ComprasForm title = { title } options = {options} form = {form} setOptions = {this.setOptions} 
                         onChange = { this.onChange } onChangeAdjunto = { this.onChangeAdjunto } clearFiles = {this.clearFiles}
-                        sendFactura = { () => { this.sendFactura() } } onSubmit = { this.onSubmit } />
+                        sendFactura = { () => { this.sendFactura() } } onSubmit = { this.onSubmit } >
+                        {
+                            solicitud ?
+                                <SolicitudCompraCard solicitud = {solicitud} />
+                            : ''
+                        }
+                    </ComprasForm>
                 </Modal>
                 <ModalDelete show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteCompraAxios() }}>
                     <Subtitle className="my-3 text-center">

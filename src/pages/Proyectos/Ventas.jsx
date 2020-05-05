@@ -92,7 +92,6 @@ class Ventas extends Component{
     }
 
     openModalEdit = (venta) => {
-        console.log('Venta - ', venta, ' - ')
         const { form, options } = this.state
         form.factura = venta.factura ? 'Con factura' : 'Sin factura'
         if(venta.cliente){
@@ -302,7 +301,6 @@ class Ventas extends Component{
 
     // Setters
     setOptions = (name, array) => {
-        console.log(name, array, 'set options')
         const {options} = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
@@ -386,7 +384,6 @@ class Ventas extends Component{
                 options['tiposPagos'] = setSelectOptions( tiposPagos, 'tipo' )
                 options['tiposImpuestos'] = setSelectOptions( tiposImpuestos, 'tipo' )
                 options['estatusCompras'] = setSelectOptions( estatusCompras, 'estatus' )
-                console.log('-OPTIONS-', options)
                 this.setState({
                     ... this.state,
                     options,

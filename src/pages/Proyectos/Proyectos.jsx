@@ -1057,7 +1057,6 @@ class Proyectos extends Component{
     async cpAxios(value){
         await axios.get(CP_URL + value + '?type=simplified').then(
             (response) => {
-                console.log(response, 'RESPONSE')
                 const { error } = response.data
                 const {form, options } = this.state
                 if(!error){
