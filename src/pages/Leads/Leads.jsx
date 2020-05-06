@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { DataTable } from '../../components/tables'
-import { faPlus, faEdit, faTrash, faPhone, faEnvelope, faSync, faTruckLoading} from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faEdit, faTrash, faPhone, faEnvelope, faSync, faTruckLoading, faFileExport} from '@fortawesome/free-solid-svg-icons'
 import { Button } from '../../components/form-components'
 import axios from 'axios'
 import swal from 'sweetalert'
@@ -12,6 +12,8 @@ import Moment from 'react-moment'
 import { Modal } from '../../components/singles'
 import { LeadForm } from '../../components/forms'
 import { Subtitle, B, Small } from '../../components/texts'
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
 
 class Leads extends Component{
 
@@ -54,13 +56,41 @@ class Leads extends Component{
                 servicios: this.setServiciosData(lead.servicios),
                 empresa: this.setTextTable(lead.empresa.name),
                 origen: this.setTextTable(lead.origen.origen),
-                fecha: this.setDate(lead.created_at)
+                fecha: this.setDateTable(lead.created_at)
             }
         })
+        let aux = []
+
+        leads.map((lead) => {
+            console.log('lead', lead)
+            aux.push({
+                Nombre: lead.nombre,
+                Teléfono: lead.telefono,
+                Correo: lead.correo,
+                Empresa: lead.empresa ? lead.empresa.name : '',
+                Origen: lead.origen ? lead.origen.origen : '',
+                Servicios: lead.servicios ? this.setServiciosCSV(lead.servicios) : '',
+                Comentario: lead.comentario,
+                Fecha: new Date(lead.created_at)
+            })
+        })
+
         this.setState({
             ... this.state,
-            leads: _leads
+            leads: _leads,
+            leadsData: aux
         })
+    }
+
+    setServiciosCSV = servicios => {
+        let aux = ''
+        servicios.map((servicio, key) => {
+            if(key > 0){
+                aux += ', '
+            }
+            aux += servicio.servicio
+        })
+        return aux
     }
 
     setTextTable = text => {
@@ -71,14 +101,13 @@ class Leads extends Component{
         )
     }
 
-    setDate = date => {
+    setDateTable = date => {
         return(
             <Small>
                 <Moment format="DD/MM/YYYY">
-                    <Small>{date}</Small>
+                    {date}
                 </Moment>
             </Small>
-            
         )
     }
 
@@ -613,12 +642,25 @@ class Leads extends Component{
         this.getLeads()
     }
 
+    exportToCSV = () => {
+        const { leadsData } = this.state
+        const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+        const fileExtension = '.xlsx';
+        const ws = XLSX.utils.json_to_sheet(leadsData);
+        const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        const data = new Blob([excelBuffer], {type: fileType});
+        FileSaver.saveAs(data, 'leads' + fileExtension);
+    }
+
     render(){
         const { leads, modalAdd, form, origenes, empresas, servicios, title, tipoForm, modalDelete, leadId, modalConvert, convertir } = this.state
         return(
             <Layout active={'leads'}  { ...this.props}>
-                <div className="text-right">
-                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModalAddLead() } } text='' icon={faPlus} color="green"
+                <div className="text-right d-flex justify-content-end">
+                    <Button className="small-button " onClick={ (e) => { this.exportToCSV() } } text='' icon={faFileExport} color="transparent"
+                        tooltip={{id:'export', text:'Exportar'}} /> 
+                    <Button className="small-button ml-4 mr-4" onClick={ (e) => { this.openModalAddLead() } } text='' icon={faPlus} color="green"
                         tooltip={{id:'add', text:'Nuevo'}} /> 
                 </div>
                 { leads && <DataTable columns={LEADS_COLUMNS} data={leads}/>}

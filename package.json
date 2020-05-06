@@ -15,6 +15,7 @@
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
     "date-fns": "^2.10.0",
+    "file-saver": "^2.0.2",
     "history": "^4.10.1",
     "moment": "^2.24.0",
     "node-sass": "^4.13.1",
@@ -45,7 +46,8 @@
     "rfs": "^9.0.2",
     "styled-components": "^5.0.1",
     "sweetalert": "^2.1.2",
-    "webfontloader": "^1.6.28"
+    "webfontloader": "^1.6.28",
+    "xlsx": "^0.16.0"
   },
   "scripts": {
     "start": "react-scripts start",
