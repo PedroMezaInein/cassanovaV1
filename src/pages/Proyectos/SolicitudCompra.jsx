@@ -350,6 +350,7 @@ class SolicitudCompra extends Component{
         const { form } = this.state
         await axios.post(URL_DEV + 'solicitud-compra', form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
+                const { solicitudes } = response.data
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'La solicitud fue registrado con éxito.',
@@ -361,7 +362,8 @@ class SolicitudCompra extends Component{
                     ... this.state,
                     modal: false,
                     form: this.clearForm(),
-                    title: 'Nueva solicitud de compra'
+                    title: 'Nueva solicitud de compra',
+                    solicitudes: this.setSolicitudes(solicitudes)
                 })
             },
             (error) => {
