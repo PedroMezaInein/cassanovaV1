@@ -161,9 +161,9 @@ class Facturacion extends Component{
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'facturas', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { facturas } = response.data
+                const { facturas, facturasVentas } = response.data
                 this.setState({
-                    facturas: this.setFactura(facturas)
+                    facturas: this.setFactura(facturasVentas)
                 })
             },
             (error) => {
