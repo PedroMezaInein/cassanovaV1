@@ -33,6 +33,8 @@ const Cuentas = Loader(() => import('./pages/Bancos/Cuenta') )
 const EstadosCuenta = Loader(() => import('./pages/Bancos/EstadosCuenta') )
 const Traspasos = Loader(() => import('./pages/Bancos/Traspasos') )
 
+const Conceptos = Loader(() => import('./pages/Presupuesto/Conceptos') )
+
 const Ingresos = Loader(() => import('./pages/Administracion/Ingresos') )
 const Egresos = Loader(() => import('./pages/Administracion/Egresos') )
 const Facturacion = Loader(() => import('./pages/Administracion/Facturacion') )
@@ -114,6 +116,8 @@ class App extends Component{
                 <Route path = "/usuarios/usuarios" exact component = { Usuarios } />
                 <Route path = "/usuarios/tareas" exact component = { Tareas } />
                 <Route path = "/usuarios/empresas" exact component ={ Empresas } />
+
+                <Route path = "/presupuesto/conceptos" exact component ={ Conceptos } />
 
                 <Route path = "/proyectos/proyectos" exact component ={ Proyectos } />
                 <Route path = "/proyectos/ventas" exact component ={ Ventas } />
