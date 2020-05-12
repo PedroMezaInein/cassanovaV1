@@ -22,7 +22,21 @@ class Conceptos extends Component{
 
     state = {
         modal: false,
-        title: 'Nuevo concepto'
+        title: 'Nuevo concepto',
+        options: {
+            categorias: [],
+            unidades: []
+        },
+        form: {
+            unidad: '',
+            categoria: '',
+            descripcion: '',
+            manoObra: '',
+            herramienta: '',
+            materiales: '',
+            clave: '',
+            costo: ''
+        }
     }
 
     componentDidMount(){
@@ -55,14 +69,77 @@ class Conceptos extends Component{
         })
     }
 
+    onSubmit = e => {
+        e.preventDefault()
+        const { title } = this.state
+        swal({
+            title: '¡Un momento!',
+            text: 'La información está siendo procesada.',
+            buttons: false
+        })
+        if(title === 'Editar solicitud de compra')
+            console.log('HOLA')
+        else
+            this.addConceptoAxios()
+    }
+
+    onChange = e => {
+        const {form} = this.state
+        const {name, value} = e.target
+        form[name] = value
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
     async getConceptosAxios(){
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'conceptos', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { unidades, categorias, conceptos } = response.data
-                console.log('Unidades', unidades)
-                console.log('Categorias', categorias)
-                console.log('Conceptos', conceptos)
+                const { options } = this.state
+                options['unidades'] = setOptions(unidades, 'nombre', 'id')
+                options['categorias'] = setOptions(categorias, 'nombre', 'id')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        icon: 'error',
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups 😕!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.' + error,
+                icon: 'error'
+            })
+        })
+    }
+
+    async addConceptoAxios(){
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        await axios.post(URL_DEV + 'conceptos', form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'La solicitud fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
             },
             (error) => {
                 console.log(error, 'error')
@@ -92,7 +169,7 @@ class Conceptos extends Component{
 
     render(){
 
-        const { modal, title } = this.state
+        const { modal, title, form, options } = this.state
 
         return(
             <Layout active={'administracion'}  { ...this.props}>
@@ -102,7 +179,8 @@ class Conceptos extends Component{
                 </div>
 
                 <Modal show = {modal} handleClose = { this.handleClose } >
-                    <ConceptoForm title = { title } />
+                    <ConceptoForm title = { title } form  = { form } options = { options } 
+                        onChange = { this.onChange } onSubmit = { this.onSubmit } />
                 </Modal>
 
             </Layout>
