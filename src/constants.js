@@ -827,3 +827,42 @@ export const SOLICITUD_COMPRA_COLUMNS = [
         accessor: 'fecha',
     },
 ]
+
+export const CONCEPTOS_COLUMNS = [
+    {
+        Header: ' ',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Categoria',
+        accessor: 'categoria'
+    },
+    {
+        Header: 'Clave',
+        accessor: 'clave'
+    },
+    {
+        Header: 'Descripción',
+        accessor: 'descripcion'
+    },
+    {
+        Header: 'Unidad',
+        accessor: 'unidad'
+    },
+    {
+        Header: 'Costo',
+        accessor: 'costo'
+    },
+    {
+        Header: 'Materiales',
+        accessor: 'materiales'
+    },
+    {
+        Header: 'Mano de obra',
+        accessor: 'manoObra'
+    },
+    {
+        Header: 'Herramienta',
+        accessor: 'herramienta'
+    }
+]

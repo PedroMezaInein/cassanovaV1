@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
-import { URL_DEV, SOLICITUD_COMPRA_COLUMNS } from '../../constants'
+import { URL_DEV, CONCEPTOS_COLUMNS } from '../../constants'
 
 // Functions
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
@@ -36,7 +36,8 @@ class Conceptos extends Component{
             materiales: '',
             clave: '',
             costo: ''
-        }
+        },
+        conceptos: []
     }
 
     componentDidMount(){
@@ -56,7 +57,8 @@ class Conceptos extends Component{
         this.setState({
             ... this.state,
             modal: true,
-            title: 'Nuevo concepto'
+            title: 'Nuevo concepto',
+            form: this.clearForm()
         })
     }
 
@@ -69,6 +71,36 @@ class Conceptos extends Component{
         })
     }
 
+    setConceptos = conceptos => {
+        let aux = []
+        conceptos.map( (concepto) => {
+            aux.push(
+                {
+                    actions: '',
+                    categoria: setTextTable(concepto.categoria.nombre),
+                    clave: setTextTable(concepto.clave),
+                    descripcion: setTextTable(concepto.descripcion),
+                    unidad: setTextTable(concepto.unidad.nombre),
+                    costo: setMoneyTable(concepto.costo),
+                    materiales: setTextTable(concepto.materiales),
+                    manoObra: setTextTable(concepto.mano_obra),
+                    herramienta: setTextTable(concepto.herramienta),
+                    
+                }
+            )
+        })
+        return aux
+    }
+
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.map( (element) => {
+            form[element] = ''
+        })
+        return form
+    }
+
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
@@ -77,7 +109,7 @@ class Conceptos extends Component{
             text: 'La información está siendo procesada.',
             buttons: false
         })
-        if(title === 'Editar solicitud de compra')
+        if(title === 'Editar concepto de compra')
             console.log('HOLA')
         else
             this.addConceptoAxios()
@@ -101,6 +133,11 @@ class Conceptos extends Component{
                 const { options } = this.state
                 options['unidades'] = setOptions(unidades, 'nombre', 'id')
                 options['categorias'] = setOptions(categorias, 'nombre', 'id')
+                this.setState({
+                    ... this.state,
+                    options,
+                    conceptos: this.setConceptos(conceptos)
+                })
             },
             (error) => {
                 console.log(error, 'error')
@@ -133,12 +170,20 @@ class Conceptos extends Component{
         const { form } = this.state
         await axios.post(URL_DEV + 'conceptos', form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
+                const { conceptos } = response.data
                 swal({
                     title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'La solicitud fue registrado con éxito.',
+                    text: response.data.message !== undefined ? response.data.message : 'La concepto fue registrado con éxito.',
                     icon: 'success',
                     timer: 1500,
                     buttons: false
+                })
+                this.setState({
+                    ... this.state,
+                    conceptos: this.setConceptos(conceptos),
+                    modal:false,
+                    title: 'Nuevo concepto',
+                    form: this.clearForm()
                 })
             },
             (error) => {
@@ -169,7 +214,7 @@ class Conceptos extends Component{
 
     render(){
 
-        const { modal, title, form, options } = this.state
+        const { modal, title, form, options, conceptos } = this.state
 
         return(
             <Layout active={'administracion'}  { ...this.props}>
@@ -183,6 +228,7 @@ class Conceptos extends Component{
                         onChange = { this.onChange } onSubmit = { this.onSubmit } />
                 </Modal>
 
+                <DataTable columns = { CONCEPTOS_COLUMNS } data = { conceptos } />
             </Layout>
         )
     }
