@@ -22,6 +22,7 @@ class Conceptos extends Component{
 
     state = {
         modal: false,
+        modalDelete: false,
         title: 'Nuevo concepto',
         options: {
             categorias: [],
@@ -37,7 +38,8 @@ class Conceptos extends Component{
             clave: '',
             costo: ''
         },
-        conceptos: []
+        conceptos: [],
+        concepto: ''
     }
 
     componentDidMount(){
@@ -62,12 +64,54 @@ class Conceptos extends Component{
         })
     }
 
+    openModalEdit = (concepto) => {
+        const { form } = this.state
+
+        form.manoObra = concepto.manoObra
+        form.herramienta = concepto.herramienta
+        form.materiales = concepto.materiales
+
+        form.descripcion = concepto.descripcion
+        form.clave = concepto.clave
+        form.costo = concepto.costo
+
+        form.categoria = concepto.categoria.id.toString()
+        form.unidad = concepto.unidad.id.toString()
+
+        this.setState({
+            ... this.state,
+            modal: true,
+            title: 'Editar concepto',
+            form,
+            concepto: concepto
+        })
+    }
+
+    openModalDelete = (concepto) => {
+        this.setState({
+            ... this.state,
+            modalDelete: true,
+            concepto: concepto
+        })
+    }
+
     handleClose = () => {
         const { modal } = this.state
         this.setState({
             ... this.state,
             modal: !modal,
-            title: 'Nuevo concepto'
+            title: 'Nuevo concepto',
+            concepto: '',
+            form: this.clearForm()
+        })
+    }
+
+    handleCloseDelete = () => {
+        const { modalDelete } = this.state
+        this.setState({
+            ... this.state,
+            modalDelete: !modalDelete,
+            concepto: '',
         })
     }
 
@@ -76,7 +120,7 @@ class Conceptos extends Component{
         conceptos.map( (concepto) => {
             aux.push(
                 {
-                    actions: '',
+                    actions: this.setActions(concepto),
                     categoria: setTextTable(concepto.categoria.nombre),
                     clave: setTextTable(concepto.clave),
                     descripcion: setTextTable(concepto.descripcion),
@@ -90,6 +134,19 @@ class Conceptos extends Component{
             )
         })
         return aux
+    }
+
+    setActions = concepto => {
+        return(
+            <>
+                <div className="d-flex align-items-center flex-column flex-md-row">
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalEdit(concepto)} } text='' icon={faEdit} color="transparent" 
+                        tooltip={{id:'edit', text:'Editar'}} />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalDelete(concepto)} } text='' icon={faTrash} color="red" 
+                        tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
+                </div>
+            </>
+        )
     }
 
     clearForm = () => {
@@ -109,8 +166,8 @@ class Conceptos extends Component{
             text: 'La información está siendo procesada.',
             buttons: false
         })
-        if(title === 'Editar concepto de compra')
-            console.log('HOLA')
+        if(title === 'Editar concepto')
+            this.editConceptoAxios()
         else
             this.addConceptoAxios()
     }
@@ -212,9 +269,102 @@ class Conceptos extends Component{
         })
     }
 
+    async editConceptoAxios(){
+        const { access_token } = this.props.authUser
+        const { form, concepto } = this.state
+        await axios.put(URL_DEV + 'conceptos/' + concepto.id, form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { conceptos } = response.data
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'La concepto fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+                this.setState({
+                    ... this.state,
+                    conceptos: this.setConceptos(conceptos),
+                    modal:false,
+                    title: 'Nuevo concepto',
+                    form: this.clearForm()
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        icon: 'error',
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups 😕!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.' + error,
+                icon: 'error'
+            })
+        })
+    }
+
+    async deleteConceptoAxios(){
+        const { access_token } = this.props.authUser
+        const { concepto } = this.state
+        await axios.delete(URL_DEV + 'conceptos/' + concepto.id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { conceptos } = response.data
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'La concepto fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+                this.setState({
+                    ... this.state,
+                    conceptos: this.setConceptos(conceptos),
+                    modalDelete:false,
+                    concepto: ''
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        icon: 'error',
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups 😕!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.' + error,
+                icon: 'error'
+            })
+        })
+    }
+
     render(){
 
-        const { modal, title, form, options, conceptos } = this.state
+        const { modal, modalDelete, title, form, options, conceptos } = this.state
 
         return(
             <Layout active={'administracion'}  { ...this.props}>
@@ -229,6 +379,12 @@ class Conceptos extends Component{
                 </Modal>
 
                 <DataTable columns = { CONCEPTOS_COLUMNS } data = { conceptos } />
+
+                <ModalDelete show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteConceptoAxios() }}>
+                    <Subtitle className="my-3 text-center">
+                        ¿Estás seguro que deseas eliminar el concepto?
+                    </Subtitle>
+                </ModalDelete>
             </Layout>
         )
     }
