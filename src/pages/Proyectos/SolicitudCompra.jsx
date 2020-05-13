@@ -92,7 +92,8 @@ class SolicitudCompra extends Component{
             ... this.state,
             modal: true,
             title: 'Nueva solicitud de compra',
-            form: this.clearForm()
+            form: this.clearForm(),
+            remision: ''
         })
     }
 
@@ -128,7 +129,8 @@ class SolicitudCompra extends Component{
             title: 'Editar solicitud de compra',
             solicitud: solicitud,
             form,
-            options
+            options,
+            remision: ''
         })
     }
 
@@ -148,7 +150,8 @@ class SolicitudCompra extends Component{
             ... this.state,
             modal: !modal,
             form: this.clearForm(),
-            solicitud: ''
+            solicitud: '',
+            remision: ''
         })
     }
 
@@ -158,7 +161,8 @@ class SolicitudCompra extends Component{
             ... this.state,
             modal: !modal,
             form: this.clearForm(),
-            solicitud: ''
+            solicitud: '',
+            remision: ''
         })
     }
 
@@ -167,7 +171,8 @@ class SolicitudCompra extends Component{
         this.setState({
             ... this.state,
             modalSingle: !modalSingle,
-            solicitud: ''
+            solicitud: '',
+            remision: ''
         })
     }
 
