@@ -34,6 +34,7 @@ const EstadosCuenta = Loader(() => import('./pages/Bancos/EstadosCuenta') )
 const Traspasos = Loader(() => import('./pages/Bancos/Traspasos') )
 
 const Conceptos = Loader(() => import('./pages/Presupuesto/Conceptos') )
+const Rendimiento = Loader(() => import('./pages/Presupuesto/Rendimiento') )
 
 const Ingresos = Loader(() => import('./pages/Administracion/Ingresos') )
 const Egresos = Loader(() => import('./pages/Administracion/Egresos') )
@@ -44,6 +45,7 @@ const Proyectos = Loader(() => import('./pages/Proyectos/Proyectos') )
 const Ventas = Loader(() => import('./pages/Proyectos/Ventas') )
 const Compras = Loader(() => import('./pages/Proyectos/Compras') )
 const SolicitudCompra = Loader(() => import('./pages/Proyectos/SolicitudCompra') )
+const Remision = Loader(() => import('./pages/Proyectos/Remision') )
 
 const Areas = Loader( () => import('./pages/Catalogos/Areas') )
 
@@ -118,11 +120,13 @@ class App extends Component{
                 <Route path = "/usuarios/empresas" exact component ={ Empresas } />
 
                 <Route path = "/presupuesto/conceptos" exact component ={ Conceptos } />
+                <Route path = "/presupuesto/rendimiento" exact component ={ Rendimiento } />
 
                 <Route path = "/proyectos/proyectos" exact component ={ Proyectos } />
                 <Route path = "/proyectos/ventas" exact component ={ Ventas } />
                 <Route path = "/proyectos/compras" exact component ={ Compras } />
                 <Route path = "/proyectos/solicitud-compra" exact component ={ SolicitudCompra } />
+                <Route path = "/proyectos/remision" exact component ={ Remision } />
                 
                 <Route path = "/administracion/ingresos" exact component ={ Ingresos } />
                 <Route path = "/administracion/egresos" exact component ={ Egresos } />

@@ -866,3 +866,61 @@ export const CONCEPTOS_COLUMNS = [
         accessor: 'herramienta'
     }
 ]
+
+export const RENDIMIENTOS_COLUMNS = [
+    {
+        Header: ' ',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Materiales',
+        accessor: 'materiales'
+    },
+    {
+        Header: 'Unidad',
+        accessor: 'unidad'
+    },
+    {
+        Header: 'Costo',
+        accessor: 'costo'
+    },
+    {
+        Header: 'Proveedor',
+        accessor: 'proveedor'
+    },
+    {
+        Header: 'Rendimiento',
+        accessor: 'rendimiento'
+    },
+    {
+        Header: 'Descripción',
+        accessor: 'descripcion'
+    },
+]
+
+export const REMISION_COLUMNS = [
+    {
+        Header: ' ',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Fecha',
+        accessor: 'fecha'
+    },
+    {
+        Header: 'Proyecto',
+        accessor: 'proyecto'
+    },
+    {
+        Header: 'Área',
+        accessor: 'area'
+    },
+    {
+        Header: 'Subárea',
+        accessor: 'subarea'
+    },
+    {
+        Header: 'Descripción',
+        accessor: 'descripcion'
+    },
+]
