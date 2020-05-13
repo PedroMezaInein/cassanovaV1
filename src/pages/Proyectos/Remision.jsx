@@ -17,12 +17,14 @@ import { faPlus, faLink, faEdit, faTrash, faSync } from '@fortawesome/free-solid
 import { DataTable } from '../../components/tables'
 import { Subtitle } from '../../components/texts'
 import { RemisionForm } from '../../components/forms'
+import { RemisionCard } from '../../components/cards'
 
 class Remisiones extends Component{
 
     state = {
         modal: false,
         modalDelete: false,
+        modalSingle: false,
         title: 'Nueva remisión',
         options:{
             proyectos: [],
@@ -51,6 +53,19 @@ class Remisiones extends Component{
         if(!remisiones)
             history.push('/')
         this.getRemisionesAxios()
+        let queryString = this.props.history.location.search
+        if(queryString){
+            let params = new URLSearchParams(queryString)
+            let id = parseInt(params.get("id"))
+            if(id){
+                
+                this.setState({
+                    ... this.state,
+                    modalSingle: true
+                })
+                this.getRemisionAxios(id)
+            }
+        }
     }
 
     openModal = () => {
@@ -107,6 +122,14 @@ class Remisiones extends Component{
             title: 'Nueva remisión',
             remision: '',
             form: this.clearForm()
+        })
+    }
+
+    handleCloseSingle = () => {
+        this.setState({
+            ... this.state,
+            modalSingle: false,
+            remision: ''
         })
     }
 
@@ -223,6 +246,42 @@ class Remisiones extends Component{
                     ... this.state,
                     options,
                     remisiones: this.setRemisiones(remisiones)
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        icon: 'error',
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups 😕!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.' + error,
+                icon: 'error'
+            })
+        })
+    }
+
+    async getRemisionAxios(id){
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'remision/'+id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { remision } = response.data
+                this.setState({
+                    ... this.state,
+                    remision: remision,
                 })
             },
             (error) => {
@@ -393,7 +452,7 @@ class Remisiones extends Component{
 
     render(){
 
-        const { modal, modalDelete, title, form, remisiones, options } = this.state
+        const { modal, modalDelete, modalSingle, title, form, remisiones, remision, options } = this.state
 
         return(
             <Layout active={'administracion'}  { ...this.props}>
@@ -414,6 +473,22 @@ class Remisiones extends Component{
                         ¿Estás seguro que deseas eliminar la remisión?
                     </Subtitle>
                 </ModalDelete>
+
+                <Modal show = { modalSingle } handleClose = { this.handleCloseSingle } >
+
+                    <RemisionCard data = { remision }>
+                        {
+                            remision.convertido ? '' :
+                                <div className="col-md-12 mb-3 d-flex justify-content-end">
+                                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.convertir(remision)} } text='' icon={faSync} color="transparent" 
+                                        tooltip={{id:'convertir', text:'Comprar', type:'success'}} />
+                                </div>
+                        }
+                        
+                    </RemisionCard>
+                    
+                </Modal>
+
             </Layout>
         )
     }
