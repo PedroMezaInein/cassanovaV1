@@ -146,6 +146,10 @@ class Remisiones extends Component{
                     <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalDelete(remision)} } text='' icon={faTrash} color="red" 
                         tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
                 </div>
+                <div className="d-flex align-items-center flex-column flex-md-row">
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.convertir(remision)} } text='' icon={faSync} color="transparent" 
+                        tooltip={{id:'convertir', text:'Convertir', type:'success'}} />
+                </div>
             </>
         )
     }
@@ -197,6 +201,14 @@ class Remisiones extends Component{
             ... this.state,
             form
         })
+    }
+
+    convertir = remision => {
+        const { history } = this.props
+        history.push({
+            pathname: '/proyectos/solicitud-compra',
+            state: { remision: remision}
+        });
     }
 
     async getRemisionesAxios(){

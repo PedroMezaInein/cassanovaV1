@@ -17,7 +17,7 @@ import { faPlus, faLink, faEdit, faTrash } from '@fortawesome/free-solid-svg-ico
 import { ComprasForm } from '../../components/forms'
 import { DataTable } from '../../components/tables'
 import Subtitle from '../../components/texts/Subtitle'
-import SolicitudCompraCard from '../../components/cards/Administracion/SolicitudCompraCard'
+import {SolicitudCompraCard} from '../../components/cards'
 
 class Compras extends Component{
 

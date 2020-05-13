@@ -19,6 +19,9 @@ import Subtitle from '../../components/texts/Subtitle'
 import { SolicitudCompraForm } from '../../components/forms'
 import { SolicitudCompraCard } from '../../components/cards'
 import { Small } from '../../components/texts'
+import RemisionCard from '../../components/cards/Proyectos/RemisionCard'
+import { Accordion } from 'react-bootstrap'
+import { faEye } from '@fortawesome/free-regular-svg-icons'
 
 class SolicitudCompra extends Component{
 
@@ -37,6 +40,7 @@ class SolicitudCompra extends Component{
             empresa: '',
             descripcion: '',
             total: '',
+            remision: '',
             fecha: new Date(),
             tipoPago: 0,
             factura: 'Sin factura'
@@ -75,6 +79,12 @@ class SolicitudCompra extends Component{
             }
         }
         this.getSolicitudesCompraAxios()
+        const { state } = this.props.location
+        if(state){
+            if(state.remision){
+                this.getRemisionAxios(state.remision.id)
+            }
+        }
     }
 
     openModal = () => {
@@ -345,6 +355,62 @@ class SolicitudCompra extends Component{
         })
     }
 
+    async getRemisionAxios(id){
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'remision/'+id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { remision } = response.data
+                const { form, options } = this.state
+                if(remision.subarea){
+                    if(remision.subarea.area){
+                        form.area = remision.subarea.area.id.toString()
+                        if(remision.subarea.area.subareas){
+                            options['subareas'] = setOptions(remision.subarea.area.subareas, 'nombre', 'id')
+                            form.subarea = remision.subarea.id.toString()
+                        }
+                    }
+                }
+                if(remision.proyecto){
+                    form.proyecto = remision.proyecto.id.toString()
+                }
+                form.remision = remision.id
+                form.fecha = new Date(remision.created_at)
+                form.descripcion = remision.descripcion
+                this.setState({
+                    ... this.state,
+                    remision: remision,
+                    form,
+                    options,
+                    title: 'Converit remisión',
+                    modal: true
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        icon: 'error',
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups 😕!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.' + error,
+                icon: 'error'
+            })
+        })
+    }
+
     async addSolicitudCompraAxios(){
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -490,7 +556,7 @@ class SolicitudCompra extends Component{
 
     render(){
 
-        const { modal, modalDelete, modalSingle, title, form, options, solicitudes, solicitud } = this.state
+        const { modal, modalDelete, modalSingle, title, form, options, solicitudes, solicitud, remision } = this.state
 
         return(
             <Layout active={'proyectos'}  { ...this.props}>
@@ -501,7 +567,23 @@ class SolicitudCompra extends Component{
                 <Modal show = {modal} handleClose = { this.handleClose } >
                     <SolicitudCompraForm title = { title } form = { form } options = { options } 
                         setOptions = {this.setOptions}  onChange = { this.onChange }
-                        onSubmit = { this.onSubmit } />
+                        onSubmit = { this.onSubmit } >
+                        {
+                            remision !== '' ?
+                            
+                            <Accordion>
+                                <div className="d-flex justify-content-end">
+                                    <Accordion.Toggle as = { Button } icon={ faEye } color="transparent" eventKey={0} />
+                                </div>
+                                <Accordion.Collapse eventKey = { 0 } className="px-md-5 px-2" >
+                                    <div>
+                                        <RemisionCard data = { remision }/>
+                                    </div>
+                                </Accordion.Collapse>
+                            </Accordion>
+                            : ''
+                        }
+                    </SolicitudCompraForm>
                 </Modal>
                 <ModalDelete show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteSolicitudAxios() }}>
                     <Subtitle className="my-3 text-center">

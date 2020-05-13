@@ -42,7 +42,7 @@ class SolicitudCompraForm extends Component{
     }
 
     render(){
-        const { title, options, form, onChange, ... props } = this.props
+        const { title, options, form, onChange, children, ... props } = this.props
         return(
             <Form { ... props}>
                 <Subtitle className="text-center" color="gold">
@@ -50,6 +50,10 @@ class SolicitudCompraForm extends Component{
                         title
                     }
                 </Subtitle>
+
+                {
+                    children
+                }
 
                 <div className="row mx-0 my-3">
                     <div className="col-md-6 px-2">
