@@ -103,13 +103,13 @@ class VentasForm extends Component{
                         : ''
                     }
 
-                    {
+                    {/* {
                         form.factura === 'Con factura' && form.adjuntos.factura.value ?
                             <div className="col-md-6 d-flex align-items-center justify-content-md-end justify-content-center">
                                 <Button icon='' className="mx-auto" onClick={sendFactura} text="Enviar Factura" />
                             </div>
                         : ''
-                    }
+                    } */}
 
                     {
                         form.factura === 'Con factura' && form.facturaObject ?

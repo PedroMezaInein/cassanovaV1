@@ -8,7 +8,7 @@ import { URL_DEV, VENTAS_COLUMNS } from '../../constants'
 
 // Functions
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
-
+import { waitAlert, errorAlert } from '../../functions/alert'
 //
 import Layout from '../../components/layout/layout'
 import { Button } from '../../components/form-components'
@@ -32,6 +32,12 @@ class Ventas extends Component{
             areas:[],
             subareas:[],
             clientes: [],
+            proyectos: []
+        },
+        data:{
+            clientes: [],
+            empresas: [],
+            cuentas: [],
             proyectos: []
         },
         form:{
@@ -193,10 +199,79 @@ class Ventas extends Component{
     }
 
     onChangeAdjunto = e => {
-        const { form } = this.state
+        const { form, data, options } = this.state
         const { files, value, name } = e.target
         let aux = []
         for(let counter = 0; counter < files.length; counter ++){
+            if(name === 'factura')
+            {
+                let extension = files[counter].name.slice((Math.max(0, files[counter].name.lastIndexOf(".")) || Infinity) + 1);
+                if(extension === 'xml'){
+                    waitAlert()
+                    const reader = new FileReader()
+                    reader.onload = async (e) => { 
+                        const text = (e.target.result)
+                        var XMLParser = require('react-xml-parser');
+                        var xml = new XMLParser().parseFromString(text);
+                        const emisor = xml.getElementsByTagName('cfdi:Emisor')[0]
+                        const receptor = xml.getElementsByTagName('cfdi:Receptor')[0]
+                        let obj = {
+                            rfc_receptor: receptor.attributes.Rfc ? receptor.attributes.Rfc : '',
+                            nombre_receptor: receptor.attributes.Nombre ? receptor.attributes.Nombre : '',
+                            uso_cfdi: receptor.attributes.UsoCFDI ? receptor.attributes.UsoCFDI : '',
+                            rfc_emisor: emisor.attributes.Rfc ? emisor.attributes.Rfc : '',
+                            nombre_emisor: emisor.attributes.Nombre ? emisor.attributes.Nombre : '',
+                            regimen_fiscal: emisor.attributes.RegimenFiscal ? emisor.attributes.RegimenFiscal : '',
+                            lugar_expedicion: xml.attributes.LugarExpedicion ? xml.attributes.LugarExpedicion : '',
+                            fecha: xml.attributes.Fecha ? new Date(xml.attributes.Fecha) : '',
+                            metodo_pago: xml.attributes.MetodoPago ? xml.attributes.MetodoPago : '',
+                            tipo_de_comprobante: xml.attributes.TipoDeComprobante ? xml.attributes.TipoDeComprobante : '',
+                            total: xml.attributes.Total ? xml.attributes.Total : '',
+                            subtotal: xml.attributes.SubTotal ? xml.attributes.SubTotal : '',
+                            tipo_cambio: xml.attributes.TipoCambio ? xml.attributes.TipoCambio : '',
+                            moneda: xml.attributes.Moneda ? xml.attributes.Moneda : '',
+                            numero_certificado: xml.attributes.NoCertificado ? xml.attributes.NoCertificado : '',
+                            folio: xml.attributes.folio ? xml.attributes.folio : '',
+                            serie: xml.attributes.serie ? xml.attributes.serie : '',
+                        }
+                        let auxEmpresa = ''
+                        data.empresas.find(function(element, index) {
+                            if(element.razon_social === obj.nombre_receptor){
+                                auxEmpresa = element
+                            }
+                        });
+                        let auxCliente = ''
+                        data.clientes.find(function(element, index) {
+                            if(element.empresa === obj.nombre_emisor){
+                                auxCliente = element
+                            }
+                        });
+                        if(auxEmpresa){
+                            options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')
+                            form.empresa = auxEmpresa.name
+                        }else{
+                            errorAlert('No existe la empresa')
+                        }
+                        if(auxCliente){
+                            options['proyectos'] = setOptions(auxCliente.proyectos, 'nombre', 'id')
+                            form.cliente = auxCliente.empresa
+                        }else{
+                            errorAlert('No existe el cliente')
+                        }
+                        if(auxEmpresa && auxCliente){
+                            swal.close()
+                        }
+                        form.facturaObject = obj
+                        form.rfc = obj.rfc_emisor
+                        this.setState({
+                            ... this.state,
+                            options,
+                            form
+                        })
+                    }
+                    reader.readAsText(files[counter])
+                }
+            }
             aux.push(
                 {
                     name: files[counter].name,
@@ -377,18 +452,21 @@ class Ventas extends Component{
         await axios.get(URL_DEV + 'ventas', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, clientes, ventas } = response.data
-                const { options } = this.state
+                const { options, data } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
                 options['clientes'] = setOptions(clientes, 'empresa', 'id')
                 options['tiposPagos'] = setSelectOptions( tiposPagos, 'tipo' )
                 options['tiposImpuestos'] = setSelectOptions( tiposImpuestos, 'tipo' )
                 options['estatusCompras'] = setSelectOptions( estatusCompras, 'estatus' )
+                data.clientes = clientes
+                data.empresas = empresas
                 this.setState({
                     ... this.state,
                     options,
                     form: this.clearForm(),
-                    ventas: this.setVentas(ventas)
+                    ventas: this.setVentas(ventas),
+                    data
                 })
             },
             (error) => {
@@ -430,7 +508,9 @@ class Ventas extends Component{
                     data.append(element, (new Date(form[element])).toDateString())
                     break
                 case 'adjuntos':
+                    break;
                 case 'facturaObject':
+                    data.append(element, JSON.stringify(form[element]))
                     break;
                 default:
                     data.append(element, form[element])
