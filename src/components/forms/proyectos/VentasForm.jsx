@@ -89,13 +89,14 @@ class VentasForm extends Component{
                             />
                     </div>
                     {
-                        form.factura === 'Con factura' ?        
+                        form.factura === 'Con factura' && title === 'Nueva venta' ?        
                             <div className="col-md-6 px-2">
                                 <FileInput 
                                     onChangeAdjunto = { onChangeAdjunto } 
                                     placeholder = { form['adjuntos']['factura']['placeholder'] }
                                     value = { form['adjuntos']['factura']['value'] }
-                                    name = { 'factura' } id = { 'factura' }
+                                    name = { 'factura' } 
+                                    id = { 'factura' }
                                     accept = "text/xml, application/pdf" 
                                     files = { form['adjuntos']['factura']['files'] }
                                     deleteAdjunto = { clearFiles } multiple/>
@@ -103,16 +104,8 @@ class VentasForm extends Component{
                         : ''
                     }
 
-                    {/* {
-                        form.factura === 'Con factura' && form.adjuntos.factura.value ?
-                            <div className="col-md-6 d-flex align-items-center justify-content-md-end justify-content-center">
-                                <Button icon='' className="mx-auto" onClick={sendFactura} text="Enviar Factura" />
-                            </div>
-                        : ''
-                    } */}
-
                     {
-                        form.factura === 'Con factura' && form.facturaObject ?
+                        form.factura === 'Con factura' && title === 'Nueva venta' ?
                             <div className="col-md-6 px-2">
                                 <Input placeholder="RFC" name="rfc" value={form.rfc} onChange={onChange}/>
                             </div>

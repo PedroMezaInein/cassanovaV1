@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
-import { URL_DEV, VENTAS_COLUMNS, GOLD } from '../../constants'
+import { URL_DEV, VENTAS_COLUMNS } from '../../constants'
 
 // Functions
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
@@ -13,9 +13,9 @@ import { waitAlert, errorAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Button } from '../../components/form-components'
 import { Modal, ModalDelete } from '../../components/singles'
-import { faPlus, faLink, faEdit, faTrash, faReceipt } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faLink, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { VentasForm } from '../../components/forms'
-import { DataTable, FacturaTable } from '../../components/tables'
+import { DataTable } from '../../components/tables'
 import Subtitle from '../../components/texts/Subtitle'
 
 class Ventas extends Component{
@@ -23,10 +23,8 @@ class Ventas extends Component{
     state = {
         modal: false,
         modalDelete: false,
-        modalFacturas: false,
         title: 'Nueva venta',
         ventas: [],
-        facturas: [],
         venta: '',
         options:{
             empresas:[],
@@ -90,7 +88,6 @@ class Ventas extends Component{
         this.getVentasAxios()
     }
 
-    // Modal
     openModal = () => {
         this.setState({
             ... this.state,
@@ -102,10 +99,12 @@ class Ventas extends Component{
 
     openModalEdit = (venta) => {
         const { form, options } = this.state
+        console.log(venta, 'VENTA')
         form.factura = venta.factura ? 'Con factura' : 'Sin factura'
         if(venta.cliente){
             form.cliente = venta.cliente.id.toString()
             options['proyectos'] = setOptions(venta.cliente.proyectos, 'nombre', 'id')
+            console.log(options.proyectos, 'proyectos')
             form.proyecto = venta.proyecto.id.toString()
         }
         if(venta.empresa){
@@ -117,6 +116,9 @@ class Ventas extends Component{
             form.area = venta.subarea.area.id.toString()
             options['subareas'] = setOptions(venta.subarea.area.subareas, 'nombre', 'id')
             form.subarea = venta.subarea.id.toString()
+        }
+        if(venta.proyecto){
+            form.proyecto = venta.proyecto.id.toString()
         }
         
         form.tipoPago = venta.tipo_pago ? venta.tipo_pago.id : 0
@@ -163,15 +165,6 @@ class Ventas extends Component{
         })
     }
 
-    openModalFacturas = venta => {
-        this.setState({
-            ... this.state,
-            modalFacturas: true,
-            venta: venta,
-            form: this.clearForm()
-        })
-    }
-
     openModalDelete = (venta) => {
         this.setState({
             ... this.state,
@@ -199,86 +192,7 @@ class Ventas extends Component{
         })
     }
 
-    handleCloseFacturas = () => {
-        this.setState({
-            ... this.state,
-            modalFacturas: false,
-            venta: '',
-            form: this.clearForm()
-        })
-    }
-
-    //Setter
-    setVentas = ventas => {
-        console.log(ventas, 'ventas')
-        let aux = []
-        ventas.map( (venta) => {
-            console.log(venta, 'venta')
-            aux.push(
-                {
-                    actions: this.setActions(venta),
-                    cuenta: setArrayTable(
-                        [
-                            {name:'Empresa', text:venta.empresa.name},
-                            {name:'Cuenta', text:venta.cuenta.nombre},
-                            {name:'# de cuenta', text:venta.cuenta.numero},
-                            {name:'ID', text:venta.id}
-                        ]
-                    ),
-                    proyecto: setTextTable(venta.proyecto.nombre),
-                    cliente: setTextTable(venta.cliente.nombre),
-                    factura: setTextTable(venta.facturas ? 'Con factura' : 'Sin factura'),
-                    monto: setMoneyTable(venta.monto),
-                    impuesto: setTextTable( venta.tipo_impuesto ? venta.tipo_impuesto.tipo : 'Sin definir'),
-                    tipoPago: setTextTable(venta.tipo_pago.tipo),
-                    descripcion: setTextTable(venta.descripcion),
-                    area: setTextTable(venta.subarea.area.nombre),
-                    subarea: setTextTable(venta.subarea.nombre),
-                    estatusCompra: setTextTable(venta.estatus_compra.estatus),
-                    total: setMoneyTable(venta.total),
-                    adjuntos: setAdjuntosList([
-                        venta.pago ? {name: 'Pago', url: venta.pago.url} : '',
-                        venta.presupuesto ? {name: 'Presupuesto', url: venta.presupuesto.url} : '',
-                    ]),
-                    fecha: setDateTable(venta.created_at)
-                }
-            )
-        })
-        return aux
-    }
-
-    setActions = venta => {
-        return(
-            <>
-                <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalEdit(venta)} } text='' icon={faEdit} color="transparent" 
-                        tooltip={{id:'edit', text:'Editar'}} />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalDelete(venta)} } text='' icon={faTrash} color="red" 
-                        tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
-                </div>
-                <div className="d-flex align-items-center flex-column flex-md-row my-1">
-                    {
-                        venta.factura ?
-                            <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalFacturas(venta)} } text='' icon={faReceipt} color="transparent" 
-                                tooltip={{id:'taxes', text:'Facturas'}} />
-                        : ''
-                    }
-                    
-                </div>
-            </>
-        )
-    }
-
-    setOptions = (name, array) => {
-        const {options} = this.state
-        options[name] = setOptions(array, 'nombre', 'id')
-        this.setState({
-            ... this.state,
-            options
-        })
-    }
-
-    // Form
+    //Handle change
     onChange = e => {
         const {form} = this.state
         const {name, value} = e.target
@@ -322,8 +236,8 @@ class Ventas extends Component{
                             tipo_cambio: xml.attributes.TipoCambio ? xml.attributes.TipoCambio : '',
                             moneda: xml.attributes.Moneda ? xml.attributes.Moneda : '',
                             numero_certificado: xml.attributes.NoCertificado ? xml.attributes.NoCertificado : '',
-                            folio: xml.attributes.Folio ? xml.attributes.Folio : '',
-                            serie: xml.attributes.Serie ? xml.attributes.Serie : '',
+                            folio: xml.attributes.folio ? xml.attributes.folio : '',
+                            serie: xml.attributes.serie ? xml.attributes.serie : '',
                         }
                         let auxEmpresa = ''
                         data.empresas.find(function(element, index) {
@@ -389,9 +303,7 @@ class Ventas extends Component{
             }
         }
         if(aux.length < 1){
-            form['adjuntos'][name].value = ''
-            if(name === 'factura')
-                form['facturaObject'] = ''
+            form['adjuntos'][name].value = ''    
         }
         form['adjuntos'][name].files = aux
         this.setState({
@@ -405,6 +317,18 @@ class Ventas extends Component{
         let aux = Object.keys(form)
         aux.map( (element) => {
             switch(element){
+                case 'rfc':
+                case 'cliente':
+                case 'proyecto':
+                case 'empresa':
+                case 'cuenta':
+                case 'area':
+                case 'subarea':
+                case 'total':
+                case 'descripcion':
+                case 'facturaObject':
+                    form[element] = ''
+                    break;
                 case 'tipoImpuesto':
                 case 'tipoPago':
                 case 'estatusCompra':
@@ -434,24 +358,97 @@ class Ventas extends Component{
                             files: []
                         }
                     }
-                    break;
                 default:
-                    form[element] = ''
                     break;
             }
         })
         return form;
     }
 
-    //
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
-        waitAlert()
+        swal({
+            title: '¡Un momento!',
+            text: 'La información está siendo procesada.',
+            buttons: false
+        })
         if(title === 'Editar venta')
             this.editVentaAxios()
         else
             this.addVentaAxios()
+    }
+
+    // Setters
+    setOptions = (name, array) => {
+        const {options} = this.state
+        options[name] = setOptions(array, 'nombre', 'id')
+        this.setState({
+            ... this.state,
+            options
+        })
+    }
+
+    setFactura = factura => {
+        const {form} = this.state
+        form['rfc'] = factura.rfc_emisor[0]
+        form['cliente'] = factura.nombre_emisor[0]
+        form['empresa'] = factura.nombre_receptor[0]
+        form['fecha'] =  new Date(factura.fecha[0])
+        form['total'] = factura.subtotal[0]
+        form['facturaObject'] = factura
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
+    setVentas = ventas => {
+        let aux = []
+        ventas.map( (venta) => {
+            aux.push(
+                {
+                    actions: this.setActions(venta),
+                    cuenta: setArrayTable(
+                        [
+                            {name:'Empresa', text:venta.empresa.name},
+                            {name:'Cuenta', text:venta.cuenta.nombre},
+                            {name:'# de cuenta', text:venta.cuenta.numero}
+                        ]
+                    ),
+                    proyecto: setTextTable(venta.proyecto.nombre),
+                    cliente: setTextTable(venta.cliente.nombre),
+                    factura: setFacturaTable(venta),
+                    monto: setMoneyTable(venta.monto),
+                    impuesto: setTextTable( venta.tipo_impuesto ? venta.tipo_impuesto.tipo : 'Sin definir'),
+                    tipoPago: setTextTable(venta.tipo_pago.tipo),
+                    descripcion: setTextTable(venta.descripcion),
+                    area: setTextTable(venta.subarea.area.nombre),
+                    subarea: setTextTable(venta.subarea.nombre),
+                    estatusCompra: setTextTable(venta.estatus_compra.estatus),
+                    total: setMoneyTable(venta.total),
+                    adjuntos: setAdjuntosList([
+                        venta.pago ? {name: 'Pago', url: venta.pago.url} : '',
+                        venta.presupuesto ? {name: 'Presupuesto', url: venta.presupuesto.url} : '',
+                    ]),
+                    fecha: setDateTable(venta.created_at)
+                }
+            )
+        })
+        return aux
+    }
+
+    setActions = venta => {
+        return(
+            <>
+                <div className="d-flex align-items-center flex-column flex-md-row">
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalEdit(venta)} } text='' icon={faEdit} color="transparent" 
+                        tooltip={{id:'edit', text:'Editar'}} />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalDelete(venta)} } text='' icon={faTrash} color="red" 
+                        tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
+                </div>
+            </>
+        )
     }
 
     // Async
@@ -487,16 +484,19 @@ class Ventas extends Component{
                         confirmButtonText: 'Inicia sesión'
                     });
                 }else{
-                    errorAlert(
-                        error.response.data.message !== undefined ? 
-                            error.response.data.message 
-                        : 'Ocurrió un error desconocido, intenta de nuevo.'
-                    )
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        icon: 'error',
+                    })
                 }
             }
         ).catch((error) => {
-            console.log(error, 'CATCH ERROR')
-            errorAlert('Ocurrió un error desconocido, intenta de nuevo')
+            swal({
+                title: '¡Ups 😕!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error'
+            })
         })
     }
 
@@ -563,16 +563,19 @@ class Ventas extends Component{
                         confirmButtonText: 'Inicia sesión'
                     });
                 }else{
-                    errorAlert(
-                        error.response.data.message !== undefined ? 
-                            error.response.data.message 
-                        : 'Ocurrió un error desconocido, intenta de nuevo.'
-                    )
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        icon: 'error',
+                    })
                 }
             }
         ).catch((error) => {
-            console.log(error, 'CATCH ERROR')
-            errorAlert('Ocurrió un error desconocido, intenta de nuevo')
+            swal({
+                title: '¡Ups 😕!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error'
+            })
         })
     }
 
@@ -635,16 +638,19 @@ class Ventas extends Component{
                         confirmButtonText: 'Inicia sesión'
                     });
                 }else{
-                    errorAlert(
-                        error.response.data.message !== undefined ? 
-                            error.response.data.message 
-                        : 'Ocurrió un error desconocido, intenta de nuevo.'
-                    )
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        icon: 'error',
+                    })
                 }
             }
         ).catch((error) => {
-            console.log(error, 'CATCH ERROR')
-            errorAlert('Ocurrió un error desconocido, intenta de nuevo')
+            swal({
+                title: '¡Ups 😕!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error'
+            })
         })
     }
 
@@ -660,8 +666,8 @@ class Ventas extends Component{
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
-                    modalDelete: false,
                     ventas: this.setVentas(ventas),
+                    modalDelete: false,
                     venta: ''
                 })
 
@@ -684,22 +690,92 @@ class Ventas extends Component{
                         confirmButtonText: 'Inicia sesión'
                     });
                 }else{
-                    errorAlert(
-                        error.response.data.message !== undefined ? 
-                            error.response.data.message 
-                        : 'Ocurrió un error desconocido, intenta de nuevo.'
-                    )
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        icon: 'error',
+                    })
                 }
             }
         ).catch((error) => {
-            console.log(error, 'CATCH ERROR')
-            errorAlert('Ocurrió un error desconocido, intenta de nuevo')
+            console.log('Error', error, 'catch')
+            swal({
+                title: '¡Ups 😕!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error'
+            })
+        })
+    }
+
+    //Factura
+    async sendFactura(){
+
+        const { access_token } = this.props.authUser
+        const {form} = this.state
+        
+        const data = new FormData()
+        
+        for (var i = 0; i < form.adjuntos.factura.files.length; i++) {
+            data.append('filesName[]', form.adjuntos.factura.files[i].name)
+            data.append('files[]', form.adjuntos.factura.files[i].file)
+        }
+
+        swal({
+            title: '¡Un momento!',
+            text: 'Se está enviando tu mensaje.',
+            buttons: false
+        })
+
+        await axios.post(URL_DEV + 'facturas/read/ingresos', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { factura, empresa, clientes, cliente } = response.data
+                const { options, form } = this.state
+                options['cuentas'] = setOptions(empresa.cuentas, 'nombre', 'id')
+                options['clientes'] = setOptions(clientes, 'nombre', 'id')
+                options['proyectos'] = setOptions(cliente.proyectos, 'nombre', 'id')
+                form['rfc'] = factura.rfc_emisor[0]
+                form['cliente'] = factura.nombre_emisor[0]
+                form['empresa'] = factura.nombre_receptor[0]
+                form['fecha'] =  new Date(factura.fecha[0])
+                form['total'] = factura.subtotal[0]
+                form['facturaObject'] = factura
+                swal.close();
+                this.setState({
+                    ... this.state,
+                    options, form
+                })
+                
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        icon: 'error',
+                    })
+                }
+            }
+        ).catch((error) => {
+            console.log('Catch error', error)
+            swal({
+                title: '¡Ups 😕!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error'
+            })
         })
     }
 
     render(){
 
-        const { modal, modalDelete, modalFacturas, title, options, form, ventas, venta } = this.state
+        const { modal, modalDelete, title, options, form, ventas } = this.state
 
         return(
             <Layout active={'proyectos'}  { ...this.props}>
@@ -710,21 +786,13 @@ class Ventas extends Component{
                 <Modal show = {modal} handleClose = { this.handleClose } >
                     <VentasForm title = { title } options = {options} form = {form} setOptions = {this.setOptions} 
                         onChange = { this.onChange } onChangeAdjunto = { this.onChangeAdjunto } clearFiles = {this.clearFiles}
-                        onSubmit = { this.onSubmit } />
+                        sendFactura = { () => { this.sendFactura() } } onSubmit = { this.onSubmit } />
                 </Modal>
-
                 <ModalDelete show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteVentaAxios() }}>
                     <Subtitle className="my-3 text-center">
                         ¿Estás seguro que deseas eliminar la venta?
                     </Subtitle>
                 </ModalDelete>
-
-                <Modal show = { modalFacturas } handleClose = { this.handleCloseFacturas }>
-                    <Subtitle className="text-center" color = 'gold' >
-                        Facturas
-                    </Subtitle>
-                    <FacturaTable facturas = { venta.facturas } />
-                </Modal>
             </Layout>
         )
     }
