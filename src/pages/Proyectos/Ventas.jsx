@@ -221,13 +221,12 @@ class Ventas extends Component{
                         [
                             {name:'Empresa', text:venta.empresa.name},
                             {name:'Cuenta', text:venta.cuenta.nombre},
-                            {name:'# de cuenta', text:venta.cuenta.numero},
-                            {name:'ID', text:venta.id}
+                            {name:'# de cuenta', text:venta.cuenta.numero}
                         ]
                     ),
                     proyecto: setTextTable(venta.proyecto.nombre),
                     cliente: setTextTable(venta.cliente.nombre),
-                    factura: setTextTable(venta.facturas ? 'Con factura' : 'Sin factura'),
+                    factura: setTextTable(venta.facturas.length ? 'Con factura' : 'Sin factura'),
                     monto: setMoneyTable(venta.monto),
                     impuesto: setTextTable( venta.tipo_impuesto ? venta.tipo_impuesto.tipo : 'Sin definir'),
                     tipoPago: setTextTable(venta.tipo_pago.tipo),
@@ -324,6 +323,11 @@ class Ventas extends Component{
                             numero_certificado: xml.attributes.NoCertificado ? xml.attributes.NoCertificado : '',
                             folio: xml.attributes.Folio ? xml.attributes.Folio : '',
                             serie: xml.attributes.Serie ? xml.attributes.Serie : '',
+                        }
+                        if(obj.numero_certificado === ''){
+                            let NoCertificado = text.search('NoCertificado="')
+                            if(NoCertificado)
+                                obj.numero_certificado = text.substring(NoCertificado+15, NoCertificado + 35)
                         }
                         let auxEmpresa = ''
                         data.empresas.find(function(element, index) {
