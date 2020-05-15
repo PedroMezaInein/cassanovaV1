@@ -11,12 +11,13 @@ import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable
 import { waitAlert, errorAlert } from '../../functions/alert'
 //
 import Layout from '../../components/layout/layout'
-import { Button } from '../../components/form-components'
+import { Button, FileInput } from '../../components/form-components'
 import { Modal, ModalDelete } from '../../components/singles'
 import { faPlus, faLink, faEdit, faTrash, faReceipt } from '@fortawesome/free-solid-svg-icons'
 import { VentasForm } from '../../components/forms'
 import { DataTable, FacturaTable } from '../../components/tables'
 import Subtitle from '../../components/texts/Subtitle'
+import { Form, ProgressBar } from 'react-bootstrap'
 
 class Ventas extends Component{
 
@@ -24,6 +25,7 @@ class Ventas extends Component{
         modal: false,
         modalDelete: false,
         modalFacturas: false,
+        porcentaje: 0,
         title: 'Nueva venta',
         ventas: [],
         facturas: [],
@@ -164,10 +166,19 @@ class Ventas extends Component{
     }
 
     openModalFacturas = venta => {
+        let { porcentaje } = this.state
+        porcentaje = 0
+        venta.facturas.map((factura)=>{
+            porcentaje = porcentaje + factura.total
+        })
+        porcentaje = porcentaje * 100 / venta.total
+        porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
         this.setState({
             ... this.state,
             modalFacturas: true,
             venta: venta,
+            facturas: venta.facturas,
+            porcentaje,
             form: this.clearForm()
         })
     }
@@ -204,6 +215,8 @@ class Ventas extends Component{
             ... this.state,
             modalFacturas: false,
             venta: '',
+            facturas: [],
+            porcentaje: 0,
             form: this.clearForm()
         })
     }
@@ -580,6 +593,86 @@ class Ventas extends Component{
         })
     }
 
+    async sendFacturaAxios(){
+
+        const { access_token } = this.props.authUser
+        const { form, venta } = this.state
+        const data = new FormData();
+        
+        let aux = Object.keys(form)
+        aux.map( (element) => {
+            switch(element){
+                case 'facturaObject':
+                    data.append(element, JSON.stringify(form[element]))
+                    break;
+                default:
+                    break
+            }
+        })
+        aux = Object.keys(form.adjuntos)
+        aux.map( (element) => {
+            if(form.adjuntos[element].value !== '' && element === 'factura'){
+                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                }
+                data.append('adjuntos[]', element)
+            }
+        })
+
+        data.append('id', venta.id )
+        
+        await axios.post(URL_DEV + 'ventas/factura', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+
+                const { venta } = response.data
+                let { porcentaje } = this.state
+                porcentaje = 0
+                venta.facturas.map((factura)=>{
+                    porcentaje = porcentaje + factura.total
+                })
+                porcentaje = porcentaje * 100 / venta.total
+                porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
+                this.setState({
+                    ... this.state,
+                    form: this.clearForm(),
+                    venta: venta,
+                    facturas: venta.facturas,
+                    porcentaje
+                })
+                
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    errorAlert(
+                        error.response.data.message !== undefined ? 
+                            error.response.data.message 
+                        : 'Ocurrió un error desconocido, intenta de nuevo.'
+                    )
+                }
+            }
+        ).catch((error) => {
+            console.log(error, 'CATCH ERROR')
+            errorAlert('Ocurrió un error desconocido, intenta de nuevo')
+        })
+    }
+
     async editVentaAxios(){
 
         const { access_token } = this.props.authUser
@@ -703,7 +796,7 @@ class Ventas extends Component{
 
     render(){
 
-        const { modal, modalDelete, modalFacturas, title, options, form, ventas, venta } = this.state
+        const { modal, modalDelete, modalFacturas, title, options, form, ventas, venta, porcentaje, facturas } = this.state
 
         return(
             <Layout active={'proyectos'}  { ...this.props}>
@@ -727,7 +820,35 @@ class Ventas extends Component{
                     <Subtitle className="text-center" color = 'gold' >
                         Facturas
                     </Subtitle>
-                    <FacturaTable facturas = { venta.facturas } />
+                    <div className="px-3 my-2">
+                        <ProgressBar animated label={`${porcentaje}%`} 
+                            variant = { porcentaje > 100 ? 'danger' : porcentaje > 75 ? 'success' : 'warning'} 
+                            now = {porcentaje} />
+                    </div>
+                    <Form onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios();}}>
+                        <div className="row mx-0">
+                            <div className="col-md-6 px-2">
+                                
+                                <FileInput 
+                                    onChangeAdjunto = { this.onChangeAdjunto } 
+                                    placeholder = { form['adjuntos']['factura']['placeholder'] }
+                                    value = { form['adjuntos']['factura']['value'] }
+                                    name = { 'factura' } 
+                                    id = { 'factura' }
+                                    accept = "text/xml, application/pdf" 
+                                    files = { form['adjuntos']['factura']['files'] }
+                                    deleteAdjunto = { this.clearFiles } multiple/>
+                            </div>
+                            {
+                                form.adjuntos.factura.files.length ?
+                                    <div className="col-md-6 px-2 align-items-center d-flex">
+                                        <Button icon='' className="mx-auto" type="submit" text="Enviar" />
+                                    </div>
+                                : ''
+                            }
+                        </div>
+                    </Form>
+                    <FacturaTable facturas = { facturas } />
                 </Modal>
             </Layout>
         )

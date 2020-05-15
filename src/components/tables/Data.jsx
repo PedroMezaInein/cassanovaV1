@@ -19,7 +19,7 @@ const IndeterminateCheckbox = React.forwardRef(
         return <input type="checkbox" ref={resolvedRef} {...rest} />
     }
 )
-function Table({ columns, data }){
+function Table({ columns, data, hideSelector }){
     const { 
         getTableProps, 
         getTableBodyProps, 
@@ -44,7 +44,7 @@ function Table({ columns, data }){
     }, useSortBy, usePagination );
     return(
         <>
-            <div className="hidding-columns">
+            <div className={hideSelector ? "d-none hidding-columns" : "hidding-columns"}>
                 <div>
                     <IndeterminateCheckbox {...getToggleHideAllColumnsProps()} /> Mostrar todas
                 </div>
@@ -155,10 +155,10 @@ class DataTable extends Component{
     }
 
     render(){
-        const { data, columns } = this.props
+        const { data, columns, hideSelector } = this.props
         return(
             <div>
-                <Table columns={columns} data={data} />
+                <Table columns={columns} data={data} hideSelector = { hideSelector } />
             </div>
         )
     }

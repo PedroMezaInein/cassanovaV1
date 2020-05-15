@@ -54,13 +54,22 @@ export default class FacturaTable extends Component{
         return aux
     }
 
+    componentDidUpdate(prevProps){
+        if (prevProps.facturas !== this.props.facturas) {
+            this.setState({
+                ... this.state,
+                data: this.setFactura(this.props.facturas)
+            })
+        }
+    }
+
     render(){
         const { data } = this.state
         return(
             <>
                 {
                     data.length ? 
-                        <DataTable columns = { FACTURAS_COLUMNS } data = { data } />
+                        <DataTable columns = { FACTURAS_COLUMNS } data = { data } hideSelector = { true } />
                     : ''
                 }
                 
