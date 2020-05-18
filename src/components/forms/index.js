@@ -15,6 +15,7 @@ import areasForm from './catalogos/AreaForm'
 import proyectosForm from './proyectos/ProyectosForm'
 import ventasForm from './proyectos/VentasForm'
 import comprasForm from './proyectos/ComprasForm'
+import facturaForm from './administracion/FacturaForm'
 import solicitudCompraForm from './proyectos/SolicitudCompraForm'
 import conceptoForm from './presupuesto/ConceptoForm'
 import rendimientoForm from './presupuesto/RendimientoForm'
@@ -37,6 +38,7 @@ export const AreasForm = areasForm
 export const ProyectosForm = proyectosForm
 export const VentasForm = ventasForm
 export const ComprasForm = comprasForm
+export const FacturaForm = facturaForm
 export const SolicitudCompraForm = solicitudCompraForm
 export const ConceptoForm = conceptoForm
 export const RendimientoForm = rendimientoForm

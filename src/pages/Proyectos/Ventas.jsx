@@ -13,8 +13,8 @@ import { waitAlert, errorAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Button, FileInput } from '../../components/form-components'
 import { Modal, ModalDelete } from '../../components/singles'
-import { faPlus, faLink, faEdit, faTrash, faReceipt } from '@fortawesome/free-solid-svg-icons'
-import { VentasForm } from '../../components/forms'
+import { faPlus, faLink, faEdit, faTrash, faReceipt, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons'
+import { VentasForm, FacturaForm } from '../../components/forms'
 import { DataTable, FacturaTable } from '../../components/tables'
 import Subtitle from '../../components/texts/Subtitle'
 import { Form, ProgressBar } from 'react-bootstrap'
@@ -25,6 +25,7 @@ class Ventas extends Component{
         modal: false,
         modalDelete: false,
         modalFacturas: false,
+        modalAskFactura: false,
         porcentaje: 0,
         title: 'Nueva venta',
         ventas: [],
@@ -36,7 +37,10 @@ class Ventas extends Component{
             areas:[],
             subareas:[],
             clientes: [],
-            proyectos: []
+            proyectos: [],
+            formasPago: [],
+            metodosPago: [],
+            estatusFacturas: []
         },
         data:{
             clientes: [],
@@ -55,6 +59,12 @@ class Ventas extends Component{
             cuenta: '',
             area: '',
             subarea: '',
+            //Factura
+            formaPago: '',
+            metodoPago: '',
+            estatusFactura: '',
+            concepto: '',
+            //Fin factura
             tipoImpuesto: 0,
             tipoPago: 0,
             estatusCompra: 0,
@@ -165,6 +175,19 @@ class Ventas extends Component{
         })
     }
 
+    openModalAskFactura = venta => {
+        const { form } = this.state
+        form.empresa = venta.empresa.id.toString()
+        form.cliente = venta.cliente.id.toString()
+        form.rfc = venta.cliente.rfc
+        this.setState({
+            ... this.state,
+            modalAskFactura: true,
+            venta: venta,
+            form
+        })
+    }
+
     openModalFacturas = venta => {
         let { porcentaje } = this.state
         porcentaje = 0
@@ -217,6 +240,15 @@ class Ventas extends Component{
             venta: '',
             facturas: [],
             porcentaje: 0,
+            form: this.clearForm()
+        })
+    }
+
+    handleCloseAskFactura = () => {
+        this.setState({
+            ... this.state,
+            modalAskFactura: false,
+            venta: '',
             form: this.clearForm()
         })
     }
@@ -275,7 +307,12 @@ class Ventas extends Component{
                                 tooltip={{id:'taxes', text:'Facturas'}} />
                         : ''
                     }
-                    
+                    {
+                        venta.factura ?
+                            <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalAskFactura(venta)} } text='' icon={faEnvelopeOpenText} color="transparent" 
+                                tooltip={{id:'bills', text:'Pedir factura'}} />
+                        : ''
+                    }
                 </div>
             </>
         )
@@ -471,16 +508,26 @@ class Ventas extends Component{
             this.addVentaAxios()
     }
 
+    onSubmitAskFactura = e => {
+        e.preventDefault()
+        waitAlert()
+        this.askFacturaAxios()
+    }
+
     // Async
     async getVentasAxios(){
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'ventas', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, clientes, ventas } = response.data
+                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, 
+                    clientes, ventas, metodosPago, formasPago, estatusFacturas } = response.data
                 const { options, data } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
                 options['clientes'] = setOptions(clientes, 'empresa', 'id')
+                options['metodosPago'] = setOptions(metodosPago, 'nombre', 'id')
+                options['formasPago'] = setOptions(formasPago, 'nombre', 'id')
+                options['estatusFacturas'] = setOptions(estatusFacturas, 'estatus', 'id')
                 options['tiposPagos'] = setSelectOptions( tiposPagos, 'tipo' )
                 options['tiposImpuestos'] = setSelectOptions( tiposImpuestos, 'tipo' )
                 options['estatusCompras'] = setSelectOptions( estatusCompras, 'estatus' )
@@ -854,9 +901,53 @@ class Ventas extends Component{
         })
     }
 
+    async askFacturaAxios(){
+
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        await axios.post(URL_DEV + 'facturas/ask', form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                
+                this.setState({
+                    ... this.state,
+                    form: this.clearForm(),
+                    modalAskFactura: false
+                })
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    errorAlert(
+                        error.response.data.message !== undefined ? 
+                            error.response.data.message 
+                        : 'Ocurrió un error desconocido, intenta de nuevo.'
+                    )
+                }
+            }
+        ).catch((error) => {
+            console.log(error, 'CATCH ERROR')
+            errorAlert('Ocurrió un error desconocido, intenta de nuevo')
+        })
+    }
+
     render(){
 
-        const { modal, modalDelete, modalFacturas, title, options, form, ventas, venta, porcentaje, facturas } = this.state
+        const { modal, modalDelete, modalFacturas, modalAskFactura, title, options, form, ventas, venta, porcentaje, facturas } = this.state
 
         return(
             <Layout active={'proyectos'}  { ...this.props}>
@@ -910,6 +1001,11 @@ class Ventas extends Component{
                     </Form>
                     <FacturaTable deleteFactura = { this.deleteFactura } facturas = { facturas } />
                 </Modal>
+                <Modal show = { modalAskFactura } handleClose = { this.handleCloseAskFactura }>
+                    <FacturaForm options = { options } onChange = { this.onChange } form = { form } 
+                        onSubmit = { this.onSubmitAskFactura } />
+                </Modal>
+
             </Layout>
         )
     }
