@@ -553,6 +553,57 @@ export const FACTURAS_COLUMNS = [
     },
 ]
 
+export const FACTURAS_COLUMNS_2 = [
+    {
+        Header: ' ',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Folio',
+        accessor: 'folio',
+    },
+    {
+        Header: 'Serie',
+        accessor: 'serie'
+    },
+    {
+        Header: 'No. Certificado',
+        accessor: 'noCertificado'
+    },
+    {
+        Header: 'Emisor',
+        accessor: 'emisor'
+    },
+    {
+        Header: 'Receptor',
+        accessor: 'receptor'
+    },
+    {
+        Header: 'Uso CFDI',
+        accessor: 'usoCFDI'
+    },
+    {
+        Header: 'Expedición',
+        accessor: 'expedicion'
+    },
+    {
+        Header: 'Subtotal',
+        accessor: 'subtotal'
+    },
+    {
+        Header: 'Total',
+        accessor: 'total'
+    },
+    {
+        Header: 'Adjuntos',
+        accessor: 'adjuntos',
+    },
+    {
+        Header: 'Fecha',
+        accessor: 'fecha',
+    },
+]
+
 export const PROVEEDORES_COLUMNS = [
     {
         Header: ' ',

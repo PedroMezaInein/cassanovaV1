@@ -794,6 +794,66 @@ class Ventas extends Component{
         })
     }
 
+    deleteFactura = id => {
+        waitAlert()
+        this.deleteFacturaAxios(id)
+    }
+
+    async deleteFacturaAxios(id){
+
+        const { access_token } = this.props.authUser
+        const { venta } = this.state
+        await axios.delete(URL_DEV + 'ventas/' + venta.id + '/facturas/' + id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                
+                const { venta } = response.data
+                let { porcentaje } = this.state
+                porcentaje = 0
+                venta.facturas.map((factura)=>{
+                    porcentaje = porcentaje + factura.total
+                })
+                porcentaje = porcentaje * 100 / venta.total
+                porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
+                this.setState({
+                    ... this.state,
+                    form: this.clearForm(),
+                    venta: venta,
+                    facturas: venta.facturas,
+                    porcentaje
+                })
+                
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    errorAlert(
+                        error.response.data.message !== undefined ? 
+                            error.response.data.message 
+                        : 'Ocurrió un error desconocido, intenta de nuevo.'
+                    )
+                }
+            }
+        ).catch((error) => {
+            console.log(error, 'CATCH ERROR')
+            errorAlert('Ocurrió un error desconocido, intenta de nuevo')
+        })
+    }
+
     render(){
 
         const { modal, modalDelete, modalFacturas, title, options, form, ventas, venta, porcentaje, facturas } = this.state
@@ -848,7 +908,7 @@ class Ventas extends Component{
                             }
                         </div>
                     </Form>
-                    <FacturaTable facturas = { facturas } />
+                    <FacturaTable deleteFactura = { this.deleteFactura } facturas = { facturas } />
                 </Modal>
             </Layout>
         )

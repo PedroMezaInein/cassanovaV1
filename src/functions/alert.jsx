@@ -15,3 +15,29 @@ export function errorAlert(text){
         icon: 'error',
     })
 }
+
+export function deleteAlert(text, action){
+    swal({
+        title: text,
+        buttons: {
+            cancel: {
+                text: "Cancelar",
+                value: null,
+                visible: true,
+                className: "button__green btn-primary cancel",
+                closeModal: true,
+            },
+            confirm: {
+                text: "Aceptar",
+                value: true,
+                visible: true,
+                className: "button__red btn-primary",
+                closeModal: true
+            }
+        }
+    }).then((result) => {
+        if(result){
+            action()
+        }
+    })
+}

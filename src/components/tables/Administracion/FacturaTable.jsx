@@ -1,7 +1,11 @@
 import React, { Component } from 'react'
 import DataTable from '../Data'
-import { FACTURAS_COLUMNS } from '../../../constants'
+import { FACTURAS_COLUMNS_2 } from '../../../constants'
 import { setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList } from '../../../functions/setters'
+import { deleteAlert } from '../../../functions/alert'
+import { Button } from '../../form-components'
+import { faTrash } from '@fortawesome/free-solid-svg-icons'
+
 export default class FacturaTable extends Component{
 
     state = {
@@ -22,6 +26,7 @@ export default class FacturaTable extends Component{
             console.log(factura, 'FACTURA')
             aux.push(
                 {
+                    actions: this.setActions(factura),
                     folio: setTextTable(factura.folio),
                     serie: setTextTable(factura.serie),
                     noCertificado: setTextTable(factura.numero_certificado),
@@ -63,13 +68,33 @@ export default class FacturaTable extends Component{
         }
     }
 
+    setActions = factura => {
+        const { deleteFactura } = this.props
+        return(
+            <>
+                <div className="d-flex align-items-center flex-column flex-md-row">
+                    <Button className="mx-2 my-2 my-md-0 small-button" 
+                        onClick={
+                            (e) => 
+                                {
+                                    e.preventDefault(); 
+                                    deleteAlert('¿Seguro deseas borrar la factura?', () => deleteFactura(factura.id) ) 
+                                } 
+                        } 
+                        text='' icon={faTrash} color="red" 
+                        tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
+                </div>
+            </>
+        )
+    }
+
     render(){
         const { data } = this.state
         return(
             <>
                 {
                     data.length ? 
-                        <DataTable columns = { FACTURAS_COLUMNS } data = { data } hideSelector = { true } />
+                        <DataTable columns = { FACTURAS_COLUMNS_2 } data = { data } hideSelector = { true } />
                     : ''
                 }
                 
