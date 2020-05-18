@@ -24,6 +24,9 @@ class ClienteForm extends Component{
                     <Input name="empresa" value={form.empresa} onChange={onChange} type="text" placeholder="Nombre empresa"/>
                 </div>
                 <div className="px-2 col-md-6">
+                    <Input name="rfc" value={form.rfc} onChange={onChange} type="text" placeholder="RFC empresa"/>
+                </div>
+                <div className="px-2 col-md-6">
                     <Input name="nombre" value={form.nombre} onChange={onChange} type="text" placeholder="Nombre del empleado"/>
                 </div>
                 <div className="px-2 col-md-6">

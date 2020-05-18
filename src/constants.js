@@ -80,7 +80,8 @@ export const EMPTY_CLIENTE = {
     municipio: '',
     colonia: '',
     calle: '',
-    perfil: ''
+    perfil: '',
+    rfc: ''
 }
 
 export const EMPTY_PROSPECTO = {

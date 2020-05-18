@@ -148,6 +148,7 @@ class Leads extends Component{
         form['puesto'] = cliente.puesto
         form['calle'] = cliente.calle
         form['perfil'] = cliente.perfil
+        form['rfc'] = cliente.rfc
 
         this.setState({
             ... this.state,
