@@ -63,6 +63,19 @@ class ComprasForm extends Component{
         onChange({target:{value: aux, name: 'tipoImpuesto'}})
     }
 
+    updateTipoPago = e => {
+        const { options, form, onChange } = this.props
+        const { value } = e.target
+        if(form.facturaObject)
+        {
+            options.tiposPagos.map( (option) => {
+                if(option.value.toString() === value.toString() && option.text.toString() === 'TOTAL')
+                    onChange({target:{value: form.facturaObject.subtotal, name: 'total'}})
+            })
+        }
+        onChange(e)
+    }
+
     render(){
         const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, sendFactura, ...props } = this.props
         return(
@@ -109,15 +122,7 @@ class ComprasForm extends Component{
                     }
 
                     {
-                        form.factura === 'Con factura' && form.adjuntos.factura.value ?
-                            <div className="col-md-6 d-flex align-items-center justify-content-md-end justify-content-center">
-                                <Button icon='' className="mx-auto" onClick={sendFactura} text="Enviar Factura" />
-                            </div>
-                        : ''
-                    }
-
-                    {
-                        form.factura === 'Con factura' && form.facturaObject ?
+                        form.factura === 'Con factura' && title === 'Nueva venta' ?
                             <div className="col-md-6 px-2">
                                 <Input placeholder="RFC" name="rfc" value={form.rfc} onChange={onChange}/>
                             </div>
@@ -131,14 +136,8 @@ class ComprasForm extends Component{
                     </div>
 
                     <div className="col-md-6 px-2">
-                        {
-                            form.facturaObject ? 
-                                <Input placeholder="Cliente" readOnly name="cliente" value={form.cliente} onChange={onChange}/>
-                            :
-                                <SelectSearch options={options.clientes} placeholder = "Selecciona el cliente" 
-                                    name = "clientes" value = { form.cliente } onChange = { this.updateCliente }/>    
-                        }
-                        
+                        <SelectSearch options={options.clientes} placeholder = "Selecciona el cliente" 
+                            name = "cliente" value = { form.cliente } onChange = { this.updateCliente }/>    
                     </div>
                     {
                         form.cliente ? 
@@ -181,7 +180,7 @@ class ComprasForm extends Component{
                         options.tiposPagos.length > 0 ?
                             <div className="col-md-6 px-2">
                                 <Select placeholder="Selecciona el tipo de pago" options = { options.tiposPagos } 
-                                    name="tipoPago" value = { form.tipoPago } onChange = { onChange } />
+                                    name="tipoPago" value = { form.tipoPago } onChange = { this.updateTipoPago } />
                             </div>
                         : ''
                     }

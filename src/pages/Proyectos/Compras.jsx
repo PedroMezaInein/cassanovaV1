@@ -8,6 +8,7 @@ import { URL_DEV, COMPRAS_COLUMNS } from '../../constants'
 
 // Functions
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
+import { errorAlert, waitAlert } from '../../functions/alert'
 
 //
 import Layout from '../../components/layout/layout'
@@ -23,24 +24,8 @@ class Compras extends Component{
 
     state = {
         modal: false,
-        modalDelete: false,
         title: 'Nueva compra',
-        compras: [],
-        compra: '',
-        solicitud: '',
-        options:{
-            empresas:[],
-            cuentas:[],
-            areas:[],
-            subareas:[],
-            clientes: [],
-            proyectos: [],
-            proveedores: [],
-            tiposImpuestos: [],
-            tiposPagos: [],
-            estatusCompras: []
-        },
-        form:{
+        form: {
             factura: 'Sin factura',
             facturaObject: '',
             rfc: '',
@@ -54,6 +39,11 @@ class Compras extends Component{
             subarea: '',
             comision: '',
             solicitud: '',
+            //Factura
+            formaPago: '',
+            metodoPago: '',
+            estatusPago: '',
+            //Fin factura
             tipoImpuesto: 0,
             tipoPago: 0,
             estatusCompra: 0,
@@ -75,18 +65,42 @@ class Compras extends Component{
                     files: []
                 }
             }
-        }
+        },
+        options: {
+            empresas:[],
+            cuentas:[],
+            areas:[],
+            subareas:[],
+            clientes: [],
+            proyectos: [],
+            proveedores: [],
+            tiposImpuestos: [],
+            tiposPagos: [],
+            estatusCompras: [],
+            formasPago: [],
+            metodosPago: [],
+            estatusFacturas: []
+        },
+        data:{
+            clientes: [],
+            empresas: [],
+            cuentas: [],
+            proyectos: [],
+            proveedores: []
+        },
+        solicitud: '',
+        compras: []
     }
 
     componentDidMount(){
         const { authUser: { user : { permisos : permisos } } } = this.props
         const { history : { location: { pathname: pathname } } } = this.props
         const { history } = this.props
-        const egresos = permisos.find(function(element, index) {
+        const compras = permisos.find(function(element, index) {
             const { modulo: { url: url } } = element
             return  pathname === '/' + url
         });
-        if(!egresos)
+        if(!compras)
             history.push('/')
         this.getComprasAxios()
         const { state } = this.props.location
@@ -97,230 +111,8 @@ class Compras extends Component{
         }
     }
 
-    openModal = () => {
-        this.setState({
-            ... this.state,
-            modal: true,
-            title: 'Nueva compra',
-            form: this.clearForm()
-        })
-    }
-
-    openModalEdit = (compra) => {
-        const { form, options } = this.state
-        form.factura = compra.factura ? 'Con factura' : 'Sin factura'
-        if(compra.proyecto){
-            if(compra.proyecto.cliente){
-                form.cliente = compra.proyecto.cliente.id.toString()
-                options['proyectos'] = setOptions(compra.proyecto.cliente.proyectos, 'nombre', 'id')
-                form.proyecto = compra.proyecto.id.toString()
-            }
-        }
-        if(compra.empresa){
-            form.empresa = compra.empresa.id.toString()
-            options['cuentas'] = setOptions(compra.empresa.cuentas, 'nombre', 'id')
-            form.cuenta = compra.cuenta.id.toString()
-        }
-        if(compra.subarea){
-            form.area = compra.subarea.area.id.toString()
-            options['subareas'] = setOptions(compra.subarea.area.subareas, 'nombre', 'id')
-            form.subarea = compra.subarea.id.toString()
-        }
-        
-        form.tipoPago = compra.tipo_pago ? compra.tipo_pago.id : 0
-        form.tipoImpuesto = compra.tipo_impuesto ? compra.tipo_impuesto.id : 0
-        form.estatusCompra = compra.estatus_compra ? compra.estatus_compra.id : 0
-        form.total = compra.monto
-        form.fecha = new Date(compra.created_at)
-        form.descripcion = compra.descripcion
-        form.comision = compra.comision
-        if(compra.proveedor)
-            form.proveedor = compra.proveedor.id.toString()
-        if(compra.pago){
-            form.adjuntos.pago.files = [{
-                name: compra.pago.name, url: compra.pago.url
-            }]
-        }
-        if(compra.presupuesto){
-            form.adjuntos.presupuesto.files = [{
-                name: compra.presupuesto.name, url: compra.presupuesto.url
-            }]
-        }
-        if(compra.facturas){
-            form.facturaObject = compra.facturas
-            let aux = []
-            if(compra.facturas.xml){
-                aux.push({
-                    name: 'factura.xml', url: compra.facturas.xml.url
-                })
-            }
-            if(compra.facturas.pdf){
-                aux.push({
-                    name: 'factura.pdf', url: compra.facturas.pdf.url
-                })
-            }
-            form.adjuntos.factura.files = aux
-            form.rfc = compra.facturas.rfc_emisor
-            form.cliente = compra.proyecto.cliente.nombre
-            form.empresa = compra.empresa.name
-        }
-        this.setState({
-            ... this.state,
-            modal: true,
-            compra: compra,
-            form,
-            options,
-            title: 'Editar compra'
-        })
-    }
-
-    openModalDelete = (compra) => {
-        this.setState({
-            ... this.state,
-            modalDelete: true,
-            compra: compra
-        })
-    }
-
-    handleClose = () => {
-        const { modal } = this.state
-        this.setState({
-            ... this.state,
-            modal: !modal,
-            form: this.clearForm(),
-            title: 'Nueva compra'
-        })
-    }
-
-    handleCloseDelete = () => {
-        const { modalDelete } = this.state
-        this.setState({
-            ... this.state,
-            modalDelete: !modalDelete,
-            compra: ''
-        })
-    }
-
-    //Handle change
-    onChange = e => {
-        const {form} = this.state
-        const {name, value} = e.target
-        form[name] = value
-        this.setState({
-            ... this.state,
-            form
-        })
-    }
-
-    onChangeAdjunto = e => {
-        const { form } = this.state
-        const { files, value, name } = e.target
-        let aux = []
-        for(let counter = 0; counter < files.length; counter ++){
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]) ,
-                    key: counter
-                }
-            )
-        }
-        form['adjuntos'][name].value = value
-        form['adjuntos'][name].files = aux
-        this.setState({
-            ... this.state,
-            form
-        })
-    }
-
-    clearFiles = (name, key) => {
-        const { form } = this.state
-        let aux = []
-        for(let counter = 0; counter < form['adjuntos'][name].files.length; counter ++){
-            if(counter !== key){
-                aux.push(form['adjuntos'][name].files[counter])
-            }
-        }
-        if(aux.length < 1){
-            form['adjuntos'][name].value = ''    
-        }
-        form['adjuntos'][name].files = aux
-        this.setState({
-            ... this.state,
-            form
-        })
-    }
-
-    clearForm = () => {
-        const { form } = this.state
-        let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
-                case 'rfc':
-                case 'cliente':
-                case 'proyecto':
-                case 'empresa':
-                case 'cuenta':
-                case 'area':
-                case 'subarea':
-                case 'total':
-                case 'descripcion':
-                case 'facturaObject':
-                case 'solicitud':
-                    form[element] = ''
-                    break;
-                case 'tipoImpuesto':
-                case 'tipoPago':
-                case 'estatusCompra':
-                    form[element] = 0
-                    break;
-                case 'factura':
-                    form[element] = 'Sin factura'
-                    break;
-                case 'fecha':
-                    form[element] = new Date()
-                    break;
-                case 'adjuntos':
-                    form[element] = {
-                        factura:{
-                            value: '',
-                            placeholder: 'Factura',
-                            files: []
-                        },
-                        pago:{
-                            value: '',
-                            placeholder: 'Pago',
-                            files: []
-                        },
-                        presupuesto:{
-                            value: '',
-                            placeholder: 'Presupuesto',
-                            files: []
-                        }
-                    }
-                default:
-                    break;
-            }
-        })
-        return form;
-    }
-
-    onSubmit = e => {
-        e.preventDefault()
-        const { title } = this.state
-        swal({
-            title: '¡Un momento!',
-            text: 'La información está siendo procesada.',
-            buttons: false
-        })
-        if(title === 'Editar compra')
-            this.editCompraAxios()
-        else
-            this.addCompraAxios()
-    }
-
     // Setters
+
     setOptions = (name, array) => {
         const {options} = this.state
         options[name] = setOptions(array, 'nombre', 'id')
@@ -328,27 +120,6 @@ class Compras extends Component{
             ... this.state,
             options
         })
-    }
-
-    setFactura = factura => {
-        const {form} = this.state
-        form['rfc'] = factura.rfc_emisor[0]
-        form['cliente'] = factura.nombre_emisor[0]
-        form['empresa'] = factura.nombre_receptor[0]
-        form['fecha'] =  new Date(factura.fecha[0])
-        form['total'] = factura.subtotal[0]
-        form['facturaObject'] = factura
-        this.setState({
-            ... this.state,
-            form
-        })
-    }
-
-    setSolicitud = solicitud => {
-        /* const { form } = this.state
-        form.factura = solicitud.factura ? 'Con factura' : 'Sin factura'
-        form.descripcion = solicitud.descripcion */
-        /* return form */
     }
 
     setCompras = compras => {
@@ -366,7 +137,7 @@ class Compras extends Component{
                     ),
                     proyecto: setTextTable(compra.proyecto.nombre),
                     proveedor: setTextTable(compra.proveedor.nombre),
-                    factura: setFacturaTable(compra),
+                    /* factura: setTextTable(compra.facturas.length ? 'Con factura' : 'Sin factura'), */
                     monto: setMoneyTable(compra.monto),
                     comision: setMoneyTable(compra.comision),
                     impuesto: setTextTable( compra.tipo_impuesto ? compra.tipo_impuesto.tipo : 'Sin definir'),
@@ -400,13 +171,351 @@ class Compras extends Component{
         )
     }
 
+    //Add, edit y convert modal
+    openModal = ( ) => {
+        this.setState({
+            ... this.state,
+            modal: true,
+            title: 'Nueva compra',
+            form: this.clearForm()
+        })
+    }
+
+    handleClose = () => {
+        const { modal } = this.state
+        this.setState({
+            ... this.state,
+            modal: !modal,
+            form: this.clearForm(),
+            title: 'Nueva venta'
+        })
+    }
+
+    //ClearForm
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.map( (element) => {
+            switch(element){
+                case 'tipoImpuesto':
+                case 'tipoPago':
+                case 'estatusCompra':
+                    form[element] = 0
+                    break;
+                case 'factura':
+                    form[element] = 'Sin factura'
+                    break;
+                case 'fecha':
+                    form[element] = new Date()
+                    break;
+                case 'adjuntos':
+                    form[element] = {
+                        factura:{
+                            value: '',
+                            placeholder: 'Factura',
+                            files: []
+                        },
+                        pago:{
+                            value: '',
+                            placeholder: 'Pago',
+                            files: []
+                        },
+                        presupuesto:{
+                            value: '',
+                            placeholder: 'Presupuesto',
+                            files: []
+                        }
+                    }
+                    break;
+                default:
+                    form[element] = ''
+                    break;
+            }
+        })
+        return form;
+    }
+
+    //Form
+    onChange = e => {
+        const {form} = this.state
+        const {name, value} = e.target
+        form[name] = value
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
+    onChangeAdjunto = e => {
+        const { form, data, options } = this.state
+        const { files, value, name } = e.target
+        let aux = []
+        for(let counter = 0; counter < files.length; counter ++){
+            if(name === 'factura')
+            {
+                let extension = files[counter].name.slice((Math.max(0, files[counter].name.lastIndexOf(".")) || Infinity) + 1);
+                if(extension === 'xml'){
+                    waitAlert()
+                    const reader = new FileReader()
+                    reader.onload = async (e) => { 
+                        const text = (e.target.result)
+                        var XMLParser = require('react-xml-parser');
+                        var xml = new XMLParser().parseFromString(text);
+                        const emisor = xml.getElementsByTagName('cfdi:Emisor')[0]
+                        const receptor = xml.getElementsByTagName('cfdi:Receptor')[0]
+                        let obj = {
+                            rfc_receptor: receptor.attributes.Rfc ? receptor.attributes.Rfc : '',
+                            nombre_receptor: receptor.attributes.Nombre ? receptor.attributes.Nombre : '',
+                            uso_cfdi: receptor.attributes.UsoCFDI ? receptor.attributes.UsoCFDI : '',
+                            rfc_emisor: emisor.attributes.Rfc ? emisor.attributes.Rfc : '',
+                            nombre_emisor: emisor.attributes.Nombre ? emisor.attributes.Nombre : '',
+                            regimen_fiscal: emisor.attributes.RegimenFiscal ? emisor.attributes.RegimenFiscal : '',
+                            lugar_expedicion: xml.attributes.LugarExpedicion ? xml.attributes.LugarExpedicion : '',
+                            fecha: xml.attributes.Fecha ? new Date(xml.attributes.Fecha) : '',
+                            metodo_pago: xml.attributes.MetodoPago ? xml.attributes.MetodoPago : '',
+                            tipo_de_comprobante: xml.attributes.TipoDeComprobante ? xml.attributes.TipoDeComprobante : '',
+                            total: xml.attributes.Total ? xml.attributes.Total : '',
+                            subtotal: xml.attributes.SubTotal ? xml.attributes.SubTotal : '',
+                            tipo_cambio: xml.attributes.TipoCambio ? xml.attributes.TipoCambio : '',
+                            moneda: xml.attributes.Moneda ? xml.attributes.Moneda : '',
+                            numero_certificado: xml.attributes.NoCertificado ? xml.attributes.NoCertificado : '',
+                            folio: xml.attributes.Folio ? xml.attributes.Folio : '',
+                            serie: xml.attributes.Serie ? xml.attributes.Serie : '',
+                        }
+                        if(obj.numero_certificado === ''){
+                            let NoCertificado = text.search('NoCertificado="')
+                            if(NoCertificado)
+                                obj.numero_certificado = text.substring(NoCertificado+15, NoCertificado + 35)
+                        }
+                        let aux = ''
+                        if(obj.subtotal === ''){
+                            let Subtotal = text.search('SubTotal="')
+                            if(Subtotal)
+                                Subtotal = text.substring(Subtotal+10)
+                                aux = Subtotal.search('"')
+                                Subtotal = Subtotal.substring(0,aux)
+                                obj.subtotal = Subtotal
+                        }
+                        if(obj.fecha === ''){
+                            let Fecha = text.search('Fecha="')
+                            if(Fecha)
+                                Fecha = text.substring(Fecha+7)
+                                aux = Fecha.search('"')
+                                Fecha = Fecha.substring(0,aux)
+                                obj.fecha = Fecha
+                        }
+                        let auxEmpresa = ''
+                        data.empresas.find(function(element, index) {
+                            if(element.razon_social === obj.nombre_emisor){
+                                auxEmpresa = element
+                            }
+                        });
+                        let auxProveedor = ''
+                        data.proveedores.find(function(element, index) {
+                            if(element.razon_social === obj.nombre_receptor){
+                                auxProveedor = element
+                            }
+                        });
+                        if(auxEmpresa){
+                            options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')
+                            form.empresa = auxEmpresa.name
+                        }else{
+                            errorAlert('No existe la empresa')
+                        }
+                        if(auxProveedor){
+                            form.proveedor = auxProveedor.id.toString()
+                        }else{
+                            errorAlert('No existe el cliente')
+                        }
+                        if(auxEmpresa && auxProveedor){
+                            swal.close()
+                        }
+                        form.facturaObject = obj
+                        form.rfc = obj.rfc_emisor
+                        this.setState({
+                            ... this.state,
+                            options,
+                            form
+                        })
+                    }
+                    reader.readAsText(files[counter])
+                }
+            }
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]) ,
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][name].value = value
+        form['adjuntos'][name].files = aux
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
+    clearFiles = (name, key) => {
+        const { form } = this.state
+        let aux = []
+        for(let counter = 0; counter < form['adjuntos'][name].files.length; counter ++){
+            if(counter !== key){
+                aux.push(form['adjuntos'][name].files[counter])
+            }
+        }
+        if(aux.length < 1){
+            form['adjuntos'][name].value = ''
+            if(name === 'factura')
+                form['facturaObject'] = ''
+        }
+        form['adjuntos'][name].files = aux
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
+    //Submits
+    onSubmit = e => {
+        e.preventDefault()
+        const { title } = this.state
+        waitAlert()
+        if(title === 'Editar compra')
+            this.editCompraAxios()
+        else
+            this.addCompraAxios()
+    }
+
     // Async
+    // Compras
+    async getComprasAxios(){
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'compras', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, 
+                    clientes, compras, proveedores, formasPago, metodosPago, estatusFacturas } = response.data
+                const { options, data } = this.state
+                options['empresas'] = setOptions(empresas, 'name', 'id')
+                options['proveedores'] = setOptions(proveedores, 'nombre', 'id')
+                options['areas'] = setOptions(areas, 'nombre', 'id')
+                options['clientes'] = setOptions(clientes, 'empresa', 'id')
+                options['tiposPagos'] = setSelectOptions( tiposPagos, 'tipo' )
+                options['tiposImpuestos'] = setSelectOptions( tiposImpuestos, 'tipo' )
+                options['estatusCompras'] = setSelectOptions( estatusCompras, 'estatus' )
+                options['estatusFacturas'] = setOptions(estatusFacturas, 'estatus', 'id')
+                options['formasPago'] = setOptions(formasPago, 'nombre', 'id')
+                options['metodosPago'] = setOptions(metodosPago, 'nombre', 'id')
+                data.proveedores = proveedores
+                data.empresas = empresas
+                this.setState({
+                    ... this.state,
+                    options,
+                    form: this.clearForm(),
+                    compras: this.setCompras(compras),
+                    data
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async addCompraAxios(){
+
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        const data = new FormData();
+        
+        let aux = Object.keys(form)
+        aux.map( (element) => {
+            switch(element){
+                case 'fecha':
+                    data.append(element, (new Date(form[element])).toDateString())
+                    break
+                case 'adjuntos':
+                    break;
+                case 'facturaObject':
+                    data.append(element, JSON.stringify(form[element]))
+                    break;
+                default:
+                    data.append(element, form[element])
+                    break
+            }
+        })
+        aux = Object.keys(form.adjuntos)
+        aux.map( (element) => {
+            if(form.adjuntos[element].value !== ''){
+                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                }
+                data.append('adjuntos[]', element)
+            }
+        })
+        
+        await axios.post(URL_DEV + 'compras', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+
+                const { compras } = response.data
+                this.setState({
+                    ... this.state,
+                    form: this.clearForm(),
+                    modal: false,
+                    compras: this.setCompras(compras)
+                })
+                
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    // Solicitud compra
     async getSolicitudCompraAxios(id){
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'solicitud-compra/'+id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { solicitud } = response.data
-                const { form, options } = this.state
+                const { options, form } = this.state
                 form.solicitud = solicitud.id
                 form.factura = solicitud.factura ? 'Con factura' : 'Sin factura'
                 if(solicitud.factura){
@@ -458,54 +567,8 @@ class Compras extends Component{
                     title: 'Convierte la solicitud de compra',
                     solicitud: solicitud,
                     modal: true,
-                    form
-                })
-                console.log('STATE', this.state)
-            },
-            (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                }else{
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
-                        icon: 'error',
-                    })
-                }
-            }
-        ).catch((error) => {
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.' + error,
-                icon: 'error'
-            })
-        })
-    }
-
-    async getComprasAxios(){
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'compras', { headers: {Authorization:`Bearer ${access_token}`}}).then(
-            (response) => {
-                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, clientes, compras, proveedores } = response.data
-                const { options } = this.state
-                options['empresas'] = setOptions(empresas, 'name', 'id')
-                options['proveedores'] = setOptions(proveedores, 'nombre', 'id')
-                options['areas'] = setOptions(areas, 'nombre', 'id')
-                options['clientes'] = setOptions(clientes, 'empresa', 'id')
-                options['tiposPagos'] = setSelectOptions( tiposPagos, 'tipo' )
-                options['tiposImpuestos'] = setSelectOptions( tiposImpuestos, 'tipo' )
-                options['estatusCompras'] = setSelectOptions( estatusCompras, 'estatus' )
-                this.setState({
-                    ... this.state,
-                    options,
-                    form: this.clearForm(),
-                    compras: this.setCompras(compras)
+                    form,
+                    options
                 })
             },
             (error) => {
@@ -518,297 +581,22 @@ class Compras extends Component{
                         confirmButtonText: 'Inicia sesión'
                     });
                 }else{
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
-                        icon: 'error',
-                    })
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.' + error,
-                icon: 'error'
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
-
-    async addCompraAxios(){
-
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-        const data = new FormData();
-        
-        let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
-                case 'fecha':
-                    data.append(element, (new Date(form[element])).toDateString())
-                    break
-                case 'adjuntos':
-                case 'facturaObject':
-                    break;
-                default:
-                    data.append(element, form[element])
-                    break
-            }
-        })
-        aux = Object.keys(form.adjuntos)
-        aux.map( (element) => {
-            if(form.adjuntos[element].value !== ''){
-                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
-                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
-                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
-                }
-                data.append('adjuntos[]', element)
-            }
-        })
-        
-        await axios.post(URL_DEV + 'compras', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
-            (response) => {
-
-                const { compras } = response.data
-                this.setState({
-                    ... this.state,
-                    form: this.clearForm(),
-                    modal: false,
-                    compras: this.setCompras(compras)
-                })
-                
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
-
-            },
-            (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                }else{
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
-                        icon: 'error',
-                    })
-                }
-            }
-        ).catch((error) => {
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error'
-            })
-        })
-    }
-
-    async editCompraAxios(){
-
-        const { access_token } = this.props.authUser
-        const { form, compra } = this.state
-        const data = new FormData();
-        
-        let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
-                case 'fecha':
-                    data.append(element, (new Date(form[element])).toDateString())
-                    break
-                case 'adjuntos':
-                case 'facturaObject':
-                    break;
-                default:
-                    data.append(element, form[element])
-                    break
-            }
-        })
-        aux = Object.keys(form.adjuntos)
-        aux.map( (element) => {
-            for (var i = 0; i < form.adjuntos[element].files.length; i++) {
-                data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
-                data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
-            }
-            data.append('adjuntos[]', element)
-        })
-        
-        await axios.post(URL_DEV + 'compras/update/' + compra.id, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
-            (response) => {
-
-                const { compras } = response.data
-                this.setState({
-                    ... this.state,
-                    form: this.clearForm(),
-                    modal: false,
-                    compras: this.setCompras(compras)
-                })
-                
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
-
-            },
-            (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                }else{
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
-                        icon: 'error',
-                    })
-                }
-            }
-        ).catch((error) => {
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error'
-            })
-        })
-    }
-
-    async deleteCompraAxios(){
-
-        const { access_token } = this.props.authUser
-        const { compra } = this.state
-        await axios.delete(URL_DEV + 'compras/' + compra.id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
-            (response) => {
-                
-                const { compras } = response.data
-
-                this.setState({
-                    ... this.state,
-                    form: this.clearForm(),
-                    compras: this.setCompras(compras),
-                    modalDelete: false,
-                    compra: ''
-                })
-
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue eliminado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
-
-            },
-            (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                }else{
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
-                        icon: 'error',
-                    })
-                }
-            }
-        ).catch((error) => {
-            console.log('Error', error, 'catch')
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error'
-            })
-        })
-    }
-
-    //Factura
-    async sendFactura(){
-
-        const { access_token } = this.props.authUser
-        const {form} = this.state
-        
-        const data = new FormData()
-        
-        for (var i = 0; i < form.adjuntos.factura.files.length; i++) {
-            data.append('filesName[]', form.adjuntos.factura.files[i].name)
-            data.append('files[]', form.adjuntos.factura.files[i].file)
-        }
-
-        swal({
-            title: '¡Un momento!',
-            text: 'Se está enviando tu mensaje.',
-            buttons: false
-        })
-
-        await axios.post(URL_DEV + 'facturas/read', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
-            (response) => {
-                const { factura, empresa, clientes, cliente, proveedores, proveedor } = response.data
-                const { options, form } = this.state
-                options['cuentas'] = setOptions(empresa.cuentas, 'nombre', 'id')
-                options['proveedores'] = setOptions(proveedores, 'nombre', 'id')
-                options['clientes'] = setOptions(clientes, 'nombre', 'id')
-                options['proyectos'] = setOptions(cliente.proyectos, 'nombre', 'id')
-                form['cliente'] = cliente.empresa
-                form['rfc'] = factura.rfc_receptor[0]
-                form['proveedor'] = proveedor.id.toString()
-                form['empresa'] = factura.serie[0]
-                form['fecha'] =  new Date(factura.fecha[0])
-                form['total'] = factura.subtotal[0]
-                form['facturaObject'] = factura
-                swal.close();
-                this.setState({
-                    ... this.state,
-                    options, form
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                }else{
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
-                        icon: 'error',
-                    })
-                }
-            }
-        ).catch((error) => {
-            console.log('Catch error', error)
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error'
-            })
-        })
-    }
-
+    
     render(){
 
-        const { modal, modalDelete, title, options, form, compras, solicitud } = this.state
+        const {
+            modal,
+            title, form, options,
+            solicitud, compras
+        } = this.state
 
         return(
             <Layout active={'proyectos'}  { ...this.props}>
@@ -827,11 +615,6 @@ class Compras extends Component{
                         }
                     </ComprasForm>
                 </Modal>
-                <ModalDelete show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteCompraAxios() }}>
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas eliminar la compra?
-                    </Subtitle>
-                </ModalDelete>
             </Layout>
         )
     }
