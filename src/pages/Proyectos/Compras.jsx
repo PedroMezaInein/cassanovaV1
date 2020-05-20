@@ -994,38 +994,41 @@ class Compras extends Component{
                     {
                         compra.tipo_pago ?
                             compra.tipo_pago.tipo !== 'TOTAL' ?
-                                <div className="px-3 my-2">
-                                    <ProgressBar animated label={`${porcentaje}%`} 
-                                        variant = { porcentaje > 100 ? 'danger' : porcentaje > 75 ? 'success' : 'warning'} 
-                                        now = {porcentaje} />
-                                </div>
+                                <>
+                                    <div className="px-3 my-2">
+                                        <ProgressBar animated label={`${porcentaje}%`} 
+                                            variant = { porcentaje > 100 ? 'danger' : porcentaje > 75 ? 'success' : 'warning'} 
+                                            now = {porcentaje} />
+                                    </div>
+                                    <Form onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios();}}>
+                                        <div className="row mx-0">
+                                            <div className="col-md-6 px-2">
+                                                
+                                                <FileInput 
+                                                    onChangeAdjunto = { this.onChangeAdjunto } 
+                                                    placeholder = { form['adjuntos']['factura']['placeholder'] }
+                                                    value = { form['adjuntos']['factura']['value'] }
+                                                    name = { 'factura' } 
+                                                    id = { 'factura' }
+                                                    accept = "text/xml, application/pdf" 
+                                                    files = { form['adjuntos']['factura']['files'] }
+                                                    deleteAdjunto = { this.clearFiles } multiple/>
+                                            </div>
+                                            {
+                                                form.adjuntos.factura.files.length ?
+                                                    <div className="col-md-6 px-2 align-items-center d-flex">
+                                                        <Button icon='' className="mx-auto" type="submit" text="Enviar" />
+                                                    </div>
+                                                : ''
+                                            }
+                                        </div>
+                                    </Form>
+                                </>
                             : ''
                         : ''
                     }
                     
-                    <Form onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios();}}>
-                        <div className="row mx-0">
-                            <div className="col-md-6 px-2">
-                                
-                                <FileInput 
-                                    onChangeAdjunto = { this.onChangeAdjunto } 
-                                    placeholder = { form['adjuntos']['factura']['placeholder'] }
-                                    value = { form['adjuntos']['factura']['value'] }
-                                    name = { 'factura' } 
-                                    id = { 'factura' }
-                                    accept = "text/xml, application/pdf" 
-                                    files = { form['adjuntos']['factura']['files'] }
-                                    deleteAdjunto = { this.clearFiles } multiple/>
-                            </div>
-                            {
-                                form.adjuntos.factura.files.length ?
-                                    <div className="col-md-6 px-2 align-items-center d-flex">
-                                        <Button icon='' className="mx-auto" type="submit" text="Enviar" />
-                                    </div>
-                                : ''
-                            }
-                        </div>
-                    </Form>
+                    
                     <FacturaTable deleteFactura = { this.deleteFactura } facturas = { facturas } />
                 </Modal>
             </Layout>
