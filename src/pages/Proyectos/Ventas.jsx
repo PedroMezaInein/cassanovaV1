@@ -147,24 +147,6 @@ class Ventas extends Component{
                 name: venta.presupuesto.name, url: venta.presupuesto.url
             }]
         }
-        if(venta.facturas){
-            form.facturaObject = venta.facturas
-            let aux = []
-            if(venta.facturas.xml){
-                aux.push({
-                    name: 'factura.xml', url: venta.facturas.xml.url
-                })
-            }
-            if(venta.facturas.pdf){
-                aux.push({
-                    name: 'factura.pdf', url: venta.facturas.pdf.url
-                })
-            }
-            form.adjuntos.factura.files = aux
-            form.rfc = venta.facturas.rfc_emisor
-            form.cliente = venta.cliente.nombre
-            form.empresa = venta.empresa.name
-        }
         this.setState({
             ... this.state,
             modal: true,

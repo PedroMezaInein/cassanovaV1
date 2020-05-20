@@ -107,7 +107,7 @@ class ComprasForm extends Component{
                             />
                     </div>
                     {
-                        form.factura === 'Con factura' ?        
+                        form.factura === 'Con factura'  && title !== 'Editar compra' ?              
                             <div className="col-md-6 px-2">
                                 <FileInput 
                                     onChangeAdjunto = { onChangeAdjunto } 
@@ -122,7 +122,7 @@ class ComprasForm extends Component{
                     }
 
                     {
-                        form.factura === 'Con factura' && title === 'Nueva venta' ?
+                        form.factura === 'Con factura' && title !== 'Editar compra' ?
                             <div className="col-md-6 px-2">
                                 <Input placeholder="RFC" name="rfc" value={form.rfc} onChange={onChange}/>
                             </div>

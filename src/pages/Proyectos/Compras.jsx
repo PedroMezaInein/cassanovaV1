@@ -12,18 +12,21 @@ import { errorAlert, waitAlert } from '../../functions/alert'
 
 //
 import Layout from '../../components/layout/layout'
-import { Button } from '../../components/form-components'
+import { Button, FileInput } from '../../components/form-components'
 import { Modal, ModalDelete } from '../../components/singles'
-import { faPlus, faLink, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { ComprasForm } from '../../components/forms'
-import { DataTable } from '../../components/tables'
+import { faPlus, faLink, faEdit, faTrash, faReceipt, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons'
+import { ComprasForm, FacturaForm } from '../../components/forms'
+import { DataTable, FacturaTable } from '../../components/tables'
 import Subtitle from '../../components/texts/Subtitle'
 import {SolicitudCompraCard} from '../../components/cards'
-
+import { Form, ProgressBar } from 'react-bootstrap'
 class Compras extends Component{
 
     state = {
         modal: false,
+        modalDelete: false,
+        modalFacturas: false,
+        modalAskFactura: false,
         title: 'Nueva compra',
         form: {
             factura: 'Sin factura',
@@ -89,7 +92,10 @@ class Compras extends Component{
             proveedores: []
         },
         solicitud: '',
-        compras: []
+        compras: [],
+        compra: '',
+        porcentaje: '',
+        facturas: []
     }
 
     componentDidMount(){
@@ -137,7 +143,7 @@ class Compras extends Component{
                     ),
                     proyecto: setTextTable(compra.proyecto.nombre),
                     proveedor: setTextTable(compra.proveedor.nombre),
-                    /* factura: setTextTable(compra.facturas.length ? 'Con factura' : 'Sin factura'), */
+                    factura: setTextTable(compra.facturas.length ? 'Con factura' : 'Sin factura'),
                     monto: setMoneyTable(compra.monto),
                     comision: setMoneyTable(compra.comision),
                     impuesto: setTextTable( compra.tipo_impuesto ? compra.tipo_impuesto.tipo : 'Sin definir'),
@@ -167,6 +173,16 @@ class Compras extends Component{
                     <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalDelete(compra)} } text='' icon={faTrash} color="red" 
                         tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
                 </div>
+                {
+                    compra.factura ?
+                        <div className="d-flex align-items-center flex-column flex-md-row my-1">
+                            <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalFacturas(compra)} } text='' icon={faReceipt} color="transparent" 
+                                tooltip={{id:'taxes', text:'Facturas'}} />
+                            {/* <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalAskFactura(compra)} } text='' icon={faEnvelopeOpenText} color="transparent" 
+                                tooltip={{id:'bills', text:'Pedir factura'}} /> */}
+                        </div>
+                    : ''
+                }
             </>
         )
     }
@@ -181,6 +197,56 @@ class Compras extends Component{
         })
     }
 
+    openModalEdit = (compra) => {
+        const { form, options } = this.state
+        form.factura = compra.factura ? 'Con factura' : 'Sin factura'
+        if(compra.proyecto){
+            if(compra.proyecto.cliente){
+                form.cliente = compra.proyecto.cliente.id.toString()
+                options['proyectos'] = setOptions(compra.proyecto.cliente.proyectos, 'nombre', 'id')
+                form.proyecto = compra.proyecto.id.toString()
+            }
+        }
+        if(compra.empresa){
+            form.empresa = compra.empresa.id.toString()
+            options['cuentas'] = setOptions(compra.empresa.cuentas, 'nombre', 'id')
+            form.cuenta = compra.cuenta.id.toString()
+        }
+        if(compra.subarea){
+            form.area = compra.subarea.area.id.toString()
+            options['subareas'] = setOptions(compra.subarea.area.subareas, 'nombre', 'id')
+            form.subarea = compra.subarea.id.toString()
+        }
+        
+        form.tipoPago = compra.tipo_pago ? compra.tipo_pago.id : 0
+        form.tipoImpuesto = compra.tipo_impuesto ? compra.tipo_impuesto.id : 0
+        form.estatusCompra = compra.estatus_compra ? compra.estatus_compra.id : 0
+        form.total = compra.monto
+        form.fecha = new Date(compra.created_at)
+        form.descripcion = compra.descripcion
+        form.comision = compra.comision
+        if(compra.proveedor)
+            form.proveedor = compra.proveedor.id.toString()
+        if(compra.pago){
+            form.adjuntos.pago.files = [{
+                name: compra.pago.name, url: compra.pago.url
+            }]
+        }
+        if(compra.presupuesto){
+            form.adjuntos.presupuesto.files = [{
+                name: compra.presupuesto.name, url: compra.presupuesto.url
+            }]
+        }
+        this.setState({
+            ... this.state,
+            modal: true,
+            compra: compra,
+            form,
+            options,
+            title: 'Editar compra'
+        })
+    }
+
     handleClose = () => {
         const { modal } = this.state
         this.setState({
@@ -188,6 +254,53 @@ class Compras extends Component{
             modal: !modal,
             form: this.clearForm(),
             title: 'Nueva venta'
+        })
+    }
+    // Delete
+    openModalDelete = (compra) => {
+        this.setState({
+            ... this.state,
+            modalDelete: true,
+            compra: compra
+        })
+    }
+
+    handleCloseDelete = () => {
+        const { modalDelete } = this.state
+        this.setState({
+            ... this.state,
+            modalDelete: !modalDelete,
+            compra: ''
+        })
+    }
+
+    //Facturas
+    openModalFacturas = compra => {
+        let { porcentaje } = this.state
+        porcentaje = 0
+        compra.facturas.map((factura)=>{
+            porcentaje = porcentaje + factura.total
+        })
+        porcentaje = porcentaje * 100 / (compra.total - compra.comision)
+        porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
+        this.setState({
+            ... this.state,
+            modalFacturas: true,
+            compra: compra,
+            facturas: compra.facturas,
+            porcentaje,
+            form: this.clearForm()
+        })
+    }
+
+    handleCloseFacturas = () => {
+        this.setState({
+            ... this.state,
+            modalFacturas: false,
+            venta: '',
+            facturas: [],
+            porcentaje: 0,
+            form: this.clearForm()
         })
     }
 
@@ -389,6 +502,11 @@ class Compras extends Component{
             this.addCompraAxios()
     }
 
+    deleteFactura = id => {
+        waitAlert()
+        this.deleteFacturaAxios(id)
+    }
+
     // Async
     // Compras
     async getComprasAxios(){
@@ -509,6 +627,119 @@ class Compras extends Component{
         })
     }
 
+    async editCompraAxios(){
+
+        const { access_token } = this.props.authUser
+        const { form, compra } = this.state
+        const data = new FormData();
+        
+        let aux = Object.keys(form)
+        aux.map( (element) => {
+            switch(element){
+                case 'fecha':
+                    data.append(element, (new Date(form[element])).toDateString())
+                    break
+                case 'adjuntos':
+                case 'facturaObject':
+                    break;
+                default:
+                    data.append(element, form[element])
+                    break
+            }
+        })
+        aux = Object.keys(form.adjuntos)
+        aux.map( (element) => {
+            for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+            }
+            data.append('adjuntos[]', element)
+        })
+        
+        await axios.post(URL_DEV + 'compras/update/' + compra.id, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+
+                const { compras } = response.data
+                this.setState({
+                    ... this.state,
+                    form: this.clearForm(),
+                    modal: false,
+                    compras: this.setCompras(compras)
+                })
+                
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async deleteCompraAxios(){
+
+        const { access_token } = this.props.authUser
+        const { compra } = this.state
+        await axios.delete(URL_DEV + 'compras/' + compra.id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                
+                const { compras } = response.data
+
+                this.setState({
+                    ... this.state,
+                    form: this.clearForm(),
+                    compras: this.setCompras(compras),
+                    modalDelete: false,
+                    compra: ''
+                })
+
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue eliminado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     // Solicitud compra
     async getSolicitudCompraAxios(id){
         const { access_token } = this.props.authUser
@@ -589,13 +820,149 @@ class Compras extends Component{
             console.log(error, 'error')
         })
     }
+
+    // Factura
+    async sendFacturaAxios(){
+
+        const { access_token } = this.props.authUser
+        const { form, compra } = this.state
+        const data = new FormData();
+        
+        let aux = Object.keys(form)
+        aux.map( (element) => {
+            switch(element){
+                case 'facturaObject':
+                    data.append(element, JSON.stringify(form[element]))
+                    break;
+                default:
+                    break
+            }
+        })
+        aux = Object.keys(form.adjuntos)
+        aux.map( (element) => {
+            if(form.adjuntos[element].value !== '' && element === 'factura'){
+                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                }
+                data.append('adjuntos[]', element)
+            }
+        })
+
+        data.append('id', compra.id )
+        
+        await axios.post(URL_DEV + 'compras/factura', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+
+                const { compra } = response.data
+                let { porcentaje } = this.state
+                porcentaje = 0
+                compra.facturas.map((factura)=>{
+                    porcentaje = porcentaje + factura.total
+                })
+                porcentaje = porcentaje * 100 / (compra.total - compra.comision)
+                porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
+                this.setState({
+                    ... this.state,
+                    form: this.clearForm(),
+                    compra: compra,
+                    facturas: compra.facturas,
+                    porcentaje
+                })
+                
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    errorAlert(
+                        error.response.data.message !== undefined ? 
+                            error.response.data.message 
+                        : 'Ocurrió un error desconocido, intenta de nuevo.'
+                    )
+                }
+            }
+        ).catch((error) => {
+            console.log(error, 'CATCH ERROR')
+            errorAlert('Ocurrió un error desconocido, intenta de nuevo')
+        })
+    }
     
+    async deleteFacturaAxios(id){
+
+        const { access_token } = this.props.authUser
+        const { compra } = this.state
+        await axios.delete(URL_DEV + 'compras/' + compra.id + '/facturas/' + id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                
+                const { compra } = response.data
+                let { porcentaje } = this.state
+                porcentaje = 0
+                compra.facturas.map((factura)=>{
+                    porcentaje = porcentaje + factura.total
+                })
+                porcentaje = porcentaje * 100 / (compra.total - compra.comision)
+                porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
+                this.setState({
+                    ... this.state,
+                    form: this.clearForm(),
+                    compra: compra,
+                    facturas: compra.facturas,
+                    porcentaje
+                })
+                
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    errorAlert(
+                        error.response.data.message !== undefined ? 
+                            error.response.data.message 
+                        : 'Ocurrió un error desconocido, intenta de nuevo.'
+                    )
+                }
+            }
+        ).catch((error) => {
+            console.log(error, 'CATCH ERROR')
+            errorAlert('Ocurrió un error desconocido, intenta de nuevo')
+        })
+    }
+
     render(){
 
         const {
-            modal,
+            modal, modalDelete, modalFacturas, modalAskFactura,
             title, form, options,
-            solicitud, compras
+            solicitud, compras, porcentaje, facturas, compra
         } = this.state
 
         return(
@@ -614,6 +981,52 @@ class Compras extends Component{
                             : ''
                         }
                     </ComprasForm>
+                </Modal>
+                <ModalDelete show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteCompraAxios() }}>
+                    <Subtitle className="my-3 text-center">
+                        ¿Estás seguro que deseas eliminar la compra?
+                    </Subtitle>
+                </ModalDelete>
+                <Modal show = { modalFacturas } handleClose = { this.handleCloseFacturas }>
+                    <Subtitle className="text-center" color = 'gold' >
+                        Facturas
+                    </Subtitle>
+                    {
+                        compra.tipo_pago ?
+                            compra.tipo_pago.tipo !== 'TOTAL' ?
+                                <div className="px-3 my-2">
+                                    <ProgressBar animated label={`${porcentaje}%`} 
+                                        variant = { porcentaje > 100 ? 'danger' : porcentaje > 75 ? 'success' : 'warning'} 
+                                        now = {porcentaje} />
+                                </div>
+                            : ''
+                        : ''
+                    }
+                    
+                    <Form onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios();}}>
+                        <div className="row mx-0">
+                            <div className="col-md-6 px-2">
+                                
+                                <FileInput 
+                                    onChangeAdjunto = { this.onChangeAdjunto } 
+                                    placeholder = { form['adjuntos']['factura']['placeholder'] }
+                                    value = { form['adjuntos']['factura']['value'] }
+                                    name = { 'factura' } 
+                                    id = { 'factura' }
+                                    accept = "text/xml, application/pdf" 
+                                    files = { form['adjuntos']['factura']['files'] }
+                                    deleteAdjunto = { this.clearFiles } multiple/>
+                            </div>
+                            {
+                                form.adjuntos.factura.files.length ?
+                                    <div className="col-md-6 px-2 align-items-center d-flex">
+                                        <Button icon='' className="mx-auto" type="submit" text="Enviar" />
+                                    </div>
+                                : ''
+                            }
+                        </div>
+                    </Form>
+                    <FacturaTable deleteFactura = { this.deleteFactura } facturas = { facturas } />
                 </Modal>
             </Layout>
         )
