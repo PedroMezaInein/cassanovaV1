@@ -41,3 +41,12 @@ export function deleteAlert(text, action){
         }
     })
 }
+
+export function forbiddenAccessAlert(){
+    swal({
+        title: '¡Ups 😕!',
+        text: 'Parece que no has iniciado sesión',
+        icon: 'warning',
+        confirmButtonText: 'Inicia sesión'
+    });
+}
