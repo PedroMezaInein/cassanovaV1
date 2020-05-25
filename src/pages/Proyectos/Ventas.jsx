@@ -64,6 +64,7 @@ class Ventas extends Component{
             metodoPago: '',
             estatusFactura: '',
             concepto: '',
+            email: '',
             //Fin factura
             tipoImpuesto: 0,
             tipoPago: 0,
