@@ -11,9 +11,10 @@ class EgresosForm extends Component{
     }
 
     updateEmpresa = value => {
-        const { onChange, setCuentas } = this.props
+        const { onChange, setOptions } = this.props
         onChange({target:{value: value.value, name:'empresa'}})
-        setCuentas(value.cuentas)
+        onChange({target:{value: '', name:'cuenta'}})
+        setOptions('cuentas',value.cuentas)
     }
 
     updateCuenta = value => {
@@ -27,9 +28,10 @@ class EgresosForm extends Component{
     }
 
     updateArea = value => {
-        const { onChange, setSubareas } = this.props
+        const { onChange, setOptions } = this.props
         onChange({target:{value: value.value, name:'area'}})
-        setSubareas(value.subareas)
+        onChange({target:{value: '', name:'subarea'}})
+        setOptions('subareas',value.subareas)
     }
 
     updateSubarea = value => {
@@ -37,11 +39,36 @@ class EgresosForm extends Component{
         onChange({target:{value: value.value, name:'subarea'}})
     }
 
+    updateTipoPago = e => {
+        const { options, form, onChange } = this.props
+        const { value } = e.target
+        if(form.facturaObject)
+        {
+            options.tiposPagos.map( (option) => {
+                if(option.value.toString() === value.toString() && option.text.toString() === 'TOTAL')
+                    onChange({target:{value: form.facturaObject.subtotal, name: 'total'}})
+            })
+        }
+        onChange(e)
+    }
+
+    updateFactura = e => {
+        const { value, name } = e.target
+        const { onChange, options } = this.props
+        onChange({target:{value: value, name: name}})
+        let aux = ''
+        options.tiposImpuestos.find(function(element, index) {        
+            if(element.text === 'IVA')
+                aux = element.value
+        });
+        onChange({target:{value: aux, name: 'tipoImpuesto'}})
+    }
+    
     render(){
-        const { onChange, onChangeFile, onChangeAdjunto, sendFactura, clearAdjunto, clearFile, form, title, options, setSubareas, setCuentas, ... props } = this.props
+        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, ...props } = this.props
         return(
             <Form { ... props}>
-                <Subtitle className="text-center" color="gold">
+                <Subtitle className="text-center mb-4" color="gold">
                     { title }
                 </Subtitle>
                 
@@ -49,7 +76,7 @@ class EgresosForm extends Component{
                     <div className="col-md-6 px-2">
                         <RadioGroup
                             name = 'factura'
-                            onChange = { onChange }
+                            onChange = { this.updateFactura }
                             options = {
                                 [
                                     {
@@ -67,45 +94,33 @@ class EgresosForm extends Component{
                             />
                     </div>
                     {
-                        form.factura === 'Con factura' ?        
+                        form.factura === 'Con factura' && title !== 'Editar egreso' ? 
                             <div className="col-md-6 px-2">
                                 <FileInput 
-                                    onChangeAdjunto = { onChangeFile } 
-                                    placeholder = "Factura"
-                                    value = {form.fileFactura.value}
-                                    name = "fileFactura"
-                                    id = "fileFactura"
-                                    accept = "application/pdf, text/xml"
-                                    files = { form.fileFactura.adjuntos }
-                                    deleteAdjunto = { clearFile }
-                                    multiple
-                                    />
+                                    onChangeAdjunto = { onChangeAdjunto } 
+                                    placeholder = { form['adjuntos']['factura']['placeholder'] }
+                                    value = { form['adjuntos']['factura']['value'] }
+                                    name = { 'factura' } id = { 'factura' }
+                                    accept = "text/xml, application/pdf" 
+                                    files = { form['adjuntos']['factura']['files'] }
+                                    deleteAdjunto = { clearFiles } multiple/>
                             </div>
                         : ''
                     }
+
                     {
-                        form.factura === 'Con factura' && form.fileFactura.value ?
-                            <div className="col-md-6 d-flex align-items-center justify-content-md-end justify-content-center">
-                                <Button icon='' className="mx-auto" onClick={sendFactura} text="Enviar Factura" />
-                            </div>
-                        : ''
-                    }
-                    <div className="col-md-6 px-2">
-                        {
-                            form.facturaObject ?
-                                <Input placeholder="Proveedor" readOnly name="proveedor" value={form.proveedor} onChange={onChange}/>
-                            :
-                                <SelectSearch options={options.proveedores} placeholder = "Selecciona el proveedor" 
-                                    name = "proveedor" value = { form.proveedor } onChange = { this.updateProveedor }/>
-                        }
-                    </div>
-                    {
-                        form.factura === 'Con factura' && form.facturaObject ?
+                        form.factura === 'Con factura' && title !== 'Editar egreso' ?
                             <div className="col-md-6 px-2">
                                 <Input placeholder="RFC" name="rfc" value={form.rfc} onChange={onChange}/>
                             </div>
                         : ''
                     }
+
+                    <div className="col-md-6 px-2">
+                        <SelectSearch options={options.proveedores} placeholder = "Selecciona el proveedor" 
+                            name = "proveedores" value = { form.proveedor } onChange = { this.updateProveedor }/>    
+                    </div>
+
                     <div className="col-md-6 px-2">
                         {
                             form.facturaObject ?
@@ -116,16 +131,29 @@ class EgresosForm extends Component{
                         }
                     </div>
                     {
-                        options.cuentas.length > 0 ?
+                        form.empresa ?
                             <div className="col-md-6 px-2">
                                 <SelectSearch options={options.cuentas} placeholder = "Selecciona la cuenta" 
                                     name = "cuenta" value = { form.cuenta } onChange = { this.updateCuenta }/>
                             </div>
                         : ''
                     }
+
+                    <div className="col-md-6 px-2">
+                        <SelectSearch options={options.areas} placeholder = "Selecciona el área" 
+                            name = "area" value = { form.area } onChange = { this.updateArea }/>
+                    </div>
+                    {
+                        form.area ? 
+                            <div className="col-md-6 px-2">
+                                <SelectSearch options={options.subareas} placeholder = "Selecciona el subárea" 
+                                    name = "subarea" value = { form.subarea } onChange = { this.updateSubarea }/>
+                            </div>
+                        : ''
+                    }                    
                     <div className="col-md-6 px-2">
                         <Select placeholder="Selecciona el tipo de pago" options = { options.tiposPagos } 
-                            name="tipoPago" value = { form.tipoPago } onChange = { onChange } />
+                            name="tipoPago" value = { form.tipoPago } onChange = { this.updateTipoPago } />
                     </div>
                     <div className="col-md-6 px-2">
                         <Select placeholder="Selecciona el impuesto" options = { options.tiposImpuestos } 
@@ -135,18 +163,7 @@ class EgresosForm extends Component{
                         <Select placeholder="Selecciona el estatus de compra" options = { options.estatusCompras } 
                             name="estatusCompra" value = { form.estatusCompra } onChange = { onChange } />
                     </div>
-                    <div className="col-md-6 px-2">
-                        <SelectSearch options={options.areas} placeholder = "Selecciona el área" 
-                            name = "area" value = { form.area } onChange = { this.updateArea }/>
-                    </div>
-                    {
-                        options.subareas.length > 0 ?
-                            <div className="col-md-6 px-2">
-                                <SelectSearch options={options.subareas} placeholder = "Selecciona el subárea" 
-                                    name = "subarea" value = { form.subarea } onChange = { this.updateSubarea }/>
-                            </div>
-                        : ''
-                    }
+
                     <div className="col-md-6 px-2">
                         <InputMoney thousandSeparator={true}  placeholder = "Monto" value = { form.total } name = "total" onChange = { onChange }/>
                     </div>
@@ -159,28 +176,24 @@ class EgresosForm extends Component{
                             name = "fecha" value = { form.fecha }/>
                     </div>
                     <div className = "col-md-6 px-2 ">
-                        <FileInput 
+                        <FileInput
                             onChangeAdjunto = { onChangeAdjunto } 
-                            placeholder = "Presupuesto"
-                            value = {form.presupuesto.value}
-                            name = "presupuesto"
-                            id = "presupuesto"
-                            accept = "application/pdf, image/*" 
-                            files = { form.presupuesto.name === '' ? [] : [ {name: form.presupuesto.name, key: 1}] }
-                            deleteAdjunto = { (e) => { clearAdjunto('presupuesto') }}
-                            />
+                            placeholder = { form['adjuntos']['presupuesto']['placeholder'] }
+                            value = { form['adjuntos']['presupuesto']['value'] }
+                            name = { 'presupuesto' } id = { 'presupuesto' }
+                            accept = "text/xml, application/pdf" 
+                            files = { form['adjuntos']['presupuesto']['files'] }
+                            deleteAdjunto = { clearFiles } />
                     </div>
                     <div className = "col-md-6 px-2 ">
                         <FileInput 
                             onChangeAdjunto = { onChangeAdjunto } 
-                            placeholder = "Pago"
-                            value = {form.pago.value}
-                            name = "pago"
-                            id = "pago"
-                            accept = "application/pdf, image/*" 
-                            files = { form.pago.name === '' ? [] : [ {name: form.pago.name, key: 1}] }
-                            deleteAdjunto = { (e) => { clearAdjunto('pago') }}
-                            />
+                            placeholder = { form['adjuntos']['pago']['placeholder'] }
+                            value = { form['adjuntos']['pago']['value'] }
+                            name = { 'pago' } id = { 'pago' }
+                            accept = "text/xml, application/pdf" 
+                            files = { form['adjuntos']['pago']['files'] }
+                            deleteAdjunto = { clearFiles } />
                     </div>
                     <div className = " col-md-12 px-2">
                         <Input as = "textarea" placeholder = "Descripción" rows = "3" value = { form.descripcion }

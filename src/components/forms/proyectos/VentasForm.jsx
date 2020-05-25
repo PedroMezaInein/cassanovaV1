@@ -46,6 +46,19 @@ class VentasForm extends Component{
         onChange({target:{value: date, name:'fecha'}})
     }
 
+    updateTipoPago = e => {
+        const { options, form, onChange } = this.props
+        const { value } = e.target
+        if(form.facturaObject)
+        {
+            options.tiposPagos.map( (option) => {
+                if(option.value.toString() === value.toString() && option.text.toString() === 'TOTAL')
+                    onChange({target:{value: form.facturaObject.subtotal, name: 'total'}})
+            })
+        }
+        onChange(e)
+    }
+    
     updateFactura = e => {
         const { value, name } = e.target
         const { onChange, options } = this.props
@@ -161,7 +174,7 @@ class VentasForm extends Component{
                     }
                     <div className="col-md-6 px-2">
                         <Select placeholder="Selecciona el tipo de pago" options = { options.tiposPagos } 
-                            name="tipoPago" value = { form.tipoPago } onChange = { onChange } />
+                            name="tipoPago" value = { form.tipoPago } onChange = { this.updateTipoPago } />
                     </div>
                     <div className="col-md-6 px-2">
                         <Select placeholder="Selecciona el impuesto" options = { options.tiposImpuestos } 
