@@ -14,6 +14,7 @@ import { errorAlert, waitAlert, forbiddenAccessAlert } from '../../../functions/
 import Layout from '../../../components/layout/layout'
 import { EgresosForm as Formulario } from '../../../components/forms'
 import NewTable from '../../../components/tables/NewTable'
+ 
 
 class EgresosForm extends Component{
 
@@ -127,17 +128,15 @@ class EgresosForm extends Component{
                     {/* <Formulario title={title} form={form} onChange={this.onChange} sendFactura = { () => {this.readFactura() }}
                         onChangeFile = {this.onChangeFile} onChangeAdjunto = {this.onChangeAdjunto} clearAdjunto = {this.clearAdjunto} clearFile = {this.clearFile} 
                         options={options} setCuentas = { this.setCuentas } setSubareas = { this.setSubareas } onSubmit = {this.onSubmit}/> */}
-                <NewTable headers = {['actions', 'nombre', 'apellido']} 
+                <NewTable headers = {['Proyecto', 'Proveedor', 'Cuenta','Factura','Monto','Comisión','Impuesto','Total','Tipo de pago','Descripción','Área','Sub-Área','Estatus compra','Adjuntos','Fecha','Opciones']} 
+
                     data = {
                         [
                             [
-                                'ELiminar', 'Juan', 'Perez'
+                                'Test3','GALT ASSET MANAGEMENT S.A.P.I. DE C.V.','Empresa:INEIN Cuenta:Afirme Omar  # de cuenta:AACA951213SQ1-2','Con factura','$18,750	','$1,000','IVA','$22,750','TOTAL','Testing factura','ACABADOS','EQUIPOS','COMPLETO','Pago Presupuesto','20/05/2020','1'
                             ],
                             [
-                                'Agregar', 'Juan', 'Perez'
-                            ],
-                            [
-                                'Modificar', 'Juan', 'Perez'
+                                'Test3','GALT ASSET MANAGEMENT S.A.P.I. DE C.V.','Empresa:INEIN Cuenta:Afirme Omar  # de cuenta:AACA951213SQ1-2','Con factura','$100,000','$1,000','IVA','$117,000','AVANCE','Nuevo test','ACCESORIOS','MANO DE OBRA','COMPLETO','Pago Presupuesto','20/05/2020','1'
                             ],
                         ]
                     }/>
