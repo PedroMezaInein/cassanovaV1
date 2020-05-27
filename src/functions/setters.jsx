@@ -5,6 +5,7 @@ import NumberFormat from 'react-number-format';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileAlt } from '@fortawesome/free-regular-svg-icons';
 import { GOLD } from '../constants';
+import { renderToString } from 'react-dom/server'
 
 export function setOptions( arreglo, name, value ){
     let aux = []
@@ -39,15 +40,19 @@ export function setSelectOptions(arreglo, name){
 }
 
 export function setTextTable( text ){
-    return(
+    return renderToString(
         <Small> 
             {text} 
         </Small>
     )
+
+    /* return( */
+        
+    /* ) */
 }
 
 export function setDateTable( date ){
-    return(
+    return renderToString(
         <Small>
             <Moment format="DD/MM/YYYY">
                 {date}
@@ -57,14 +62,14 @@ export function setDateTable( date ){
 }
 
 export function setMoneyTable( value ){
-    return(
+    return renderToString(
         <NumberFormat value = { value } displayType = { 'text' } thousandSeparator = { true } prefix = { '$' }
                 renderText = { value => <Small> { value } </Small> } />
     )
 }
 
 export function setArrayTable( arreglo ){
-    return(
+    return renderToString(
         arreglo.map((element) => {
             return(
                 <>
@@ -140,7 +145,7 @@ export function setFacturaTable( data ){
 
 export function setAdjuntosList(list){
     let aux = true
-    return(
+    return renderToString(
         
         list.map((element, key) => {
             if(element !== '')

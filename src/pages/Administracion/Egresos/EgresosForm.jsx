@@ -12,7 +12,7 @@ import { errorAlert, waitAlert, forbiddenAccessAlert } from '../../../functions/
 
 //
 import Layout from '../../../components/layout/layout'
-import NewTable from '../../../components/tables/NewTable'
+/* import NewTable from '../../../components/tables/NewTable' */
  
 import { EgresosForm as EgresosFormulario } from '../../../components/forms'
 
@@ -520,10 +520,8 @@ class EgresosForm extends Component{
         const { form, title, options } = this.state
         return(
             <Layout active={'administracion'}  { ...this.props}>
-                    {/* <Formulario title={title} form={form} onChange={this.onChange} sendFactura = { () => {this.readFactura() }}
-                        onChangeFile = {this.onChangeFile} onChangeAdjunto = {this.onChangeAdjunto} clearAdjunto = {this.clearAdjunto} clearFile = {this.clearFile} 
-                        options={options} setCuentas = { this.setCuentas } setSubareas = { this.setSubareas } onSubmit = {this.onSubmit}/> */}
-                <NewTable headers = {['Proyecto', 'Proveedor', 'Cuenta','Factura','Monto','Comisión','Impuesto','Total','Tipo de pago','Descripción','Área','Sub-Área','Estatus compra','Adjuntos','Fecha','Opciones']} 
+                    
+                {/* <NewTable headers = {['Proyecto', 'Proveedor', 'Cuenta','Factura','Monto','Comisión','Impuesto','Total','Tipo de pago','Descripción','Área','Sub-Área','Estatus compra','Adjuntos','Fecha','Opciones']} 
 
                     data = {
                         [
@@ -534,17 +532,16 @@ class EgresosForm extends Component{
                                 'Test3','GALT ASSET MANAGEMENT S.A.P.I. DE C.V.','Empresa:INEIN Cuenta:Afirme Omar  # de cuenta:AACA951213SQ1-2','Con factura','$100,000','$1,000','IVA','$117,000','AVANCE','Nuevo test','ACCESORIOS','MANO DE OBRA','COMPLETO','Pago Presupuesto','20/05/2020','1'
                             ],
                         ]
-                    }/>
+                    }/> */}
                 <EgresosFormulario 
-                    title = { title } 
-                    form = { form }
-                    onChange = { this.onChange } 
-                    onChangeAdjunto = { this.onChangeAdjunto } 
-                    clearFiles = { this.clearFiles } 
-                    options = { options } 
-                    setOptions = { this.setOptions } 
-                    onSubmit = {this.onSubmit}/> 
-                
+                            title = { title } 
+                            form = { form }
+                            onChange = { this.onChange } 
+                            onChangeAdjunto = { this.onChangeAdjunto } 
+                            clearFiles = { this.clearFiles } 
+                            options = { options } 
+                            setOptions = { this.setOptions } 
+                            onSubmit = {this.onSubmit}/> 
             </Layout>
         )
     }
