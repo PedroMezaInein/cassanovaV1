@@ -528,22 +528,41 @@ class EgresosForm extends Component{
                     data = {
                         [
                             [
-                                'Test3','GALT ASSET MANAGEMENT S.A.P.I. DE C.V.','Empresa:INEIN Cuenta:Afirme Omar  # de cuenta:AACA951213SQ1-2','Con factura','$18,750	','$1,000','IVA','$22,750','TOTAL','Testing factura','ACABADOS','EQUIPOS','COMPLETO','Pago Presupuesto','20/05/2020','1'
+                                'Proyecto 1','Galt Asset Management S.A.P.I. DE C.V.','Empresa:INEIN','Con factura','$18,750','$1,000','IVA','$22,750','Total','Testing factura','Acabados','Equipos','Completo','Pago Presupuesto','20/05/2020','1'
                             ],
                             [
-                                'Test3','GALT ASSET MANAGEMENT S.A.P.I. DE C.V.','Empresa:INEIN Cuenta:Afirme Omar  # de cuenta:AACA951213SQ1-2','Con factura','$100,000','$1,000','IVA','$117,000','AVANCE','Nuevo test','ACCESORIOS','MANO DE OBRA','COMPLETO','Pago Presupuesto','20/05/2020','1'
+                                'Proyecto 2','Galt Asset Management S.A.P.I. DE C.V.','Empresa:INEIN','Con factura','$100,000','$1,000','IVA','$117,000','Avance','Nueva factura','Acessorios','Mano de obra','Completo','Pago Presupuesto','21/05/2020','1'
+                            ],
+                            [
+                                'Proyecto 2','Galt Asset Management S.A.P.I. DE C.V.','Empresa:INEIN','Con factura','$100,000','$1,000','IVA','$117,000','Avance','Nueva factura','Acessorios','Mano de obra','Completo','Pago Presupuesto','21/05/2020','1'
+                            ],
+                            [
+                                'Proyecto 2','Galt Asset Management S.A.P.I. DE C.V.','Empresa:INEIN','Con factura','$100,000','$1,000','IVA','$117,000','Avance','Nueva factura','Acessorios','Mano de obra','Completo','Pago Presupuesto','21/05/2020','1'
+                            ],
+                            [
+                                'Proyecto 2','Galt Asset Management S.A.P.I. DE C.V.','Empresa:INEIN','Con factura','$100,000','$1,000','IVA','$117,000','Avance','Nueva factura','Acessorios','Mano de obra','Completo','Pago Presupuesto','21/05/2020','1'
+                            ],
+                            [
+                                'Proyecto 2','Galt Asset Management S.A.P.I. DE C.V.','Empresa:INEIN','Con factura','$100,000','$1,000','IVA','$117,000','Avance','Nueva factura','Acessorios','Mano de obra','Completo','Pago Presupuesto','21/05/2020','1'
+                            ],
+                            [
+                                'Proyecto 2','Galt Asset Management S.A.P.I. DE C.V.','Empresa:INEIN','Con factura','$100,000','$1,000','IVA','$117,000','Avance','Nueva factura','Acessorios','Mano de obra','Completo','Pago Presupuesto','21/05/2020','1'
+                            ],
+                            [
+                                'Proyecto 2','Galt Asset Management S.A.P.I. DE C.V.','Empresa:INEIN','Con factura','$100,000','$1,000','IVA','$117,000','Avance','Nueva factura','Acessorios','Mano de obra','Completo','Pago Presupuesto','21/05/2020','1'
+                            ],
+                            [
+                                'Proyecto 2','Galt Asset Management S.A.P.I. DE C.V.','Empresa:INEIN','Con factura','$100,000','$1,000','IVA','$117,000','Avance','Nueva factura','Acessorios','Mano de obra','Completo','Pago Presupuesto','21/05/2020','1'
+                            ],
+                            [
+                                'Proyecto 2','Galt Asset Management S.A.P.I. DE C.V.','Empresa:INEIN','Con factura','$100,000','$1,000','IVA','$117,000','Avance','Nueva factura','Acessorios','Mano de obra','Completo','Pago Presupuesto','21/05/2020','1'
+                            ],
+                            [
+                                'Proyecto 2','Galt Asset Management S.A.P.I. DE C.V.','Empresa:INEIN','Con factura','$100,000','$1,000','IVA','$117,000','Avance','Nueva factura','Acessorios','Mano de obra','Completo','Pago Presupuesto','21/05/2020','1'
                             ],
                         ]
                     }/>
-                <EgresosFormulario 
-                    title = { title } 
-                    form = { form }
-                    onChange = { this.onChange } 
-                    onChangeAdjunto = { this.onChangeAdjunto } 
-                    clearFiles = { this.clearFiles } 
-                    options = { options } 
-                    setOptions = { this.setOptions } 
-                    onSubmit = {this.onSubmit}/> 
+                
                 
             </Layout>
         )
