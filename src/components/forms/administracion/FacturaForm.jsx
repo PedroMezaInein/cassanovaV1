@@ -79,6 +79,11 @@ export default class FacturaForm extends Component{
                         <SelectSearch options={options.estatusFacturas} placeholder = "Estatus" 
                             name = "estatusFactura" value = { form.estatusFactura } onChange = { this.updateEstatusFactura }/>
                     </div>
+
+                    <div className="col-md-6 px-2">
+                        <Input placeholder = "Correo" value = { form.email } name = "email" onChange = { onChange } />
+                    </div>
+
                 </div>
                 
                 <div className="d-flex justify-content-center my-3">

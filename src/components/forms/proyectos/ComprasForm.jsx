@@ -77,7 +77,7 @@ class ComprasForm extends Component{
     }
 
     render(){
-        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, sendFactura, ...props } = this.props
+        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, ...props } = this.props
         return(
             <Form { ... props }>
                 <Subtitle className="text-center" color = "gold">
@@ -132,7 +132,6 @@ class ComprasForm extends Component{
                     <div className="col-md-6 px-2">
                         <SelectSearch options={options.proveedores} placeholder = "Selecciona el proveedor" 
                             name = "proveedores" value = { form.proveedor } onChange = { this.updateProveedor }/>    
-                        
                     </div>
 
                     <div className="col-md-6 px-2">

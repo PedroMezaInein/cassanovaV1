@@ -36,7 +36,8 @@ const Traspasos = Loader(() => import('./pages/Bancos/Traspasos') )
 const Conceptos = Loader(() => import('./pages/Presupuesto/Conceptos') )
 const Rendimiento = Loader(() => import('./pages/Presupuesto/Rendimiento') )
 
-const Ingresos = Loader(() => import('./pages/Administracion/Ingresos') )
+const Ingresos = Loader(() => import('./pages/Administracion/Ingresos/Ingresos') )
+const IngresosForm = Loader(() => import('./pages/Administracion/Ingresos/IngresosForm') )
 
 const Egresos = Loader(() => import('./pages/Administracion/Egresos/Egresos') )
 const EgresosForm = Loader(() => import('./pages/Administracion/Egresos/EgresosForm') )
@@ -131,10 +132,11 @@ class App extends Component{
                 <Route path = "/proyectos/solicitud-compra" exact component ={ SolicitudCompra } />
                 <Route path = "/proyectos/remision" exact component ={ Remision } />
                 
-                <Route path = "/administracion/ingresos" exact component ={ Ingresos } />
-                
                 <Route path = "/administracion/egresos" exact component ={ Egresos } />
                 <Route path = "/administracion/egresos/:action" exact component ={ EgresosForm } />
+
+                <Route path = "/administracion/ingresos" exact component ={ Ingresos } />
+                <Route path = "/administracion/ingresos/:action" exact component ={ IngresosForm } />
                 
                 <Route path = "/administracion/facturacion" exact component ={ Facturacion } />
                 <Route path = "/administracion/proveedores" exact component ={ Proveedores } />

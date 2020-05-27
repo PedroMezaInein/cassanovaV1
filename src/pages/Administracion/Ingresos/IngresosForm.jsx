@@ -12,43 +12,52 @@ import { errorAlert, waitAlert, forbiddenAccessAlert } from '../../../functions/
 
 //
 import Layout from '../../../components/layout/layout'
-import NewTable from '../../../components/tables/NewTable'
- 
-import { EgresosForm as EgresosFormulario } from '../../../components/forms'
+import { IngresosForm as IngresosFormulario } from '../../../components/forms'
 
-class EgresosForm extends Component{
+class IngresosForm extends Component{
 
     state = {
-        title: 'Nuevo egreso',
+        ingresos: [],
+        ingreso: '',
+        title: 'Nuevo ingreso',
         options:{
-            empresas:[],
-            cuentas:[],
+            empresas: [],
+            cuentas: [],
             areas:[],
             subareas:[],
             tiposPagos:[],
             tiposImpuestos:[],
             estatusCompras:[],
-            proveedores: [],
-        },form:{
+            clientes: [],
+        },
+        data:{
+            clientes:[],
+            empresas: []
+        },
+        form:{
             factura: 'Sin factura',
             
             rfc: '',
-            proveedor: '',
+            cliente: '',
             empresa: '',
             cuenta: '',
             area:'',
             subarea: '',
             total: '',
-            comision: '',
             descripcion: '',
             facturaObject: '',
+
+            fileFactura: {
+                value: '',
+                adjuntos: [],
+            },
 
             tipoPago: 0,
             tipoImpuesto: 0,
             estatusCompra: 0,
             
             fecha: new Date(),
-            
+
             adjuntos:{
                 factura:{
                     value: '',
@@ -66,11 +75,81 @@ class EgresosForm extends Component{
                     files: []
                 }
             }
-        },
-        data:{
-            proveedores:[],
-            empresas: []
         }
+    }
+
+    componentDidMount(){
+        const { authUser: { user : { permisos : permisos } } } = this.props
+        const { history : { location: { pathname: pathname } } } = this.props
+        const { match : { params: { action: action } } } = this.props
+        const { history, location: { state: state} } = this.props
+        
+        const ingresos = permisos.find(function(element, index) {
+            const { modulo: { url: url } } = element
+            return  pathname === '/' + url + '/' + action
+        })
+
+        switch(action){
+            case 'add':
+                this.setState({
+                    ... this.state,
+                    title: 'Nuevo ingreso'
+                })
+                break;
+            case 'edit':
+                if(state){
+                    if(state.ingreso)
+                    {
+                        const { ingreso } = state
+                        const { form, options } = this.state
+                        if(ingreso.empresa){
+                            form.empresa = ingreso.empresa.id.toString()
+                            options['cuentas'] = setOptions(ingreso.empresa.cuentas, 'nombre', 'id')
+                            form.cuenta = ingreso.cuenta.id.toString()
+                        }
+                        if(ingreso.subarea){
+                            form.area = ingreso.subarea.area.id.toString()
+                            options['subareas'] = setOptions(ingreso.subarea.area.subareas, 'nombre', 'id')
+                            form.subarea = ingreso.subarea.id.toString()
+                        }
+                        
+                        form.tipoPago = ingreso.tipo_pago ? ingreso.tipo_pago.id : 0
+                        form.tipoImpuesto = ingreso.tipo_impuesto ? ingreso.tipo_impuesto.id : 0
+                        form.estatusCompra = ingreso.estatus_compra ? ingreso.estatus_compra.id : 0
+                        form.total = ingreso.monto
+                        form.fecha = new Date(ingreso.created_at)
+                        form.descripcion = ingreso.descripcion
+                        if(ingreso.cliente)
+                            form.cliente = ingreso.cliente.id.toString()
+                        if(ingreso.pago){
+                            form.adjuntos.pago.files = [{
+                                name: ingreso.pago.name, url: ingreso.pago.url
+                            }]
+                        }
+                        if(ingreso.presupuesto){
+                            form.adjuntos.presupuesto.files = [{
+                                name: ingreso.presupuesto.name, url: ingreso.presupuesto.url
+                            }]
+                        }
+                        this.setState({
+                            ... this.state,
+                            title: 'Editar ingreso',
+                            form,
+                            options,
+                            ingreso: ingreso
+                        })
+                    }
+                    else
+                        history.push('/administracion/ingresos')
+                }else
+                    history.push('/administracion/ingresos')
+                break;
+            default:
+                break;
+        }
+        if(!ingresos)
+            history.push('/')
+        this.getIngresosAxios()
     }
 
     // On change
@@ -144,14 +223,14 @@ class EgresosForm extends Component{
                         }
                         let auxEmpresa = ''
                         data.empresas.find(function(element, index) {
-                            if(element.razon_social === obj.nombre_emisor){
+                            if(element.razon_social === obj.nombre_receptor){
                                 auxEmpresa = element
                             }
                         });
-                        let auxProveedor = ''
-                        data.proveedores.find(function(element, index) {
-                            if(element.razon_social === obj.nombre_receptor){
-                                auxProveedor = element
+                        let auxCliente = ''
+                        data.clientes.find(function(element, index) {
+                            if(element.empresa === obj.nombre_emisor){
+                                auxCliente = element
                             }
                         });
                         if(auxEmpresa){
@@ -160,12 +239,12 @@ class EgresosForm extends Component{
                         }else{
                             errorAlert('No existe la empresa')
                         }
-                        if(auxProveedor){
-                            form.proveedor = auxProveedor.id.toString()
+                        if(auxCliente){
+                            form.cliente = auxCliente.empresa
                         }else{
-                            errorAlert('No existe el proveedor')
+                            errorAlert('No existe el cliente')
                         }
-                        if(auxEmpresa && auxProveedor){
+                        if(auxEmpresa && auxCliente){
                             swal.close()
                         }
                         form.facturaObject = obj
@@ -259,90 +338,6 @@ class EgresosForm extends Component{
         return form;
     }
 
-    onSubmit = e => {
-        e.preventDefault()
-        const{ title } = this.state
-        waitAlert()
-        if(title === 'Editar egreso'){
-            this.editEgresoAxios()
-        }else
-            this.addEgresoAxios()
-    }
-
-    componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
-        const { match : { params: { action: action } } } = this.props
-        const { history, location: { state: state} } = this.props
-        
-        const egresos = permisos.find(function(element, index) {
-            const { modulo: { url: url } } = element
-            return  pathname === '/' + url + '/' + action
-        });
-        switch(action){
-            case 'add':
-                this.setState({
-                    ... this.state,
-                    title: 'Nuevo egreso'
-                })
-                break;
-            case 'edit':
-                if(state){
-                    if(state.egreso)
-                    {
-                        const { egreso } = state
-                        const { form, options } = this.state
-                        if(egreso.empresa){
-                            form.empresa = egreso.empresa.id.toString()
-                            options['cuentas'] = setOptions(egreso.empresa.cuentas, 'nombre', 'id')
-                            form.cuenta = egreso.cuenta.id.toString()
-                        }
-                        if(egreso.subarea){
-                            form.area = egreso.subarea.area.id.toString()
-                            options['subareas'] = setOptions(egreso.subarea.area.subareas, 'nombre', 'id')
-                            form.subarea = egreso.subarea.id.toString()
-                        }
-                        
-                        form.tipoPago = egreso.tipo_pago ? egreso.tipo_pago.id : 0
-                        form.tipoImpuesto = egreso.tipo_impuesto ? egreso.tipo_impuesto.id : 0
-                        form.estatusCompra = egreso.estatus_compra ? egreso.estatus_compra.id : 0
-                        form.total = egreso.monto
-                        form.fecha = new Date(egreso.created_at)
-                        form.descripcion = egreso.descripcion
-                        form.comision = egreso.comision
-                        if(egreso.proveedor)
-                            form.proveedor = egreso.proveedor.id.toString()
-                        if(egreso.pago){
-                            form.adjuntos.pago.files = [{
-                                name: egreso.pago.name, url: egreso.pago.url
-                            }]
-                        }
-                        if(egreso.presupuesto){
-                            form.adjuntos.presupuesto.files = [{
-                                name: egreso.presupuesto.name, url: egreso.presupuesto.url
-                            }]
-                        }
-                        this.setState({
-                            ... this.state,
-                            title: 'Editar egreso',
-                            form,
-                            options,
-                            egreso: egreso
-                        })
-                    }
-                    else
-                        history.push('/administracion/egresos')
-                }else
-                    history.push('/administracion/egresos')
-                break;
-            default:
-                break;
-        }
-        if(!egresos)
-            history.push('/')
-        this.getEgresosAxios()
-    }
-
     //Setters
     setOptions = (name, array) => {
         const {options} = this.state
@@ -353,20 +348,31 @@ class EgresosForm extends Component{
         })
     }
 
+    // SUbmit
+    onSubmit = e => {
+        e.preventDefault()
+        const{ title } = this.state
+        waitAlert()
+        if(title === 'Editar ingreso'){
+            this.editIngresoAxios()
+        }else
+            this.addIngresoAxios()
+    }
+
     //ASYNC
-    async getEgresosAxios(){
+    async getIngresosAxios(){
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'egresos', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'ingresos', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { proveedores, empresas, areas, tiposPagos, tiposImpuestos, estatusCompras } = response.data
+                const { clientes, empresas, areas, tiposPagos, tiposImpuestos, estatusCompras } = response.data
                 const { options, data } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
-                options['proveedores'] = setOptions(proveedores, 'nombre', 'id')
+                options['clientes'] = setOptions(clientes, 'nombre', 'id')
                 options['tiposPagos'] = setSelectOptions( tiposPagos, 'tipo' )
                 options['tiposImpuestos'] = setSelectOptions( tiposImpuestos, 'tipo' )
                 options['estatusCompras'] = setSelectOptions( estatusCompras, 'estatus' )
-                data.proveedores = proveedores
+                data.clientes = clientes
                 data.empresas = empresas
                 this.setState({
                     ... this.state,
@@ -388,7 +394,7 @@ class EgresosForm extends Component{
         })
     }
 
-    async addEgresoAxios(){
+    async addIngresoAxios(){
         
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -421,11 +427,10 @@ class EgresosForm extends Component{
             }
         })
 
-        await axios.post(URL_DEV + 'egresos', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'ingresos', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 this.setState({
                     ... this.state,
-                    modal: false,
                     form: this.clearForm()
                 })
                 swal({
@@ -437,7 +442,7 @@ class EgresosForm extends Component{
                 })
                 const { history } = this.props
                     history.push({
-                    pathname: '/administracion/egresos'
+                    pathname: '/administracion/ingresos'
                 });
             },
             (error) => {
@@ -454,10 +459,10 @@ class EgresosForm extends Component{
         })
     }
 
-    async editEgresoAxios(){
+    async editIngresoAxios(){
 
         const { access_token } = this.props.authUser
-        const { form, egreso } = this.state
+        const { form, ingreso } = this.state
         const data = new FormData();
         
         let aux = Object.keys(form)
@@ -483,11 +488,10 @@ class EgresosForm extends Component{
             data.append('adjuntos[]', element)
         })
         
-        await axios.post(URL_DEV + 'egresos/update/' + egreso.id, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'ingresos/update/' + ingreso.id, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 this.setState({
                     ... this.state,
-                    modal: false,
                     form: this.clearForm()
                 })
                 swal({
@@ -499,7 +503,7 @@ class EgresosForm extends Component{
                 })
                 const { history } = this.props
                     history.push({
-                    pathname: '/administracion/egresos'
+                    pathname: '/administracion/ingresos'
                 });
             },
             (error) => {
@@ -520,22 +524,7 @@ class EgresosForm extends Component{
         const { form, title, options } = this.state
         return(
             <Layout active={'administracion'}  { ...this.props}>
-                    {/* <Formulario title={title} form={form} onChange={this.onChange} sendFactura = { () => {this.readFactura() }}
-                        onChangeFile = {this.onChangeFile} onChangeAdjunto = {this.onChangeAdjunto} clearAdjunto = {this.clearAdjunto} clearFile = {this.clearFile} 
-                        options={options} setCuentas = { this.setCuentas } setSubareas = { this.setSubareas } onSubmit = {this.onSubmit}/> */}
-                <NewTable headers = {['Proyecto', 'Proveedor', 'Cuenta','Factura','Monto','Comisión','Impuesto','Total','Tipo de pago','Descripción','Área','Sub-Área','Estatus compra','Adjuntos','Fecha','Opciones']} 
-
-                    data = {
-                        [
-                            [
-                                'Test3','GALT ASSET MANAGEMENT S.A.P.I. DE C.V.','Empresa:INEIN Cuenta:Afirme Omar  # de cuenta:AACA951213SQ1-2','Con factura','$18,750	','$1,000','IVA','$22,750','TOTAL','Testing factura','ACABADOS','EQUIPOS','COMPLETO','Pago Presupuesto','20/05/2020','1'
-                            ],
-                            [
-                                'Test3','GALT ASSET MANAGEMENT S.A.P.I. DE C.V.','Empresa:INEIN Cuenta:Afirme Omar  # de cuenta:AACA951213SQ1-2','Con factura','$100,000','$1,000','IVA','$117,000','AVANCE','Nuevo test','ACCESORIOS','MANO DE OBRA','COMPLETO','Pago Presupuesto','20/05/2020','1'
-                            ],
-                        ]
-                    }/>
-                <EgresosFormulario 
+                <IngresosFormulario 
                     title = { title } 
                     form = { form }
                     onChange = { this.onChange } 
@@ -544,7 +533,6 @@ class EgresosForm extends Component{
                     options = { options } 
                     setOptions = { this.setOptions } 
                     onSubmit = {this.onSubmit}/> 
-                
             </Layout>
         )
     }
@@ -559,4 +547,4 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(EgresosForm);
+export default connect(mapStateToProps, mapDispatchToProps)(IngresosForm);
