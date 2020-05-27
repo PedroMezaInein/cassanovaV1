@@ -59,7 +59,8 @@ class NewTable extends Component {
       
        
         // begin first table
-        table.DataTable({  
+        table.DataTable({ 
+            
             
             initComplete: function () {
                 table.find("thead th").each( function () {
@@ -80,28 +81,44 @@ class NewTable extends Component {
                     } );
                 } );
             },
-
+            
             colReorder: true,        
             responsive: true,
             data: data,
             columns,
             // DOM Layout settings
-            dom: `<'row'<'col-sm-12'tr>>
-			<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 dataTables_pager'lp>>`,
+            dom: 
+            `<'row'
+                <'col-sm-12'tr>>
+                <'row'<'col-sm-12 col-md-5'i>
+                <'col-sm-12 col-md-7 dataTables_pager'lp>
+            >`,
 
-            lengthMenu: [10, 20, 30],
+            lengthMenu:	[[5, 10, 20, 25, 50, -1], [5, 10, 20, 25, 50, "Todos"]],
+            pageLength: 5,
 
-            pageLength: 10
-
-
-            // Order settings
-        
-           
-        });
+            language: {
+                "sProcessing":    "Procesando...",
+                "sLengthMenu":    "Mostrar _MENU_ registros",
+                "sZeroRecords":   "No se encontraron resultados",
+                "sEmptyTable":    "Ningún dato disponible en esta tabla",
+                "sInfo":          "Registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty":     "Registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered":  "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix":   "",
+                "sSearch":        "Buscar:",
+                "sUrl":           "",
+                "sInfoThousands":  ",",
+                "sLoadingRecords":"Cargando...",
+                "oPaginate": {
+                    "sFirst":"Primero",
+                    "sLast":"Último",
+                    "sNext":"Siguiente",
+                    "sPrevious":"Anterior"
+                }
+            },
             
-        
-       
-
+        });
     }
     componentWillUnmount() {
         $('.data-table-wrapper')
@@ -116,10 +133,6 @@ class NewTable extends Component {
 
         const { headers, data } = this.props;
         
-
-
-
-
         return (
         <>
         
@@ -130,7 +143,7 @@ class NewTable extends Component {
                         <div className="card-title">
                             <h3 className="card-label font-weight-bolder">
                                 Facturas
-                            <span className="d-block text-muted pt-2 font-size-sm">Listado de tacturas</span>
+                            <span className="d-block text-muted pt-2 font-size-sm">Listado de facturas</span>
                             </h3>
                         </div>
                         <div className="card-toolbar">
@@ -147,7 +160,7 @@ class NewTable extends Component {
                                         </g>
 									</svg>
                                     {/*end::Svg Icon*/}
-								</span>Export</button>
+								</span>Exportar</button>
                                 {/*begin::Dropdown Menu*/}
 							    <div className="dropdown-menu dropdown-menu-sm dropdown-menu-right">
                                     {/*begin::Navigation*/}
@@ -158,7 +171,7 @@ class NewTable extends Component {
                                                 <span className="navi-icon">
                                                     <i className="la la-print"></i>
                                                 </span>
-                                                <span className="navi-text">Print</span>
+                                                <span className="navi-text">Imprimir</span>
                                             </a>
                                         </li>
                                         <li className="navi-item">
@@ -166,7 +179,7 @@ class NewTable extends Component {
                                                 <span className="navi-icon">
                                                     <i className="la la-copy"></i>
                                                 </span>
-                                                <span className="navi-text">Copy</span>
+                                                <span className="navi-text">Copiar</span>
                                             </a>
                                         </li>
                                         <li className="navi-item">
@@ -211,13 +224,14 @@ class NewTable extends Component {
 									</g>
 								</svg>
 								{/*end::Svg Icon*/}
-							</span>New Record</a>
+							</span>Enviar</a>
                         {/*end::Button*/}   
                     </div>
                 </div>
                 <div className="card-body">
+                    {/*table table-separate table-head-custom table-checkable display responsive dt-responsive table table-striped"*/}
                     {/*begin: Datatable*/}
-                    <table ref="main" className="table table-separate table-head-custom table-checkable display responsive nowrap dt-responsive" id="kt_datatable2" />
+                    <table ref="main" className="table table-separate table-head-custom table-checkable table-striped display responsive dt-responsive" id="kt_datatable2" />
                     {/*<table    >
                         <tr>
                             {
