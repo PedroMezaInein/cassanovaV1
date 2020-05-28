@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 /* import '../../styles/plugins.bundle.css';*/
-import '../../styles/style.bundle.css';
-import '../../styles/datables.css'; 
+/* import '../../styles/style.bundle.css';
+import '../../styles/datables.css';  */
 import ReactDOM from 'react-dom'
 import { renderToString } from 'react-dom/server' 
 
