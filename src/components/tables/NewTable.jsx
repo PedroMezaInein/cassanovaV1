@@ -112,11 +112,9 @@ class NewTable extends Component {
                     'orderable': false,
                     render: function ( data, type, row, meta ) {
                         let aux = ''
-                        console.log(data)
                         {
                             data.map( (element) => {
-                                console.log(element, 'element')
-                                aux = aux + /* `<input type="button" onClick = { console.log('hola')} value="Edit" class="btnEdit sfBtn sfPrimaryBtn sfLocale" />` */
+                                aux = aux + 
                                 `<button name=${element.action}  id = ${row.id} class="btn btn-primary btn-actions-table">${element.text}</button>`
                             })
                         }
@@ -151,9 +149,8 @@ class NewTable extends Component {
                     return element    
                 }
             });
-            console.log(actions, name)
             actions[name].function(aux)
-            // Reset form
+            
             
         });
     }
