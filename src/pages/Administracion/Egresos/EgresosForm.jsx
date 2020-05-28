@@ -561,7 +561,7 @@ class EgresosForm extends Component{
                             ],
                         ]
                     }/> */}
-                <Card className="m-2 p-2">
+                <Card className="m-2 p-2 m-md-4 p-md-4">
                     <Card.Body>
                         <EgresosFormulario 
                             title = { title } 
