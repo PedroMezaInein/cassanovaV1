@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { renderToString } from 'react-dom/server'
 
 //
 import { connect } from 'react-redux'
@@ -19,6 +20,7 @@ import { EgresosForm, FacturaForm } from '../../../components/forms'
 import { DataTable, FacturaTable } from '../../../components/tables'
 import { Subtitle } from '../../../components/texts'
 import { Form, ProgressBar } from 'react-bootstrap'
+import NewTable from '../../../components/tables/NewTable'
 
 class egresos extends Component{
 
@@ -32,7 +34,8 @@ class egresos extends Component{
         porcentaje: 0,
         data: {
             proveedores: [],
-            empresas: []
+            empresas: [],
+            egresos: []
         },
         form:{
             formaPago: '',
@@ -250,7 +253,8 @@ class egresos extends Component{
                         egreso.pago ? {name: 'Pago', url: egreso.pago.url} : '',
                         egreso.presupuesto ? {name: 'Presupuesto', url: egreso.presupuesto.url} : '',
                     ]),
-                    fecha: setDateTable(egreso.created_at)
+                    fecha: setDateTable(egreso.created_at),
+                    id: egreso.id
                 }
             )
         })
@@ -258,7 +262,31 @@ class egresos extends Component{
     }
 
     setActions= egreso => {
-        return(
+        let aux = []
+        aux.push({
+            text: 'Editar',
+            action: 'edit',
+            tooltip: {id:'edit', text:'Editar'}
+            },
+            {
+                text: 'Eliminar',
+                action: 'delete',
+                tooltip: {id:'delete', text:'Eliminar', type:'error'}
+            }
+        )
+        console.log(egreso, 'egreso')
+        if(egreso.factura)
+        {
+            alert('SI hay factura')
+            aux.push({
+                text: 'Facturas',
+                action: 'facturas',
+                tooltip: {id:'taxes', text:'Facturas'}
+            })
+        }
+        return aux
+            
+        /* return(
             <>
                 <div className="d-flex align-items-center flex-column flex-md-row">
                     <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.changePageEdit(e)(egreso) } text='' icon={faEdit} color="transparent"
@@ -275,6 +303,20 @@ class egresos extends Component{
                     : ''
                 }
             </>
+        ) */
+        return(
+            [
+                {
+                    text: 'Editar',
+                    action: 'edit',
+                    tooltip: {id:'delete', text:'Eliminar', type:'error'}
+                },
+                {
+                    text: 'Eliminar',
+                    action: 'delete',
+                    tooltip: {id:'delete', text:'Eliminar', type:'error'}
+                }
+            ]
         )
     }
 
@@ -285,7 +327,7 @@ class egresos extends Component{
         });
     }
 
-    changePageEdit = e => (egreso) => {
+    changePageEdit = (egreso) => {
         const { history } = this.props
         history.push({
             pathname: '/administracion/egresos/edit',
@@ -293,7 +335,7 @@ class egresos extends Component{
         });
     }
 
-    openModalDelete = e => egreso => {
+    openModalDelete = egreso => {
         this.setState({
             ... this.state,
             modalDelete: true,
@@ -352,6 +394,7 @@ class egresos extends Component{
                 const { egresos, proveedores, empresas } = response.data
                 data.proveedores = proveedores
                 data.empresas = empresas
+                data.egresos = egresos
                 this.setState({
                     ... this.state,
                     egresos: this.setEgresos(egresos),
@@ -378,11 +421,14 @@ class egresos extends Component{
         await axios.delete(URL_DEV + 'egresos/' + egreso.id, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { egresos } = response.data
+                const { data } = this.state
+                data.egresos = egresos
                 this.setState({
                     ... this.state,
                     egresos: this.setEgresos(egresos),
                     modalDelete: false,
-                    egreso: ''
+                    egreso: '',
+                    data
                 })
                 swal({
                     title: '¡Listo 👋!',
@@ -440,7 +486,7 @@ class egresos extends Component{
             (response) => {
 
                 const { egreso, egresos } = response.data
-                let { porcentaje } = this.state
+                let { porcentaje, data } = this.state
                 porcentaje = 0
                 egreso.facturas.map((factura)=>{
                     porcentaje = porcentaje + factura.total
@@ -453,7 +499,8 @@ class egresos extends Component{
                     egreso: egreso,
                     facturas: egreso.facturas,
                     porcentaje,
-                    egresos: this.setEgresos(egresos)
+                    egresos: this.setEgresos(egresos),
+                    egresos: egresos
                 })
                 
                 swal({
@@ -487,19 +534,21 @@ class egresos extends Component{
             (response) => {
                 
                 const { egreso, egresos } = response.data
-                let { porcentaje } = this.state
+                let { porcentaje, data } = this.state
                 porcentaje = 0
                 egreso.facturas.map((factura)=>{
                     porcentaje = porcentaje + factura.total
                 })
                 porcentaje = porcentaje * 100 / (egreso.total - egreso.comision)
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
+                data.egresos = egresos
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
                     egreso: egreso,
                     egresos: this.setEgresos(egresos),
                     facturas: egreso.facturas,
+                    data,
                     porcentaje
                 })
                 
@@ -527,15 +576,29 @@ class egresos extends Component{
     }
 
     render(){
-        const { egresos, modalDelete, modalFacturas, egreso, facturas, porcentaje, form } = this.state
+        const { egresos, modalDelete, modalFacturas, egreso, facturas, porcentaje, form, data } = this.state
+        console.log(egresos, 'egresos -')
         return(
             <Layout active={'administracion'}  { ...this.props}>
                 <div className="text-right">
                     <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.changePageAdd() } } text='' icon = { faPlus } color="green"
                         tooltip={{id:'add', text:'Nuevo'}} />
                 </div>
-                <DataTable columns = {EGRESOS_COLUMNS} data= {egresos}/>
-                
+                {/* <DataTable columns = {EGRESOS_COLUMNS} data= {egresos}/> */}
+                {
+                    egresos.length ? 
+                        <NewTable columns = { EGRESOS_COLUMNS } data = { egresos } 
+                            title = 'Egresos' subtitle = 'Listado de egresos'
+                            url = '/administracion/egresos/add'
+                            actions = {{
+                                'edit': {function: this.changePageEdit},
+                                'delete': {function: this.openModalDelete},
+                                'facturas': {function: this.openModalFacturas}
+                            }}
+                            elements = { data.egresos }
+                            />
+                    : ''
+                }
                 <ModalDelete show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteEgresoAxios() }}>
                     <Subtitle className="my-3 text-center">
                         ¿Estás seguro que deseas eliminar el egreso?

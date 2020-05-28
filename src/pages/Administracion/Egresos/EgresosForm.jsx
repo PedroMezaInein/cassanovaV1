@@ -13,7 +13,7 @@ import { errorAlert, waitAlert, forbiddenAccessAlert } from '../../../functions/
 //
 import Layout from '../../../components/layout/layout'
 import NewTable from '../../../components/tables/NewTable'
- 
+
 import { EgresosForm as EgresosFormulario } from '../../../components/forms'
 
 class EgresosForm extends Component{
@@ -520,10 +520,8 @@ class EgresosForm extends Component{
         const { form, title, options } = this.state
         return(
             <Layout active={'administracion'}  { ...this.props}>
-                    {/* <Formulario title={title} form={form} onChange={this.onChange} sendFactura = { () => {this.readFactura() }}
-                        onChangeFile = {this.onChangeFile} onChangeAdjunto = {this.onChangeAdjunto} clearAdjunto = {this.clearAdjunto} clearFile = {this.clearFile} 
-                        options={options} setCuentas = { this.setCuentas } setSubareas = { this.setSubareas } onSubmit = {this.onSubmit}/> */}
-                <NewTable headers = {['Proyecto', 'Proveedor', 'Cuenta','Factura','Monto','Comisión','Impuesto','Total','Tipo de pago','Descripción','Área','Sub-Área','Estatus compra','Adjuntos','Fecha','Opciones']} 
+                    
+             <NewTable headers = {['Proyecto', 'Proveedor', 'Cuenta','Factura','Monto','Comisión','Impuesto','Total','Tipo de pago','Descripción','Área','Sub-Área','Estatus compra','Adjuntos','Fecha','Opciones']} 
 
                     data = {
                         [
@@ -564,6 +562,16 @@ class EgresosForm extends Component{
                     }/>
                 
                 
+                    }/> 
+                <EgresosFormulario 
+                            title = { title } 
+                            form = { form }
+                            onChange = { this.onChange } 
+                            onChangeAdjunto = { this.onChangeAdjunto } 
+                            clearFiles = { this.clearFiles } 
+                            options = { options } 
+                            setOptions = { this.setOptions } 
+                            onSubmit = {this.onSubmit}/> 
             </Layout>
         )
     }
