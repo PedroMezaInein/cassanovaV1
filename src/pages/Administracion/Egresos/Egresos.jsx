@@ -580,10 +580,10 @@ class egresos extends Component{
         console.log(egresos, 'egresos -')
         return(
             <Layout active={'administracion'}  { ...this.props}>
-                <div className="text-right">
+                {/* <div className="text-right">
                     <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.changePageAdd() } } text='' icon = { faPlus } color="green"
                         tooltip={{id:'add', text:'Nuevo'}} />
-                </div>
+                </div> */}
                 {/* <DataTable columns = {EGRESOS_COLUMNS} data= {egresos}/> */}
                 {
                     egresos.length ? 
