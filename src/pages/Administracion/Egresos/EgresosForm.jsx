@@ -521,7 +521,7 @@ class EgresosForm extends Component{
         return(
             <Layout active={'administracion'}  { ...this.props}>
                     
-             <NewTable headers = {['Proyecto', 'Proveedor', 'Cuenta','Factura','Monto','Comisión','Impuesto','Total','Tipo de pago','Descripción','Área','Sub-Área','Estatus compra','Adjuntos','Fecha','Opciones']} 
+             {/* <NewTable columns = {['Proyecto', 'Proveedor', 'Cuenta','Factura','Monto','Comisión','Impuesto','Total','Tipo de pago','Descripción','Área','Sub-Área','Estatus compra','Adjuntos','Fecha','Opciones']} 
 
                     data = {
                         [
@@ -559,10 +559,7 @@ class EgresosForm extends Component{
                                 'Proyecto 2','Galt Asset Management S.A.P.I. DE C.V.','Empresa:INEIN','Con factura','$100,000','$1,000','IVA','$117,000','Avance','Nueva factura','Acessorios','Mano de obra','Completo','Pago Presupuesto','21/05/2020','1'
                             ],
                         ]
-                    }/>
-                
-                
-                    }/> 
+                    }/> */}
                 <EgresosFormulario 
                             title = { title } 
                             form = { form }

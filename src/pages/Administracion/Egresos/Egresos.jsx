@@ -274,10 +274,10 @@ class egresos extends Component{
                 tooltip: {id:'delete', text:'Eliminar', type:'error'}
             }
         )
-        console.log(egreso, 'egreso')
+        
         if(egreso.factura)
         {
-            alert('SI hay factura')
+            
             aux.push({
                 text: 'Facturas',
                 action: 'facturas',
