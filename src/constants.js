@@ -619,6 +619,10 @@ export const PROVEEDORES_COLUMNS = [
         accessor: 'razonSocial'
     },
     {
+        Header: 'RFC',
+        accessor: 'rfc'
+    },
+    {
         Header: 'Contacto',
         accessor: 'contacto'
     },

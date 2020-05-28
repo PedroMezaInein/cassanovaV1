@@ -6,18 +6,19 @@ import {Input, Select, SelectSearch, Button} from '../../form-components'
 class ProveedorForm extends Component{
 
     updateArea = value => {
-        const { onChangeForm, setSubareas } = this.props
-        onChangeForm( { target: { name: 'area', value: value.value.toString() } } )
-        setSubareas(value.subareas)
+        const { onChange, setOptions } = this.props
+        onChange({target:{value: value.value, name:'area'}})
+        onChange({target:{value: '', name:'subarea'}})
+        setOptions('subareas',value.subareas)
     }
 
     updateSubarea = value => {
-        const { onChangeForm } = this.props
-        onChangeForm( { target: { name: 'subarea', value: value.value.toString() } } )
+        const { onChange } = this.props
+        onChange( { target: { name: 'subarea', value: value.value.toString() } } )
     }
 
     render(){
-        const { title, form, onChangeForm, tipos, bancos, areas, subareas, setSubareas, ... props } = this.props
+        const { title, options, form, onChange, setOptions, ...props } = this.props
         return(
             <Form { ... props}>
                 <Subtitle className="text-center">
@@ -27,30 +28,33 @@ class ProveedorForm extends Component{
                 </Subtitle>
                 <div className="row mx-0 mt-3">
                     <div className="col-md-6 px-2">
-                        <Input name="nombre" value={form.nombre} placeholder="Nombre" onChange={onChangeForm} />
+                        <Input name="nombre" value={form.nombre} placeholder="Nombre" onChange={onChange} />
                     </div>
                     <div className="col-md-6 px-2">
-                        <Input name="razonSocial" value={form.razonSocial} placeholder="Razón Social" onChange={onChangeForm} />
+                        <Input name="razonSocial" value={form.razonSocial} placeholder="Razón Social" onChange={onChange} />
                     </div>
                     <div className="col-md-6 px-2">
-                        <Input name="correo" value={form.correo} placeholder="Correo" type="email" onChange={onChangeForm} />
+                        <Input name="rfc" value={form.rfc} placeholder="RFC" onChange={onChange} />
                     </div>
                     <div className="col-md-6 px-2">
-                        <Input name="telefono" value={form.telefono} placeholder="Teléfono" onChange={onChangeForm} />
+                        <Input name="correo" value={form.correo} placeholder="Correo" type="email" onChange={onChange} />
                     </div>
                     <div className="col-md-6 px-2">
-                        <Input name="cuenta" value={form.cuenta} placeholder="Cuenta" onChange={onChangeForm} />
+                        <Input name="telefono" value={form.telefono} placeholder="Teléfono" onChange={onChange} />
                     </div>
                     <div className="col-md-6 px-2">
-                        <Input name="numCuenta" value={form.numCuenta} placeholder="No. de cuenta" onChange={onChangeForm} />
+                        <Input name="cuenta" value={form.cuenta} placeholder="Cuenta" onChange={onChange} />
                     </div>
                     <div className="col-md-6 px-2">
-                        <Select required name = 'tipo' options = { tipos } placeholder = 'Selecciona el tipo de cuenta' value = { form.tipo }
-                            onChange = { onChangeForm } />
+                        <Input name="numCuenta" value={form.numCuenta} placeholder="No. de cuenta" onChange={onChange} />
                     </div>
                     <div className="col-md-6 px-2">
-                        <Select required name = 'banco' options = { bancos } placeholder = 'Selecciona el banco' value = { form.banco }
-                            onChange = { onChangeForm } />
+                        <Select required name = 'tipo' options = { options.tipos } placeholder = 'Selecciona el tipo de cuenta' value = { form.tipo }
+                            onChange = { onChange } />
+                    </div>
+                    <div className="col-md-6 px-2">
+                        <Select required name = 'banco' options = { options.bancos } placeholder = 'Selecciona el banco' value = { form.banco }
+                            onChange = { onChange } />
                     </div>
                     {
                         form.leadId ? 
@@ -58,13 +62,13 @@ class ProveedorForm extends Component{
                         : ''
                     }
                     <div className="col-md-6 px-2">
-                        <SelectSearch options = { areas } placeholder = "Selecciona el área"
+                        <SelectSearch options = { options.areas } placeholder = "Selecciona el área"
                             name="area" value={form.area} onChange={this.updateArea}/> 
                     </div>
                     {
                         form.area ?
                             <div className="col-md-6 px-2">
-                                <SelectSearch options = { subareas } placeholder = "Selecciona el subárea"
+                                <SelectSearch options = { options.subareas } placeholder = "Selecciona el subárea"
                                     name="subarea" value={form.subarea} onChange={this.updateSubarea}/> 
                             </div>
                         : ''

@@ -11,6 +11,7 @@ import cuentaForm from './CuentaForm'
 import traspasoForm from './TraspasoForm'
 import ingresosForm from './administracion/IngresosForm'
 import egresosForm from './administracion/EgresosForm'
+import proveedorForm from './administracion/ProveedorForm'
 import areasForm from './catalogos/AreaForm'
 import proyectosForm from './proyectos/ProyectosForm'
 import ventasForm from './proyectos/VentasForm'
@@ -34,6 +35,7 @@ export const CuentaForm = cuentaForm
 export const TraspasoForm = traspasoForm
 export const IngresosForm = ingresosForm
 export const EgresosForm = egresosForm
+export const ProveedorForm = proveedorForm
 export const AreasForm = areasForm
 export const ProyectosForm = proyectosForm
 export const VentasForm = ventasForm

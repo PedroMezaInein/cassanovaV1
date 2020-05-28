@@ -72,6 +72,17 @@ export function setArrayTable( arreglo ){
         arreglo.map((element) => {
             return(
                 <>
+                    {
+                        element.name ? 
+                            <Small className = "mr-1" >
+                                <B color = "gold">
+                                    {
+                                        element.name
+                                    }:
+                                </B>
+                            </Small>
+                        : ''
+                    }
                     <Small className = "mr-1" >
                         <B color = "gold">
                             {
