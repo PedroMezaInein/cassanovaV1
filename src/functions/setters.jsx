@@ -5,7 +5,6 @@ import NumberFormat from 'react-number-format';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileAlt } from '@fortawesome/free-regular-svg-icons';
 import { GOLD } from '../constants';
-import {  } from 'react-dom/server'
 
 export function setOptions( arreglo, name, value ){
     let aux = []
