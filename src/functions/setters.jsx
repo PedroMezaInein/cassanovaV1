@@ -61,9 +61,11 @@ export function setDateTable( date ){
 }
 
 export function setMoneyTable( value ){
+    let cantidad = 0
+    cantidad = parseFloat(Math.round(value)).toFixed(2)
     return (
-        <NumberFormat value = { value } displayType = { 'text' } thousandSeparator = { true } prefix = { '$' }
-                renderText = { value => <Small> { value } </Small> } />
+        <NumberFormat value = { cantidad } displayType = { 'text' } thousandSeparator = { true } prefix = { '$' }
+                renderText = { cantidad => <Small> { cantidad } </Small> } />
     )
 }
 
