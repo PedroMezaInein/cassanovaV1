@@ -1,11 +1,4 @@
-<<<<<<< HEAD
 import React, { Component } from 'react'; 
-=======
-import React, { Component } from 'react';
-/* import '../../styles/plugins.bundle.css';*/
-/* import '../../styles/style.bundle.css';
-import '../../styles/datables.css';  */
->>>>>>> 3d3033cbb8498b02a2edd42189031d98fb104138
 import ReactDOM from 'react-dom'
 import { renderToString } from 'react-dom/server' 
 import {PlusCircle} from '../../assets/svg'
@@ -136,13 +129,8 @@ class NewTable extends Component {
                         let aux = ''
                         {
                             data.map( (element) => {
-<<<<<<< HEAD
                                 aux = aux + /* `<input type="button" onClick = { console.log('hola')} value="Edit" class="btnEdit sfBtn sfPrimaryBtn sfLocale" />` */
                                 `<button name=${element.action}  id = ${row.id} class="ml-2 btn btn-actions-table btn btn-xs btn-icon btn-text-${element.btnclass} btn-hover-${element.btnclass}"><i class=${element.iconclass}></i></button>`
-=======
-                                aux = aux + 
-                                `<button name=${element.action}  id = ${row.id} class="btn btn-primary btn-actions-table">${element.text}</button>`
->>>>>>> 3d3033cbb8498b02a2edd42189031d98fb104138
                             })
                         }
                         return(
@@ -173,11 +161,7 @@ class NewTable extends Component {
                 if(element.id.toString() === id){
                     return element    
                 }
-<<<<<<< HEAD
             }); 
-=======
-            });
->>>>>>> 3d3033cbb8498b02a2edd42189031d98fb104138
             actions[name].function(aux)
             
             
