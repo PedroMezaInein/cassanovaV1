@@ -444,8 +444,9 @@ export const INGRESOS_COLUMNS = [
 ]
 
 export const EGRESOS_COLUMNS = [
+    
     {
-        Header: ' ',
+        Header: 'Opciones',
         accessor: 'actions',
     },
     {
@@ -477,7 +478,7 @@ export const EGRESOS_COLUMNS = [
         accessor: 'total'
     },
     {
-        Header: 'Tipo de pago',
+        Header: 'Pago', //Cambié de Tipo de pago a Pago
         accessor: 'tipoPago'
     },
     {
@@ -489,7 +490,7 @@ export const EGRESOS_COLUMNS = [
         accessor: 'area'
     },
     {
-        Header: 'Sub-Área',
+        Header: 'Sub-área',
         accessor: 'subarea'
     },
     {

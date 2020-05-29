@@ -1,11 +1,17 @@
+
+@import 'style.bundle.css';
+@import 'plugins.bundle.css';
+@import 'prismjs.bundle.css';
+@import 'datables.css';
+
 @import "~rfs/scss";
-@import 'mixin';
+//@import 'mixin';
 @import 'general';
-@import 'button';
-@import 'text';
-@import 'card';
-@import 'table';
-@import 'navbar';
+//@import 'button';
+//@import 'text';
+//@import 'card';
+//@import 'table';
+//@import 'navbar';
 @import 'sidebar';
 @import 'form';
 @import 'modal';

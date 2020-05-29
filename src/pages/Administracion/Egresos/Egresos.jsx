@@ -235,7 +235,7 @@ class egresos extends Component{
                         [
                             {name:'Empresa', text: egreso.empresa ? egreso.empresa.name : ''},
                             {name:'Cuenta', text: egreso.cuenta ? egreso.cuenta.nombre : ''},
-                            {name:'# de cuenta', text: egreso.cuenta ? egreso.cuenta.numero : ''}
+                            {name:'No. de cuenta', text: egreso.cuenta ? egreso.cuenta.numero : ''}
                         ]
                     )),
                     cliente: renderToString(setTextTable(egreso.proveedor ? egreso.proveedor.nombre : '')),
@@ -263,25 +263,31 @@ class egresos extends Component{
 
     setActions= egreso => {
         let aux = []
-        aux.push({
-            text: 'Editar',
-            action: 'edit',
-            tooltip: {id:'edit', text:'Editar'}
-            },
-            {
-                text: 'Eliminar',
-                action: 'delete',
-                tooltip: {id:'delete', text:'Eliminar', type:'error'}
-            }
+            aux.push(
+                {
+                    text: 'Editar',
+                    btnclass: 'success',
+                    iconclass: 'flaticon2-pen',
+                    action: 'edit',
+                    tooltip: {id:'edit', text:'Editar'},
+                },
+                {
+                    text: 'Eliminar',
+                    btnclass: 'danger',
+                    iconclass: 'flaticon2-rubbish-bin',                  
+                    action: 'delete',
+                    tooltip: {id:'delete', text:'Eliminar', type:'error'},
+                }
         )
         
         if(egreso.factura)
-        {
-            
-            aux.push({
+            {
+                aux.push({
                 text: 'Facturas',
+                btnclass: 'primary',
+                iconclass: 'flaticon2-medical-records',
                 action: 'facturas',
-                tooltip: {id:'taxes', text:'Facturas'}
+                tooltip: {id:'taxes', text:'Facturas'},
             })
         }
         return aux

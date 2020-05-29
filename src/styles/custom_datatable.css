@@ -1,0 +1,32 @@
+.dataTables_wrapper .dataTable thead th{
+    color: #000000 !important;
+}
+
+.dataTables_wrapper .dataTables_pager .dataTables_length label{
+color: #80808F !important;
+}
+
+div.dataTables_wrapper div.dataTables_info {
+color: #80808F!important;
+}
+
+div.dataTables_wrapper div.dataTables_length select{
+    color: #3699FF !important;
+    background-color: #E1F0FF !important;
+    border: 0 !important;
+    padding: 4px;
+    font-size: 1.08rem;
+    line-height: 1.5;
+    border-radius: 0.42rem;    
+    margin-left: 10px;
+    margin-right: 10px;
+    text-align-last:center;
+}
+
+thead{
+    text-align-last:center;
+}
+.dataTables_pager .dataTables_paginate .paginate_button .current {
+
+}
+
