@@ -1,11 +1,8 @@
-import React, { Component } from 'react';
-import '../../styles/plugins.bundle.css';
-import '../../styles/style.bundle.css';
-import '../../styles/datables.css';
+import React, { Component } from 'react'; 
 import ReactDOM from 'react-dom'
 import { renderToString } from 'react-dom/server' 
-
 import {PlusCircle} from '../../assets/svg'
+import '../../styles/custom_datatable.css'
 
 const $ = require('jquery');
 $.DataTable = require('datatables.net');
@@ -15,6 +12,7 @@ require("datatables.net-searchpanes");
 require("datatables.net-colreorder");
 require("datatables.net-buttons");
 require("datatables.net-select");
+require("datatables.net-fixedheader");
 
 function reloadTableData(data) {
     const table = $('.data-table-wrapper')
@@ -46,10 +44,29 @@ class NewTable extends Component {
         table.DataTable({  
             
             initComplete: function () {
+                var html_append;
+                var html;
+                var contador =0;
                 table.find("thead th").each( function () {
                     var title = $(this).text();
-                    $(this).append(`<br/><input class="form-control form-control-sm form-filter datatable-input" type="text" placeholder="${title}"/>`);
+                
+                /*Opcioón 1*/    
+                //$(this).append('<br/><input class="form-control form-control-sm form-filter datatable-input" type="text"/>');
+                
+                 /*Opción 2 */
+                 if (contador!=0)
+                 {
+                  
+                $(this).append('<div class="mt-2 separator separator-dashed separator-border-2"></div><div class="mt-2 input-icon"><input type="text" class="form-control form-control-sm"/><span><i class="flaticon2-search-1 icon-sm"></i></span></div>');
+                     
+                 }
+                 contador ++;
+                
+
+                //  html+='<th style="'+$(this).attr("style").toString()+'"><input class="form-control form-control-sm form-filter datatable-input" type="text"/></th>';
                 } );
+                
+                //table.find("thead").append('<tr class="filter">'+html+'</tr>');
                 // Apply the search
                 this.api().columns().every( function () {
                     var that = this;
@@ -61,6 +78,8 @@ class NewTable extends Component {
                         }
                     } );
                 } );
+
+                
             },
             
             colReorder: true,        
@@ -74,10 +93,6 @@ class NewTable extends Component {
                 <'row'<'col-sm-12 col-md-5'i>
                 <'col-sm-12 col-md-7 dataTables_pager'lp>
             >`,
-
-            lengthMenu:	[[5, 10, 20, 25, 50, -1], [5, 10, 20, 25, 50, "Todos"]],
-            pageLength: 5,
-
             language: {
                 "sProcessing":    "Procesando...",
                 "sLengthMenu":    "Mostrar _MENU_ registros",
@@ -90,12 +105,12 @@ class NewTable extends Component {
                 "sSearch":        "Buscar:",
                 "sUrl":           "",
                 "sInfoThousands":  ",",
-                "sLoadingRecords":"Cargando...",
+                "sLoadingRecords":'Cargando... <div class="spinner spinner-primary mr-10"></div>',
                 "oPaginate": {
-                    "sFirst":"Primero",
-                    "sLast":"Último",
-                    "sNext":"Siguiente",
-                    "sPrevious":"Anterior"
+                    "sFirst":'<i class="btn btn-icon btn-sm btn-light-primary mr-2 my-1 ki ki-bold-double-arrow-back icon-xs"></i>',
+                    "sLast":'<i class="btn btn-icon btn-sm btn-light-primary mr-4 my-1 ki ki-bold-double-arrow-next icon-xs"></i>',
+                    "sNext":'<i class="btn btn-icon btn-sm btn-light-primary ml-4 my-1 ki ki-bold-arrow-next icon-xs"></i>',
+                    "sPrevious":'<i class="btn btn-icon btn-sm btn-light-primary mr-2 my-1 ki ki-bold-arrow-back icon-xs"></i>'
                 }
             },
             
@@ -112,12 +127,10 @@ class NewTable extends Component {
                     'orderable': false,
                     render: function ( data, type, row, meta ) {
                         let aux = ''
-                        console.log(data)
                         {
                             data.map( (element) => {
-                                console.log(element, 'element')
                                 aux = aux + /* `<input type="button" onClick = { console.log('hola')} value="Edit" class="btnEdit sfBtn sfPrimaryBtn sfLocale" />` */
-                                `<button name=${element.action}  id = ${row.id} class="btn btn-primary btn-actions-table">${element.text}</button>`
+                                `<button name=${element.action}  id = ${row.id} class="ml-2 btn btn-actions-table btn btn-xs btn-icon btn-text-${element.btnclass} btn-hover-${element.btnclass}"><i class=${element.iconclass}></i></button>`
                             })
                         }
                         return(
@@ -127,31 +140,28 @@ class NewTable extends Component {
                     /* 'defaultContent': '<button type="button" class="btn btn-primary btn-edit">Edit</button>' */
                 }
             ], 
-            /* dom: 'Bfrtip', */
-            buttons: [
-                'selected',
-                'selectedSingle',
-                'selectAll',
-                'selectNone',
-                'selectRows',
-                'selectColumns',
-                'selectCells'
-            ],
-            select: true,
-            lengthMenu: [20, 40, 50],
 
-            pageLength: 20
+
+            lengthMenu:	[[20, 30, 40, 50, -1], [20, 30, 40, 50, "Todos"]],
+            pageLength: 20,
+
+        });
+        table.on('responsive-resize.dt', function(e, datatable, columns) {
+            for (var i in columns) {
+                var index = parseInt(i, 10) + 1;
+                table.find('th:nth-child(' + index + ')').toggle(columns[i]);
+            }
         });
         $(this.refs.main).on('click', '.btn-actions-table', function(e){
             e.preventDefault();
-            
-            const { id, name } = e.target
-            let aux = elements.find(function(element, index) {
-                if(element.id.toString() === id.toString()){
+            var id = $(this).attr('id').toString()
+            var name =$(this).attr('name').toString() 
+
+            let aux = elements.find(function(element, index) { 
+                if(element.id.toString() === id){
                     return element    
                 }
-            });
-            console.log(actions, name)
+            }); 
             actions[name].function(aux)
             // Reset form
             
@@ -181,7 +191,7 @@ class NewTable extends Component {
                         <div className="card card-custom">
                             <div className="card-header flex-wrap border-0 pt-6 pb-0">
                                 <div className="card-title">
-                                    <h3 className="card-label font-weight-bolder">
+                                    <h2 className="card-label font-weight-bolder font-size-h2">
                                         {
                                             title ? title : ''
                                         }
@@ -190,20 +200,17 @@ class NewTable extends Component {
                                                 subtitle ? subtitle : ''
                                             }
                                         </span>
-                                    </h3>
+                                    </h2>
                                 </div>
                                 <div className="card-toolbar">
-                                    
-                                    <a href={url} className="btn btn-primary font-weight-bolder">
-                                        <span className="svg-icon svg-icon-md">
-                                            <PlusCircle />
-                                        </span>
-                                        Agregar
+                                     <a href={url} className="btn btn-icon btn-light-success pulse pulse-success mr-2 font-weight-bold" title="Agregar">
+                                        <i className="flaticon-add"></i>
+                                        <span className="pulse-ring"></span>
                                     </a>
                                 </div>
                             </div>
                             <div className="card-body">
-                                <table ref="main" className="table table-separate table-head-custom table-checkable display responsive nowrap dt-responsive" id="kt_datatable2" />
+                                <table ref="main" className="table table-separate table-head-custom table-checkable display responsive nowrap dt-responsive table-striped" id="kt_datatable2" />
                             </div>
                         </div>   
                     </div>
@@ -212,5 +219,4 @@ class NewTable extends Component {
         )
     }
 }
-
 export default NewTable
