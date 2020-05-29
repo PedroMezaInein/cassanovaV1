@@ -208,6 +208,15 @@ export function setContactoTable(contacto){
     return(
         <div>
             {
+                contacto.nombre ?
+                    <Small>
+                        {
+                            contacto.nombre
+                        }
+                    </Small>
+                : ''
+            }
+            {
                 contacto.telefono &&
                 <div className="my-2">
                     <a target="_blank" href={`tel:+${contacto.telefono}`}>

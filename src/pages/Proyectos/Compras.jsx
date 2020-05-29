@@ -136,22 +136,22 @@ class Compras extends Component{
                     actions: this.setActions(compra),
                     cuenta: setArrayTable(
                         [
-                            {name:'Empresa', text:compra.empresa.name},
-                            {name:'Cuenta', text:compra.cuenta.nombre},
-                            {name:'# de cuenta', text:compra.cuenta.numero}
+                            {name:'Empresa', text: compra.empresa ? compra.empresa.name : ''},
+                            {name:'Cuenta', text: compra.cuenta ? compra.cuenta.nombre : ''},
+                            {name:'# de cuenta', text: compra.cuenta ? compra.cuenta.numero : ''}
                         ]
                     ),
-                    proyecto: setTextTable(compra.proyecto.nombre),
-                    proveedor: setTextTable(compra.proveedor.nombre),
+                    proyecto: setTextTable(compra.proyecto ? compra.proyecto.nombre : ''),
+                    proveedor: setTextTable(compra.proveedor ? compra.proveedor.nombre : ''),
                     factura: setTextTable(compra.facturas.length ? 'Con factura' : 'Sin factura'),
                     monto: setMoneyTable(compra.monto),
                     comision: setMoneyTable(compra.comision),
                     impuesto: setTextTable( compra.tipo_impuesto ? compra.tipo_impuesto.tipo : 'Sin definir'),
                     tipoPago: setTextTable(compra.tipo_pago.tipo),
                     descripcion: setTextTable(compra.descripcion),
-                    area: setTextTable(compra.subarea.area.nombre),
-                    subarea: setTextTable(compra.subarea.nombre),
-                    estatusCompra: setTextTable(compra.estatus_compra.estatus),
+                    area: setTextTable( compra.subarea ? compra.subarea.area ? compra.subarea.area.nombre : '' : ''),
+                    subarea: setTextTable( compra.subarea ? compra.subarea.nombre : ''),
+                    estatusCompra: setTextTable( compra.estatus_compra ? compra.estatus_compra.estatus : ''),
                     total: setMoneyTable(compra.total),
                     adjuntos: setAdjuntosList([
                         compra.pago ? {name: 'Pago', url: compra.pago.url} : '',

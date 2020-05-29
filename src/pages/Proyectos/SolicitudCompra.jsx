@@ -239,15 +239,15 @@ class SolicitudCompra extends Component{
             aux.push(
                 {
                     actions: this.setActions(solicitud),
-                    proyecto: setTextTable(solicitud.proyecto.nombre),
-                    empresa: setTextTable(solicitud.empresa.name),
-                    proveedor: setTextTable(solicitud.proveedor.nombre),
+                    proyecto: setTextTable( solicitud.proyecto ? solicitud.proyecto.nombre : ''),
+                    empresa: setTextTable( solicitud.empresa ? solicitud.empresa.name : '' ),
+                    proveedor: setTextTable( solicitud.proveedor ? solicitud.proveedor.nombre : '' ),
                     factura: setTextTable(solicitud.factura ? 'Con factura' : 'Sin factura'),
                     monto: setMoneyTable(solicitud.monto),
                     tipoPago: setTextTable(solicitud.tipo_pago.tipo),
                     descripcion: setTextTable(solicitud.descripcion),
-                    area: setTextTable(solicitud.subarea.area.nombre),
-                    subarea: setTextTable(solicitud.subarea.nombre),
+                    area: setTextTable( solicitud.subarea ? solicitud.subarea.area ? solicitud.subarea.area.nombre : '' : '' ),
+                    subarea: setTextTable( solicitud.subarea ? solicitud.subarea.nombre : '' ),
                     fecha: setDateTable(solicitud.created_at)
                 }
             )
