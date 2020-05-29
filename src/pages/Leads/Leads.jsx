@@ -14,6 +14,7 @@ import { LeadForm } from '../../components/forms'
 import { Subtitle, B, Small } from '../../components/texts'
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
+import { setOptions, setSelectOptions, setTextTable, setDateTable,setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList, setContactoTable } from '../../functions/setters'
 
 class Leads extends Component{
 
@@ -50,13 +51,13 @@ class Leads extends Component{
         leads.map((lead, key) => {
             _leads[key] = {
                 actions: this.setActions(lead),
-                nombre: this.setTextTable(lead.nombre),
-                contacto: this.setContacto(lead),
-                comentario: this.setTextTable(lead.comentario),
-                servicios: this.setServiciosData(lead.servicios),
-                empresa: this.setTextTable(lead.empresa.name),
-                origen: this.setTextTable(lead.origen.origen),
-                fecha: this.setDateTable(lead.created_at)
+                nombre: setTextTable(lead.nombre),
+                contacto: setContactoTable(lead),
+                comentario: setTextTable(lead.comentario),
+                servicios: setListTable(lead.servicios, 'servicio'),
+                empresa: setTextTable(lead.empresa ? lead.empresa.name : ''),
+                origen: setTextTable(lead.origen ? lead.origen.origen : ''),
+                fecha: setDateTable(lead.created_at)
             }
         })
         let aux = []
@@ -93,23 +94,6 @@ class Leads extends Component{
         return aux
     }
 
-    setTextTable = text => {
-        return(
-            <Small>
-                {text}
-            </Small>
-        )
-    }
-
-    setDateTable = date => {
-        return(
-            <Small>
-                <Moment format="DD/MM/YYYY">
-                    {date}
-                </Moment>
-            </Small>
-        )
-    }
 
     setActions = (lead) => {
         return(

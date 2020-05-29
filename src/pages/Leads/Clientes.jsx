@@ -13,6 +13,8 @@ import { Form } from 'react-bootstrap'
 import { ClienteForm } from '../../components/forms'
 import { Modal } from '../../components/singles'
 
+import { setOptions, setSelectOptions, setTextTable, setDateTable,setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
+
 class Leads extends Component{
 
     state = {
@@ -167,12 +169,12 @@ class Leads extends Component{
             aux.push(
                 {
                     actions: this.setActions(cliente),
-                    empresa: this.setText(cliente.empresa),
+                    empresa: setTextTable(cliente.empresa),
                     direccion: this.setDireccion(cliente),
-                    perfil: this.setText(cliente.perfil),
-                    nombre: this.setText(cliente.nombre),
-                    puesto: this.setText(cliente.puesto),
-                    fecha: this.setDate(cliente.created_at)
+                    perfil: setTextTable(cliente.perfil),
+                    nombre: setTextTable(cliente.nombre),
+                    puesto: setTextTable(cliente.puesto),
+                    fecha: setDateTable(cliente.created_at)
                 }
             )
         })

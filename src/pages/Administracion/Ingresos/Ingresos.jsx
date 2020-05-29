@@ -207,7 +207,7 @@ class Ingresos extends Component{
                             swal.close()
                         }
                         form.facturaObject = obj
-                        form.rfc = obj.rfc_emisor
+                        form.rfc = obj.rfc_receptor
                         this.setState({
                             ... this.state,
                             options,
@@ -278,20 +278,20 @@ class Ingresos extends Component{
                     actions: this.setActions(ingreso),
                     cuenta: setArrayTable(
                         [
-                            {name:'Empresa', text:ingreso.empresa.name},
-                            {name:'Cuenta', text:ingreso.cuenta.nombre},
-                            {name:'# de cuenta', text:ingreso.cuenta.numero}
+                            {name:'Empresa', text: ingreso.empresa ? ingreso.empresa.name : '' },
+                            {name:'Cuenta', text: ingreso.cuenta ? ingreso.cuenta.nombre : '' },
+                            {name:'# de cuenta', text: ingreso.cuenta ? ingreso.cuenta.numero : '' }
                         ]
                     ),
-                    cliente: setTextTable(ingreso.cliente.nombre),
+                    cliente: setTextTable( ingreso.cliente ?  ingreso.cliente.nombre : ''),
                     factura: setTextTable(ingreso.facturas.length ? 'Con factura' : 'Sin factura'),
                     monto: setMoneyTable(ingreso.monto),
                     impuesto: setTextTable( ingreso.tipo_impuesto ? ingreso.tipo_impuesto.tipo : 'Sin definir'),
-                    tipoPago: setTextTable(ingreso.tipo_pago.tipo),
+                    tipoPago: setTextTable( ingreso.tipo_pago ? ingreso.tipo_pago.tipo : ''),
                     descripcion: setTextTable(ingreso.descripcion),
-                    area: setTextTable(ingreso.subarea.area.nombre),
-                    subarea: setTextTable(ingreso.subarea.nombre),
-                    estatusCompra: setTextTable(ingreso.estatus_compra.estatus),
+                    area: setTextTable( ingreso.subarea ? ingreso.subarea.area.nombre : '' ),
+                    subarea: setTextTable( ingreso.subarea ? ingreso.subarea.nombre : '' ),
+                    estatusCompra: setTextTable( ingreso.estatus_compra ? ingreso.estatus_compra.estatus : '' ),
                     total: setMoneyTable(ingreso.total),
                     adjuntos: setAdjuntosList([
                         ingreso.pago ? {name: 'Pago', url: ingreso.pago.url} : '',

@@ -15,6 +15,7 @@ import NumberFormat from 'react-number-format';
 import { Form, Badge } from 'react-bootstrap'
 import Input from '../../components/form-components/Input'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { setOptions, setSelectOptions, setTextTable, setDateTable,setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
 
 class EstadosCuenta extends Component{
 
@@ -47,15 +48,23 @@ class EstadosCuenta extends Component{
     setEstados = estados => {
         let aux = []
         estados.map( (estado, key) => {
+            console.log(estado.cuentas[0].numero, 'estado')
             aux.push( {
                 
                 actions: this.setAction( estado.id, estado.cuentas ),
 
-                cuenta: this.setCuenta( estado.cuentas[0] ),
+                cuenta: estado.cuentas.length > 0 ? 
+                        setArrayTable(
+                            [
+                                {'name': 'Cuenta', 'text': estado.cuentas[0].nombre ? estado.cuentas[0].nombre: 'Sin definir'},
+                                {'name': 'No. Cuenta', 'text': estado.cuentas[0].numero ? estado.cuentas[0].numero : 'Sin definir'},
+                            ]
+                        )
+                    : '',
 
-                estado: this.setLinks( estado ),
+                estado: setArrayTable([ { url: estado.url, text: estado.name} ]),
 
-                fecha: this.setDateTable( estado.created_at )
+                fecha: setDateTable( estado.created_at )
             } )
         })
         this.setState({

@@ -11,6 +11,8 @@ import { Modal } from '../../components/singles'
 import axios from 'axios'
 import swal from 'sweetalert'
 
+import { setOptions, setSelectOptions, setTextTable, setDateTable,setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
+
 class Areas extends Component{
 
     state = {
@@ -87,8 +89,8 @@ class Areas extends Component{
         areas.map((area) => {
             aux.push({
                 actions: this.setActions(area),
-                area: this.setTextTable(area.nombre),
-                subareas: this.setListTable(area.subareas)
+                area: setTextTable(area.nombre),
+                subareas: setListTable(area.subareas, 'nombre')
             })
         })
         return aux

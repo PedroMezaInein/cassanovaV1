@@ -390,7 +390,7 @@ class Ventas extends Component{
                             swal.close()
                         }
                         form.facturaObject = obj
-                        form.rfc = obj.rfc_emisor
+                        form.rfc = obj.rfc_receptor
                         this.setState({
                             ... this.state,
                             options,

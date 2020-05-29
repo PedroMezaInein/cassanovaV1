@@ -16,6 +16,8 @@ import { Form, Badge } from 'react-bootstrap'
 import Calendar from '../../components/form-components/Calendar'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
+import { setOptions, setSelectOptions, setTextTable, setDateTable,setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
+
 class Cuentas extends Component{
 
     state = {
@@ -188,19 +190,19 @@ class Cuentas extends Component{
                 
                 actions: this.setActions( cuenta ),
 
-                nombre: this.setText( cuenta.nombre ),
-                numero: this.setText( cuenta.numero ),
+                nombre: setTextTable( cuenta.nombre ),
+                numero: setTextTable( cuenta.numero ),
                 
-                balance: this.setMoney( cuenta.balance ),
+                balance: setMoneyTable( cuenta.balance ),
 
-                descripcion: this.setText( cuenta.descripcion ),
+                descripcion: setTextTable( cuenta.descripcion ),
 
-                banco: this.setText( cuenta.banco.nombre ),
-                tipo: this.setText( cuenta.tipo.tipo ),
-                estatus: this.setText( cuenta.estatus.estatus ),
-                empresa: this.setEmpresasTable(cuenta.empresa),
+                banco: setTextTable( cuenta.banco ? cuenta.banco.nombre : ''),
+                tipo: setTextTable( cuenta.tipo ? cuenta.tipo.tipo : '' ),
+                estatus: setTextTable( cuenta.estatus ? cuenta.estatus.estatus : '' ),
+                empresa: setListTable(cuenta.empresa, 'name'),
 
-                fecha: this.setDateTable( cuenta.created_at )
+                fecha: setDateTable( cuenta.created_at )
             } )
         })
         this.setState({
@@ -215,8 +217,8 @@ class Cuentas extends Component{
         estados.map((estado, key) => {
             aux.push( {
                 actions: this.setAction(estado.id),
-                estado: this.setLinks( estado ),
-                fecha: this.setDateTable( estado.created_at )
+                estado: setArrayTable([ { url: estado.url, text: estado.name} ]),
+                fecha: setDateTable( estado.created_at )
             } )
         })
         this.setState({
@@ -226,22 +228,12 @@ class Cuentas extends Component{
     }
 
     setEmpresasTable = arreglo => {
-        return(
-            <Small>
-                {
-                    arreglo.map((element) => {
-                        return(
-                            <>
-                                {
-                                    element.name
-                                }
-                                <br />
-                            </>
-                        )
-                    })
-                }
-            </Small>
-        )
+        let aux = []
+        arreglo.map(( element ) => {
+            aux.push({text: element.name})
+        })
+        console.log( arreglo, 'arreglo')
+        setArrayTable( aux )
     }
 
     setDateTable = date => {
@@ -453,8 +445,8 @@ class Cuentas extends Component{
         cuenta.estados.map((estado, key) => {
             aux.push( {
                 actions: this.setAction(estado.id),
-                estado: this.setLinks( estado ),
-                fecha: this.setDateTable( estado.created_at )
+                estado: setArrayTable([ { url: estado.url, text: estado.name} ]),
+                fecha: setDateTable( estado.created_at )
             } )
         })
         this.setState({

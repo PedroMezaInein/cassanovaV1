@@ -4,6 +4,7 @@ import Moment from 'react-moment'
 import NumberFormat from 'react-number-format';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileAlt } from '@fortawesome/free-regular-svg-icons';
+import { faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { GOLD } from '../constants';
 
 export function setOptions( arreglo, name, value ){
@@ -69,6 +70,29 @@ export function setMoneyTable( value ){
     )
 }
 
+export function setListTable( arreglo, nombre ){
+    return(
+        <ul>
+            {
+                arreglo.map( (element, key) => {
+                    return(
+                        <>
+                            <li key = {key}>
+                                <Small>
+                                    {
+                                        element[nombre]
+                                    }
+                                </Small>
+                            </li>
+                        </>
+                    )
+                })
+            }
+        </ul>
+        
+    )
+}
+
 export function setArrayTable( arreglo ){
     return (
         arreglo.map((element) => {
@@ -85,13 +109,6 @@ export function setArrayTable( arreglo ){
                             </Small>
                         : ''
                     }
-                    <Small className = "mr-1" >
-                        <B color = "gold">
-                            {
-                                element.name
-                            }:
-                        </B>
-                    </Small>
                     {
                         element.url ?
                             <a href={element.url} target="_blank">
@@ -184,5 +201,35 @@ export function setAdjuntosList(list){
                 )
             }
         })
+    )
+}
+
+export function setContactoTable(contacto){
+    return(
+        <div>
+            {
+                contacto.telefono &&
+                <div className="my-2">
+                    <a target="_blank" href={`tel:+${contacto.telefono}`}>
+                        <Small>
+                            <FontAwesomeIcon className="mx-3" icon={faPhone} />
+                            {contacto.telefono}
+                        </Small>
+                        
+                    </a>
+                </div>
+            }
+            {
+                contacto.email &&
+                <div className="my-2">
+                    <a target="_blank" href={`mailto:+${contacto.email}`}>
+                        <Small>
+                            <FontAwesomeIcon className="mx-3"  icon={faEnvelope} />
+                            {contacto.email}
+                        </Small>
+                    </a>
+                </div>
+            }
+        </div>
     )
 }

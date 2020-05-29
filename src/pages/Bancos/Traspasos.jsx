@@ -16,6 +16,8 @@ import { Form, Badge } from 'react-bootstrap'
 import Input from '../../components/form-components/Input'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
+import { setOptions, setSelectOptions, setTextTable, setDateTable,setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
+
 class Traspasos extends Component{
 
     state = {
@@ -226,12 +228,26 @@ class Traspasos extends Component{
         traspasos.map( (traspaso) => {
             _aux.push({
                 actions: this.setActions(traspaso),
-                origen: this.setCuenta(traspaso.origen),
-                destino: this.setCuenta(traspaso.destino),
-                monto: this.setMoney(traspaso.cantidad),
-                comentario: this.setText(traspaso.comentario),
-                usuario: this.setText(traspaso.user.name),
-                fecha: this.setDateTable(traspaso.created_at)
+                origen: setArrayTable(
+                    traspaso.origen ?
+                        [
+                            {name: 'Nombre', text: traspaso.origen.nombre},
+                            {name: '# cuenta', text: traspaso.origen.numero}
+                        ]
+                    : ''
+                ),
+                destino: setArrayTable(
+                    traspaso.destino ?
+                        [
+                            {name: 'Nombre', text: traspaso.destino.nombre},
+                            {name: '# cuenta', text: traspaso.destino.numero}
+                        ]
+                    : ''
+                ),
+                monto: setMoneyTable(traspaso.cantidad),
+                comentario: setTextTable(traspaso.comentario),
+                usuario: setTextTable(traspaso.user.name),
+                fecha: setDateTable(traspaso.created_at)
             })
         })
         this.setState({
