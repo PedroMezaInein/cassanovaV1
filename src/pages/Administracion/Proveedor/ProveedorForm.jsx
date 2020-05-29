@@ -1,0 +1,335 @@
+import React, { Component } from 'react'
+
+//
+import { connect } from 'react-redux'
+import axios from 'axios'
+import swal from 'sweetalert'
+import { URL_DEV } from '../../../constants'
+
+// Functions
+import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../../functions/setters'
+import { errorAlert, waitAlert, forbiddenAccessAlert } from '../../../functions/alert'
+
+//
+import Layout from '../../../components/layout/layout'
+import { ProveedorForm as ProveedorFormulario } from '../../../components/forms'
+import { Card } from 'react-bootstrap'
+
+class ProveedorForm extends Component{
+
+    state = {
+        title: 'Nuevo proveedor',
+        form: {
+            nombre: '',
+            razonSocial: '',
+            rfc: '',
+            correo: '',
+            telefono: '',
+            cuenta: '',
+            numCuenta: '',
+            tipo: 0,
+            banco: 0,
+            leadId: '',
+            area: '',
+            subarea: ''
+        },
+        data:{
+            proveedores: []
+        },
+        options: {
+            areas: [],
+            subareas: [],
+            bancos: [],
+            tipos: []
+        }
+    }
+
+    componentDidMount(){
+        const { authUser: { user : { permisos : permisos } } } = this.props
+        const { history : { location: { pathname: pathname } } } = this.props
+        const { match : { params: { action: action } } } = this.props
+        const { history, location: { state: state} } = this.props
+        
+        const proveedores = permisos.find(function(element, index) {
+            const { modulo: { url: url } } = element
+            return  pathname === '/' + url + '/' + action
+        })
+
+        switch(action){
+            case 'add':
+                this.setState({
+                    ... this.state,
+                    title: 'Nuevo proveedor'
+                })
+                break;
+            case 'edit':
+                if(state){
+                    if(state.proveedor)
+                    {
+                        this.setProveedor(state.proveedor)
+                        this.setState({
+                            ... this.state,
+                            title: 'Editar proveedor'
+                        })
+                    }
+                    else
+                        history.push('/administracion/proveedores')
+                }else
+                    history.push('/administracion/proveedores')
+                break;
+            case 'convert':
+                if(state){
+                    if(state.lead)
+                    {
+                        this.setLead(state.lead)
+                        this.setState({
+                            ... this.state,
+                            title: 'Convertir lead en proveedor'
+                        })
+                    }
+                    else
+                        history.push('/administracion/proveedores')
+                }else
+                    history.push('/administracion/proveedores')
+                break;
+            default:
+                break;
+        }
+        if(!proveedores)
+            history.push('/')
+        this.getProveedoresAxios()
+    }
+
+    // Form
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.map( (element) => {
+            switch(element){
+                case 'tipo':
+                case 'banco':
+                    form[element] = 0
+                    break;
+                default:
+                    form[element] = ''
+                    break;
+            }
+        })
+        return form;
+    }
+
+    // On change
+    onChange = e => {
+        const {form} = this.state
+        const {name, value} = e.target
+        form[name] = value
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
+    //Submit
+    onSubmit = e => {
+        e.preventDefault()
+        const { title } = this.state
+        waitAlert()
+        if(title === 'Editar proveedor')
+            this.updateProveedorAxios()
+        else
+            this.addProveedorAxios()
+    }
+
+    //Setters
+    setOptions = (name, array) => {
+        const {options} = this.state
+        options[name] = setOptions(array, 'nombre', 'id')
+        this.setState({
+            ... this.state,
+            options
+        })
+    }
+
+    setProveedor = proveedor => {
+
+        const { form, options} = this.state
+
+        form.nombre = proveedor.nombre
+        form.razonSocial = proveedor.razon_social
+        form.rfc = proveedor.rfc
+        form.correo = proveedor.email
+        form.telefono = proveedor.telefono
+
+        form.cuenta = proveedor.cuenta
+        form.numCuenta = proveedor.numero_cuenta
+
+        form.banco = proveedor.banco ? proveedor.banco.id : 0
+        form.tipo = proveedor.tipo_cuenta ? proveedor.tipo_cuenta.id : 0
+
+        if(proveedor.subarea)
+        {
+            form.area = proveedor.subarea.area.id.toString()
+            options['subareas'] = setOptions(proveedor.subarea.area.subareas, 'nombre', 'id')
+            form.subarea = proveedor.subarea.id.toString()
+        }
+        
+        this.setState({
+            ... this.state,
+            options,
+            proveedor: proveedor,
+            form
+        })
+    }
+
+    setLead = lead => {
+
+        const { form } = this.state
+
+        form.nombre = lead.nombre
+        form.correo = lead.email
+        form.telefono = lead.telefono
+        form.leadId = lead.id
+
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
+    async getProveedoresAxios(){
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'proveedores', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { areas, proveedores, bancos, tipos_cuentas } = response.data
+                const { data, options } = this.state
+                options.areas = setOptions(areas, 'nombre', 'id')
+                options.bancos = setSelectOptions(bancos, 'nombre')
+                options.tipos = setSelectOptions(tipos_cuentas, 'tipo')
+                data.proveedores = proveedores
+                this.setState({
+                    ... this.state,
+                    data,
+                    options
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async addProveedorAxios(){
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        await axios.post(URL_DEV + 'proveedores', form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { proveedores } = response.data
+                this.setState({
+                    ... this.state,
+                    form: this.clearForm(),
+                    title: ''
+                })
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El provedor fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+                const { history } = this.props
+                    history.push({
+                    pathname: '/administracion/proveedores'
+                });
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async updateProveedorAxios(){
+        const { access_token } = this.props.authUser
+        const { form, proveedor } = this.state
+        await axios.put(URL_DEV + 'proveedores/' + proveedor.id, form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { proveedores } = response.data
+                this.setState({
+                    ... this.state,
+                    form: this.clearForm(),
+                    title: '',
+                })
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El provedor fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+                const { history } = this.props
+                    history.push({
+                    pathname: '/administracion/proveedores'
+                });
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    render(){
+        const { form, title, options } = this.state
+        return(
+            <Layout active={'administracion'}  { ...this.props}>
+                <Card className="m-2 p-2 m-md-4 p-md-4">
+                    <Card.Body>
+                        <ProveedorFormulario 
+                            title = { title } 
+                            form = { form }
+                            onChange = { this.onChange } 
+                            options = { options } 
+                            setOptions = { this.setOptions } 
+                            onSubmit = {this.onSubmit}/> 
+
+                    </Card.Body>    
+                </Card>
+                
+            </Layout>
+        )
+    }
+}
+
+
+const mapStateToProps = state => {
+    return{
+        authUser: state.authUser
+    }
+}
+
+const mapDispatchToProps = dispatch => ({
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProveedorForm);

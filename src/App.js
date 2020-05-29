@@ -43,7 +43,9 @@ const Egresos = Loader(() => import('./pages/Administracion/Egresos/Egresos') )
 const EgresosForm = Loader(() => import('./pages/Administracion/Egresos/EgresosForm') )
 
 const Facturacion = Loader(() => import('./pages/Administracion/Facturacion') )
-const Proveedores = Loader(() => import('./pages/Administracion/Proveedor') )
+
+const Proveedores = Loader(() => import('./pages/Administracion/Proveedor/Proveedor') )
+const ProveedoresForm = Loader(() => import('./pages/Administracion/Proveedor/ProveedorForm') )
 
 const Proyectos = Loader(() => import('./pages/Proyectos/Proyectos') )
 const Ventas = Loader(() => import('./pages/Proyectos/Ventas') )
@@ -139,7 +141,9 @@ class App extends Component{
                 <Route path = "/administracion/ingresos/:action" exact component ={ IngresosForm } />
                 
                 <Route path = "/administracion/facturacion" exact component ={ Facturacion } />
+
                 <Route path = "/administracion/proveedores" exact component ={ Proveedores } />
+                <Route path = "/administracion/proveedores/:action" exact component ={ ProveedoresForm } />
 
                 <Route path = "/bancos/cuentas" exact component ={ Cuentas } />
                 <Route path = "/bancos/estados-cuenta" exact component ={ EstadosCuenta } />

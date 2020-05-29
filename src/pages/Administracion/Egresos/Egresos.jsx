@@ -231,29 +231,29 @@ class egresos extends Component{
             aux.push(
                 {
                     actions: this.setActions(egreso),
-                    cuenta: setArrayTable(
+                    cuenta: renderToString(setArrayTable(
                         [
                             {name:'Empresa', text:egreso.empresa.name},
                             {name:'Cuenta', text:egreso.cuenta.nombre},
                             {name:'No. de cuenta', text:egreso.cuenta.numero}
                         ]
-                    ),
-                    cliente: setTextTable(egreso.proveedor.nombre),
-                    factura: setTextTable(egreso.facturas.length ? 'Con factura' : 'Sin factura'),
-                    monto: setMoneyTable(egreso.monto),
-                    comision: setMoneyTable(egreso.comision),
-                    total: setMoneyTable(egreso.comision),
-                    impuesto: setTextTable( egreso.tipo_impuesto ? egreso.tipo_impuesto.tipo : 'Sin definir'),
-                    tipoPago: setTextTable(egreso.tipo_pago.tipo),
-                    descripcion: setTextTable(egreso.descripcion),
-                    area: setTextTable(egreso.subarea.area.nombre),
-                    subarea: setTextTable(egreso.subarea.nombre),
-                    estatusCompra: setTextTable(egreso.estatus_compra.estatus),
-                    adjuntos: setAdjuntosList([
+                    )),
+                    cliente: renderToString(setTextTable(egreso.proveedor.nombre)),
+                    factura: renderToString(setTextTable(egreso.facturas.length ? 'Con factura' : 'Sin factura')),
+                    monto: renderToString(setMoneyTable(egreso.monto)),
+                    comision: renderToString(setMoneyTable(egreso.comision)),
+                    total: renderToString(setMoneyTable(egreso.comision)),
+                    impuesto: renderToString(setTextTable( egreso.tipo_impuesto ? egreso.tipo_impuesto.tipo : 'Sin definir')),
+                    tipoPago: renderToString(setTextTable(egreso.tipo_pago.tipo)),
+                    descripcion: renderToString(setTextTable(egreso.descripcion)),
+                    area: renderToString(setTextTable(egreso.subarea.area.nombre)),
+                    subarea: renderToString(setTextTable(egreso.subarea.nombre)),
+                    estatusCompra: renderToString(setTextTable(egreso.estatus_compra.estatus)),
+                    adjuntos: renderToString(setAdjuntosList([
                         egreso.pago ? {name: 'Pago', url: egreso.pago.url} : '',
                         egreso.presupuesto ? {name: 'Presupuesto', url: egreso.presupuesto.url} : '',
-                    ]),
-                    fecha: setDateTable(egreso.created_at),
+                    ])),
+                    fecha: renderToString(setDateTable(egreso.created_at)),
                     id: egreso.id
                 }
             )
@@ -586,10 +586,10 @@ class egresos extends Component{
         console.log(egresos, 'egresos -')
         return(
             <Layout active={'administracion'}  { ...this.props}>
-                <div className="text-right">
+                {/* <div className="text-right">
                     <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.changePageAdd() } } text='' icon = { faPlus } color="green"
                         tooltip={{id:'add', text:'Nuevo'}} />
-                </div>
+                </div> */}
                 {/* <DataTable columns = {EGRESOS_COLUMNS} data= {egresos}/> */}
                 {
                     egresos.length ? 

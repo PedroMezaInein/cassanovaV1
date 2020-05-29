@@ -15,6 +15,7 @@ import Layout from '../../../components/layout/layout'
 import NewTable from '../../../components/tables/NewTable'
 
 import { EgresosForm as EgresosFormulario } from '../../../components/forms'
+import { Card } from 'react-bootstrap'
 
 class EgresosForm extends Component{
 
@@ -560,7 +561,9 @@ class EgresosForm extends Component{
                             ],
                         ]
                     }/> */}
-                <EgresosFormulario 
+                <Card className="m-2 p-2 m-md-4 p-md-4">
+                    <Card.Body>
+                        <EgresosFormulario 
                             title = { title } 
                             form = { form }
                             onChange = { this.onChange } 
@@ -569,6 +572,9 @@ class EgresosForm extends Component{
                             options = { options } 
                             setOptions = { this.setOptions } 
                             onSubmit = {this.onSubmit}/> 
+                    </Card.Body>
+                </Card>
+                
             </Layout>
         )
     }

@@ -381,15 +381,16 @@ class Leads extends Component{
     safeConvertLead = (e) => (lead) => {
         const { history } = this.props
         const { convertir } = this.state
+        
         if(convertir === 'Proveedor'){
             history.push({
-                pathname: '/administracion/proveedores',
+                pathname: '/administracion/proveedores/convert',
                 state: { lead: lead}
             });
         }else{
             history.push({
                 pathname: '/leads/prospectos',
-                state: { lead: lead}
+                state: { lead: lead.id}
             });
         }
         
@@ -694,7 +695,7 @@ class Leads extends Component{
                     </Subtitle>
                     <div className="d-flex justify-content-center mt-3">
                         <Button icon='' onClick={this.handleCloseConvertModal} text="Cancelar" className="mr-3" color="red"/>
-                        <Button icon='' onClick={(e) => { this.safeConvertLead(e)(leadId.id) }} text="Continuar" />
+                        <Button icon='' onClick={(e) => { this.safeConvertLead(e)(leadId) }} text="Continuar" />
                     </div>
                 </Modal>
             </Layout>
