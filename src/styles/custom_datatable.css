@@ -1,5 +1,9 @@
 .dataTables_wrapper .dataTable thead th{
     color: #000000 !important;
+    
+}
+table{
+    text-transform: uppercase;
 }
 
 .dataTables_wrapper .dataTables_pager .dataTables_length label{
@@ -48,8 +52,5 @@ thead{
 .card-toolbar a.btn.btn-icon i.flaticon-add div{
     padding-right: 0px;
     padding-left: 0px;
-}
-.dataTables_pager .dataTables_paginate .paginate_button .current {
-
 }
 

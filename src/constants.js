@@ -498,12 +498,12 @@ export const EGRESOS_COLUMNS = [
         accessor: 'estatusCompra'
     },
     {
-        Header: 'Adjuntos',
-        accessor: 'adjuntos',
-    },
-    {
         Header: 'Fecha',
         accessor: 'fecha',
+    },
+    {
+        Header: 'Adjuntos',
+        accessor: 'adjuntos',
     },
 ]
 
@@ -608,7 +608,7 @@ export const FACTURAS_COLUMNS_2 = [
 
 export const PROVEEDORES_COLUMNS = [
     {
-        Header: ' ',
+        Header: 'Opciones',
         accessor: 'actions',
     },
     {
@@ -620,10 +620,6 @@ export const PROVEEDORES_COLUMNS = [
         accessor: 'razonSocial'
     },
     {
-        Header: 'RFC',
-        accessor: 'rfc'
-    },
-    {
         Header: 'Contacto',
         accessor: 'contacto'
     },
@@ -632,11 +628,11 @@ export const PROVEEDORES_COLUMNS = [
         accessor: 'cuenta'
     },
     {
-        Header: 'Area',
+        Header: 'Área',
         accessor: 'area'
     },
     {
-        Header: 'Subarea',
+        Header: 'Sub-área',
         accessor: 'subarea'
     },
     {
@@ -646,6 +642,10 @@ export const PROVEEDORES_COLUMNS = [
     {
         Header: 'Fecha',
         accessor: 'fecha',
+    },
+    {
+        Header: 'RFC',
+        accessor: 'rfc'
     },
 ]
 
