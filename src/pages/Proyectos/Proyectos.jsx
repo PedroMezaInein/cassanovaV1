@@ -15,7 +15,7 @@ import NumberFormat from 'react-number-format';
 import swal from 'sweetalert'
 import { Form, Accordion } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
+import { setOptions, setSelectOptions, setTextTable, setDateTable,setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList, setContactoTable } from '../../functions/setters'
 
 class Proyectos extends Component{
 
@@ -500,18 +500,18 @@ class Proyectos extends Component{
         proyectos.map( (proyecto) => {
             aux.push({
                 actions: this.setActionsTable(proyecto),
-                nombre: this.setTextTable(proyecto.nombre),
-                cliente: this.setTextTable(proyecto.cliente.empresa),
+                nombre: setTextTable(proyecto.nombre),
+                cliente: setTextTable( proyecto.cliente ? proyecto.cliente.empresa : ''),
                 direccion: this.setDireccionTable(proyecto),
-                contacto: this.setArrayTable(
+                contacto: setArrayTable(
                     [
                         {name:'Nombre', text:proyecto.contacto},
                         {name:'Teléfono', text:proyecto.numero_contacto, url:`tel:+${proyecto.numero_contacto}`}
                     ]),
-                empresa: this.setTextTable(proyecto.empresa.name),
-                porcentaje: this.setTextTable(proyecto.porcentaje + '%'),
-                fechaInicio: this.setDateTable(proyecto.fecha_inicio),
-                fechaFin: this.setDateTable(proyecto.fecha_fin),
+                empresa: setTextTable( proyecto.empresa ? proyecto.empresa.name : ''),
+                porcentaje: setTextTable(proyecto.porcentaje + '%'),
+                fechaInicio: setDateTable(proyecto.fecha_inicio),
+                fechaFin: setDateTable(proyecto.fecha_fin),
                 adjuntos: this.setAdjuntosTable(proyecto)
             })
         })
@@ -523,21 +523,11 @@ class Proyectos extends Component{
             <>
                 {
                     proyecto.imagen ?
-                        this.setArrayTable(
+                        setArrayTable(
                             [
                                 {name:'Imagen', text:proyecto.imagen.name, url:proyecto.imagen.url}
                             ]
                         )
-                    : ''
-                }
-                {
-                    proyecto.adjuntos.length > 0 ?
-                        <div className="cursor mt-2" onClick = { (e) => { e.preventDefault(); this.openModalAdjuntos(proyecto)} }>
-                            <Small>
-                                <FontAwesomeIcon icon={faLink} className="mr-2" />
-                                Adjuntos
-                            </Small>
-                        </div>
                     : ''
                 }
                 {

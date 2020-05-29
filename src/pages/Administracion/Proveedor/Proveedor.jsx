@@ -67,7 +67,6 @@ class Proveedor extends Component{
                     )),
                     cuenta: renderToString(setArrayTable(
                         [
-                            {'name': 'Cuenta', 'text': proveedor.cuenta ? proveedor.cuenta: 'Sin definir'},
                             {'name': 'No. Cuenta', 'text': proveedor.numero_cuenta ? proveedor.numero_cuenta : 'Sin definir'},
                             {'name': 'Banco', 'text': proveedor.banco ? proveedor.banco.nombre: 'Sin definir'},
                             {'name': 'Tipo Cuenta', 'text': proveedor.tipo_cuenta? proveedor.tipo_cuenta.tipo: 'Sin definir'},

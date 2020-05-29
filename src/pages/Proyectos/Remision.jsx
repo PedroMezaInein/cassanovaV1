@@ -150,9 +150,9 @@ class Remisiones extends Component{
                 {
                     actions: this.setActions(remision),
                     fecha: setDateTable(remision.created_at),
-                    proyecto: setTextTable(remision.proyecto.nombre),
-                    area: setTextTable(remision.subarea.area.nombre),
-                    subarea: setTextTable(remision.subarea.nombre),
+                    proyecto: setTextTable(remision.proyecto ? remision.proyecto.nombre : ''),
+                    area: setTextTable( remision.subarea ? remision.subarea.area ? remision.subarea.area.nombre : '' : ''),
+                    subarea: setTextTable( remision.subarea ? remision.subarea.nombre : ''),
                     descripcion: setTextTable(remision.descripcion)
                 }
             )

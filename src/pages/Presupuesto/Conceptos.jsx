@@ -121,10 +121,10 @@ class Conceptos extends Component{
             aux.push(
                 {
                     actions: this.setActions(concepto),
-                    categoria: setTextTable(concepto.categoria.nombre),
+                    categoria: concepto.categoria ? setTextTable(concepto.categoria.nombre) : '',
                     clave: setTextTable(concepto.clave),
                     descripcion: setTextTable(concepto.descripcion),
-                    unidad: setTextTable(concepto.unidad.nombre),
+                    unidad: concepto.unidad ? setTextTable(concepto.unidad.nombre) : '',
                     costo: setMoneyTable(concepto.costo),
                     materiales: setTextTable(concepto.materiales),
                     manoObra: setTextTable(concepto.mano_obra),

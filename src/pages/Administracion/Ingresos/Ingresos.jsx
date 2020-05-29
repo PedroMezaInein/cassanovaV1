@@ -283,7 +283,7 @@ class Ingresos extends Component{
                             {name:'# de cuenta', text: ingreso.cuenta ? ingreso.cuenta.numero : '' }
                         ]
                     ),
-                    cliente: setTextTable( ingreso.cliente ?  ingreso.cliente.nombre : ''),
+                    cliente: setTextTable( ingreso.cliente ?  ingreso.cliente.empresa : ''),
                     factura: setTextTable(ingreso.facturas.length ? 'Con factura' : 'Sin factura'),
                     monto: setMoneyTable(ingreso.monto),
                     impuesto: setTextTable( ingreso.tipo_impuesto ? ingreso.tipo_impuesto.tipo : 'Sin definir'),

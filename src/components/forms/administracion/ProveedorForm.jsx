@@ -42,9 +42,9 @@ class ProveedorForm extends Component{
                     <div className="col-md-6 px-2">
                         <Input name="telefono" value={form.telefono} placeholder="Teléfono" onChange={onChange} />
                     </div>
-                    <div className="col-md-6 px-2">
+                    {/* <div className="col-md-6 px-2">
                         <Input name="cuenta" value={form.cuenta} placeholder="Cuenta" onChange={onChange} />
-                    </div>
+                    </div> */}
                     <div className="col-md-6 px-2">
                         <Input name="numCuenta" value={form.numCuenta} placeholder="No. de cuenta" onChange={onChange} />
                     </div>

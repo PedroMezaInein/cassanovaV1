@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Accordion, Form } from 'react-bootstrap'
 import Moment from 'react-moment'
 import { DataTable } from '../../components/tables'
-
+import { setOptions, setSelectOptions, setTextTable, setDateTable,setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList, setContactoTable } from '../../functions/setters'
 class Leads extends Component{
 
     state = {
@@ -239,17 +239,26 @@ class Leads extends Component{
         prospectos.map((prospecto, key) => {
             _prospectos.push( {
                 actions: this.setActions(prospecto),
-                lead: this.setLeadTable(prospecto.lead),
-                empresa: this.setText(prospecto.lead.empresa.name),
-                cliente: this.setClienteTable(prospecto.cliente),
-                tipoProyecto: this.setText(prospecto.tipo_proyecto.tipo),
-                descripcion: this.setText(prospecto.descripcion),
-                vendedor: this.setText(prospecto.vendedor.name),
-                preferencia: this.setText(prospecto.preferencia),
-                estatusProspecto: this.setText(prospecto.estatus_prospecto.estatus),
-                motivo: this.setText(prospecto.motivo),
-                estatusContratacion: this.setText(prospecto.estatus_contratacion.estatus),
-                fechaConversion: this.setDateTable(prospecto.created_at)
+                lead: prospecto.lead ?
+                        setContactoTable(prospecto.lead)
+                    : '',
+                empresa: prospecto.lead ? prospecto.lead.empresa ? setTextTable(prospecto.lead.empresa.name) : '' : '',
+                cliente: prospecto.cliente ?
+                        setArrayTable([
+                            { name: 'Nombre', text: prospecto.cliente.nombre },
+                            { name: 'RFC', text: prospecto.cliente.rfc },
+                            { name: 'Empresa', text: prospecto.cliente.empresa },
+                        ])
+                    : ''
+                ,
+                tipoProyecto: prospecto.tipo_proyecto ? setTextTable(prospecto.tipo_proyecto.tipo) : '',
+                descripcion: setTextTable(prospecto.descripcion),
+                vendedor: prospecto.vendedor ? setTextTable(prospecto.vendedor.name) : '',
+                preferencia: setTextTable(prospecto.preferencia),
+                estatusProspecto: prospecto.estatus_prospecto ? setTextTable(prospecto.estatus_prospecto.estatus) : '',
+                motivo: setTextTable(prospecto.motivo),
+                estatusContratacion: prospecto.estatus_contratacion ? setTextTable(prospecto.estatus_contratacion.estatus) : '',
+                fechaConversion: setDateTable(prospecto.created_at)
             } )
         })
         this.setState({
