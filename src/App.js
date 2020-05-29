@@ -51,7 +51,9 @@ const Proyectos = Loader(() => import('./pages/Proyectos/Proyectos') )
 const Ventas = Loader(() => import('./pages/Proyectos/Ventas') )
 const Compras = Loader(() => import('./pages/Proyectos/Compras') )
 const SolicitudCompra = Loader(() => import('./pages/Proyectos/SolicitudCompra') )
-const Remision = Loader(() => import('./pages/Proyectos/Remision') )
+
+const Remision = Loader(() => import('./pages/Proyectos/Remision/Remision') )
+const RemisionForm = Loader(() => import('./pages/Proyectos/Remision/RemisionForm') )
 
 const Areas = Loader( () => import('./pages/Catalogos/Areas') )
 
@@ -132,7 +134,9 @@ class App extends Component{
                 <Route path = "/proyectos/ventas" exact component ={ Ventas } />
                 <Route path = "/proyectos/compras" exact component ={ Compras } />
                 <Route path = "/proyectos/solicitud-compra" exact component ={ SolicitudCompra } />
+                
                 <Route path = "/proyectos/remision" exact component ={ Remision } />
+                <Route path = "/proyectos/remision/:action" exact component ={ RemisionForm } />
                 
                 <Route path = "/administracion/egresos" exact component ={ Egresos } />
                 <Route path = "/administracion/egresos/:action" exact component ={ EgresosForm } />

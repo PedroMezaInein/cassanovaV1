@@ -980,4 +980,8 @@ export const REMISION_COLUMNS = [
         Header: 'Descripción',
         accessor: 'descripcion'
     },
+    {
+        Header: 'Adjunto',
+        accessor: 'adjunto'
+    }
 ]
