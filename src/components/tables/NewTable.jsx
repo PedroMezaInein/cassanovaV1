@@ -14,16 +14,16 @@ require("datatables.net-buttons");
 require("datatables.net-select");
 require("datatables.net-fixedheader");
 
-function reloadTableData(data) {
-    const table = $('.data-table-wrapper')
-        .find('table')
-        .DataTable();
-    table.clear();
-    table.rows.add(data);
-    table.draw();
-}
-
 class NewTable extends Component {
+    
+    reloadTableData(data) {
+        var table = $(this.refs.main)
+            .DataTable();
+        table.clear();
+        table.rows.add(data).draw();
+        table.draw();
+    }
+    
     componentDidMount() {
         const { actions, elements, data } = this.props
         var header = this.props.columns;
@@ -175,10 +175,11 @@ class NewTable extends Component {
             .destroy(true);
     }
     shouldComponentUpdate(nextProps) {
-        if(nextProps.data !== this.props.data)
-        {
-            reloadTableData(nextProps.data)
+        if (nextProps.data !== this.props.data) {
+            this.reloadTableData(nextProps.data);
         }
+        return false;
+        
     }
     render() {
 
