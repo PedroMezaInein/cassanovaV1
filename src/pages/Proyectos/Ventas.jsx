@@ -253,7 +253,7 @@ class Ventas extends Component{
                         ]
                     ),
                     proyecto: setTextTable( venta.proyecto ? venta.proyecto.nombre : '' ),
-                    cliente: setTextTable( venta.cliente ? venta.cliente.nombre : '' ),
+                    cliente: setTextTable( venta.cliente ? venta.cliente.empresa : '' ),
                     factura: setTextTable(venta.facturas.length ? 'Con factura' : 'Sin factura'),
                     monto: setMoneyTable(venta.monto),
                     impuesto: setTextTable( venta.tipo_impuesto ? venta.tipo_impuesto.tipo : 'Sin definir'),
