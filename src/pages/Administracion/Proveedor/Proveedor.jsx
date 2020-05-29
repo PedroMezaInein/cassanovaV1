@@ -88,11 +88,15 @@ class Proveedor extends Component{
         aux.push(
             {
                 text: 'Editar',
+                btnclass: 'success',
+                iconclass: 'flaticon2-pen',
                 action: 'edit',
                 tooltip: {id:'edit', text:'Editar'}
             },
             {
                 text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin', 
                 action: 'delete',
                 tooltip: {id:'delete', text:'Eliminar', type:'error'}
             }
