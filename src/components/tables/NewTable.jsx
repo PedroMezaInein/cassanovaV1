@@ -49,16 +49,16 @@ class NewTable extends Component {
                 var contador =0;
                 table.find("thead th").each( function () {
                     var title = $(this).text();
-                
-                /*Opcioón 1*/    
-                //$(this).append('<br/><input class="form-control form-control-sm form-filter datatable-input" type="text"/>');
-                
-                 /*Opción 2 */
+                 
                  if (contador!=0)
                  {
-                  
-                $(this).append('<div class="mt-2 separator separator-dashed separator-border-2"></div><div class="mt-2 input-icon"><input type="text" class="form-control form-control-sm"/><span><i class="flaticon2-search-1 icon-sm"></i></span></div>');
-                     
+                /*Opcioón 1*/    
+                //$(this).append('<br/><input class="form-control form-control-sm form-filter datatable-input" type="text"/>');
+                /*Opción 2 */
+                //$(this).append('<div class="mt-2 separator separator-dashed separator-border-2"></div><div class="mt-2 input-icon"><input type="text" class="form-control form-control-sm"/><span><i class="flaticon2-search-1 icon-sm"></i></span></div>');
+                /*Opción 3 */
+                $(this).append('<div class="mt-2 separator separator-dashed separator-border-2"></div><div class="mt-2"><input type="text" class="form-control form-control-sm"/></div>');
+                
                  }
                  contador ++;
                 
@@ -203,8 +203,8 @@ class NewTable extends Component {
                                     </h2>
                                 </div>
                                 <div className="card-toolbar">
-                                     <a href={url} className="btn btn-icon btn-light-success pulse pulse-success mr-2 font-weight-bold" title="Agregar">
-                                        <i className="flaticon-add"></i>
+                                     <a href={url} className="btn btn-icon btn-light-success pulse pulse-success mr-2 font-weight-bold">
+                                        <i className="flaticon-add"></i><div>Agregar</div>
                                         <span className="pulse-ring"></span>
                                     </a>
                                 </div>
