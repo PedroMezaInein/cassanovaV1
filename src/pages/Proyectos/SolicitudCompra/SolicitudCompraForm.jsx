@@ -13,34 +13,46 @@ import { errorAlert, waitAlert, forbiddenAccessAlert } from '../../../functions/
 
 //
 import Layout from '../../../components/layout/layout'
-import { RemisionForm as RemisionFormulario } from '../../../components/forms'
-import { Card } from 'react-bootstrap'
+import { SolicitudCompraForm as SolicitudCompraFormulario } from '../../../components/forms'
+import { Card, Accordion } from 'react-bootstrap'
+import { Button } from '../../../components/form-components'
+import { faEye } from '@fortawesome/free-solid-svg-icons'
+import { RemisionCard } from '../../../components/cards'
 
-
-class RemisionForm extends Component{
+class SolicitudCompraForm extends Component{
 
     state = {
-        title: 'Nueva remisión',
+        title: 'Nueva solicitud de compra',
+        solicitud: '',
         remision: '',
         options:{
+            proveedores: [],
             proyectos: [],
+            empresas: [],
             areas: [],
-            subareas: []
+            subareas: [],
+            tiposPagos: []
         },
         form:{
+            proveedor: '',
             proyecto: '',
-            fecha: new Date(),
             area: '',
             subarea: '',
+            empresa: '',
             descripcion: '',
+            total: '',
+            remision: '',
+            fecha: new Date(),
+            tipoPago: 0,
+            factura: 'Sin factura',
             adjuntos:{
                 adjunto:{
                     value: '',
-                    placeholder: 'Adjunto',
+                    placeholder: 'Presupuesto',
                     files: []
                 }
             }
-        },
+        }
     }
 
     componentDidMount(){
@@ -56,57 +68,61 @@ class RemisionForm extends Component{
             case 'add':
                 this.setState({
                     ... this.state,
-                    title: 'Nueva remisión'
+                    title: 'Nueva solicitud de compra'
                 })
                 break;
             case 'edit':
                 if(state){
-                    if(state.remision)
+                    if(state.solicitud)
                     {
                         const { form, options } = this.state
-                        const { remision } = state
+                        const { solicitud } = state
                         
-                        form.proyecto = remision.proyecto ? remision.proyecto.id.toString() : ''
-                        if(remision.subarea)
-                        {
-                            if(remision.subarea.area){
-                                if(remision.subarea.area.subareas){
-                                    console.log(remision.subarea, 'subarea')
-                                    options.subareas = setOptions(remision.subarea.area.subareas, 'nombre', 'id')
-                                    form.area = remision.subarea.area.id.toString()
-                                    form.subarea = remision.subarea.id.toString()
-                                }
-                            }
-                        }
-                        form.fecha = new Date(remision.created_at)
-                        form.descripcion = remision.descripcion
-                        if(remision.adjunto){
-                            form.adjuntos.adjunto.files = [{
-                                name: remision.adjunto.name, url: remision.adjunto.url
-                            }]
-                        }
+                        let aux = this.setSolicitud(solicitud)
+
                         this.setState({
                             ... this.state,
-                            form,
-                            options,
-                            remision: remision,
-                            title: 'Editar remisión'
+                            form: aux.form,
+                            options: aux.options,
+                            solicitud: solicitud,
+                            title: 'Editar solicitud de compra'
                         })
                     }
                     else
-                        history.push('/proyectos/remision')
+                        history.push('/proyectos/solicitud-compra')
                 }else
-                    history.push('/proyectos/remision')
+                    history.push('/proyectos/solicitud-compra')
+                break;
+            case 'convert':
+                if(state){
+                    if(state.remision)
+                    {
+                        const { remision } = state
+                        
+                        let aux = this.setRemision(remision)
+
+                        this.setState({
+                            ... this.state,
+                            form: aux.form,
+                            options: aux.options,
+                            remision: remision,
+                            title: 'Convertir remisión en solicitud de compra'
+                        })
+                    }
+                    else
+                        history.push('/proyectos/solicitud-compra')
+                }else
+                    history.push('/proyectos/solicitud-compra')
                 break;
             default:
                 break;
         }
         if(!remisiones)
             history.push('/')
-        this.getRemisionesAxios()
+        this.getSolicitudesCompraAxios()
     }
 
-    // On change
+    //Handle change
     onChange = e => {
         const {form} = this.state
         const {name, value} = e.target
@@ -159,12 +175,16 @@ class RemisionForm extends Component{
 
     onSubmit = e => {
         e.preventDefault()
-        const{ title } = this.state
-        waitAlert()
-        if(title === 'Editar remisión'){
-            this.editRemisionAxios()
-        }else
-            this.addRemisionAxios()
+        const { title } = this.state
+        swal({
+            title: '¡Un momento!',
+            text: 'La información está siendo procesada.',
+            buttons: false
+        })
+        if(title === 'Editar solicitud de compra')
+            this.editSolicitudCompraAxios()
+        else
+            this.addSolicitudCompraAxios()
     }
 
     //Setters
@@ -176,15 +196,74 @@ class RemisionForm extends Component{
             options
         })
     }
-    
-    async getRemisionesAxios(){
+
+    setSolicitud = solicitud => {
+        const {form, options} = this.state
+        if(solicitud.empresa)
+            form.empresa = solicitud.empresa.id.toString()
+        if(solicitud.tipo_pago)
+            form.tipoPago = solicitud.tipo_pago.id
+        if(solicitud.proveedor)
+            form.proveedor = solicitud.proveedor.id.toString()
+        if(solicitud.proyecto)
+            form.proyecto = solicitud.proyecto.id.toString()
+        if(solicitud.subarea){
+            if(solicitud.subarea.area){
+                form.area = solicitud.subarea.area.id.toString()
+                if(solicitud.subarea.area.subareas){
+                    options['subareas'] = setOptions(solicitud.subarea.area.subareas, 'nombre', 'id')
+                    form.subarea = solicitud.subarea.id.toString()
+                }
+            }
+        }
+        if(solicitud.factura)
+            form.factura = 'Con factura'
+        else
+            form.factura = 'Sin factura'
+        form.descripcion = solicitud.descripcion
+        form.fecha = new Date(solicitud.created_at)
+        form.total = solicitud.monto
+        
+        let aux = [];
+        aux.form = form
+        aux.options = options
+        return aux
+    }
+
+    setRemision = remision => {
+        const { form, options } = this.state
+        if(remision.proyecto)
+            form.proyecto = remision.proyecto.id.toString()
+        if(remision.subarea){
+            if(remision.subarea.area){
+                form.area = remision.subarea.area.id.toString()
+                if(remision.subarea.area.subareas){
+                    options['subareas'] = setOptions(remision.subarea.area.subareas, 'nombre', 'id')
+                    form.subarea = remision.subarea.id.toString()
+                }
+            }
+        }
+        form.descripcion = remision.descripcion
+        form.fecha = new Date(remision.created_at)
+        let aux = []
+        aux.form = form
+        aux.options = options
+        return aux
+    }
+
+    //Async
+    async getSolicitudesCompraAxios(){
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'remision', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'solicitud-compra', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { proyectos, areas, remisiones } = response.data
+                const { empresas, areas, tiposPagos, proveedores, proyectos } = response.data
                 const { options } = this.state
-                options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
+                options['empresas'] = setOptions(empresas, 'name', 'id')
+                options['proveedores'] = setOptions(proveedores, 'nombre', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
+                options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
+                options['tiposPagos'] = setSelectOptions( tiposPagos, 'tipo' )
+                
                 this.setState({
                     ... this.state,
                     options
@@ -204,7 +283,7 @@ class RemisionForm extends Component{
         })
     }
 
-    async addRemisionAxios(){
+    async addSolicitudCompraAxios(){
         
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -234,9 +313,9 @@ class RemisionForm extends Component{
             }
         })
 
-        await axios.post(URL_DEV + 'remision', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'solicitud-compra', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { remision } = response.data
+                const { solicitud } = response.data
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.',
@@ -246,7 +325,7 @@ class RemisionForm extends Component{
                 })
                 const { history } = this.props
                     history.push({
-                    pathname: '/proyectos/remision'
+                    pathname: '/proyectos/solicitud-compra'
                 });
             },
             (error) => {
@@ -263,10 +342,10 @@ class RemisionForm extends Component{
         })
     }
 
-    async editRemisionAxios(){
+    async editSolicitudCompraAxios(){
 
         const { access_token } = this.props.authUser
-        const { form, remision } = this.state
+        const { form, solicitud } = this.state
         const data = new FormData();
         
         let aux = Object.keys(form)
@@ -291,9 +370,9 @@ class RemisionForm extends Component{
             data.append('adjuntos[]', element)
         })
         
-        await axios.post(URL_DEV + 'remision/update/' + remision.id, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'solicitud-compra/update/' + solicitud.id, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const {remision} = response.data
+                const {solicitud} = response.data
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.',
@@ -303,7 +382,7 @@ class RemisionForm extends Component{
                 })
                 const { history } = this.props
                     history.push({
-                    pathname: '/proyectos/remision'
+                    pathname: '/proyectos/solicitud-compra'
                 });
             },
             (error) => {
@@ -321,8 +400,8 @@ class RemisionForm extends Component{
     }
 
     render(){
-
-        const { form, title, options } = this.state
+        
+        const { form, title, options, remision } = this.state
 
         return(
             <Layout active={'administracion'}  { ...this.props}>
@@ -330,7 +409,7 @@ class RemisionForm extends Component{
                 
                 <Card className="m-2 p-2 m-md-4 p-md-4">
                     <Card.Body>
-                        <RemisionFormulario 
+                        <SolicitudCompraFormulario 
                             title = { title } 
                             form = { form }
                             onChange = { this.onChange } 
@@ -339,7 +418,25 @@ class RemisionForm extends Component{
                             onSubmit = {this.onSubmit}
                             onChangeAdjunto = { this.onChangeAdjunto }
                             clearFiles = { this.clearFiles }
-                            /> 
+                            >
+                                
+                                {
+                                    remision !== '' ?
+                                    
+                                        <Accordion>
+                                            <div className="d-flex justify-content-end">
+                                                <Accordion.Toggle as = { Button } icon={ faEye } color="transparent" eventKey={0} />
+                                            </div>
+                                            <Accordion.Collapse eventKey = { 0 } className="px-md-5 px-2" >
+                                                <div>
+                                                    <RemisionCard data = { remision }/>
+                                                </div>
+                                            </Accordion.Collapse>
+                                        </Accordion>
+                                    : ''
+                                }
+
+                        </SolicitudCompraFormulario>
 
                     </Card.Body>    
                 </Card>
@@ -358,4 +455,4 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(RemisionForm);
+export default connect(mapStateToProps, mapDispatchToProps)(SolicitudCompraForm);

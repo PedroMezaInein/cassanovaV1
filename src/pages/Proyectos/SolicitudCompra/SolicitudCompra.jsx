@@ -5,7 +5,7 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
-import { URL_DEV, GOLD, REMISION_COLUMNS } from '../../../constants'
+import { URL_DEV, GOLD, SOLICITUD_COMPRA_COLUMNS } from '../../../constants'
 
 // Functions
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../../functions/setters'
@@ -16,21 +16,20 @@ import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { Button , FileInput } from '../../../components/form-components'
 import { faPlus, faTrash, faEdit, faSync, faMoneyBill, faFileAlt, faFileArchive, faMoneyBillWave, faReceipt, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons'
-import { RemisionCard } from '../../../components/cards'
+import { SolicitudCompraCard } from '../../../components/cards'
 import { Small, B, Subtitle } from '../../../components/texts'
 import NewTable from '../../../components/tables/NewTable'
 
-
-class Remisiones extends Component{
+class SolicitudCompra extends Component{
 
     state = {
         modalDelete: false,
         modalSingle: false,
-        title: 'Nueva remisión',
-        remisiones: [],
-        remision: '',
+        title: 'Nueva solicitud de compra',
+        solicitud: '',
+        solicitudes: [],
         data:{
-            remisiones: []
+            solicitudes: []
         }
     }
 
@@ -38,13 +37,12 @@ class Remisiones extends Component{
         const { authUser: { user : { permisos : permisos } } } = this.props
         const { history : { location: { pathname: pathname } } } = this.props
         const { history } = this.props
-        const remisiones = permisos.find(function(element, index) {
+        const solicitud = permisos.find(function(element, index) {
             const { modulo: { url: url } } = element
             return  pathname === '/' + url
         });
-        if(!remisiones)
+        if(!solicitud)
             history.push('/')
-        this.getRemisionesAxios()
         let queryString = this.props.history.location.search
         if(queryString){
             let params = new URLSearchParams(queryString)
@@ -55,24 +53,19 @@ class Remisiones extends Component{
                     ... this.state,
                     modalSingle: true
                 })
-                this.getRemisionAxios(id)
+                this.getSolicitudCompraAxios(id)
+
             }
         }
+        this.getSolicitudesCompraAxios()
     }
-    
-    openModalDelete = (remision) => {
+
+    openModalDelete = ( solicitud ) => {
         this.setState({
             ... this.state,
             modalDelete: true,
-            remision: remision
-        })
-    }
-
-    handleCloseSingle = () => {
-        this.setState({
-            ... this.state,
-            modalSingle: false,
-            remision: ''
+            title: 'Nueva solicitud de compra',
+            solicitud: solicitud
         })
     }
 
@@ -81,31 +74,46 @@ class Remisiones extends Component{
         this.setState({
             ... this.state,
             modalDelete: !modalDelete,
-            remision: '',
+            solicitud: '',
+            remision: ''
         })
     }
 
-    // Setters
-    setRemisiones = remisiones => {
+    handleCloseSingle = () => {
+        const { modalSingle } = this.state
+        this.setState({
+            ... this.state,
+            modalSingle: !modalSingle,
+            solicitud: '',
+            remision: ''
+        })
+    }
+
+    setSolicitudes = solicitudes => {
         let aux = []
-        remisiones.map( (remision) => {
+        solicitudes.map( (solicitud) => {
             aux.push(
                 {
-                    actions: this.setActions(remision),
-                    fecha: renderToString(setDateTable(remision.created_at)),
-                    proyecto: renderToString(setTextTable(remision.proyecto ? remision.proyecto.nombre : '')),
-                    area: renderToString(setTextTable( remision.subarea ? remision.subarea.area ? remision.subarea.area.nombre : '' : '')),
-                    subarea: renderToString(setTextTable( remision.subarea ? remision.subarea.nombre : '')),
-                    descripcion: renderToString(setTextTable(remision.descripcion)),
-                    adjunto: remision.adjunto ? renderToString(setArrayTable([{text: 'Adjunto', url: remision.adjunto.url}])) : renderToString(setTextTable('Sin adjuntos')),
-                    id: remision.id
+                    actions: this.setActions(solicitud),
+                    proyecto: renderToString(setTextTable( solicitud.proyecto ? solicitud.proyecto.nombre : '')),
+                    empresa: renderToString(setTextTable( solicitud.empresa ? solicitud.empresa.name : '' )),
+                    proveedor: renderToString(setTextTable( solicitud.proveedor ? solicitud.proveedor.nombre : '' )),
+                    factura: renderToString(setTextTable(solicitud.factura ? 'Con factura' : 'Sin factura')),
+                    monto: renderToString(setMoneyTable(solicitud.monto)),
+                    tipoPago: renderToString(setTextTable(solicitud.tipo_pago ? solicitud.tipo_pago.tipo : '')),
+                    descripcion: renderToString(setTextTable(solicitud.descripcion)),
+                    area: renderToString(setTextTable( solicitud.subarea ? solicitud.subarea.area ? solicitud.subarea.area.nombre : '' : '' )),
+                    subarea: renderToString(setTextTable( solicitud.subarea ? solicitud.subarea.nombre : '' )),
+                    fecha: renderToString(setDateTable(solicitud.created_at)),
+                    adjunto: solicitud.adjunto ? renderToString(setArrayTable([{text: 'Adjunto', url: solicitud.adjunto.url}])) : renderToString(setTextTable('Sin adjuntos')),
+                    id: solicitud.id
                 }
             )
         })
         return aux
     }
 
-    setActions = remision => {
+    setActions = solicitud => {
         let aux = []
             aux.push(
                 {
@@ -133,34 +141,33 @@ class Remisiones extends Component{
         return aux
     }
 
-    changePageConvert = remision => {
-        console.log(remision, 'remision')
+    changePageConvert = solicitud => {
         const { history } = this.props
         history.push({
-            pathname: '/proyectos/solicitud-compra/convert',
-            state: { remision: remision}
+            pathname: '/proyectos/compra/convert',
+            state: { solicitud: solicitud}
         });
     }
 
-    changePageEdit = remision => {
+    changePageEdit = solicitud => {
         const { history } = this.props
         history.push({
-            pathname: '/proyectos/remision/edit',
-            state: { remision: remision}
+            pathname: '/proyectos/solicitud-compra/edit',
+            state: { solicitud: solicitud}
         });
     }
 
-    async getRemisionesAxios(){
+    //Async
+    async getSolicitudesCompraAxios(){
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'remision', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'solicitud-compra', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { proyectos, areas, remisiones } = response.data
+                const { solicitudes } = response.data
                 const { data } = this.state
-                data.remisiones = remisiones
+                data.solicitudes = solicitudes
                 this.setState({
                     ... this.state,
-                    remisiones: this.setRemisiones(remisiones),
-                    data
+                    solicitudes: this.setSolicitudes(solicitudes)
                 })
             },
             (error) => {
@@ -177,14 +184,14 @@ class Remisiones extends Component{
         })
     }
 
-    async getRemisionAxios(id){
+    async getSolicitudCompraAxios(id){
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'remision/'+id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'solicitud-compra/'+id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { remision } = response.data
+                const { solicitud } = response.data
                 this.setState({
                     ... this.state,
-                    remision: remision,
+                    solicitud: solicitud
                 })
             },
             (error) => {
@@ -201,27 +208,28 @@ class Remisiones extends Component{
         })
     }
 
-    async deleteRemisionAxios(){
+    async deleteSolicitudAxios(){
         const { access_token } = this.props.authUser
-        const { remision } = this.state
-        await axios.delete(URL_DEV + 'remision/' + remision.id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        const { solicitud } = this.state
+        await axios.delete(URL_DEV + 'solicitud-compra/' + solicitud.id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { remisiones } = response.data
+                const { solicitudes } = response.data
                 const { data } = this.state
-                data.remisiones = remisiones
+                data.solicitudes = solicitudes 
                 swal({
                     title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'La remisión fue eliminada con éxito.',
+                    text: response.data.message !== undefined ? response.data.message : 'La solicitud fue registrado con éxito.',
                     icon: 'success',
                     timer: 1500,
                     buttons: false
                 })
                 this.setState({
                     ... this.state,
-                    remisiones: this.setRemisiones(remisiones),
-                    modalDelete:false,
-                    remision: '',
-                    data
+                    modalDelete: false,
+                    data,
+                    title: 'Nueva solicitud de compra',
+                    solicitud: '',
+                    solicitudes: this.setSolicitudes(solicitudes)
                 })
             },
             (error) => {
@@ -240,42 +248,38 @@ class Remisiones extends Component{
 
     render(){
 
-        const { data, modalDelete, modalSingle, remisiones, remision } = this.state
+        const { modalDelete, modalSingle, solicitudes, solicitud, data } = this.state
 
         return(
-            <Layout active={'administracion'}  { ...this.props}>
-
+            <Layout active={'proyectos'}  { ...this.props}>
                 
-                {/* <DataTable columns = { REMISION_COLUMNS } data = { remisiones } /> */}
-                <NewTable columns = { REMISION_COLUMNS } data = {remisiones} 
-                    title = 'Remisiones' subtitle = 'Listado de demisiones'
-                    url = '/proyectos/remision/add'
+                <NewTable columns = { SOLICITUD_COMPRA_COLUMNS } data = {solicitudes} 
+                    title = 'Solicitudes de compra' subtitle = 'Listado de solicitudes de compra'
+                    url = '/proyectos/solicitud-compra/add'
                     actions = {{
                         'edit': {function: this.changePageEdit},
                         'delete': {function: this.openModalDelete},
                         'convert': {function: this.changePageConvert}
                     }}
-                    elements = { data.remisiones } />
-
-                <ModalDelete show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteRemisionAxios() }}>
+                    elements = { data.solicitudes } />
+                
+                <ModalDelete show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteSolicitudAxios() }}>
                     <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas eliminar la remisión?
+                        ¿Estás seguro que deseas eliminar la solicitud de compra?
                     </Subtitle>
                 </ModalDelete>
-
+                
                 <Modal show = { modalSingle } handleClose = { this.handleCloseSingle } >
-
-                    <RemisionCard data = { remision }>
+                    <SolicitudCompraCard data = { solicitud }>
                         {
-                            remision.convertido ? '' :
+                            solicitud.convertido ? '' :
                                 <div className="col-md-12 mb-3 d-flex justify-content-end">
-                                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.changePageConvert(remision)} } text='' icon={faSync} color="transparent" 
+                                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.changePageConvert(solicitud)} } text='' icon={faSync} color="transparent" 
                                         tooltip={{id:'convertir', text:'Comprar', type:'success'}} />
                                 </div>
                         }
                         
-                    </RemisionCard>
-                    
+                    </SolicitudCompraCard>
                 </Modal>
 
             </Layout>
@@ -292,4 +296,4 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Remisiones);
+export default connect(mapStateToProps, mapDispatchToProps)(SolicitudCompra);
