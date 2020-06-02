@@ -591,9 +591,7 @@ class egresos extends Component{
                         tooltip={{id:'add', text:'Nuevo'}} />
                 </div> */}
                 {/* <DataTable columns = {EGRESOS_COLUMNS} data= {egresos}/> */}
-                {
-                    egresos.length ? 
-                        <NewTable columns = { EGRESOS_COLUMNS } data = { egresos } 
+                <NewTable columns = { EGRESOS_COLUMNS } data = { egresos } 
                             title = 'Egresos' subtitle = 'Listado de egresos'
                             url = '/administracion/egresos/add'
                             actions = {{
@@ -603,8 +601,6 @@ class egresos extends Component{
                             }}
                             elements = { data.egresos }
                             />
-                    : ''
-                }
                 <ModalDelete show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteEgresoAxios() }}>
                     <Subtitle className="my-3 text-center">
                         ¿Estás seguro que deseas eliminar el egreso?
