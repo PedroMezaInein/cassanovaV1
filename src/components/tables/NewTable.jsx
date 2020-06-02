@@ -26,23 +26,15 @@ class NewTable extends Component {
 
         $(this.refs.main).on('click', '.btn-actions-table', function(e){
             e.preventDefault();
-            alert('Hola')
             var id = $(this).attr('id').toString()
             var name =$(this).attr('name').toString() 
-
-            console.log(id, name, 'id name')
-
             let aux = elements.find(function(element, index) { 
                 if(element.id.toString() === id){
                     return element    
                 }
             }); 
-            console.log(actions[name], 'actions name')
-            console.log(aux, 'aux')
-            console.log(this.props, 'PROPS')
+            console.log(id, name, aux, 'Last')
             actions[name].function(aux)
-            
-            
         });
 
     }
@@ -178,14 +170,15 @@ class NewTable extends Component {
         
         $(this.refs.main).on('click', '.btn-actions-table', function(e){
             e.preventDefault();
-            var id = $(this).attr('id').toString()
+            /* var id = $(this).attr('id').toString()
             var name =$(this).attr('name').toString() 
             let aux = elements.find(function(element, index) { 
                 if(element.id.toString() === id){
                     return element    
                 }
             }); 
-            actions[name].function(aux)
+            console.log(id, name, aux, 'first')
+            actions[name].function(aux) */
         });
     }
 
@@ -232,7 +225,7 @@ class NewTable extends Component {
                                 </div>
                             </div>
                             <div className="card-body">
-                                <table ref="main" className="table table-separate table-head-custom table-checkable display responsive nowrap dt-responsive table-striped" id="kt_datatable2" />
+                                <table ref="main" className="table table-separate table-head-custom table-checkable display responsive nowrap dt-responsive table-striped new-table" id="kt_datatable2" />
                             </div>
                         </div>   
                     </div>
