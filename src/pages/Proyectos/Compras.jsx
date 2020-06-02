@@ -202,8 +202,8 @@ class Compras extends Component{
         form.factura = compra.factura ? 'Con factura' : 'Sin factura'
         if(compra.proyecto){
             if(compra.proyecto.cliente){
-                form.cliente = compra.proyecto.cliente.id.toString()
-                options['proyectos'] = setOptions(compra.proyecto.cliente.proyectos, 'nombre', 'id')
+                /* form.cliente = compra.proyecto.cliente.id.toString()
+                options['proyectos'] = setOptions(compra.proyecto.cliente.proyectos, 'nombre', 'id') */
                 form.proyecto = compra.proyecto.id.toString()
             }
         }
@@ -513,13 +513,14 @@ class Compras extends Component{
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'compras', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, 
+                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos,
                     clientes, compras, proveedores, formasPago, metodosPago, estatusFacturas } = response.data
                 const { options, data } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['proveedores'] = setOptions(proveedores, 'nombre', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
-                options['clientes'] = setOptions(clientes, 'empresa', 'id')
+                /* options['clientes'] = setOptions(clientes, 'empresa', 'id') */
+                options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
                 options['tiposPagos'] = setSelectOptions( tiposPagos, 'tipo' )
                 options['tiposImpuestos'] = setSelectOptions( tiposImpuestos, 'tipo' )
                 options['estatusCompras'] = setSelectOptions( estatusCompras, 'estatus' )
@@ -764,7 +765,7 @@ class Compras extends Component{
                     if(solicitud.proyecto.cliente){
                         if(solicitud.proyecto.cliente.proyectos){
                             options['proyectos'] = setOptions(solicitud.proyecto.cliente.proyectos, 'nombre', 'id')
-                            form.cliente = solicitud.proyecto.cliente.id.toString()
+                            /* form.cliente = solicitud.proyecto.cliente.id.toString() */
                             form.proyecto = solicitud.proyecto.id.toString()
                         }
                     }
