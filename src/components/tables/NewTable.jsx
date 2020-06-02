@@ -26,6 +26,7 @@ class NewTable extends Component {
 
         $(this.refs.main).on('click', '.btn-actions-table', function(e){
             e.preventDefault();
+            alert('Hola')
             var id = $(this).attr('id').toString()
             var name =$(this).attr('name').toString() 
 
@@ -175,7 +176,7 @@ class NewTable extends Component {
             }
         });
         
-        /* $(this.refs.main).on('click', '.btn-actions-table', function(e){
+        $(this.refs.main).on('click', '.btn-actions-table', function(e){
             e.preventDefault();
             var id = $(this).attr('id').toString()
             var name =$(this).attr('name').toString() 
@@ -185,7 +186,7 @@ class NewTable extends Component {
                 }
             }); 
             actions[name].function(aux)
-        }); */
+        });
     }
 
     componentWillUnmount() {
