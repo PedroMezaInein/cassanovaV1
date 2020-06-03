@@ -36,7 +36,7 @@ class Sidebar extends Component{
                                             return(
                                                 <NavItem key={key} url={submodule.url} eventKey={module.slug+'/'+submodule.slug}>
                                                     <NavIcon>
-                                                        <div className="d-flex align-items-center">
+                                                        <div className="ml-5 d-flex align-items-center">
                                                             <FontAwesomeIcon  className="subnav__icon" icon={ICONS_MODULES[submodule.icon]} />
                                                             <div className="mx-2">
                                                                 <span className="subnav__text">
