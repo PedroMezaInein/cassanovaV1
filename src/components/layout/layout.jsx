@@ -6,6 +6,8 @@ import MenuResponsive from './menuResponsive'
 import { logout, login } from '../../redux/reducers/auth_user'
 import axios from 'axios'
 import { URL_DEV } from '../../constants'
+
+import NewSideBar from './NewSideBar'
 class Layout extends Component{
 
     state = {
@@ -47,14 +49,17 @@ class Layout extends Component{
         const { children,  } = this.props
         const { menu } = this.state
         return(
-            <div className="contenedor__full-height position-relative">
-                <Sidebar {... this.props} />
-                <MenuResponsive expanded={menu ? 'expanded' : ''} clickResponsiveMenu={ this.clickResponsiveMenu } {... this.props} />
-                <Navbar clickResponsiveMenu={ this.clickResponsiveMenu } clickLogout={ this.logoutUser } {... this.props} />
-                <div className="mx-md-5 px-md-5 mx-4 pt-2 contenedor">
-                    {children}
-                </div>
-            </div>
+            
+                <div className="pl-5  position-relative nav-full-height"  >
+                   <Navbar clickResponsiveMenu={ this.clickResponsiveMenu } clickLogout={ this.logoutUser } {... this.props} />
+                   
+                     <Sidebar {... this.props} />
+                
+                    <MenuResponsive expanded={menu ? 'expanded' : ''} clickResponsiveMenu={ this.clickResponsiveMenu } {... this.props} />
+                    <div className="pl-5 container-fluid">
+                        {children}
+                    </div>
+                </div> 
         )
     }
 }
