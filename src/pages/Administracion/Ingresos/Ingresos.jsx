@@ -9,7 +9,7 @@ import { URL_DEV, GOLD, INGRESOS_COLUMNS } from '../../../constants'
 
 // Functions
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert } from '../../../functions/alert'
 
 //
 import Layout from '../../../components/layout/layout'
@@ -204,7 +204,7 @@ class Ingresos extends Component{
                         if(auxCliente){
                             form.cliente = auxCliente.empresa
                         }else{
-                            errorAlert('No existe el cliente')
+                            createAlert('No existe el cliente', '¿Lo quieres crear?', () => this.addClienteAxios(obj))
                         }
                         if(auxEmpresa && auxCliente){
                             swal.close()
@@ -661,6 +661,44 @@ class Ingresos extends Component{
                     buttons: false
                 })
 
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async addClienteAxios(obj){
+
+        const { access_token } = this.props.authUser
+
+        const data = new FormData();
+
+        
+        data.append('empresa', obj.nombre_emisor)
+        data.append('nombre', obj.nombre_emisor)
+        data.append('rfc', obj.rfc_emisor)
+
+        await axios.post(URL_DEV + 'cliente', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+
+                this.getIngresosAxios()
+                
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
             },
             (error) => {
                 console.log(error, 'error')

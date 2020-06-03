@@ -42,6 +42,34 @@ export function deleteAlert(text, action){
     })
 }
 
+
+export function createAlert(title, text, action){
+    swal({
+        title: title,
+        text: text,
+        buttons: {
+            cancel: {
+                text: "Cancelar",
+                value: null,
+                visible: true,
+                className: "button__green btn-primary cancel",
+                closeModal: true,
+            },
+            confirm: {
+                text: "Aceptar",
+                value: true,
+                visible: true,
+                className: "button__red btn-primary",
+                closeModal: true
+            }
+        }
+    }).then((result) => {
+        if(result){
+            action()
+        }
+    })
+}
+
 export function forbiddenAccessAlert(){
     swal({
         title: '¡Ups 😕!',

@@ -8,7 +8,7 @@ import { URL_DEV, VENTAS_COLUMNS, GOLD } from '../../constants'
 
 // Functions
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
-import { waitAlert, errorAlert } from '../../functions/alert'
+import { waitAlert, errorAlert, createAlert,forbiddenAccessAlert } from '../../functions/alert'
 //
 import Layout from '../../components/layout/layout'
 import { Button, FileInput } from '../../components/form-components'
@@ -384,7 +384,7 @@ class Ventas extends Component{
                             options['proyectos'] = setOptions(auxCliente.proyectos, 'nombre', 'id')
                             form.cliente = auxCliente.empresa
                         }else{
-                            errorAlert('No existe el cliente')
+                            createAlert('No existe el cliente', '¿Lo quieres crear?', () => this.addClienteAxios(obj))
                         }
                         if(auxEmpresa && auxCliente){
                             swal.close()
@@ -498,6 +498,45 @@ class Ventas extends Component{
     }
 
     // Async
+
+    async addClienteAxios(obj){
+
+        const { access_token } = this.props.authUser
+
+        const data = new FormData();
+
+        
+        data.append('empresa', obj.nombre_emisor)
+        data.append('nombre', obj.nombre_emisor)
+        data.append('rfc', obj.rfc_emisor)
+
+        await axios.post(URL_DEV + 'cliente', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+
+                this.getVentasAxios()
+                
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    
     async getVentasAxios(){
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'ventas', { headers: {Authorization:`Bearer ${access_token}`}}).then(
@@ -519,7 +558,6 @@ class Ventas extends Component{
                 this.setState({
                     ... this.state,
                     options,
-                    form: this.clearForm(),
                     ventas: this.setVentas(ventas),
                     data
                 })
