@@ -215,8 +215,7 @@ class NewTable extends Component {
 
         return (
             <>
-                <div className="d-flex flex-column-fluid">        
-                    <div className="container">
+                
                         <div className="card card-custom">
                             <div className="card-header flex-wrap border-0 pt-6 pb-0">
                                 <div className="card-title">
@@ -232,18 +231,17 @@ class NewTable extends Component {
                                     </h2>
                                 </div>
                                 <div className="card-toolbar">
-                                     <a href={url} className="btn btn-icon btn-light-success pulse pulse-success mr-2 font-weight-bold">
-                                        <i className="flaticon-add"></i><div>Agregar</div>
-                                        <span className="pulse-ring"></span>
+
+
+                                    <a href={url} className="btn btn-success font-weight-bold mr-2">
+                                        <i className="flaticon-add"></i> Agregar
                                     </a>
                                 </div>
                             </div>
                             <div className="card-body">
-                                <table ref="main" className="table table-separate table-head-custom table-checkable display responsive nowrap dt-responsive table-striped" id="kt_datatable2" />
+                                <table ref="main" className="table table-separate table-head-custom table-checkable display responsive nowrap dt-responsive table-hover" id="kt_datatable2" />
                             </div>
                         </div>   
-                    </div>
-                </div> 
             </>
         )
     }
