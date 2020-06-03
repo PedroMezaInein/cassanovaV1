@@ -883,6 +883,10 @@ export const SOLICITUD_COMPRA_COLUMNS = [
         Header: 'Fecha',
         accessor: 'fecha',
     },
+    {
+        Header: 'Adjunto',
+        accessor: 'adjunto'
+    }
 ]
 
 export const CONCEPTOS_COLUMNS = [
@@ -980,4 +984,8 @@ export const REMISION_COLUMNS = [
         Header: 'Descripción',
         accessor: 'descripcion'
     },
+    {
+        Header: 'Adjunto',
+        accessor: 'adjunto'
+    }
 ]

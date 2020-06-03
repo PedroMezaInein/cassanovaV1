@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { Subtitle, Small } from '../../texts'
-import { Input, Select, SelectSearch, Button, Calendar, InputMoney, RadioGroup } from '../../form-components'
+import { Input, FileInput, SelectSearch, Button, Calendar } from '../../form-components'
 
 class ConceptoForm extends Component{
 
@@ -28,7 +28,7 @@ class ConceptoForm extends Component{
     }
     
     render(){
-        const { title, options, form, onChange, setOptions, ... props } = this.props
+        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, ... props } = this.props
         return(
             <Form { ... props}>
                 <Subtitle className="text-center" color="gold">
@@ -58,6 +58,16 @@ class ConceptoForm extends Component{
                             </div>
                         : ''
                     }
+                    <div className="col-md-6 px-2">
+                        <FileInput 
+                            onChangeAdjunto = { onChangeAdjunto } 
+                            placeholder = { form.adjuntos.adjunto.placeholder }
+                            value = { form.adjuntos.adjunto.value }
+                            name = 'adjunto' id = 'adjunto'
+                            accept = "image/*, application/pdf" 
+                            files = { form.adjuntos.adjunto.files }
+                            deleteAdjunto = { clearFiles } multiple/>
+                    </div>
                     <div className = " col-md-12 px-2">
                         <Input as = "textarea" placeholder = "Descripción" rows = "3" value = { form.descripcion }
                             name = "descripcion" onChange = { onChange } />

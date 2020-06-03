@@ -93,6 +93,29 @@ export default class RemisionCard extends Component{
                             </>
                         : ''
                     }
+                    <div className="col-md-6">
+                        <Small>
+                            <B color="gold">
+                                Adjunto:
+                            </B>
+                        </Small>
+                        <br />
+                        {
+                            data.adjunto ?
+                                <a href={data.adjunto.url} target="_blank">
+                                    <Small>
+                                        {
+                                            data.adjunto.name
+                                        }
+                                    </Small>
+                                </a>
+                            :
+                                <Small>
+                                    Sin adjunto
+                                </Small>
+                        }
+                        <hr />
+                    </div>
                     {
                         data.descripcion ?
                             <div className="col-md-12">
@@ -111,6 +134,7 @@ export default class RemisionCard extends Component{
                             </div>
                         : ''
                     }
+                    
                 </div>
             </Card>
         )

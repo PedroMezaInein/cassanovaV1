@@ -198,9 +198,7 @@ class Proveedor extends Component{
         return(
             <Layout active={'administracion'}  { ...this.props}>
                 
-                {
-                    proveedores.length ?
-                        <NewTable columns = { PROVEEDORES_COLUMNS } data = { proveedores } 
+                <NewTable columns = { PROVEEDORES_COLUMNS } data = { proveedores } 
                             title = 'Proveedores' subtitle = 'Listado de proveedores'
                             url = '/administracion/proveedores/add'
                             actions = {{
@@ -209,8 +207,7 @@ class Proveedor extends Component{
                             }}
                             elements = { data.proveedores }
                             />
-                    : ''
-                }
+                
 
                 <ModalDelete show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteProveedor() }}>
                     <Subtitle className="my-3 text-center">

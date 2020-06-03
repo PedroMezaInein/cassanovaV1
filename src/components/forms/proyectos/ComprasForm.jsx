@@ -134,7 +134,7 @@ class ComprasForm extends Component{
                             name = "proveedores" value = { form.proveedor } onChange = { this.updateProveedor }/>    
                     </div>
 
-                    <div className="col-md-6 px-2">
+                    {/* <div className="col-md-6 px-2">
                         <SelectSearch options={options.clientes} placeholder = "Selecciona el cliente" 
                             name = "cliente" value = { form.cliente } onChange = { this.updateCliente }/>    
                     </div>
@@ -145,7 +145,11 @@ class ComprasForm extends Component{
                                     name = "proyecto" value = { form.proyecto } onChange = { this.updateProyecto }/>
                             </div>
                         : ''
-                    }
+                    } */}
+                    <div className="col-md-6 px-2">
+                        <SelectSearch options={options.proyectos} placeholder = "Selecciona el proyecto" 
+                            name = "proyecto" value = { form.proyecto } onChange = { this.updateProyecto }/>
+                    </div>
                     <div className="col-md-6 px-2">
                         {
                             form.facturaObject ?

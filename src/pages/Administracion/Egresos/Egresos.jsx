@@ -9,7 +9,7 @@ import { URL_DEV, GOLD, PROVEEDORES_COLUMNS, EGRESOS_COLUMNS } from '../../../co
 
 // Functions
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert } from '../../../functions/alert'
 
 //
 import Layout from '../../../components/layout/layout'
@@ -171,7 +171,7 @@ class egresos extends Component{
                         if(auxProveedor){
                             form.proveedor = auxProveedor.id.toString()
                         }else{
-                            errorAlert('No existe el proveedor')
+                            createAlert('No existe el proveedor', '¿Lo quieres crear?', () => this.addProveedorAxios(obj))
                         }
                         if(auxEmpresa && auxProveedor){
                             swal.close()
@@ -392,6 +392,43 @@ class egresos extends Component{
         this.deleteFacturaAxios(id)
     }
 
+    async addProveedorAxios(obj){
+
+        const { access_token } = this.props.authUser
+
+        const data = new FormData();
+
+        data.append('nombre', obj.nombre_receptor)
+        data.append('razonSocial', obj.nombre_receptor)
+        data.append('rfc', obj.rfc_receptor)
+
+        await axios.post(URL_DEV + 'proveedores', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+
+                this.getEgresosAxios()
+                
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     async getEgresosAxios(){
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'egresos', { headers: {Authorization:`Bearer ${access_token}`}}).then(
@@ -591,9 +628,7 @@ class egresos extends Component{
                         tooltip={{id:'add', text:'Nuevo'}} />
                 </div> */}
                 {/* <DataTable columns = {EGRESOS_COLUMNS} data= {egresos}/> */}
-                {
-                    egresos.length ? 
-                        <NewTable columns = { EGRESOS_COLUMNS } data = { egresos } 
+                <NewTable columns = { EGRESOS_COLUMNS } data = { egresos } 
                             title = 'Egresos' subtitle = 'Listado de egresos'
                             url = '/administracion/egresos/add'
                             actions = {{
@@ -603,8 +638,6 @@ class egresos extends Component{
                             }}
                             elements = { data.egresos }
                             />
-                    : ''
-                }
                 <ModalDelete show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteEgresoAxios() }}>
                     <Subtitle className="my-3 text-center">
                         ¿Estás seguro que deseas eliminar el egreso?

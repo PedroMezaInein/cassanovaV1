@@ -8,7 +8,7 @@ import { URL_DEV, COMPRAS_COLUMNS } from '../../constants'
 
 // Functions
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
-import { errorAlert, waitAlert } from '../../functions/alert'
+import { errorAlert, waitAlert, createAlert, forbiddenAccessAlert } from '../../functions/alert'
 
 //
 import Layout from '../../components/layout/layout'
@@ -202,8 +202,8 @@ class Compras extends Component{
         form.factura = compra.factura ? 'Con factura' : 'Sin factura'
         if(compra.proyecto){
             if(compra.proyecto.cliente){
-                form.cliente = compra.proyecto.cliente.id.toString()
-                options['proyectos'] = setOptions(compra.proyecto.cliente.proyectos, 'nombre', 'id')
+                /* form.cliente = compra.proyecto.cliente.id.toString()
+                options['proyectos'] = setOptions(compra.proyecto.cliente.proyectos, 'nombre', 'id') */
                 form.proyecto = compra.proyecto.id.toString()
             }
         }
@@ -425,7 +425,7 @@ class Compras extends Component{
                         });
                         let auxProveedor = ''
                         data.proveedores.find(function(element, index) {
-                            if(element.razon_social === obj.nombre_receptor){
+                            if(element.rfc === obj.rfc_receptor){
                                 auxProveedor = element
                             }
                         });
@@ -438,7 +438,7 @@ class Compras extends Component{
                         if(auxProveedor){
                             form.proveedor = auxProveedor.id.toString()
                         }else{
-                            errorAlert('No existe el cliente')
+                            createAlert('No existe el proveedor', '¿Lo quieres crear?', () => this.addProveedorAxios(obj))
                         }
                         if(auxEmpresa && auxProveedor){
                             swal.close()
@@ -513,13 +513,14 @@ class Compras extends Component{
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'compras', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, 
+                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos,
                     clientes, compras, proveedores, formasPago, metodosPago, estatusFacturas } = response.data
                 const { options, data } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['proveedores'] = setOptions(proveedores, 'nombre', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
-                options['clientes'] = setOptions(clientes, 'empresa', 'id')
+                /* options['clientes'] = setOptions(clientes, 'empresa', 'id') */
+                options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
                 options['tiposPagos'] = setSelectOptions( tiposPagos, 'tipo' )
                 options['tiposImpuestos'] = setSelectOptions( tiposImpuestos, 'tipo' )
                 options['estatusCompras'] = setSelectOptions( estatusCompras, 'estatus' )
@@ -531,7 +532,7 @@ class Compras extends Component{
                 this.setState({
                     ... this.state,
                     options,
-                    form: this.clearForm(),
+                    /* form: this.clearForm(), */
                     compras: this.setCompras(compras),
                     data
                 })
@@ -539,12 +540,7 @@ class Compras extends Component{
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
+                    forbiddenAccessAlert()
                 }else{
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
@@ -611,12 +607,44 @@ class Compras extends Component{
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async addProveedorAxios(obj){
+
+        const { access_token } = this.props.authUser
+
+        const data = new FormData();
+
+        data.append('nombre', obj.nombre_receptor)
+        data.append('razonSocial', obj.nombre_receptor)
+        data.append('rfc', obj.rfc_receptor)
+
+        await axios.post(URL_DEV + 'proveedores', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+
+                this.getComprasAxios()
+                
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
                 }else{
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
@@ -679,12 +707,7 @@ class Compras extends Component{
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
+                    forbiddenAccessAlert()
                 }else{
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
@@ -724,12 +747,7 @@ class Compras extends Component{
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
+                    forbiddenAccessAlert()
                 }else{
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
@@ -764,7 +782,7 @@ class Compras extends Component{
                     if(solicitud.proyecto.cliente){
                         if(solicitud.proyecto.cliente.proyectos){
                             options['proyectos'] = setOptions(solicitud.proyecto.cliente.proyectos, 'nombre', 'id')
-                            form.cliente = solicitud.proyecto.cliente.id.toString()
+                            /* form.cliente = solicitud.proyecto.cliente.id.toString() */
                             form.proyecto = solicitud.proyecto.id.toString()
                         }
                     }
@@ -805,12 +823,7 @@ class Compras extends Component{
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
+                    forbiddenAccessAlert()
                 }else{
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
@@ -882,23 +895,14 @@ class Compras extends Component{
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
+                    forbiddenAccessAlert()
                 }else{
-                    errorAlert(
-                        error.response.data.message !== undefined ? 
-                            error.response.data.message 
-                        : 'Ocurrió un error desconocido, intenta de nuevo.'
-                    )
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            console.log(error, 'CATCH ERROR')
-            errorAlert('Ocurrió un error desconocido, intenta de nuevo')
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
     
@@ -937,23 +941,14 @@ class Compras extends Component{
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
+                    forbiddenAccessAlert()
                 }else{
-                    errorAlert(
-                        error.response.data.message !== undefined ? 
-                            error.response.data.message 
-                        : 'Ocurrió un error desconocido, intenta de nuevo.'
-                    )
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            console.log(error, 'CATCH ERROR')
-            errorAlert('Ocurrió un error desconocido, intenta de nuevo')
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 

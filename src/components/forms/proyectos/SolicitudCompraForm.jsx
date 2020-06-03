@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import {Subtitle, Small} from '../../texts'
-import {Input, Select, SelectSearch, Button, Calendar, InputMoney, RadioGroup } from '../../form-components'
+import {Input, Select, SelectSearch, Button, Calendar, InputMoney, RadioGroup, FileInput } from '../../form-components'
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
 
 
@@ -42,7 +42,7 @@ class SolicitudCompraForm extends Component{
     }
 
     render(){
-        const { title, options, form, onChange, children, ... props } = this.props
+        const { title, options, form, onChange, children, onChangeAdjunto, clearFiles, ... props } = this.props
         return(
             <Form { ... props}>
                 <Subtitle className="text-center" color="gold">
@@ -110,6 +110,16 @@ class SolicitudCompraForm extends Component{
                             placeholder = { ' Lleva factura ' }
                             value = { form.factura }
                             />
+                    </div>
+                    <div className="col-md-6 px-2">
+                        <FileInput 
+                            onChangeAdjunto = { onChangeAdjunto } 
+                            placeholder = { form.adjuntos.adjunto.placeholder }
+                            value = { form.adjuntos.adjunto.value }
+                            name = 'adjunto' id = 'adjunto'
+                            accept = "image/*, application/pdf" 
+                            files = { form.adjuntos.adjunto.files }
+                            deleteAdjunto = { clearFiles } multiple/>
                     </div>
                     <div className = " col-md-12 px-2">
                         <Input as = "textarea" placeholder = "Descripción" rows = "3" value = { form.descripcion }

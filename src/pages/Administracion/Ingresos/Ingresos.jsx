@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { renderToString } from 'react-dom/server'
 
 //
 import { connect } from 'react-redux'
@@ -8,7 +9,7 @@ import { URL_DEV, GOLD, INGRESOS_COLUMNS } from '../../../constants'
 
 // Functions
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert } from '../../../functions/alert'
 
 //
 import Layout from '../../../components/layout/layout'
@@ -22,6 +23,7 @@ import Moment from 'react-moment'
 import NumberFormat from 'react-number-format';
 import { Form, ProgressBar } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import NewTable from '../../../components/tables/NewTable'
 
 
 class Ingresos extends Component{
@@ -37,7 +39,8 @@ class Ingresos extends Component{
         porcentaje: 0,
         data: {
             proveedores: [],
-            empresas: []
+            empresas: [],
+            ingresos: []
         },
         form:{
             formaPago: '',
@@ -201,7 +204,7 @@ class Ingresos extends Component{
                         if(auxCliente){
                             form.cliente = auxCliente.empresa
                         }else{
-                            errorAlert('No existe el cliente')
+                            createAlert('No existe el cliente', '¿Lo quieres crear?', () => this.addClienteAxios(obj))
                         }
                         if(auxEmpresa && auxCliente){
                             swal.close()
@@ -276,28 +279,29 @@ class Ingresos extends Component{
             aux.push(
                 {
                     actions: this.setActions(ingreso),
-                    cuenta: setArrayTable(
+                    cuenta: renderToString(setArrayTable(
                         [
                             {name:'Empresa', text: ingreso.empresa ? ingreso.empresa.name : '' },
                             {name:'Cuenta', text: ingreso.cuenta ? ingreso.cuenta.nombre : '' },
                             {name:'# de cuenta', text: ingreso.cuenta ? ingreso.cuenta.numero : '' }
                         ]
-                    ),
-                    cliente: setTextTable( ingreso.cliente ?  ingreso.cliente.empresa : ''),
-                    factura: setTextTable(ingreso.facturas.length ? 'Con factura' : 'Sin factura'),
-                    monto: setMoneyTable(ingreso.monto),
-                    impuesto: setTextTable( ingreso.tipo_impuesto ? ingreso.tipo_impuesto.tipo : 'Sin definir'),
-                    tipoPago: setTextTable( ingreso.tipo_pago ? ingreso.tipo_pago.tipo : ''),
-                    descripcion: setTextTable(ingreso.descripcion),
-                    area: setTextTable( ingreso.subarea ? ingreso.subarea.area.nombre : '' ),
-                    subarea: setTextTable( ingreso.subarea ? ingreso.subarea.nombre : '' ),
-                    estatusCompra: setTextTable( ingreso.estatus_compra ? ingreso.estatus_compra.estatus : '' ),
-                    total: setMoneyTable(ingreso.total),
-                    adjuntos: setAdjuntosList([
+                    )),
+                    cliente: renderToString(setTextTable( ingreso.cliente ?  ingreso.cliente.empresa : '')),
+                    factura: renderToString(setTextTable(ingreso.facturas.length ? 'Con factura' : 'Sin factura')),
+                    monto: renderToString(setMoneyTable(ingreso.monto)),
+                    impuesto: renderToString(setTextTable( ingreso.tipo_impuesto ? ingreso.tipo_impuesto.tipo : 'Sin definir')),
+                    tipoPago: renderToString(setTextTable( ingreso.tipo_pago ? ingreso.tipo_pago.tipo : '')),
+                    descripcion: renderToString(setTextTable(ingreso.descripcion)),
+                    area: renderToString(setTextTable( ingreso.subarea ? ingreso.subarea.area.nombre : '' )),
+                    subarea: renderToString(setTextTable( ingreso.subarea ? ingreso.subarea.nombre : '' )),
+                    estatusCompra: renderToString(setTextTable( ingreso.estatus_compra ? ingreso.estatus_compra.estatus : '' )),
+                    total: renderToString(setMoneyTable(ingreso.total)),
+                    adjuntos: renderToString(setAdjuntosList([
                         ingreso.pago ? {name: 'Pago', url: ingreso.pago.url} : '',
                         ingreso.presupuesto ? {name: 'Presupuesto', url: ingreso.presupuesto.url} : '',
-                    ]),
-                    fecha: setDateTable(ingreso.created_at)
+                    ])),
+                    fecha: renderToString(setDateTable(ingreso.created_at)),
+                    id: ingreso.id
                 }
             )
         })
@@ -305,12 +309,52 @@ class Ingresos extends Component{
     }
 
     setActions= ingreso => {
-        return(
+
+        let aux = []
+            aux.push(
+                {
+                    text: 'Editar',
+                    btnclass: 'success',
+                    iconclass: 'flaticon2-pen',
+                    action: 'edit',
+                    tooltip: {id:'edit', text:'Editar'},
+                },
+                {
+                    text: 'Eliminar',
+                    btnclass: 'danger',
+                    iconclass: 'flaticon2-rubbish-bin',                  
+                    action: 'delete',
+                    tooltip: {id:'delete', text:'Eliminar', type:'error'},
+                }
+        )
+        
+        if(ingreso.factura)
+        {
+            aux.push(
+                {
+                    text: 'Facturas',
+                    btnclass: 'primary',
+                    iconclass: 'flaticon2-medical-records',
+                    action: 'facturas',
+                    tooltip: {id:'taxes', text:'Facturas'},
+                },
+                {
+                    text: 'Pedir factura',
+                    btnclass: 'primary',
+                    iconclass: 'flaticon2-medical-records',
+                    action: 'askFacturas',
+                    tooltip: {id:'ask-taxes', text:'Facturas'},
+                }
+            )
+        }
+        return aux
+
+        /* return(
             <>
                 <div className="d-flex align-items-center flex-column flex-md-row">
                     <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.changePageEdit(ingreso)} } text='' icon={faEdit} color="transparent" 
                         tooltip={{id:'edit', text:'Editar'}} />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalDelete(e)(ingreso) } text='' icon={faTrash} color="red" 
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => { e.preventDefault(); this.openModalDelete(ingreso)} } text='' icon={faTrash} color="red" 
                         tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
                 </div>
                 {
@@ -324,11 +368,11 @@ class Ingresos extends Component{
                     : ''
                 }
             </>
-        )
+        ) */
     }
 
     // Modales
-    openModalDelete = e => (ingreso) => {
+    openModalDelete = (ingreso) => {
         this.setState({
             ... this.state,
             modalDelete: true,
@@ -345,7 +389,7 @@ class Ingresos extends Component{
         })
     }
 
-    openModalFacturas = ingreso => {
+    openModalFacturas = (ingreso) => {
         let { porcentaje } = this.state
         porcentaje = 0
         ingreso.facturas.map((factura)=>{
@@ -414,6 +458,7 @@ class Ingresos extends Component{
                 options['clientes'] = setOptions(clientes, 'empresa', 'id')
                 data.clientes = clientes
                 data.empresas = empresas
+                data.ingresos = ingresos
                 this.setState({
                     ... this.state,
                     ingresos: this.setIngresos(ingresos),
@@ -441,9 +486,12 @@ class Ingresos extends Component{
         await axios.delete(URL_DEV + 'ingresos/' + ingreso.id, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { ingresos } = response.data
+                const { data } = this.state
+                data.ingresos = ingresos
                 this.setState({
                     ... this.state,
                     ingresos: this.setIngresos(ingresos),
+                    data,
                     modalDelete: false,
                     ingreso: ''
                 })
@@ -503,19 +551,21 @@ class Ingresos extends Component{
             (response) => {
 
                 const { ingreso, ingresos } = response.data
-                let { porcentaje } = this.state
+                let { porcentaje, data } = this.state
                 porcentaje = 0
                 ingreso.facturas.map((factura)=>{
                     porcentaje = porcentaje + factura.total
                 })
                 porcentaje = porcentaje * 100 / (ingreso.total)
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
+                data.ingresos = ingresos
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
                     ingreso: ingreso,
                     facturas: ingreso.facturas,
                     porcentaje,
+                    data,
                     ingresos: this.setIngresos(ingresos)
                 })
                 
@@ -550,17 +600,19 @@ class Ingresos extends Component{
             (response) => {
                 
                 const { ingresos, ingreso } = response.data
-                let { porcentaje } = this.state
+                let { porcentaje, data } = this.state
                 porcentaje = 0
                 ingreso.facturas.map((factura)=>{
                     porcentaje = porcentaje + factura.total
                 })
                 porcentaje = porcentaje * 100 / (ingreso.total)
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
+                data.ingresos = ingresos
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
                     ingreso: ingreso,
+                    data,
                     ingresos: this.setIngresos(ingresos),
                     facturas: ingreso.facturas,
                     porcentaje
@@ -624,16 +676,64 @@ class Ingresos extends Component{
         })
     }
 
+    async addClienteAxios(obj){
+
+        const { access_token } = this.props.authUser
+
+        const data = new FormData();
+
+        
+        data.append('empresa', obj.nombre_emisor)
+        data.append('nombre', obj.nombre_emisor)
+        data.append('rfc', obj.rfc_emisor)
+
+        await axios.post(URL_DEV + 'cliente', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+
+                this.getIngresosAxios()
+                
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render(){
-        const { ingresos, form, options, modalDelete, modalFacturas, porcentaje, facturas, ingreso, modalAskFactura } = this.state
+        const { ingresos, form, options, modalDelete, modalFacturas, porcentaje, facturas, ingreso, modalAskFactura, data } = this.state
         return(
             <Layout active={'administracion'}  { ...this.props}>
-                <div className="text-right">
+                {/* <div className="text-right">
                     <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.changePageAdd() } } text='' icon = { faPlus } color="green" 
                         tooltip={{id:'add', text:'Nuevo'}} />
-                </div>
+                </div> */}
 
-                <DataTable columns = {INGRESOS_COLUMNS} data= {ingresos}/>
+                {/* <DataTable columns = {INGRESOS_COLUMNS} data= {ingresos}/> */}
+                <NewTable columns = { INGRESOS_COLUMNS } data = { ingresos } 
+                    title = 'Ingresos' subtitle = 'Listado de ingresos'
+                    url = '/administracion/ingresos/add'
+                    actions = {{
+                        'edit': {function: this.changePageEdit},
+                        'delete': {function: this.openModalDelete},
+                        'facturas': {function: this.openModalFacturas},
+                        'askFacturas': {function: this.openModalAskFactura}
+                    }}
+                    elements = { data.ingresos } />
                 
                 <ModalDelete show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteIngresoAxios() }}>
                     <Subtitle className="my-3 text-center">

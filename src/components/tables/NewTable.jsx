@@ -28,20 +28,13 @@ class NewTable extends Component {
             e.preventDefault();
             var id = $(this).attr('id').toString()
             var name =$(this).attr('name').toString() 
-
-            console.log(id, name, 'id name')
-
             let aux = elements.find(function(element, index) { 
                 if(element.id.toString() === id){
                     return element    
                 }
             }); 
-            console.log(actions[name], 'actions name')
-            console.log(aux, 'aux')
-            console.log(this.props, 'PROPS')
+            console.log(id, name, aux, 'Last')
             actions[name].function(aux)
-            
-            
         });
 
     }
@@ -177,22 +170,15 @@ class NewTable extends Component {
         
         $(this.refs.main).on('click', '.btn-actions-table', function(e){
             e.preventDefault();
-            var id = $(this).attr('id').toString()
+            /* var id = $(this).attr('id').toString()
             var name =$(this).attr('name').toString() 
-
-            console.log(id, name, 'id name')
-
             let aux = elements.find(function(element, index) { 
                 if(element.id.toString() === id){
                     return element    
                 }
             }); 
-            console.log(actions[name], 'actions name')
-            console.log(aux, 'aux')
-            console.log(this.props, 'PROPS')
-            actions[name].function(aux)
-            
-            
+            console.log(id, name, aux, 'first')
+            actions[name].function(aux) */
         });
     }
 
