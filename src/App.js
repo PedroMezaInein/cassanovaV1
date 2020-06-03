@@ -113,7 +113,7 @@ class App extends Component{
             history.push('/login')
         }
         return(
-            <div className="">
+            <div>
                 
                 <Route path = "/login" exact component = { Login } />
 
