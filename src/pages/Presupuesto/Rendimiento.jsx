@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 import React, { Component } from 'react'
-
+import { renderToString } from 'react-dom/server'
 //
 import { connect } from 'react-redux'
 import axios from 'axios'
@@ -17,8 +18,9 @@ import { faPlus, faLink, faEdit, faTrash, faSync } from '@fortawesome/free-solid
 import { DataTable } from '../../components/tables'
 import { Subtitle } from '../../components/texts'
 import { RendimientoForm } from '../../components/forms'
+import NewTable from '../../components/tables/NewTable'
 
-class Rendimientos extends Component{
+class Rendimientos extends Component {
 
     state = {
         modal: false,
@@ -27,6 +29,9 @@ class Rendimientos extends Component{
         options: {
             proveedores: [],
             unidades: []
+        },
+        data: {
+            rendimientos: []
         },
         form: {
             unidad: '',
@@ -44,15 +49,15 @@ class Rendimientos extends Component{
         rendimiento: ''
     }
 
-    componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
+    componentDidMount() {
+        const { authUser: { user: { permisos: permisos } } } = this.props
+        const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props
-        const rendimientos = permisos.find(function(element, index) {
+        const rendimientos = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
-            return  pathname === '/' + url
+            return pathname === '/' + url
         });
-        if(!rendimientos)
+        if (!rendimientos)
             history.push('/')
         this.getRendimientosAxios()
     }
@@ -119,17 +124,17 @@ class Rendimientos extends Component{
 
     setRendimientos = rendimientos => {
         let aux = []
-        rendimientos.map( (rendimiento) => {
+        rendimientos.map((rendimiento) => {
             aux.push(
                 {
                     actions: this.setActions(rendimiento),
-                    materiales: setTextTable(rendimiento.materiales),
-                    unidad: setTextTable(rendimiento.unidad.nombre),
-                    costo: setMoneyTable(rendimiento.costo),
-                    proveedor: setTextTable(rendimiento.proveedor.nombre),
-                    rendimiento: setTextTable(rendimiento.rendimiento),
-                    descripcion: setTextTable(rendimiento.descripcion),
-                    
+                    materiales: renderToString(setTextTable(rendimiento.materiales)),
+                    unidad: renderToString(setTextTable(rendimiento.unidad.nombre)),
+                    costo: renderToString(setMoneyTable(rendimiento.costo)),
+                    proveedor: renderToString(setTextTable(rendimiento.proveedor.nombre)),
+                    rendimiento: renderToString(setTextTable(rendimiento.rendimiento)),
+                    descripcion: renderToString(setTextTable(rendimiento.descripcion)),
+                    id: rendimiento.id
                 }
             )
         })
@@ -137,6 +142,27 @@ class Rendimientos extends Component{
     }
 
     setActions = rendimiento => {
+        let aux = []
+        aux.push(
+            {
+                text: 'Editar',
+                btnclass: 'success',
+                iconclass: 'flaticon2-pen',
+                action: 'edit',
+                tooltip: { id: 'edit', text: 'Editar' }
+            },
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',
+                action: 'delete',
+                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
+            }
+        )
+        return aux
+    }
+
+    /*setActions = rendimiento => {
         return(
             <>
                 <div className="d-flex align-items-center flex-column flex-md-row">
@@ -147,20 +173,20 @@ class Rendimientos extends Component{
                 </div>
             </>
         )
-    }
+    }*/
 
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'adjunto':
                     form[element]['value'] = ''
                     form[element]['files'] = []
                     break;
                 default:
                     form[element] = '';
-                break;
+                    break;
             }
         })
         return form
@@ -174,15 +200,15 @@ class Rendimientos extends Component{
             text: 'La información está siendo procesada.',
             buttons: false
         })
-        if(title === 'Editar rendimiento')
+        if (title === 'Editar rendimiento')
             this.editRendimientoAxios()
         else
             this.addRendimientoAxios()
     }
 
     onChange = e => {
-        const {form} = this.state
-        const {name, value} = e.target
+        const { form } = this.state
+        const { name, value } = e.target
         form[name] = value
         this.setState({
             ... this.state,
@@ -194,12 +220,12 @@ class Rendimientos extends Component{
         const { form } = this.state
         const { files, value, name } = e.target
         let aux = []
-        for(let counter = 0; counter < files.length; counter ++){
+        for (let counter = 0; counter < files.length; counter++) {
             aux.push(
                 {
                     name: files[counter].name,
                     file: files[counter],
-                    url: URL.createObjectURL(files[counter]) ,
+                    url: URL.createObjectURL(files[counter]),
                     key: counter
                 }
             )
@@ -215,13 +241,13 @@ class Rendimientos extends Component{
     clearFiles = (name, key) => {
         const { form } = this.state
         let aux = []
-        for(let counter = 0; counter < form[name].files.length; counter ++){
-            if(counter !== key){
+        for (let counter = 0; counter < form[name].files.length; counter++) {
+            if (counter !== key) {
                 aux.push(form[name].files[counter])
             }
         }
-        if(aux.length < 1){
-            form[name].value = ''    
+        if (aux.length < 1) {
+            form[name].value = ''
         }
         form[name].files = aux
         this.setState({
@@ -230,33 +256,36 @@ class Rendimientos extends Component{
         })
     }
 
-    async getRendimientosAxios(){
+    async getRendimientosAxios() {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'rendimientos', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'rendimientos', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                const { data } = this.state
                 const { unidades, proveedores, rendimientos } = response.data
                 const { options } = this.state
+                data.rendimientos = rendimientos
                 options['unidades'] = setOptions(unidades, 'nombre', 'id')
                 options['proveedores'] = setOptions(proveedores, 'nombre', 'id')
                 this.setState({
                     ... this.state,
                     options,
-                    rendimientos: this.setRendimientos(rendimientos)
+                    rendimientos: this.setRendimientos(rendimientos),
+                    data
                 })
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
                     })
                 }
@@ -270,15 +299,15 @@ class Rendimientos extends Component{
         })
     }
 
-    async addRendimientoAxios(){
+    async addRendimientoAxios() {
         const { access_token } = this.props.authUser
         const { form } = this.state
         const data = new FormData();
         let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'adjunto':
-                    if(form.adjunto.files.length > 0)
+                    if (form.adjunto.files.length > 0)
                         //Falta adjuntar fotos
                         break;
                     break;
@@ -287,7 +316,7 @@ class Rendimientos extends Component{
                     break
             }
         })
-        await axios.post(URL_DEV + 'rendimientos', form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'rendimientos', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { rendimientos } = response.data
                 swal({
@@ -300,24 +329,24 @@ class Rendimientos extends Component{
                 this.setState({
                     ... this.state,
                     rendimientos: this.setRendimientos(rendimientos),
-                    modal:false,
+                    modal: false,
                     title: 'Nuevo rendimiento',
                     form: this.clearForm()
                 })
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
                     })
                 }
@@ -331,10 +360,10 @@ class Rendimientos extends Component{
         })
     }
 
-    async editRendimientoAxios(){
+    async editRendimientoAxios() {
         const { access_token } = this.props.authUser
         const { form, rendimiento } = this.state
-        await axios.put(URL_DEV + 'rendimientos/' + rendimiento.id, form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.put(URL_DEV + 'rendimientos/' + rendimiento.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { rendimientos } = response.data
                 swal({
@@ -347,24 +376,24 @@ class Rendimientos extends Component{
                 this.setState({
                     ... this.state,
                     rendimientos: this.setRendimientos(rendimientos),
-                    modal:false,
+                    modal: false,
                     title: 'Nuevo rendimiento',
                     form: this.clearForm()
                 })
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
                     })
                 }
@@ -378,10 +407,10 @@ class Rendimientos extends Component{
         })
     }
 
-    async deleteRendimientoAxios(){
+    async deleteRendimientoAxios() {
         const { access_token } = this.props.authUser
         const { rendimiento } = this.state
-        await axios.delete(URL_DEV + 'rendimientos/' + rendimiento.id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.delete(URL_DEV + 'rendimientos/' + rendimiento.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { rendimientos } = response.data
                 swal({
@@ -394,23 +423,23 @@ class Rendimientos extends Component{
                 this.setState({
                     ... this.state,
                     rendimientos: this.setRendimientos(rendimientos),
-                    modalDelete:false,
+                    modalDelete: false,
                     rendimiento: ''
                 })
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
                     })
                 }
@@ -424,26 +453,36 @@ class Rendimientos extends Component{
         })
     }
 
-    render(){
+    render() {
 
-        const { modal, modalDelete, title, form, options, rendimientos } = this.state
+        const { modal, modalDelete, title, form, options, rendimientos, data } = this.state
 
-        return(
-            <Layout active={'administracion'}  { ...this.props}>
-
+        return (
+            <Layout active={'administracion'}  {...this.props}>
+                {/*
                 <div className="text-right">
                     <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon = { faPlus } color="green" />
                 </div>
-
-                <Modal show = {modal} handleClose = { this.handleClose } >
-                    <RendimientoForm title = { title } form  = { form } options = { options } 
-                        onChange = { this.onChange } onSubmit = { this.onSubmit } onChangeAdjunto = { this.onChangeAdjunto } 
-                        clearFiles = { this.clearFiles } />
+                */}
+                <Modal show={modal} handleClose={this.handleClose} >
+                    <RendimientoForm title={title} form={form} options={options}
+                        onChange={this.onChange} onSubmit={this.onSubmit} onChangeAdjunto={this.onChangeAdjunto}
+                        clearFiles={this.clearFiles} />
                 </Modal>
 
-                <DataTable columns = { RENDIMIENTOS_COLUMNS } data = { rendimientos } />
+                {/*<DataTable columns = { RENDIMIENTOS_COLUMNS } data = { rendimientos } />*/}
+                <NewTable columns={RENDIMIENTOS_COLUMNS} data={rendimientos}
+                    title='Rendimientos' subtitle='Listado de rendimientos'
+                    mostrar_boton={true}
+                    abrir_modal={true}
+                    onClick={this.openModal}
+                    mostrar_acciones={true}
 
-                <ModalDelete show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteRendimientoAxios() }}>
+                    elements={data.rendimientos}
+                />
+
+
+                <ModalDelete show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); this.deleteRendimientoAxios() }}>
                     <Subtitle className="my-3 text-center">
                         ¿Estás seguro que deseas eliminar el rendimiento?
                     </Subtitle>
@@ -454,7 +493,7 @@ class Rendimientos extends Component{
 }
 
 const mapStateToProps = state => {
-    return{
+    return {
         authUser: state.authUser
     }
 }
