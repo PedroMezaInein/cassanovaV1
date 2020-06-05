@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Sidebar from './sidebar'
@@ -8,17 +9,17 @@ import axios from 'axios'
 import { URL_DEV } from '../../constants'
 
 import NewSideBar from './NewSideBar'
-class Layout extends Component{
+class Layout extends Component {
 
     state = {
         menu: false
     }
 
-    constructor(props){
+    constructor(props) {
         super(props)
     }
 
-    logoutUser = () =>{
+    logoutUser = () => {
         this.logoutUserAxios();
     }
 
@@ -27,10 +28,10 @@ class Layout extends Component{
             menu: !this.state.menu
         })
     }
-    
-    async logoutUserAxios(){
-        const { logout, authUser : {access_token: access_token}, history } = this.props
-        await axios.get(URL_DEV + 'user/logout', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+
+    async logoutUserAxios() {
+        const { logout, authUser: { access_token: access_token }, history } = this.props
+        await axios.get(URL_DEV + 'user/logout', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 logout();
                 history.push('/login')
@@ -45,27 +46,27 @@ class Layout extends Component{
         })
     }
 
-    render(){
-        const { children,  } = this.props
+    render() {
+        const { children, } = this.props
         const { menu } = this.state
-        return(
-            
-                <div className="pl-5  position-relative nav-full-height"  >
-                   <Navbar clickResponsiveMenu={ this.clickResponsiveMenu } clickLogout={ this.logoutUser } {... this.props} />
-                   
-                     <Sidebar {... this.props} />
-                
-                    <MenuResponsive expanded={menu ? 'expanded' : ''} clickResponsiveMenu={ this.clickResponsiveMenu } {... this.props} />
-                    <div className="pl-5 container-fluid">
-                        {children}
-                    </div>
-                </div> 
+        return (
+
+            <div className="pl-5  position-relative nav-full-height"  >
+                <Navbar clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {... this.props} />
+
+                <Sidebar {... this.props} />
+
+                <MenuResponsive expanded={menu ? 'expanded' : ''} clickResponsiveMenu={this.clickResponsiveMenu} {... this.props} />
+                <div className="pl-5 container-fluid">
+                    {children}
+                </div>
+            </div>
         )
     }
 }
 
 const mapStateToProps = state => {
-    return{
+    return {
         authUser: state.authUser
     }
 }
