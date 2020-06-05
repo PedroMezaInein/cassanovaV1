@@ -621,6 +621,7 @@ class egresos extends Component{
     render(){
         const { egresos, modalDelete, modalFacturas, egreso, facturas, porcentaje, form, data } = this.state
         console.log(egresos, 'egresos -')
+        console.log(data.egresos)
         return(
             <Layout active={'administracion'}  { ...this.props}>
                 {/* <div className="text-right">
@@ -631,6 +632,9 @@ class egresos extends Component{
                 <NewTable columns = { EGRESOS_COLUMNS } data = { egresos } 
                             title = 'Egresos' subtitle = 'Listado de egresos'
                             url = '/administracion/egresos/add'
+                            mostrar_boton={true}
+                            abrir_modal={false}
+                            mostrar_acciones={true}
                             actions = {{
                                 'edit': {function: this.changePageEdit},
                                 'delete': {function: this.openModalDelete},
