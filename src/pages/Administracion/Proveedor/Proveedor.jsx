@@ -200,7 +200,10 @@ class Proveedor extends Component{
                 
                 <NewTable columns = { PROVEEDORES_COLUMNS } data = { proveedores } 
                             title = 'Proveedores' subtitle = 'Listado de proveedores'
-                            url = '/administracion/proveedores/add'
+                            mostrar_boton={true}
+                            abrir_modal={false}
+                            url = '/administracion/proveedores/add'  
+                            mostrar_acciones={true} 
                             actions = {{
                                 'edit': {function: this.changePageEdit},
                                 'delete': {function: this.openModalDelete}
