@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */  
 import React, { Component } from 'react'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
