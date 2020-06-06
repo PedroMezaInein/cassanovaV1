@@ -132,8 +132,8 @@ class SolicitudCompra extends Component{
                 },
                 {
                     text: 'Convertir',
-                    btnclass: 'warning',
-                    iconclass: 'flaticon2-rubbish-bin',                  
+                    btnclass: 'info',
+                    iconclass: 'flaticon2-refresh',                  
                     action: 'convert',
                     tooltip: {id:'convert', text:'Convertir', type:'success'},
                 }
@@ -255,7 +255,11 @@ class SolicitudCompra extends Component{
                 
                 <NewTable columns = { SOLICITUD_COMPRA_COLUMNS } data = {solicitudes} 
                     title = 'Solicitudes de compra' subtitle = 'Listado de solicitudes de compra'
+                    mostrar_boton={true}
+                    abrir_modal={false}
                     url = '/proyectos/solicitud-compra/add'
+                    mostrar_acciones={true}
+                    
                     actions = {{
                         'edit': {function: this.changePageEdit},
                         'delete': {function: this.openModalDelete},
