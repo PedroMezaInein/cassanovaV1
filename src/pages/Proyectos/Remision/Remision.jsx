@@ -124,8 +124,8 @@ class Remisiones extends Component{
                 },
                 {
                     text: 'Convertir',
-                    btnclass: 'warning',
-                    iconclass: 'flaticon2-rubbish-bin',                  
+                    btnclass: 'info',
+                    iconclass: 'flaticon2-refresh',                  
                     action: 'convert',
                     tooltip: {id:'convert', text:'Convertir', type:'success'},
                 }
@@ -249,7 +249,11 @@ class Remisiones extends Component{
                 {/* <DataTable columns = { REMISION_COLUMNS } data = { remisiones } /> */}
                 <NewTable columns = { REMISION_COLUMNS } data = {remisiones} 
                     title = 'Remisiones' subtitle = 'Listado de demisiones'
+                    mostrar_boton={true}
+                    abrir_modal={false}                    
                     url = '/proyectos/remision/add'
+                    mostrar_acciones={true}
+
                     actions = {{
                         'edit': {function: this.changePageEdit},
                         'delete': {function: this.openModalDelete},
