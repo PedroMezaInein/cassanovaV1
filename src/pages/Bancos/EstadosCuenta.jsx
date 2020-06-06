@@ -3,7 +3,7 @@ import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { faPlus, faTrash, faEdit, faPaperclip, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { Button, Select, SelectSearch, Calendar } from '../../components/form-components'
-import { Modal } from '../../components/singles'
+import { Modal, ModalDelete } from '../../components/singles'
 import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV, CUENTAS_COLUMNS, EDOS_CUENTAS_COLUMNS_2, DARK_BLUE } from '../../constants'
@@ -15,30 +15,37 @@ import NumberFormat from 'react-number-format';
 import { Form, Badge } from 'react-bootstrap'
 import Input from '../../components/form-components/Input'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { setOptions, setSelectOptions, setTextTable, setDateTable,setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
+import NewTable from '../../components/tables/NewTable'
+import { renderToString } from 'react-dom/server'
+import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert } from '../../functions/alert'
+import { setOptions, setSelectOptions, setTextTable, setDateTable, setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
 
-class EstadosCuenta extends Component{
+class EstadosCuenta extends Component {
 
     state = {
         modal: false,
         adjunto: '',
         adjuntoName: '',
         adjuntoFile: '',
+        modalDelete: false,
         cuentas: [],
         cuenta: '',
         fecha: new Date(),
-        estados: []
+        estados: [],
+        data: {
+            estados: []
+        }
     }
 
-    componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
+    componentDidMount() {
+        const { authUser: { user: { permisos: permisos } } } = this.props
+        const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props
-        const leads = permisos.find(function(element, index) {
+        const leads = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
-            return  pathname === '/' + url
+            return pathname === '/' + url
         });
-        if(!leads)
+        if (!leads)
             history.push('/')
         this.getEstadosCuenta()
     }
@@ -47,25 +54,26 @@ class EstadosCuenta extends Component{
 
     setEstados = estados => {
         let aux = []
-        estados.map( (estado, key) => {
+        estados.map((estado, key) => {
             console.log(estado.cuentas[0].numero, 'estado')
-            aux.push( {
-                
-                actions: this.setAction( estado.id, estado.cuentas ),
+            aux.push({
 
-                cuenta: estado.cuentas.length > 0 ? 
-                        setArrayTable(
-                            [
-                                {'name': 'Cuenta', 'text': estado.cuentas[0].nombre ? estado.cuentas[0].nombre: 'Sin definir'},
-                                {'name': 'No. Cuenta', 'text': estado.cuentas[0].numero ? estado.cuentas[0].numero : 'Sin definir'},
-                            ]
-                        )
+                actions: this.setActions(estado),
+
+                cuenta: estado.cuentas.length > 0 ?
+                    renderToString(setArrayTable(
+                        [
+                            { 'name': 'Cuenta', 'text': estado.cuentas[0].nombre ? estado.cuentas[0].nombre : 'Sin definir' },
+                            { 'name': 'No. Cuenta', 'text': estado.cuentas[0].numero ? estado.cuentas[0].numero : 'Sin definir' },
+                        ]
+                    ))
                     : '',
 
-                estado: setArrayTable([ { url: estado.url, text: estado.name} ]),
+                estado: renderToString(setArrayTable([{ url: estado.url, text: estado.name }])),
 
-                fecha: setDateTable( estado.created_at )
-            } )
+                fecha: renderToString(setDateTable(estado.created_at)),
+                id: estado.id
+            })
         })
         this.setState({
             ... this.state,
@@ -73,61 +81,77 @@ class EstadosCuenta extends Component{
         })
     }
 
-    setAction = (id, cuentas ) => {
-        return(
-            <>
-                <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" text='' icon={faTrash} color="red" 
-                        tooltip={{id:'delete', text:'Eliminar', type:'error'}}
-                        onClick = { () => {
-                            swal({
-                                title: '¿Estás seguro?',
-                                icon: 'warning',
-                                buttons: {
-                                    cancel: {
-                                        text: "Cancelar",
-                                        value: null,
-                                        visible: true,
-                                        className: "button__green btn-primary cancel",
-                                        closeModal: true,
-                                    },
-                                    confirm: {
-                                        text: "Aceptar",
-                                        value: true,
-                                        visible: true,
-                                        className: "button__red btn-primary",
-                                        closeModal: true
-                                    }
-                                }
-                            }).then((result) => {
-                                if(result){
-                                    this.deleteEstadoAxios(id, cuentas[0].id)
-                                }
-                            })
-                        }} />
-                </div>
-            </>
+
+    setActions = estado => {
+        let aux = []
+        aux.push(
+
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',
+                action: 'delete',
+                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
+            }
         )
+        return aux
     }
 
+    /*
+       setAction = (id, cuentas ) => {
+           return(
+               <>
+                   <div className="d-flex align-items-center flex-column flex-md-row">
+                       <Button className="mx-2 my-2 my-md-0 small-button" text='' icon={faTrash} color="red" 
+                           tooltip={{id:'delete', text:'Eliminar', type:'error'}}
+                           onClick = { () => {
+                               swal({
+                                   title: '¿Estás seguro?',
+                                   icon: 'warning',
+                                   buttons: {
+                                       cancel: {
+                                           text: "Cancelar",
+                                           value: null,
+                                           visible: true,
+                                           className: "button__green btn-primary cancel",
+                                           closeModal: true,
+                                       },
+                                       confirm: {
+                                           text: "Aceptar",
+                                           value: true,
+                                           visible: true,
+                                           className: "button__red btn-primary",
+                                           closeModal: true
+                                       }
+                                   }
+                               }).then((result) => {
+                                   if(result){
+                                       this.deleteEstadoAxios(id, cuentas[0].id)
+                                   }
+                               })
+                           }} />
+                   </div>
+               </>
+           )
+       } 
+       */
     setLinks = value => {
-        return(
+        return (
             <a href={value.url} target="_blank">
                 <Small>
                     {
                         value.name
                     }
-                </Small>        
+                </Small>
             </a>
         )
     }
-
     setCuenta = cuenta => {
-        return(
+        return (
             <>
                 <div>
                     <Small className="mr-2">
-                        Nombre: 
+                        Nombre:
                     </Small>
                     <Small color="gold">
                         <B>
@@ -148,9 +172,8 @@ class EstadosCuenta extends Component{
             </>
         )
     }
-
     setDateTable = date => {
-        return(
+        return (
             <Small>
                 <Moment format="DD/MM/YYYY">
                     {date}
@@ -158,9 +181,7 @@ class EstadosCuenta extends Component{
             </Small>
         )
     }
-
     // Form
-
     onChangeAdjunto = (e) => {
         this.setState({
             ... this.state,
@@ -169,7 +190,6 @@ class EstadosCuenta extends Component{
             adjuntoName: e.target.files[0].name
         })
     }
-
     deleteAdjunto = () => {
         this.setState({
             ... this.state,
@@ -178,18 +198,16 @@ class EstadosCuenta extends Component{
             adjuntoName: ''
         })
     }
-
     updateCuenta = value => {
         this.setState({
             ... this.state,
             cuenta: value.value
         })
     }
-
     submitForm = e => {
         e.preventDefault();
         const { cuenta, adjuntoFile, adjunto, adjuntoName } = this.state
-        if(adjunto){
+        if (adjunto) {
             swal({
                 title: '¡Un momento!',
                 text: 'Se está enviando tu estado de cuenta.',
@@ -199,7 +217,6 @@ class EstadosCuenta extends Component{
         }
     }
     // Modal
-
     handleClose = () => {
         const { modal } = this.state
         this.setState({
@@ -211,30 +228,42 @@ class EstadosCuenta extends Component{
             fecha: new Date()
         })
     }
-
     openModal = () => {
         this.setState({
             modal: true,
             fecha: new Date()
         })
     }
-
+    openModalDelete = estado => {
+        this.setState({
+            ... this.state,
+            modalDelete: true,
+            estado: estado
+        })
+    }
+    handleCloseDelete = () => {
+        const { modalDelete } = this.state
+        this.setState({
+            ... this.state,
+            modalDelete: !modalDelete,
+            estado: ''
+        })
+    }
     handleChangeDate = date => {
         this.setState({
             ... this.state,
             fecha: date
         })
     }
-
     // Axios
-
     // Get
-
-    async getEstadosCuenta(){
+    async getEstadosCuenta() {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'estados-cuentas', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'estados-cuentas', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { estados, cuentas } = response.data
+                const { data } = this.state
+                data.estados = estados
                 this.setEstados(estados)
                 let aux = []
                 cuentas.map((element, key) => {
@@ -242,23 +271,24 @@ class EstadosCuenta extends Component{
                 })
                 this.setState({
                     ... this.state,
-                    cuentas: aux
+                    cuentas: aux,
+                    //  estados: this.setEstados(estados)
                 })
-                
+
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
                     })
                 }
@@ -271,8 +301,7 @@ class EstadosCuenta extends Component{
             })
         })
     }
-
-    async addEstadoAxios(){
+    async addEstadoAxios() {
         const { access_token } = this.props.authUser
         const { adjunto, adjuntoName, adjuntoFile, cuenta, fecha } = this.state
         const data = new FormData();
@@ -280,7 +309,7 @@ class EstadosCuenta extends Component{
         data.append('adjuntoName', adjuntoName)
         data.append('cuenta', cuenta)
         data.append('fecha', (new Date(fecha)).toDateString())
-        await axios.post(URL_DEV + 'estados-cuentas', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'estados-cuentas', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { estados } = response.data
                 this.setEstados(estados)
@@ -302,17 +331,17 @@ class EstadosCuenta extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
                     })
                 }
@@ -325,12 +354,22 @@ class EstadosCuenta extends Component{
             })
         })
     }
-
-    async deleteEstadoAxios(id, cuenta){
+    async deleteEstadoAxios() {
         const { access_token } = this.props.authUser
-        await axios.delete(URL_DEV + 'cuentas/' + cuenta + '/estado/' + id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        const { estado } = this.state
+        console.log(this.state)
+        await axios.delete(URL_DEV + 'cuentas/' + estado.cuentas[0].id + '/estado/' + estado.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { estados } = response.data
+                const { data } = this.state
+                data.estados = estados
+                this.setState({
+                    ... this.state,
+                    //estados: this.setEstados(estados),
+                    modalDelete: false,
+                    estado: '',
+                    data
+                })
                 this.setEstados(estados)
                 swal({
                     title: '¡Listo 👋!',
@@ -342,86 +381,104 @@ class EstadosCuenta extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
                     })
                 }
             }
         ).catch((error) => {
+            console.log(error)
             swal({
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error'
             })
         })
-        
+
     }
-
-
-    render(){
-        const { modal, adjunto, adjuntoName, adjuntoFile, cuentas, cuenta, estados, fecha } = this.state
-        return(
-            <Layout active={'bancos'}  { ...this.props}>
-                <div className="text-right">
+    render() {
+        const { modal, modalDelete, adjunto, adjuntoName, adjuntoFile, cuentas, cuenta, estados, fecha, data } = this.state
+        console.log(estados, 'egresos -')
+        console.log(data.estados)
+        return (
+            <Layout active={'bancos'}  {...this.props}>
+                {/* <div className="text-right">
                     <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon={faPlus} color="green" 
                         tooltip={{id:'add', text:'Nuevo'}} />
-                </div>
-                <DataTable columns = { EDOS_CUENTAS_COLUMNS_2 } data = { estados } />
-                <Modal show = { modal } handleClose={ this.handleClose } >
+                </div>*/
+                }
+
+                <NewTable columns={EDOS_CUENTAS_COLUMNS_2} data={estados}
+                    title='Estados de cuenta' subtitle='Listado de estados de cuenta'
+                    mostrar_boton={true}
+                    abrir_modal={true}
+                    mostrar_acciones={true}
+                    onClick={this.openModal}
+                    actions={{
+                        'delete': { function: this.openModalDelete },
+                    }}
+                    elements={data.estados}
+                />
+                <ModalDelete show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteEstadoAxios() }}>
+                    <Subtitle className="my-3 text-center">
+                        ¿Estás seguro que deseas eliminar el egreso?
+                    </Subtitle>
+                </ModalDelete>
+                <Modal show={modal} handleClose={this.handleClose} >
                     <Subtitle className="text-center" color="gold">
                         Agregar estado de cuenta
                     </Subtitle>
-                    <Form onSubmit = { this.submitForm }>
+                    <Form onSubmit={this.submitForm}>
                         <div className="row mx-0">
                             <div className="col-md-6 px-2">
-                                <SelectSearch 
-                                    options = {cuentas} 
-                                    placeholder = "Selecciona la cuenta" 
-                                    name = "cuenta" 
-                                    value = { cuenta } 
-                                    onChange = { this.updateCuenta }
-                                    />
+                                <SelectSearch
+                                    options={cuentas}
+                                    placeholder="Selecciona la cuenta"
+                                    name="cuenta"
+                                    value={cuenta}
+                                    onChange={this.updateCuenta}
+                                />
                             </div>
                             <div className="col-md-6 px-2">
-                            <Calendar 
-                                onChangeCalendar = { this.handleChangeDate }
-                                placeholder = "Fecha"
-                                name = "fecha"
-                                value = { fecha }
+                                <Calendar
+                                    onChangeCalendar={this.handleChangeDate}
+                                    placeholder="Fecha"
+                                    name="fecha"
+                                    value={fecha}
                                 />
                             </div>
                             <div className="col-md-6 px-2 d-flex align-items-center">
                                 <div className="image-upload d-flex align-items-center">
                                     <div className="no-label">
                                         <Input
-                                            onChange = {this.onChangeAdjunto}
-                                            value = {adjunto}
-                                            name="adjunto" 
-                                            type="file" 
+                                            onChange={this.onChangeAdjunto}
+                                            value={adjunto}
+                                            name="adjunto"
+                                            type="file"
                                             id="adjunto"
-                                            accept="application/pdf"/>
+                                            accept="application/pdf" />
                                     </div>
                                     <label htmlFor="adjunto">
-                                        <FontAwesomeIcon className = "p-0 font-unset mr-2" icon={ faPaperclip } color={ DARK_BLUE } />
+                                        <FontAwesomeIcon className="p-0 font-unset mr-2" icon={faPaperclip} color={DARK_BLUE} />
                                     </label>
                                     {
                                         adjuntoName &&
-                                            <Badge variant="light" className="d-flex px-3 align-items-center" pill>
-                                                <FontAwesomeIcon icon={faTimes} onClick={ (e) => { e.preventDefault(); this.deleteAdjunto() } } className=" small-button mr-2" />
-                                                {
-                                                    adjuntoName
-                                                }
-                                            </Badge>
+                                        <Badge variant="light" className="d-flex px-3 align-items-center" pill>
+                                            <FontAwesomeIcon icon={faTimes} onClick={(e) => { e.preventDefault(); this.deleteAdjunto() }} className=" small-button mr-2" />
+                                            {
+                                                adjuntoName
+                                            }
+                                        </Badge>
                                     }
                                 </div>
                             </div>
@@ -435,15 +492,11 @@ class EstadosCuenta extends Component{
         )
     }
 }
-
-
 const mapStateToProps = state => {
-    return{
+    return {
         authUser: state.authUser
     }
 }
-
 const mapDispatchToProps = dispatch => ({
 })
-
 export default connect(mapStateToProps, mapDispatchToProps)(EstadosCuenta);
