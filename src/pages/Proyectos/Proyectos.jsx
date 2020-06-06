@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { renderToString } from 'react-dom/server'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { Modal, Card, Slider } from '../../components/singles'
@@ -16,6 +17,7 @@ import swal from 'sweetalert'
 import { Form, Accordion } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { setOptions, setSelectOptions, setTextTable, setDateTable,setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList, setContactoTable } from '../../functions/setters'
+import NewTable from '../../components/tables/NewTable'
 
 class Proyectos extends Component{
 
@@ -28,6 +30,9 @@ class Proyectos extends Component{
         modalDelete: false,
         modalAdjuntos: false,
         adjuntos:[],
+        data: {
+            proyectos: []
+        },
         form:{
             fechaInicio: new Date(),
             fechaFin: new Date(),
@@ -175,7 +180,7 @@ class Proyectos extends Component{
         })
     }
 
-    openModalDelete = (e) => (proyecto) => {
+    openModalDelete = (proyecto) => {
         this.setState({
             ... this.state,
             proyecto: proyecto,
@@ -183,7 +188,7 @@ class Proyectos extends Component{
         })
     }
 
-    openModalEdit = (e) => (proyecto) => {
+    openModalEdit = (proyecto) => {
         const {form, options} = this.state
 
         form.cp = proyecto.cp;
@@ -499,20 +504,21 @@ class Proyectos extends Component{
         let aux = []
         proyectos.map( (proyecto) => {
             aux.push({
-                actions: this.setActionsTable(proyecto),
-                nombre: setTextTable(proyecto.nombre),
-                cliente: setTextTable( proyecto.cliente ? proyecto.cliente.empresa : ''),
-                direccion: this.setDireccionTable(proyecto),
-                contacto: setArrayTable(
+                actions: this.setActions(proyecto),
+                nombre: renderToString(setTextTable(proyecto.nombre)),
+                cliente: renderToString(setTextTable( proyecto.cliente ? proyecto.cliente.empresa : '')),
+                direccion: renderToString(this.setDireccionTable(proyecto)),
+                contacto: renderToString(setArrayTable(
                     [
                         {name:'Nombre', text:proyecto.contacto},
                         {name:'Teléfono', text:proyecto.numero_contacto, url:`tel:+${proyecto.numero_contacto}`}
-                    ]),
-                empresa: setTextTable( proyecto.empresa ? proyecto.empresa.name : ''),
-                porcentaje: setTextTable(proyecto.porcentaje + '%'),
-                fechaInicio: setDateTable(proyecto.fecha_inicio),
-                fechaFin: setDateTable(proyecto.fecha_fin),
-                adjuntos: this.setAdjuntosTable(proyecto)
+                    ])),
+                empresa: renderToString(setTextTable( proyecto.empresa ? proyecto.empresa.name : '')),
+                porcentaje: renderToString(setTextTable(proyecto.porcentaje + '%')),
+                fechaInicio: renderToString(setDateTable(proyecto.fecha_inicio)),
+                fechaFin: renderToString(setDateTable(proyecto.fecha_fin)),
+                adjuntos: renderToString(this.setAdjuntosTable(proyecto)),
+                id: proyecto.id
             })
         })
         return aux
@@ -541,7 +547,34 @@ class Proyectos extends Component{
         )
     }
 
-    setActionsTable = proyecto => {
+    setActions = concepto => {
+        let aux = []
+        aux.push(
+            {
+                text: 'Editar',
+                btnclass: 'success',
+                iconclass: 'flaticon2-pen',
+                action: 'edit',
+                tooltip: { id: 'edit', text: 'Editar' }
+            },
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',
+                action: 'delete',
+                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
+            },
+            {
+                text: 'Adjuntos',
+                btnclass: 'primary',
+                iconclass: 'flaticon-attachment',
+                action: 'adjuntos',
+                tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
+            }
+        )
+        return aux
+    }
+    /*setActions = proyecto => {
         return(
             <>
                 <div className="d-flex align-items-center flex-column flex-md-row">
@@ -556,7 +589,7 @@ class Proyectos extends Component{
                 </div>
             </>
         )
-    }
+    }*/
 
     setDireccionTable = proyecto => {
         return(
@@ -639,14 +672,18 @@ class Proyectos extends Component{
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'proyectos', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
+                const { data } = this.state
                 const { clientes, empresas, proyectos } = response.data
                 const { options, prospecto } = this.state
+                data.proyectos = proyectos
                 options['clientes'] = this.setOptions(clientes, 'empresa', 'id')
                 options['empresas'] = this.setOptions(empresas, 'name', 'id')
                 this.setState({
                     ...this.state,
                     options,
-                    proyectos: this.setProyectos(proyectos)
+                    proyectos: this.setProyectos(proyectos),
+                    data
+
                 })
             },
             (error) => {
@@ -1074,13 +1111,29 @@ class Proyectos extends Component{
     }
 
     render(){
-        const { modal, modalDelete, modalAdjuntos, title, adjuntos, prospecto, form, options, proyectos } = this.state
+        const { modal, modalDelete, modalAdjuntos, title, adjuntos, prospecto, form, options, proyectos,data } = this.state
         return(
             <Layout active={'proyectos'}  { ...this.props}>
-                <div className="text-right">
+                {/*<div className="text-right">
                     <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon = { faPlus } color="green" />
                 </div>
-                <DataTable columns = {PROYECTOS_COLUMNS} data= {proyectos}/>
+                 */}
+                {/* <DataTable columns = {PROYECTOS_COLUMNS} data= {proyectos}/>*/}
+
+                <NewTable columns={PROYECTOS_COLUMNS} data={proyectos}
+                    title='Proyectos' subtitle='Listado de proyectos'
+                    mostrar_boton={true}
+                    abrir_modal={true}
+                    mostrar_acciones={true}
+                    onClick={ this.openModal }
+                    actions={{
+                        'edit': { function: this.openModalEdit },
+                        'delete': { function: this.openModalDelete },
+                        'adjuntos': { function: this.openModalAdjuntos }
+                    }}
+                    elements={data.proyectos}
+                />
+
                 <Modal show = {modal} handleClose = {this.handleClose}>
                     <ProyectosForm title = { title } form = { form } onChange = {this.onChange} options = { options } 
                         onChangeAdjunto = { this.onChangeAdjunto } clearFiles = { this.clearFiles } onChangeCP = { this.onChangeCP }
