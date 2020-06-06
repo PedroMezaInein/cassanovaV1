@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { renderToString } from 'react-dom/server'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { faPlus, faPhone, faEnvelope, faEye, faEdit, faTrash, faCalendarAlt, faPhoneVolume } from '@fortawesome/free-solid-svg-icons'
@@ -12,10 +13,11 @@ import { Small, Subtitle, B } from '../../components/texts'
 import { Form } from 'react-bootstrap'
 import { ClienteForm } from '../../components/forms'
 import { Modal } from '../../components/singles'
+import NewTable from '../../components/tables/NewTable'
 
-import { setOptions, setSelectOptions, setTextTable, setDateTable,setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
+import { setOptions, setSelectOptions, setTextTable, setDateTable, setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
 
-class Leads extends Component{
+class Leads extends Component {
 
     state = {
         clientes: [],
@@ -26,30 +28,33 @@ class Leads extends Component{
         typeForm: 'Add',
         estado: '',
         municipio: '',
+        data: {
+            clientes: []
+        },
         colonias: []
     }
 
-    constructor(props){
+    constructor(props) {
         super(props);
         const { state } = props.location
     }
 
-    componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
+    componentDidMount() {
+        const { authUser: { user: { permisos: permisos } } } = this.props
+        const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props
-        const leads = permisos.find(function(element, index) {
+        const leads = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
-            return  pathname === '/' + url
+            return pathname === '/' + url
         });
-        if(!leads)
+        if (!leads)
             history.push('/')
         this.getClientesAxios();
     }
 
     // Form
 
-    clearForm = ( name, empty ) => {
+    clearForm = (name, empty) => {
         let aux = Object.keys(empty)
         let _form = this.state[name]
         aux.map((element) => {
@@ -61,13 +66,13 @@ class Leads extends Component{
     }
 
     updateColonia = value => {
-        this.onChange({target:{name:'colonia', value: value.value}})
+        this.onChange({ target: { name: 'colonia', value: value.value } })
     }
 
     changeCP = event => {
         const { value, name } = event.target
-        this.onChange({target:{name: name, value: value}})
-        if(value.length === 5)
+        this.onChange({ target: { name: name, value: value } })
+        if (value.length === 5)
             this.cpAxios(value)
     }
 
@@ -114,7 +119,7 @@ class Leads extends Component{
         this.clearForm('form', EMPTY_CLIENTE)
     }
 
-    activeModal = () => {
+    openModal = () => {
         this.setState({
             ... this.state,
             modal: true,
@@ -123,25 +128,25 @@ class Leads extends Component{
         this.clearForm('form', EMPTY_CLIENTE)
     }
 
-    openModalDelete = e => cliente => {
+    openModalDelete = cliente => {
         this.setState({
             ... this.state,
             modalDelete: true,
             cliente
         })
-        
+
     }
 
-    openModalEdit = e => cliente => {
+    openModalEdit = cliente => {
 
         const { form, colonias } = this.state
 
-        if(cliente.cp){
+        if (cliente.cp) {
             this.cpAxios(cliente.cp)
             form['cp'] = cliente.cp
         }
 
-        if(cliente.colonia){
+        if (cliente.colonia) {
             form['colonia'] = cliente.colonia
         }
 
@@ -163,18 +168,19 @@ class Leads extends Component{
 
     // Setters
 
-    setTableClientes = clientes => {
+    setClientes = clientes => {
         let aux = [];
         clientes.map((cliente) => {
             aux.push(
                 {
                     actions: this.setActions(cliente),
-                    empresa: setTextTable(cliente.empresa),
-                    direccion: this.setDireccion(cliente),
-                    perfil: setTextTable(cliente.perfil),
-                    nombre: setTextTable(cliente.nombre),
-                    puesto: setTextTable(cliente.puesto),
-                    fecha: setDateTable(cliente.created_at)
+                    empresa: renderToString(setTextTable(cliente.empresa)),
+                    direccion: renderToString(this.setDireccion(cliente)),
+                    perfil: renderToString(setTextTable(cliente.perfil)),
+                    nombre: renderToString(setTextTable(cliente.nombre)),
+                    puesto: renderToString(setTextTable(cliente.puesto)),
+                    fecha: renderToString(setDateTable(cliente.created_at)),
+                    id: cliente.id
                 }
             )
         })
@@ -183,8 +189,28 @@ class Leads extends Component{
             clientes: aux
         })
     }
-
     setActions = cliente => {
+        let aux = []
+        aux.push(
+            {
+                text: 'Editar',
+                btnclass: 'success',
+                iconclass: 'flaticon2-pen',
+                action: 'edit',
+                tooltip: { id: 'edit', text: 'Editar' }
+            },
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',
+                action: 'delete',
+                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
+            }
+        )
+        return aux
+    }
+
+    /*    setActions = cliente => {
         return(
             <>
                 <div className="d-flex align-items-center flex-column flex-md-row">
@@ -195,72 +221,79 @@ class Leads extends Component{
                 </div>
             </>
         )
-    }
+    }*/
 
     setText = text => {
-        return(
+        return (
             <Small>
-                { text }
+                {text}
             </Small>
         )
     }
 
     setDireccion = cliente => {
-        return(
+        return (
             <>
                 <Small className="mr-1">
-                    { cliente.calle }, colonia
+                    {cliente.calle}, colonia
                 </Small>
                 <Small className="mr-1">
-                    { cliente.colonia },
+                    {cliente.colonia},
                 </Small>
                 <Small className="mr-1">
-                    { cliente.municipio },
+                    {cliente.municipio},
                 </Small>
                 <Small className="mr-1">
-                    { cliente.estado }. CP: 
+                    {cliente.estado}. CP:
                 </Small>
                 <Small className="mr-1">
-                    { cliente.cp }
+                    {cliente.cp}
                 </Small>
             </>
         )
     }
 
     setDate = date => {
-        return(
+        return (
             <Small>
                 <Moment format="DD/MM/YYYY">
-                    { date }
+                    {date}
                 </Moment>
             </Small>
         )
     }
-    
+
     // Axios
 
-    async getClientesAxios(){
+    async getClientesAxios() {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'cliente', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'cliente', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { clientes } = response.data
-                this.setTableClientes(clientes)
+                const { data } = this.state
+                data.clientes = clientes
+                this.setClientes(clientes)
+                this.setState({
+                    ... this.state,
+                    //clientes: this.setClientes(clientes),
+                    data
+                })
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        
+
                     })
                 }
             }
@@ -269,18 +302,18 @@ class Leads extends Component{
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
-                
+
             })
         })
     }
 
-    async addClienteAxios(){
+    async addClienteAxios() {
         const { access_token } = this.props.authUser
         const { form } = this.state
-        await axios.post(URL_DEV + 'cliente', form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'cliente', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { clientes } = response.data
-                this.setTableClientes(clientes)
+                this.setClientes(clientes)
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'Creaste con éxito un nuevo cliente.',
@@ -297,19 +330,19 @@ class Leads extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        
+
                     })
                 }
             }
@@ -318,18 +351,18 @@ class Leads extends Component{
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
-                
+
             })
         })
     }
 
-    async editClienteAxios(){
+    async editClienteAxios() {
         const { access_token } = this.props.authUser
         const { form, cliente } = this.state
-        await axios.put(URL_DEV + 'cliente/' + cliente.id, form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.put(URL_DEV + 'cliente/' + cliente.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { clientes, message } = response.data
-                this.setTableClientes(clientes)
+                this.setClientes(clientes)
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'Editaste con éxito al cliente.',
@@ -346,19 +379,19 @@ class Leads extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        
+
                     })
                 }
             }
@@ -367,18 +400,18 @@ class Leads extends Component{
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
-                
+
             })
         })
     }
 
-    async deleteClienteAxios(){
+    async deleteClienteAxios() {
         const { access_token } = this.props.authUser
         const { form, cliente } = this.state
-        await axios.delete(URL_DEV + 'cliente/' + cliente.id,{ headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.delete(URL_DEV + 'cliente/' + cliente.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { clientes } = response.data
-                this.setTableClientes(clientes)
+                this.setClientes(clientes)
                 swal({
                     title: '¡Listo 👋!',
                     text: response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito al cliente.',
@@ -395,19 +428,19 @@ class Leads extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        
+
                     })
                 }
             }
@@ -416,19 +449,19 @@ class Leads extends Component{
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
-                
+
             })
         })
     }
 
-    async cpAxios(value){
+    async cpAxios(value) {
         await axios.get(CP_URL + value + '?type=simplified').then(
             (response) => {
                 const { municipio, estado, asentamiento } = response.data.response
                 const { cliente } = this.state
                 let aux = [];
                 asentamiento.map((colonia, key) => {
-                    aux.push({value: colonia, name: colonia})
+                    aux.push({ value: colonia, name: colonia })
                 })
                 this.setState({
                     ... this.state,
@@ -436,60 +469,75 @@ class Leads extends Component{
                     estado,
                     colonias: aux
                 })
-                if(cliente.colonia){
-                    aux.find( function(element, index){
-                        if(element.name === cliente.colonia){
+                if (cliente.colonia) {
+                    aux.find(function (element, index) {
+                        if (element.name === cliente.colonia) {
                             this.updateColonia(element)
                         }
                     })
                 }
-                this.onChange({target:{name:'cp', value: value}})
-                this.onChange({target:{name:'municipio', value: municipio}})
-                this.onChange({target:{name:'estado', value: estado}})
+                this.onChange({ target: { name: 'cp', value: value } })
+                this.onChange({ target: { name: 'municipio', value: municipio } })
+                this.onChange({ target: { name: 'estado', value: estado } })
             },
             (error) => {
-               
+
             }
         ).catch((error) => {
-           
+
         })
     }
 
-    render(){
-        const { clientes, modal, typeForm, form, estado, municipio, colonias, modalDelete, cliente } = this.state
-        return(
-            <Layout active={'leads'}  { ...this.props}>
-                <div className="text-right">
-                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.activeModal() } } text='' icon={faPlus} color="green" 
+    render() {
+        const { clientes, modal, typeForm, form, estado, municipio, colonias, modalDelete, cliente, data } = this.state
+        return (
+            <Layout active={'leads'}  {...this.props}>
+                {/*<div className="text-right">
+                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon={faPlus} color="green" 
                         tooltip={{id:'add', text:'Nuevo'}} />
                 </div>
-                <DataTable columns = { CLIENTES_COLUMNS } data = { clientes } />
-                <Modal show = { modal } handleClose = { this.handleCloseModal }>
-                    <Form onSubmit = { typeForm === 'Add' ? this.submitForm : this.submitEditForm } className="m-4">
+                */}
+
+                {/* <DataTable columns = { CLIENTES_COLUMNS } data = { clientes } />*/}
+                <NewTable columns={CLIENTES_COLUMNS} data={clientes}
+                    title='Clientes' subtitle='Listado de clientes'
+                    mostrar_boton={true}
+                    abrir_modal={true}
+                    mostrar_acciones={true}
+                    onClick={this.openModal}
+                    actions={{
+                        'edit': { function: this.openModalEdit },
+                        'delete': { function: this.openModalDelete }
+                    }}
+                    elements={data.clientes}
+                />
+
+                <Modal show={modal} handleClose={this.handleCloseModal}>
+                    <Form onSubmit={typeForm === 'Add' ? this.submitForm : this.submitEditForm} className="m-4">
                         <div className="row mx-0">
-                            <ClienteForm 
-                                onChange = { this.onChange } 
-                                title = { typeForm === 'Add' ? 'Registrar nuevo cliente' : 'Editar usuario' }
-                                form = { form }
-                                changeCP = { this.changeCP }
-                                estado = { estado }
-                                municipio = { municipio }
-                                colonias = { colonias }
-                                updateColonia = { this.updateColonia }
-                                />
+                            <ClienteForm
+                                onChange={this.onChange}
+                                title={typeForm === 'Add' ? 'Registrar nuevo cliente' : 'Editar usuario'}
+                                form={form}
+                                changeCP={this.changeCP}
+                                estado={estado}
+                                municipio={municipio}
+                                colonias={colonias}
+                                updateColonia={this.updateColonia}
+                            />
                         </div>
                         <div className="mt-3 text-center">
                             <Button icon='' className="mx-auto" type="submit" text="Enviar" />
                         </div>
                     </Form>
                 </Modal>
-                <Modal show = { modalDelete } handleClose = { this.handleDeleteModal } >
+                <Modal show={modalDelete} handleClose={this.handleDeleteModal} >
                     <Subtitle className="my-3 text-center">
                         ¿Estás seguro que deseas eliminar a <B color="red">{cliente.empresa}</B>?
                     </Subtitle>
                     <div className="d-flex justify-content-center mt-3">
-                        <Button icon='' onClick = { this.handleDeleteModal } text="Cancelar" className="mr-3" color="green"/>
-                        <Button icon='' onClick = { (e) => { this.safeDelete(e)(cliente.id) }} text="Continuar" color="red"/>
+                        <Button icon='' onClick={this.handleDeleteModal} text="Cancelar" className="mr-3" color="green" />
+                        <Button icon='' onClick={(e) => { this.safeDelete(e)(cliente.id) }} text="Continuar" color="red" />
                     </div>
                 </Modal>
             </Layout>
@@ -499,7 +547,7 @@ class Leads extends Component{
 
 
 const mapStateToProps = state => {
-    return{
+    return {
         authUser: state.authUser
     }
 }
