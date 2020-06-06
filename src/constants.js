@@ -137,7 +137,7 @@ export const TABLE_SIZE = 20
 // Leads
 export const LEADS_COLUMNS = [                
     {
-        Header: ' ',
+        Header: 'OPCIONES',
         accessor: 'actions',
     },
     {
@@ -172,7 +172,7 @@ export const LEADS_COLUMNS = [
 
 export const PROSPECTOS_COLUMNS = [                
     {
-        Header: ' ',
+        Header: 'OPCIONES',
         accessor: 'actions',
     },
     {
@@ -246,7 +246,7 @@ export const CONTACTO_COLUMNS = [
 
 export const CLIENTES_COLUMNS = [
     {
-        Header: ' ',
+        Header: 'OPCIONES',
         accessor: 'actions',
     },
     {
@@ -277,7 +277,7 @@ export const CLIENTES_COLUMNS = [
 
 export const CUENTAS_COLUMNS = [
     {
-        Header: ' ',
+        Header: 'OPCIONES',
         accessor: 'actions',
     },
     {
@@ -320,7 +320,7 @@ export const CUENTAS_COLUMNS = [
 
 export const EDOS_CUENTAS_COLUMNS = [
     {
-        Header: ' ',
+        Header: '',
         accessor: 'actions',
     },
     {
@@ -335,7 +335,7 @@ export const EDOS_CUENTAS_COLUMNS = [
 
 export const EDOS_CUENTAS_COLUMNS_2 = [
     {
-        Header: ' ',
+        Header: 'OPCIONES',
         accessor: 'actions',
     },
     {
@@ -354,7 +354,7 @@ export const EDOS_CUENTAS_COLUMNS_2 = [
 
 export const TRASPASOS_COLUMNS = [
     {
-        Header: ' ',
+        Header: 'OPCIONES',
         accessor: 'actions',
     },
     {
@@ -386,7 +386,7 @@ export const TRASPASOS_COLUMNS = [
 
 export const INGRESOS_COLUMNS = [
     {
-        Header: ' ',
+        Header: 'OPCIONES',
         accessor: 'actions',
     },
     {
@@ -509,6 +509,7 @@ export const EGRESOS_COLUMNS = [
 
 
 export const FACTURAS_COLUMNS = [
+    
     {
         Header: 'Folio',
         accessor: 'folio',
@@ -651,7 +652,7 @@ export const PROVEEDORES_COLUMNS = [
 
 export const AREAS_COLUMNS = [
     {
-        Header: ' ',
+        Header: 'OPCIONES',
         accessor: 'actions',
     },
     {
@@ -666,7 +667,7 @@ export const AREAS_COLUMNS = [
 
 export const PROYECTOS_COLUMNS = [
     {
-        Header: ' ',
+        Header: 'OPCIONES',
         accessor: 'actions',
     },
     {
@@ -840,7 +841,7 @@ export const COMPRAS_COLUMNS = [
 
 export const SOLICITUD_COMPRA_COLUMNS = [
     {
-        Header: ' ',
+        Header: 'OPCIONES',
         accessor: 'actions',
     },
     {
@@ -891,7 +892,7 @@ export const SOLICITUD_COMPRA_COLUMNS = [
 
 export const CONCEPTOS_COLUMNS = [
     {
-        Header: ' ',
+        Header: 'OPCIONES',
         accessor: 'actions',
     },
     {
@@ -930,7 +931,7 @@ export const CONCEPTOS_COLUMNS = [
 
 export const RENDIMIENTOS_COLUMNS = [
     {
-        Header: ' ',
+        Header: 'OPCIONES',
         accessor: 'actions',
     },
     {
@@ -961,7 +962,7 @@ export const RENDIMIENTOS_COLUMNS = [
 
 export const REMISION_COLUMNS = [
     {
-        Header: ' ',
+        Header: 'OPCIONES',
         accessor: 'actions',
     },
     {
