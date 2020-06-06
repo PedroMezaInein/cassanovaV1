@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { renderToString } from 'react-dom/server'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { Button } from '../../components/form-components'
@@ -10,16 +11,20 @@ import { Small, Subtitle } from '../../components/texts'
 import { Modal } from '../../components/singles'
 import axios from 'axios'
 import swal from 'sweetalert'
+import NewTable from '../../components/tables/NewTable'
 
-import { setOptions, setSelectOptions, setTextTable, setDateTable,setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
+import { setOptions, setSelectOptions, setTextTable, setDateTable, setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
 
-class Areas extends Component{
+class Areas extends Component {
 
     state = {
         form: {
             nombre: '',
             subarea: '',
             subareas: []
+        },
+        data: {
+            areas: []
         },
         areas: [],
         modal: false,
@@ -28,28 +33,28 @@ class Areas extends Component{
         area: ''
     }
 
-    componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
+    componentDidMount() {
+        const { authUser: { user: { permisos: permisos } } } = this.props
+        const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props
-        const areas = permisos.find(function(element, index) {
+        const areas = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
-            return  pathname === '/' + url
+            return pathname === '/' + url
         });
-        if(!areas)
+        if (!areas)
             history.push('/')
         this.getAreasAxios()
     }
 
     addSubarea = () => {
         const { form } = this.state
-        if(form['subarea'] !== ''){
+        if (form['subarea'] !== '') {
             let aux = false;
-            aux = form.subareas.find(function(element, index) {
-                if(element === form.subarea)
+            aux = form.subareas.find(function (element, index) {
+                if (element === form.subarea)
                     return true
             });
-            if(aux !== true){
+            if (aux !== true) {
                 form.subareas.push(form.subarea)
                 form.subarea = ''
                 this.setState({
@@ -63,8 +68,8 @@ class Areas extends Component{
     deleteSubarea = value => {
         const { form } = this.state
         let aux = []
-        form.subareas.find(function(element, index) {
-            if(element.toString() !== value.toString())
+        form.subareas.find(function (element, index) {
+            if (element.toString() !== value.toString())
                 aux.push(element)
         });
         form.subareas = aux
@@ -89,14 +94,15 @@ class Areas extends Component{
         areas.map((area) => {
             aux.push({
                 actions: this.setActions(area),
-                area: setTextTable(area.nombre),
-                subareas: setListTable(area.subareas, 'nombre')
+                area: renderToString(setTextTable(area.nombre)),
+                subareas: renderToString(setListTable(area.subareas, 'nombre')),
+                id: area.id
             })
         })
         return aux
     }
 
-    setActions= area => {
+    /*setActions= area => {
         return(
             <>
                 <div className="d-flex align-items-center flex-column flex-md-row">
@@ -107,10 +113,31 @@ class Areas extends Component{
                 </div>
             </>
         )
+    }*/
+
+    setActions = concepto => {
+        let aux = []
+        aux.push(
+            {
+                text: 'Editar',
+                btnclass: 'success',
+                iconclass: 'flaticon2-pen',
+                action: 'edit',
+                tooltip: { id: 'edit', text: 'Editar' }
+            },
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',
+                action: 'delete',
+                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
+            }
+        )
+        return aux
     }
 
     setTextTable = text => {
-        return(
+        return (
             <Small>
                 {text}
             </Small>
@@ -118,11 +145,11 @@ class Areas extends Component{
     }
 
     setListTable = lista => {
-        return(
+        return (
             <ul>
                 {
                     lista.map((element) => {
-                        return(
+                        return (
                             <li>
                                 <Small>
                                     {element.nombre}
@@ -138,8 +165,8 @@ class Areas extends Component{
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'subareas':
                     form[element] = []
                     break;
@@ -152,7 +179,7 @@ class Areas extends Component{
     }
 
     handleClose = () => {
-        const {modal} = this.state
+        const { modal } = this.state
         this.setState({
             modal: !modal,
             title: 'Nueva área',
@@ -162,7 +189,7 @@ class Areas extends Component{
     }
 
     handleCloseDelete = () => {
-        const {modalDelete} = this.state
+        const { modalDelete } = this.state
         this.setState({
             modalDelete: !modalDelete,
             area: ''
@@ -177,15 +204,15 @@ class Areas extends Component{
         })
     }
 
-    openModalDelete = e => area => {
+    openModalDelete = area => {
         this.setState({
             modalDelete: true,
             area: area
         })
     }
 
-    openModalEdit = e => area => {
-        const {form} = this.state
+    openModalEdit = area => {
+        const { form } = this.state
         form.nombre = area.nombre
         let aux = []
         area.subareas.map((element) => {
@@ -203,9 +230,9 @@ class Areas extends Component{
     onSubmit = e => {
         e.preventDefault()
         const { form, title } = this.state
-        if(title === 'Nueva área')
+        if (title === 'Nueva área')
             this.addAreaAxios()
-        if(title === 'Editar área')
+        if (title === 'Editar área')
             this.updateAreaAxios()
     }
 
@@ -213,31 +240,34 @@ class Areas extends Component{
         this.deleteAreaAxios()
     }
 
-    async getAreasAxios(){
+    async getAreasAxios() {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'areas', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'areas', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                const { data } = this.state
                 const { areas } = response.data
+                data.areas = areas
                 this.setState({
                     ... this.state,
-                    areas: this.setAreas(areas)
+                    areas: this.setAreas(areas),
+                    data
                 })
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        
+
                     })
                 }
             }
@@ -248,15 +278,15 @@ class Areas extends Component{
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
-                
+
             })
         })
     }
 
-    async addAreaAxios(){
+    async addAreaAxios() {
         const { access_token } = this.props.authUser
         const { form } = this.state
-        await axios.post(URL_DEV + 'areas', form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'areas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { areas } = response.data
                 swal({
@@ -276,19 +306,19 @@ class Areas extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        
+
                     })
                 }
             }
@@ -299,15 +329,15 @@ class Areas extends Component{
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
-                
+
             })
         })
     }
 
-    async updateAreaAxios(){
+    async updateAreaAxios() {
         const { access_token } = this.props.authUser
         const { form, area } = this.state
-        await axios.put(URL_DEV + 'areas/' + area.id, form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.put(URL_DEV + 'areas/' + area.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { areas } = response.data
                 swal({
@@ -328,19 +358,19 @@ class Areas extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        
+
                     })
                 }
             }
@@ -351,15 +381,15 @@ class Areas extends Component{
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
-                
+
             })
         })
     }
 
-    async deleteAreaAxios(){
+    async deleteAreaAxios() {
         const { access_token } = this.props.authUser
         const { area } = this.state
-        await axios.delete(URL_DEV + 'areas/' + area.id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.delete(URL_DEV + 'areas/' + area.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { areas } = response.data
                 swal({
@@ -380,19 +410,19 @@ class Areas extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        
+
                     })
                 }
             }
@@ -403,32 +433,48 @@ class Areas extends Component{
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
-                
+
             })
         })
     }
 
-    render(){
-        const { form, areas, modal, modalDelete, title } = this.state
-        return(
-            <Layout active={'catalogos'}  { ...this.props}>
-                <div className="text-right">
+    render() {
+        const { form, areas, modal, modalDelete, title, data } = this.state
+        //console.log(areas)
+        //console.log(data.areas)
+        return (
+            <Layout active={'catalogos'}  {...this.props}>
+                {/*} <div className="text-right">
                     <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon = { faPlus } color="green" 
                         tooltip={{id:'add', text:'Nuevo'}} />
-                </div>área
-                <DataTable columns = {AREAS_COLUMNS} data= {areas}/>
-                <Modal show = {modal} handleClose = {this.handleClose}>
-                    <AreasForm form = {form} onChange = { this.onChange } 
-                        addSubarea = { this.addSubarea } deleteSubarea = { this.deleteSubarea } 
-                        title = {title} onSubmit={this.onSubmit}/>
+        </div>área*/}
+
+                {/*} <DataTable columns = {AREAS_COLUMNS} data= {areas}/>*/}
+                <NewTable columns={AREAS_COLUMNS} data={areas}
+                    title='Áreas' subtitle='Listado de áreas'
+                    mostrar_boton={true}
+                    abrir_modal={true}
+                    mostrar_acciones={true}
+                    onClick={this.openModal}
+                    actions={{
+                        'edit': { function: this.openModalEdit },
+                        'delete': { function: this.openModalDelete }
+                    }}
+                    elements={data.areas}
+                />
+
+                <Modal show={modal} handleClose={this.handleClose}>
+                    <AreasForm form={form} onChange={this.onChange}
+                        addSubarea={this.addSubarea} deleteSubarea={this.deleteSubarea}
+                        title={title} onSubmit={this.onSubmit} />
                 </Modal>
-                <Modal show = { modalDelete } handleClose={ this.handleCloseDelete } >
+                <Modal show={modalDelete} handleClose={this.handleCloseDelete} >
                     <Subtitle className="my-3 text-center">
                         ¿Estás seguro que deseas eliminar el área?
                     </Subtitle>
                     <div className="d-flex justify-content-center mt-3">
-                        <Button icon='' onClick = { this.handleCloseDelete } text="Cancelar" className="mr-3" color="green"/>
-                        <Button icon='' onClick = { (e) => { this.safeDelete(e)() }} text="Continuar" color="red"/>
+                        <Button icon='' onClick={this.handleCloseDelete} text="Cancelar" className="mr-3" color="green" />
+                        <Button icon='' onClick={(e) => { this.safeDelete(e)() }} text="Continuar" color="red" />
                     </div>
                 </Modal>
             </Layout>
@@ -438,7 +484,7 @@ class Areas extends Component{
 
 
 const mapStateToProps = state => {
-    return{
+    return {
         authUser: state.authUser
     }
 }
