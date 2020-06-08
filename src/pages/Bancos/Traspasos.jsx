@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { renderToString } from 'react-dom/server'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { faPlus, faTrash, faEdit, faPaperclip, faTimes } from '@fortawesome/free-solid-svg-icons'
@@ -15,6 +16,7 @@ import NumberFormat from 'react-number-format';
 import { Form, Badge } from 'react-bootstrap'
 import Input from '../../components/form-components/Input'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import NewTable from '../../components/tables/NewTable'
 
 import { setOptions, setSelectOptions, setTextTable, setDateTable,setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
 
@@ -33,6 +35,9 @@ class Traspasos extends Component{
             adjunto: '',
             adjuntoFile: '',
             adjuntoName: ''
+        },
+        data:{
+            traspasos: []
         },
         traspasos: [],
         traspaso: ''
@@ -228,26 +233,27 @@ class Traspasos extends Component{
         traspasos.map( (traspaso) => {
             _aux.push({
                 actions: this.setActions(traspaso),
-                origen: setArrayTable(
+                origen: renderToString(setArrayTable(
                     traspaso.origen ?
                         [
                             {name: 'Nombre', text: traspaso.origen.nombre},
                             {name: '# cuenta', text: traspaso.origen.numero}
                         ]
                     : ''
-                ),
-                destino: setArrayTable(
+                )),
+                destino: renderToString(setArrayTable(
                     traspaso.destino ?
                         [
                             {name: 'Nombre', text: traspaso.destino.nombre},
                             {name: '# cuenta', text: traspaso.destino.numero}
                         ]
                     : ''
-                ),
-                monto: setMoneyTable(traspaso.cantidad),
-                comentario: setTextTable(traspaso.comentario),
-                usuario: setTextTable(traspaso.user.name),
-                fecha: setDateTable(traspaso.created_at)
+                )),
+                monto: renderToString(setMoneyTable(traspaso.cantidad)),
+                comentario: renderToString(setTextTable(traspaso.comentario)),
+                usuario: renderToString(setTextTable(traspaso.user.name)),
+                fecha: renderToString(setDateTable(traspaso.created_at)),
+                id: traspaso.id
             })
         })
         this.setState({
@@ -256,7 +262,7 @@ class Traspasos extends Component{
         })
     }
 
-    setActions = traspaso => {
+   /* setActions = traspaso => {
         return(
             <>
                 <div className="d-flex align-items-center flex-column flex-md-row">
@@ -276,6 +282,36 @@ class Traspasos extends Component{
                 </div>
             </>
         )
+    }
+    */
+
+    setActions = proveedor => {
+        let aux = []
+        aux.push(
+            {
+                text: 'Editar',
+                btnclass: 'success',
+                iconclass: 'flaticon2-pen',
+                action: 'edit',
+                tooltip: {id:'edit', text:'Editar'}
+            },
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin', 
+                action: 'delete',
+                tooltip: {id:'delete', text:'Eliminar', type:'error'}
+            },
+            {
+                text: 'Transpasos',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin', 
+                action: 'delete',
+                tooltip: {id:'adjuntos', text:'Mostrar adjuntos'}
+            }
+        )
+        
+        return aux
     }
 
     setCuenta = cuenta => {
@@ -336,7 +372,9 @@ class Traspasos extends Component{
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'traspasos', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { cuentas, traspasos } = response.data
+                const { data } = this.state
+                const { cuentas, traspasos } = response.data                
+                data.traspasos = traspasos
                 this.setTraspasos(traspasos)
                 let aux =  []
                 cuentas.map((cuenta, key) => {
@@ -344,7 +382,8 @@ class Traspasos extends Component{
                 })
                 this.setState({
                     ... this.state,
-                    cuentas: aux
+                    cuentas: aux,                   
+                    //traspasos:this.setTraspasos(traspasos)
                 })
             },
             (error) => {
@@ -537,14 +576,30 @@ class Traspasos extends Component{
 
     render(){
 
-        const { modal, modalDelete, cuentas, form, traspasos, traspaso } = this.state
+        const { modal, modalDelete, cuentas, form, traspasos, traspaso, data} = this.state
 
         return(
             <Layout active={'bancos'}  { ...this.props}>
-                <div className="text-right">
+                {/* <div className="text-right">
                     <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon={faPlus} color="green" />
                 </div>
                 <DataTable columns = { TRASPASOS_COLUMNS } data = { traspasos } />
+                */}
+                <NewTable columns={TRASPASOS_COLUMNS} data={traspasos}
+                    title='Traspasos' subtitle='Listado de traspasos'
+                    mostrar_boton={true}
+                    abrir_modal={true}
+                    onClick={this.openModal}
+                    mostrar_acciones={true}
+
+                    actions={{
+                        'edit': { function: this.openEdit },
+                        'delete': { function: this.openDelete },
+                        //'adjuntos': { function: this.openModalFacturas },
+                    }}
+                    elements={data.traspaso} />
+
+
                 <Modal show = { modal } handleClose={ this.handleClose } >
                     <TraspasoForm cuentas = { cuentas } form = { form } onChange = { this.onchange } onChangeAdjunto = { this.onChangeAdjunto } 
                         deleteAdjunto = { this.deleteAdjunto } title = { traspaso === '' ? "Nuevo traspaso" : 'Editar traspaso'} 
