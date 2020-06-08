@@ -711,7 +711,7 @@ export const PROYECTOS_COLUMNS = [
 
 export const VENTAS_COLUMNS = [
     {
-        Header: ' ',
+        Header: 'Opciones',
         accessor: 'actions',
     },
     {
@@ -774,7 +774,7 @@ export const VENTAS_COLUMNS = [
 
 export const COMPRAS_COLUMNS = [
     {
-        Header: ' ',
+        Header: 'Opciones',
         accessor: 'actions',
     },
     {
@@ -990,3 +990,24 @@ export const REMISION_COLUMNS = [
         accessor: 'adjunto'
     }
 ]
+
+export const EMPRESA_COLUMNS = [
+    {
+        Header: 'Opciones',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Nombre',
+        accessor: 'name',
+    },
+    {
+        Header: 'Razón social',
+        accessor: 'razonSocial',
+    },
+    {
+        Header: 'Logo',
+        accessor: 'logo',
+    },
+]
+
+
