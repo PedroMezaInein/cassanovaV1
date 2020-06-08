@@ -14,7 +14,7 @@ import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert } from '../../
 //
 import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete } from '../../../components/singles'
-import { Button , FileInput } from '../../../components/form-components'
+import { Button, FileInput } from '../../../components/form-components'
 import { faPlus, faTrash, faEdit, faMoneyBill, faFileAlt, faFileArchive, faMoneyBillWave, faReceipt, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons'
 import { IngresosForm, FacturaForm } from '../../../components/forms'
 import { DataTable, FacturaTable } from '../../../components/tables'
@@ -26,7 +26,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import NewTable from '../../../components/tables/NewTable'
 
 
-class Ingresos extends Component{
+class Ingresos extends Component {
 
     state = {
         ingresos: [],
@@ -42,7 +42,7 @@ class Ingresos extends Component{
             empresas: [],
             ingresos: []
         },
-        form:{
+        form: {
             formaPago: '',
             metodoPago: '',
             estatusFactura: '',
@@ -54,15 +54,15 @@ class Ingresos extends Component{
             rfc: '',
             total: '',
             fecha: new Date(),
-            adjuntos:{
-                factura:{
+            adjuntos: {
+                factura: {
                     value: '',
                     placeholder: 'Factura',
                     files: []
                 }
             }
         },
-        options:{
+        options: {
             formasPago: [],
             metodosPago: [],
             estatusFacturas: [],
@@ -71,15 +71,15 @@ class Ingresos extends Component{
         }
     }
 
-    componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
+    componentDidMount() {
+        const { authUser: { user: { permisos: permisos } } } = this.props
+        const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props
-        const ingresos = permisos.find(function(element, index) {
+        const ingresos = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
-            return  pathname === '/' + url
+            return pathname === '/' + url
         });
-        if(!ingresos)
+        if (!ingresos)
             history.push('/')
         this.getIngresosAxios()
     }
@@ -93,14 +93,14 @@ class Ingresos extends Component{
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'fecha':
                     form[element] = new Date()
                     break;
                 case 'adjuntos':
                     form[element] = {
-                        factura:{
+                        factura: {
                             value: '',
                             placeholder: 'Factura',
                             files: []
@@ -116,8 +116,8 @@ class Ingresos extends Component{
     }
 
     onChange = e => {
-        const {form} = this.state
-        const {name, value} = e.target
+        const { form } = this.state
+        const { name, value } = e.target
         form[name] = value
         this.setState({
             ... this.state,
@@ -129,14 +129,13 @@ class Ingresos extends Component{
         const { form, data, options } = this.state
         const { files, value, name } = e.target
         let aux = []
-        for(let counter = 0; counter < files.length; counter ++){
-            if(name === 'factura')
-            {
+        for (let counter = 0; counter < files.length; counter++) {
+            if (name === 'factura') {
                 let extension = files[counter].name.slice((Math.max(0, files[counter].name.lastIndexOf(".")) || Infinity) + 1);
-                if(extension === 'xml'){
+                if (extension === 'xml') {
                     waitAlert()
                     const reader = new FileReader()
-                    reader.onload = async (e) => { 
+                    reader.onload = async (e) => {
                         const text = (e.target.result)
                         var XMLParser = require('react-xml-parser');
                         var xml = new XMLParser().parseFromString(text);
@@ -161,52 +160,52 @@ class Ingresos extends Component{
                             folio: xml.attributes.Folio ? xml.attributes.Folio : '',
                             serie: xml.attributes.Serie ? xml.attributes.Serie : '',
                         }
-                        if(obj.numero_certificado === ''){
+                        if (obj.numero_certificado === '') {
                             let NoCertificado = text.search('NoCertificado="')
-                            if(NoCertificado)
-                                obj.numero_certificado = text.substring(NoCertificado+15, NoCertificado + 35)
+                            if (NoCertificado)
+                                obj.numero_certificado = text.substring(NoCertificado + 15, NoCertificado + 35)
                         }
                         let aux = ''
-                        if(obj.subtotal === ''){
+                        if (obj.subtotal === '') {
                             let Subtotal = text.search('SubTotal="')
-                            if(Subtotal)
-                                Subtotal = text.substring(Subtotal+10)
-                                aux = Subtotal.search('"')
-                                Subtotal = Subtotal.substring(0,aux)
-                                obj.subtotal = Subtotal
+                            if (Subtotal)
+                                Subtotal = text.substring(Subtotal + 10)
+                            aux = Subtotal.search('"')
+                            Subtotal = Subtotal.substring(0, aux)
+                            obj.subtotal = Subtotal
                         }
-                        if(obj.fecha === ''){
+                        if (obj.fecha === '') {
                             let Fecha = text.search('Fecha="')
-                            if(Fecha)
-                                Fecha = text.substring(Fecha+7)
-                                aux = Fecha.search('"')
-                                Fecha = Fecha.substring(0,aux)
-                                obj.fecha = Fecha
+                            if (Fecha)
+                                Fecha = text.substring(Fecha + 7)
+                            aux = Fecha.search('"')
+                            Fecha = Fecha.substring(0, aux)
+                            obj.fecha = Fecha
                         }
                         let auxEmpresa = ''
-                        data.empresas.find(function(element, index) {
-                            if(element.razon_social === obj.nombre_receptor){
+                        data.empresas.find(function (element, index) {
+                            if (element.razon_social === obj.nombre_receptor) {
                                 auxEmpresa = element
                             }
                         });
                         let auxCliente = ''
-                        data.clientes.find(function(element, index) {
-                            if(element.empresa === obj.nombre_emisor){
+                        data.clientes.find(function (element, index) {
+                            if (element.empresa === obj.nombre_emisor) {
                                 auxCliente = element
                             }
                         });
-                        if(auxEmpresa){
+                        if (auxEmpresa) {
                             options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')
                             form.empresa = auxEmpresa.name
-                        }else{
+                        } else {
                             errorAlert('No existe la empresa')
                         }
-                        if(auxCliente){
+                        if (auxCliente) {
                             form.cliente = auxCliente.empresa
-                        }else{
+                        } else {
                             createAlert('No existe el cliente', '¿Lo quieres crear?', () => this.addClienteAxios(obj))
                         }
-                        if(auxEmpresa && auxCliente){
+                        if (auxEmpresa && auxCliente) {
                             swal.close()
                         }
                         form.facturaObject = obj
@@ -224,7 +223,7 @@ class Ingresos extends Component{
                 {
                     name: files[counter].name,
                     file: files[counter],
-                    url: URL.createObjectURL(files[counter]) ,
+                    url: URL.createObjectURL(files[counter]),
                     key: counter
                 }
             )
@@ -240,14 +239,14 @@ class Ingresos extends Component{
     clearFiles = (name, key) => {
         const { form } = this.state
         let aux = []
-        for(let counter = 0; counter < form['adjuntos'][name].files.length; counter ++){
-            if(counter !== key){
+        for (let counter = 0; counter < form['adjuntos'][name].files.length; counter++) {
+            if (counter !== key) {
                 aux.push(form['adjuntos'][name].files[counter])
             }
         }
-        if(aux.length < 1){
+        if (aux.length < 1) {
             form['adjuntos'][name].value = ''
-            if(name === 'factura')
+            if (name === 'factura')
                 form['facturaObject'] = ''
         }
         form['adjuntos'][name].files = aux
@@ -268,37 +267,37 @@ class Ingresos extends Component{
         const { history } = this.props
         history.push({
             pathname: '/administracion/ingresos/edit',
-            state: { ingreso: ingreso}
+            state: { ingreso: ingreso }
         });
     }
 
     // TABLA
     setIngresos = ingresos => {
         let aux = []
-        ingresos.map( (ingreso) => {
+        ingresos.map((ingreso) => {
             aux.push(
                 {
                     actions: this.setActions(ingreso),
                     cuenta: renderToString(setArrayTable(
                         [
-                            {name:'Empresa', text: ingreso.empresa ? ingreso.empresa.name : '' },
-                            {name:'Cuenta', text: ingreso.cuenta ? ingreso.cuenta.nombre : '' },
-                            {name:'# de cuenta', text: ingreso.cuenta ? ingreso.cuenta.numero : '' }
+                            { name: 'Empresa', text: ingreso.empresa ? ingreso.empresa.name : '' },
+                            { name: 'Cuenta', text: ingreso.cuenta ? ingreso.cuenta.nombre : '' },
+                            { name: '# de cuenta', text: ingreso.cuenta ? ingreso.cuenta.numero : '' }
                         ]
                     )),
-                    cliente: renderToString(setTextTable( ingreso.cliente ?  ingreso.cliente.empresa : '')),
+                    cliente: renderToString(setTextTable(ingreso.cliente ? ingreso.cliente.empresa : '')),
                     factura: renderToString(setTextTable(ingreso.facturas.length ? 'Con factura' : 'Sin factura')),
                     monto: renderToString(setMoneyTable(ingreso.monto)),
-                    impuesto: renderToString(setTextTable( ingreso.tipo_impuesto ? ingreso.tipo_impuesto.tipo : 'Sin definir')),
-                    tipoPago: renderToString(setTextTable( ingreso.tipo_pago ? ingreso.tipo_pago.tipo : '')),
+                    impuesto: renderToString(setTextTable(ingreso.tipo_impuesto ? ingreso.tipo_impuesto.tipo : 'Sin definir')),
+                    tipoPago: renderToString(setTextTable(ingreso.tipo_pago ? ingreso.tipo_pago.tipo : '')),
                     descripcion: renderToString(setTextTable(ingreso.descripcion)),
-                    area: renderToString(setTextTable( ingreso.subarea ? ingreso.subarea.area.nombre : '' )),
-                    subarea: renderToString(setTextTable( ingreso.subarea ? ingreso.subarea.nombre : '' )),
-                    estatusCompra: renderToString(setTextTable( ingreso.estatus_compra ? ingreso.estatus_compra.estatus : '' )),
+                    area: renderToString(setTextTable(ingreso.subarea ? ingreso.subarea.area.nombre : '')),
+                    subarea: renderToString(setTextTable(ingreso.subarea ? ingreso.subarea.nombre : '')),
+                    estatusCompra: renderToString(setTextTable(ingreso.estatus_compra ? ingreso.estatus_compra.estatus : '')),
                     total: renderToString(setMoneyTable(ingreso.total)),
                     adjuntos: renderToString(setAdjuntosList([
-                        ingreso.pago ? {name: 'Pago', url: ingreso.pago.url} : '',
-                        ingreso.presupuesto ? {name: 'Presupuesto', url: ingreso.presupuesto.url} : '',
+                        ingreso.pago ? { name: 'Pago', url: ingreso.pago.url } : '',
+                        ingreso.presupuesto ? { name: 'Presupuesto', url: ingreso.presupuesto.url } : '',
                     ])),
                     fecha: renderToString(setDateTable(ingreso.created_at)),
                     id: ingreso.id
@@ -308,42 +307,41 @@ class Ingresos extends Component{
         return aux
     }
 
-    setActions= ingreso => {
+    setActions = ingreso => {
 
         let aux = []
-            aux.push(
-                {
-                    text: 'Editar',
-                    btnclass: 'success',
-                    iconclass: 'flaticon2-pen',
-                    action: 'edit',
-                    tooltip: {id:'edit', text:'Editar'},
-                },
-                {
-                    text: 'Eliminar',
-                    btnclass: 'danger',
-                    iconclass: 'flaticon2-rubbish-bin',                  
-                    action: 'delete',
-                    tooltip: {id:'delete', text:'Eliminar', type:'error'},
-                }
+        aux.push(
+            {
+                text: 'Editar',
+                btnclass: 'success',
+                iconclass: 'flaticon2-pen',
+                action: 'edit',
+                tooltip: { id: 'edit', text: 'Editar' },
+            },
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',
+                action: 'delete',
+                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' },
+            }
         )
-        
-        if(ingreso.factura)
-        {
+
+        if (ingreso.factura) {
             aux.push(
                 {
                     text: 'Facturas',
                     btnclass: 'primary',
                     iconclass: 'flaticon2-medical-records',
                     action: 'facturas',
-                    tooltip: {id:'taxes', text:'Facturas'},
+                    tooltip: { id: 'taxes', text: 'Facturas' },
                 },
                 {
                     text: 'Pedir factura',
                     btnclass: 'primary',
                     iconclass: 'flaticon2-medical-records',
                     action: 'askFacturas',
-                    tooltip: {id:'ask-taxes', text:'Facturas'},
+                    tooltip: { id: 'ask-taxes', text: 'Facturas' },
                 }
             )
         }
@@ -392,7 +390,7 @@ class Ingresos extends Component{
     openModalFacturas = (ingreso) => {
         let { porcentaje } = this.state
         porcentaje = 0
-        ingreso.facturas.map((factura)=>{
+        ingreso.facturas.map((factura) => {
             porcentaje = porcentaje + factura.total
         })
         porcentaje = porcentaje * 100 / (ingreso.total)
@@ -445,9 +443,9 @@ class Ingresos extends Component{
         this.deleteFacturaAxios(id)
     }
 
-    async getIngresosAxios(){
+    async getIngresosAxios() {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'ingresos', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'ingresos', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { data, options } = this.state
                 const { ingresos, clientes, empresas, formasPago, metodosPago, estatusFacturas } = response.data
@@ -468,9 +466,9 @@ class Ingresos extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -480,10 +478,10 @@ class Ingresos extends Component{
         })
     }
 
-    async deleteIngresoAxios(){
+    async deleteIngresoAxios() {
         const { access_token } = this.props.authUser
         const { ingreso } = this.state
-        await axios.delete(URL_DEV + 'ingresos/' + ingreso.id, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.delete(URL_DEV + 'ingresos/' + ingreso.id, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { ingresos } = response.data
                 const { data } = this.state
@@ -505,9 +503,9 @@ class Ingresos extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -518,15 +516,15 @@ class Ingresos extends Component{
     }
 
     // Factura
-    async sendFacturaAxios(){
+    async sendFacturaAxios() {
 
         const { access_token } = this.props.authUser
         const { form, ingreso } = this.state
         const data = new FormData();
-        
+
         let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'facturaObject':
                     data.append(element, JSON.stringify(form[element]))
                     break;
@@ -535,8 +533,8 @@ class Ingresos extends Component{
             }
         })
         aux = Object.keys(form.adjuntos)
-        aux.map( (element) => {
-            if(form.adjuntos[element].value !== '' && element === 'factura'){
+        aux.map((element) => {
+            if (form.adjuntos[element].value !== '' && element === 'factura') {
                 for (var i = 0; i < form.adjuntos[element].files.length; i++) {
                     data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
                     data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
@@ -545,15 +543,15 @@ class Ingresos extends Component{
             }
         })
 
-        data.append('id', ingreso.id )
-        
-        await axios.post(URL_DEV + 'ingresos/factura', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+        data.append('id', ingreso.id)
+
+        await axios.post(URL_DEV + 'ingresos/factura', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
 
                 const { ingreso, ingresos } = response.data
                 let { porcentaje, data } = this.state
                 porcentaje = 0
-                ingreso.facturas.map((factura)=>{
+                ingreso.facturas.map((factura) => {
                     porcentaje = porcentaje + factura.total
                 })
                 porcentaje = porcentaje * 100 / (ingreso.total)
@@ -568,7 +566,7 @@ class Ingresos extends Component{
                     data,
                     ingresos: this.setIngresos(ingresos)
                 })
-                
+
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
@@ -580,9 +578,9 @@ class Ingresos extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -591,18 +589,18 @@ class Ingresos extends Component{
             console.log(error, 'error')
         })
     }
-    
-    async deleteFacturaAxios(id){
+
+    async deleteFacturaAxios(id) {
 
         const { access_token } = this.props.authUser
         const { ingreso } = this.state
-        await axios.delete(URL_DEV + 'ingresos/' + ingreso.id + '/facturas/' + id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.delete(URL_DEV + 'ingresos/' + ingreso.id + '/facturas/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                
+
                 const { ingresos, ingreso } = response.data
                 let { porcentaje, data } = this.state
                 porcentaje = 0
-                ingreso.facturas.map((factura)=>{
+                ingreso.facturas.map((factura) => {
                     porcentaje = porcentaje + factura.total
                 })
                 porcentaje = porcentaje * 100 / (ingreso.total)
@@ -617,7 +615,7 @@ class Ingresos extends Component{
                     facturas: ingreso.facturas,
                     porcentaje
                 })
-                
+
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
@@ -629,9 +627,9 @@ class Ingresos extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -641,13 +639,13 @@ class Ingresos extends Component{
         })
     }
 
-    async askFacturaAxios(){
+    async askFacturaAxios() {
 
         const { access_token } = this.props.authUser
         const { form } = this.state
-        await axios.post(URL_DEV + 'facturas/ask', form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'facturas/ask', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                
+
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
@@ -664,9 +662,9 @@ class Ingresos extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -676,22 +674,22 @@ class Ingresos extends Component{
         })
     }
 
-    async addClienteAxios(obj){
+    async addClienteAxios(obj) {
 
         const { access_token } = this.props.authUser
 
         const data = new FormData();
 
-        
+
         data.append('empresa', obj.nombre_emisor)
         data.append('nombre', obj.nombre_emisor)
         data.append('rfc', obj.rfc_emisor)
 
-        await axios.post(URL_DEV + 'cliente', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'cliente', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
 
                 this.getIngresosAxios()
-                
+
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
@@ -702,9 +700,9 @@ class Ingresos extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -714,71 +712,75 @@ class Ingresos extends Component{
         })
     }
 
-    render(){
+    render() {
         const { ingresos, form, options, modalDelete, modalFacturas, porcentaje, facturas, ingreso, modalAskFactura, data } = this.state
-        return(
-            <Layout active={'administracion'}  { ...this.props}>
+        return (
+            <Layout active={'administracion'}  {...this.props}>
                 {/* <div className="text-right">
                     <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.changePageAdd() } } text='' icon = { faPlus } color="green" 
                         tooltip={{id:'add', text:'Nuevo'}} />
                 </div> */}
 
                 {/* <DataTable columns = {INGRESOS_COLUMNS} data= {ingresos}/> */}
-                <NewTable columns = { INGRESOS_COLUMNS } data = { ingresos } 
-                    title = 'Ingresos' subtitle = 'Listado de ingresos'
-                    url = '/administracion/ingresos/add'
-                    actions = {{
-                        'edit': {function: this.changePageEdit},
-                        'delete': {function: this.openModalDelete},
-                        'facturas': {function: this.openModalFacturas},
-                        'askFacturas': {function: this.openModalAskFactura}
+                <NewTable columns={INGRESOS_COLUMNS} data={ingresos}
+                    title='Ingresos' subtitle='Listado de ingresos'
+                    mostrar_boton={true}
+                    abrir_modal={false}
+                    url='/administracion/ingresos/add'
+                    mostrar_acciones={true}
+
+                    actions={{
+                        'edit': { function: this.changePageEdit },
+                        'delete': { function: this.openModalDelete },
+                        'facturas': { function: this.openModalFacturas },
+                        'askFacturas': { function: this.openModalAskFactura }
                     }}
-                    elements = { data.ingresos } />
-                
-                <ModalDelete show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteIngresoAxios() }}>
+                    elements={data.ingresos} />
+
+                <ModalDelete show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteIngresoAxios() }}>
                     <Subtitle className="my-3 text-center">
                         ¿Estás seguro que deseas eliminar el ingreso?
                     </Subtitle>
                 </ModalDelete>
 
-                <Modal show = { modalFacturas } handleClose = { this.handleCloseFacturas }>
-                    <Subtitle className="text-center" color = 'gold' >
+                <Modal show={modalFacturas} handleClose={this.handleCloseFacturas}>
+                    <Subtitle className="text-center" color='gold' >
                         Facturas
                     </Subtitle>
                     <div className="px-3 my-2">
-                        <ProgressBar animated label={`${porcentaje}%`} 
-                            variant = { porcentaje > 100 ? 'danger' : porcentaje > 75 ? 'success' : 'warning'} 
-                            now = {porcentaje} />
+                        <ProgressBar animated label={`${porcentaje}%`}
+                            variant={porcentaje > 100 ? 'danger' : porcentaje > 75 ? 'success' : 'warning'}
+                            now={porcentaje} />
                     </div>
-                    <Form onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios();}}>
+                    <Form onSubmit={(e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios(); }}>
                         <div className="row mx-0">
                             <div className="col-md-6 px-2">
-                                
-                                <FileInput 
-                                    onChangeAdjunto = { this.onChangeAdjunto } 
-                                    placeholder = { form['adjuntos']['factura']['placeholder'] }
-                                    value = { form['adjuntos']['factura']['value'] }
-                                    name = { 'factura' } 
-                                    id = { 'factura' }
-                                    accept = "text/xml, application/pdf" 
-                                    files = { form['adjuntos']['factura']['files'] }
-                                    deleteAdjunto = { this.clearFiles } multiple/>
+
+                                <FileInput
+                                    onChangeAdjunto={this.onChangeAdjunto}
+                                    placeholder={form['adjuntos']['factura']['placeholder']}
+                                    value={form['adjuntos']['factura']['value']}
+                                    name={'factura'}
+                                    id={'factura'}
+                                    accept="text/xml, application/pdf"
+                                    files={form['adjuntos']['factura']['files']}
+                                    deleteAdjunto={this.clearFiles} multiple />
                             </div>
                             {
                                 form.adjuntos.factura.files.length ?
                                     <div className="col-md-6 px-2 align-items-center d-flex">
                                         <Button icon='' className="mx-auto" type="submit" text="Enviar" />
                                     </div>
-                                : ''
+                                    : ''
                             }
                         </div>
                     </Form>
-                    <FacturaTable deleteFactura = { this.deleteFactura } facturas = { facturas } />
+                    <FacturaTable deleteFactura={this.deleteFactura} facturas={facturas} />
                 </Modal>
 
-                <Modal show = { modalAskFactura } handleClose = { this.handleCloseAskFactura }>
-                    <FacturaForm options = { options } onChange = { this.onChange } form = { form } 
-                        onSubmit = { this.onSubmitAskFactura } />
+                <Modal show={modalAskFactura} handleClose={this.handleCloseAskFactura}>
+                    <FacturaForm options={options} onChange={this.onChange} form={form}
+                        onSubmit={this.onSubmitAskFactura} />
                 </Modal>
 
             </Layout>
@@ -788,7 +790,7 @@ class Ingresos extends Component{
 
 
 const mapStateToProps = state => {
-    return{
+    return {
         authUser: state.authUser
     }
 }

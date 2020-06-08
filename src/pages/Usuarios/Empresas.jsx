@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { renderToString } from 'react-dom/server'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
@@ -10,6 +11,8 @@ import { Button } from '../../components/form-components'
 import { Modal } from '../../components/singles'
 import { EmpresaForm } from '../../components/forms'
 import swal from 'sweetalert'
+import NewTable from '../../components/tables/NewTable'
+import { EMPRESA_COLUMNS, DARK_BLUE } from '../../constants'
 class Empresas extends Component{
 
     state= {
@@ -22,6 +25,9 @@ class Empresas extends Component{
             razonSocial: '',
             logo: '',
             file: []
+        },
+        data: {
+            empresas: []
         },
         img: '',
         formTitle: '',
@@ -51,7 +57,14 @@ class Empresas extends Component{
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'empresa', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { data: {empresas: empresas} } = response
+                const { data } = this.state
+                const { data: {empresas: empresas} } = response                
+                data.empresas = empresas
+               /* YO lo agregué this.setState({
+                    ... this.state,
+                    empresas: this.setEmpresas(empresas),
+                    data
+                })*/
                 this.setEmpresas(empresas)
             },
             (error) => {
@@ -88,9 +101,10 @@ class Empresas extends Component{
         empresas_list.map((empresa, key) => {
             empresas[key] = {
                 actions: this.setActions(empresa),
-                name: empresa.name,
-                razonSocial: empresa.razon_social,
-                logo: empresa.logo !== null ? <img className="logo" src={empresa.logo} alt={empresa.name} /> : 'No hay logo'
+                name: renderToString(empresa.name),
+                razonSocial: renderToString(empresa.razon_social),
+                logo: renderToString(empresa.logo !== null ? <img className="logo" src={empresa.logo} alt={empresa.name} /> : 'No hay logo'),
+                id: empresa.id
             }
         })
         this.setState({
@@ -107,7 +121,7 @@ class Empresas extends Component{
         })
     }
 
-    setActions = (empresa) => {
+    /*setActions = (empresa) => {
         return(
             <div className="d-flex align-items-center">
                 <Button className="mx-2 small-button" onClick={(e) => this.openModalEditEmpresa(e)(empresa)} text='' icon={faEdit} color="yellow"
@@ -117,9 +131,29 @@ class Empresas extends Component{
             </div>
         )
     }
-
+    */
+   setActions = proveedor => {
+    let aux = []
+        aux.push(
+            {
+                text: 'Editar',
+                btnclass: 'success',
+                iconclass: 'flaticon2-pen',
+                action: 'edit',
+                tooltip: {id:'edit', text:'Editar'}
+            },
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin', 
+                action: 'delete',
+                tooltip: {id:'delete', text:'Eliminar', type:'error'}
+            }
+        )
+    return aux
+    }
     // Modal
-    openModalDeleteEmpresa = (e) => (emp) => {
+    openModalDeleteEmpresa =  (emp) => {
         this.setState({
             ... this.state,
             modalDelete: true,
@@ -127,7 +161,7 @@ class Empresas extends Component{
             formAction: 'Delete'
         })
     }
-    openModalEditEmpresa = (e) => (emp) => {
+    openModalEditEmpresa = (emp) => {
         this.setState({
             ... this.state,
             modalEdit: true,
@@ -143,7 +177,7 @@ class Empresas extends Component{
         })
     }
 
-    openModalAddEmpresa = () => {
+    openModal = () => {
         this.setState({
             ... this.state,
             modalEdit: true,
@@ -396,14 +430,31 @@ class Empresas extends Component{
         })
     }
     render(){
-        const { empresas, modalDelete, modalEdit, empresa, form, img, formTitle, formAction } = this.state
+        const { empresas, modalDelete, modalEdit, empresa, form, img, formTitle, formAction,data } = this.state
         return(
             <Layout active={'usuarios'} { ...this.props}>
-                <div className="text-right">
-                    <Button className="small-button ml-auto mr-4" onClick={(e) => this.openModalAddEmpresa()} text='' icon={faPlus} color="green"
+               
+               {/* <div className="text-right">
+                    <Button className="small-button ml-auto mr-4" onClick={(e) => this.openModal()} text='' icon={faPlus} color="green"
                         tooltip={{id:'add', text:'Nuevo'}} />
                 </div>
-                <EmpresasTable data={empresas} />
+                */}
+                {/*<EmpresasTable data={empresas} />*/}
+
+                <NewTable  columns={EMPRESA_COLUMNS} data = { empresas } 
+                            title = 'Empresas' subtitle = 'Listado de empresas'
+                            mostrar_boton={true}
+                            abrir_modal={true}
+                            onClick={this.openModal}
+                            mostrar_acciones={true} 
+                            
+                            actions = {{
+                                'edit': {function: this.openModalEditEmpresa},
+                                'delete': {function: this.openModalDeleteEmpresa}
+                            }}
+                            elements = { data.empresas }
+                            />
+
                 <Modal show={modalEdit} handleClose={this.handleEditModal}>
                     <EmpresaForm 
                         removeFile={this.removeFile} 

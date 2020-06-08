@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */  
 import React, { Component } from 'react'
-
+import { renderToString } from 'react-dom/server'
 //
 import { connect } from 'react-redux'
 import axios from 'axios'
@@ -20,6 +21,8 @@ import { DataTable, FacturaTable } from '../../components/tables'
 import Subtitle from '../../components/texts/Subtitle'
 import {SolicitudCompraCard} from '../../components/cards'
 import { Form, ProgressBar } from 'react-bootstrap'
+import NewTable from '../../components/tables/NewTable'
+
 class Compras extends Component{
 
     state = {
@@ -89,7 +92,8 @@ class Compras extends Component{
             empresas: [],
             cuentas: [],
             proyectos: [],
-            proveedores: []
+            proveedores: [],            
+            compras: []
         },
         solicitud: '',
         compras: [],
@@ -134,30 +138,32 @@ class Compras extends Component{
             aux.push(
                 {
                     actions: this.setActions(compra),
-                    cuenta: setArrayTable(
+                    cuenta: renderToString(setArrayTable(
                         [
                             {name:'Empresa', text: compra.empresa ? compra.empresa.name : ''},
                             {name:'Cuenta', text: compra.cuenta ? compra.cuenta.nombre : ''},
                             {name:'# de cuenta', text: compra.cuenta ? compra.cuenta.numero : ''}
                         ]
-                    ),
-                    proyecto: setTextTable(compra.proyecto ? compra.proyecto.nombre : ''),
-                    proveedor: setTextTable(compra.proveedor ? compra.proveedor.nombre : ''),
-                    factura: setTextTable(compra.facturas.length ? 'Con factura' : 'Sin factura'),
-                    monto: setMoneyTable(compra.monto),
-                    comision: setMoneyTable(compra.comision),
-                    impuesto: setTextTable( compra.tipo_impuesto ? compra.tipo_impuesto.tipo : 'Sin definir'),
-                    tipoPago: setTextTable(compra.tipo_pago.tipo),
-                    descripcion: setTextTable(compra.descripcion),
-                    area: setTextTable( compra.subarea ? compra.subarea.area ? compra.subarea.area.nombre : '' : ''),
-                    subarea: setTextTable( compra.subarea ? compra.subarea.nombre : ''),
-                    estatusCompra: setTextTable( compra.estatus_compra ? compra.estatus_compra.estatus : ''),
-                    total: setMoneyTable(compra.total),
-                    adjuntos: setAdjuntosList([
+                    )),
+                    proyecto: renderToString(setTextTable(compra.proyecto ? compra.proyecto.nombre : '')),
+                    proveedor: renderToString(setTextTable(compra.proveedor ? compra.proveedor.nombre : '')),
+                    factura: renderToString(setTextTable(compra.facturas.length ? 'Con factura' : 'Sin factura')),
+                    monto: renderToString(setMoneyTable(compra.monto)),
+                    comision: renderToString(setMoneyTable(compra.comision)),
+                    impuesto: renderToString(setTextTable( compra.tipo_impuesto ? compra.tipo_impuesto.tipo : 'Sin definir')),
+                    tipoPago: renderToString(setTextTable(compra.tipo_pago.tipo)),
+                    descripcion: renderToString(setTextTable(compra.descripcion)),
+                    area: renderToString(setTextTable( compra.subarea ? compra.subarea.area ? compra.subarea.area.nombre : '' : '')),
+                    subarea: renderToString(setTextTable( compra.subarea ? compra.subarea.nombre : '')),
+                    estatusCompra: renderToString(setTextTable( compra.estatus_compra ? compra.estatus_compra.estatus : '')),
+                    total: renderToString(setMoneyTable(compra.total)),
+                    adjuntos: renderToString(setAdjuntosList([
                         compra.pago ? {name: 'Pago', url: compra.pago.url} : '',
                         compra.presupuesto ? {name: 'Presupuesto', url: compra.presupuesto.url} : '',
-                    ]),
-                    fecha: setDateTable(compra.created_at)
+                    ])),
+                    fecha: renderToString(setDateTable(compra.created_at)),
+                    id: compra.id
+
                 }
             )
         })
@@ -165,27 +171,50 @@ class Compras extends Component{
     }
 
     setActions = compra => {
-        return(
-            <>
-                <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalEdit(compra)} } text='' icon={faEdit} color="transparent" 
-                        tooltip={{id:'edit', text:'Editar'}} />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalDelete(compra)} } text='' icon={faTrash} color="red" 
-                        tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
-                </div>
-                {
-                    compra.factura ?
-                        <div className="d-flex align-items-center flex-column flex-md-row my-1">
-                            <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalFacturas(compra)} } text='' icon={faReceipt} color="transparent" 
-                                tooltip={{id:'taxes', text:'Facturas'}} />
-                            {/* <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalAskFactura(compra)} } text='' icon={faEnvelopeOpenText} color="transparent" 
-                                tooltip={{id:'bills', text:'Pedir factura'}} /> */}
-                        </div>
-                    : ''
-                }
-            </>
+
+        let aux = []
+        aux.push(
+            {
+                text: 'Editar',
+                btnclass: 'success',
+                iconclass: 'flaticon2-pen',
+                action: 'edit',
+                tooltip: { id: 'edit', text: 'Editar' },
+            },
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',
+                action: 'delete',
+                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' },
+            }
         )
+
+        if (compra.factura) {
+            aux.push(
+                {
+                    text: 'Facturas',
+                    btnclass: 'primary',
+                    iconclass: 'flaticon2-medical-records',
+                    action: 'facturas',
+                    tooltip: { id: 'taxes', text: 'Facturas' },
+                },
+                {
+                    text: 'Pedir factura',
+                    btnclass: 'primary',
+                    iconclass: 'flaticon2-medical-records',
+                    action: 'askFacturas',
+                    tooltip: { id: 'ask-taxes', text: 'Facturas' },
+                }
+            )
+        }
+        return aux
+
     }
+    
+    
+    
+    
 
     //Add, edit y convert modal
     openModal = ( ) => {
@@ -529,6 +558,7 @@ class Compras extends Component{
                 options['metodosPago'] = setOptions(metodosPago, 'nombre', 'id')
                 data.proveedores = proveedores
                 data.empresas = empresas
+                data.compras = compras
                 this.setState({
                     ... this.state,
                     options,
@@ -957,15 +987,34 @@ class Compras extends Component{
         const {
             modal, modalDelete, modalFacturas, modalAskFactura,
             title, form, options,
-            solicitud, compras, porcentaje, facturas, compra
+            solicitud, compras, porcentaje, facturas, compra,data
         } = this.state
 
         return(
             <Layout active={'proyectos'}  { ...this.props}>
-                <div className="text-right">
+               {/* <div className="text-right">
                     <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon = { faPlus } color="green" />
                 </div>
-                <DataTable columns = { COMPRAS_COLUMNS } data= { compras }/>
+
+               <DataTable columns = { COMPRAS_COLUMNS } data= { compras }/>
+                */}
+
+                <NewTable columns={COMPRAS_COLUMNS} data={compras}
+                    title='Compras' subtitle='Listado de compras'
+                    mostrar_boton={true}
+                    abrir_modal={true}                    
+                    onClick={this.openModal}
+                    mostrar_acciones={true}
+
+                    actions={{
+                        'edit': { function: this.openModalEdit },
+                        'delete': { function: this.openModalDelete },
+                        'facturas': { function: this.openModalFacturas },
+                        'askFacturas': { function: this.openModalAskFactura }
+                    }}
+                    elements={data.compras} />
+
+
                 <Modal show = {modal} handleClose = { this.handleClose } >
                     <ComprasForm title = { title } options = {options} form = {form} setOptions = {this.setOptions} 
                         onChange = { this.onChange } onChangeAdjunto = { this.onChangeAdjunto } clearFiles = {this.clearFiles}

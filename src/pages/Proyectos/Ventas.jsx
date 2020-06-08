@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-
+import { renderToString } from 'react-dom/server'
 //
 import { connect } from 'react-redux'
 import axios from 'axios'
@@ -18,6 +18,7 @@ import { VentasForm, FacturaForm } from '../../components/forms'
 import { DataTable, FacturaTable } from '../../components/tables'
 import Subtitle from '../../components/texts/Subtitle'
 import { Form, ProgressBar } from 'react-bootstrap'
+import NewTable from '../../components/tables/NewTable'
 
 class Ventas extends Component{
 
@@ -46,7 +47,8 @@ class Ventas extends Component{
             clientes: [],
             empresas: [],
             cuentas: [],
-            proyectos: []
+            proyectos: [],
+            ventas: []
         },
         form:{
             factura: 'Sin factura',
@@ -115,6 +117,8 @@ class Ventas extends Component{
 
     openModalEdit = (venta) => {
         const { form, options } = this.state
+        console.log(venta)
+        console.log(venta.subarea)
         form.factura = venta.factura ? 'Con factura' : 'Sin factura'
         if(venta.cliente){
             form.cliente = venta.cliente.id.toString()
@@ -124,7 +128,7 @@ class Ventas extends Component{
         if(venta.empresa){
             form.empresa = venta.empresa.id.toString()
             options['cuentas'] = setOptions(venta.empresa.cuentas, 'nombre', 'id')
-            form.cuenta = venta.cuenta.id.toString()
+           // form.cuenta = venta.cuenta.id.toString()
         }
         if(venta.subarea){
             form.area = venta.subarea.area.id.toString()
@@ -245,35 +249,73 @@ class Ventas extends Component{
             aux.push(
                 {
                     actions: this.setActions(venta),
-                    cuenta: setArrayTable(
+                    cuenta: renderToString(setArrayTable(
                         [
                             {name:'Empresa', text: venta.empresa ? venta.empresa.name : '' },
                             {name:'Cuenta', text: venta.cuenta ? venta.cuenta.nombre : '' },
                             {name:'# de cuenta', text: venta.cuenta ? venta.cuenta.numero : '' }
                         ]
-                    ),
-                    proyecto: setTextTable( venta.proyecto ? venta.proyecto.nombre : '' ),
-                    cliente: setTextTable( venta.cliente ? venta.cliente.empresa : '' ),
-                    factura: setTextTable(venta.facturas.length ? 'Con factura' : 'Sin factura'),
-                    monto: setMoneyTable(venta.monto),
-                    impuesto: setTextTable( venta.tipo_impuesto ? venta.tipo_impuesto.tipo : 'Sin definir'),
-                    tipoPago: setTextTable( venta.tipo_pago ? venta.tipo_pago.tipo: '' ),
-                    descripcion: setTextTable(venta.descripcion),
-                    area: setTextTable( venta.subarea ? venta.subarea.area ? venta.subarea.area.nombre : '' : ''),
-                    subarea: setTextTable( venta.subarea ? venta.subarea.nombre : ''),
-                    estatusCompra: setTextTable( venta.estatus_compra ? venta.estatus_compra.estatus : ''),
-                    total: setMoneyTable(venta.total),
-                    adjuntos: setAdjuntosList([
+                    )),
+                    proyecto: renderToString(setTextTable( venta.proyecto ? venta.proyecto.nombre : '' )),
+                    cliente: renderToString(setTextTable( venta.cliente ? venta.cliente.empresa : '' )),
+                    factura: renderToString(setTextTable(venta.facturas.length ? 'Con factura' : 'Sin factura')),
+                    monto: renderToString(setMoneyTable(venta.monto)),
+                    impuesto: renderToString(setTextTable( venta.tipo_impuesto ? venta.tipo_impuesto.tipo : 'Sin definir')),
+                    tipoPago: renderToString(setTextTable( venta.tipo_pago ? venta.tipo_pago.tipo: '' )),
+                    descripcion: renderToString(setTextTable(venta.descripcion)),
+                    area: renderToString(setTextTable( venta.subarea ? venta.subarea.area ? venta.subarea.area.nombre : '' : '')),
+                    subarea: renderToString(setTextTable( venta.subarea ? venta.subarea.nombre : '')),
+                    estatusCompra: renderToString(setTextTable( venta.estatus_compra ? venta.estatus_compra.estatus : '')),
+                    total: renderToString(setMoneyTable(venta.total)),
+                    adjuntos: renderToString(setAdjuntosList([
                         venta.pago ? {name: 'Pago', url: venta.pago.url} : '',
                         venta.presupuesto ? {name: 'Presupuesto', url: venta.presupuesto.url} : '',
-                    ]),
-                    fecha: setDateTable(venta.created_at)
+                    ])),
+                    fecha: renderToString(setDateTable(venta.created_at)),
+                    id: venta.id
                 }
             )
         })
         return aux
     }
 
+    setActions = concepto => {
+        let aux = []
+        aux.push(
+            {
+                text: 'Editar',
+                btnclass: 'success',
+                iconclass: 'flaticon2-pen',
+                action: 'edit',
+                tooltip: { id: 'edit', text: 'Editar' }
+            },
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',
+                action: 'delete',
+                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
+            },
+            {
+                text: 'Facturas',
+                btnclass: 'primary',
+                iconclass: 'flaticon-file-1',
+                action: 'delete',
+                tooltip: { id: 'taxes', text: 'Facturas' }
+            },
+            {
+                text: 'Pedir factura',
+                btnclass: 'info',
+                iconclass: 'flaticon-interface-4',
+                action: 'bills',
+                tooltip: { id: 'bills', text: 'Pedir factura' }
+            }
+
+        )
+        return aux
+    }
+
+    /* Es diferente esta función
     setActions = venta => {
         return(
             <>
@@ -300,6 +342,7 @@ class Ventas extends Component{
             </>
         )
     }
+    */
 
     setOptions = (name, array) => {
         const {options} = this.state
@@ -555,6 +598,7 @@ class Ventas extends Component{
                 options['estatusCompras'] = setSelectOptions( estatusCompras, 'estatus' )
                 data.clientes = clientes
                 data.empresas = empresas
+                data.ventas = ventas
                 this.setState({
                     ... this.state,
                     options,
@@ -968,14 +1012,33 @@ class Ventas extends Component{
 
     render(){
 
-        const { modal, modalDelete, modalFacturas, modalAskFactura, title, options, form, ventas, venta, porcentaje, facturas } = this.state
-
+        const { modal, modalDelete, modalFacturas, modalAskFactura, title, options, form, ventas, venta, porcentaje, facturas,data } = this.state
+        console.log(ventas)
+        console.log(data.ventas)
         return(
             <Layout active={'proyectos'}  { ...this.props}>
-                <div className="text-right">
+                {/*<div className="text-right">
                     <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon = { faPlus } color="green" />
                 </div>
-                <DataTable columns = { VENTAS_COLUMNS } data= { ventas }/>
+                */}
+                {/*<DataTable columns = { VENTAS_COLUMNS } data= { ventas }/>*/}
+
+                <NewTable columns={VENTAS_COLUMNS} data={ventas}
+                    title='Ventas' subtitle='Listado de ventas'
+                    mostrar_boton={true}
+                    abrir_modal={true}
+                    mostrar_acciones={true}
+                    onClick={ this.openModal }
+                    actions={{
+                        'edit': { function: this.openModalEdit },
+                        'delete': { function: this.openModalDelete },                        
+                        'taxes': { function: this.openModalFacturas },                   
+                        'bills': { function: this.openModalAskFactura },
+
+                    }}
+                    elements={data.ventas}
+                />
+
                 <Modal show = {modal} handleClose = { this.handleClose } >
                     <VentasForm title = { title } options = {options} form = {form} setOptions = {this.setOptions} 
                         onChange = { this.onChange } onChangeAdjunto = { this.onChangeAdjunto } clearFiles = {this.clearFiles}

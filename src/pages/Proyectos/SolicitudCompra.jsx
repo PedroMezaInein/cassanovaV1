@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-
+import { renderToString } from 'react-dom/server'
 //
 import { connect } from 'react-redux'
 import axios from 'axios'
@@ -22,6 +22,7 @@ import { Small } from '../../components/texts'
 import RemisionCard from '../../components/cards/Proyectos/RemisionCard'
 import { Accordion } from 'react-bootstrap'
 import { faEye } from '@fortawesome/free-regular-svg-icons'
+import NewTable from '../../components/tables/NewTable'
 
 class SolicitudCompra extends Component{
 
@@ -32,6 +33,9 @@ class SolicitudCompra extends Component{
         title: 'Nueva solicitud de compra',
         solicitud: '',
         solicitudes: [],
+        data: {
+            solicitudes: []
+        },
         form:{
             proveedor: '',
             proyecto: '',
@@ -239,23 +243,51 @@ class SolicitudCompra extends Component{
             aux.push(
                 {
                     actions: this.setActions(solicitud),
-                    proyecto: setTextTable( solicitud.proyecto ? solicitud.proyecto.nombre : ''),
-                    empresa: setTextTable( solicitud.empresa ? solicitud.empresa.name : '' ),
-                    proveedor: setTextTable( solicitud.proveedor ? solicitud.proveedor.nombre : '' ),
-                    factura: setTextTable(solicitud.factura ? 'Con factura' : 'Sin factura'),
-                    monto: setMoneyTable(solicitud.monto),
-                    tipoPago: setTextTable(solicitud.tipo_pago.tipo),
-                    descripcion: setTextTable(solicitud.descripcion),
-                    area: setTextTable( solicitud.subarea ? solicitud.subarea.area ? solicitud.subarea.area.nombre : '' : '' ),
-                    subarea: setTextTable( solicitud.subarea ? solicitud.subarea.nombre : '' ),
-                    fecha: setDateTable(solicitud.created_at)
+                    proyecto: renderToString(setTextTable( solicitud.proyecto ? solicitud.proyecto.nombre : '')),
+                    empresa: renderToString(setTextTable( solicitud.empresa ? solicitud.empresa.name : '' )),
+                    proveedor: renderToString(setTextTable( solicitud.proveedor ? solicitud.proveedor.nombre : '' )),
+                    factura: renderToString(setTextTable(solicitud.factura ? 'Con factura' : 'Sin factura')),
+                    monto: renderToString(setMoneyTable(solicitud.monto)),
+                    tipoPago: renderToString(setTextTable(solicitud.tipo_pago.tipo)),
+                    descripcion: renderToString(setTextTable(solicitud.descripcion)),
+                    area: renderToString(setTextTable( solicitud.subarea ? solicitud.subarea.area ? solicitud.subarea.area.nombre : '' : '' )),
+                    subarea: renderToString(setTextTable( solicitud.subarea ? solicitud.subarea.nombre : '' )),
+                    fecha: renderToString(setDateTable(solicitud.created_at)),
+                    id: solicitud.id
                 }
             )
         })
         return aux
     }
 
-    setActions = solicitud => {
+    setActions = concepto => {
+        let aux = []
+        aux.push(
+            {
+                text: 'Editar',
+                btnclass: 'success',
+                iconclass: 'flaticon2-pen',
+                action: 'edit',
+                tooltip: { id: 'edit', text: 'Editar' }
+            },
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',
+                action: 'delete',
+                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
+            }
+            {
+                text: 'Convertir',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-refresh',
+                action: 'convertir',
+                tooltip: { id: 'convertir', text: 'Eliminar', type: 'error' }
+            }
+        )
+        return aux
+    }
+    /*setActions = solicitud => {
         return(
             <>
                 <div className="d-flex align-items-center flex-column flex-md-row">
@@ -270,7 +302,7 @@ class SolicitudCompra extends Component{
                 </div>
             </>
         )
-    }
+    }*/
 
     convertirSolicitud = solicitud => {
         const { history } = this.props
@@ -328,10 +360,14 @@ class SolicitudCompra extends Component{
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'solicitud-compra/'+id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
+                const { data } = this.state
                 const { solicitud } = response.data
+                data.solicitud = solicitud
                 this.setState({
                     ... this.state,
-                    solicitud: solicitud
+                    solicitud: solicitud,
+                    solicitud: this.setSolicitudes(solicitud),
+                    data
                 })
             },
             (error) => {
@@ -568,7 +604,23 @@ class SolicitudCompra extends Component{
                 <div className="text-right">
                     <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon = { faPlus } color="green" />
                 </div>
-                <DataTable columns = { SOLICITUD_COMPRA_COLUMNS } data= { solicitudes }/>
+            
+                {/* <DataTable columns = { SOLICITUD_COMPRA_COLUMNS } data= { solicitudes }/>*/}
+                
+                <NewTable columns={SOLICITUD_COMPRA_COLUMNS} data={solicitudes}
+                    title='Solicitudes' subtitle='Listado de solicitudes'
+                    mostrar_boton={true}
+                    abrir_modal={true}
+                    mostrar_acciones={true}
+                    onClick={ this.openModal }
+                    actions={{
+                        'edit': { function: this.openModalEdit },
+                        'delete': { function: this.openModalDelete },
+                        'convertir': { function: this.convertirSolicitud }
+                    }}
+                    elements={data.conceptos}
+                />
+
                 <Modal show = {modal} handleClose = { this.handleClose } >
                     <SolicitudCompraForm title = { title } form = { form } options = { options } 
                         setOptions = {this.setOptions}  onChange = { this.onChange }

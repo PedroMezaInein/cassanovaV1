@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */  
 import React, { Component } from 'react'
+import { renderToString } from 'react-dom/server'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { DataTable } from '../../components/tables'
@@ -16,6 +17,7 @@ import { Subtitle, B, Small } from '../../components/texts'
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 import { setOptions, setSelectOptions, setTextTable, setDateTable,setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList, setContactoTable } from '../../functions/setters'
+import NewTable from '../../components/tables/NewTable'
 
 class Leads extends Component{
 
@@ -39,6 +41,9 @@ class Leads extends Component{
             origen: 0,
             servicios: []
         },
+        data:{
+            leads: []
+        },
         leadId : '',
         convertir: ''
     }
@@ -52,13 +57,14 @@ class Leads extends Component{
         leads.map((lead, key) => {
             _leads[key] = {
                 actions: this.setActions(lead),
-                nombre: setTextTable(lead.nombre),
-                contacto: setContactoTable(lead),
-                comentario: setTextTable(lead.comentario),
-                servicios: setListTable(lead.servicios, 'servicio'),
-                empresa: setTextTable(lead.empresa ? lead.empresa.name : ''),
-                origen: setTextTable(lead.origen ? lead.origen.origen : ''),
-                fecha: setDateTable(lead.created_at)
+                nombre: renderToString(setTextTable(lead.nombre)),
+                contacto: renderToString(setContactoTable(lead)),
+                comentario: renderToString(setTextTable(lead.comentario)),
+                servicios: renderToString(setListTable(lead.servicios, 'servicio')),
+                empresa: renderToString(setTextTable(lead.empresa ? lead.empresa.name : '')),
+                origen: renderToString(setTextTable(lead.origen ? lead.origen.origen : '')),
+                fecha: renderToString(setDateTable(lead.created_at)),
+                id: lead.id
             }
         })
         let aux = []
@@ -95,8 +101,42 @@ class Leads extends Component{
         return aux
     }
 
+    setActions = lead => {
+        let aux = []
+        aux.push(
+            {
+                text: 'Editar',
+                btnclass: 'success',
+                iconclass: 'flaticon2-pen',
+                action: 'edit',
+                tooltip: {id:'edit', text:'Editar'}
+            },
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin', 
+                action: 'delete',
+                tooltip: {id:'delete', text:'Eliminar', type:'error'}
+            },
+            {
+                text: 'Convertir a prospecto',
+                btnclass: 'primary',
+                iconclass: 'flaticon2-user-1',
+                action: 'prospecto',
+                tooltip: {id:'prospecto', text:'Convertir en prospecto'}
+            },
+            {
+                text: 'Convertir en proveedor',
+                btnclass: 'info',
+                iconclass: 'flaticon-user-ok',
+                action: 'proveedor',
+                tooltip: {id:'proveedor', text:'Convertir en proveedor'}
+            }
+        )
+        return aux
+    }
 
-    setActions = (lead) => {
+    /*    setActions = (lead) => {
         return(
             <>
                 <div className="d-flex align-items-center flex-column flex-md-row">
@@ -114,6 +154,7 @@ class Leads extends Component{
             </>
         )
     }
+    */
 
     setContacto = (lead) => {
         return(
@@ -215,7 +256,7 @@ class Leads extends Component{
     
     // Modals
 
-    openModalAddLead = () => {
+    openModal = () => {
         this.setState({
             ... this.state,
             modalAdd: !this.state.modalAdd,
@@ -224,7 +265,7 @@ class Leads extends Component{
         })
     }
 
-    openModalEditLead = (e) => (lead) => {
+    openModalEditLead =  (lead) => {
         let { form, leadId } = this.state
         
         form['nombre'] = lead.nombre
@@ -270,7 +311,7 @@ class Leads extends Component{
         })
     }
 
-    openModalSafeDelete = (e) => (lead) => {
+    openModalSafeDelete =  (lead) => {
         let { leadId } = this.state
 
         leadId = lead
@@ -283,7 +324,7 @@ class Leads extends Component{
 
     }
 
-    openModalSafeConvert = (e) => (lead) => {
+    openModalSafeConvert =  (lead) => {
         let { leadId } = this.state
         leadId = lead
         this.setState({
@@ -294,7 +335,7 @@ class Leads extends Component{
         })
     }
 
-    openModalSafeConvertProveedor = (e) => (lead) => {
+    openModalSafeConvertProveedor =  (lead) => {
         let { leadId } = this.state
         leadId = lead
         this.setState({
@@ -417,10 +458,16 @@ class Leads extends Component{
         await axios.get(URL_DEV + 'lead', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { empresas, leads, origenes, servicios } = response.data
+                const { data } = this.state
+                data.leads = leads
                 this.setLeads(leads)
                 this.setOrigenes(origenes)
                 this.setServicios(servicios)
                 this.setEmpresas(empresas)
+                this.setState({
+                    ... this.state,
+                    //leads: this.setLeads(leads)
+                })
             },
             (error) => {
                 console.log(error, 'error')
@@ -640,16 +687,40 @@ class Leads extends Component{
     }
 
     render(){
-        const { leads, modalAdd, form, origenes, empresas, servicios, title, tipoForm, modalDelete, leadId, modalConvert, convertir } = this.state
+        const { leads, modalAdd, form, origenes, empresas, servicios, title, tipoForm, modalDelete, leadId, modalConvert, convertir,data } = this.state
+        console.log(leads)
+        console.log(data.leads)
         return(
             <Layout active={'leads'}  { ...this.props}>
-                <div className="text-right d-flex justify-content-end">
+                {/*<div className="text-right d-flex justify-content-end">
                     <Button className="small-button " onClick={ (e) => { this.exportToCSV() } } text='' icon={faFileExport} color="transparent"
                         tooltip={{id:'export', text:'Exportar'}} /> 
-                    <Button className="small-button ml-4 mr-4" onClick={ (e) => { this.openModalAddLead() } } text='' icon={faPlus} color="green"
+                    {/*<Button className="small-button ml-4 mr-4" onClick={ (e) => { this.openModal() } } text='' icon={faPlus} color="green"
                         tooltip={{id:'add', text:'Nuevo'}} /> 
+                        
                 </div>
-                { leads && <DataTable columns={LEADS_COLUMNS} data={leads}/>}
+                {/*   { leads && <DataTable columns={LEADS_COLUMNS} data={leads}/>}*/}
+                
+                
+                { 
+                    <NewTable columns = { LEADS_COLUMNS } data = { leads } 
+                    title = 'Leads' subtitle = 'Listado de leads'
+                    mostrar_boton={true}
+                    abrir_modal={true} 
+                    onClick={this.openModal}
+                    mostrar_acciones={true} 
+                    
+                    exportar_boton={true} 
+                    onClickExport={this.exportToCSV}
+                    
+                    actions = {{
+                        'edit': {function: this.openModalEditLead},
+                        'delete': {function: this.openModalSafeDelete},
+                        'prospecto': {function: this.openModalSafeConvert},
+                        'proveedor': {function: this.openModalSafeConvertProveedor},
+                    }}
+                    elements = { data.leads }
+                />}
                 <Modal show = { modalAdd } handleClose = { this.handleCloseModal } >
                     <LeadForm 
                         className = " px-3 "
