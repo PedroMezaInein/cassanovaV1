@@ -16,10 +16,10 @@ import NumberFormat from 'react-number-format';
 import swal from 'sweetalert'
 import { Form, Accordion } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { setOptions, setSelectOptions, setTextTable, setDateTable,setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList, setContactoTable } from '../../functions/setters'
+import { setOptions, setSelectOptions, setTextTable, setDateTable, setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList, setContactoTable } from '../../functions/setters'
 import NewTable from '../../components/tables/NewTable'
 
-class Proyectos extends Component{
+class Proyectos extends Component {
 
     state = {
         proyectos: [],
@@ -29,11 +29,11 @@ class Proyectos extends Component{
         modal: false,
         modalDelete: false,
         modalAdjuntos: false,
-        adjuntos:[],
+        adjuntos: [],
         data: {
             proyectos: []
         },
-        form:{
+        form: {
             fechaInicio: new Date(),
             fechaFin: new Date(),
             nombre: '',
@@ -48,125 +48,125 @@ class Proyectos extends Component{
             colonia: '',
             porcentaje: '',
             descripcion: '',
-            adjuntos:{
-                image:{
+            adjuntos: {
+                image: {
                     value: '',
                     placeholder: 'Imagen',
                     files: []
                 },
-                cotizacion:{
+                cotizacion: {
                     value: '',
                     placeholder: 'Cotización',
                     files: []
                 },
-                comprobantePagos:{
+                comprobantePagos: {
                     value: '',
                     placeholder: 'Comprobante de pagos',
                     files: []
                 },
-                catalogoConceptos:{
+                catalogoConceptos: {
                     value: '',
                     placeholder: 'Catálogo de conceptos',
                     files: []
                 },
-                programasObra:{
+                programasObra: {
                     value: '',
                     placeholder: 'Programas de obra',
                     files: []
                 },
-                descripcion:{
+                descripcion: {
                     value: '',
                     placeholder: 'Descripción de los trabajos',
                     files: []
                 },
-                levantamientos:{
+                levantamientos: {
                     value: '',
                     placeholder: 'Levantamiento',
                     files: []
                 },
-                fotosDurante:{
+                fotosDurante: {
                     value: '',
                     placeholder: 'Fotos durante',
                     files: []
                 },
-                fotosFin:{
+                fotosFin: {
                     value: '',
                     placeholder: 'Fotos fin',
                     files: []
                 },
-                planos:{
+                planos: {
                     value: '',
                     placeholder: 'Planos',
                     files: []
                 },
-                renders:{
+                renders: {
                     value: '',
                     placeholder: 'Renders',
                     files: []
                 },
-                fichasTecnicas:{
+                fichasTecnicas: {
                     value: '',
                     placeholder: 'Fichas técnicas',
                     files: []
                 },
-                dictamenes:{
+                dictamenes: {
                     value: '',
                     placeholder: 'Dictámenes y memorias de cálculo',
                     files: []
                 },
-                mantenimiento:{
+                mantenimiento: {
                     value: '',
                     placeholder: 'Consignas de mantenimiento',
                     files: []
                 },
-                moodboard:{
+                moodboard: {
                     value: '',
                     placeholder: 'Moodboard',
                     files: []
                 },
-                diseñosAprobados:{
+                diseñosAprobados: {
                     value: '',
                     placeholder: 'Diseños aprobados por cliente',
                     files: []
                 },
-                garantia:{
+                garantia: {
                     value: '',
                     placeholder: 'Garantía de vicios ocultos',
                     files: []
                 },
-                contratos:{
+                contratos: {
                     value: '',
                     placeholder: 'Contratos',
                     files: []
                 }
             }
         },
-        options:{
+        options: {
             clientes: [],
             empresas: [],
             colonias: []
         }
     }
 
-    constructor(props){
+    constructor(props) {
         super(props);
         const { state } = props.location
-        if(state){
+        if (state) {
             this.state.modal = true
             this.state.title = 'Prospecto a convertir'
             this.getProspectoAxios(state.prospectos.id)
         }
     }
 
-    componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
+    componentDidMount() {
+        const { authUser: { user: { permisos: permisos } } } = this.props
+        const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props
-        const proyectos = permisos.find(function(element, index) {
+        const proyectos = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
-            return  pathname === '/' + url
+            return pathname === '/' + url
         })
-        if(!proyectos)
+        if (!proyectos)
             history.push('/')
         this.getProyectosAxios()
     }
@@ -189,7 +189,7 @@ class Proyectos extends Component{
     }
 
     openModalEdit = (proyecto) => {
-        const {form, options} = this.state
+        const { form, options } = this.state
 
         form.cp = proyecto.cp;
         this.cpAxios(proyecto.cp)
@@ -209,9 +209,8 @@ class Proyectos extends Component{
         form.empresa = proyecto.empresa.id.toString()
         form.colonia = proyecto.colonia
 
-        if(proyecto.imagen)
-        {
-            form.adjuntos.image.files = [{name: proyecto.imagen.name, file: '', url: proyecto.imagen.url, key: 0}]
+        if (proyecto.imagen) {
+            form.adjuntos.image.files = [{ name: proyecto.imagen.name, file: '', url: proyecto.imagen.url, key: 0 }]
         }
 
 
@@ -225,32 +224,32 @@ class Proyectos extends Component{
     }
 
     openModalAdjuntos = proyecto => {
-        
+
         let { adjuntos } = this.state
-        
-        let auxheaders = [ 
-            {name: 'cotizaciones', placeholder: 'Cotización', form: 'cotizacion'},
-            {name: 'comprobante_pagos', placeholder: 'Comprobante de pagos', form: 'comprobantePagos'},
-            {name: 'catalogo_conceptos', placeholder: 'Catálogo de conceptos', form: 'catalogoConceptos'},
-            {name: 'programas_obra', placeholder: 'Programas de obra', form: 'programasObra'},
-            {name: 'descripcion', placeholder: 'Descripción de los trabajos', form: 'descripcion'},
-            {name: 'levantamientos', placeholder: 'Levantamiento', form: 'levantamientos'},
-            {name: 'fotos_durante', placeholder: 'Fotos durante', form: 'fotosDurante'},
-            {name: 'fotos_fin', placeholder: 'Fotos fin', form: 'fotosFin'},
-            {name: 'planos', placeholder: 'Planos', form: 'planos'},
-            {name: 'renders', placeholder: 'Renders', form: 'renders'},
-            {name: 'fichas_tecnicas', placeholder: 'Fichas técnicas', form: 'fichasTecnicas'},
-            {name: 'dictamenes', placeholder: 'Dictámenes y memorias de cálculo', form: 'dictamenes'},
-            {name: 'mantenimiento', placeholder: 'Consignas de mantenimiento', form: 'mantenimiento'},
-            {name: 'moodboard', placeholder: 'Moodboard', form: 'moodboard'},
-            {name: 'diseños_aprobados', placeholder: 'Diseños aprobados por cliente', form:'diseñosAprobados'},
-            {name: 'garantia', placeholder: 'Garantía de vicios ocultos', form:'garantia'},
-            {name: 'contratos', placeholder: 'Contratos', form:'contratos'}
+
+        let auxheaders = [
+            { name: 'cotizaciones', placeholder: 'Cotización', form: 'cotizacion' },
+            { name: 'comprobante_pagos', placeholder: 'Comprobante de pagos', form: 'comprobantePagos' },
+            { name: 'catalogo_conceptos', placeholder: 'Catálogo de conceptos', form: 'catalogoConceptos' },
+            { name: 'programas_obra', placeholder: 'Programas de obra', form: 'programasObra' },
+            { name: 'descripcion', placeholder: 'Descripción de los trabajos', form: 'descripcion' },
+            { name: 'levantamientos', placeholder: 'Levantamiento', form: 'levantamientos' },
+            { name: 'fotos_durante', placeholder: 'Fotos durante', form: 'fotosDurante' },
+            { name: 'fotos_fin', placeholder: 'Fotos fin', form: 'fotosFin' },
+            { name: 'planos', placeholder: 'Planos', form: 'planos' },
+            { name: 'renders', placeholder: 'Renders', form: 'renders' },
+            { name: 'fichas_tecnicas', placeholder: 'Fichas técnicas', form: 'fichasTecnicas' },
+            { name: 'dictamenes', placeholder: 'Dictámenes y memorias de cálculo', form: 'dictamenes' },
+            { name: 'mantenimiento', placeholder: 'Consignas de mantenimiento', form: 'mantenimiento' },
+            { name: 'moodboard', placeholder: 'Moodboard', form: 'moodboard' },
+            { name: 'diseños_aprobados', placeholder: 'Diseños aprobados por cliente', form: 'diseñosAprobados' },
+            { name: 'garantia', placeholder: 'Garantía de vicios ocultos', form: 'garantia' },
+            { name: 'contratos', placeholder: 'Contratos', form: 'contratos' }
         ]
 
         let aux = []
 
-        auxheaders.map( (element) => {
+        auxheaders.map((element) => {
             aux.push({
                 id: element.name,
                 text: element.placeholder,
@@ -272,30 +271,30 @@ class Proyectos extends Component{
     }
 
     setAdjuntosSlider = proyecto => {
-    
-        let auxheaders = [ 
-            {name: 'cotizaciones', placeholder: 'Cotización', form: 'cotizacion'},
-            {name: 'comprobante_pagos', placeholder: 'Comprobante de pagos', form: 'comprobantePagos'},
-            {name: 'catalogo_conceptos', placeholder: 'Catálogo de conceptos', form: 'catalogoConceptos'},
-            {name: 'programas_obra', placeholder: 'Programas de obra', form: 'programasObra'},
-            {name: 'descripcion', placeholder: 'Descripción de los trabajos', form: 'descripcion'},
-            {name: 'levantamientos', placeholder: 'Levantamiento', form: 'levantamientos'},
-            {name: 'fotos_durante', placeholder: 'Fotos durante', form: 'fotosDurante'},
-            {name: 'fotos_fin', placeholder: 'Fotos fin', form: 'fotosFin'},
-            {name: 'planos', placeholder: 'Planos', form: 'planos'},
-            {name: 'renders', placeholder: 'Renders', form: 'renders'},
-            {name: 'fichas_tecnicas', placeholder: 'Fichas técnicas', form: 'fichasTecnicas'},
-            {name: 'dictamenes', placeholder: 'Dictámenes y memorias de cálculo', form: 'dictamenes'},
-            {name: 'mantenimiento', placeholder: 'Consignas de mantenimiento', form: 'mantenimiento'},
-            {name: 'moodboard', placeholder: 'Moodboard', form: 'moodboard'},
-            {name: 'diseños_aprobados', placeholder: 'Diseños aprobados por cliente', form:'diseñosAprobados'},
-            {name: 'garantia', placeholder: 'Garantía de vicios ocultos', form:'garantia'},
-            {name: 'contratos', placeholder: 'Contratos', form:'contratos'}
+
+        let auxheaders = [
+            { name: 'cotizaciones', placeholder: 'Cotización', form: 'cotizacion' },
+            { name: 'comprobante_pagos', placeholder: 'Comprobante de pagos', form: 'comprobantePagos' },
+            { name: 'catalogo_conceptos', placeholder: 'Catálogo de conceptos', form: 'catalogoConceptos' },
+            { name: 'programas_obra', placeholder: 'Programas de obra', form: 'programasObra' },
+            { name: 'descripcion', placeholder: 'Descripción de los trabajos', form: 'descripcion' },
+            { name: 'levantamientos', placeholder: 'Levantamiento', form: 'levantamientos' },
+            { name: 'fotos_durante', placeholder: 'Fotos durante', form: 'fotosDurante' },
+            { name: 'fotos_fin', placeholder: 'Fotos fin', form: 'fotosFin' },
+            { name: 'planos', placeholder: 'Planos', form: 'planos' },
+            { name: 'renders', placeholder: 'Renders', form: 'renders' },
+            { name: 'fichas_tecnicas', placeholder: 'Fichas técnicas', form: 'fichasTecnicas' },
+            { name: 'dictamenes', placeholder: 'Dictámenes y memorias de cálculo', form: 'dictamenes' },
+            { name: 'mantenimiento', placeholder: 'Consignas de mantenimiento', form: 'mantenimiento' },
+            { name: 'moodboard', placeholder: 'Moodboard', form: 'moodboard' },
+            { name: 'diseños_aprobados', placeholder: 'Diseños aprobados por cliente', form: 'diseñosAprobados' },
+            { name: 'garantia', placeholder: 'Garantía de vicios ocultos', form: 'garantia' },
+            { name: 'contratos', placeholder: 'Contratos', form: 'contratos' }
         ]
 
         let aux = []
 
-        auxheaders.map( (element) => {
+        auxheaders.map((element) => {
             aux.push({
                 id: element.name,
                 text: element.placeholder,
@@ -354,12 +353,12 @@ class Proyectos extends Component{
         const { form } = this.state
         const { files, value, name } = e.target
         let aux = []
-        for(let counter = 0; counter < files.length; counter ++){
+        for (let counter = 0; counter < files.length; counter++) {
             aux.push(
                 {
                     name: files[counter].name,
                     file: files[counter],
-                    url: URL.createObjectURL(files[counter]) ,
+                    url: URL.createObjectURL(files[counter]),
                     key: counter
                 }
             )
@@ -374,21 +373,21 @@ class Proyectos extends Component{
 
     onChangeCP = event => {
         const { value, name } = event.target
-        this.onChange({target:{name: name, value: value}})
-        if(value.length === 5)
+        this.onChange({ target: { name: name, value: value } })
+        if (value.length === 5)
             this.cpAxios(value)
     }
 
     clearFiles = (name, key) => {
         const { form } = this.state
         let aux = []
-        for(let counter = 0; counter < form['adjuntos'][name].files.length; counter ++){
-            if(counter !== key){
+        for (let counter = 0; counter < form['adjuntos'][name].files.length; counter++) {
+            if (counter !== key) {
                 aux.push(form['adjuntos'][name].files[counter])
             }
         }
-        if(aux.length < 1){
-            form['adjuntos'][name].value = ''    
+        if (aux.length < 1) {
+            form['adjuntos'][name].value = ''
         }
         form['adjuntos'][name].files = aux
         this.setState({
@@ -400,8 +399,8 @@ class Proyectos extends Component{
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'fechaInicio':
                 case 'fechaFin':
                     form[element] = new Date()
@@ -414,7 +413,7 @@ class Proyectos extends Component{
             }
         })
         aux = Object.keys(form.adjuntos)
-        aux.map( (element) => {
+        aux.map((element) => {
             form.adjuntos[element].value = ''
             form.adjuntos[element].files = []
         })
@@ -441,14 +440,14 @@ class Proyectos extends Component{
                 }
             }
         }).then((result) => {
-            if(result){
+            if (result) {
                 this.deleteAdjuntoAxios(element.id)
             }
         })
     }
 
     handleChange = (files, item) => {
-        this.onChangeAdjunto( { target: { name: item.form, value: files, files:files } } )
+        this.onChangeAdjunto({ target: { name: item.form, value: files, files: files } })
         swal({
             title: '¿Confirmas el envio de adjuntos?',
             buttons: {
@@ -468,7 +467,7 @@ class Proyectos extends Component{
                 }
             }
         }).then((result) => {
-            if(result){
+            if (result) {
                 this.addProyectoAdjuntoAxios(item.form)
             }
         })
@@ -482,7 +481,7 @@ class Proyectos extends Component{
             text: 'La información está siendo procesada.',
             buttons: false
         })
-        if(title === 'Editar proyecto')
+        if (title === 'Editar proyecto')
             this.editProyectoAxios()
         else
             this.addProyectoAxios()
@@ -492,28 +491,28 @@ class Proyectos extends Component{
         this.deleteProyectoAxios()
     }
 
-    setOptions = ( arreglo, name, value ) => {
+    setOptions = (arreglo, name, value) => {
         let aux = []
-        arreglo.map( (element) => {
-            aux.push({ name: element[name], value: element[value].toString() } )
+        arreglo.map((element) => {
+            aux.push({ name: element[name], value: element[value].toString() })
         })
         return aux
     }
 
     setProyectos = proyectos => {
         let aux = []
-        proyectos.map( (proyecto) => {
+        proyectos.map((proyecto) => {
             aux.push({
                 actions: this.setActions(proyecto),
                 nombre: renderToString(setTextTable(proyecto.nombre)),
-                cliente: renderToString(setTextTable( proyecto.cliente ? proyecto.cliente.empresa : '')),
+                cliente: renderToString(setTextTable(proyecto.cliente ? proyecto.cliente.empresa : '')),
                 direccion: renderToString(this.setDireccionTable(proyecto)),
                 contacto: renderToString(setArrayTable(
                     [
-                        {name:'Nombre', text:proyecto.contacto},
-                        {name:'Teléfono', text:proyecto.numero_contacto, url:`tel:+${proyecto.numero_contacto}`}
+                        { name: 'Nombre', text: proyecto.contacto },
+                        { name: 'Teléfono', text: proyecto.numero_contacto, url: `tel:+${proyecto.numero_contacto}` }
                     ])),
-                empresa: renderToString(setTextTable( proyecto.empresa ? proyecto.empresa.name : '')),
+                empresa: renderToString(setTextTable(proyecto.empresa ? proyecto.empresa.name : '')),
                 porcentaje: renderToString(setTextTable(proyecto.porcentaje + '%')),
                 fechaInicio: renderToString(setDateTable(proyecto.fecha_inicio)),
                 fechaFin: renderToString(setDateTable(proyecto.fecha_fin)),
@@ -525,23 +524,23 @@ class Proyectos extends Component{
     }
 
     setAdjuntosTable = proyecto => {
-        return(
+        return (
             <>
                 {
                     proyecto.imagen ?
                         setArrayTable(
                             [
-                                {name:'Imagen', text:proyecto.imagen.name, url:proyecto.imagen.url}
+                                { name: 'Imagen', text: proyecto.imagen.name, url: proyecto.imagen.url }
                             ]
                         )
-                    : ''
+                        : ''
                 }
                 {
                     proyecto.adjuntos.length === 0 && !proyecto.imagen ?
                         <Small>
-                            Sin adjuntos 
+                            Sin adjuntos
                         </Small>
-                    : ''
+                        : ''
                 }
             </>
         )
@@ -592,29 +591,29 @@ class Proyectos extends Component{
     }*/
 
     setDireccionTable = proyecto => {
-        return(
+        return (
             <>
                 <Small className="mr-1">
-                    { proyecto.calle }, colonia
+                    {proyecto.calle}, colonia
                 </Small>
                 <Small className="mr-1">
-                    { proyecto.colonia },
+                    {proyecto.colonia},
                 </Small>
                 <Small className="mr-1">
-                    { proyecto.municipio },
+                    {proyecto.municipio},
                 </Small>
                 <Small className="mr-1">
-                    { proyecto.estado }. CP: 
+                    {proyecto.estado}. CP:
                 </Small>
                 <Small className="mr-1">
-                    { proyecto.cp }
+                    {proyecto.cp}
                 </Small>
             </>
         )
     }
 
     setTextTable = text => {
-        return(
+        return (
             <Small>
                 {
                     text
@@ -624,7 +623,7 @@ class Proyectos extends Component{
     }
 
     setDateTable = date => {
-        return(
+        return (
             <Small>
                 <Moment format="DD/MM/YYYY">
                     {date}
@@ -634,12 +633,12 @@ class Proyectos extends Component{
     }
 
     setArrayTable = arreglo => {
-        return(
+        return (
             arreglo.map((element) => {
-                return(
+                return (
                     <>
-                        <Small className = "mr-1" >
-                            <B color = "gold">
+                        <Small className="mr-1" >
+                            <B color="gold">
                                 {
                                     element.name
                                 }:
@@ -654,7 +653,7 @@ class Proyectos extends Component{
                                         }
                                     </Small>
                                 </a>
-                            :
+                                :
                                 <Small>
                                     {
                                         element.text
@@ -668,9 +667,9 @@ class Proyectos extends Component{
         )
     }
 
-    async getProyectosAxios(){
+    async getProyectosAxios() {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'proyectos', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'proyectos', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { data } = this.state
                 const { clientes, empresas, proyectos } = response.data
@@ -688,17 +687,17 @@ class Proyectos extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error'
                     })
                 }
@@ -709,15 +708,15 @@ class Proyectos extends Component{
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
-                
+
             })
         })
     }
 
-    async deleteProyectoAxios(){
+    async deleteProyectoAxios() {
         const { access_token } = this.props.authUser
         const { proyecto } = this.state
-        await axios.delete(URL_DEV + 'proyectos/' + proyecto.id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.delete(URL_DEV + 'proyectos/' + proyecto.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { proyectos } = response.data
                 swal({
@@ -736,17 +735,17 @@ class Proyectos extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error'
                     })
                 }
@@ -757,18 +756,18 @@ class Proyectos extends Component{
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
-                
+
             })
         })
     }
 
-    async deleteAdjuntoAxios(id){
+    async deleteAdjuntoAxios(id) {
         const { access_token } = this.props.authUser
         const { proyecto } = this.state
-        await axios.delete(URL_DEV + 'proyectos/'+proyecto.id+'/adjunto/' + id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.delete(URL_DEV + 'proyectos/' + proyecto.id + '/adjunto/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { proyecto, proyectos } = response.data
-                
+
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.',
@@ -786,17 +785,17 @@ class Proyectos extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error'
                     })
                 }
@@ -807,18 +806,18 @@ class Proyectos extends Component{
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
-                
+
             })
         })
     }
 
-    async addProyectoAxios(){
+    async addProyectoAxios() {
         const { access_token } = this.props.authUser
         const { form, prospecto } = this.state
         const data = new FormData();
         let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'fechaInicio':
                 case 'fechaFin':
                     data.append(element, (new Date(form[element])).toDateString())
@@ -831,20 +830,20 @@ class Proyectos extends Component{
             }
         })
         aux = Object.keys(form.adjuntos)
-        aux.map( (element) => {
-            if(form.adjuntos[element].value !== ''){
+        aux.map((element) => {
+            if (form.adjuntos[element].value !== '') {
                 for (var i = 0; i < form.adjuntos[element].files.length; i++) {
                     data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
                     data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
                 }
-                if(element.toString() !== 'image')
+                if (element.toString() !== 'image')
                     data.append('adjuntos[]', element)
             }
         })
-        if(prospecto){
+        if (prospecto) {
             data.append('prospecto', prospecto.id)
         }
-        await axios.post(URL_DEV + 'proyectos', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'proyectos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { proyectos, proyecto } = response.data
                 const { options } = this.state
@@ -867,17 +866,17 @@ class Proyectos extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error'
                     })
                 }
@@ -887,12 +886,12 @@ class Proyectos extends Component{
             swal({
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',                
+                icon: 'error',
             })
         })
     }
 
-    async addProyectoAdjuntoAxios(name){
+    async addProyectoAdjuntoAxios(name) {
         const { access_token } = this.props.authUser
         const { form, proyecto } = this.state
         const data = new FormData();
@@ -902,11 +901,11 @@ class Proyectos extends Component{
             data.append(`files_${name}[]`, form.adjuntos[name].files[i].file)
         }
 
-        await axios.post(URL_DEV + 'proyectos/'+proyecto.id+'/adjuntos', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                
+
                 const { proyecto, proyectos } = response.data
-                
+
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.',
@@ -924,17 +923,17 @@ class Proyectos extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error'
                     })
                 }
@@ -944,18 +943,18 @@ class Proyectos extends Component{
             swal({
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',                
+                icon: 'error',
             })
         })
     }
 
-    async editProyectoAxios(){
+    async editProyectoAxios() {
         const { access_token } = this.props.authUser
         const { form, prospecto, proyecto } = this.state
         const data = new FormData();
         let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'fechaInicio':
                 case 'fechaFin':
                     data.append(element, (new Date(form[element])).toDateString())
@@ -968,20 +967,20 @@ class Proyectos extends Component{
             }
         })
         aux = Object.keys(form.adjuntos)
-        aux.map( (element) => {
-            if(form.adjuntos[element].value !== ''){
+        aux.map((element) => {
+            if (form.adjuntos[element].value !== '') {
                 for (var i = 0; i < form.adjuntos[element].files.length; i++) {
                     data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
                     data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
                 }
-                if(element.toString() !== 'image')
+                if (element.toString() !== 'image')
                     data.append('adjuntos[]', element)
             }
         })
-        if(prospecto){
+        if (prospecto) {
             data.append('prospecto', prospecto.id)
         }
-        await axios.post(URL_DEV + 'proyectos/' +proyecto.id, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'proyectos/' + proyecto.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { proyectos, proyecto } = response.data
                 const { options } = this.state
@@ -1004,17 +1003,17 @@ class Proyectos extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error'
                     })
                 }
@@ -1024,22 +1023,22 @@ class Proyectos extends Component{
             swal({
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',                
+                icon: 'error',
             })
         })
     }
 
-    async getProspectoAxios(id){
+    async getProspectoAxios(id) {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'prospecto/' + id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'prospecto/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { prospecto } = response.data
                 const { form, options } = this.state
-                if(prospecto.cliente.cp){
+                if (prospecto.cliente.cp) {
                     form.cp = prospecto.cliente.cp
                     this.cpAxios(prospecto.cliente.cp)
                 }
-                if(prospecto.cliente.colonia){
+                if (prospecto.cliente.colonia) {
                     form.colonia = prospecto.cliente.colonia.toString()
                 }
                 form.calle = prospecto.cliente.calle
@@ -1055,17 +1054,17 @@ class Proyectos extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error'
                     })
                 }
@@ -1076,23 +1075,23 @@ class Proyectos extends Component{
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
-                
+
             })
         })
     }
 
-    async cpAxios(value){
+    async cpAxios(value) {
         await axios.get(CP_URL + value + '?type=simplified').then(
             (response) => {
                 const { error } = response.data
-                const {form, options } = this.state
-                if(!error){
+                const { form, options } = this.state
+                if (!error) {
                     const { municipio, estado, asentamiento } = response.data.response
                     form['municipio'] = municipio
                     form['estado'] = estado
                     let aux = []
-                    asentamiento.map( (element) => {
-                        aux.push({ name: element.toString(), value: element.toString() } )
+                    asentamiento.map((element) => {
+                        aux.push({ name: element.toString(), value: element.toString() })
                     })
                     options['colonias'] = aux
                     this.setState({
@@ -1103,17 +1102,17 @@ class Proyectos extends Component{
                 }
             },
             (error) => {
-               
+
             }
         ).catch((error) => {
             console.log('error catch', error)
         })
     }
 
-    render(){
-        const { modal, modalDelete, modalAdjuntos, title, adjuntos, prospecto, form, options, proyectos,data } = this.state
-        return(
-            <Layout active={'proyectos'}  { ...this.props}>
+    render() {
+        const { modal, modalDelete, modalAdjuntos, title, adjuntos, prospecto, form, options, proyectos, data } = this.state
+        return (
+            <Layout active={'proyectos'}  {...this.props}>
                 {/*<div className="text-right">
                     <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon = { faPlus } color="green" />
                 </div>
@@ -1125,7 +1124,7 @@ class Proyectos extends Component{
                     mostrar_boton={true}
                     abrir_modal={true}
                     mostrar_acciones={true}
-                    onClick={ this.openModal }
+                    onClick={this.openModal}
                     actions={{
                         'edit': { function: this.openModalEdit },
                         'delete': { function: this.openModalDelete },
@@ -1134,219 +1133,219 @@ class Proyectos extends Component{
                     elements={data.proyectos}
                 />
 
-                <Modal show = {modal} handleClose = {this.handleClose}>
-                    <ProyectosForm title = { title } form = { form } onChange = {this.onChange} options = { options } 
-                        onChangeAdjunto = { this.onChangeAdjunto } clearFiles = { this.clearFiles } onChangeCP = { this.onChangeCP }
-                        onSubmit = { this.onSubmit } >
+                <Modal show={modal} handleClose={this.handleClose}>
+                    <ProyectosForm title={title} form={form} onChange={this.onChange} options={options}
+                        onChangeAdjunto={this.onChangeAdjunto} clearFiles={this.clearFiles} onChangeCP={this.onChangeCP}
+                        onSubmit={this.onSubmit} >
                         {
                             prospecto !== '' ?
-                            <Accordion>
-                                <div className="d-flex justify-content-end">
-                                    <Accordion.Toggle as = { Button } icon={ faEye } color="transparent" eventKey={0} />
-                                </div>
-                                <Accordion.Collapse eventKey = { 0 } className="px-md-5 px-2" >
-                                    <div>
-                                        <Card className="mx-md-5 my-3">
-                                            <div className="row mx-0">
-                                                <div className="col-md-12 mb-3">
-                                                    <P className="text-center" color="gold">
-                                                        Lead
-                                                    </P>
-                                                </div>
-                                                <div className="col-md-6 mb-3">
-                                                    <Small color="dark-blue">
-                                                        <B color="gold" className="pr-1">Nombre:</B><br />
-                                                        {
-                                                            prospecto.lead.nombre
-                                                        }
-                                                    </Small>
-                                                    <hr />
-                                                    <Small color="dark-blue">
-                                                        <B color="gold" className="pr-1">Teléfono:</B><br />
-                                                        <a target="_blank" href={`tel:+${prospecto.lead.telefono}`}>
-                                                            <FontAwesomeIcon icon={faPhone} className="mr-2" />
-                                                            {
-                                                                prospecto.lead.telefono
-                                                            }
-                                                        </a>
-                                                    </Small>
-                                                    <hr />
-                                                    <Small color="dark-blue">
-                                                        <B color="gold" className="pr-1">Correo:</B><br />
-                                                        <a target="_blank" href={`mailto:+${prospecto.lead.email}`}>
-                                                            <FontAwesomeIcon icon={faEnvelope} className="mr-2" />
-                                                            {
-                                                                prospecto.lead.email
-                                                            }
-                                                        </a>
-                                                    </Small>
-                                                    <hr />
-                                                </div>
-                                                <div className="col-md-6 mb-3">
-                                                    <Small color="dark-blue">
-                                                        <B color="gold" className="pr-1">Empresa:</B><br />
-                                                        {
-                                                            prospecto.lead.empresa.name
-                                                        }
-                                                    </Small>
-                                                    <hr />
-                                                    <Small color="dark-blue">
-                                                        <B color="gold" className="mr-1">Origen:</B><br />
-                                                        {
-                                                            prospecto.lead.origen.origen
-                                                        }
-                                                    </Small>
-                                                    <hr />
-                                                    <Small color="dark-blue">
-                                                        <Small>
-                                                            <B color="gold" className="mr-1">Fecha:</B><br />
-                                                        </Small>
-                                                        <Moment format="DD/MM/YYYY">
-                                                            {
-                                                                prospecto.lead.created_at
-                                                            }
-                                                        </Moment>
-                                                    </Small>
-                                                    <hr />
-                                                </div>
-                                                <div className="col-md-6 mb-3">
-                                                    <Small color="dark-blue">
-                                                        <B className="mr-1" color="gold">Comentario:</B><br />
-                                                        {
-                                                            prospecto.lead.comentario
-                                                        }
-                                                    </Small>
-                                                    <hr />
-                                                </div>
-                                                <div className="col-md-6 mb-3">
-                                                    <div className="text-color__dark-blue">
-                                                        <Small>
-                                                            <B color="gold" className="mr-1">Servicios:</B><br />
-                                                        </Small>
-                                                        <div className="px-2">
-                                                            <ul>
-                                                                {
-                                                                    prospecto.lead.servicios ? prospecto.lead.servicios.map((servicio, key) => {
-                                                                        return(
-                                                                            <li key={key}>
-                                                                                <Small color="dark-blue">
-                                                                                    {servicio.servicio}
-                                                                                </Small>
-                                                                            </li>
-                                                                        )
-                                                                    }) :
-                                                                    <li>
-                                                                        <Small color="dark-blue">
-                                                                            No hay servicios registrados
-                                                                        </Small>
-                                                                    </li>
-                                                                }
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                    <hr />
-                                                </div>
-                                            </div>
-                                        </Card>
-                                        <Card className="mx-md-5 my-3">
-                                            <div className="row mx-0">
-                                                <div className="col-md-12 mb-3">
-                                                    <P className="text-center" color="gold">
-                                                        Prospecto
-                                                    </P>
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <Small>
-                                                        <B color="gold">
-                                                            Cliente:
-                                                        </B>
-                                                    </Small>
-                                                    <br />
-                                                    <Small color="dark-blue">
-                                                        {
-                                                            prospecto.cliente.empresa
-                                                        }
-                                                    </Small>
-                                                    <hr />
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <Small>
-                                                        <B color="gold">
-                                                            Vendedor:
-                                                        </B>
-                                                    </Small>
-                                                    <br />
-                                                    <Small color="dark-blue">
-                                                        {
-                                                            prospecto.vendedor.name
-                                                        }
-                                                    </Small>
-                                                    <hr />
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <Small>
-                                                        <B color="gold">
-                                                            Tipo:
-                                                        </B>
-                                                    </Small>
-                                                    <br />
-                                                    <Small color="dark-blue">
-                                                        {
-                                                            prospecto.tipo_proyecto.tipo
-                                                        }
-                                                    </Small>
-                                                    <hr />
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <Small>
-                                                        <B color="gold">
-                                                            Estatus contratación:
-                                                        </B>
-                                                    </Small>
-                                                    <br />
-                                                    <Small color="dark-blue">
-                                                        {
-                                                            prospecto.estatus_contratacion.estatus
-                                                        }
-                                                    </Small>
-                                                    <hr />
-                                                </div>
-                                                <div className="col-md-12">
-                                                    <Small>
-                                                        <B color="gold">
-                                                            Descripción:
-                                                        </B>
-                                                    </Small>
-                                                    <br />
-                                                    <Small color="dark-blue">
-                                                        {
-                                                            prospecto.descripcion
-                                                        }
-                                                    </Small>
-                                                    <hr />
-                                                </div>
-                                            </div>
-                                        </Card>
+                                <Accordion>
+                                    <div className="d-flex justify-content-end">
+                                        <Accordion.Toggle as={Button} icon={faEye} color="transparent" eventKey={0} />
                                     </div>
-                                </Accordion.Collapse>
-                            </Accordion>
-                            : ''
+                                    <Accordion.Collapse eventKey={0} className="px-md-5 px-2" >
+                                        <div>
+                                            <Card className="mx-md-5 my-3">
+                                                <div className="row mx-0">
+                                                    <div className="col-md-12 mb-3">
+                                                        <P className="text-center" color="gold">
+                                                            Lead
+                                                    </P>
+                                                    </div>
+                                                    <div className="col-md-6 mb-3">
+                                                        <Small color="dark-blue">
+                                                            <B color="gold" className="pr-1">Nombre:</B><br />
+                                                            {
+                                                                prospecto.lead.nombre
+                                                            }
+                                                        </Small>
+                                                        <hr />
+                                                        <Small color="dark-blue">
+                                                            <B color="gold" className="pr-1">Teléfono:</B><br />
+                                                            <a target="_blank" href={`tel:+${prospecto.lead.telefono}`}>
+                                                                <FontAwesomeIcon icon={faPhone} className="mr-2" />
+                                                                {
+                                                                    prospecto.lead.telefono
+                                                                }
+                                                            </a>
+                                                        </Small>
+                                                        <hr />
+                                                        <Small color="dark-blue">
+                                                            <B color="gold" className="pr-1">Correo:</B><br />
+                                                            <a target="_blank" href={`mailto:+${prospecto.lead.email}`}>
+                                                                <FontAwesomeIcon icon={faEnvelope} className="mr-2" />
+                                                                {
+                                                                    prospecto.lead.email
+                                                                }
+                                                            </a>
+                                                        </Small>
+                                                        <hr />
+                                                    </div>
+                                                    <div className="col-md-6 mb-3">
+                                                        <Small color="dark-blue">
+                                                            <B color="gold" className="pr-1">Empresa:</B><br />
+                                                            {
+                                                                prospecto.lead.empresa.name
+                                                            }
+                                                        </Small>
+                                                        <hr />
+                                                        <Small color="dark-blue">
+                                                            <B color="gold" className="mr-1">Origen:</B><br />
+                                                            {
+                                                                prospecto.lead.origen.origen
+                                                            }
+                                                        </Small>
+                                                        <hr />
+                                                        <Small color="dark-blue">
+                                                            <Small>
+                                                                <B color="gold" className="mr-1">Fecha:</B><br />
+                                                            </Small>
+                                                            <Moment format="DD/MM/YYYY">
+                                                                {
+                                                                    prospecto.lead.created_at
+                                                                }
+                                                            </Moment>
+                                                        </Small>
+                                                        <hr />
+                                                    </div>
+                                                    <div className="col-md-6 mb-3">
+                                                        <Small color="dark-blue">
+                                                            <B className="mr-1" color="gold">Comentario:</B><br />
+                                                            {
+                                                                prospecto.lead.comentario
+                                                            }
+                                                        </Small>
+                                                        <hr />
+                                                    </div>
+                                                    <div className="col-md-6 mb-3">
+                                                        <div className="text-color__dark-blue">
+                                                            <Small>
+                                                                <B color="gold" className="mr-1">Servicios:</B><br />
+                                                            </Small>
+                                                            <div className="px-2">
+                                                                <ul>
+                                                                    {
+                                                                        prospecto.lead.servicios ? prospecto.lead.servicios.map((servicio, key) => {
+                                                                            return (
+                                                                                <li key={key}>
+                                                                                    <Small color="dark-blue">
+                                                                                        {servicio.servicio}
+                                                                                    </Small>
+                                                                                </li>
+                                                                            )
+                                                                        }) :
+                                                                            <li>
+                                                                                <Small color="dark-blue">
+                                                                                    No hay servicios registrados
+                                                                        </Small>
+                                                                            </li>
+                                                                    }
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                        <hr />
+                                                    </div>
+                                                </div>
+                                            </Card>
+                                            <Card className="mx-md-5 my-3">
+                                                <div className="row mx-0">
+                                                    <div className="col-md-12 mb-3">
+                                                        <P className="text-center" color="gold">
+                                                            Prospecto
+                                                    </P>
+                                                    </div>
+                                                    <div className="col-md-6">
+                                                        <Small>
+                                                            <B color="gold">
+                                                                Cliente:
+                                                        </B>
+                                                        </Small>
+                                                        <br />
+                                                        <Small color="dark-blue">
+                                                            {
+                                                                prospecto.cliente.empresa
+                                                            }
+                                                        </Small>
+                                                        <hr />
+                                                    </div>
+                                                    <div className="col-md-6">
+                                                        <Small>
+                                                            <B color="gold">
+                                                                Vendedor:
+                                                        </B>
+                                                        </Small>
+                                                        <br />
+                                                        <Small color="dark-blue">
+                                                            {
+                                                                prospecto.vendedor.name
+                                                            }
+                                                        </Small>
+                                                        <hr />
+                                                    </div>
+                                                    <div className="col-md-6">
+                                                        <Small>
+                                                            <B color="gold">
+                                                                Tipo:
+                                                        </B>
+                                                        </Small>
+                                                        <br />
+                                                        <Small color="dark-blue">
+                                                            {
+                                                                prospecto.tipo_proyecto.tipo
+                                                            }
+                                                        </Small>
+                                                        <hr />
+                                                    </div>
+                                                    <div className="col-md-6">
+                                                        <Small>
+                                                            <B color="gold">
+                                                                Estatus contratación:
+                                                        </B>
+                                                        </Small>
+                                                        <br />
+                                                        <Small color="dark-blue">
+                                                            {
+                                                                prospecto.estatus_contratacion.estatus
+                                                            }
+                                                        </Small>
+                                                        <hr />
+                                                    </div>
+                                                    <div className="col-md-12">
+                                                        <Small>
+                                                            <B color="gold">
+                                                                Descripción:
+                                                        </B>
+                                                        </Small>
+                                                        <br />
+                                                        <Small color="dark-blue">
+                                                            {
+                                                                prospecto.descripcion
+                                                            }
+                                                        </Small>
+                                                        <hr />
+                                                    </div>
+                                                </div>
+                                            </Card>
+                                        </div>
+                                    </Accordion.Collapse>
+                                </Accordion>
+                                : ''
                         }
                     </ProyectosForm>
                 </Modal>
-                <Modal show = { modalDelete } handleClose={ this.handleCloseDelete } >
+                <Modal show={modalDelete} handleClose={this.handleCloseDelete} >
                     <Subtitle className="my-3 text-center">
                         ¿Estás seguro que deseas eliminar el proyecto?
                     </Subtitle>
                     <div className="d-flex justify-content-center mt-3">
-                        <Button icon='' onClick = { this.handleCloseDelete } text="Cancelar" className="mr-3" color="green"/>
-                        <Button icon='' onClick = { (e) => { this.safeDelete(e)() }} text="Continuar" color="red"/>
+                        <Button icon='' onClick={this.handleCloseDelete} text="Cancelar" className="mr-3" color="green" />
+                        <Button icon='' onClick={(e) => { this.safeDelete(e)() }} text="Continuar" color="red" />
                     </div>
                 </Modal>
-                <Modal show = { modalAdjuntos } handleClose={ this.handleCloseAdjuntos } >
+                <Modal show={modalAdjuntos} handleClose={this.handleCloseAdjuntos} >
                     <div className="p-2">
-                        <Slider elements = {adjuntos.length > 0 ? adjuntos : [] }
-                            deleteFile = { this.deleteFile } handleChange = {this.handleChange} />
+                        <Slider elements={adjuntos.length > 0 ? adjuntos : []}
+                            deleteFile={this.deleteFile} handleChange={this.handleChange} />
                     </div>
                 </Modal>
             </Layout>
@@ -1356,7 +1355,7 @@ class Proyectos extends Component{
 
 
 const mapStateToProps = state => {
-    return{
+    return {
         authUser: state.authUser
     }
 }
