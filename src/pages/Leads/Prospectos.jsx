@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { renderToString } from 'react-dom/server'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { faPlus, faPhone, faEnvelope, faEye, faEdit, faTrash, faCalendarAlt, faPhoneVolume, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
@@ -13,8 +14,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Accordion, Form } from 'react-bootstrap'
 import Moment from 'react-moment'
 import { DataTable } from '../../components/tables'
-import { setOptions, setSelectOptions, setTextTable, setDateTable,setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList, setContactoTable } from '../../functions/setters'
-class Leads extends Component{
+import { setOptions, setSelectOptions, setTextTable, setDateTable, setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList, setContactoTable } from '../../functions/setters'
+import NewTable from '../../components/tables/NewTable'
+class Leads extends Component {
 
     state = {
         modal: false,
@@ -35,28 +37,31 @@ class Leads extends Component{
         form: EMPTY_PROSPECTO,
         formCliente: EMPTY_CLIENTE,
         formContacto: EMPTY_CONTACTO,
-        contactHistory: []
+        contactHistory: [],
+        data: {
+            prospecto: []
+        }
     }
 
-    constructor(props){
+    constructor(props) {
         super(props);
         const { state } = props.location
-        if(state){
+        if (state) {
             this.state.modal = true
             this.state.title = 'Lead a convertir'
             this.getLeadAxios(state.lead)
         }
     }
 
-    componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
+    componentDidMount() {
+        const { authUser: { user: { permisos: permisos } } } = this.props
+        const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props
-        const leads = permisos.find(function(element, index) {
+        const leads = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
-            return  pathname === '/' + url
+            return pathname === '/' + url
         });
-        if(!leads)
+        if (!leads)
             history.push('/')
         this.getProspectos();
     }
@@ -68,7 +73,7 @@ class Leads extends Component{
         this.setState({
             ... this.state,
             modal: !this.state.modal,
-            
+
         })
     }
 
@@ -143,25 +148,25 @@ class Leads extends Component{
 
     openEdit = e => (prospecto) => {
         const { form } = this.state
-        form['descripcion'] = prospecto.descripcion 
-        form['preferencia'] = prospecto.preferencia 
+        form['descripcion'] = prospecto.descripcion
+        form['preferencia'] = prospecto.preferencia
         form['motivo'] = prospecto.motivo
-        if(prospecto.vendedor){
+        if (prospecto.vendedor) {
             form['vendedor'] = prospecto.vendedor.email
         }
-        if(prospecto.estatus_prospecto){
+        if (prospecto.estatus_prospecto) {
             form['estatusProspecto'] = prospecto.estatus_prospecto.estatus
         }
-        if(prospecto.cliente){
+        if (prospecto.cliente) {
             form['cliente'] = prospecto.cliente.empresa
         }
-        if(prospecto.tipo_proyecto){
+        if (prospecto.tipo_proyecto) {
             form['tipoProyecto'] = prospecto.tipo_proyecto.tipo
         }
-        if(prospecto.estatus_contratacion){
+        if (prospecto.estatus_contratacion) {
             form['estatusContratacion'] = prospecto.estatus_contratacion.estatus
         }
-        
+
         this.setState({
             ... this.state,
             modal: true,
@@ -186,14 +191,14 @@ class Leads extends Component{
         const { history } = this.props
         history.push({
             pathname: '/proyectos/proyectos',
-            state: { prospectos: prospecto}
+            state: { prospectos: prospecto }
         });
     }
-    
+
     // Setters
 
     setTipos = (list, name) => {
-        let aux = [{ value: 'New', name: '+ Agregar nuevo'}]
+        let aux = [{ value: 'New', name: '+ Agregar nuevo' }]
         list && list.map((element, key) => {
             aux.push({ value: element.tipo, name: element.tipo })
         })
@@ -201,10 +206,10 @@ class Leads extends Component{
             ... this.state,
             [name]: aux
         })
-        
+
     }
     setEstatus = (list, name) => {
-        let aux = [{ value: 'New', name: '+ Agregar nuevo'}]
+        let aux = [{ value: 'New', name: '+ Agregar nuevo' }]
         list && list.map((element, key) => {
             aux.push({ value: element.estatus, name: element.estatus })
         })
@@ -212,7 +217,7 @@ class Leads extends Component{
             ... this.state,
             [name]: aux
         })
-        
+
     }
     setVendedores = vendedores => {
         let aux = []
@@ -225,7 +230,7 @@ class Leads extends Component{
         })
     }
     setClientes = clientes => {
-        let aux = [{ value: 'New', name: '+ Agregar nuevo'}]
+        let aux = [{ value: 'New', name: '+ Agregar nuevo' }]
         clientes && clientes.map((element, key) => {
             aux.push({ value: element.empresa, name: element.empresa })
         })
@@ -237,29 +242,30 @@ class Leads extends Component{
     setProspectos = prospectos => {
         let _prospectos = []
         prospectos.map((prospecto, key) => {
-            _prospectos.push( {
+            _prospectos.push({
                 actions: this.setActions(prospecto),
                 lead: prospecto.lead ?
-                        setContactoTable(prospecto.lead)
+                renderToString(setContactoTable(prospecto.lead))
                     : '',
-                empresa: prospecto.lead ? prospecto.lead.empresa ? setTextTable(prospecto.lead.empresa.name) : '' : '',
+                empresa: prospecto.lead ? prospecto.lead.empresa ?  renderToString(setTextTable(prospecto.lead.empresa.name)) : '' : '',
                 cliente: prospecto.cliente ?
-                        setArrayTable([
-                            { name: 'Nombre', text: prospecto.cliente.nombre },
-                            { name: 'RFC', text: prospecto.cliente.rfc },
-                            { name: 'Empresa', text: prospecto.cliente.empresa },
-                        ])
+                renderToString(setArrayTable([
+                        { name: 'Nombre', text: prospecto.cliente.nombre },
+                        { name: 'RFC', text: prospecto.cliente.rfc },
+                        { name: 'Empresa', text: prospecto.cliente.empresa },
+                    ]))
                     : ''
                 ,
-                tipoProyecto: prospecto.tipo_proyecto ? setTextTable(prospecto.tipo_proyecto.tipo) : '',
-                descripcion: setTextTable(prospecto.descripcion),
-                vendedor: prospecto.vendedor ? setTextTable(prospecto.vendedor.name) : '',
-                preferencia: setTextTable(prospecto.preferencia),
-                estatusProspecto: prospecto.estatus_prospecto ? setTextTable(prospecto.estatus_prospecto.estatus) : '',
-                motivo: setTextTable(prospecto.motivo),
-                estatusContratacion: prospecto.estatus_contratacion ? setTextTable(prospecto.estatus_contratacion.estatus) : '',
-                fechaConversion: setDateTable(prospecto.created_at)
-            } )
+                tipoProyecto: prospecto.tipo_proyecto ?  renderToString(setTextTable(prospecto.tipo_proyecto.tipo)) : '',
+                descripcion:  renderToString(setTextTable(prospecto.descripcion)),
+                vendedor: prospecto.vendedor ?  renderToString(setTextTable(prospecto.vendedor.name)) : '',
+                preferencia:  renderToString(setTextTable(prospecto.preferencia)),
+                estatusProspecto: prospecto.estatus_prospecto ?  renderToString(setTextTable(prospecto.estatus_prospecto.estatus)) : '',
+                motivo:  renderToString(setTextTable(prospecto.motivo)),
+                estatusContratacion: prospecto.estatus_contratacion ?  renderToString(setTextTable(prospecto.estatus_contratacion.estatus)) : '',
+                fechaConversion:  renderToString(setDateTable(prospecto.created_at)),
+                id: prospecto.id
+            })
         })
         this.setState({
             ... this.state,
@@ -268,35 +274,82 @@ class Leads extends Component{
     }
 
     setActions = prospecto => {
-        return(
+        let aux = []
+        aux.push(
+            {
+                text: 'Editar',
+                btnclass: 'success',
+                iconclass: 'flaticon2-pen',
+                action: 'edit',
+                tooltip: {id:'edit', text:'Editar'}
+            },
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin', 
+                action: 'delete',
+                tooltip: {id:'delete', text:'Eliminar', type:'error'}
+            },
+            {
+                text: 'Contacto',
+                btnclass: 'primary',
+                iconclass: 'flaticon-support', 
+                action: 'contacto',
+                tooltip: {id:'contacto', text:'Contacto'}
+            },                
+            {
+                text: 'Convertir en proyecto',
+                btnclass: 'warning',
+                iconclass: 'flaticon2-rubbish-bin', 
+                action: 'convert',
+                tooltip: {id:'convert', text:'Convertir en proyecto'}
+            }
+        )
+        if (prospecto.contactos.length > 0) {
+            aux.push(
+            {
+                text: 'Historial de contacto',
+                btnclass: 'info',
+                iconclass: 'flaticon2-rubbish-bin', 
+                action: 'delete',
+                tooltip: {id:'delete', text:'Historial de contacto'}
+            }
+        )        
+    }
+    return aux
+    }
+    /*
+    setActions = prospecto => {
+        return (
             <>
                 <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openEdit(e)(prospecto) } text='' icon={faEdit} color="transparent" 
-                        tooltip={{id:'edit', text:'Editar'}} />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openSafeDelete(e)(prospecto) } text='' icon={faTrash} color="red" 
-                        tooltip={{id:'delete', text:'Eliminar', type: 'error'}} />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openEdit(e)(prospecto)} text='' icon={faEdit} color="transparent"
+                        tooltip={{ id: 'edit', text: 'Editar' }} />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openSafeDelete(e)(prospecto)} text='' icon={faTrash} color="red"
+                        tooltip={{ id: 'delete', text: 'Eliminar', type: 'error' }} />
                 </div>
                 <div className="d-flex align-items-center flex-column flex-md-row my-2">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.activeFormContact(e)(prospecto.id)} text='' icon={faPhoneVolume} color="transparent" 
-                        tooltip={{id:'contacto', text:'Contacto', type:'success'}} />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.activeFormContact(e)(prospecto.id)} text='' icon={faPhoneVolume} color="transparent"
+                        tooltip={{ id: 'contacto', text: 'Contacto', type: 'success' }} />
                     {
-                        prospecto.contactos.length > 0 && 
-                            <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.activeModalHistory(e)(prospecto.contactos)} text='' icon={faCalendarAlt} color="transparent" 
-                                tooltip={{id:'historial', text:'Historial de contacto'}} />
+                        prospecto.contactos.length > 0 &&
+                        <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.activeModalHistory(e)(prospecto.contactos)} text='' icon={faCalendarAlt} color="transparent"
+                            tooltip={{ id: 'historial', text: 'Historial de contacto' }} />
                     }
                 </div>
                 <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openConvert(e)(prospecto) } text='' icon={faSyncAlt} color="transparent"
-                        tooltip={{id:'convert', text:'Convertir en proyecto', type:'success'}} />
+                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openConvert(e)(prospecto)} text='' icon={faSyncAlt} color="transparent"
+                        tooltip={{ id: 'convert', text: 'Convertir en proyecto', type: 'success' }} />
                 </div>
             </>
         )
     }
+    */
     setLeadTable = lead => {
-        return(
+        return (
             <div>
                 <Small>
-                    { lead.nombre }
+                    {lead.nombre}
                 </Small>
                 {
                     lead.telefono &&
@@ -314,7 +367,7 @@ class Leads extends Component{
                     <div className="my-2">
                         <a target="_blank" href={`mailto:+${lead.email}`}>
                             <Small>
-                                <FontAwesomeIcon className="mx-3"  icon={faEnvelope} />
+                                <FontAwesomeIcon className="mx-3" icon={faEnvelope} />
                                 {lead.email}
                             </Small>
                         </a>
@@ -324,26 +377,26 @@ class Leads extends Component{
         )
     }
     setText = text => {
-        return(
+        return (
             <Small className="">
-                { text }
+                {text}
             </Small>
         )
     }
     setClienteTable = cliente => {
-        return(
+        return (
             <>
                 {
                     cliente &&
                     <div>
                         <Small className="mr-1">
-                            { cliente.empresa }
+                            {cliente.empresa}
                         </Small>
                         <Small className="mr-1">
-                            { cliente.nombre }
+                            {cliente.nombre}
                         </Small>
                         <Small className="mr-1">
-                            { cliente.puesto }
+                            {cliente.puesto}
                         </Small>
                     </div>
                 }
@@ -351,7 +404,7 @@ class Leads extends Component{
         )
     }
     setDateTable = date => {
-        return(
+        return (
             <Moment format="DD/MM/YYYY">
                 {date}
             </Moment>
@@ -359,11 +412,11 @@ class Leads extends Component{
     }
     // Form
 
-    clearForm = ( name, empty ) => {
+    clearForm = (name, empty) => {
         let aux = Object.keys(empty)
         let _form = this.state[name]
         aux.map((element) => {
-            if(element === 'Success')
+            if (element === 'Success')
                 _form[element] = 'Contactado'
             else
                 _form[element] = ''
@@ -420,41 +473,48 @@ class Leads extends Component{
         this.editProspectoAxios(form, prospecto.id);
     }
 
-    submitContactForm = e => {  
+    submitContactForm = e => {
         e.preventDefault();
         const { formContacto, prospecto } = this.state
         this.addContactoAxios(formContacto, prospecto)
     }
     // Axios
 
-    async getProspectos(){
+    async getProspectos() {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'prospecto', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'prospecto', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { prospectos, tipoProyectos, estatusContratacion, estatusProspectos, vendedores, tiposContactos, clientes } = response.data
+                const { data } = this.state
+                data.prospectos = prospectos
                 this.setTipos(tipoProyectos, 'tipoProyectos')
-                this.setEstatus(estatusContratacion,'estatusContratacion')
-                this.setEstatus(estatusProspectos,'estatusProspectos')
+                this.setEstatus(estatusContratacion, 'estatusContratacion')
+                this.setEstatus(estatusProspectos, 'estatusProspectos')
                 this.setVendedores(vendedores)
                 this.setClientes(clientes)
-                this.setTipos(tiposContactos,'tiposContactos')
+                this.setTipos(tiposContactos, 'tiposContactos')
                 this.setProspectos(prospectos)
+                this.setState({
+                    ... this.state,
+                    //prospectos: this.setProspectos(prospectos)
+                })
+
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        
+
                     })
                 }
             }
@@ -463,22 +523,22 @@ class Leads extends Component{
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
-                
+
             })
         })
     }
 
-    async addProspectoAxios(data){
+    async addProspectoAxios(data) {
         const { access_token } = this.props.authUser
-        await axios.post(URL_DEV + 'prospecto', data, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'prospecto', data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { prospectos, tipoProyectos, estatusContratacion, estatusProspectos, vendedores, tiposContactos, clientes } = response.data
                 this.setTipos(tipoProyectos, 'tipoProyectos')
-                this.setEstatus(estatusContratacion,'estatusContratacion')
-                this.setEstatus(estatusProspectos,'estatusProspectos')
+                this.setEstatus(estatusContratacion, 'estatusContratacion')
+                this.setEstatus(estatusProspectos, 'estatusProspectos')
                 this.setVendedores(vendedores)
                 this.setClientes(clientes)
-                this.setTipos(tiposContactos,'tiposContactos')
+                this.setTipos(tiposContactos, 'tiposContactos')
                 this.setProspectos(prospectos)
                 this.clearForm('form', EMPTY_PROSPECTO)
                 this.clearForm('formCliente', EMPTY_CLIENTE)
@@ -498,19 +558,19 @@ class Leads extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        
+
                     })
                 }
             }
@@ -519,14 +579,14 @@ class Leads extends Component{
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
-                
+
             })
         })
     }
 
-    async deleteProspectoAxios(id){
+    async deleteProspectoAxios(id) {
         const { access_token } = this.props.authUser
-        await axios.delete(URL_DEV + 'prospecto/' + id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.delete(URL_DEV + 'prospecto/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { prospectos } = response.data
                 this.setProspectos(prospectos)
@@ -546,19 +606,19 @@ class Leads extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        
+
                     })
                 }
             }
@@ -567,22 +627,22 @@ class Leads extends Component{
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
-                
+
             })
         })
     }
 
-    async editProspectoAxios(data, id){
+    async editProspectoAxios(data, id) {
         const { access_token } = this.props.authUser
-        await axios.put(URL_DEV + 'prospecto/' + id,data, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.put(URL_DEV + 'prospecto/' + id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { prospectos, tipoProyectos, estatusContratacion, estatusProspectos, vendedores, tiposContactos, clientes } = response.data
                 this.setTipos(tipoProyectos, 'tipoProyectos')
-                this.setEstatus(estatusContratacion,'estatusContratacion')
-                this.setEstatus(estatusProspectos,'estatusProspectos')
+                this.setEstatus(estatusContratacion, 'estatusContratacion')
+                this.setEstatus(estatusProspectos, 'estatusProspectos')
                 this.setVendedores(vendedores)
                 this.setClientes(clientes)
-                this.setTipos(tiposContactos,'tiposContactos')
+                this.setTipos(tiposContactos, 'tiposContactos')
                 this.setProspectos(prospectos)
                 this.clearForm('form', EMPTY_PROSPECTO)
                 this.clearForm('formCliente', EMPTY_CLIENTE)
@@ -602,19 +662,19 @@ class Leads extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        
+
                     })
                 }
             }
@@ -623,18 +683,18 @@ class Leads extends Component{
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
-                
+
             })
         })
     }
 
 
-    async addContactoAxios(form, id){
+    async addContactoAxios(form, id) {
         const { access_token } = this.props.authUser
-        await axios.post(URL_DEV + 'prospecto/'+id+'/contacto', form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'prospecto/' + id + '/contacto', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { prospectos, tiposContactos } = response.data
-                this.setTipos(tiposContactos,'tiposContactos')
+                this.setTipos(tiposContactos, 'tiposContactos')
                 this.setProspectos(prospectos)
                 this.clearForm('formContacto', EMPTY_CONTACTO)
                 this.setState({
@@ -652,19 +712,19 @@ class Leads extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        
+
                     })
                 }
             }
@@ -673,14 +733,14 @@ class Leads extends Component{
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
-                
+
             })
         })
     }
 
-    async getLeadAxios(lead){
+    async getLeadAxios(lead) {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'lead/' + lead, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'lead/' + lead, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { lead } = response.data
                 this.setState({
@@ -690,19 +750,19 @@ class Leads extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     });
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        
+
                     })
                 }
             }
@@ -711,47 +771,63 @@ class Leads extends Component{
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
                 icon: 'error',
-                
+
             })
         })
     }
 
 
-    render(){
-        const { modal, modalConvert, title, lead, vendedores, estatusProspectos, clientes, tipoProyectos, estatusContratacion, tiposContactos, form, formCliente, formContacto, 
-                prospectos, modalHistoryContact, contactHistory, modalContactForm, modalDelete, prospecto } = this.state
-        
-        return(
-            <Layout active={'leads'}  { ...this.props}>
-                {
+    render() {
+        const { modal, modalConvert, title, lead, vendedores, estatusProspectos, clientes, tipoProyectos, estatusContratacion, tiposContactos, form, formCliente, formContacto,
+            prospectos, modalHistoryContact, contactHistory, modalContactForm, modalDelete, prospecto, data } = this.state
+
+        return (
+            <Layout active={'leads'}  {...this.props}>
+               {/* {
                     prospectos &&
-                        <DataTable columns = { PROSPECTOS_COLUMNS } data = { prospectos }/>
+                    <DataTable columns={PROSPECTOS_COLUMNS} data={prospectos} />
                 }
-                <Modal show = { modal } handleClose = { this.handleCloseModal } >
-                    <ProspectoForm 
-                        className = " px-3 "
-                        title = { title }
-                        vendedores = { vendedores }
-                        estatusProspectos = { estatusProspectos }
-                        clientes = { clientes }
-                        tipoProyecto = { tipoProyectos }
-                        estatusContratacion = { estatusContratacion }
-                        form = { form }
-                        formCliente = { formCliente }
-                        formContacto = { formContacto }
-                        onChange = {this.onChange}
-                        onChangeCliente = {this.onChangeCliente}
-                        onSubmit = { title === 'Lead a convertir' ? this.submitForm : this.submitEditForm }
-                        tiposContactos = { tiposContactos }
-                        onChangeContacto = { this.onChangeContacto }
-                        >
+                */}
+                <NewTable columns = { PROSPECTOS_COLUMNS } data = { prospectos } 
+                            title = 'Prospectos' subtitle = 'Listado de prospectos'
+                            mostrar_boton={false}
+                            abrir_modal={false}  
+                            mostrar_acciones={true} 
+                            actions = {{
+                                'edit': {function: this.openEdit},
+                                'delete': {function: this.openSafeDelete},
+                                'contacto': {function: this.activeFormContact},
+                                'historial': {function: this.activeModalHistory},
+                                'convert': {function: this.openConvert}
+                            }}
+                            elements = { data.prospectos }
+                            />
+
+                <Modal show={modal} handleClose={this.handleCloseModal} >
+                    <ProspectoForm
+                        className=" px-3 "
+                        title={title}
+                        vendedores={vendedores}
+                        estatusProspectos={estatusProspectos}
+                        clientes={clientes}
+                        tipoProyecto={tipoProyectos}
+                        estatusContratacion={estatusContratacion}
+                        form={form}
+                        formCliente={formCliente}
+                        formContacto={formContacto}
+                        onChange={this.onChange}
+                        onChangeCliente={this.onChangeCliente}
+                        onSubmit={title === 'Lead a convertir' ? this.submitForm : this.submitEditForm}
+                        tiposContactos={tiposContactos}
+                        onChangeContacto={this.onChangeContacto}
+                    >
                         {
                             lead &&
                             <Accordion>
                                 <div className="d-flex justify-content-end">
-                                    <Accordion.Toggle as = { Button } icon={ faEye } color="transparent" eventKey={0} />
+                                    <Accordion.Toggle as={Button} icon={faEye} color="transparent" eventKey={0} />
                                 </div>
-                                <Accordion.Collapse eventKey = { 0 } className="px-md-5 px-2" >
+                                <Accordion.Collapse eventKey={0} className="px-md-5 px-2" >
                                     <Card className="mx-md-5 my-3">
                                         <div className="row mx-0">
                                             <div className="col-md-6 mb-3">
@@ -813,7 +889,7 @@ class Leads extends Component{
                                                             lead.comentario
                                                         }
                                                     </div>
-                                                    
+
                                                 </P>
                                                 <hr />
                                             </div>
@@ -824,13 +900,13 @@ class Leads extends Component{
                                                         <ul>
                                                             {
                                                                 lead.servicios ? lead.servicios.map((servicio, key) => {
-                                                                    return(
+                                                                    return (
                                                                         <li key={key}>
                                                                             {servicio.servicio}
                                                                         </li>
                                                                     )
                                                                 }) :
-                                                                <li>No hay servicios registrados</li>
+                                                                    <li>No hay servicios registrados</li>
                                                             }
                                                         </ul>
                                                     </div>
@@ -844,33 +920,34 @@ class Leads extends Component{
                         }
                     </ProspectoForm>
                 </Modal>
-                <Modal show = { modalHistoryContact } handleClose = { this.handleCloseHistoryModal }>
+                <Modal show={modalHistoryContact} handleClose={this.handleCloseHistoryModal}>
                     <Subtitle className="my-3">
                         Historial de contacto
                     </Subtitle>
                     {
                         contactHistory &&
-                            <DataTable columns = { CONTACTO_COLUMNS } data = { contactHistory } />
+                        <DataTable columns={CONTACTO_COLUMNS} data={contactHistory} />
                     }
+
                 </Modal>
-                <Modal show = { modalContactForm } handleClose = { this.handleCloseFormContact }>
+                <Modal show={modalContactForm} handleClose={this.handleCloseFormContact}>
                     <Form className="mx-3" onSubmit={this.submitContactForm}>
                         <Subtitle className="mb-3">
                             Agregar un nuevo contacto
                         </Subtitle>
-                        <ContactoLeadForm tiposContactos = { tiposContactos } formContacto = { formContacto } onChangeContacto = { this.onChangeContacto } />
+                        <ContactoLeadForm tiposContactos={tiposContactos} formContacto={formContacto} onChangeContacto={this.onChangeContacto} />
                         <div className="mt-3 text-center">
                             <Button icon='' className="mx-auto" type="submit" text="Enviar" />
                         </div>
                     </Form>
                 </Modal>
-                <Modal show = { modalDelete } handleClose = { this.handleDeleteModal } >
+                <Modal show={modalDelete} handleClose={this.handleDeleteModal} >
                     <Subtitle className="my-3 text-center">
                         ¿Estás seguro que deseas eliminarel prospecto?
                     </Subtitle>
                     <div className="d-flex justify-content-center mt-3">
-                        <Button icon='' onClick = { this.handleDeleteModal } text="Cancelar" className="mr-3" color="green"/>
-                        <Button icon='' onClick = { (e) => { this.safeDelete(e)(prospecto.id) }} text="Continuar" color="red"/>
+                        <Button icon='' onClick={this.handleDeleteModal} text="Cancelar" className="mr-3" color="green" />
+                        <Button icon='' onClick={(e) => { this.safeDelete(e)(prospecto.id) }} text="Continuar" color="red" />
                     </div>
                 </Modal>
                 <Modal show={modalConvert} handleClose={this.handleCloseConvertModal}>
@@ -878,7 +955,7 @@ class Leads extends Component{
                         ¿Estás seguro que deseas convertir el prospecto en un proyecto?
                     </Subtitle>
                     <div className="d-flex justify-content-center mt-3">
-                        <Button icon='' onClick={this.handleCloseConvertModal} text="Cancelar" className="mr-3" color="red"/>
+                        <Button icon='' onClick={this.handleCloseConvertModal} text="Cancelar" className="mr-3" color="red" />
                         <Button icon='' onClick={(e) => { this.safeConvert(e)(prospecto) }} text="Continuar" />
                     </div>
                 </Modal>
@@ -889,7 +966,7 @@ class Leads extends Component{
 
 
 const mapStateToProps = state => {
-    return{
+    return {
         authUser: state.authUser
     }
 }
