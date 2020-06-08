@@ -3,11 +3,11 @@ import ReactDOM from 'react-dom'
 import { renderToString } from 'react-dom/server'
 import { PlusCircle } from '../../assets/svg'
 import '../../styles/custom_datatable.css'
-
+import '../../styles/metronic/_datables.scss';
 
 const $ = require('jquery');
 $.DataTable = require('datatables.net');
-require("datatables.net-responsive");
+require("datatables.net-responsive-bs4");
 require("datatables.net-select");
 require("datatables.net-searchpanes");
 require("datatables.net-colreorder");
@@ -28,16 +28,19 @@ class NewTable extends Component {
 
         $(this.refs.main).on('click', '.btn-actions-table', function (e) {
             e.preventDefault();
+            console.log("Boton clic")
             var id = $(this).attr('id').toString()
             var name = $(this).attr('name').toString()
             let aux = elements.find(function (element, index) {
                 if (element.id.toString() === id) {
+
                     return element
+
                 }
             });
-            //   console.log(id, name, aux, 'Last')
+            console.log(id, name, aux, 'Last')
             //  console.log(actions)
-            //  console.log(actions[name])
+            // console.log(actions[name])
 
             actions[name].function(aux)
         });
@@ -116,7 +119,7 @@ class NewTable extends Component {
             >`,
             language: {
                 "sProcessing": "Procesando...",
-                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sLengthMenu": "Mostrar _MENU_ &nbsp;registros",
                 "sZeroRecords": "No se encontraron resultados",
                 "sEmptyTable": "Ningún dato disponible en esta tabla",
                 "sInfo": "Registros del _START_ al _END_ de un total de _TOTAL_ registros",
@@ -128,10 +131,10 @@ class NewTable extends Component {
                 "sInfoThousands": ",",
                 "sLoadingRecords": 'Cargando... <div class="spinner spinner-primary mr-10"></div>',
                 "oPaginate": {
-                    "sFirst": '<i class="btn btn-icon btn-sm btn-light-primary mr-2 my-1 ki ki-bold-double-arrow-back icon-xs"></i>',
-                    "sLast": '<i class="btn btn-icon btn-sm btn-light-primary mr-4 my-1 ki ki-bold-double-arrow-next icon-xs"></i>',
-                    "sNext": '<i class="btn btn-icon btn-sm btn-light-primary ml-4 my-1 ki ki-bold-arrow-next icon-xs"></i>',
-                    "sPrevious": '<i class="btn btn-icon btn-sm btn-light-primary mr-2 my-1 ki ki-bold-arrow-back icon-xs"></i>'
+                    "sFirst": '<i class=" ki ki-bold-arrow-back"></i>',
+                    "sLast": '<i class="ki ki-bold-double-arrow-next"></i>',
+                    "sNext": '<i class="ki ki-bold-arrow-next"></i>',
+                    "sPrevious": '<i class=" ki ki-bold-arrow-back"></i>'
                 }
             },
 
@@ -154,7 +157,7 @@ class NewTable extends Component {
                                 //console.log(element)
                                 // console.log(row)
                                 aux = aux + /* `<input type="button" onClick = { console.log('hola')} value="Edit" class="btnEdit sfBtn sfPrimaryBtn sfLocale" />` */
-                                    `<button name=${element.action}  id = ${row.id} class="ml-2 btn btn-actions-table btn btn-xs btn-icon btn-text-${element.btnclass} btn-hover-${element.btnclass}"><i class=${element.iconclass}></i></button>`
+                                    `<button name=${element.action}  id = ${row.id} class="ml-2 btn btn-actions-table btn-xs btn-icon btn-text-${element.btnclass} btn-hover-${element.btnclass}" title=${element.text}><i class=${element.iconclass}></i></button>`
                             })
                         }
                         return (
@@ -213,9 +216,14 @@ class NewTable extends Component {
             this.props.onClick();
         }
     }
+    clickHandlerExport = (e) => {
+        if (typeof this.props.onClick === 'function') {
+            this.props.onClickExport();
+        }
+    }
     render() {
 
-        const { columns, data, title, subtitle, url, mostrar_boton, abrir_modal } = this.props
+        const { columns, data, title, subtitle, url, mostrar_boton, abrir_modal, exportar_boton } = this.props
 
         return (
             <>
@@ -235,10 +243,15 @@ class NewTable extends Component {
                             </h2>
                         </div>
                         <div className="card-toolbar">
-
+                            {(exportar_boton == true) ?
+                                <button onClick={() => this.clickHandlerExport()} className="btn btn-primary font-weight-bold mr-2">
+                                    <i className="far fa-file-excel"></i> Exportar
+                                </button>
+                                :
+                                ""
+                            }
                             {
-                                (mostrar_boton == true) ?
-
+                                    (mostrar_boton == true) ?
                                     (abrir_modal == true) ?
                                         <button onClick={() => this.clickHandler()} className="btn btn-success font-weight-bold mr-2">
                                             <i className="flaticon-add"></i> Agregar
@@ -251,11 +264,12 @@ class NewTable extends Component {
                                     ""
                             }
 
+
                         </div>
                     </div>
                     <div className="card-body">
 
-                        <table ref="main" className="table table-separate table-head-custom table-checkable display responsive nowrap dt-responsive table-hover " id="kt_datatable2" />
+                        <table ref="main" className="table table-separate table-head-custom table-checkable display table-hover text-justify" id="kt_datatable2" />
 
                     </div>
                 </div>
