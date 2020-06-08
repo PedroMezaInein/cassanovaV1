@@ -6,7 +6,13 @@ table{
     text-transform: uppercase;
 }
 
-.dataTables_wrapper .dataTables_pager .dataTables_length label{
+div.dataTables_wrapper div.dataTables_length select{
+    color: #3699FF !important;
+    background-color: #E1F0FF !important;
+    border: 0 !important;
+}
+
+/*.dataTables_wrapper .dataTables_pager .dataTables_length label{
 color: #80808F !important;
 }
 
@@ -32,10 +38,14 @@ thead{
     text-align-last:center;
 }
 
-.dataTables_wrapper table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:before{
+/*.dataTables_wrapper table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:before{
     padding:5px;
     padding-left:9px;
+}*/
+thead{
+    text-align-last:center;
 }
+
 .card-toolbar a.btn.btn-icon{
     color: #1bc5bd;
     background-color: #c9f7f5;
