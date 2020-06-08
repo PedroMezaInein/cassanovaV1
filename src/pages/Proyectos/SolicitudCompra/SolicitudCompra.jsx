@@ -132,7 +132,7 @@ class SolicitudCompra extends Component{
                 },
                 {
                     text: 'Convertir',
-                    btnclass: 'info',
+                    btnclass: 'primary',
                     iconclass: 'flaticon2-refresh',                  
                     action: 'convert',
                     tooltip: {id:'convert', text:'Convertir', type:'success'},
