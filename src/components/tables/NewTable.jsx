@@ -7,7 +7,7 @@ import '../../styles/metronic/_datables.scss';
 
 const $ = require('jquery');
 $.DataTable = require('datatables.net');
-/* require("datatables.net-responsive-bs4"); */
+require("datatables.net-responsive-bs4");
 require("datatables.net-select");
 require("datatables.net-searchpanes");
 require("datatables.net-colreorder");
@@ -267,8 +267,9 @@ class NewTable extends Component {
 
                         </div>
                     </div>
+                    <div className="separator separator-solid mt-3"></div>
                     <div className="card-body">
-
+                        
                         <table ref="main" className="table table-separate table-head-custom table-checkable display table-hover text-justify" id="kt_datatable2" />
 
                     </div>
