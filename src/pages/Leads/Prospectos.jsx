@@ -232,7 +232,7 @@ class Leads extends Component {
     setClientes = clientes => {
         let aux = [{ value: 'New', name: '+ Agregar nuevo' }]
         clientes && clientes.map((element, key) => {
-            aux.push({ value: element.empresa, name: element.empresa })
+            aux.push({ value: element.id.toString(), name: element.empresa })
         })
         this.setState({
             ... this.state,
@@ -491,11 +491,12 @@ class Leads extends Component {
                 this.setEstatus(estatusContratacion, 'estatusContratacion')
                 this.setEstatus(estatusProspectos, 'estatusProspectos')
                 this.setVendedores(vendedores)
-                this.setClientes(clientes)
+                /* this.setClientes(clientes) */
                 this.setTipos(tiposContactos, 'tiposContactos')
                 this.setProspectos(prospectos)
                 this.setState({
                     ... this.state,
+                    clientes: setOptions(clientes, 'nombre', 'id')
                     //prospectos: this.setProspectos(prospectos)
                 })
 
@@ -537,7 +538,7 @@ class Leads extends Component {
                 this.setEstatus(estatusContratacion, 'estatusContratacion')
                 this.setEstatus(estatusProspectos, 'estatusProspectos')
                 this.setVendedores(vendedores)
-                this.setClientes(clientes)
+                /* this.setClientes(clientes) */
                 this.setTipos(tiposContactos, 'tiposContactos')
                 this.setProspectos(prospectos)
                 this.clearForm('form', EMPTY_PROSPECTO)
@@ -545,6 +546,7 @@ class Leads extends Component {
                 this.clearForm('formContacto', EMPTY_CONTACTO)
                 this.setState({
                     ... this.state,
+                    clientes: setOptions(clientes, 'nombre', 'id'),
                     modal: false,
                     title: '',
                 })
@@ -641,7 +643,7 @@ class Leads extends Component {
                 this.setEstatus(estatusContratacion, 'estatusContratacion')
                 this.setEstatus(estatusProspectos, 'estatusProspectos')
                 this.setVendedores(vendedores)
-                this.setClientes(clientes)
+                /* this.setClientes(clientes) */
                 this.setTipos(tiposContactos, 'tiposContactos')
                 this.setProspectos(prospectos)
                 this.clearForm('form', EMPTY_PROSPECTO)
@@ -650,6 +652,7 @@ class Leads extends Component {
                 this.setState({
                     ... this.state,
                     modal: false,
+                    clientes: setOptions(clientes, 'nombre', 'id'),
                     title: '',
                 })
                 swal({

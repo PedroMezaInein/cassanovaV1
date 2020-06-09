@@ -55,6 +55,7 @@
       "eslint-config-react-app": "^5.2.1",
       "eslint-loader": "^4.0.2",
       "eslint-plugin-import": "^2.20.2",
+      "espree": "^7.1.0",
       "exif-js": "^2.3.0",
       "fg-loadcss": "2.1.0",
       "file-saver": "^2.0.2",
