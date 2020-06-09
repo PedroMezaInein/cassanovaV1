@@ -279,7 +279,7 @@ class Ventas extends Component{
         return aux
     }
 
-    setActions = concepto => {
+    setActions = venta => {
         let aux = []
         aux.push(
             {
@@ -295,7 +295,11 @@ class Ventas extends Component{
                 iconclass: 'flaticon2-rubbish-bin',
                 action: 'delete',
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
-            },
+            }
+        )
+
+        if(venta.factura){
+        aux.push(
             {
                 text: 'Facturas',
                 btnclass: 'primary',
@@ -310,12 +314,12 @@ class Ventas extends Component{
                 action: 'bills',
                 tooltip: { id: 'bills', text: 'Pedir factura' }
             }
-
         )
-        return aux
     }
+    return aux
+}
 
-    /* Es diferente esta función
+    /* 
     setActions = venta => {
         return(
             <>
