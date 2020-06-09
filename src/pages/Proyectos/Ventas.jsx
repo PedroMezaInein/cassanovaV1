@@ -297,7 +297,6 @@ class Ventas extends Component{
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
             }
         )
-
         if(venta.factura){
         aux.push(
             {
