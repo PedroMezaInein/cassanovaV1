@@ -196,6 +196,7 @@ class NewTable extends Component {
             console.log(id, name, aux, 'first')
             actions[name].function(aux) */
         });
+    
     }
 
     componentWillUnmount() {
@@ -207,6 +208,7 @@ class NewTable extends Component {
     shouldComponentUpdate(nextProps) {
         if (nextProps.data !== this.props.data) {
             this.reloadTableData(nextProps);
+            console.log(nextProps, 'next')
         }
         return false;
 
@@ -267,7 +269,7 @@ class NewTable extends Component {
 
                         </div>
                     </div>
-                    <div className="separator separator-solid mt-3"></div>
+                    <div class="separator separator-solid mt-3"></div>
                     <div className="card-body">
                         
                         <table ref="main" className="table table-separate table-head-custom table-checkable display table-hover text-justify" id="kt_datatable2" />
