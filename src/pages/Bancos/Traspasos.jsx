@@ -94,6 +94,7 @@ class Traspasos extends Component{
     onSubmit = e =>{
         e.preventDefault()
         const { origen, destino } = this.state.form
+        console.log(origen, destino)
         if(origen === destino){
             swal({
                 title: '¡Error!',
@@ -182,8 +183,8 @@ class Traspasos extends Component{
         })
     }
 
-    openEdit = e => traspaso => {
-        e.preventDefault();
+    openEdit = traspaso => {
+       
         const { form } = this.state
         let aux = Object.keys(form)
         aux.map( (element) => {
@@ -217,9 +218,17 @@ class Traspasos extends Component{
             form
         })
     }
+    adjuntoTranspaso = (traspaso) => {
+       /* const { history } = this.props
+        history.push({
+            pathname: traspaso.adjunto.url
+         });*/
+         var win = window.open( traspaso.adjunto.url, '_blank');
+        win.focus();
+    }
 
-    openDelete = e => (traspaso) => {
-        e.preventDefault();
+    openDelete =  (traspaso) => {
+       
         this.setState({
             ... this.state,
             modalDelete: true,
@@ -285,7 +294,7 @@ class Traspasos extends Component{
     }
     */
 
-    setActions = proveedor => {
+    setActions = traspaso => {
         let aux = []
         aux.push(
             {
@@ -301,15 +310,19 @@ class Traspasos extends Component{
                 iconclass: 'flaticon2-rubbish-bin', 
                 action: 'delete',
                 tooltip: {id:'delete', text:'Eliminar', type:'error'}
-            },
-            {
-                text: 'Transpasos',
-                btnclass: 'danger',
-                iconclass: 'flaticon2-rubbish-bin', 
-                action: 'delete',
-                tooltip: {id:'adjuntos', text:'Mostrar adjuntos'}
             }
         )
+            if (traspaso.adjunto) {
+                aux.push(                    
+                {
+                    text: 'Transpasos',
+                    btnclass: 'primary',
+                    iconclass: 'flaticon-refresh', 
+                    action: 'adjuntos',
+                    tooltip: {id:'adjuntos', text:'Mostrar adjuntos'}
+                }
+            )
+        }
         
         return aux
     }
@@ -382,7 +395,8 @@ class Traspasos extends Component{
                 })
                 this.setState({
                     ... this.state,
-                    cuentas: aux,                   
+                    cuentas: aux,   
+                    data                
                     //traspasos:this.setTraspasos(traspasos)
                 })
             },
@@ -595,9 +609,9 @@ class Traspasos extends Component{
                     actions={{
                         'edit': { function: this.openEdit },
                         'delete': { function: this.openDelete },
-                        //'adjuntos': { function: this.openModalFacturas },
+                        'adjuntos': { function: this.adjuntoTranspaso },
                     }}
-                    elements={data.traspaso} />
+                    elements={data.traspasos} />
 
 
                 <Modal show = { modal } handleClose={ this.handleClose } >
