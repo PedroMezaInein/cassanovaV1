@@ -1,13 +1,16 @@
 .form-control {
-    border-width: 0 0 2px 0!important;
-    border-radius: 0;
-    background-color: transparent;
-    border-color: $dark-blue;
-    color: $blue;
-    &::placeholder {
-        color: $blue!important;
-    }
-    margin-bottom: 1rem;
+    display: block;
+    width: 100%;
+    height: calc(1.5em + 1.3rem + 2px);
+    padding: 0.65rem 1rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #464E5F;
+    background-color: #ffffff;
+    background-clip: padding-box;
+    border: 1px solid #E5EAEE;
+    border-radius: 0.42rem;
 }
 
 .label-form {
@@ -45,11 +48,11 @@
     position: relative;
     box-sizing: border-box;
     input{
-        border-width: 0 0 2px 0!important;
-        border-radius: 0;
+        //border-width: 0 0 2px 0!important;
+        //border-radius: 0;
         background-color: transparent;
-        border-color: $dark-blue;
-        color: $blue;
+        //border-color: $dark-blue;
+        //color: $blue;
         &::placeholder {
             color: $blue!important;
         }
