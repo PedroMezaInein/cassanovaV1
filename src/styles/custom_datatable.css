@@ -64,3 +64,7 @@ thead{
     padding-left: 0px;
 }
 
+div.dataTables_wrapper div.dataTables_info {
+    color: #80808F!important;
+    margin-top:7px;
+    }
