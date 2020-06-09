@@ -1,6 +1,6 @@
 import React from 'react'
-import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
+//import Form from 'react-bootstrap/Form';
+//import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons'
@@ -9,6 +9,7 @@ import {URL_DEV} from '../../constants'
 import { connect } from 'react-redux'
 import { login } from '../../redux/reducers/auth_user'
 import swal from 'sweetalert'
+import '../../styles/login-3.css'
 
 class LoginForm extends React.Component {
     constructor(props) {
@@ -138,32 +139,37 @@ class LoginForm extends React.Component {
 
     render() {
         return (
-            <Form onSubmit={this.handleSubmit}>
-                <Form.Control 
-                    type="text"
-                    placeholder="Ingresa tu email"
-                    required
-                    className={this.state.error.email !== '' ? 'error ' : ''}
-                    value={this.state.form.email}
-                    onChange={this.handleChange}
-                    name="email"/>
-                    {
-                        this.state.error.email !== '' &&
-                            <label className="label-error">
-                                {this.state.error.email}
-                            </label>
-                    }
-                <InputGroup>
-                    <Form.Control
+            
+            <form className="form pt-5" onSubmit={this.handleSubmit}>
+                <div className="form-group">
+                    <input className={"form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-3 pl-4"}
+                        type="text" 
+                        placeholder="Ingresa tu email"
+                        required
+                        //className={this.state.error.email !== '' ? 'error ' : ''}
+                        value={this.state.form.email}
+                        onChange={this.handleChange}
+                        name="email"
+                    />
+                        {
+                            this.state.error.email !== '' &&
+                                <label className="label-error">
+                                    {this.state.error.email}
+                                </label>
+                        }
+				</div>
+                
+                <div className="form-group">
+                    <input className={"form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-3  pl-4"}
                         type={this.state.showPassword ? 'text' : 'password'} 
                         placeholder="Ingresa tu constraseña" 
                         required
                         value={this.state.form.password}
                         onChange={this.handleChange}
-                        className={this.state.error.password !== '' ? 'error' : 'mt-3'}
+                        //className={this.state.error.password !== '' ? 'error' : 'mt-3'}>
                         name="password"
-                        />
-                    <InputGroup.Prepend 
+                    />
+                    {/*<InputGroup.Prepend 
                         onClick={this.changeInputType}
                         className={this.state.error.password !== '' ? 'error' : 'mt-3'}>
                         <InputGroup.Text id="inputGroupPrepend">
@@ -175,26 +181,28 @@ class LoginForm extends React.Component {
                             }
                         </InputGroup.Text>
                     </InputGroup.Prepend>
-                </InputGroup>
+                    */}
+				</div>
                 {
                     this.state.error.password !== '' &&
                         <label className="label-error">
                             {this.state.error.password}
                         </label>
                 }
-                <div className="d-flex justify-content-center">
-                    <Button icon='' type="submit"
-                        className="mt-4 mx-auto px-4 button-enviar"
-                        disabled={
-                            this.state.form.email === '' ||
-                            this.state.form.password === '' ||
-                            this.state.error.email !== '' ||
-                            this.state.error.password !== ''
-                        }>
-                        Enviar
-                    </Button>
-                </div>            
-            </Form>
+
+                <div className="form-group text-center mt-10 pt-5">
+					<button className="btn btn-pill btn-primary opacity-90 pl-4 pr-4"
+                            type="submit"
+                            disabled={
+                                this.state.form.email === '' ||
+                                this.state.form.password === '' ||
+                                this.state.error.email !== '' ||
+                                this.state.error.password !== ''
+                            }>
+                    Iniciar sesión
+                    </button>
+				</div>
+            </form>
         )
     }
 }
