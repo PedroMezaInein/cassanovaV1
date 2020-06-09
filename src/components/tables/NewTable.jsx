@@ -7,7 +7,7 @@ import '../../styles/metronic/_datables.scss';
 
 const $ = require('jquery');
 $.DataTable = require('datatables.net');
-require("datatables.net-responsive-bs4");
+/* require("datatables.net-responsive-bs4"); */
 require("datatables.net-select");
 require("datatables.net-searchpanes");
 require("datatables.net-colreorder");
