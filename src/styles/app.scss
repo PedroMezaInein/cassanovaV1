@@ -1,22 +1,26 @@
 @import 'style.bundle.css';
 @import 'plugins.bundle.css';
 @import 'prismjs.bundle.css';
+@import 'dark.css';
+@import 'light.css';
 /* @import 'datables.css'; */
+
 
 @import "~rfs/scss";
 @import 'mixin';
 @import 'general';
 @import 'button';
 @import 'text';
-/* @import 'card'; */
+//@import 'card';
 @import 'table';
 @import 'navbar';
 @import 'sidebar';
-@import 'form';
+//@import 'form';
 @import 'modal';
 @import 'task';
 @import 'accordion';
 @import 'pdf';
 @import './metronic/keenthemes-icons/font/ki';
 /* @import './metronic/style'; */
-@import './metronic/datables';
+
+
