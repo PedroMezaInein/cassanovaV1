@@ -1,26 +1,33 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 
-class Input extends Component{
+class Input extends Component {
 
     /* constructor(props){
         super(props)
     } */
 
-    render(){
-        const { error, onChange, placeholder  } = this.props
-        return(
-            <div>
-                <Form.Label className="mt-2 mb-1 label-form">
-                    {placeholder}
-                </Form.Label>
-                <Form.Control onChange={ (e) => {e.preventDefault(); onChange(e)} } className={`${error}`} { ... this.props}/>
-                {
-                    error && 
+    render() {
+        const { error, onChange, placeholder, iconclass,spantext } = this.props 
+        return (
+            <div >
+                <label className="col-form-label">{placeholder}</label>
+
+                <div className="input-group">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">
+                            <i className={iconclass+" kt-font-boldest text-success"}></i>
+                        </span>
+                    </div>
+                    <Form.Control onChange={(e) => { e.preventDefault(); onChange(e) }} className={`${error}`} {... this.props} />
+                    {
+                        error &&
                         <label className="error-label">
                             {error}
                         </label>
-                }
+                    }
+                </div>
+                <span className="form-text text-muted">Por favor, ingrese su {spantext}</span>
             </div>
         )
     }
