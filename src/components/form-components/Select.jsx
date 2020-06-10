@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 
+import '../../styles/select_custom.css';
+
 class Select extends Component{
     /* constructor(props){
         super(props)
@@ -10,9 +12,8 @@ class Select extends Component{
         const { options, placeholder, value, name, onChange, ...props } = this.props
         return(
             <>
-                <Form.Label className="mt-2 mb-1 label-form">
-                    { placeholder }     
-                </Form.Label>
+                <Form.Label className="col-form-label">{ placeholder }</Form.Label>
+                
                 <Form.Control onChange={ onChange } name={ name } value={ value } as="select" {... props}>
                     <option value={0} disabled>
                         {placeholder}
