@@ -123,11 +123,13 @@ class Ventas extends Component{
         if(venta.cliente){
             form.cliente = venta.cliente.id.toString()
             options['proyectos'] = setOptions(venta.cliente.proyectos, 'nombre', 'id')
+            if(venta.proyecto)
             form.proyecto = venta.proyecto.id.toString()
         }
         if(venta.empresa){
             form.empresa = venta.empresa.id.toString()
             options['cuentas'] = setOptions(venta.empresa.cuentas, 'nombre', 'id')
+            if(venta.cuenta)
             form.cuenta = venta.cuenta.id.toString()
         }
         if(venta.subarea){

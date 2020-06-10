@@ -239,7 +239,8 @@ class Compras extends Component{
         if(compra.empresa){
             form.empresa = compra.empresa.id.toString()
             options['cuentas'] = setOptions(compra.empresa.cuentas, 'nombre', 'id')
-            form.cuenta = compra.cuenta.id.toString()
+            if(compra.cuenta)
+                form.cuenta = compra.cuenta.id.toString()
         }
         if(compra.subarea){
             form.area = compra.subarea.area.id.toString()
