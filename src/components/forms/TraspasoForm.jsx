@@ -10,12 +10,12 @@ class TareaForm extends Component{
 
     updateOrigen = value => {
         const { onChange } = this.props
-        onChange( { target: { name: 'origen', value: value.value } } )
+        onChange( { target: { name: 'origen', value: value } } )
     }
 
     updateDestino = value => {
         const { onChange } = this.props
-        onChange( { target: { name: 'destino', value: value.value } } )
+        onChange( { target: { name: 'destino', value: value } } )
     }
 
     changeDate = date => {

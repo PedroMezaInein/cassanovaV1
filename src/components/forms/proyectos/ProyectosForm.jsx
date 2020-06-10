@@ -46,12 +46,12 @@ class ProyectosForm extends Component{
 
     updateCliente = value => {
         const { onChange } = this.props
-        onChange( { target: { name: 'cliente', value: value.value } } )
+        onChange( { target: { name: 'cliente', value: value} } )
     }
 
     updateEmpresa = value => {
         const { onChange } = this.props
-        onChange( { target: { name: 'empresa', value: value.value } } )
+        onChange( { target: { name: 'empresa', value: value } } )
     }
 
     updateColonia = value => {

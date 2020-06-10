@@ -201,7 +201,7 @@ class EstadosCuenta extends Component {
     updateCuenta = value => {
         this.setState({
             ... this.state,
-            cuenta: value.value
+            cuenta: value
         })
     }
     submitForm = e => {

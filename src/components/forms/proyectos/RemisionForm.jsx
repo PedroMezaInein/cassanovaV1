@@ -7,19 +7,37 @@ class ConceptoForm extends Component{
 
     updateProyecto = value => {
         const { onChange, form } = this.props
-        onChange({target:{value: value.value, name:'proyecto'}})
+        onChange({target:{value: value, name:'proyecto'}})
     }
-
+    /*Código Omar
     updateArea = value => {
         const { onChange, setOptions } = this.props
         onChange({target:{value: value.value, name:'area'}})
         onChange({target:{value: '', name:'subarea'}})
         setOptions('subareas', value.subareas)
+    }*/
+
+    updateArea = value => {
+        const { onChange, setOptions } = this.props
+        
+        onChange({target:{value: value, name:'area'}})
+        onChange({target:{value: '', name:'subarea'}})
+
+        const { options: { areas: areas } } = this.props
+        const aux = areas.find(function(element, index) {
+            if(value.toString() === element.value.toString() )
+            {
+                setOptions('subareas',element.subareas)
+            }
+        })
+        
     }
 
     updateSubarea = value => {
         const { onChange, setOptions } = this.props
-        onChange({target:{value: value.value, name:'subarea'}})
+       /* Código Omar
+       onChange({target:{value: value.value, name:'subarea'}})*/
+       onChange( { target: { name: 'subarea', value: value.toString() } } )
     }
 
     handleChangeDate = (date) =>{
