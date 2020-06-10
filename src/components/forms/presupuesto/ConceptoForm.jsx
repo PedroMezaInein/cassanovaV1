@@ -8,13 +8,13 @@ class ConceptoForm extends Component{
     updateCategoria = value => {
         const { onChange, form } = this.props
         if(form.clave === '')
-            onChange({target:{value: value.value+'.', name:'clave'}})
-        onChange({target:{value: value.value, name:'categoria'}})
+            onChange({target:{value: value+'.', name:'clave'}})
+        onChange({target:{value: value, name:'categoria'}})
     }
 
     updateUnidades = value => {
         const { onChange } = this.props
-        onChange({target:{value: value.value, name:'unidad'}})
+        onChange({target:{value: value, name:'unidad'}})
     }
 
     render(){
@@ -26,39 +26,54 @@ class ConceptoForm extends Component{
                         title
                     }
                 </Subtitle>
-                <div className="row mx-0 my-3">
-                    <div className="col-md-6 px-2">
-                        <SelectSearch options={options.categorias} placeholder = "Selecciona la categoría" 
-                            name = "categoria" value = { form.categoria } onChange = { this.updateCategoria }/>
+                <div className="">
+                    <div className="form-group row form-group-marginless mt-5">
+
+                        <div className="col-md-4">
+                            <SelectSearch options={options.categorias} placeholder = "Selecciona la categoría" 
+                                name = "categoria" value = { form.categoria } onChange = { this.updateCategoria }/>
+                                <span className="form-text text-muted">Por favor, selecciona la categoría</span>
+                        </div>
+
+                        <div className="col-md-4">
+                            <Input placeholder = "Clave" value = { form.clave } name = "clave" onChange = { onChange } iconclass={"fas fa-key"} spantext={"clave."} />
+                        </div>
+
+                        <div className="col-md-4">
+                            <Input placeholder = "Mano de obra" value = { form.manoObra } name = "manoObra" onChange = { onChange }  iconclass={"fas fa-tractor"} spantext={"mano de obra."} />
+                        </div>
+
                     </div>
-                    <div className="col-md-6 px-2">
-                        <Input placeholder = "Clave" value = { form.clave } name = "clave" onChange = { onChange } />
+                    <div className="form-group row form-group-marginless">
+                        <div className="col-md-4">
+                            <Input placeholder = "Herramienta" value = { form.herramienta } name = "herramienta" onChange = { onChange } iconclass={"fas fa-toolbox"} spantext={"herramienta."}/>
+                        </div>
+
+                        <div className="col-md-4">
+                            <Input placeholder = "Materiales" value = { form.materiales } name = "materiales" onChange = { onChange } iconclass={"fas fa-tools"} spantext={"material."}/>
+                        </div>
+
+                        <div className="col-md-4">
+                            <InputMoney thousandSeparator={true}  placeholder = "Costo" value = { form.costo } name = "costo" onChange = { onChange } iconclass={"fas fa-dollar-sign"} spantext={"costo."}/>
+                        </div>
                     </div>
-                    <div className="col-md-6 px-2">
-                        <Input placeholder = "Mano de obra" value = { form.manoObra } name = "manoObra" onChange = { onChange } />
+                    
+                    <div className="form-group row form-group-marginless"> 
+                        <div className="col-md-4">
+                            <SelectSearch options={options.unidades} placeholder = "Selecciona la unidad" 
+                                name = "unidad" value = { form.unidad } onChange = { this.updateUnidades }/>
+                            <span className="form-text text-muted">Por favor, selecciona la unidad</span>
+						</div>
+                        
+                        <div className = "col-md-8">
+                            <Input as = "textarea" placeholder = "Descripción" rows = "1" value = { form.descripcion }
+                                name = "descripcion" onChange = { onChange } spantext={"descripción."} iconclass={"far fa-file-alt"}  />
+                        </div>
                     </div>
-                    <div className="col-md-6 px-2">
-                        <Input placeholder = "Herramienta" value = { form.herramienta } name = "herramienta" onChange = { onChange } />
                     </div>
-                    <div className="col-md-6 px-2">
-                        <Input placeholder = "Materiales" value = { form.materiales } name = "materiales" onChange = { onChange } />
+                    <div className="d-flex justify-content-center my-3">
+                        <Button  icon='' type="submit" className="text-center mx-auto" text='Enviar' />
                     </div>
-                    <div className="col-md-6 px-2">
-                        <InputMoney thousandSeparator={true}  placeholder = "Costo" value = { form.costo } name = "costo" onChange = { onChange }/>
-                    </div>
-                    <div className="col-md-6 px-2">
-                        <SelectSearch options={options.unidades} placeholder = "Selecciona la unidad" 
-                            name = "unidad" value = { form.unidad } onChange = { this.updateUnidades }/>
-                    </div>
-                    <div className = " col-md-12 px-2">
-                        <Input as = "textarea" placeholder = "Descripción" rows = "3" value = { form.descripcion }
-                            name = "descripcion" onChange = { onChange } />
-                    </div>
-                </div>
-                
-                <div className="d-flex justify-content-center my-3">
-                    <Button  icon='' type="submit" className="text-center mx-auto" text='Enviar' />
-                </div>
                 
             </Form>
         )
