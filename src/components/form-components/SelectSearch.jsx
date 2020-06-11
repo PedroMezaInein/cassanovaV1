@@ -7,7 +7,7 @@ class SelectSearchForm extends Component{
 
     render(){
         
-        const { name, onChange, options,  placeholder, value  } = this.props 
+        const { name, onChange, options,  placeholder, value, iconclass} = this.props 
         
         return(
             <div>
@@ -19,7 +19,7 @@ class SelectSearchForm extends Component{
                             <div className="input-group">
                                 <div className="input-group-prepend">
                                     <span className="input-group-text">
-                                    <i className="far fa-calendar-check kt-font-boldest text-success"></i>
+                                    <i className={iconclass+" kt-font-boldest text-success"}></i>
                                     </span>
                                 </div>
 
