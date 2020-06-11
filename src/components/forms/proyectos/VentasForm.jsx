@@ -33,13 +33,16 @@ class VentasForm extends Component {
         const { onChange, setOptions } = this.props
         onChange({ target: { value: value, name: 'cliente' } })
         onChange({ target: { value: '', name: 'proyecto' } })
-        const { options: { proyectos: proyectos } } = this.props
+        const { options: { clientes: clientes } } = this.props
 
-        const aux = proyectos.find(function (element, index) {
+        const aux = clientes.find(function (element, index) {
             if (value.toString() === element.value.toString()) {
                 setOptions('proyectos', element.proyectos)
             }
         })
+
+        console.log('update cliente')
+        console.log(this.props)
     }
     updateProyecto = value => {
         const { onChange } = this.props
