@@ -31,23 +31,22 @@ export function AsideMenuList({ layoutProps }) {
   };
 
   const modulos = [
-    { link: '/proyectos/ventas', svg: '/media/svg/icons/Code/Error-circle.svg', nombre: '0', submodulos: [
-      { link: '/dashboard/1', svg: '/media/svg/icons/Code/Error-circle.svg', nombre: 'S 1' },
-      { link: '/dashboard/2', svg: '/media/svg/icons/Code/Error-circle.svg', nombre: 'S 2' },
-      { link: '/dashboard/3', svg: '/media/svg/icons/Code/Error-circle.svg', nombre: 'S 3' },
-
-    ] },
-    { link: '/dashboard', svg: '/media/svg/icons/Code/Error-circle.svg', nombre: '1' },
-    { link: '/dashboard', svg: '/media/svg/icons/Code/Error-circle.svg', nombre: '2', submodulos: [
+    { link: '/proyectos/ventas', svg: '/media/svg/icons/Code/Error-circle.svg', nombre: '0', 
+      submodulos: [
         { link: '/dashboard/1', svg: '/media/svg/icons/Code/Error-circle.svg', nombre: 'S 1' },
         { link: '/dashboard/2', svg: '/media/svg/icons/Code/Error-circle.svg', nombre: 'S 2' },
         { link: '/dashboard/3', svg: '/media/svg/icons/Code/Error-circle.svg', nombre: 'S 3' },
-  
-      ] }
+      ]
+    },
+    { link: '/dashboard', svg: '/media/svg/icons/Code/Error-circle.svg', nombre: '1' },
+    { link: '/dashboard', svg: '/media/svg/icons/Code/Error-circle.svg', nombre: '2', 
+      submodulos: [
+        { link: '/dashboard/1', svg: '/media/svg/icons/Code/Error-circle.svg', nombre: 'S 1' },
+        { link: '/dashboard/2', svg: '/media/svg/icons/Code/Error-circle.svg', nombre: 'S 2' },
+        { link: '/dashboard/3', svg: '/media/svg/icons/Code/Error-circle.svg', nombre: 'S 3' },
+      ] 
+    }
   ]
-
-  
-
   return (
     <>
       <ul className={`menu-nav`}>
