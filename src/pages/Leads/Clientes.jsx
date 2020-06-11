@@ -66,7 +66,7 @@ class Leads extends Component {
     }
 
     updateColonia = value => {
-        this.onChange({ target: { name: 'colonia', value: value.value } })
+        this.onChange({ target: { name: 'colonia', value: value } })
     }
 
     changeCP = event => {
