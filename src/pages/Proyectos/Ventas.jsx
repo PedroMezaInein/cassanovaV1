@@ -309,7 +309,7 @@ class Ventas extends Component{
                 tooltip: { id: 'taxes', text: 'Facturas' }
             },
             {
-                text: 'Pedir factura',
+                text: 'Pedir&nbsp;factura',
                 btnclass: 'info',
                 iconclass: 'flaticon-interface-4',
                 action: 'bills',
