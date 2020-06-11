@@ -525,77 +525,63 @@ class Usuarios extends Component{
     render(){
         const { users, modalActive, form, options, modalSafeDeleteActive, user_to_interact, modalUpdateUser, form: { tipo : tipo_form }, empleadoForm, empresas_options, modalPermisos } = this.state;
         return(
-            <Layout active={'usuarios'}  { ...this.props}>
-                <div className="d-flex align-items-center mb-2 flex-column flex-md-row justify-content-md-between">
-                    <Title className="text-center">
-                        Listado de usuarios registrados
-                    </Title>
-                    <div className="mt-3 mt-md-0 ml-auto">
-                        <Button onClick={this.addUser()} text='' className="" icon={faUserPlus}
-                            tooltip={{id:'add', text:'Nuevo'}} />
+            <>
+                <Layout active={'usuarios'}  { ...this.props}>
+                    <div className="d-flex align-items-center mb-2 flex-column flex-md-row justify-content-md-between">
+                        <Title className="text-center">
+                            Listado de usuarios registrados
+                        </Title>
+                        <div className="mt-3 mt-md-0 ml-auto">
+                            <Button onClick={this.addUser()} text='' className="" icon={faUserPlus}
+                                tooltip={{id:'add', text:'Nuevo'}} />
+                        </div>
+                        
                     </div>
-                    
-                </div>
-                {
-                    users.map((tipo_users, key) => {
-                        return(
-                            <div key={key} className="my-4">
-                                <Subtitle>
-                                    {tipo_users.tipo}
-                                </Subtitle>
-                                <div className="row py-3 mx-0">
-                                    {
-                                        tipo_users.usuarios.map((user, _key) => {
-                                            return(
-                                                <div className="col-md-6 col-xl-3 col-12 mb-2 px-0" key={_key}>
-                                                    <Card className="mx-3" >
-                                                        <Button onClick={(e) => { this.changePermisos(e)(user) }} icon={faKey} className="mr-2" color="gold-no-bg"
-                                                            tooltip={{id:'permisos', text:'Permisos de usuario'}} />
-                                                        <div className="text-center">
-                                                            <P>
-                                                                {user.name}
-                                                            </P>
+                    {
+                        users.map((tipo_users, key) => {
+                            return(
+                                <div key={key} className="my-4">
+                                    <Subtitle>
+                                        {tipo_users.tipo}
+                                    </Subtitle>
+                                    <div className="row py-3 mx-0">
+                                        {
+                                            tipo_users.usuarios.map((user, _key) => {
+                                                return(
+                                                    <div className="col-md-6 col-xl-3 col-12 mb-2 px-0" key={_key}>
+                                                        <Card className="mx-3" >
+                                                            <Button onClick={(e) => { this.changePermisos(e)(user) }} icon={faKey} className="mr-2" color="gold-no-bg"
+                                                                tooltip={{id:'permisos', text:'Permisos de usuario'}} />
+                                                            <div className="text-center">
+                                                                <P>
+                                                                    {user.name}
+                                                                </P>
 
-                                                            <Small>
-                                                                {user.email}
-                                                            </Small>
-                                                        </div>
-                                                        <div className="d-flex justify-content-between mt-3">
-                                                            <Button icon='' onClick={(e) => { this.updateUser(e)(user) }} icon={faUserEdit} className="mr-2" color="blue"
-                                                                tooltip={{id:'edit', text:'Editar'}} />
-                                                            <Button icon='' onClick={(e) => { this.deleteuser(e)(user) }} icon={faUserSlash} color="red"
-                                                                tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
-                                                        </div>
-                                                    </Card>
-                                                </div>
-                                            )
-                                        })
-                                    }
+                                                                <Small>
+                                                                    {user.email}
+                                                                </Small>
+                                                            </div>
+                                                            <div className="d-flex justify-content-between mt-3">
+                                                                <Button icon='' onClick={(e) => { this.updateUser(e)(user) }} icon={faUserEdit} className="mr-2" color="blue"
+                                                                    tooltip={{id:'edit', text:'Editar'}} />
+                                                                <Button icon='' onClick={(e) => { this.deleteuser(e)(user) }} icon={faUserSlash} color="red"
+                                                                    tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
+                                                            </div>
+                                                        </Card>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                    </div>
                                 </div>
-                            </div>
-                        )
-                    })
-                }
-                <Modal show={modalActive} handleClose={this.handleCloseModal}>
-                    <RegisterUserForm className="px-3" form={ form } options={options} onSubmit={ this.handleSubmitAddUser} 
-                        onChange={(e) => {e.preventDefault(); this.handleChangeInput(e)}} title="Registrar usuario">
-                        {
-                            tipo_form < 3 && tipo_form > 0 &&
-                            <EmpleadoForm 
-                                form={empleadoForm} 
-                                onChange={this.handleChangeEmpleado}
-                                options={empresas_options}
-                                title="Datos del empleado" 
-                                onChangeCalendar={this.handleChangeDate}
-                                />
-                        }
-                    </RegisterUserForm>
-                </Modal>
-                <Modal show={modalUpdateUser} handleClose={this.handleCloseModalUpdateUser}>
-                    <RegisterUserForm form={ form } options={options} className="px-3" onSubmit={ this.handleSubmitEditUser } 
-                        onChange={(e) => {e.preventDefault(); this.handleChangeInput(e)}} title="Editar usuario">
-                        {
-                            tipo_form < 3 && tipo_form > 0 &&
+                            )
+                        })
+                    }
+                    <Modal show={modalActive} handleClose={this.handleCloseModal}>
+                        <RegisterUserForm className="px-3" form={ form } options={options} onSubmit={ this.handleSubmitAddUser} 
+                            onChange={(e) => {e.preventDefault(); this.handleChangeInput(e)}} title="Registrar usuario">
+                            {
+                                tipo_form < 3 && tipo_form > 0 &&
                                 <EmpleadoForm 
                                     form={empleadoForm} 
                                     onChange={this.handleChangeEmpleado}
@@ -603,22 +589,38 @@ class Usuarios extends Component{
                                     title="Datos del empleado" 
                                     onChangeCalendar={this.handleChangeDate}
                                     />
-                        }
-                    </RegisterUserForm>
-                </Modal>
-                <Modal show={modalSafeDeleteActive} handleClose={this.handleCloseSafeModal}>
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas eliminar a <B color="red">{user_to_interact.name}</B>
-                    </Subtitle>
-                    <div className="d-flex justify-content-center mt-3">
-                        <Button icon='' onClick={this.handleCloseSafeModal} text="Cancelar" className="mr-3" color="green"/>
-                        <Button icon='' onClick={(e) => { this.deleteSafeUser(e)(user_to_interact.id) }} text="Continuar" color="red"/>
-                    </div>
-                </Modal>
-                <Modal show={modalPermisos} handleClose={this.handleCloseModalPermisos}>
-                    <PermisosForm {... this.props} handleClose={this.handleCloseModalPermisos} user={user_to_interact.id}/>
-                </Modal>
-            </Layout>
+                            }
+                        </RegisterUserForm>
+                    </Modal>
+                    <Modal show={modalUpdateUser} handleClose={this.handleCloseModalUpdateUser}>
+                        <RegisterUserForm form={ form } options={options} className="px-3" onSubmit={ this.handleSubmitEditUser } 
+                            onChange={(e) => {e.preventDefault(); this.handleChangeInput(e)}} title="Editar usuario">
+                            {
+                                tipo_form < 3 && tipo_form > 0 &&
+                                    <EmpleadoForm 
+                                        form={empleadoForm} 
+                                        onChange={this.handleChangeEmpleado}
+                                        options={empresas_options}
+                                        title="Datos del empleado" 
+                                        onChangeCalendar={this.handleChangeDate}
+                                        />
+                            }
+                        </RegisterUserForm>
+                    </Modal>
+                    <Modal show={modalSafeDeleteActive} handleClose={this.handleCloseSafeModal}>
+                        <Subtitle className="my-3 text-center">
+                            ¿Estás seguro que deseas eliminar a <B color="red">{user_to_interact.name}</B>
+                        </Subtitle>
+                        <div className="d-flex justify-content-center mt-3">
+                            <Button icon='' onClick={this.handleCloseSafeModal} text="Cancelar" className="mr-3" color="green"/>
+                            <Button icon='' onClick={(e) => { this.deleteSafeUser(e)(user_to_interact.id) }} text="Continuar" color="red"/>
+                        </div>
+                    </Modal>
+                    <Modal show={modalPermisos} handleClose={this.handleCloseModalPermisos}>
+                        <PermisosForm {... this.props} handleClose={this.handleCloseModalPermisos} user={user_to_interact.id}/>
+                    </Modal>
+                </Layout>
+            </>
         )
     }
 }

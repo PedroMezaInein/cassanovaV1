@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import Sidebar from './sidebar'
 import Navbar from './navbar'
 import MenuResponsive from './menuResponsive'
+import NewAsideMenu from './newAsideMenu'
 import { logout, login } from '../../redux/reducers/auth_user'
 import axios from 'axios'
 import { URL_DEV } from '../../constants'
@@ -54,8 +55,9 @@ class Layout extends Component {
             <div className="pl-5  position-relative nav-full-height"  >
                 <Navbar clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {... this.props} />
 
-                <Sidebar {... this.props} />
-
+                {/* <Sidebar {... this.props} /> */}
+                {/* <NewAsideMenu /> */}
+                
                 <MenuResponsive expanded={menu ? 'expanded' : ''} clickResponsiveMenu={this.clickResponsiveMenu} {... this.props} />
                 <div className="pl-5 container-fluid">
                     {children}
