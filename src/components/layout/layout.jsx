@@ -55,7 +55,7 @@ class Layout extends Component {
                 <Navbar clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {... this.props} />
 
                 {/* <Sidebar {... this.props} /> */}
-                {/* <NewAsideMenu /> */}
+                <NewAsideMenu props =  {this.props} />
                 
                 <MenuResponsive expanded={menu ? 'expanded' : ''} clickResponsiveMenu={this.clickResponsiveMenu} {... this.props} />
                 <div className="pl-5 container-fluid">
