@@ -14,6 +14,7 @@ import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert } from '../../
 //
 import Layout from '../../../components/layout/layout'
 import { IngresosForm as IngresosFormulario } from '../../../components/forms'
+import { Card } from 'react-bootstrap'
 
 class IngresosForm extends Component{
 
@@ -563,15 +564,19 @@ class IngresosForm extends Component{
         const { form, title, options } = this.state
         return(
             <Layout active={'administracion'}  { ...this.props}>
-                <IngresosFormulario 
-                    title = { title } 
-                    form = { form }
-                    onChange = { this.onChange } 
-                    onChangeAdjunto = { this.onChangeAdjunto } 
-                    clearFiles = { this.clearFiles } 
-                    options = { options } 
-                    setOptions = { this.setOptions } 
-                    onSubmit = {this.onSubmit}/> 
+                <Card className="m-2 p-2 m-md-4 p-md-4">
+                    <Card.Body>
+                    <IngresosFormulario 
+                        title = { title } 
+                        form = { form }
+                        onChange = { this.onChange } 
+                        onChangeAdjunto = { this.onChangeAdjunto } 
+                        clearFiles = { this.clearFiles } 
+                        options = { options } 
+                        setOptions = { this.setOptions } 
+                        onSubmit = {this.onSubmit}/> 
+                    </Card.Body>
+                </Card>
             </Layout>
         )
     }
