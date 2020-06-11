@@ -6,37 +6,37 @@ import { Form } from 'react-bootstrap'
 class ComprasForm extends Component {
 
     /* Código Omar
-     updateCliente = value => {
-     const { onChange, setOptions } = this.props
-     onChange({ target: { value: value.value, name: 'cliente' } })
-     onChange({ target: { value: '', name: 'proyecto' } })
-     setOptions('proyectos', value.proyectos)
- }
+    updateCliente = value => {
+    const { onChange, setOptions } = this.props
+    onChange({ target: { value: value.value, name: 'cliente' } })
+    onChange({ target: { value: '', name: 'proyecto' } })
+    setOptions('proyectos', value.proyectos)
+}
 
- updateProyecto = value => {
-     const { onChange } = this.props
-     onChange({ target: { value: value.value, name: 'proyecto' } })
- }
+updateProyecto = value => {
+    const { onChange } = this.props
+    onChange({ target: { value: value.value, name: 'proyecto' } })
+}
 
- updateEmpresa = value => {
-     const { onChange, setOptions } = this.props
-     onChange({ target: { value: value.value, name: 'empresa' } })
-     onChange({ target: { value: '', name: 'cuenta' } })
-     setOptions('cuentas', value.cuentas)
- }
+updateEmpresa = value => {
+    const { onChange, setOptions } = this.props
+    onChange({ target: { value: value.value, name: 'empresa' } })
+    onChange({ target: { value: '', name: 'cuenta' } })
+    setOptions('cuentas', value.cuentas)
+}
 
- updateCuenta = value => {
-     const { onChange } = this.props
-     onChange({ target: { value: value.value, name: 'cuenta' } })
- }
+updateCuenta = value => {
+    const { onChange } = this.props
+    onChange({ target: { value: value.value, name: 'cuenta' } })
+}
 
- 
- updateArea = value => {
-     const { onChange, setOptions } = this.props
-     onChange({target:{value: value.value, name:'area'}})
-     onChange({target:{value: '', name:'subarea'}})
-     setOptions('subareas',value.subareas)
- }*/
+
+updateArea = value => {
+    const { onChange, setOptions } = this.props
+    onChange({target:{value: value.value, name:'area'}})
+    onChange({target:{value: '', name:'subarea'}})
+    setOptions('subareas',value.subareas)
+}*/
 
     updateCliente = value => {
         const { onChange, setOptions } = this.props
