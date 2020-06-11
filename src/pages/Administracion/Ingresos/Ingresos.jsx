@@ -337,7 +337,7 @@ class Ingresos extends Component {
                     tooltip: { id: 'taxes', text: 'Facturas' },
                 },
                 {
-                    text: 'Pedir factura',
+                    text: 'Pedir&nbsp;factura',
                     btnclass: 'primary',
                     iconclass: 'flaticon2-medical-records',
                     action: 'askFacturas',

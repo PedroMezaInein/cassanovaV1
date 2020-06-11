@@ -119,14 +119,14 @@ class Leads extends Component{
                 tooltip: {id:'delete', text:'Eliminar', type:'error'}
             },
             {
-                text: 'Convertir a prospecto',
+                text: 'Convertir&nbsp;a&nbsp;prospecto',
                 btnclass: 'primary',
                 iconclass: 'flaticon2-user-1',
                 action: 'prospecto',
                 tooltip: {id:'prospecto', text:'Convertir en prospecto'}
             },
             {
-                text: 'Convertir en proveedor',
+                text: 'Convertir&nbsp;en&nbsp;proveedor',
                 btnclass: 'info',
                 iconclass: 'flaticon-user-ok',
                 action: 'proveedor',

@@ -335,7 +335,7 @@ class Cuentas extends Component {
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
             },
             {
-                text: 'Agregar estado de cuenta',
+                text: 'Agregar&nbsp;estado&nbsp;de&nbsp;cuenta',
                 btnclass: 'primary',
                 iconclass: 'flaticon2-infographic',
                 action: 'estado',

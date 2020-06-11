@@ -276,7 +276,7 @@ class SolicitudCompra extends Component{
                 iconclass: 'flaticon2-rubbish-bin',
                 action: 'delete',
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
-            }
+            },
             {
                 text: 'Convertir',
                 btnclass: 'danger',

@@ -298,7 +298,7 @@ class Leads extends Component {
                 tooltip: {id:'contacto', text:'Contacto'}
             },                
             {
-                text: 'Convertir en proyecto',
+                text: 'Convertir&nbsp;en&nbsp;proyecto',
                 btnclass: 'warning',
                 iconclass: 'flaticon2-rubbish-bin', 
                 action: 'convert',
@@ -308,7 +308,7 @@ class Leads extends Component {
         if (prospecto.contactos.length > 0) {
             aux.push(
             {
-                text: 'Historial de contacto',
+                text: 'Historial&nbsp;de&nbsp;contacto',
                 btnclass: 'info',
                 iconclass: 'flaticon2-rubbish-bin', 
                 action: 'delete',
