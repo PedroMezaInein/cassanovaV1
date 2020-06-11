@@ -204,8 +204,9 @@ class Proyectos extends Component {
 
         form.porcentaje = proyecto.porcentaje
         form.descripcion = proyecto.descripcion
-
-        form.cliente = proyecto.cliente.id.toString()
+        if(proyecto.cliente)        
+        form.cliente = proyecto.cliente.id.toString()   
+        if(proyecto.empresa)     
         form.empresa = proyecto.empresa.id.toString()
         form.colonia = proyecto.colonia
 
