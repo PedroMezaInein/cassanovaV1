@@ -10,7 +10,6 @@ export default function NewAsideMenu({disableScroll}) {
           id="kt_aside_menu"
           data-menu-vertical="1"
           className={`aside-menu my-4 `}
-         
         >
           <AsideMenuList  />
         </div>
