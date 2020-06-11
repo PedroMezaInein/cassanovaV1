@@ -14,7 +14,7 @@ class InputMoney extends Component{
     }
 
     render(){
-        const { error, onChange, placeholder, value, prefix, thousandSeparator,iconclass,spantext  } = this.props
+        const { error, onChange, placeholder, value, prefix, thousandSeparator,iconclass } = this.props
         return(
             <div>
                 <Form.Label className="col-form-label">
@@ -30,7 +30,6 @@ class InputMoney extends Component{
                     <NumberFormat value = { value } displayType = { 'input' } thousandSeparator = { thousandSeparator ? thousandSeparator : false } prefix = { prefix } className="form-control w-100"
                     renderText = { value => <div> { value } </div> } onValueChange = { (values) => this.onChange(values) } placeholder = {placeholder} />
                 </div>
-                <span className="form-text text-muted">Por favor, ingrese su {spantext}</span>
             </div>
         )
     }

@@ -8,7 +8,7 @@ class Input extends Component {
     } */
 
     render() {
-        const { error, onChange, placeholder, iconclass,spantext } = this.props 
+        const { error, onChange, placeholder, iconclass } = this.props 
         return (
             <div >
                 <label className="col-form-label">{placeholder}</label>
@@ -26,8 +26,7 @@ class Input extends Component {
                             {error}
                         </label>
                     }
-                </div>
-                <span className="form-text text-muted">Por favor, ingrese su {spantext}</span>
+                </div>                
             </div>
         )
     }
