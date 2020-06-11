@@ -31,58 +31,70 @@ class LeadForm extends Component{
                     {title}
                 </Subtitle>
 
-                <div className="row mx-0">
-                    
-                    <div className="col-md-12 px-2">
+                <div className="form-group row form-group-marginless mt-5">
+                    <div className="col-md-4">
                         <Input required type="text" placeholder="Nombre"
-                            name="nombre" value={ form.nombre } onChange = { onChange }
-                            />
+                            name="nombre" value={ form.nombre } onChange = { onChange } iconclass={"far fa-user"} 
+                        />
+                        <span className="form-text text-muted">Por favor, ingrese el nombre. </span>
                     </div>
-                    <div className="col-md-6 px-2">
+                    <div className="col-md-4">
                         <Input required type="email" placeholder="Correo electrónico"
-                            name="email" value={ form.email } onChange = { onChange }
-                            />
+                            name="email" value={ form.email } onChange = { onChange } iconclass={"far fa-envelope"} 
+                        />
+                        <span className="form-text text-muted">Por favor, ingrese su correo electrónico. </span>
                     </div>
-                    <div className="col-md-6 px-2">
-                        <Input required type="text" placeholder="Teléfono"
-                            name="telefono" value={ form.telefono } onChange = { onChange }/>
+                    <div className="col-md-4">
+                            <Input required type="text" placeholder="Teléfono"
+                                name="telefono" value={ form.telefono } onChange = { onChange } iconclass={"fas fa-mobile-alt"}/>
+                            <span className="form-text text-muted">Por favor, ingrese su teléfono. </span>
                     </div>
-
-                    <div className="col-md-12 px-2">
-                        <Input required rows="3" as="textarea" placeholder="Comentario"
-                            name="comentario"  value = { form.comentario } onChange = { onChange } />
+                </div>
+                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-8">
+                        <Input required rows="2" as="textarea" placeholder="Comentario"
+                            name="comentario"  value = { form.comentario } onChange = { onChange } iconclass={" far fa-comment-dots"}/>
+                        <span className="form-text text-muted">Por favor, ingrese su comentario</span>
                     </div>
-
-                    <div className="col-md-6 px-2">
+                    <div className="col-md-4">
                         <Calendar 
                             onChangeCalendar ={ onChangeCalendar }    
                             placeholder="Fecha de ingreso"
                             name="fecha"
                             value={form.fecha}
+                            iconclass={"far fa-calendar-alt"} 
                             />
+                        <span className="form-text text-muted">Por favor, ingrese su fecha de ingreso. </span>
                     </div>
-                    <div className="col-md-6 px-2">
-                        <Select placeholder="Selecciona la empresa para el lead" options = { empresas } 
-                            name="empresa" value = { form.empresa } onChange = { onChange } 
+                </div>
+                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
+                    
+                    <div className="col-md-6">
+                        <Select placeholder="Seleccione la empresa para el lead" options = { empresas } 
+                            name="empresa" value = { form.empresa } onChange = { onChange } iconclass={"far fa-building"} 
                             />
+                        <span className="form-text text-muted">Por favor, seleccione la empresa para el lead. </span>
                     </div>
-                    <div className="col-md-12 px-2">
-                        <Select placeholder="Selecciona el origen para el lead" options = { origenes } 
-                            name="origen" value = { form.origen } onChange = { onChange } 
+                    <div className="col-md-6">
+                        <Select placeholder="Seleccione el origen para el lead" options = { origenes } 
+                            name="origen" value = { form.origen } onChange = { onChange } iconclass={" fas fa-mail-bulk "}
                             />
+                        <span className="form-text text-muted">Por favor, seleccione el origen para el lead. </span>
                     </div>
-
-                    <div className="col-md-12 px-2">
+                </div>
+                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-12">
                         <OptionsCheckbox placeholder="Selecciona los serivicios de interés" options = { form.servicios } 
                             name="servicios" value = { form.servicios } onChange =  { this.handleChangeCheckbox }/>
                     </div>
-
                 </div>
-                
+                                
                 <div className="mt-3 text-center">
                     <Button icon='' className="mx-auto" type="submit" text="Enviar" />
                 </div>
-
             </Form>
         )
     }

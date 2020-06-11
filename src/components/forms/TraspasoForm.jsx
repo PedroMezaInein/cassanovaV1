@@ -32,30 +32,37 @@ class TareaForm extends Component{
                 <Subtitle className="text-center my-2" color="gold">
                     {title}
                 </Subtitle>
+                <div className="form-group row form-group-marginless mt-5">
+                    <div className="col-md-6">
+                        <SelectSearch options = { cuentas } value = { form.origen } onChange = { this.updateOrigen } placeholder="Cuenta origen" iconclass={"far fa-credit-card"} />
+                        <span className="form-text text-muted">Por favor, seleccione la cuenta origen</span>
+                    </div>
+                    <div className="col-md-6">
+                        <SelectSearch options = { cuentas } value = { form.destino } onChange = { this.updateDestino } placeholder="Cuenta destino" iconclass={"far fa-credit-card"} />
+                        <span className="form-text text-muted">Por favor, seleccione la cuenta destino</span>
+                    </div>
+                </div>
 
-                <div className="row mx-0">
-                    <div className="col-md-6 px-2">
-                        <InputMoney thousandSeparator={true}  prefix = { '$' } name = "cantidad" value = { form.cantidad } onChange = { onChange } placeholder="Ingrese el monto de traspaso" />
+                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-4">
+                        <InputMoney thousandSeparator={true}  prefix = { '$' } name = "cantidad" value = { form.cantidad } onChange = { onChange } placeholder="Ingrese el monto de traspaso" iconclass={" fas fa-money-check-alt"} />
+                        <span className="form-text text-muted">Por favor, ingrese el monto del transpaso </span>
                     </div>
-                    <div className="col-md-6 px-2">
-                        <SelectSearch options = { cuentas } value = { form.origen } onChange = { this.updateOrigen } placeholder="Cuenta origen"/>
+                    <div className="col-md-4">
+                        <Calendar onChangeCalendar = { this.changeDate } name = "fecha" value = { form.fecha } placeholder="Fecha de traspaso" iconclass={"far fa-calendar-alt"} />
+                        <span className="form-text text-muted">Por favor, seleccione la fecha del transpaso </span>
                     </div>
-                    <div className="col-md-6 px-2">
-                        <SelectSearch options = { cuentas } value = { form.destino } onChange = { this.updateDestino } placeholder="Cuenta destino"/>
-                    </div>
-                    <div className="col-md-6 px-2">
-                        <Calendar onChangeCalendar = { this.changeDate } name = "fecha" value = { form.fecha } placeholder="Fecha de traspaso"/>
-                    </div>
-                    <div className="col-md-8 px-2 d-flex">
-                        
+                    <div className="col-md-4">
                         <div className="image-upload d-flex align-items-center">
                             <div className="no-label">
                                 <Input onChange = { onChangeAdjunto } value = { form.adjunto } name = "adjunto" type = "file" id = "adjunto"
-                                    accept = "application/pdf, image/*" />
+                                    accept = "application/pdf, image/*" iconclass={"fas fa-paperclip"} />
+                                <span className="form-text text-muted">Por favor, adjunte su documento. </span>     
                             </div>
-                            <label htmlFor="adjunto">
+                            {/*<label htmlFor="adjunto">
                                 <FontAwesomeIcon className = "p-0 font-unset mr-2" icon={ faPaperclip } color={ DARK_BLUE } />
-                            </label>
+                            </label>*/}
                             {
                                 form.adjuntoName &&
                                     <Badge variant="light" className="d-flex px-3 align-items-center" pill>
@@ -69,9 +76,13 @@ class TareaForm extends Component{
                                     </Badge>
                             }
                         </div>
-                    </div>
-                    <div className="col-md-12 px-2">
-                        <Input placeholder = "Comentario" as = "textarea" rows = "3" name = "comentario" value = { form.comentario } onChange = { onChange } />
+                    </div>                    
+                </div>
+                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-12">
+                        <Input placeholder = "Comentario" as = "textarea" rows = "3" name = "comentario" value = { form.comentario } onChange = { onChange } iconclass={" far fa-comment-dots"}/>
+                        <span className="form-text text-muted">Por favor, ingrese su comentario</span>
                     </div>
                 </div>
 

@@ -25,25 +25,35 @@ class RendimientoForm extends Component{
                     }
                 </Subtitle>
                 
-                <div className="row mx-0">
-                    <div className="col-md-6 px-2">
-                        <Input placeholder = "Materiales" value = { form.materiales } name = "materiales" onChange = { onChange } />
+                <div className="form-group row form-group-marginless mt-5">
+                    <div className="col-md-4">
+                        <Input placeholder = "Materiales" value = { form.materiales } name = "materiales" onChange = { onChange } iconclass={"fas fa-tools"}/>
+                        <span className="form-text text-muted">Por favor, ingrese su material. </span>
                     </div>
-                    <div className="col-md-6 px-2">
+                    <div className="col-md-4">
                         <SelectSearch options={options.unidades} placeholder = "Selecciona la unidad" 
-                            name = "unidad" value = { form.unidad } onChange = { this.updateUnidades }/>
+                            name = "unidad" value = { form.unidad } onChange = { this.updateUnidades } iconclass={" fas fa-weight-hanging"} />
+                        <span className="form-text text-muted">Por favor, selecciona la unidad</span>                        
                     </div>
-                    <div className="col-md-6 px-2">
-                        <InputMoney thousandSeparator={true}  placeholder = "Costo" value = { form.costo } name = "costo" onChange = { onChange }/>
+                    <div className="col-md-4">
+                        <InputMoney thousandSeparator={true}  placeholder = "Costo" value = { form.costo } name = "costo" onChange = { onChange } iconclass={"fas fa-dollar-sign"}/>
+                        <span className="form-text text-muted">Por favor, ingrese su costo. </span>
                     </div>
-                    <div className="col-md-6 px-2">
-                        <Input placeholder = "Rendimiento" value = { form.rendimiento } name = "rendimiento" onChange = { onChange } />
+                </div>
+                
+                <div class="separator separator-dashed mt-1 mb-2"></div>
+                
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-4">
+                        <Input placeholder = "Rendimiento" value = { form.rendimiento } name = "rendimiento" onChange = { onChange } iconclass={" fas fa-chart-line "} />
+                        <span className="form-text text-muted">Por favor, ingrese su rendimiento</span>
                     </div>
-                    <div className="col-md-6 px-2">
+                    <div className="col-md-4">
                         <SelectSearch options={options.proveedores} placeholder = "Selecciona el proveedor" 
-                            name = "proveedor" value = { form.proveedor } onChange = { this.updateProveedor }/>
+                        name = "proveedor" value = { form.proveedor } onChange = { this.updateProveedor } iconclass={"far fa-user"}/>
+                        <span className="form-text text-muted">Por favor, selecciona el proveedor </span>
                     </div>
-                    <div className = "col-md-6 px-2 ">
+                    <div className="col-md-4">
                         <FileInput 
                             onChangeAdjunto = { onChangeAdjunto } 
                             placeholder = 'Adjunto'
@@ -52,13 +62,18 @@ class RendimientoForm extends Component{
                             accept = "image/*, application/pdf" 
                             files = { form['adjunto']['files'] }
                             deleteAdjunto = { clearFiles } />
+                        <span className="form-text text-muted">Por favor, adjunte su documento. </span>
                     </div>
-                    <div className = " col-md-12 px-2">
-                        <Input as = "textarea" placeholder = "Descripción" rows = "3" value = { form.descripcion }
-                            name = "descripcion" onChange = { onChange } />
-                    </div>
+                </div>
 
-                    
+                <div class="separator separator-dashed mt-1 mb-2"></div>
+
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-12">
+                        <Input as = "textarea" placeholder = "Descripción" rows = "2" value = { form.descripcion }
+                            name = "descripcion" onChange = { onChange } iconclass={"far fa-file-alt"}/>
+                        <span className="form-text text-muted">Por favor, ingrese su descripción. </span>
+                    </div>
                 </div>
 
                 <div className="d-flex justify-materialescontent-center my-3">

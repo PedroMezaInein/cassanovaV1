@@ -439,49 +439,67 @@ class EstadosCuenta extends Component {
                         Agregar estado de cuenta
                     </Subtitle>
                     <Form onSubmit={this.submitForm}>
-                        <div className="row mx-0">
-                            <div className="col-md-6 px-2">
-                                <SelectSearch
-                                    options={cuentas}
-                                    placeholder="Selecciona la cuenta"
-                                    name="cuenta"
-                                    value={cuenta}
-                                    onChange={this.updateCuenta}
+                    <div className="form-group row form-group-marginless mt-5">
+                        <div className="col-md-8">
+                            <SelectSearch
+                                options={cuentas}
+                                placeholder="Selecciona la cuenta"
+                                name="cuenta"
+                                value={cuenta}
+                                onChange={this.updateCuenta}
+                                iconclass={"far fa-credit-card"} 
                                 />
-                            </div>
-                            <div className="col-md-6 px-2">
-                                <Calendar
-                                    onChangeCalendar={this.handleChangeDate}
-                                    placeholder="Fecha"
-                                    name="fecha"
-                                    value={fecha}
-                                />
-                            </div>
-                            <div className="col-md-6 px-2 d-flex align-items-center">
-                                <div className="image-upload d-flex align-items-center">
-                                    <div className="no-label">
-                                        <Input
-                                            onChange={this.onChangeAdjunto}
-                                            value={adjunto}
-                                            name="adjunto"
-                                            type="file"
-                                            id="adjunto"
-                                            accept="application/pdf" />
+                            <span className="form-text text-muted">Por favor, seleccione la cuenta. </span>
+                        </div>
+                        <div className="col-md-4">
+                            <Calendar
+                                onChangeCalendar={this.handleChangeDate}
+                                placeholder="Fecha"
+                                name="fecha"
+                                value={fecha}
+                                iconclass={"far fa-calendar-alt"} 
+                            />
+                            <span className="form-text text-muted">Por favor, seleccione la fecha. </span>
+                        </div>
+                    </div>
+                    <div class="separator separator-dashed mt-1 mb-2"></div>
+                    <div className="form-group row form-group-marginless">
+                        <div className="col-md-12">
+                            <div className="px-2 d-flex align-items-center">
+                                    <div className="image-upload d-flex align-items-center">
+                                        <div className="no-label">
+                                            <Input
+                                                onChange={this.onChangeAdjunto}
+                                                value={adjunto}
+                                                name="adjunto"
+                                                type="file"
+                                                id="adjunto"
+                                                accept="application/pdf" 
+                                                />
+                                            <span className="form-text text-muted">Por favor, adjunte su documento. </span>
+                                        </div>
+                                        {/*<label htmlFor="adjunto">
+                                            <FontAwesomeIcon className="p-0 font-unset mr-2" icon={faPaperclip} color={DARK_BLUE} />
+                                        </label>
+                                        */}
+                                        {
+                                            adjuntoName &&
+                                            <Badge variant="light" className="d-flex px-3 align-items-center" pill>
+                                                <FontAwesomeIcon icon={faTimes} onClick={(e) => { e.preventDefault(); this.deleteAdjunto() }} className=" small-button mr-2" />
+                                                {
+                                                    adjuntoName
+                                                }
+                                            </Badge>
+                                        }
                                     </div>
-                                    <label htmlFor="adjunto">
-                                        <FontAwesomeIcon className="p-0 font-unset mr-2" icon={faPaperclip} color={DARK_BLUE} />
-                                    </label>
-                                    {
-                                        adjuntoName &&
-                                        <Badge variant="light" className="d-flex px-3 align-items-center" pill>
-                                            <FontAwesomeIcon icon={faTimes} onClick={(e) => { e.preventDefault(); this.deleteAdjunto() }} className=" small-button mr-2" />
-                                            {
-                                                adjuntoName
-                                            }
-                                        </Badge>
-                                    }
                                 </div>
-                            </div>
+                        </div>
+                    </div>
+
+
+
+                        <div className="row mx-0">
+                            
                             <div className="col-md-12 text-center mt-3">
                                 <Button icon='' className="mx-auto" type="submit" text="Enviar" />
                             </div>

@@ -38,45 +38,52 @@ class ProveedorForm extends Component {
 
                     <div className="form-group row form-group-marginless mt-5">
                         <div className="col-md-4">
-                            <Input name="nombre" value={form.nombre} placeholder="Nombre" onChange={onChange} iconclass={"far fa-user"} spantext={"nombre."} />
+                            <Input name="nombre" value={form.nombre} placeholder="Nombre" onChange={onChange} iconclass={"far fa-user"}/>
+                            <span className="form-text text-muted">Por favor, ingrese el nombre. </span>
                         </div>
 
                         <div className="col-md-4">
-                            <Input name="razonSocial" value={form.razonSocial} placeholder="Razón social" onChange={onChange} iconclass={"far fa-file"} spantext={"razón social."} />
+                            <Input name="razonSocial" value={form.razonSocial} placeholder="Razón social" onChange={onChange} iconclass={"far fa-building"}/>
+                            <span className="form-text text-muted">Por favor, ingrese su razón social. </span>
                         </div>
 
                         <div className="col-md-4">
-                            <Input name="rfc" value={form.rfc} placeholder="RFC" onChange={onChange} iconclass={"far fa-file-alt"} spantext={"RFC."} />
+                            <Input name="rfc" value={form.rfc} placeholder="RFC" onChange={onChange} iconclass={"far fa-file-alt"} />
+                            <span className="form-text text-muted">Por favor, ingrese su RFC. </span>
                         </div>
                     </div>
 
                     <div className="form-group row form-group-marginless">
-
                         <div className="col-md-4">
-                            <Input name="correo" value={form.correo} placeholder="Correo electrónico" type="email" onChange={onChange} iconclass={"far fa-envelope"} spantext={"correo electrónico."} />
+                            <Input name="correo" value={form.correo} placeholder="Correo electrónico" type="email" onChange={onChange} iconclass={"far fa-envelope"}/>
+                            <span className="form-text text-muted">Por favor, ingrese su correo electrónico. </span>
                         </div>
 
                         <div className="col-md-4">
-                            <Input name="telefono" value={form.telefono} placeholder="Teléfono" onChange={onChange} iconclass={"fas fa-mobile-alt"} spantext={"teléfono."} />
+                            <Input name="telefono" value={form.telefono} placeholder="Teléfono" onChange={onChange} iconclass={"fas fa-mobile-alt"}/>
+                            <span className="form-text text-muted">Por favor, ingrese su teléfono. </span>
                         </div>
 
                         {/* <div className="col-md-4">
-                            <Input name="cuenta" value={form.cuenta} placeholder="Cuenta" onChange={onChange} iconclass={"la la-file-text-o"} spantext={"cuenta."}/>
+                            <Input name="cuenta" value={form.cuenta} placeholder="Cuenta" onChange={onChange} iconclass={"la la-file-text-o"}/>
                         </div> */}
 
                         <div className="col-md-4">
-                            <Input name="numCuenta" value={form.numCuenta} placeholder="Número de cuenta" onChange={onChange} iconclass={"far fa-credit-card"} spantext={"número de cuenta."} />
+                            <Input name="numCuenta" value={form.numCuenta} placeholder="Número de cuenta" onChange={onChange} iconclass={" fas fa-id-card "} />
+                            <span className="form-text text-muted">Por favor, ingrese el número de cuenta </span>
                         </div>
                     </div>
 
                     <div className="form-group row form-group-marginless">
                         <div className="col-md-4">
                             <Select required name='tipo' options={options.tipos} placeholder='Selecciona el tipo de cuenta' value={form.tipo}
-                                onChange={onChange} />
+                                onChange={onChange} iconclass={" far fa-address-card"}/>
+                            <span className="form-text text-muted">Por favor, ingrese el tipo de cuenta </span>
                         </div>
                         <div className="col-md-4">
                             <Select required name='banco' options={options.bancos} placeholder='Selecciona el banco' value={form.banco}
-                                onChange={onChange} />
+                                onChange={onChange} iconclass={" fab fa-cc-discover "}/>
+                            <span className="form-text text-muted">Por favor, seleccione el banco </span>
                         </div>
                         {
                             form.leadId ?
@@ -85,7 +92,8 @@ class ProveedorForm extends Component {
                         }
                         <div className="col-md-4">
                             <SelectSearch options={options.areas} placeholder="Selecciona el área"
-                                name="area" value={form.area} onChange={this.updateArea} />
+                                name="area" value={form.area} onChange={this.updateArea} iconclass={"far fa-window-maximize"} />
+                            <span className="form-text text-muted">Por favor, ingrese el área </span>
                         </div>
                     </div>
                     <div className="form-group row form-group-marginless">
@@ -93,7 +101,8 @@ class ProveedorForm extends Component {
                             form.area ?
                                 <div className="col-md-4">
                                     <SelectSearch options={options.subareas} placeholder="Selecciona el subárea"
-                                        name="subarea" value={form.subarea} onChange={this.updateSubarea} />
+                                        name="subarea" value={form.subarea} onChange={this.updateSubarea} iconclass={"far fa-window-restore"}/>
+                                    <span className="form-text text-muted">Por favor, ingrese la sub-área </span>
                                 </div>
                                 : ''
                         }
