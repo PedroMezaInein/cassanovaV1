@@ -305,7 +305,7 @@ class Ventas extends Component{
                 text: 'Facturas',
                 btnclass: 'primary',
                 iconclass: 'flaticon-file-1',
-                action: 'delete',
+                action: 'taxes',
                 tooltip: { id: 'taxes', text: 'Facturas' }
             },
             {
