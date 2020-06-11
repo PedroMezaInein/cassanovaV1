@@ -55,7 +55,7 @@ class Layout extends Component {
             <div className="pl-5  position-relative nav-full-height"  >
                 <Navbar clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {... this.props} />
 
-                {/* <Sidebar {... this.props} /> */}
+                <Sidebar {... this.props} />
                 {/* <NewAsideMenu /> */}
                 
                 <MenuResponsive expanded={menu ? 'expanded' : ''} clickResponsiveMenu={this.clickResponsiveMenu} {... this.props} />
