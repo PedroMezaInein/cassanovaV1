@@ -8,7 +8,6 @@ import NewAsideMenu from './newAsideMenu'
 import { logout, login } from '../../redux/reducers/auth_user'
 import axios from 'axios'
 import { URL_DEV } from '../../constants'
-
 import NewSideBar from './NewSideBar'
 class Layout extends Component {
 
@@ -56,7 +55,7 @@ class Layout extends Component {
                 <Navbar clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {... this.props} />
 
                 {/* <Sidebar {... this.props} /> */}
-                {/* <NewAsideMenu /> */}
+                { <NewAsideMenu /> }
                 
                 <MenuResponsive expanded={menu ? 'expanded' : ''} clickResponsiveMenu={this.clickResponsiveMenu} {... this.props} />
                 <div className="pl-5 container-fluid">
