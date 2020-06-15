@@ -407,7 +407,7 @@ class EstadosCuenta extends Component {
 
     }
     render() {
-        const { modal, modalDelete, adjunto, adjuntoName, adjuntoFile, cuentas, cuenta, estados, fecha, data } = this.state
+        const { modal, modalDelete, adjunto, adjuntoName, adjuntoFile, cuentas, cuenta, estados, fecha, data,title } = this.state
         console.log(estados, 'egresos -')
         console.log(data.estados)
         return (
@@ -434,12 +434,10 @@ class EstadosCuenta extends Component {
                         ¿Estás seguro que deseas eliminar el egreso?
                     </Subtitle>
                 </ModalDelete>
-                <Modal show={modal} handleClose={this.handleClose} >
-                    <Subtitle className="text-center" color="gold">
-                        Agregar estado de cuenta
-                    </Subtitle>
+                <Modal title = {"Agregar estado de cuenta"} show={modal} handleClose={this.handleClose} >
+                    
                     <Form onSubmit={this.submitForm}>
-                    <div className="form-group row form-group-marginless mt-5">
+                    <div className="form-group row form-group-marginless">
                         <div className="col-md-8">
                             <SelectSearch
                                 options={cuentas}

@@ -16,11 +16,8 @@ class ClienteForm extends Component{
         return(
             <>
                 <div className="col-md-12">
-                    <Subtitle className="text-left my-3" color="gold">
-                        { title }
-                    </Subtitle>
                 </div>
-                <div className="form-group row form-group-marginless mt-5">
+                <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Input name="empresa" value={form.empresa} onChange={onChange} type="text" placeholder="Nombre empresa"iconclass={"far fa-building"}/>
                         <span className="form-text text-muted">Por favor, ingrese el nombre de la empresa</span>

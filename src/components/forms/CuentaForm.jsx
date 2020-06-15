@@ -16,10 +16,7 @@ class LeadForm extends Component{
         const { bancos, estatus, tipos, title, form, onChange, onChangeEmpresa, updateEmpresa, empresas, ...props } = this.props
         return(
             <Form { ... props}>
-                <Subtitle className = "text-center" color = "gold">
-                    {title}
-                </Subtitle>
-                <div className="form-group row form-group-marginless mt-5">
+                <div className="form-group row form-group-marginless">
                     <div className="col-md-8">
                         <Input 
                             required

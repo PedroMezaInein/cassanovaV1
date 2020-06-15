@@ -26,12 +26,7 @@ class LeadForm extends Component{
         const { title, servicios, empresas, origenes, form, onChange, onChangeCalendar, onChangeCheckboxes, ...props } = this.props
         return(
             <Form { ... props}>
-
-                <Subtitle className="text-center" color="gold">
-                    {title}
-                </Subtitle>
-
-                <div className="form-group row form-group-marginless mt-5">
+                <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Input required type="text" placeholder="Nombre del lead"
                             name="nombre" value={ form.nombre } onChange = { onChange } iconclass={"far fa-user"} 

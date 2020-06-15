@@ -21,12 +21,7 @@ class ConceptoForm extends Component {
         const { title, options, form, onChange, ...props } = this.props
         return (
             <Form {...props}>
-                <Subtitle className="text-center" color="gold">
-                    {
-                        title
-                    }
-                </Subtitle>
-                    <div className="form-group row form-group-marginless mt-5">
+                    <div className="form-group row form-group-marginless">
                         <div className="col-md-4">
                             <SelectSearch options={options.categorias} placeholder="Selecciona la categoría"
                                 name="categoria" value={form.categoria} onChange={this.updateCategoria} iconclass={" fas fa-book"} fas fa-weight-hanging/>

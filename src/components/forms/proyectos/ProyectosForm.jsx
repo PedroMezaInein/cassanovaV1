@@ -63,15 +63,11 @@ class ProyectosForm extends Component{
         const { title, children, form, onChange, onChangeCP, onChangeAdjunto, clearFiles, options, ... props } = this.props
         return(
             <Form { ... props}>
-                <Subtitle className="text-center" color="gold">
-                    {
-                        title
-                    }
-                </Subtitle>
+                
                 {
                     children
                 }
-                 <div className="form-group row form-group-marginless mt-5">
+                <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Input name="nombre" value={form.nombre} onChange={onChange} type="text" placeholder="Nombre del proyecto" iconclass={"far fa-folder-open"}/>
                         <span className="form-text text-muted">Por favor, ingrese su nombre del proyecto. </span>

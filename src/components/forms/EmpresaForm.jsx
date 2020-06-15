@@ -17,10 +17,7 @@ class EmpresaForm extends Component{
         const { form, onChange, title, img, removeFile} = this.props
         return(
             <Form { ... this.props}>
-                <Subtitle className="text-center" color="gold">
-                    {title}
-                </Subtitle>
-                    <div className="form-group row form-group-marginless mt-5">
+                    <div className="form-group row form-group-marginless">
                         <div className="col-md-4">
                             <Input onChange={ onChange } required name="name" type="text" value={ form.name } placeholder="Nombre" iconclass={"far fa-user"}/>
                             <span className="form-text text-muted">Por favor, ingrese su nombre. </span>

@@ -28,11 +28,7 @@ class TareaForm extends Component{
         const { title, cuentas, form, onChange, onChangeAdjunto, deleteAdjunto, ... props } = this.props
         return(
             <Form { ... props}>
-                
-                <Subtitle className="text-center my-2" color="gold">
-                    {title}
-                </Subtitle>
-                <div className="form-group row form-group-marginless mt-5">
+                <div className="form-group row form-group-marginless">
                     <div className="col-md-6">
                         <SelectSearch options = { cuentas } value = { form.origen } onChange = { this.updateOrigen } placeholder="Cuenta origen" iconclass={"far fa-credit-card"} />
                         <span className="form-text text-muted">Por favor, seleccione la cuenta origen</span>
