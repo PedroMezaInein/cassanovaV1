@@ -117,7 +117,7 @@ class App extends Component{
             history.push('/login')
         }
         return(
-            <div>
+            <>
                 
                 <Route path = "/login" exact component = { Login } />
 
@@ -164,7 +164,7 @@ class App extends Component{
                 <Route path = "/normas" exact component ={ Normas } />
 
                 <Route path = "/catalogos/areas" exact component ={ Areas } />
-            </div>
+            </>
         )
     }
 }
