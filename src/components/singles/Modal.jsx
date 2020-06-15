@@ -27,13 +27,7 @@ class modal extends Component{
                 </Modal.Header>
                 <Modal.Body>
                     { children }
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button  onClick={handleClose} className={"btn btn-light-primary font-weight-bold mr-1"}>
-                        Cerrar
-                    </Button>
-                    <Button variant="primary" >Enviar</Button>
-                </Modal.Footer>
+                </Modal.Body>               
             </Modal>
             </>
     )
