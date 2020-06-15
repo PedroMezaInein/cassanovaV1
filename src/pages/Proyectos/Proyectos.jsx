@@ -18,6 +18,7 @@ import { Form, Accordion } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList, setContactoTable } from '../../functions/setters'
 import NewTable from '../../components/tables/NewTable'
+import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert } from '../../functions/alert'
 
 class Proyectos extends Component {
 
@@ -37,6 +38,7 @@ class Proyectos extends Component {
         form: {
             fechaInicio: new Date(),
             fechaFin: new Date(),
+            semana: '',
             nombre: '',
             cliente: '',
             contacto: '',
@@ -604,6 +606,7 @@ class Proyectos extends Component {
 
     onSubmitAvance = e => {
         e.preventDefault()
+        waitAlert();
         this.addAvanceAxios()
     }
 
@@ -1018,9 +1021,9 @@ class Proyectos extends Component {
         })
     }
 
-    async addProyectoAxios() {
+    async addAvanceAxios() {
         const { access_token } = this.props.authUser
-        const { form, prospecto } = this.state
+        const { form, proyecto } = this.state
         const data = new FormData();
         let aux = Object.keys(form)
         aux.map((element) => {
@@ -1029,32 +1032,32 @@ class Proyectos extends Component {
                 case 'fechaFin':
                     data.append(element, (new Date(form[element])).toDateString())
                     break
-                case 'adjuntos':
-                    break;
-                default:
+                case 'semana':
                     data.append(element, form[element])
+                    break;
+                case 'avances':
+                    break;
+                    /* data.append(element, JSON.stringify(form[element]))
+                    break; */
+                default:
                     break
             }
         })
-        aux = Object.keys(form.adjuntos)
-        aux.map((element) => {
-            if (form.adjuntos[element].value !== '') {
-                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
-                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
-                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+        form.avances.map(( avance, key) => {
+            if (avance.adjuntos.value !== '') {
+                for (var i = 0; i < avance.adjuntos.files.length; i++) {
+                    data.append(`files_name[]`, avance.adjuntos.files[i].name)
+                    data.append(`files[]`, avance.adjuntos.files[i].file)
+                    data.append(`files_descripcion[]`, avance.descripcion)
                 }
-                if (element.toString() !== 'image')
-                    data.append('adjuntos[]', element)
             }
         })
-        if (prospecto) {
-            data.append('prospecto', prospecto.id)
-        }
-        await axios.post(URL_DEV + 'proyectos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        data.append('proyecto', proyecto.id)
+        await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/avances', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { proyectos, proyecto } = response.data
-                const { options } = this.state
-                options['clientes'] = []
+
+                const { proyecto, proyectos, avance } = response.data
+
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.',
@@ -1062,39 +1065,28 @@ class Proyectos extends Component {
                     timer: 1500,
                     buttons: false
                 })
+
+                var win = window.open( avance.pdf, '_blank');
+                win.focus();
+
                 this.setState({
                     ... this.state,
-                    form: this.clearForm(),
+                    proyecto: proyecto,
                     proyectos: this.setProyectos(proyectos),
-                    options,
-                    proyecto: '',
-                    modal: false
+                    form: this.clearForm()
                 })
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error'
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            console.log('error catch', error)
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -1317,7 +1309,7 @@ class Proyectos extends Component {
     }
 
     render() {
-        const { modal, modalDelete, modalAdjuntos, modalAvances, title, adjuntos, prospecto, form, options, proyectos, data } = this.state
+        const { modal, modalDelete, modalAdjuntos, modalAvances, title, adjuntos, prospecto, form, options, proyectos, proyecto, data } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 {/*<div className="text-right">
@@ -1558,7 +1550,8 @@ class Proyectos extends Component {
                 </Modal>
                 <Modal title = { title } show = { modalAvances } handleClose = { this.handleCloseAvances }>
                     <AvanceForm form = { form } onChangeAvance =  { this.onChangeAvance } onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance } 
-                        clearFilesAvances = { this.clearFilesAvances } addRowAvance = { this.addRowAvance } onSubmit = { this.onSubmitAvance }/>
+                        clearFilesAvances = { this.clearFilesAvances } addRowAvance = { this.addRowAvance } onSubmit = { this.onSubmitAvance }
+                        onChange = { this.onChange } proyecto = { proyecto } />
                 </Modal>
             </Layout>
         )

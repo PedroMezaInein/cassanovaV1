@@ -223,7 +223,7 @@ class Traspasos extends Component{
         history.push({
             pathname: traspaso.adjunto.url
          });*/
-         var win = window.open( traspaso.adjunto.url, '_blank');
+        var win = window.open( traspaso.adjunto.url, '_blank');
         win.focus();
     }
 
