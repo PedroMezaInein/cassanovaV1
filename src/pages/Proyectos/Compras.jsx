@@ -108,7 +108,7 @@ class Compras extends Component{
         const { history } = this.props
         const compras = permisos.find(function(element, index) {
             const { modulo: { url: url } } = element
-            return  pathname === '/' + url
+            return pathname === url
         });
         if(!compras)
             history.push('/')

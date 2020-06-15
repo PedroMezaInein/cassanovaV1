@@ -55,7 +55,7 @@ class Rendimientos extends Component {
         const { history } = this.props
         const rendimientos = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
-            return pathname === '/' + url
+            return pathname === url
         });
         if (!rendimientos)
             history.push('/')

@@ -43,7 +43,7 @@ class Proveedor extends Component{
         const { history } = this.props
         const proveedor = permisos.find(function(element, index) {
             const { modulo: { url: url } } = element
-            return  pathname === '/' + url
+            return pathname === url
         });
         if(!proveedor)
             history.push('/')

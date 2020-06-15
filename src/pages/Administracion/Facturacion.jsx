@@ -35,7 +35,7 @@ class Facturacion extends Component {
         const { history } = this.props
         const facturas = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
-            return pathname === '/' + url
+            return pathname === url
         });
         if (!facturas)
             history.push('/')

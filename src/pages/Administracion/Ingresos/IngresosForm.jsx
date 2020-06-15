@@ -88,7 +88,7 @@ class IngresosForm extends Component{
         
         const ingresos = permisos.find(function(element, index) {
             const { modulo: { url: url } } = element
-            return  pathname === '/' + url + '/' + action
+            return pathname === url + '/' + action
         })
 
         switch(action){

@@ -164,7 +164,7 @@ class Proyectos extends Component {
         const { history } = this.props
         const proyectos = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
-            return pathname === '/' + url
+            return pathname === url
         })
         if (!proyectos)
             history.push('/')

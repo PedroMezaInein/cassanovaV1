@@ -53,7 +53,7 @@ class ProveedorForm extends Component{
         
         const proveedores = permisos.find(function(element, index) {
             const { modulo: { url: url } } = element
-            return  pathname === '/' + url + '/' + action
+            return pathname === url + '/' + action
         })
 
         switch(action){
