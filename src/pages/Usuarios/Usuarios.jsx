@@ -540,7 +540,7 @@ class Usuarios extends Component{
                     {
                         users.map((tipo_users, key) => {
                             return(
-                                <div key={key} className="my-4">
+                                <div key={key} className="col-md-12">
                                     <Subtitle>
                                         {tipo_users.tipo}
                                     </Subtitle>

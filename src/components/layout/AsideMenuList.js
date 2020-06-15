@@ -5,6 +5,7 @@ import {NavLink}  from "react-router-dom";
 import SVG from "react-inlinesvg";
 import { checkIsActive, toAbsoluteUrl} from "../../functions/routers"
 
+
 function openSubmenu(modulo){
     let aux = document.getElementById(`submenu-${modulo}`);
     let x = document.getElementsByClassName("submenu-asidemenu");
@@ -19,7 +20,6 @@ function openSubmenu(modulo){
             }       
         }
     });
-
 }
 
 export function AsideMenuList({ props }) {
@@ -29,49 +29,31 @@ export function AsideMenuList({ props }) {
         ? " menu-item-active menu-item-open "
         : "";
   };
-
+  
   const modulos = props.authUser.modulos ? props.authUser.modulos : []
 
-
-
-  /* const modulos = [
-    { link: '/proyectos/ventas', svg: '/media/svg/icons/Code/Error-circle.svg', nombre: '0', 
-      submodulos: [
-        { link: '/dashboard/1', svg: '/media/svg/icons/Code/Error-circle.svg', nombre: 'S 1' },
-        { link: '/dashboard/2', svg: '/media/svg/icons/Code/Error-circle.svg', nombre: 'S 2' },
-        { link: '/dashboard/3', svg: '/media/svg/icons/Code/Error-circle.svg', nombre: 'S 3' },
-      ]
-    },
-    { link: '/dashboard', svg: '/media/svg/icons/Code/Error-circle.svg', nombre: '1' },
-    { link: '/dashboard', svg: '/media/svg/icons/Code/Error-circle.svg', nombre: '2', 
-      submodulos: [
-        { link: '/dashboard/1', svg: '/media/svg/icons/Code/Error-circle.svg', nombre: 'S 1' },
-        { link: '/dashboard/2', svg: '/media/svg/icons/Code/Error-circle.svg', nombre: 'S 2' },
-        { link: '/dashboard/3', svg: '/media/svg/icons/Code/Error-circle.svg', nombre: 'S 3' },
-      ] 
-    }
-  ] */
   return (
-    <>
+    <>    
       <ul className={`menu-nav`}>
         {
           modulos.map( (modulo, key) => {
             return(
               <li
-                className={`menu-item menu-item-submenu ${getMenuItemActive(
+                className={`menu-item menu-item-submenu  ${getMenuItemActive(
                 modulo.url
                 )}`}
                 key = {key}
                 aria-haspopup="true"
                 data-menu-toggle="hover"
+                onClick = { () => { openSubmenu(modulo.slug) } }
                 >
                   
                 <div className="menu-link menu-toggle" to={modulo.url}>
-                <span className="svg-icon menu-icon">
-                  <SVG
-                      src={toAbsoluteUrl(modulo.svg)}
-                  />
-                </span>
+                  <span className="svg-icon menu-icon">
+                    <SVG
+                        src={toAbsoluteUrl("/images/svg/bancos.svg")}
+                    />
+                  </span>
                 {
                   modulo.url ? 
                   <NavLink className="menu-text menu-link" to={modulo.url}>{modulo.name}</NavLink>
@@ -82,7 +64,7 @@ export function AsideMenuList({ props }) {
                 
                   {
                       modulo.modulos.length > 1 ? 
-                        <i className="menu-arrow"  onClick = { () => { openSubmenu(modulo.slug) } }/>
+                        <i className="menu-arrow" />
                       : ''
                   }
                   
@@ -98,16 +80,17 @@ export function AsideMenuList({ props }) {
                             </span>
                           </li>
                           {
-                            modulo.modulos.map( (submodulo) => {
+                            modulo.modulos.map( (submodulo) => {  
                               return(
                                 <li
+                                key={submodulo.url}
                                   className={`menu-item ${getMenuItemActive(submodulo.url)}`}
                                   aria-haspopup="true"
                                   >
-                                    <NavLink className="menu-link" to={submodulo.url}>
+                                    <NavLink className="menu-link" to={"/"+submodulo.url}>
                                       <span className="svg-icon menu-icon">
                                         <SVG
-                                          src={toAbsoluteUrl(submodulo.svg)}
+                                          src={toAbsoluteUrl("/images/svg/submodulo.svg")}
                                         />
                                       </span>
                                       <span className="menu-text">{submodulo.name}</span>
