@@ -35,9 +35,7 @@ class ConceptoForm extends Component{
 
     updateSubarea = value => {
         const { onChange, setOptions } = this.props
-       /* Código Omar
-       onChange({target:{value: value.value, name:'subarea'}})*/
-       onChange( { target: { name: 'subarea', value: value.toString() } } )
+        onChange( { target: { name: 'subarea', value: value.toString() } } )
     }
 
     handleChangeDate = (date) =>{
