@@ -73,7 +73,7 @@ export function AsideMenuList({ props }) {
                                                 {
                                                     modulo.modulos.map( (submodulo) => {
                                                         return(
-                                                            <li className={`menu-item ${getMenuItemActive(submodulo.url)}`} aria-haspopup="true">
+                                                            <li  key={submodulo.url} className={`menu-item ${getMenuItemActive(submodulo.url)}`} aria-haspopup="true">
                                                                 <NavLink className="menu-link" to={submodulo.url}>
                                                                     <span className="svg-icon menu-icon">
                                                                         <SVG src={toAbsoluteUrl(submodulo.icon)} />
