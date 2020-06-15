@@ -67,7 +67,7 @@ class ConceptoForm extends Component {
                         <div className="col-md-8">
                             <Input as="textarea" placeholder="Descripción" rows="1" value={form.descripcion}
                                 name="descripcion" onChange={onChange} iconclass={"far fa-file-alt"} />
-                             <span className="form-text text-muted">Por favor, ingrese su descripción. </span>
+                            <span className="form-text text-muted">Por favor, ingresa la descripción. </span>
                         </div>
                     </div>
                 
