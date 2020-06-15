@@ -19,13 +19,7 @@ class RendimientoForm extends Component{
         const { title, options, form, onChange, clearFiles, onChangeAdjunto, ... props } = this.props
         return(
             <Form { ... props}>
-                <Subtitle className="text-center" color="gold">
-                    {
-                        title
-                    }
-                </Subtitle>
-                
-                <div className="form-group row form-group-marginless mt-5">
+                <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Input placeholder = "Materiales" value = { form.materiales } name = "materiales" onChange = { onChange } iconclass={"fas fa-tools"}/>
                         <span className="form-text text-muted">Por favor, ingrese su material. </span>
