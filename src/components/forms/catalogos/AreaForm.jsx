@@ -19,13 +19,13 @@ class AreaForm extends Component{
                 </Subtitle>
                 <div className="row mx-0">
                     <div className="col-md-6 mx-center px-2">
-                        <Input required name="nombre" value={form.nombre} placeholder="Nombre" onChange={onChange} iconclass={"far fa-window-maximize"}/>
-                        <span className="form-text text-muted">Por favor, ingrese el área </span>
+                        <Input required name="nombre" value={form.nombre} placeholder="Nombre del área" onChange={onChange} iconclass={"far fa-window-maximize"}/>
+                        <span className="form-text text-muted">Por favor, ingresa el nombre del área </span>
                     </div>
                     <div className="col-md-6 mx-center d-flex px-2 align-items-end">
                         <div className="w-100">
-                            <Input name="subarea" value={form.subarea} placeholder="Subarea" onChange={onChange} iconclass={"far fa-window-restore"}/>
-                            <span className="form-text text-muted">Por favor, ingrese la sub-área </span>
+                            <Input name="subarea" value={form.subarea} placeholder="Subárea " onChange={onChange} iconclass={"far fa-window-restore"}/>
+                            <span className="form-text text-muted">Por favor, ingresa la subárea </span>
                         </div>
                         <Button icon = {faCaretRight} text ="" color="transparent" className="pb-3 ml-2" onClick = { addSubarea } />
                     </div>

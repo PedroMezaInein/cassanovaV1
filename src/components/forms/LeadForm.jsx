@@ -33,21 +33,21 @@ class LeadForm extends Component{
 
                 <div className="form-group row form-group-marginless mt-5">
                     <div className="col-md-4">
-                        <Input required type="text" placeholder="Nombre"
+                        <Input required type="text" placeholder="Nombre del lead"
                             name="nombre" value={ form.nombre } onChange = { onChange } iconclass={"far fa-user"} 
                         />
-                        <span className="form-text text-muted">Por favor, ingrese el nombre. </span>
+                        <span className="form-text text-muted">Por favor, ingresa el nombre del lead. </span>
                     </div>
                     <div className="col-md-4">
                         <Input required type="email" placeholder="Correo electrónico"
                             name="email" value={ form.email } onChange = { onChange } iconclass={"far fa-envelope"} 
                         />
-                        <span className="form-text text-muted">Por favor, ingrese su correo electrónico. </span>
+                        <span className="form-text text-muted">Por favor, ingresa el correo electrónico. </span>
                     </div>
                     <div className="col-md-4">
                             <Input required type="text" placeholder="Teléfono"
                                 name="telefono" value={ form.telefono } onChange = { onChange } iconclass={"fas fa-mobile-alt"}/>
-                            <span className="form-text text-muted">Por favor, ingrese su teléfono. </span>
+                            <span className="form-text text-muted">Por favor, ingresa el teléfono. </span>
                     </div>
                 </div>
                 <div class="separator separator-dashed mt-1 mb-2"></div>
@@ -55,7 +55,7 @@ class LeadForm extends Component{
                     <div className="col-md-8">
                         <Input required rows="2" as="textarea" placeholder="Comentario"
                             name="comentario"  value = { form.comentario } onChange = { onChange } iconclass={" far fa-comment-dots"}/>
-                        <span className="form-text text-muted">Por favor, ingrese su comentario</span>
+                        <span className="form-text text-muted">Por favor, ingresa un comentario</span>
                     </div>
                     <div className="col-md-4">
                         <Calendar 
@@ -65,23 +65,23 @@ class LeadForm extends Component{
                             value={form.fecha}
                             iconclass={"far fa-calendar-alt"} 
                             />
-                        <span className="form-text text-muted">Por favor, ingrese su fecha de ingreso. </span>
+                        <span className="form-text text-muted">Por favor, ingresa la fecha de ingreso. </span>
                     </div>
                 </div>
                 <div class="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     
                     <div className="col-md-6">
-                        <Select placeholder="Seleccione la empresa para el lead" options = { empresas } 
+                        <Select placeholder="Selecciona la empresa para el lead" options = { empresas } 
                             name="empresa" value = { form.empresa } onChange = { onChange } iconclass={"far fa-building"} 
                             />
-                        <span className="form-text text-muted">Por favor, seleccione la empresa para el lead. </span>
+                        <span className="form-text text-muted">Por favor, selecciona la empresa para el lead. </span>
                     </div>
                     <div className="col-md-6">
-                        <Select placeholder="Seleccione el origen para el lead" options = { origenes } 
+                        <Select placeholder="Selecciona el origen para el lead" options = { origenes } 
                             name="origen" value = { form.origen } onChange = { onChange } iconclass={" fas fa-mail-bulk "}
                             />
-                        <span className="form-text text-muted">Por favor, seleccione el origen para el lead. </span>
+                        <span className="form-text text-muted">Por favor, selecciona el origen para el lead. </span>
                     </div>
                 </div>
                 <div class="separator separator-dashed mt-1 mb-2"></div>
