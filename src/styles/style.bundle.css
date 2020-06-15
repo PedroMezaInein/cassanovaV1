@@ -48504,7 +48504,8 @@ body {
     height: 55px;
     min-height: 55px;
     position: relative;
-    z-index: 2; }
+    z-index: 2; 
+    background-color: #1a1a27;}
     .header-mobile-fixed .header-mobile {
       position: fixed;
       top: 0;
@@ -49393,7 +49394,9 @@ body {
   -ms-flex-direction: row;
   flex-direction: row;
   padding: 0 25px;
-  height: 65px; }
+  height: 65px; 
+  background-color: #1a1a27;
+}
   .brand .brand-logo {
     display: -webkit-box;
     display: -ms-flexbox;
