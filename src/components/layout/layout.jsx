@@ -23,6 +23,7 @@ function openUserProfile (){
         document.getElementsByClassName("offcanvas")[0].classList.add("offcanvas-on");
     }
 }
+
 class Layout extends Component {
 
     state = {
@@ -99,26 +100,28 @@ class Layout extends Component {
                                         </ul>                                        
                                     </div>
                                 </div>                                
-                                <div className="topbar" onClick = { () => { openUserProfile() } }>
+                                <div className="topbar" >
                                     <div className="topbar-item">                                    
                                         {/* <Navbar clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {... this.props} />*/}
-                                            <div className="btn btn-icon w-auto btn-clean d-flex align-items-center btn-lg px-2" id="kt_quick_user_toggle">
+                                            <div className="btn btn-icon w-auto btn-clean d-flex align-items-center btn-lg px-2" id="kt_quick_user_toggle" onClick = { () => { openUserProfile() } }>
                                                 <span className="text-muted font-weight-bold font-size-base d-none d-md-inline mr-1">Hola,</span>
-                                                <span className="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-3">Omar</span>
-                                                <span className="symbol symbol-35 symbol-light-primary">
-                                                    <span className="symbol-label font-size-h5 font-weight-bold">O</span>
-                                                    
+                                                <br/>
+                                                <span className="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-3">
+                                                    {
+                                                        this.props.authUser.user.name
+                                                    }
                                                 </span>
+                                                <span className="symbol symbol-35 symbol-light-primary">
+                                                    <butto className="symbol-label font-size-h5 font-weight-bold">O</butto>
+                                                </span>                                                
                                             </div>
                                     </div>
                                 </div>
                             </div>
                         </div>                   
 
-                        <div className="content d-flex flex-column flex-column-fluid">
-                            
-                            <UrlLocation/>
-                            
+                        <div className="content d-flex flex-column flex-column-fluid">                            
+                            <UrlLocation/>                            
                             <div className="d-flex flex-column-fluid">
                                 <div className="container-fluid">
                                     <div className="row">
@@ -133,7 +136,7 @@ class Layout extends Component {
                     
                 </div>
             </div>
-            <UserPanel />
+            <UserPanel clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {... this.props} />
             </>
         )
     }
