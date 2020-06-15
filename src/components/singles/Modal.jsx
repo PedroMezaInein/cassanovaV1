@@ -10,7 +10,7 @@ class modal extends Component{
     }
 
     render(){
-        const { show, handleClose, children, setShow} = this.props
+        const { show, handleClose, children, title,  setShow} = this.props
 
         return(
             <>
@@ -23,7 +23,7 @@ class modal extends Component{
                 centered
             >
                 <Modal.Header closeButton>
-                    <Modal.Title>Titulo</Modal.Title>
+                    <Modal.Title>{title}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     { children }

@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Modal, Card, Slider } from '../../components/singles'
 import { Button } from '../../components/form-components'
 import { faPlus, faTrash, faEdit, faMoneyBill, faFileAlt, faFileArchive, faEye, faPhone, faEnvelope, faLink } from '@fortawesome/free-solid-svg-icons'
-import { ProyectosForm } from '../../components/forms'
+import { ProyectosForm, AvanceForm } from '../../components/forms'
 import axios from 'axios'
 import { URL_DEV, CP_URL, GOLD, PROYECTOS_COLUMNS } from '../../constants'
 import { DataTable } from '../../components/tables'
@@ -29,6 +29,7 @@ class Proyectos extends Component {
         modal: false,
         modalDelete: false,
         modalAdjuntos: false,
+        modalAvances: false,
         adjuntos: [],
         data: {
             proyectos: []
@@ -139,7 +140,17 @@ class Proyectos extends Component {
                     placeholder: 'Contratos',
                     files: []
                 }
-            }
+            },
+            avances:[
+                {
+                    descripcion: '',
+                    adjuntos: {
+                        value: '',
+                        placeholder: 'Fotos del avance',
+                        files: []
+                    }
+                }
+            ]
         },
         options: {
             clientes: [],
@@ -222,6 +233,18 @@ class Proyectos extends Component {
             title: 'Editar proyecto',
             form
         })
+    }
+
+    openModalAvances = proyecto => {
+
+        this.setState({
+            ... this.state,
+            modalAvances: true,
+            title: 'Avances del proyecto',
+            proyecto: proyecto,
+            form: this.clearForm(),
+        })
+
     }
 
     openModalAdjuntos = proyecto => {
@@ -314,8 +337,18 @@ class Proyectos extends Component {
             ... this.state,
             modal: !modal,
             title: 'Nuevo proyecto',
-            prospecto: '',
+            proyecto: '',
             form: this.clearForm()
+        })
+    }
+
+    handleCloseAvances = () => {
+        const { modalAvances } = this.state
+        this.setState({
+            ... this.state,
+            modalAvances: !modalAvances,
+            form: this.clearForm(),
+            proyecto: ''
         })
     }
 
@@ -346,6 +379,40 @@ class Proyectos extends Component {
         form[name] = value
         this.setState({
             ...this.state,
+            form
+        })
+    }
+
+    onChangeAvance = (key, e, name) => {
+        const { value } = e.target
+        const { form } = this.state
+        form['avances'][key][name]  = value
+        console.log(form.avances[key][name])
+        this.setState({
+            ...this.state,
+            form
+        })
+    
+    }
+
+    onChangeAdjuntoAvance = (e, key, name) => {
+        const { form } = this.state
+        const { files, value } = e.target
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['avances'][key][name].value = value
+        form['avances'][key][name].files = aux
+        this.setState({
+            ... this.state,
             form
         })
     }
@@ -397,6 +464,43 @@ class Proyectos extends Component {
         })
     }
 
+    clearFilesAvances = (name, key, _key) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < form.avances[_key].adjuntos.files.length; counter++) {
+            if (counter !== key) {
+                aux.push(form.avances[_key].adjuntos.files[counter])
+            }
+        }
+        if (aux.length < 1) {
+            form.avances[_key].adjuntos.files = []
+            form.avances[_key].adjuntos.value = ''
+        }
+        form.avances[_key].adjuntos.files = aux
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
+    addRowAvance = () => {
+        const { form } = this.state
+        form.avances.push(
+            {
+                descripcion: '',
+                adjuntos: {
+                    value: '',
+                    placeholder: 'Fotos del avance',
+                    files: []
+                }
+            }
+        )
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -405,6 +509,16 @@ class Proyectos extends Component {
                 case 'fechaInicio':
                 case 'fechaFin':
                     form[element] = new Date()
+                    break;
+                case 'avances':
+                    form[element] = [{
+                        descripcion: '',
+                        adjuntos: {
+                            value: '',
+                            placeholder: 'Fotos del avance',
+                            files: []
+                        }
+                    }]
                     break;
                 case 'adjuntos':
                     break;
@@ -486,6 +600,11 @@ class Proyectos extends Component {
             this.editProyectoAxios()
         else
             this.addProyectoAxios()
+    }
+
+    onSubmitAvance = e => {
+        e.preventDefault()
+        this.addAvanceAxios()
     }
 
     safeDelete = (e) => () => {
@@ -570,6 +689,13 @@ class Proyectos extends Component {
                 iconclass: 'flaticon-attachment',
                 action: 'adjuntos',
                 tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
+            },
+            {
+                text: 'Avances',
+                btnclass: 'primary',
+                iconclass: 'flaticon-photo-camera',
+                action: 'avances',
+                tooltip: { id: 'avances', text: 'Avances' }
             }
         )
         return aux
@@ -892,6 +1018,86 @@ class Proyectos extends Component {
         })
     }
 
+    async addProyectoAxios() {
+        const { access_token } = this.props.authUser
+        const { form, prospecto } = this.state
+        const data = new FormData();
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                case 'fechaInicio':
+                case 'fechaFin':
+                    data.append(element, (new Date(form[element])).toDateString())
+                    break
+                case 'adjuntos':
+                    break;
+                default:
+                    data.append(element, form[element])
+                    break
+            }
+        })
+        aux = Object.keys(form.adjuntos)
+        aux.map((element) => {
+            if (form.adjuntos[element].value !== '') {
+                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                }
+                if (element.toString() !== 'image')
+                    data.append('adjuntos[]', element)
+            }
+        })
+        if (prospecto) {
+            data.append('prospecto', prospecto.id)
+        }
+        await axios.post(URL_DEV + 'proyectos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { proyectos, proyecto } = response.data
+                const { options } = this.state
+                options['clientes'] = []
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+                this.setState({
+                    ... this.state,
+                    form: this.clearForm(),
+                    proyectos: this.setProyectos(proyectos),
+                    options,
+                    proyecto: '',
+                    modal: false
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                } else {
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error'
+                    })
+                }
+            }
+        ).catch((error) => {
+            console.log('error catch', error)
+            swal({
+                title: '¡Ups 😕!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
+                icon: 'error',
+            })
+        })
+    }
+
     async addProyectoAdjuntoAxios(name) {
         const { access_token } = this.props.authUser
         const { form, proyecto } = this.state
@@ -1111,7 +1317,7 @@ class Proyectos extends Component {
     }
 
     render() {
-        const { modal, modalDelete, modalAdjuntos, title, adjuntos, prospecto, form, options, proyectos, data } = this.state
+        const { modal, modalDelete, modalAdjuntos, modalAvances, title, adjuntos, prospecto, form, options, proyectos, data } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 {/*<div className="text-right">
@@ -1129,12 +1335,13 @@ class Proyectos extends Component {
                     actions={{
                         'edit': { function: this.openModalEdit },
                         'delete': { function: this.openModalDelete },
-                        'adjuntos': { function: this.openModalAdjuntos }
+                        'adjuntos': { function: this.openModalAdjuntos },
+                        'avances': { function: this.openModalAvances },
                     }}
                     elements={data.proyectos}
                 />
 
-                <Modal show={modal} handleClose={this.handleClose}>
+                <Modal title = { title } show={modal} handleClose={this.handleClose}>
                     <ProyectosForm title={title} form={form} onChange={this.onChange} options={options}
                         onChangeAdjunto={this.onChangeAdjunto} clearFiles={this.clearFiles} onChangeCP={this.onChangeCP}
                         onSubmit={this.onSubmit} >
@@ -1348,6 +1555,10 @@ class Proyectos extends Component {
                         <Slider elements={adjuntos.length > 0 ? adjuntos : []}
                             deleteFile={this.deleteFile} handleChange={this.handleChange} />
                     </div>
+                </Modal>
+                <Modal title = { title } show = { modalAvances } handleClose = { this.handleCloseAvances }>
+                    <AvanceForm form = { form } onChangeAvance =  { this.onChangeAvance } onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance } 
+                        clearFilesAvances = { this.clearFilesAvances } addRowAvance = { this.addRowAvance } onSubmit = { this.onSubmitAvance }/>
                 </Modal>
             </Layout>
         )
