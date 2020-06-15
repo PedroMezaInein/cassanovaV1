@@ -8,7 +8,7 @@ import {  Small } from '../texts'
 
 class FileInput extends Component{
     render(){
-        const { onChangeAdjunto, placeholder, value, name, id, accept, files, deleteAdjunto, ... props} = this.props
+        const { onChangeAdjunto, placeholder, value, name, id, accept, files, deleteAdjunto, deleteAdjuntoAvance, _key, ... props} = this.props
         return(
             <>
                 <label className = "mt-2 mb-1 label-form form-label">
@@ -29,7 +29,15 @@ class FileInput extends Component{
                                 <Badge variant = "light" key = { key } className="d-flex px-3 align-items-center" pill>
                                     <FontAwesomeIcon
                                         icon = { faTimes }
-                                        onClick = { (e) => { e.preventDefault(); deleteAdjunto(name, key) }}
+                                        onClick = 
+                                            { 
+                                                deleteAdjunto 
+                                                    ? (e) => { e.preventDefault(); deleteAdjunto(name, key); } 
+                                                    : deleteAdjuntoAvance 
+                                                        ? 
+                                                            (e) => { e.preventDefault(); deleteAdjuntoAvance(name, key, _key) } 
+                                                        : ''
+                                            }
                                         className = "small-button mr-2" />
                                         {
                                             file.url ? 
