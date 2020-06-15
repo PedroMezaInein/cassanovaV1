@@ -280,7 +280,7 @@ class EgresosForm extends Component{
         
         const egresos = permisos.find(function(element, index) {
             const { modulo: { url: url } } = element
-            return  pathname === '/' + url + '/' + action
+            return pathname === url + '/' + action
         });
         switch(action){
             case 'add':

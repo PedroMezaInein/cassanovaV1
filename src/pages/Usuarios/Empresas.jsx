@@ -44,7 +44,7 @@ class Empresas extends Component{
         const { history } = this.props
         const empresas = permisos.find(function(element, index) {
             const { modulo: { url: url } } = element
-            return  pathname === '/' + url
+            return pathname === url
         });
         if(!empresas)
             history.push('/')

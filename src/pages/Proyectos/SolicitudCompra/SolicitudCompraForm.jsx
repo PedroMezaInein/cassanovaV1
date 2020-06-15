@@ -62,7 +62,7 @@ class SolicitudCompraForm extends Component{
         const { history, location: { state: state} } = this.props
         const remisiones = permisos.find(function(element, index) {
             const { modulo: { url: url } } = element
-            return  pathname === '/' + url + '/' + action
+            return pathname === url + '/' + action
         });
         switch(action){
             case 'add':

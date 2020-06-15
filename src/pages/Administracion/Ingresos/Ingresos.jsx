@@ -77,7 +77,7 @@ class Ingresos extends Component {
         const { history } = this.props
         const ingresos = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
-            return pathname === '/' + url
+            return pathname === url
         });
         if (!ingresos)
             history.push('/')

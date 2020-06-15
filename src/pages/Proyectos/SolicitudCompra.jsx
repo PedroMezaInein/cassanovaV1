@@ -65,7 +65,7 @@ class SolicitudCompra extends Component{
         const { history } = this.props
         const solicitud = permisos.find(function(element, index) {
             const { modulo: { url: url } } = element
-            return  pathname === '/' + url
+            return pathname === url
         });
         if(!solicitud)
             history.push('/')

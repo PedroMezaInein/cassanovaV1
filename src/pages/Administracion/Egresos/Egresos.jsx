@@ -63,7 +63,7 @@ class egresos extends Component{
         const { history } = this.props
         const egresos = permisos.find(function(element, index) {
             const { modulo: { url: url } } = element
-            return  pathname === '/' + url
+            return pathname === url
         });
         if(!egresos)
             history.push('/')
