@@ -30,7 +30,7 @@ class Empresas extends Component{
             empresas: []
         },
         img: '',
-        formTitle: '',
+        title: '',
         formAction: '',
     } 
     constructor(props){
@@ -172,7 +172,7 @@ class Empresas extends Component{
                 logo: '',
                 file: emp.logo
             },
-            formTitle: 'Editar la empresa',
+            title: 'Editar la empresa',
             formAction: 'Edit'
         })
     }
@@ -189,7 +189,7 @@ class Empresas extends Component{
                 file: ''
             },
             img: '',
-            formTitle: 'Nueva empresa',
+            title: 'Nueva empresa',
             formAction: 'Add'
         })
     }
@@ -430,7 +430,7 @@ class Empresas extends Component{
         })
     }
     render(){
-        const { empresas, modalDelete, modalEdit, empresa, form, img, formTitle, formAction,data } = this.state
+        const { empresas, modalDelete, modalEdit, empresa, form, img, title, formAction,data } = this.state
         return(
             <Layout active={'usuarios'} { ...this.props}>
                
@@ -455,16 +455,16 @@ class Empresas extends Component{
                             elements = { data.empresas }
                             />
 
-                <Modal show={modalEdit} handleClose={this.handleEditModal}>
+                <Modal title = { title } show={modalEdit} handleClose={this.handleEditModal}>
                     <EmpresaForm 
                         removeFile={this.removeFile} 
                         form={ form } 
                         img={img} 
                         onSubmit={ formAction === 'Add' ? this.handleAddSubmit : this.handleSubmit }
                         onChange={(e) => this.handleChange(e)} 
-                        title={formTitle} />
+                        title={title} />
                 </Modal>
-                <Modal show={modalDelete} handleClose={this.handleDeleteModal}>
+                <Modal  show={modalDelete} handleClose={this.handleDeleteModal}>
                     <Subtitle className="my-3 text-center">
                         ¿Estás seguro que deseas eliminar a <B color="red">{empresa.name}</B>?
                     </Subtitle>

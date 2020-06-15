@@ -614,9 +614,9 @@ class Traspasos extends Component{
                     elements={data.traspasos} />
 
 
-                <Modal show = { modal } handleClose={ this.handleClose } >
+                <Modal title = { traspaso === '' ? "Nuevo traspaso" : 'Editar traspaso'}  show = { modal } handleClose={ this.handleClose } >
                     <TraspasoForm cuentas = { cuentas } form = { form } onChange = { this.onchange } onChangeAdjunto = { this.onChangeAdjunto } 
-                        deleteAdjunto = { this.deleteAdjunto } title = { traspaso === '' ? "Nuevo traspaso" : 'Editar traspaso'} 
+                        deleteAdjunto = { this.deleteAdjunto }
                         onSubmit = { traspaso === '' ? this.onSubmit : this.onSubmitEdit } />
                 </Modal>
                 <Modal show = { modalDelete } handleClose={ this.handleCloseDelete } >

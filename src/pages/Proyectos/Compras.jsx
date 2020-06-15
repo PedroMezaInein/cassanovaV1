@@ -1016,8 +1016,8 @@ class Compras extends Component{
                     elements={data.compras} />
 
 
-                <Modal show = {modal} handleClose = { this.handleClose } >
-                    <ComprasForm title = { title } options = {options} form = {form} setOptions = {this.setOptions} 
+                <Modal title = { title } show = {modal} handleClose = { this.handleClose } >
+                    <ComprasForm  options = {options} form = {form} setOptions = {this.setOptions} 
                         onChange = { this.onChange } onChangeAdjunto = { this.onChangeAdjunto } clearFiles = {this.clearFiles}
                         sendFactura = { () => { this.sendFactura() } } onSubmit = { this.onSubmit } >
                         {

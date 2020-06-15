@@ -721,7 +721,7 @@ class Leads extends Component{
                     }}
                     elements = { data.leads }
                 />}
-                <Modal show = { modalAdd } handleClose = { this.handleCloseModal } >
+                <Modal title = { title } show = { modalAdd } handleClose = { this.handleCloseModal } >
                     <LeadForm 
                         className = " px-3 "
                         form = { form } 
@@ -730,7 +730,6 @@ class Leads extends Component{
                         servicios = { servicios }
                         onSubmit ={ tipoForm === 'Add' ? this.handleSubmitAddLead : this.handleSubmitEditLead }
                         onChange = { (e) => { e.preventDefault(); this.handleChangeInput(e) } } 
-                        title = { title }
                         onChangeCalendar = { this.handleChangeDate }
                         onChangeCheckboxes = { this.handleChangeCheckbox }
                         >

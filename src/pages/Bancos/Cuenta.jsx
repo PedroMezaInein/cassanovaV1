@@ -801,8 +801,8 @@ class Cuentas extends Component {
                     elements={data.cuentas}
                 />
 
-                <Modal show={modal} handleClose={this.handleClose} >
-                    <CuentaForm title={cuenta === null ? "Nueva cuenta" : 'Editar cuenta'} bancos={bancos} estatus={estatus} tipos={tipos}
+                <Modal  title={cuenta === null ? "Nueva cuenta" : 'Editar cuenta'}  show={modal} handleClose={this.handleClose} >
+                    <CuentaForm bancos={bancos} estatus={estatus} tipos={tipos}
                         empresas={empresas} form={form} onChange={this.onChange} onChangeEmpresa={this.onChangeEmpresa}
                         updateEmpresa={this.updateEmpresa} onSubmit={cuenta === null ? this.onSubmit : this.onEditSubmit} />
                 </Modal>

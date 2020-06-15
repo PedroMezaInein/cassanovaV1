@@ -402,8 +402,8 @@ class Conceptos extends Component {
                     <Button className="small-button ml-auto mr-4" onClick={(e) => { this.openModal() }} text='' icon={faPlus} color="green" />
                 </div>
                 */}        
-                <Modal show={modal} handleClose={this.handleClose} >
-                    <ConceptoForm title={title} form={form} options={options}
+                <Modal title={title} show={modal} handleClose={this.handleClose} >
+                    <ConceptoForm  form={form} options={options}
                         onChange={this.onChange} onSubmit = { this.onSubmit }/>
                 </Modal>
 

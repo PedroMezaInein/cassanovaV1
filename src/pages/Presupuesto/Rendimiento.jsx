@@ -464,8 +464,8 @@ class Rendimientos extends Component {
                     <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon = { faPlus } color="green" />
                 </div>
                 */}
-                <Modal show={modal} handleClose={this.handleClose} >
-                    <RendimientoForm title={title} form={form} options={options}
+                <Modal title={title} show={modal} handleClose={this.handleClose} >
+                    <RendimientoForm form={form} options={options}
                         onChange={this.onChange} onSubmit={this.onSubmit} onChangeAdjunto={this.onChangeAdjunto}
                         clearFiles={this.clearFiles} />
                 </Modal>
