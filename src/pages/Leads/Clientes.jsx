@@ -513,8 +513,8 @@ class Leads extends Component {
                 />
 
                 <Modal  title={typeForm === 'Add' ? 'Registrar nuevo cliente' : 'Editar usuario'} show={modal} handleClose={this.handleCloseModal}>
-                    <Form onSubmit={typeForm === 'Add' ? this.submitForm : this.submitEditForm} className="m-4">
-                        <div className="row mx-0">
+                    <Form onSubmit={typeForm === 'Add' ? this.submitForm : this.submitEditForm}>
+                        <div className="">
                             <ClienteForm
                                 onChange={this.onChange}                               
                                 form={form}
