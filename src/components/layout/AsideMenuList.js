@@ -42,7 +42,8 @@ export function AsideMenuList({ props }) {
                                 className={`menu-item menu-item-submenu ${getMenuItemActive(modulo.url)}`}
                                 key = {key}
                                 aria-haspopup="true"
-                                data-menu-toggle="hover">
+                                data-menu-toggle="hover"
+                                onClick = { () => { openSubmenu(modulo.slug) } }>
                                 <div className="menu-link menu-toggle" to={modulo.url}>
                                     <span className="svg-icon menu-icon">
                                         <SVG src={toAbsoluteUrl(modulo.icon)}/>
