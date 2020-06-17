@@ -33,16 +33,15 @@ class VentasForm extends Component {
         const { onChange, setOptions } = this.props
         onChange({ target: { value: value, name: 'cliente' } })
         onChange({ target: { value: '', name: 'proyecto' } })
+        onChange({ target: { value: '', name: 'contrato' } })
         const { options: { clientes: clientes } } = this.props
 
         const aux = clientes.find(function (element, index) {
             if (value.toString() === element.value.toString()) {
                 setOptions('proyectos', element.proyectos)
+                setOptions('contratos', element.contratos)
             }
         })
-
-        console.log('update cliente')
-        console.log(this.props)
     }
     updateProyecto = value => {
         const { onChange } = this.props
@@ -111,7 +110,7 @@ class VentasForm extends Component {
         if (form.facturaObject) {
             options.tiposPagos.map((option) => {
                 if (option.value.toString() === value.toString() && option.text.toString() === 'TOTAL')
-                    onChange({ target: { value: form.facturaObject.subtotal, name: 'total' } })
+                    onChange({ target: { value: form.facturaObject.total, name: 'total' } })
             })
         }
         onChange(e)
@@ -127,6 +126,12 @@ class VentasForm extends Component {
                 aux = element.value
         });
         onChange({ target: { value: aux, name: 'tipoImpuesto' } })
+    }
+
+    updateContrato = value => {
+        const { onChange } = this.props
+        onChange({ target: { value: value, name: 'contrato' } })
+        
     }
 
     render() {
@@ -248,6 +253,15 @@ class VentasForm extends Component {
                     <div className="col-md-6 px-2">
                         <Calendar onChangeCalendar={this.handleChangeDate}
                             placeholder="Fecha" name="fecha" value={form.fecha} />
+                    </div>
+                    <div className="col-md-6 px-2">
+                        <SelectSearch 
+                            options={options.contratos} 
+                            placeholder="Selecciona el contrato"
+                            name="contrato" 
+                            value={form.contrato} 
+                            onChange={this.updateContrato} 
+                        />
                     </div>
                     <div className="col-md-6 px-2 ">
                         <FileInput
