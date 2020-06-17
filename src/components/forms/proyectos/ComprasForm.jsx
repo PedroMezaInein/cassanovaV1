@@ -92,6 +92,11 @@ updateArea = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'proveedor' } })
     }
+
+    updateContrato = value => {
+        const { onChange } = this.props
+        onChange({ target: { value: value, name: 'contrato' } })
+    }
     /*Código Omar
     updateSubarea = value => {
         const { onChange } = this.props
@@ -260,6 +265,10 @@ updateArea = value => {
                     <div className="col-md-6 px-2">
                         <Calendar onChangeCalendar={this.handleChangeDate}
                             placeholder="Fecha" name="fecha" value={form.fecha} />
+                    </div>
+                    <div className="col-md-6 px-2">
+                        <SelectSearch options={options.contratos} placeholder="Selecciona el contrato"
+                            name="contrato" value={form.contrato} onChange={this.updateContrato} />
                     </div>
                     <div className="col-md-6 px-2 ">
                         <FileInput

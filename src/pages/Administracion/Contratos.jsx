@@ -303,6 +303,7 @@ class Contratos extends Component {
                 
                 data.contratos.proveedores = contratosProveedores
                 contratos.proveedores = this.setContratos(contratosProveedores, 'Proveedor')
+                console.log(contratosProveedores, 'contratos proveedores')
                 data.contratos.clientes = contratosClientes
                 contratos.clientes = this.setContratos(contratosClientes, 'Cliente')
                 
@@ -492,7 +493,7 @@ class Contratos extends Component {
                         <div className="py-2">
                             <NewTable
                                 columns = { CONTRATOS_PROVEEDORES_COLUMNS } 
-                                data = { [] }
+                                data = { contratos.proveedores }
                                 title = 'Contratos de proveedores' 
                                 subtitle = 'Listado de contratos de proveedores'
                                 mostrar_boton = { true }

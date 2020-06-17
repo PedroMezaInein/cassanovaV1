@@ -34,6 +34,7 @@ class Compras extends Component{
         form: {
             factura: 'Sin factura',
             facturaObject: '',
+            contrato: '',
             rfc: '',
             total: '',
             cliente: '',
@@ -85,7 +86,8 @@ class Compras extends Component{
             estatusCompras: [],
             formasPago: [],
             metodosPago: [],
-            estatusFacturas: []
+            estatusFacturas: [],
+            contratos: []
         },
         data:{
             clientes: [],
@@ -246,6 +248,10 @@ class Compras extends Component{
             form.area = compra.subarea.area.id.toString()
             options['subareas'] = setOptions(compra.subarea.area.subareas, 'nombre', 'id')
             form.subarea = compra.subarea.id.toString()
+        }
+
+        if(compra.contrato){
+            form.contrato = compra.contrato.id.toString()
         }
         
         form.tipoPago = compra.tipo_pago ? compra.tipo_pago.id : 0
@@ -544,11 +550,13 @@ class Compras extends Component{
         await axios.get(URL_DEV + 'compras', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos,
-                    clientes, compras, proveedores, formasPago, metodosPago, estatusFacturas } = response.data
+                    clientes, compras, proveedores, formasPago, metodosPago, estatusFacturas, contratos } = response.data
                 const { options, data } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['proveedores'] = setOptions(proveedores, 'nombre', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
+                options['contratos'] = setOptions(contratos, 'nombre', 'id')
+                console.log('contratos', contratos)
                 /* options['clientes'] = setOptions(clientes, 'empresa', 'id') */
                 options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
                 options['tiposPagos'] = setSelectOptions( tiposPagos, 'tipo' )
