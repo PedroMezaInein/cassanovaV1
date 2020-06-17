@@ -112,7 +112,7 @@ class Layout extends Component {
                                                     }
                                                 </span>
                                                 <span className="symbol symbol-35 symbol-light-primary">
-                                                    <butto className="symbol-label font-size-h5 font-weight-bold">O</butto>
+                                                    <span className="symbol-label font-size-h5 font-weight-bold">O</span>
                                                 </span>                                                
                                             </div>
                                     </div>
@@ -121,7 +121,7 @@ class Layout extends Component {
                         </div>                   
 
                         <div className="content d-flex flex-column flex-column-fluid">                            
-                            <UrlLocation/>                            
+                            <UrlLocation {... this.props} props =  {this.props} />                            
                             <div className="d-flex flex-column-fluid">
                                 <div className="container-fluid">
                                     <div className="row">
