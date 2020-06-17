@@ -89,13 +89,21 @@ updateArea = value => {
     }
 
     updateProveedor = value => {
-        const { onChange } = this.props
+        const { onChange, setOptions } = this.props
         onChange({ target: { value: value, name: 'proveedor' } })
+        onChange({ target: { value: '', name: 'contrato' } })
+        const { data: { proveedores: proveedores } } = this.props
+        proveedores.find(function (element, index) {
+            if (value.toString() === element.id.toString()) {
+                setOptions('contratos', element.contratos)
+            }
+        })
     }
 
     updateContrato = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'contrato' } })
+        
     }
     /*Código Omar
     updateSubarea = value => {
