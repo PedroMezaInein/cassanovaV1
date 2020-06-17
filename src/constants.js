@@ -1016,6 +1016,10 @@ export const CONTRATOS_CLIENTES_COLUMNS = [
         accessor: 'actions',
     },
     {
+        Header: 'Nombre',
+        accessor: 'nombre'
+    },
+    {
         Header: 'Cliente',
         accessor: 'cliente'
     },
@@ -1053,6 +1057,10 @@ export const CONTRATOS_PROVEEDORES_COLUMNS = [
     {
         Header: 'Opciones',
         accessor: 'actions',
+    },
+    {
+        Header: 'Nombre',
+        accessor: 'nombre'
     },
     {
         Header: 'Proveedor',
