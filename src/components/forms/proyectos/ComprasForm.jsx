@@ -146,8 +146,8 @@ updateArea = value => {
                         title
                     }
                 </Subtitle>
-                <div className="row mx-0">
-                    <div className="col-md-6 px-2">
+                <div className="form-group row form-group-marginless ">
+                    <div className="col-md-4">
                         <RadioGroup
                             name='factura'
                             onChange={this.updateFactura}
@@ -166,10 +166,10 @@ updateArea = value => {
                             placeholder={' Lleva factura '}
                             value={form.factura}
                         />
-                    </div>
+                    </div>                   
                     {
                         form.factura === 'Con factura' && title !== 'Editar compra' ?
-                            <div className="col-md-6 px-2">
+                            <div className="col-md-4">
                                 <FileInput
                                     onChangeAdjunto={onChangeAdjunto}
                                     placeholder={form['adjuntos']['factura']['placeholder']}
@@ -177,25 +177,36 @@ updateArea = value => {
                                     name={'factura'} id={'factura'}
                                     accept="text/xml, application/pdf"
                                     files={form['adjuntos']['factura']['files']}
-                                    deleteAdjunto={clearFiles} multiple />
+                                    deleteAdjunto={clearFiles} multiple 
+                                />
                             </div>
                             : ''
                     }
-
                     {
                         form.factura === 'Con factura' && title !== 'Editar compra' ?
-                            <div className="col-md-6 px-2">
-                                <Input placeholder="RFC" name="rfc" value={form.rfc} onChange={onChange} />
+                            <div className="col-md-4">
+                                <Input 
+                                    placeholder="RFC" 
+                                    name="rfc" 
+                                    value={form.rfc} 
+                                    onChange={onChange} 
+                                />
                             </div>
                             : ''
                     }
-
-                    <div className="col-md-6 px-2">
-                        <SelectSearch options={options.proveedores} placeholder="Selecciona el proveedor"
-                            name="proveedores" value={form.proveedor} onChange={this.updateProveedor} />
+                </div>
+                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-4">
+                        <SelectSearch 
+                            options={options.proveedores} 
+                            placeholder="Selecciona el proveedor"
+                            name="proveedores" 
+                            value={form.proveedor} 
+                            onChange={this.updateProveedor} 
+                        />
                     </div>
-
-                    {/* <div className="col-md-6 px-2">
+                     {/* <div className="col-md-6 px-2">
                         <SelectSearch options={options.clientes} placeholder = "Selecciona el cliente" 
                             name = "cliente" value = { form.cliente } onChange = { this.updateCliente }/>    
                     </div>
@@ -207,70 +218,147 @@ updateArea = value => {
                             </div>
                         : ''
                     } */}
-                    <div className="col-md-6 px-2">
-                        <SelectSearch options={options.proyectos} placeholder="Selecciona el proyecto"
-                            name="proyecto" value={form.proyecto} onChange={this.updateProyecto} />
+                    <div className="col-md-4">
+                        <SelectSearch 
+                            options={options.proyectos} 
+                            placeholder="Selecciona el proyecto"
+                            name="proyecto" 
+                            value={form.proyecto} 
+                            onChange={this.updateProyecto} 
+                        />
                     </div>
-                    <div className="col-md-6 px-2">
+                    <div className="col-md-4">
                         {
                             form.facturaObject ?
-                                <Input placeholder="Empresa" name="empresa" readOnly value={form.empresa} onChange={onChange} />
+                                <Input 
+                                    placeholder="Empresa" 
+                                    name="empresa" 
+                                    readOnly 
+                                    value={form.empresa} 
+                                    onChange={onChange} />
                                 :
-                                <SelectSearch options={options.empresas} placeholder="Selecciona la empresa"
-                                    name="empresas" value={form.empresa} onChange={this.updateEmpresa} />
+                                <SelectSearch 
+                                    options={options.empresas} 
+                                    placeholder="Selecciona la empresa"
+                                    name="empresas" 
+                                    value={form.empresa} 
+                                    onChange={this.updateEmpresa} />
                         }
                     </div>
+                </div>
+                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
                     {
                         form.empresa ?
-                            <div className="col-md-6 px-2">
-                                <SelectSearch options={options.cuentas} placeholder="Selecciona la cuenta"
-                                    name="cuenta" value={form.cuenta} onChange={this.updateCuenta} />
+                            <div className="col-md-4">
+                                <SelectSearch 
+                                    options={options.cuentas} 
+                                    placeholder="Selecciona la cuenta"
+                                    name="cuenta" 
+                                    value={form.cuenta} 
+                                    onChange={this.updateCuenta} 
+                                />
                             </div>
                             : ''
                     }
-                    <div className="col-md-6 px-2">
-                        <SelectSearch options={options.areas} placeholder="Selecciona el área"
-                            name="areas" value={form.area} onChange={this.updateArea} />
+                    <div className="col-md-4">
+                        <SelectSearch 
+                            options={options.areas} 
+                            placeholder="Selecciona el área"
+                            name="areas" 
+                            value={form.area} 
+                            onChange={this.updateArea} 
+                        />
                     </div>
                     {
                         form.area ?
-                            <div className="col-md-6 px-2">
-                                <SelectSearch options={options.subareas} placeholder="Selecciona el subárea"
-                                    name="subarea" value={form.subarea} onChange={this.updateSubarea} />
+                            <div className="col-md-4">
+                                <SelectSearch 
+                                    options={options.subareas} 
+                                    placeholder="Selecciona el subárea"
+                                    name="subarea" 
+                                    value={form.subarea} 
+                                    onChange={this.updateSubarea} 
+                                />
                             </div>
                             : ''
                     }
+                </div>
+                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
                     {
                         options.tiposPagos.length > 0 ?
-                            <div className="col-md-6 px-2">
-                                <Select placeholder="Selecciona el tipo de pago" options={options.tiposPagos}
-                                    name="tipoPago" value={form.tipoPago} onChange={this.updateTipoPago} />
+                            <div className="col-md-4">
+                                <Select 
+                                    placeholder="Selecciona el tipo de pago" 
+                                    options={options.tiposPagos}
+                                    name="tipoPago" 
+                                    value={form.tipoPago} 
+                                    onChange={this.updateTipoPago} 
+                                />
                             </div>
                             : ''
                     }
-                    <div className="col-md-6 px-2">
-                        <Select placeholder="Selecciona el impuesto" options={options.tiposImpuestos}
-                            name="tipoImpuesto" value={form.tipoImpuesto} onChange={onChange} />
+                    <div className="col-md-4">
+                        <Select 
+                            placeholder="Selecciona el impuesto" 
+                            options={options.tiposImpuestos}
+                            name="tipoImpuesto" 
+                            value={form.tipoImpuesto} 
+                            onChange={onChange} 
+                        />
                     </div>
-                    <div className="col-md-6 px-2">
-                        <Select placeholder="Selecciona el estatus de compra" options={options.estatusCompras}
-                            name="estatusCompra" value={form.estatusCompra} onChange={onChange} />
+                    <div className="col-md-4">
+                        <Select 
+                            placeholder="Selecciona el estatus de compra" 
+                            options={options.estatusCompras}
+                            name="estatusCompra" 
+                            value={form.estatusCompra} 
+                            onChange={onChange} 
+                        />
                     </div>
-                    <div className="col-md-6 px-2">
-                        <InputMoney thousandSeparator={true} placeholder="Monto" value={form.total} name="total" onChange={onChange} />
+                </div>
+                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-4">
+                        <InputMoney 
+                            thousandSeparator={true} 
+                            placeholder="Monto" 
+                            value={form.total} 
+                            name="total" 
+                            onChange={onChange} 
+                        />
                     </div>
-                    <div className="col-md-6 px-2">
-                        <InputMoney thousandSeparator={true} placeholder="Comisión" value={form.comision} name="comision" onChange={onChange} />
+                    <div className="col-md-4">
+                        <InputMoney 
+                            thousandSeparator={true} 
+                            placeholder="Comisión" 
+                            value={form.comision} 
+                            name="comision" 
+                            onChange={onChange} 
+                        />
                     </div>
-                    <div className="col-md-6 px-2">
-                        <Calendar onChangeCalendar={this.handleChangeDate}
-                            placeholder="Fecha" name="fecha" value={form.fecha} />
+                    <div className="col-md-4">
+                        <Calendar 
+                            onChangeCalendar={this.handleChangeDate}
+                            placeholder="Fecha" 
+                            name="fecha" 
+                            value={form.fecha} 
+                        />
                     </div>
-                    <div className="col-md-6 px-2">
-                        <SelectSearch options={options.contratos} placeholder="Selecciona el contrato"
-                            name="contrato" value={form.contrato} onChange={this.updateContrato} />
+                </div>
+                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-4">
+                        <SelectSearch 
+                            options={options.contratos} 
+                            placeholder="Selecciona el contrato"
+                            name="contrato" 
+                            value={form.contrato} 
+                            onChange={this.updateContrato} 
+                        />
                     </div>
-                    <div className="col-md-6 px-2 ">
+                    <div className="col-md-4">
                         <FileInput
                             onChangeAdjunto={onChangeAdjunto}
                             placeholder={form['adjuntos']['presupuesto']['placeholder']}
@@ -278,9 +366,10 @@ updateArea = value => {
                             name={'presupuesto'} id={'presupuesto'}
                             accept="text/xml, application/pdf"
                             files={form['adjuntos']['presupuesto']['files']}
-                            deleteAdjunto={clearFiles} />
+                            deleteAdjunto={clearFiles} 
+                        />
                     </div>
-                    <div className="col-md-6 px-2 ">
+                    <div className="col-md-4">
                         <FileInput
                             onChangeAdjunto={onChangeAdjunto}
                             placeholder={form['adjuntos']['pago']['placeholder']}
@@ -288,11 +377,20 @@ updateArea = value => {
                             name={'pago'} id={'pago'}
                             accept="text/xml, application/pdf"
                             files={form['adjuntos']['pago']['files']}
-                            deleteAdjunto={clearFiles} />
+                            deleteAdjunto={clearFiles} 
+                        />
                     </div>
-                    <div className=" col-md-12 px-2">
-                        <Input as="textarea" placeholder="Descripción" rows="3" value={form.descripcion}
-                            name="descripcion" onChange={onChange} />
+                </div>
+                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-12">
+                    <Input 
+                        as="textarea" 
+                        placeholder="Descripción" 
+                        rows="2" value={form.descripcion}
+                        name="descripcion" 
+                        onChange={onChange} 
+                    />
                     </div>
                 </div>
                 <div className="mt-3 text-center">
