@@ -21,8 +21,8 @@ class ProspectoForm extends Component{
 
     updateEstatusContratacion = value => {
         const { onChange } = this.props
-        onChange({target:{name:'estatusContratacion', value: value.value}})
-        if( value.value === 'New' ){
+        onChange({target:{name:'estatusContratacion', value: value}})
+        if( value === 'New' ){
             this.setState({
                 newEstatusContratacion: true
             })
@@ -35,8 +35,8 @@ class ProspectoForm extends Component{
 
     updateEstatusProspectos = value => {
         const { onChange } = this.props
-        onChange({target:{name:'estatusProspecto', value: value.value}})
-        if( value.value === 'New' ){
+        onChange({target:{name:'estatusProspecto', value: value}})
+        if( value === 'New' ){
             this.setState({
                 newEstatusProspectos: true
             })
@@ -50,8 +50,8 @@ class ProspectoForm extends Component{
 
     updateTipoProyecto = value => {
         const { onChange } = this.props
-        onChange( { target: { name:'tipoProyecto', value: value.value } } )
-        if( value.value === 'New' ){
+        onChange( { target: { name:'tipoProyecto', value: value } } )
+        if( value === 'New' ){
             this.setState({
                 newTipoProyecto: true
             })
@@ -64,8 +64,8 @@ class ProspectoForm extends Component{
 
     updateCliente = value => {
         const { onChange } = this.props
-        onChange({target:{name:'cliente', value: value.value}})
-        if( value.value === 'New' ){
+        onChange({target:{name:'cliente', value: value}})
+        if( value === 'New' ){
             this.setState({
                 newClient: true
             })
@@ -78,12 +78,12 @@ class ProspectoForm extends Component{
 
     updateVendedor = value => {
         const { onChange } = this.props
-        onChange({target:{name:'vendedor', value: value.value}})
+        onChange({target:{name:'vendedor', value: value}})
     }
 
     updateColonia = value => {
         const { onChangeCliente } = this.props
-        onChangeCliente({target:{name:'colonia', value: value.value}})
+        onChangeCliente({target:{name:'colonia', value: value}})
     }
 
     changeCP = event => {

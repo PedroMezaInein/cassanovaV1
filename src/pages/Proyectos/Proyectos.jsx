@@ -1052,7 +1052,7 @@ class Proyectos extends Component {
                 }
             }
         })
-        data.append('proyecto', proyecto.id)
+        
         await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/avances', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
 
