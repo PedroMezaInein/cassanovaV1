@@ -187,6 +187,7 @@ updateArea = value => {
                                     files={form['adjuntos']['factura']['files']}
                                     deleteAdjunto={clearFiles} multiple 
                                 />
+                                <span className="form-text text-muted">Por favor, adjunta el documento. </span>
                             </div>
                             : ''
                     }
@@ -198,7 +199,9 @@ updateArea = value => {
                                     name="rfc" 
                                     value={form.rfc} 
                                     onChange={onChange} 
+                                    iconclass={"far fa-file-alt"} 
                                 />
+                                <span className="form-text text-muted">Por favor, ingresa el RFC. </span>
                             </div>
                             : ''
                     }
@@ -212,7 +215,9 @@ updateArea = value => {
                             name="proveedores" 
                             value={form.proveedor} 
                             onChange={this.updateProveedor} 
+                            iconclass={"far fa-user"}
                         />
+                        <span className="form-text text-muted">Por favor, selecciona el proveedor</span>
                     </div>
                      {/* <div className="col-md-6 px-2">
                         <SelectSearch options={options.clientes} placeholder = "Selecciona el cliente" 
@@ -232,8 +237,10 @@ updateArea = value => {
                             placeholder="Selecciona el proyecto"
                             name="proyecto" 
                             value={form.proyecto} 
-                            onChange={this.updateProyecto} 
+                            onChange={this.updateProyecto}
+                            iconclass={"far fa-folder-open"} 
                         />
+                        <span className="form-text text-muted">Por favor, selecciona el proyecto.</span>
                     </div>
                     <div className="col-md-4">
                         {
@@ -243,15 +250,20 @@ updateArea = value => {
                                     name="empresa" 
                                     readOnly 
                                     value={form.empresa} 
-                                    onChange={onChange} />
+                                    onChange={onChange} 
+                                    iconclass={"far fa-building"}
+                                />                                    
                                 :
                                 <SelectSearch 
                                     options={options.empresas} 
                                     placeholder="Selecciona la empresa"
                                     name="empresas" 
                                     value={form.empresa} 
-                                    onChange={this.updateEmpresa} />
+                                    onChange={this.updateEmpresa} 
+                                    iconclass={"far fa-building"}
+                                />
                         }
+                        <span className="form-text text-muted">Por favor, selecciona la empresa.</span>
                     </div>
                 </div>
                 <div class="separator separator-dashed mt-1 mb-2"></div>
@@ -264,8 +276,10 @@ updateArea = value => {
                                     placeholder="Selecciona la cuenta"
                                     name="cuenta" 
                                     value={form.cuenta} 
-                                    onChange={this.updateCuenta} 
+                                    onChange={this.updateCuenta}
+                                    iconclass={"far fa-credit-card"} 
                                 />
+                                <span className="form-text text-muted">Por favor, selecciona la cuenta.</span>
                             </div>
                             : ''
                     }
@@ -275,8 +289,10 @@ updateArea = value => {
                             placeholder="Selecciona el área"
                             name="areas" 
                             value={form.area} 
-                            onChange={this.updateArea} 
+                            onChange={this.updateArea}
+                            iconclass={"far fa-window-maximize"} 
                         />
+                        <span className="form-text text-muted">Por favor, selecciona el área.</span>
                     </div>
                     {
                         form.area ?
@@ -286,8 +302,10 @@ updateArea = value => {
                                     placeholder="Selecciona el subárea"
                                     name="subarea" 
                                     value={form.subarea} 
-                                    onChange={this.updateSubarea} 
+                                    onChange={this.updateSubarea}
+                                    iconclass={"far fa-window-restore"} 
                                 />
+                                <span className="form-text text-muted">Por favor, selecciona la sub-área.</span>
                             </div>
                             : ''
                     }
@@ -304,6 +322,7 @@ updateArea = value => {
                                     value={form.tipoPago} 
                                     onChange={this.updateTipoPago} 
                                 />
+                                <span className="form-text text-muted">Por favor, selecciona el tipo de pago.</span>
                             </div>
                             : ''
                     }
@@ -315,6 +334,7 @@ updateArea = value => {
                             value={form.tipoImpuesto} 
                             onChange={onChange} 
                         />
+                        <span className="form-text text-muted">Por favor, selecciona el impuesto.</span>
                     </div>
                     <div className="col-md-4">
                         <Select 
@@ -324,6 +344,7 @@ updateArea = value => {
                             value={form.estatusCompra} 
                             onChange={onChange} 
                         />
+                        <span className="form-text text-muted">Por favor, selecciona el estatus de compra.</span>
                     </div>
                 </div>
                 <div class="separator separator-dashed mt-1 mb-2"></div>
@@ -334,8 +355,10 @@ updateArea = value => {
                             placeholder="Monto" 
                             value={form.total} 
                             name="total" 
-                            onChange={onChange} 
+                            onChange={onChange}
+                            iconclass={"fas fa-money-check-alt"} 
                         />
+                        <span className="form-text text-muted">Por favor, ingresa el monto.</span>
                     </div>
                     <div className="col-md-4">
                         <InputMoney 
@@ -344,7 +367,9 @@ updateArea = value => {
                             value={form.comision} 
                             name="comision" 
                             onChange={onChange} 
+                            iconclass={"fas fa-money-bill-alt"} 
                         />
+                        <span className="form-text text-muted">Por favor, ingresa la comisión.</span>
                     </div>
                     <div className="col-md-4">
                         <Calendar 
@@ -353,6 +378,7 @@ updateArea = value => {
                             name="fecha" 
                             value={form.fecha} 
                         />
+                        <span className="form-text text-muted">Por favor, selecciona la fecha.</span>
                     </div>
                 </div>
                 <div class="separator separator-dashed mt-1 mb-2"></div>
@@ -364,7 +390,9 @@ updateArea = value => {
                             name="contrato" 
                             value={form.contrato} 
                             onChange={this.updateContrato} 
+                            iconclass={"fas fa-file-signature"}
                         />
+                        <span className="form-text text-muted">Por favor, selecciona el contrato.</span>
                     </div>
                     <div className="col-md-4">
                         <FileInput
@@ -376,6 +404,7 @@ updateArea = value => {
                             files={form['adjuntos']['presupuesto']['files']}
                             deleteAdjunto={clearFiles} 
                         />
+                        <span className="form-text text-muted">Por favor, adjunta el documento.</span>
                     </div>
                     <div className="col-md-4">
                         <FileInput
@@ -387,6 +416,7 @@ updateArea = value => {
                             files={form['adjuntos']['pago']['files']}
                             deleteAdjunto={clearFiles} 
                         />
+                        <span className="form-text text-muted">Por favor, adjunta el documento.</span>
                     </div>
                 </div>
                 <div class="separator separator-dashed mt-1 mb-2"></div>
@@ -397,8 +427,10 @@ updateArea = value => {
                         placeholder="Descripción" 
                         rows="2" value={form.descripcion}
                         name="descripcion" 
-                        onChange={onChange} 
+                        onChange={onChange}
+                        iconclass={"far fa-file-alt"}
                     />
+                    <span className="form-text text-muted">Por favor, ingresa la descripción.</span>
                     </div>
                 </div>
                 <div className="mt-3 text-center">
