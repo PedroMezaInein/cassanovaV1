@@ -325,7 +325,7 @@ class RemisionForm extends Component{
         const { form, title, options } = this.state
 
         return(
-            <Layout active={'administracion'}  { ...this.props}>
+            <Layout active={'proyectos'}  { ...this.props}>
 
                 
                 <Card className="m-2 p-2 m-md-4 p-md-4">

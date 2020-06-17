@@ -458,7 +458,7 @@ class Rendimientos extends Component {
         const { modal, modalDelete, title, form, options, rendimientos, data } = this.state
 
         return (
-            <Layout active={'administracion'}  {...this.props}>
+            <Layout active={'presupuesto'}  {...this.props}>
                 {/*
                 <div className="text-right">
                     <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon = { faPlus } color="green" />

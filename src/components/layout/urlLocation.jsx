@@ -12,15 +12,18 @@ class UrlLocation extends Component{
     componentDidMount() {       
         const { history: { location: { pathname: pathname } } } = this.props
         let aux = pathname.substr(1, pathname.length-1)
+        aux = aux.split('/')
+        if(!Array.isArray(aux)){
+            aux = [aux]
+        }
         this.setState({
-            paths:aux.split('/')
+            paths:aux
         })
         
     }
     
 
-    render(){
-        console.log(this.props,"props")        
+    render(){   
         const { paths } = this.state
         const modulos = this.props.authUser.modulos
         const active = this.props.active;
@@ -29,13 +32,13 @@ class UrlLocation extends Component{
         let submodulo_name;
         let submodulo;
 
-        for (let i = 0; i < modulos.length; i ++) {
+        /* for (let i = 0; i < modulos.length; i ++) {
             if (modulos[i].slug == active) {
                 icon = modulos[i].icon               
                 modulo_name = modulos[i].name
                 submodulo = modulos[i].modulos 
                 for (let j = 0; j < submodulo.length; j ++) {
-                    if (submodulo[j].slug ==paths[1]) {
+                    if (submodulo[j].slug == paths[1]) {
                         submodulo_name = submodulo[j].name
                         break;
                     }else{
@@ -44,8 +47,37 @@ class UrlLocation extends Component{
                 break;
             }else{
             }            
+        } */
+
+        if(paths.length === 1){
+            for(let i = 0; i < modulos.length; i++){
+                if(modulos[i].slug === paths[0]){
+                    modulo_name = modulos[i].name
+                    submodulo_name = modulos[i].name
+                    icon = modulos[i].icon
+                }
+            }
+        }else{
+            for (let i = 0; i < modulos.length; i ++) {
+                console.log(modulos[i].slug, active, 'ACTIVE')
+                if (modulos[i].slug == active) {
+                    
+                    icon = modulos[i].icon               
+                    modulo_name = modulos[i].name
+                    submodulo = modulos[i].modulos 
+                    for (let j = 0; j < submodulo.length; j ++) {
+                        if (submodulo[j].slug == paths[1]) {
+                            submodulo_name = submodulo[j].name
+                            console.log(modulos[i], submodulo[j], 'TESTING')
+                            break;
+                        }else{
+                        }
+                    }
+                    break;
+                }else{
+                } 
+            }
         }
-        
         return (
             <>  
                 {

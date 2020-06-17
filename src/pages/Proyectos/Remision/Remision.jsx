@@ -243,7 +243,7 @@ class Remisiones extends Component{
         const { data, modalDelete, modalSingle, remisiones, remision } = this.state
 
         return(
-            <Layout active={'administracion'}  { ...this.props}>
+            <Layout active={'proyectos'}  { ...this.props}>
 
                 
                 {/* <DataTable columns = { REMISION_COLUMNS } data = { remisiones } /> */}
