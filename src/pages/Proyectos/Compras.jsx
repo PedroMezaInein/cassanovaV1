@@ -250,9 +250,7 @@ class Compras extends Component{
             form.subarea = compra.subarea.id.toString()
         }
 
-        if(compra.contrato){
-            form.contrato = compra.contrato.id.toString()
-        }
+        
         
         form.tipoPago = compra.tipo_pago ? compra.tipo_pago.id : 0
         form.tipoImpuesto = compra.tipo_impuesto ? compra.tipo_impuesto.id : 0
@@ -261,8 +259,13 @@ class Compras extends Component{
         form.fecha = new Date(compra.created_at)
         form.descripcion = compra.descripcion
         form.comision = compra.comision
-        if(compra.proveedor)
+        if(compra.proveedor){
+            options['contratos'] = setOptions(compra.proveedor.contratos, 'nombre', 'id')
             form.proveedor = compra.proveedor.id.toString()
+            if(compra.contrato){
+                form.contrato = compra.contrato.id.toString()
+            }
+        }
         if(compra.pago){
             form.adjuntos.pago.files = [{
                 name: compra.pago.name, url: compra.pago.url
@@ -455,9 +458,6 @@ class Compras extends Component{
                         }
                         let auxEmpresa = ''
                         data.empresas.find(function(element, index) {
-                            console.log(index, '---')
-                            console.log(element)
-                            console.log(obj.rfc_receptor)
                             if(element.rfc === obj.rfc_receptor){
                                 auxEmpresa = element
                             }
@@ -476,6 +476,9 @@ class Compras extends Component{
                         }
                         if(auxProveedor){
                             form.proveedor = auxProveedor.id.toString()
+                            if(auxProveedor.contratos){
+                                options['contratos'] = setOptions(auxProveedor.contratos, 'nombre', 'id')
+                            }
                         }else{
                             createAlert('No existe el proveedor', '¿Lo quieres crear?', () => this.addProveedorAxios(obj))
                         }
@@ -556,11 +559,9 @@ class Compras extends Component{
                     clientes, compras, proveedores, formasPago, metodosPago, estatusFacturas, contratos } = response.data
                 const { options, data } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
-                options['proveedores'] = setOptions(proveedores, 'nombre', 'id')
+                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
-                options['contratos'] = setOptions(contratos, 'nombre', 'id')
-                console.log('contratos', contratos)
-                /* options['clientes'] = setOptions(clientes, 'empresa', 'id') */
+                /* options['contratos'] = setOptions(contratos, 'nombre', 'id') */
                 options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
                 options['tiposPagos'] = setSelectOptions( tiposPagos, 'tipo' )
                 options['tiposImpuestos'] = setSelectOptions( tiposImpuestos, 'tipo' )
@@ -677,7 +678,7 @@ class Compras extends Component{
 
                 const { options, data, form } = this.state
                 data.proveedores = proveedores
-                options['proveedores'] = setOptions(proveedores, 'nombre', 'id')
+                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
                 form.proveedor = proveedor.id.toString()
 
                 this.setState({
@@ -742,11 +743,16 @@ class Compras extends Component{
             (response) => {
 
                 const { compras } = response.data
+                const { data } = this.state
+
+                data.compras = compras
+
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
                     modal: false,
-                    compras: this.setCompras(compras)
+                    compras: this.setCompras(compras),
+                    data
                 })
                 
                 swal({
@@ -1016,13 +1022,7 @@ class Compras extends Component{
 
         return(
             <Layout active={'proyectos'}  { ...this.props}>
-               {/* <div className="text-right">
-                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon = { faPlus } color="green" />
-                </div>
-
-               <DataTable columns = { COMPRAS_COLUMNS } data= { compras }/>
-                */}
-
+               
                 <NewTable columns={COMPRAS_COLUMNS} data={compras}
                     title='Compras' subtitle='Listado de compras'
                     mostrar_boton={true}
@@ -1040,7 +1040,7 @@ class Compras extends Component{
 
 
                 <Modal title = { title } show = {modal} handleClose = { this.handleClose } >
-                    <ComprasForm  options = {options} form = {form} setOptions = {this.setOptions} 
+                    <ComprasForm  options = {options} form = {form} setOptions = {this.setOptions} data = { data }
                         onChange = { this.onChange } onChangeAdjunto = { this.onChangeAdjunto } clearFiles = {this.clearFiles}
                         sendFactura = { () => { this.sendFactura() } } onSubmit = { this.onSubmit } >
                         {

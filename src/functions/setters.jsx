@@ -18,7 +18,12 @@ export function setOptions( arreglo, name, value ){
                 aux.push({ name: element[name], value: element[value].toString(), subareas: element['subareas'] } )
             }else{
                 if(element.hasOwnProperty('proyectos')){
-                    aux.push({ name: element[name], value: element[value].toString(), proyectos: element['proyectos'] } )
+                    if(element.hasOwnProperty('contratos')){
+                        aux.push({ name: element[name], value: element[value].toString(), proyectos: element['proyectos'], contratos: element['contratos'] } )
+                    }else{
+                        aux.push({ name: element[name], value: element[value].toString(), proyectos: element['proyectos'] } )
+                    }
+                    
                 }else{
                     aux.push({ name: element[name], value: element[value].toString() } )
                 }

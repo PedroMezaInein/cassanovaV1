@@ -97,6 +97,7 @@ class Contratos extends Component {
         form.descripcion = contrato.descripcion
         form.tipoContrato = contrato.tipo_contrato
         form.monto = contrato.monto
+        form.nombre = contrato.nombre
         modal.form = true
         this.setState({
             ... this.state,

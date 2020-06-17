@@ -41,7 +41,8 @@ class Ventas extends Component{
             proyectos: [],
             formasPago: [],
             metodosPago: [],
-            estatusFacturas: []
+            estatusFacturas: [],
+            contratos: []
         },
         data:{
             clientes: [],
@@ -61,6 +62,7 @@ class Ventas extends Component{
             cuenta: '',
             area: '',
             subarea: '',
+            contrato: '',
             //Factura
             formaPago: '',
             metodoPago: '',
@@ -117,14 +119,16 @@ class Ventas extends Component{
 
     openModalEdit = (venta) => {
         const { form, options } = this.state
-        console.log(venta)
-        console.log(venta.subarea)
         form.factura = venta.factura ? 'Con factura' : 'Sin factura'
         if(venta.cliente){
             form.cliente = venta.cliente.id.toString()
             options['proyectos'] = setOptions(venta.cliente.proyectos, 'nombre', 'id')
             if(venta.proyecto)
             form.proyecto = venta.proyecto.id.toString()
+            options['contratos'] = setOptions(venta.cliente.contratos, 'nombre', 'id')
+            if(venta.contrato){
+                form.contrato = venta.contrato.id.toString()
+            }
         }
         if(venta.empresa){
             form.empresa = venta.empresa.id.toString()
@@ -405,20 +409,37 @@ class Ventas extends Component{
                             folio: xml.attributes.Folio ? xml.attributes.Folio : '',
                             serie: xml.attributes.Serie ? xml.attributes.Serie : '',
                         }
+                        
                         if(obj.numero_certificado === ''){
                             let NoCertificado = text.search('NoCertificado="')
                             if(NoCertificado)
                                 obj.numero_certificado = text.substring(NoCertificado+15, NoCertificado + 35)
                         }
+                        if(obj.subtotal === ''){
+                            let Subtotal = text.search('SubTotal="')
+                            if(Subtotal)
+                                Subtotal = text.substring(Subtotal+10)
+                                aux = Subtotal.search('"')
+                                Subtotal = Subtotal.substring(0,aux)
+                                obj.subtotal = Subtotal
+                        }
+                        if(obj.fecha === ''){
+                            let Fecha = text.search('Fecha="')
+                            if(Fecha)
+                                Fecha = text.substring(Fecha+7)
+                                aux = Fecha.search('"')
+                                Fecha = Fecha.substring(0,aux)
+                                obj.fecha = Fecha
+                        }
                         let auxEmpresa = ''
                         data.empresas.find(function(element, index) {
-                            if(element.razon_social === obj.nombre_receptor){
+                            if(element.rfc === obj.rfc_emisor){
                                 auxEmpresa = element
                             }
                         });
                         let auxCliente = ''
                         data.clientes.find(function(element, index) {
-                            if(element.empresa === obj.nombre_emisor){
+                            if(element.empresa === obj.nombre_receptor){
                                 auxCliente = element
                             }
                         });
@@ -431,6 +452,9 @@ class Ventas extends Component{
                         if(auxCliente){
                             options['proyectos'] = setOptions(auxCliente.proyectos, 'nombre', 'id')
                             form.cliente = auxCliente.empresa
+                            if(auxCliente.contratos){
+                                options['contratos'] = setOptions(auxCliente.contratos, 'nombre', 'id')
+                            }
                         }else{
                             createAlert('No existe el cliente', '¿Lo quieres crear?', () => this.addClienteAxios(obj))
                         }
@@ -554,14 +578,26 @@ class Ventas extends Component{
         const data = new FormData();
 
         
-        data.append('empresa', obj.nombre_emisor)
-        data.append('nombre', obj.nombre_emisor)
-        data.append('rfc', obj.rfc_emisor)
+        data.append('empresa', obj.nombre_receptor)
+        data.append('nombre', obj.nombre_receptor)
+        data.append('rfc', obj.rfc_receptor)
 
         await axios.post(URL_DEV + 'cliente', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
 
-                this.getVentasAxios()
+                const { clientes, cliente } = response.data
+
+                const { options, data, form } = this.state
+                data.clientes = clientes
+                options['clientes'] = setOptions(clientes, 'empresa', 'id')
+                form.cliente = cliente.id.toString()
+
+                this.setState({
+                    ... this.state,
+                    form,
+                    data,
+                    options
+                })
                 
                 swal({
                     title: '¡Felicidades 🥳!',
@@ -823,11 +859,14 @@ class Ventas extends Component{
             (response) => {
 
                 const { ventas } = response.data
+                const { data } = this.state
+                data.ventas = ventas
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
                     modal: false,
-                    ventas: this.setVentas(ventas)
+                    ventas: this.setVentas(ventas),
+                    data
                 })
                 
                 swal({

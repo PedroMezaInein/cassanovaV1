@@ -207,8 +207,7 @@ class NewTable extends Component {
     }
     shouldComponentUpdate(nextProps) {
         if (nextProps.data !== this.props.data) {
-            this.reloadTableData(nextProps);
-            console.log(nextProps, 'next')
+            this.reloadTableData(nextProps)
         }
         return false;
 

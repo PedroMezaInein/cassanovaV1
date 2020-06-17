@@ -147,13 +147,13 @@ class EgresosForm extends Component{
                         }
                         let auxEmpresa = ''
                         data.empresas.find(function(element, index) {
-                            if(element.razon_social === obj.nombre_emisor){
+                            if(element.rfc === obj.rfc_receptor){
                                 auxEmpresa = element
                             }
                         });
                         let auxProveedor = ''
                         data.proveedores.find(function(element, index) {
-                            if(element.rfc === obj.rfc_receptor){
+                            if(element.razon_social === obj.nombre_emisor){
                                 auxProveedor = element
                             }
                         });
@@ -365,7 +365,7 @@ class EgresosForm extends Component{
                 const { options, data } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
-                options['proveedores'] = setOptions(proveedores, 'nombre', 'id')
+                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
                 options['tiposPagos'] = setSelectOptions( tiposPagos, 'tipo' )
                 options['tiposImpuestos'] = setSelectOptions( tiposImpuestos, 'tipo' )
                 options['estatusCompras'] = setSelectOptions( estatusCompras, 'estatus' )
