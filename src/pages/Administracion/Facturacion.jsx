@@ -18,8 +18,6 @@ import swal from 'sweetalert'
 import { Form } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-
-
 class Facturacion extends Component {
 
     state = {
@@ -67,8 +65,6 @@ class Facturacion extends Component {
         })
         return aux
     }
-
-  
 
     setDateTable = date => {
         return (
