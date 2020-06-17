@@ -184,13 +184,13 @@ class Ingresos extends Component {
                         }
                         let auxEmpresa = ''
                         data.empresas.find(function (element, index) {
-                            if (element.razon_social === obj.nombre_receptor) {
+                            if (element.rfc === obj.rfc_emisor) {
                                 auxEmpresa = element
                             }
                         });
                         let auxCliente = ''
                         data.clientes.find(function (element, index) {
-                            if (element.empresa === obj.nombre_emisor) {
+                            if (element.empresa === obj.nombre_receptor) {
                                 auxCliente = element
                             }
                         });

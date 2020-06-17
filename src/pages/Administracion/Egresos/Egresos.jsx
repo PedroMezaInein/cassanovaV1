@@ -152,13 +152,13 @@ class egresos extends Component{
                         }
                         let auxEmpresa = ''
                         data.empresas.find(function(element, index) {
-                            if(element.razon_social === obj.nombre_emisor){
+                            if(element.rfc === obj.rfc_receptor){
                                 auxEmpresa = element
                             }
                         });
                         let auxProveedor = ''
                         data.proveedores.find(function(element, index) {
-                            if(element.razon_social === obj.nombre_receptor){
+                            if(element.razon_social === obj.nombre_emisor){
                                 auxProveedor = element
                             }
                         });
