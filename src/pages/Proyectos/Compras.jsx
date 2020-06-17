@@ -458,9 +458,6 @@ class Compras extends Component{
                         }
                         let auxEmpresa = ''
                         data.empresas.find(function(element, index) {
-                            console.log(index, '---')
-                            console.log(element)
-                            console.log(obj.rfc_receptor)
                             if(element.rfc === obj.rfc_receptor){
                                 auxEmpresa = element
                             }
