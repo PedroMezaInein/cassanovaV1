@@ -59,7 +59,6 @@ class UrlLocation extends Component{
             }
         }else{
             for (let i = 0; i < modulos.length; i ++) {
-                console.log(modulos[i].slug, active, 'ACTIVE')
                 if (modulos[i].slug == active) {
                     
                     icon = modulos[i].icon               
@@ -68,7 +67,6 @@ class UrlLocation extends Component{
                     for (let j = 0; j < submodulo.length; j ++) {
                         if (submodulo[j].slug == paths[1]) {
                             submodulo_name = submodulo[j].name
-                            console.log(modulos[i], submodulo[j], 'TESTING')
                             break;
                         }else{
                         }
