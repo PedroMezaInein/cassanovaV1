@@ -1010,4 +1010,80 @@ export const EMPRESA_COLUMNS = [
     },
 ]
 
+export const CONTRATOS_CLIENTES_COLUMNS = [
+    {
+        Header: 'Opciones',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Cliente',
+        accessor: 'cliente'
+    },
+    {
+        Header: 'Empresa',
+        accessor: 'empresa'
+    },
+    {
+        Header: 'Fecha de inicio',
+        accessor: 'fechaInicio'
+    },
+    {
+        Header: 'Fecha de fin',
+        accessor: 'fechaFin'
+    },
+    {
+        Header: 'Monto con IVA',
+        accessor: 'monto'
+    },
+    {
+        Header: 'Monto acumulado',
+        accessor: 'acumulado'
+    },
+    {
+        Header: 'Tipo de contrato',
+        accessor: 'contrato'
+    },
+    {
+        Header: 'Descripción', //Cambié de Tipo de pago a Pago
+        accessor: 'descripcion'
+    }
+]
 
+export const CONTRATOS_PROVEEDORES_COLUMNS = [
+    {
+        Header: 'Opciones',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Proveedor',
+        accessor: 'proveedor'
+    },
+    {
+        Header: 'Empresa',
+        accessor: 'empresa'
+    },
+    {
+        Header: 'Fecha de inicio',
+        accessor: 'fechaInicio'
+    },
+    {
+        Header: 'Fecha de fin',
+        accessor: 'fechaFin'
+    },
+    {
+        Header: 'Monto con IVA',
+        accessor: 'monto'
+    },
+    {
+        Header: 'Monto acumulado',
+        accessor: 'acumulado'
+    },
+    {
+        Header: 'Tipo de contrato',
+        accessor: 'contrato'
+    },
+    {
+        Header: 'Descripción', //Cambié de Tipo de pago a Pago
+        accessor: 'descripcion'
+    }
+]
