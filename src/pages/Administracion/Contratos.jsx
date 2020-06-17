@@ -50,7 +50,8 @@ class Contratos extends Component {
             monto: '',
             tipoContrato: '',
             descripcion: '',
-            tipo: 'cliente'
+            tipo: 'cliente',
+            nombre: ''
         },
         title:'Nuevo contrato de cliente',
         tipo: 'Cliente',
@@ -120,6 +121,7 @@ class Contratos extends Component {
         form.descripcion = contrato.descripcion
         form.tipoContrato = contrato.tipo_contrato
         form.monto = contrato.monto
+        form.nombre = contrato.nombre
         modal.form = true
         this.setState({
             ... this.state,
@@ -220,8 +222,10 @@ class Contratos extends Component {
         contratos.map((contrato) => {
             aux.push({
                 actions: this.setActions(contrato, tipo),
+                nombre: renderToString(setTextTable(contrato.nombre)),
                 cliente: tipo === 'Cliente' && contrato.cliente ? renderToString(setTextTable(contrato.cliente.empresa)) : '',
                 proveedor: tipo === 'Proveedor' && contrato.proveedor ? renderToString(setTextTable(contrato.proveedor.razon_social)) : '',
+
                 fechaInicio: renderToString(setDateTable(contrato.fecha_inicio)),
                 fechaFin: renderToString(setDateTable(contrato.fecha_fin)),
                 monto: renderToString(setMoneyTable(contrato.monto)),
@@ -329,7 +333,7 @@ class Contratos extends Component {
         await axios.post(URL_DEV + 'contratos', form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { contratosClientes, contratosProveedores } = response.data
-                const { data, contratos } = this.state
+                const { data, contratos, modal } = this.state
 
                 swal({
                     title: '¡Felicidades 🥳!',
@@ -343,11 +347,14 @@ class Contratos extends Component {
                 contratos.proveedores = this.setContratos(contratosProveedores, 'Proveedor')
                 data.contratos.clientes = contratosClientes
                 contratos.clientes = this.setContratos(contratosClientes, 'Cliente')
+
+                modal.form = false
                 
                 this.setState({
                     ... this.state,
                     data,
-                    contratos
+                    contratos,
+                    modal
                 })
             },
             (error) => {

@@ -34,6 +34,12 @@ class ContratoForm extends Component {
         return (
             <Form {...props}>
                 <div className="form-group row form-group-marginless">
+                
+                    <div className="col-md-4">
+                        <Input placeholder="Nombre" name="nombre" onChange={onChange} value={form.nombre} iconclass={"fas fa-person-booth"}/>
+                        <span className="form-text text-muted">Por favor, ingrese un nombre. </span>
+                    </div>
+
                     <div className="col-md-4">
                         {
                             tipo === 'Cliente' ?
@@ -65,6 +71,21 @@ class ContratoForm extends Component {
                         </span>
                     </div>
                     <div className="col-md-4">
+                        <SelectSearch 
+                            options={options.empresas} 
+                            placeholder = "Selecciona la empresa" 
+                            name = "empresa" 
+                            value = { form.empresa } 
+                            onChange = { this.updateEmpresa }
+                            iconclass={"far fa-building"}
+                            />
+                        <span className="form-text text-muted">Por favor, selecciona la empresa.</span>
+                    </div>
+                    
+                </div>
+                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-4">
                         <Calendar 
                             onChangeCalendar = { this.handleChangeDateInicio }
                             placeholder = "Fecha de inicio"
@@ -91,24 +112,13 @@ class ContratoForm extends Component {
                         />
                         <span className="form-text text-muted">Por favor, ingrese su fecha de fin. </span>
                     </div>
-                </div>
-                <div class="separator separator-dashed mt-1 mb-2"></div>
-                <div className="form-group row form-group-marginless">
-                    <div className="col-md-4">
-                        <SelectSearch 
-                            options={options.empresas} 
-                            placeholder = "Selecciona la empresa" 
-                            name = "empresa" 
-                            value = { form.empresa } 
-                            onChange = { this.updateEmpresa }
-                            iconclass={"far fa-building"}
-                            />
-                        <span className="form-text text-muted">Por favor, selecciona la empresa.</span>
-                    </div>
                     <div className="col-md-4">
                         <InputMoney thousandSeparator={true}  prefix = { '$' } name = "monto" value = { form.monto } onChange = { onChange } placeholder="Monto con IVA" iconclass={"fas fa-money-bill-wave-alt"}/>
                         <span className="form-text text-muted">Por favor, ingrese el monto con IVA. </span>
                     </div>
+                </div>
+                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <RadioGroup
                             name = 'tipoContrato'
