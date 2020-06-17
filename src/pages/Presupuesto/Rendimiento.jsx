@@ -265,7 +265,7 @@ class Rendimientos extends Component {
                 const { options } = this.state
                 data.rendimientos = rendimientos
                 options['unidades'] = setOptions(unidades, 'nombre', 'id')
-                options['proveedores'] = setOptions(proveedores, 'nombre', 'id')
+                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
                 this.setState({
                     ... this.state,
                     options,

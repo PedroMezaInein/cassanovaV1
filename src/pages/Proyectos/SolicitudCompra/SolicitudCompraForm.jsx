@@ -259,7 +259,7 @@ class SolicitudCompraForm extends Component{
                 const { empresas, areas, tiposPagos, proveedores, proyectos } = response.data
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
-                options['proveedores'] = setOptions(proveedores, 'nombre', 'id')
+                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
                 options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
                 options['tiposPagos'] = setSelectOptions( tiposPagos, 'tipo' )
