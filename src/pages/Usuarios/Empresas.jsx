@@ -13,6 +13,7 @@ import { EmpresaForm } from '../../components/forms'
 import swal from 'sweetalert'
 import NewTable from '../../components/tables/NewTable'
 import { EMPRESA_COLUMNS, DARK_BLUE } from '../../constants'
+import { setTextTable } from '../../functions/setters'
 class Empresas extends Component{
 
     state= {
@@ -24,7 +25,8 @@ class Empresas extends Component{
             name: '',
             razonSocial: '',
             logo: '',
-            file: []
+            file: [],
+            rfc: ''
         },
         data: {
             empresas: []
@@ -101,8 +103,9 @@ class Empresas extends Component{
         empresas_list.map((empresa, key) => {
             empresas[key] = {
                 actions: this.setActions(empresa),
-                name: renderToString(empresa.name),
-                razonSocial: renderToString(empresa.razon_social),
+                name: renderToString(setTextTable(empresa.name)),
+                razonSocial: renderToString(setTextTable(empresa.razon_social)),
+                rfc: renderToString(setTextTable(empresa.rfc)),
                 logo: renderToString(empresa.logo !== null ? <img className="logo" src={empresa.logo} alt={empresa.name} /> : 'No hay logo'),
                 id: empresa.id
             }
@@ -170,7 +173,8 @@ class Empresas extends Component{
                 name: emp.name,
                 razonSocial: emp.razon_social,
                 logo: '',
-                file: emp.logo
+                file: emp.logo,
+                rfc: emp.rfc
             },
             title: 'Editar la empresa',
             formAction: 'Edit'
@@ -186,7 +190,8 @@ class Empresas extends Component{
                 name: '',
                 razonSocial: '',
                 logo: '',
-                file: ''
+                file: '',
+                rfc: ''
             },
             img: '',
             title: 'Nueva empresa',
@@ -281,6 +286,7 @@ class Empresas extends Component{
         data.append('name', form.name)
         data.append('razonSocial', form.razonSocial)
         data.append('logo', form.file)
+        data.append('rfc', form.rfc)
         await axios.post(URL_DEV + 'empresa/' +empresa, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
                 const { data: {empresas: empresas} } = response
@@ -328,6 +334,7 @@ class Empresas extends Component{
         data.append('name', form.name)
         data.append('razonSocial', form.razonSocial)
         data.append('logo', form.file)
+        data.append('rfc', form.rfc)
         await axios.post(URL_DEV + 'empresa', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
                 const { data: {empresas: empresas} } = response

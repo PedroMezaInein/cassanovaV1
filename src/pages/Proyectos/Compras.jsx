@@ -455,13 +455,16 @@ class Compras extends Component{
                         }
                         let auxEmpresa = ''
                         data.empresas.find(function(element, index) {
-                            if(element.razon_social === obj.nombre_emisor){
+                            console.log(index, '---')
+                            console.log(element)
+                            console.log(obj.rfc_receptor)
+                            if(element.rfc === obj.rfc_receptor){
                                 auxEmpresa = element
                             }
                         });
                         let auxProveedor = ''
                         data.proveedores.find(function(element, index) {
-                            if(element.rfc === obj.rfc_receptor){
+                            if(element.razon_social === obj.nombre_emisor){
                                 auxProveedor = element
                             }
                         });
@@ -663,14 +666,26 @@ class Compras extends Component{
 
         const data = new FormData();
 
-        data.append('nombre', obj.nombre_receptor)
-        data.append('razonSocial', obj.nombre_receptor)
-        data.append('rfc', obj.rfc_receptor)
+        data.append('nombre', obj.nombre_emisor)
+        data.append('razonSocial', obj.nombre_emisor)
+        data.append('rfc', obj.rfc_emisor)
 
         await axios.post(URL_DEV + 'proveedores', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
 
-                this.getComprasAxios()
+                const { proveedores, proveedor } = response.data
+
+                const { options, data, form } = this.state
+                data.proveedores = proveedores
+                options['proveedores'] = setOptions(proveedores, 'nombre', 'id')
+                form.proveedor = proveedor.id.toString()
+
+                this.setState({
+                    ... this.state,
+                    data,
+                    options,
+                    form
+                })
                 
                 swal({
                     title: '¡Felicidades 🥳!',

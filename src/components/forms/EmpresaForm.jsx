@@ -27,6 +27,10 @@ class EmpresaForm extends Component{
                             <span className="form-text text-muted">Por favor, ingrese su razón social. </span>
                         </div>
                         <div className="col-md-4">
+                            <Input onChange={ onChange } required name="rfc" type="text" value={ form.rfc } placeholder="RFC" iconclass={"fas fa-users-cog"}/>
+                            <span className="form-text text-muted">Por favor, ingrese su RFC. </span>
+                        </div>
+                        <div className="col-md-4">
                         <div className="image-upload">
                             <Input
                                 onChange={ onChange }

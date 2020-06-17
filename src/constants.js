@@ -1005,6 +1005,10 @@ export const EMPRESA_COLUMNS = [
         accessor: 'razonSocial',
     },
     {
+        Header: 'RFC',
+        accessor: 'rfc',
+    },
+    {
         Header: 'Logo',
         accessor: 'logo',
     },
