@@ -112,7 +112,7 @@ class Layout extends Component {
                                                     }
                                                 </span>
                                                 <span className="symbol symbol-35 symbol-light-primary">
-                                                    <button className="symbol-label font-size-h5 font-weight-bold">O</button>
+                                                    <span className="symbol-label font-size-h5 font-weight-bold">O</span>
                                                 </span>                                                
                                             </div>
                                     </div>
