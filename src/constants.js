@@ -320,7 +320,7 @@ export const CUENTAS_COLUMNS = [
 
 export const EDOS_CUENTAS_COLUMNS = [
     {
-        Header: '',
+        Header: 'Opciones',
         accessor: 'actions',
     },
     {
