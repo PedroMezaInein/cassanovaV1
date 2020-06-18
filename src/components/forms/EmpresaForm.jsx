@@ -48,13 +48,13 @@ class EmpresaForm extends Component{
                         {
                             (img === '' ) && (form.file !== '' && form.file !== undefined && form.file !== null) &&
                                 <div className="p-3 position-relative">
-                                    <img className='w-100' src={form.file } />
+                                    <img className='max-h-70px' src={form.file } />
                                 </div>
                         }
                         {
                             form.logo &&
                                 <div className="p-3 position-relative">
-                                    <img value={img} className='w-100' src={ img } />
+                                    <img value={img} className='max-h-70px' src={ img } />
                                     <Button className="position-absolute delete-item " 
                                         onClick={removeFile} text='' icon={faTimesCircle}/>
                                 </div>
