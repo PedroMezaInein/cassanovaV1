@@ -1,0 +1,118 @@
+import React, { Component } from 'react'
+import { renderToString } from 'react-dom/server'
+//
+import { connect } from 'react-redux'
+import axios from 'axios'
+import swal from 'sweetalert'
+import { URL_DEV, UTILIDADES_COLUMNS, GOLD } from '../../constants'
+
+// Functions
+import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setPercentTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
+import { waitAlert, errorAlert, createAlert,forbiddenAccessAlert } from '../../functions/alert'
+//
+import Layout from '../../components/layout/layout'
+import { Button, FileInput } from '../../components/form-components'
+import { Modal, ModalDelete } from '../../components/singles'
+import { faPlus, faLink, faEdit, faTrash, faReceipt, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons'
+import { VentasForm, FacturaForm } from '../../components/forms'
+import { DataTable, FacturaTable } from '../../components/tables'
+import Subtitle from '../../components/texts/Subtitle'
+import { Form, ProgressBar } from 'react-bootstrap'
+import NewTable from '../../components/tables/NewTable'
+
+class Utilidad extends Component {
+
+    state = {
+        utilidades: [],
+        data:{
+            utilidades: []
+        }
+    }
+
+    componentDidMount() {
+        const { authUser: { user: { permisos: permisos } } } = this.props
+        const { history: { location: { pathname: pathname } } } = this.props
+        const { history } = this.props
+        const proyectos = permisos.find(function (element, index) {
+            const { modulo: { url: url } } = element
+            return pathname === url
+        })
+        if (!proyectos)
+            history.push('/')
+        this.getUtilidadesAxios()
+    }
+
+    setUtilidades = utilidades => {
+        let aux = []
+        utilidades.map((utilidad) => {
+            console.log(utilidad, 'UTILIDAD')
+            aux.push({
+                proyecto: renderToString(setTextTable(utilidad.nombre)),
+                ventas: renderToString(setMoneyTable(utilidad.ventas_count)),
+                compras: renderToString(setMoneyTable(utilidad.compras_count)),
+                utilidad: renderToString(setMoneyTable(utilidad.ventas_count-utilidad.compras_count)),
+                margen: utilidad.ventas_count > 0 ? 
+                    renderToString(setPercentTable((utilidad.ventas_count-utilidad.compras_count)*100/utilidad.ventas_count))
+                    : renderToString(setPercentTable(0)), 
+                id: utilidad.id
+            })
+        })
+        return aux
+    }
+
+    async getUtilidadesAxios(){
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'proyectos/utilidad', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { utilidades } = response.data
+                const { data } = this.state
+                data.utilidades = utilidades
+                this.setState({
+                    utilidades: this.setUtilidades(utilidades),
+                    data
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    render() {
+        const { utilidades, data } = this.state
+        return (
+            <Layout active={'proyectos'}  {...this.props}>
+                <NewTable 
+                    columns = { UTILIDADES_COLUMNS } 
+                    data = { utilidades }
+                    title = 'Utilidad' 
+                    subtitle = 'Listado de utilidad por proyecto'
+                    mostrar_boton = { false }
+                    abrir_modal = { false }
+                    mostrar_acciones = { false }
+                    elements = { data.utilidades }
+                />
+            </Layout>
+        )
+    }
+}
+
+
+const mapStateToProps = state => {
+    return {
+        authUser: state.authUser
+    }
+}
+
+const mapDispatchToProps = dispatch => ({
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Utilidad);

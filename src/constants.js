@@ -1099,3 +1099,26 @@ export const CONTRATOS_PROVEEDORES_COLUMNS = [
         accessor: 'descripcion'
     }
 ]
+
+export const UTILIDADES_COLUMNS = [
+    {
+        Header: 'Proyecto',
+        accessor: 'proyecto',
+    },
+    {
+        Header: 'Ventas',
+        accessor: 'ventas'
+    },
+    {
+        Header: 'Compras',
+        accessor: 'compras'
+    },
+    {
+        Header: 'Utilidad',
+        accessor: 'utilidad'
+    },
+    {
+        Header: 'Margen',
+        accessor: 'margen'
+    }
+]
