@@ -55,7 +55,6 @@ class EstadosCuenta extends Component {
     setEstados = estados => {
         let aux = []
         estados.map((estado, key) => {
-            console.log(estado.cuentas[0].numero, 'estado')
             aux.push({
 
                 actions: this.setActions(estado),
@@ -408,8 +407,6 @@ class EstadosCuenta extends Component {
     }
     render() {
         const { modal, modalDelete, adjunto, adjuntoName, adjuntoFile, cuentas, cuenta, estados, fecha, data,title } = this.state
-        console.log(estados, 'egresos -')
-        console.log(data.estados)
         return (
             <Layout active={'bancos'}  {...this.props}>
                 {/* <div className="text-right">

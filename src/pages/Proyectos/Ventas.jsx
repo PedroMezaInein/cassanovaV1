@@ -248,10 +248,8 @@ class Ventas extends Component{
 
     //Setter
     setVentas = ventas => {
-        console.log(ventas, 'ventas')
         let aux = []
         ventas.map( (venta) => {
-            console.log(venta, 'venta')
             aux.push(
                 {
                     actions: this.setActions(venta),
@@ -1057,8 +1055,6 @@ class Ventas extends Component{
     render(){
 
         const { modal, modalDelete, modalFacturas, modalAskFactura, title, options, form, ventas, venta, porcentaje, facturas,data } = this.state
-        console.log(ventas)
-        console.log(data.ventas)
         return(
             <Layout active={'proyectos'}  { ...this.props}>
                 {/*<div className="text-right">

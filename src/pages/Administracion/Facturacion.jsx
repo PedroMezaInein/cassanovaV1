@@ -31,9 +31,7 @@ class Facturacion extends Component {
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props
-        console.log(pathname, 'pahtname')
         let aux = pathname.substr(1, pathname.length-1)
-        console.log(aux.split('/'))
         const facturas = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
             return pathname === url
@@ -205,8 +203,6 @@ class Facturacion extends Component {
 
     render() {
         const { facturas, data } = this.state
-        console.log(facturas, "-facturas")
-        console.log(data)
         return (
             <Layout active={'administracion'}  {...this.props}>
 

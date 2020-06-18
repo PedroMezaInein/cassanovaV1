@@ -134,7 +134,6 @@ class Remisiones extends Component{
     }
 
     changePageConvert = remision => {
-        console.log(remision, 'remision')
         const { history } = this.props
         history.push({
             pathname: '/proyectos/solicitud-compra/convert',

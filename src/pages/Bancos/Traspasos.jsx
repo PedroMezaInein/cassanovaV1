@@ -94,7 +94,6 @@ class Traspasos extends Component{
     onSubmit = e =>{
         e.preventDefault()
         const { origen, destino } = this.state.form
-        console.log(origen, destino)
         if(origen === destino){
             swal({
                 title: '¡Error!',

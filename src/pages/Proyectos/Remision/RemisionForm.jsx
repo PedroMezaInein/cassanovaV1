@@ -71,7 +71,6 @@ class RemisionForm extends Component{
                         {
                             if(remision.subarea.area){
                                 if(remision.subarea.area.subareas){
-                                    console.log(remision.subarea, 'subarea')
                                     options.subareas = setOptions(remision.subarea.area.subareas, 'nombre', 'id')
                                     form.area = remision.subarea.area.id.toString()
                                     form.subarea = remision.subarea.id.toString()

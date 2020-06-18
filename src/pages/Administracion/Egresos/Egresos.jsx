@@ -620,8 +620,6 @@ class egresos extends Component{
 
     render(){
         const { egresos, modalDelete, modalFacturas, egreso, facturas, porcentaje, form, data } = this.state
-        console.log(egresos, 'egresos -')
-        console.log(data.egresos)
         return(
             <Layout active={'administracion'}  { ...this.props}>
                 {/* <div className="text-right">

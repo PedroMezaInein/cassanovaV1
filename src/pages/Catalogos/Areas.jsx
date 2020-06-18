@@ -440,8 +440,6 @@ class Areas extends Component {
 
     render() {
         const { form, areas, modal, modalDelete, title, data } = this.state
-        //console.log(areas)
-        //console.log(data.areas)
         return (
             <Layout active={'catalogos'}  {...this.props}>
                 {/*} <div className="text-right">

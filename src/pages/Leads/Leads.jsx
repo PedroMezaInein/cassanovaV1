@@ -70,7 +70,6 @@ class Leads extends Component{
         let aux = []
 
         leads.map((lead) => {
-            console.log('lead', lead)
             aux.push({
                 Nombre: lead.nombre,
                 Teléfono: lead.telefono,
@@ -688,8 +687,6 @@ class Leads extends Component{
 
     render(){
         const { leads, modalAdd, form, origenes, empresas, servicios, title, tipoForm, modalDelete, leadId, modalConvert, convertir,data } = this.state
-        console.log(leads)
-        console.log(data.leads)
         return(
             <Layout active={'leads'}  { ...this.props}>
                 {/*<div className="text-right d-flex justify-content-end">

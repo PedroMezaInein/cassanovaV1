@@ -28,7 +28,6 @@ class NewTable extends Component {
 
         $(this.refs.main).on('click', '.btn-actions-table', function (e) {
             e.preventDefault();
-            console.log("Boton clic")
             var id = $(this).attr('id').toString()
             var name = $(this).attr('name').toString()
             let aux = elements.find(function (element, index) {
@@ -38,10 +37,6 @@ class NewTable extends Component {
 
                 }
             });
-            console.log(id, name, aux, 'Last')
-            //  console.log(actions)
-            // console.log(actions[name])
-
             actions[name].function(aux)
         });
 
@@ -154,8 +149,6 @@ class NewTable extends Component {
                         let aux = ''
                         {
                             data.map((element) => {
-                                //console.log(element)
-                                // console.log(row)
                                 aux = aux + /* `<input type="button" onClick = { console.log('hola')} value="Edit" class="btnEdit sfBtn sfPrimaryBtn sfLocale" />` */
                                     `<button name=${element.action}  id = ${row.id} class="ml-2 btn btn-actions-table btn-xs btn-icon btn-text-${element.btnclass} btn-hover-${element.btnclass}" title=${element.text}><i class=${element.iconclass}></i></button>`
                             })
@@ -193,7 +186,6 @@ class NewTable extends Component {
                     return element    
                 }
             }); 
-            console.log(id, name, aux, 'first')
             actions[name].function(aux) */
         });
     

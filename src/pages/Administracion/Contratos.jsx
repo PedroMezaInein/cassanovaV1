@@ -237,7 +237,6 @@ class Contratos extends Component {
                 id: contrato.id
             })
         })
-        console.log(aux, 'aux')
         return aux
     }
 
@@ -304,7 +303,6 @@ class Contratos extends Component {
                 
                 data.contratos.proveedores = contratosProveedores
                 contratos.proveedores = this.setContratos(contratosProveedores, 'Proveedor')
-                console.log(contratosProveedores, 'contratos proveedores')
                 data.contratos.clientes = contratosClientes
                 contratos.clientes = this.setContratos(contratosClientes, 'Cliente')
                 
