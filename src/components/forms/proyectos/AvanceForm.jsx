@@ -82,7 +82,7 @@ class AvanceForm extends Component {
                             return(
                                 <>
                                     <div className="row mx-0" key = { key }>
-                                        <div className = "col-md-6 px-2">
+                                        <div className = "col-md-4 px-2">
                                             <FileInput
                                                 onChangeAdjunto={ e => onChangeAdjuntoAvance(e, key, 'adjuntos') }
                                                 placeholder={form['avances'][key]['adjuntos']['placeholder']}
@@ -97,11 +97,16 @@ class AvanceForm extends Component {
                                         <div className = "col-md-6 px-2">
                                             <Input
                                                 as = "textarea"
-                                                rows = "3"
+                                                rows = "1"
                                                 placeholder = "Descripción" 
                                                 name = "descripcion" 
                                                 value = {form['avances'][key]['descripcion']} 
                                                 onChange = { e => onChangeAvance(key, e, 'descripcion')} />
+                                        </div>
+                                        <div className = "col-md-2 px-2">
+                                            <InputMoney thousandSeparator={false}  prefix = { '%' } name = "avance" 
+                                                value = { form.avance } onChange = { e => onChangeAvance(key, e, 'avance') } 
+                                                placeholder="% de avance" iconclass={"fas fa-percent"}/>
                                         </div>
                                     </div>
                                     <hr />

@@ -146,6 +146,7 @@ class Proyectos extends Component {
             avances:[
                 {
                     descripcion: '',
+                    avance: '',
                     adjuntos: {
                         value: '',
                         placeholder: 'Fotos del avance',
@@ -515,6 +516,7 @@ class Proyectos extends Component {
                 case 'avances':
                     form[element] = [{
                         descripcion: '',
+                        avance: '',
                         adjuntos: {
                             value: '',
                             placeholder: 'Fotos del avance',
@@ -1049,6 +1051,7 @@ class Proyectos extends Component {
                     data.append(`files_name[]`, avance.adjuntos.files[i].name)
                     data.append(`files[]`, avance.adjuntos.files[i].file)
                     data.append(`files_descripcion[]`, avance.descripcion)
+                    data.append(`files_avance[]`, avance.avance)
                 }
             }
         })
