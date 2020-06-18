@@ -22,13 +22,15 @@ class Login extends Component{
         
         return(
             
-             <div class="vh-100 d-flex flex-column flex-root">
+            <div class="vh-100 d-flex flex-column flex-root">
                     <div class="login login-3 login-signin-on d-flex flex-row-fluid" id="kt_login" >
                         <div class="d-flex flex-center bgi-size-cover bgi-no-repeat flex-row-fluid" style ={ { backgroundImage: "url('/bg-2.jpg')" } }>
                             <div class="login-form text-center text-white p-7 position-relative overflow-hidden">
                                 <div class="d-flex flex-center mb-15">
                                     <a href="#" >
-                                        <img src="/inein.png" class="max-h-75px" alt="" />
+                                        <img src="/inein.png" class="max-h-75px  mr-5" alt="" />
+                                        <img src="/im.png" class="max-h-75px ml-5 mr-5" alt="" />
+                                        <img src="/Rocco.png" class="max-h-75px ml-5" alt="" />
                                     </a>
                                 </div>
                                 <div class="login-signin">
