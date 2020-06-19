@@ -222,9 +222,10 @@ class Cuentas extends Component {
         let aux = []
         estados.map((estado, key) => {
             aux.push({
-                actions: this.setAction(estado.id),
-                estado: setArrayTable([{ url: estado.url, text: estado.name }]),
-                fecha: setDateTable(estado.created_at)
+                actions: this.setActionsEstado(estado),
+                estado: renderToString(setArrayTable([{ url: estado.url, text: estado.name }])),
+                fecha: renderToString(setDateTable(estado.created_at)),
+                id:estado.id
             })
         })
         this.setState({
@@ -252,7 +253,49 @@ class Cuentas extends Component {
         )
     }
 
-    setAction = (id) => {
+    setActionsEstado = estado => {
+        let aux = []
+        aux.push(
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',
+                action: 'deleteAction',
+                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
+            }            
+        )        
+        return aux
+    }
+
+    SwaDeleteEstado = (estado) => {
+        alert("Entre")
+        swal({
+            title: '¿Estás seguro?',
+            icon: 'warning',
+            buttons: {
+                cancel: {
+                    text: "Cancelar",
+                    value: null,
+                    visible: true,
+                    className: "button__green btn-primary cancel",
+                    closeModal: true,
+                },
+                confirm: {
+                    text: "Aceptar",
+                    value: true,
+                    visible: true,
+                    className: "button__red btn-primary",
+                    closeModal: true
+                }
+            }
+        }).then((result) => {
+            if (result) {
+                this.deleteEstadoAxios(estado.id)                
+            }            
+        })
+    } 
+
+    /*setActionsEstado = (estado) => {
         return (
             <>
                 <div className="d-flex align-items-center flex-column flex-md-row">
@@ -279,7 +322,7 @@ class Cuentas extends Component {
                                 }
                             }).then((result) => {
                                 if (result) {
-                                    this.deleteEstadoAxios(id)
+                                    this.deleteEstadoAxios(estado.id)
                                 }
                             })
                         }} />
@@ -287,8 +330,7 @@ class Cuentas extends Component {
             </>
         )
     }
-
-
+*/
 
     setText = text => {
         return (
@@ -479,9 +521,10 @@ class Cuentas extends Component {
         let aux = []
         cuenta.estados.map((estado, key) => {
             aux.push({
-                actions: this.setAction(estado.id),
-                estado: setArrayTable([{ url: estado.url, text: estado.name }]),
-                fecha: setDateTable(estado.created_at)
+                actions: this.setActionsEstado(estado.id),
+                estado: renderToString(setArrayTable([{ url: estado.url, text: estado.name }])),
+                fecha: renderToString(setDateTable(estado.created_at)),
+                id:estado.id
             })
         })
         this.setState({
@@ -497,6 +540,7 @@ class Cuentas extends Component {
             modalDelete: true,
             cuenta: cuenta
         })
+        
     }
 
     // Axios
@@ -869,10 +913,19 @@ class Cuentas extends Component {
                             </div>
                         </div>
                     </Form>
-                    {
-                        estados.length > 0 && <DataTable columns={EDOS_CUENTAS_COLUMNS} data={estados} />
+                    {/* estados.length > 0 &&  <NewTable columns={EDOS_CUENTAS_COLUMNS} data={estados} />*/}
+                    {     
+                        estados.length > 0 &&   
+                        <NewTable 
+                            columns={EDOS_CUENTAS_COLUMNS} 
+                            data={estados} 
+                            mostrar_acciones={true}
+                            actions={{
+                                'deleteAction': { function: this.SwaDeleteEstado}
+                            }}
+                            elements={data.cuentas}
+                        />
                     }
-
                 </Modal>
             </Layout>
         )
