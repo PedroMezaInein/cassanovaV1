@@ -691,6 +691,17 @@ export const UNIDADES_COLUMNS = [
     }
 ]
 
+export const TIPOS_COLUMNS = [
+    {
+        Header: 'OPCIONES',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Tipo',
+        accessor: 'tipo'
+    }
+]
+
 export const PROYECTOS_COLUMNS = [
     {
         Header: 'OPCIONES',

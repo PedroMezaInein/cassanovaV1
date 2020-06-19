@@ -62,6 +62,7 @@ const RemisionForm = Loader(() => import('./pages/Proyectos/Remision/RemisionFor
 const Areas = Loader( () => import('./pages/Catalogos/Areas') )
 const Partidas = Loader( () => import('./pages/Catalogos/Partidas') )
 const Unidades = Loader( () => import('./pages/Catalogos/Unidades') )
+const TiposContratos = Loader( () => import('./pages/Catalogos/TiposContratos') )
 
 class App extends Component{
     async componentDidMount(){
@@ -172,6 +173,7 @@ class App extends Component{
                 <Route path = "/catalogos/areas" exact component ={ Areas } />
                 <Route path = "/catalogos/partidas" exact component ={ Partidas } />
                 <Route path = "/catalogos/unidades" exact component ={ Unidades } />
+                <Route path = "/catalogos/tipos-contratos" exact component ={ TiposContratos } />
             </>
         )
     }
