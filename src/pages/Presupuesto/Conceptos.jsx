@@ -27,20 +27,18 @@ class Conceptos extends Component {
         modalDelete: false,
         title: 'Nuevo concepto',
         options: {
-            categorias: [],
-            unidades: []
+            unidades: [],
+            partidas: [],
+            subpartidas: []
         },
         data: {
             conceptos: []
         },
         form: {
             unidad: '',
-            categoria: '',
+            partida: '',
+            subpartida: '',
             descripcion: '',
-            manoObra: '',
-            herramienta: '',
-            materiales: '',
-            clave: '',
             costo: ''
         },
         conceptos: [],
@@ -61,8 +59,11 @@ class Conceptos extends Component {
     }
 
     openModal = () => {
+        const { options } = this.state
+        options.subpartidas = []
         this.setState({
             ... this.state,
+            options,
             modal: true,
             title: 'Nuevo concepto',
             form: this.clearForm()
@@ -70,25 +71,27 @@ class Conceptos extends Component {
     }
 
     openModalEdit = (concepto) => {
-        const { form } = this.state
-
-        form.manoObra = concepto.manoObra
-        form.herramienta = concepto.herramienta
-        form.materiales = concepto.materiales
+        const { form, options } = this.state
 
         form.descripcion = concepto.descripcion
-        form.clave = concepto.clave
         form.costo = concepto.costo
 
-        form.categoria = concepto.categoria.id.toString()
         form.unidad = concepto.unidad.id.toString()
 
+        if(concepto.subpartida){
+            if(concepto.subpartida.partida){
+                form.partida = concepto.subpartida.partida.id.toString()
+                options['subareas'] = setOptions(concepto.subpartida.partida.subpartidas, 'nombre', 'id')
+                form.subpartida = concepto.subpartida.id.toString()
+            }
+        }
         this.setState({
             ... this.state,
             modal: true,
             title: 'Editar concepto',
             form,
-            concepto: concepto
+            concepto: concepto,
+            options
         })
     }
 
@@ -101,10 +104,12 @@ class Conceptos extends Component {
     }
 
     handleClose = () => {
-        const { modal } = this.state
+        const { modal, options } = this.state
+        options.subpartidas = []
         this.setState({
             ... this.state,
             modal: !modal,
+            options,
             title: 'Nuevo concepto',
             concepto: '',
             form: this.clearForm()
@@ -126,34 +131,18 @@ class Conceptos extends Component {
             aux.push(
                 {
                     actions: this.setActions(concepto),
-                    categoria: concepto.categoria ? renderToString(setTextTable(concepto.categoria.nombre)) : '',
                     clave: renderToString(setTextTable(concepto.clave)),
                     descripcion: renderToString(setTextTable(concepto.descripcion)),
                     unidad: concepto.unidad ? renderToString(setTextTable(concepto.unidad.nombre)) : '',
                     costo: renderToString(setMoneyTable(concepto.costo)),
-                    materiales: renderToString(setTextTable(concepto.materiales)),
-                    manoObra: renderToString(setTextTable(concepto.mano_obra)),
-                    herramienta: renderToString(setTextTable(concepto.herramienta)),
+                    partida: concepto.subpartida ? concepto.subpartida.partida ? renderToString(setTextTable(concepto.subpartida.partida.nombre)) : '' : '',
+                    subpartida: concepto.subpartida ? renderToString(setTextTable(concepto.subpartida.nombre)) : '',
                     id: concepto.id
                 }
             )
         })
         return aux
     }
-    /*
-        setActions = concepto => {
-            return(
-                <>
-                    <div className="d-flex align-items-center flex-column flex-md-row">
-                        <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalEdit(concepto)} } text='' icon={faEdit} color="transparent" 
-                            tooltip={{id:'edit', text:'Editar'}} />
-                        <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalDelete(concepto)} } text='' icon={faTrash} color="red" 
-                            tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
-                    </div>
-                </>
-            )
-        }
-    */
     setActions = concepto => {
         let aux = []
         aux.push(
@@ -173,6 +162,14 @@ class Conceptos extends Component {
             }
         )
         return aux
+    }
+    setOptions = (name, array) => {
+        const {options} = this.state
+        options[name] = setOptions(array, 'nombre', 'id')
+        this.setState({
+            ... this.state,
+            options
+        })
     }
 
     clearForm = () => {
@@ -213,11 +210,11 @@ class Conceptos extends Component {
         await axios.get(URL_DEV + 'conceptos', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { data } = this.state
-                const { unidades, categorias, conceptos } = response.data
+                const { unidades, partidas, conceptos } = response.data
                 const { options } = this.state
                 data.conceptos = conceptos
                 options['unidades'] = setOptions(unidades, 'nombre', 'id')
-                options['categorias'] = setOptions(categorias, 'nombre', 'id')
+                options['partidas'] = setOptions(partidas, 'nombre', 'id')
                 this.setState({
                     ... this.state,
                     options,
@@ -397,17 +394,11 @@ class Conceptos extends Component {
 
         return (
             <Layout active={'presupuesto'}  {...this.props}>
-                {/*
-                <div className="text-right">
-                    <Button className="small-button ml-auto mr-4" onClick={(e) => { this.openModal() }} text='' icon={faPlus} color="green" />
-                </div>
-                */}        
                 <Modal title={title} show={modal} handleClose={this.handleClose} >
-                    <ConceptoForm  form={form} options={options}
+                    <ConceptoForm  form={form} options={options} setOptions = { this.setOptions }
                         onChange={this.onChange} onSubmit = { this.onSubmit }/>
                 </Modal>
 
-                {/* <DataTable columns = { CONCEPTOS_COLUMNS } data = { conceptos } />*/}
                 <NewTable columns={CONCEPTOS_COLUMNS} data={conceptos}
                     title='Conceptos' subtitle='Listado de conceptos'
                     mostrar_boton={true}

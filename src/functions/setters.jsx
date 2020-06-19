@@ -25,7 +25,12 @@ export function setOptions( arreglo, name, value ){
                     }
                     
                 }else{
-                    aux.push({ name: element[name], value: element[value].toString() } )
+                    if(element.hasOwnProperty('subpartidas')){
+                        aux.push({ name: element[name], value: element[value].toString(), subpartidas: element['subpartidas'] } )
+                    }else{
+                        aux.push({ name: element[name], value: element[value].toString() } )
+                    }
+                    
                 }
             }
         }

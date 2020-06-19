@@ -680,6 +680,17 @@ export const PARTIDAS_COLUMNS = [
     }
 ]
 
+export const UNIDADES_COLUMNS = [
+    {
+        Header: 'OPCIONES',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Unidad',
+        accessor: 'unidad'
+    }
+]
+
 export const PROYECTOS_COLUMNS = [
     {
         Header: 'OPCIONES',
@@ -911,8 +922,12 @@ export const CONCEPTOS_COLUMNS = [
         accessor: 'actions',
     },
     {
-        Header: 'Categoria',
-        accessor: 'categoria'
+        Header: 'Partida',
+        accessor: 'partida'
+    },
+    {
+        Header: 'Subpartida',
+        accessor: 'subpartida'
     },
     {
         Header: 'Clave',
@@ -929,18 +944,6 @@ export const CONCEPTOS_COLUMNS = [
     {
         Header: 'Costo',
         accessor: 'costo'
-    },
-    {
-        Header: 'Materiales',
-        accessor: 'materiales'
-    },
-    {
-        Header: 'Mano de obra',
-        accessor: 'manoObra'
-    },
-    {
-        Header: 'Herramienta',
-        accessor: 'herramienta'
     }
 ]
 
