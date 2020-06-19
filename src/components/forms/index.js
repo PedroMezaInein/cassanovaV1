@@ -13,6 +13,7 @@ import ingresosForm from './administracion/IngresosForm'
 import egresosForm from './administracion/EgresosForm'
 import proveedorForm from './administracion/ProveedorForm'
 import areasForm from './catalogos/AreaForm'
+import partidaForm from './catalogos/PartidaForm'
 import proyectosForm from './proyectos/ProyectosForm'
 import avanceForm from './proyectos/AvanceForm'
 import ventasForm from './proyectos/VentasForm'
@@ -38,6 +39,7 @@ export const IngresosForm = ingresosForm
 export const EgresosForm = egresosForm
 export const ProveedorForm = proveedorForm
 export const AreasForm = areasForm
+export const PartidaForm = partidaForm
 export const ProyectosForm = proyectosForm
 export const AvanceForm = avanceForm
 export const VentasForm = ventasForm

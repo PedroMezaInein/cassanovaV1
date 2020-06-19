@@ -60,6 +60,7 @@ const Remision = Loader(() => import('./pages/Proyectos/Remision/Remision') )
 const RemisionForm = Loader(() => import('./pages/Proyectos/Remision/RemisionForm') )
 
 const Areas = Loader( () => import('./pages/Catalogos/Areas') )
+const Partidas = Loader( () => import('./pages/Catalogos/Partidas') )
 
 class App extends Component{
     async componentDidMount(){
@@ -168,6 +169,7 @@ class App extends Component{
                 <Route path = "/normas" exact component ={ Normas } />
 
                 <Route path = "/catalogos/areas" exact component ={ Areas } />
+                <Route path = "/catalogos/partidas" exact component ={ Partidas } />
             </>
         )
     }

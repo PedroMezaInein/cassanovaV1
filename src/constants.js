@@ -665,6 +665,21 @@ export const AREAS_COLUMNS = [
     }
 ]
 
+export const PARTIDAS_COLUMNS = [
+    {
+        Header: 'OPCIONES',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Partida',
+        accessor: 'partida'
+    },
+    {
+        Header: 'Sub partidas',
+        accessor: 'subpartidas'
+    }
+]
+
 export const PROYECTOS_COLUMNS = [
     {
         Header: 'OPCIONES',
