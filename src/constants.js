@@ -639,11 +639,11 @@ export const PROVEEDORES_COLUMNS = [
     {
         Header: 'Total de compras',
         accessor: 'total'
-    },
+    },/* 
     {
         Header: 'Fecha',
         accessor: 'fecha',
-    },
+    }, */
     {
         Header: 'RFC',
         accessor: 'rfc'

@@ -49,33 +49,37 @@ class UrlLocation extends Component{
             }            
         } */
 
-        if(paths.length === 1){
-            for(let i = 0; i < modulos.length; i++){
-                if(modulos[i].slug === paths[0]){
-                    modulo_name = modulos[i].name
-                    submodulo_name = modulos[i].name
-                    icon = modulos[i].icon
+        if(modulos){
+            if(paths.length === 1){
+                for(let i = 0; i < modulos.length; i++){
+                    if(modulos[i].slug === paths[0]){
+                        modulo_name = modulos[i].name
+                        submodulo_name = modulos[i].name
+                        icon = modulos[i].icon
+                    }
+                }
+            }else{
+                for (let i = 0; i < modulos.length; i ++) {
+                    if (modulos[i].slug == active) {
+                        
+                        icon = modulos[i].icon               
+                        modulo_name = modulos[i].name
+                        submodulo = modulos[i].modulos 
+                        for (let j = 0; j < submodulo.length; j ++) {
+                            if (submodulo[j].slug == paths[1]) {
+                                submodulo_name = submodulo[j].name
+                                break;
+                            }else{
+                            }
+                        }
+                        break;
+                    }else{
+                    } 
                 }
             }
-        }else{
-            for (let i = 0; i < modulos.length; i ++) {
-                if (modulos[i].slug == active) {
-                    
-                    icon = modulos[i].icon               
-                    modulo_name = modulos[i].name
-                    submodulo = modulos[i].modulos 
-                    for (let j = 0; j < submodulo.length; j ++) {
-                        if (submodulo[j].slug == paths[1]) {
-                            submodulo_name = submodulo[j].name
-                            break;
-                        }else{
-                        }
-                    }
-                    break;
-                }else{
-                } 
-            }
         }
+
+        
         return (
             <>  
                 {
