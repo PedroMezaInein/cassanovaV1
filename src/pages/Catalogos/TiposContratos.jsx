@@ -145,7 +145,6 @@ class TiposContratos extends Component {
     }
 
     openModalEdit = tipo => {
-        console.log(tipo, 'TIPO-')
         const { form, modal } = this.state
         modal.form = true
         form.tipo = tipo.tipo
