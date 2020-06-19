@@ -39,7 +39,8 @@ class Contratos extends Component {
         options:{
             empresas: [],
             clientes: [],
-            proveedores: []
+            proveedores: [],
+            tiposContratos: []
         },
         form:{
             cliente: '',
@@ -95,7 +96,8 @@ class Contratos extends Component {
         form.fechaInicio = new Date(contrato.fecha_inicio)
         form.fechaFin = new Date(contrato.fecha_fin)
         form.descripcion = contrato.descripcion
-        form.tipoContrato = contrato.tipo_contrato
+        if(contrato.tipo_contrato)
+            form.tipoContrato = contrato.tipo_contrato.id.toString()
         form.monto = contrato.monto
         form.nombre = contrato.nombre
         modal.form = true
@@ -120,7 +122,8 @@ class Contratos extends Component {
         form.fechaInicio = new Date(contrato.fecha_inicio)
         form.fechaFin = new Date(contrato.fecha_fin)
         form.descripcion = contrato.descripcion
-        form.tipoContrato = contrato.tipo_contrato
+        if(contrato.tipo_contrato)
+            form.tipoContrato = contrato.tipo_contrato.id.toString()
         form.monto = contrato.monto
         form.nombre = contrato.nombre
         modal.form = true
@@ -231,7 +234,7 @@ class Contratos extends Component {
                 fechaFin: renderToString(setDateTable(contrato.fecha_fin)),
                 monto: renderToString(setMoneyTable(contrato.monto)),
                 acumulado: renderToString(setMoneyTable(contrato.acumulado)),
-                contrato: renderToString((setTextTable(contrato.tipo_contrato))),
+                contrato: contrato.tipo_contrato ? renderToString((setTextTable(contrato.tipo_contrato.tipo))) : '',
                 descripcion: renderToString(setTextTable(contrato.descripcion)),
                 empresa: contrato.empresa ? renderToString(setTextTable(contrato.empresa.name)) : '',
                 id: contrato.id
@@ -294,12 +297,13 @@ class Contratos extends Component {
         await axios.get(URL_DEV + 'contratos', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { contratosClientes, contratosProveedores, empresas, 
-                    clientes, proveedores } = response.data
+                    clientes, proveedores, tiposContratos } = response.data
                 const { data, contratos, options } = this.state
 
                 options.empresas = setOptions(empresas, 'name', 'id')
                 options.proveedores = setOptions(proveedores, 'razon_social', 'id')
                 options.clientes = setOptions(clientes, 'empresa', 'id')
+                options.tiposContratos = setOptions(tiposContratos, 'tipo', 'id')
                 
                 data.contratos.proveedores = contratosProveedores
                 contratos.proveedores = this.setContratos(contratosProveedores, 'Proveedor')

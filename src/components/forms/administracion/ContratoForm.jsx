@@ -24,6 +24,11 @@ class ContratoForm extends Component {
         onChange({ target: { value: value, name: 'cliente' } })
     }
 
+    updateTipoContrato = value => {
+        const { onChange } = this.props
+        onChange({ target: { value: value, name: 'tipoContrato' } })
+    }
+
     updateProveedor = value => {
         const { onChange, setOptions } = this.props
         onChange({ target: { value: value, name: 'proveedor' } })
@@ -120,24 +125,14 @@ class ContratoForm extends Component {
                 <div class="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
-                        <RadioGroup
-                            name = 'tipoContrato'
-                            onChange = { onChange }
-                            options={
-                                [
-                                    {
-                                        label: 'Obra',
-                                        value: 'Obra'
-                                    },
-                                    {
-                                        label: 'Diseño',
-                                        value: 'Diseño'
-                                    }
-                                ]
-                            }
-                            placeholder={' Tipo de contrato '}
-                            value={form.tipoContrato}
-                        />
+                        <SelectSearch 
+                            options={options.tiposContratos} 
+                            placeholder = "Selecciona el tipo de contrato" 
+                            name = "tipoContrato" 
+                            value = { form.tipoContrato } 
+                            onChange = { this.updateTipoContrato }
+                            iconclass={"fas fa-pen-fancy"}
+                            />
                         <span className="form-text text-muted">Por favor, seleccione el tipo de contrato. </span>
                     </div>
                 </div>
