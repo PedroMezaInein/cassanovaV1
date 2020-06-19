@@ -19,6 +19,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import NewTable from '../../components/tables/NewTable'
 
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
+import { data } from 'jquery'
 
 class Cuentas extends Component {
 
@@ -261,14 +262,13 @@ class Cuentas extends Component {
                 btnclass: 'danger',
                 iconclass: 'flaticon2-rubbish-bin',
                 action: 'deleteAction',
-                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
+                tooltip: { id: 'deleteEstado', text: 'Eliminar', type: 'error' }
             }            
         )        
         return aux
     }
 
-    SwaDeleteEstado = (estado) => {
-        alert("Entre")
+    openModalDeleteEstado = (estado) => {
         swal({
             title: '¿Estás seguro?',
             icon: 'warning',
@@ -518,20 +518,18 @@ class Cuentas extends Component {
     }
 
     openModalAddEstado = cuenta => {
-        let aux = []
-        cuenta.estados.map((estado, key) => {
-            aux.push({
-                actions: this.setActionsEstado(estado.id),
-                estado: renderToString(setArrayTable([{ url: estado.url, text: estado.name }])),
-                fecha: renderToString(setDateTable(estado.created_at)),
-                id:estado.id
-            })
-        })
+        const { data } = this.state
+        console.log(cuenta, 'cuenta')
+        data.estados = cuenta ? cuenta.estados : []
+        
         this.setState({
             modalEstado: true,
             cuenta: cuenta,
-            estados: aux
+            data,
+            estados: []
         })
+
+        this.setEstados(cuenta ? cuenta.estados : [])
     }
 
     openModalDelete = cuenta => {
@@ -648,12 +646,16 @@ class Cuentas extends Component {
         await axios.post(URL_DEV + 'cuentas/estado', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { cuentas, cuenta } = response.data
+                const { data } = this.state
+                data.estados = cuenta.estados
+        
                 this.setCuentas(cuentas)
                 this.setState({
                     adjunto: '',
                     adjuntoFile: '',
                     adjuntoName: '',
-                    fecha: new Date()
+                    fecha: new Date(),
+                    data
                 })
                 this.setEstados(cuenta.estados)
                 swal.close()
@@ -785,6 +787,12 @@ class Cuentas extends Component {
             (response) => {
                 const { cuentas, cuenta } = response.data
                 this.setCuentas(cuentas)
+                const { data } = this.state
+                data.estados = cuenta.estados
+                this.setState({
+                    ... this.state,
+                    data
+                })
                 this.setEstados(cuenta.estados)
                 swal({
                     title: '¡Listo 👋!',
@@ -914,18 +922,17 @@ class Cuentas extends Component {
                         </div>
                     </Form>
                     {/* estados.length > 0 &&  <NewTable columns={EDOS_CUENTAS_COLUMNS} data={estados} />*/}
-                    {     
-                        estados.length > 0 &&   
-                        <NewTable 
+                    <NewTable 
                             columns={EDOS_CUENTAS_COLUMNS} 
                             data={estados} 
                             mostrar_acciones={true}
                             actions={{
-                                'deleteAction': { function: this.SwaDeleteEstado}
+                                'deleteAction': { function: this.openModalDeleteEstado}
                             }}
-                            elements={data.cuentas}
+                            elements={data.estados}
+
+                            idTable = 'kt_datatable_estado'
                         />
-                    }
                 </Modal>
             </Layout>
         )
