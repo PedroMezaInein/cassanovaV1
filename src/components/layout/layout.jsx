@@ -23,6 +23,18 @@ function openUserProfile (){
         document.getElementsByClassName("offcanvas")[0].classList.add("offcanvas-on");
     }
 }
+function clickShowAside(){    
+    document.body.classList.remove('aside-on');
+    document.getElementById("openbuerger").classList.remove("mobile-toggle-active");
+    document.getElementById("aside").classList.remove("aside-on");
+    document.getElementById('showaside').classList.remove("aside-overlay");     
+}
+function clickShowHeader(){
+    document.body.classList.remove('header-menu-wrapper-on');		
+	document.getElementById("openbuerger").classList.remove("mobile-toggle-active");
+	document.getElementById("showheadermenu").classList.remove("header-menu-wrapper-on");
+	document.getElementById('showheader').classList.remove("header-menu-wrapper-overlay"); 	     
+}
 
 class Layout extends Component {
 
@@ -73,10 +85,11 @@ class Layout extends Component {
                     <MenuResponsive expanded={menu ? 'expanded' : ''} clickResponsiveMenu={this.clickResponsiveMenu} {... this.props} />
                     
                     <NewAsideMenu props =  {this.props} /> 
+                    <div id="showaside" onClick = { () => { clickShowAside() } }></div>
                     <div className="d-flex flex-column flex-row-fluid wrapper"> 
                         <div  className="header header-fixed">
                             <div className="container-fluid d-flex align-items-stretch justify-content-between">
-                                <div className="header-menu-wrapper header-menu-wrapper-left" >
+                                <div id="showheadermenu"className="header-menu-wrapper header-menu-wrapper-left" >
                                     <div  className="header-menu header-menu-mobile header-menu-layout-default">
                                         <ul className="menu-nav">
                                             <li className="menu-item menu-item-submenu" data-menu-toggle="click" aria-haspopup="true">
@@ -99,7 +112,8 @@ class Layout extends Component {
                                             </li>
                                         </ul>                                        
                                     </div>
-                                </div>                                
+                                </div>   
+                                <div id="showheader" onClick = { () => { clickShowHeader() } }></div>                             
                                 <div className="topbar" >
                                     <div className="topbar-item">                                    
                                         {/* <Navbar clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {... this.props} />*/}
