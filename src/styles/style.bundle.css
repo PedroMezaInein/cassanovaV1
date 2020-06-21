@@ -49669,3 +49669,15 @@ body {
 .container_img{  
   background-image: url("/inein.png");
 }
+
+div.react-datepicker-wrapper{
+  display: block!important;
+}
+/**
+.react-datepicker__close-icon{
+  padding:0px 0px 1px 0px!important;
+}
+*/
+.h-90 {
+    height: 87% !important;
+}
