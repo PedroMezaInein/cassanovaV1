@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
-import Navbar from 'react-bootstrap/Navbar'
-
-const NameUser = React.forwardRef(({userName}) => (        
-    <div >       
+import Navbar from 'react-bootstrap/Navbar' 
+const NameUser = React.forwardRef(({userName}, ref) => (        
+    <div >    
         {userName}      
     </div>
-));
-
+)); 
 class customUser extends Component{
     
     render(){
@@ -17,7 +15,7 @@ class customUser extends Component{
 				<a href="#" className="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><Navbar as={NameUser} userName={userName}> </Navbar></a>
 				<div className="text-muted mt-1">Desarrollador</div>
 					<div className="navi mt-1">
-						<a href="#" className="navi-item">
+						{/*<a href="#" className="navi-item">
 							<span className="navi-link p-0 pb-1">
 								<span className="navi-icon mr-1">
 									<span className="svg-icon svg-icon-lg svg-icon-primary">
@@ -32,7 +30,7 @@ class customUser extends Component{
 								</span>
 								<span className="navi-text text-muted text-hover-primary">omar@inein.mx</span>
 							</span>
-						</a>
+						</a>*/}
 						<a href="#" className="btn btn-sm btn-light-primary font-weight-bolder py-1 px-3" onClick={clickLogout}>Cerrar Sesión</a>
 					</div>
             </div>        
