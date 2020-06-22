@@ -559,13 +559,13 @@ class IngresosForm extends Component{
             console.log(error, 'error')
         })
     }
-
+    
     render(){
         const { form, title, options } = this.state
         return(
             <Layout active={'administracion'}  { ...this.props}>
-                <Card className="m-2 p-2 m-md-4 p-md-4">
-                    <Card.Body>
+                <Card className="pt-0">
+                    <Card.Body className="pt-0">
                     <IngresosFormulario 
                         title = { title } 
                         form = { form }
