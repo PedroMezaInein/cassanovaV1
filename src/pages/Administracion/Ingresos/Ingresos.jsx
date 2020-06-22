@@ -29,6 +29,7 @@ import NewTable from '../../../components/tables/NewTable'
 class Ingresos extends Component {
 
     state = {
+        selectValido:false,
         ingresos: [],
         title: 'Nuevo ingreso',
         ingreso: '',
