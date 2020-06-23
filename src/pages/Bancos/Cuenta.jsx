@@ -17,10 +17,10 @@ import { Form, Badge } from 'react-bootstrap'
 import Calendar from '../../components/form-components/Calendar'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import NewTable from '../../components/tables/NewTable'
+import TableForModals from '../../components/tables/TableForModals'
 
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
 import { data } from 'jquery'
-
 class Cuentas extends Component {
 
     state = {
@@ -829,7 +829,8 @@ class Cuentas extends Component {
     }
 
     render() {
-        const { modal, modalDelete, modalEstado, bancos, estatus, tipos, form, cuentas, cuenta, empresas, estados, adjunto, adjuntoName, fecha, data } = this.state
+        const { modal, modalDelete, modalEstado, bancos, estatus, tipos, form, cuentas, cuenta, empresas, estados, adjunto, adjuntoName, fecha, data,title } = this.state
+        console.log(this.state) 
         return (
             <Layout active={'bancos'}  {...this.props}>
                 {/*} <div className="text-right">
@@ -866,11 +867,8 @@ class Cuentas extends Component {
                         <Button icon='' onClick={this.handleDeleteModal} text="Cancelar" className="mr-3" color="green" />
                         <Button icon='' onClick={(e) => { this.safeDelete(e)() }} text="Continuar" color="red" />
                     </div>
-                </Modal>
-                <Modal show={modalEstado} handleClose={this.handleEstadoClose} >
-                    <Subtitle className="my-3 text-center">
-                        Estados de cuenta para <B color="gold">{cuenta && cuenta.nombre}</B>
-                    </Subtitle>
+                </Modal> 
+                <Modal title= {cuenta === null ? "Estados de cuenta para": "Estados de cuenta para "+cuenta.nombre} show={modalEstado} handleClose={this.handleEstadoClose} >
                     <Form onSubmit={this.onSubmitEstado} >
                         <div className="row mx-0">
                             <div className="col-md-6 px-2">
@@ -922,7 +920,7 @@ class Cuentas extends Component {
                         </div>
                     </Form>
                     {/* estados.length > 0 &&  <NewTable columns={EDOS_CUENTAS_COLUMNS} data={estados} />*/}
-                    <NewTable 
+                    <TableForModals 
                             columns={EDOS_CUENTAS_COLUMNS} 
                             data={estados} 
                             mostrar_acciones={true}
