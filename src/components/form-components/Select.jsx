@@ -8,28 +8,17 @@ class Select extends Component{
         super(props)
     } */ 
 
-    validarSelect(datosSelect)
-    {console.log("entre")
+    state = {
+        selectValido: false
+    }
+
+    validarSelect(datosSelect){
+        console.log("entre")
         this.setState({
             selectValido:false            
         })
-       
-       /*         console.log(datosSelect)
-        let value = datosSelect.props.value;
-        console.log(value);
-        if(value=="0")
-        {
-            console.log("Incorrecto")
-            selectValido=false;
-        }
-        else
-        {
-            console.log("Correto")
-            selectValido=true;
-        }
-        */
     }
-  
+
     render(){
         const { options, placeholder, value, name, onChange, messageinc, ...props } = this.props
        // console.log()
@@ -39,7 +28,7 @@ class Select extends Component{
                 
                 <Form.Control 
                // className={ selectValido? " form-control is-valid ": " form-control is-invalid " }
-                onChange={ this.validarSelect(this), onChange } 
+                onChange={ (e) => { e.preventDefault(); this.validarSelect(this); this.props.onChange(e) }} 
                 name={ name } 
                 value={ value } 
                 as="select" {... props}>

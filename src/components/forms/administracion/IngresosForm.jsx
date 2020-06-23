@@ -34,6 +34,10 @@ function openWizard3(){
 
 
 class IngresosForm extends Component {
+
+    state = {
+        validated: false
+    }
     constructor(...args) {
         super(...args);
     
