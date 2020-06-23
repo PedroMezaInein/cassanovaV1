@@ -558,7 +558,7 @@ export const FACTURAS_COLUMNS = [
 
 export const FACTURAS_COLUMNS_2 = [
     {
-        Header: ' ',
+        Header: 'OPCIONES',
         accessor: 'actions',
     },
     {
