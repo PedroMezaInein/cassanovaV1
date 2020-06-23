@@ -55,13 +55,13 @@ export function AsideMenuList({ props }) {
                                             <span className="menu-text menu-link" to={modulo.url}>{modulo.name}</span>
                                     }
                                     {
-                                        modulo.modulos.length > 1 ? 
+                                        modulo.modulos.length > 1 || modulo.url === null  ? 
                                             <i className="menu-arrow"  onClick = { () => { openSubmenu(modulo.slug) } }/>
                                         : ''
                                     }
                                 </div>
                                 {
-                                    modulo.modulos.length > 1 ?
+                                    modulo.modulos.length > 1 || modulo.url === null ?
                                         <div className="menu-submenu submenu-asidemenu" id = {`submenu-${modulo.slug}`}>
                                             <i className="menu-arrow"  />
                                             <ul className="menu-subnav">
