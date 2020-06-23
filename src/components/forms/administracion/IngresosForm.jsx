@@ -233,8 +233,7 @@ class IngresosForm extends Component {
                                                         placeholder="RFC" 
                                                         name="rfc" 
                                                         value={form.rfc} 
-                                                        onChange={onChange} 
-                                                        
+                                                        onChange={onChange}                                                         
                                                         iconclass={"far fa-file-alt"} 
                                                         pattern="^([A-ZÑ\x26]{3,4}([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1]))([A-Z\d]{3})?$"
                                                         messageinc="Incorrecto. Ej. ABCD001122ABC"
@@ -268,7 +267,7 @@ class IngresosForm extends Component {
                                                         iconclass={"far fa-user"}
                                                     />                                
                                             }
-                                            <span className="form-text text-muted">Por favor, selecciona el cliente</span>
+                                            <span className="form-text text-muted">Por favor, selecciona el cliente.</span>
                                         </div>
                                         <div className="col-md-4">
                                             {
@@ -289,7 +288,7 @@ class IngresosForm extends Component {
                                                         onChange={this.updateEmpresa} 
                                                         iconclass={"far fa-building"}/>
                                             }
-                                        <span className="form-text text-muted">Por favor, selecciona la empresa</span>
+                                        <span className="form-text text-muted">Por favor, selecciona la empresa.</span>
                                         </div>                    
                                             {
                                                 form.empresa ?
@@ -362,8 +361,7 @@ class IngresosForm extends Component {
                                                     rows="3" value={form.descripcion}
                                                     name="descripcion" 
                                                     onChange={onChange}
-                                                    iconclass={"far fa-file-alt"} 
-                                                    
+                                                    iconclass={"far fa-file-alt"}                                                     
                                                     />
                                                 <span className="form-text text-muted">Por favor, ingresa la descripción. </span>
                                                 </div>
@@ -388,10 +386,11 @@ class IngresosForm extends Component {
                                                     name="tipoPago" 
                                                     value={form.tipoPago} 
                                                     onChange={this.updateTipoPago} 
-                                                    messageinc="Incorrecto. Selecciona el tipo de pago "
+                                                    messageinc="Incorrecto. Selecciona el tipo de pago."
+                                                    iconclass={"fas fa-coins"}
                                                     required
                                                 />
-                                                <span className="form-text text-muted">Por favor, selecciona el tipo de pago. </span>
+                                                <span className="form-text text-muted">Por favor, selecciona el tipo de pago.</span>
                                             </div>
                                             <div className="col-md-4">
                                                 <Select 
@@ -400,9 +399,11 @@ class IngresosForm extends Component {
                                                     name="tipoImpuesto" 
                                                     value={form.tipoImpuesto} 
                                                     onChange={onChange}
+                                                    messageinc="Incorrecto. Selecciona el impuesto."
+                                                    iconclass={"fas fa-file-invoice-dollar"}
                                                     required
                                                 />
-                                                <span className="form-text text-muted">Por favor, selecciona el impuesto. </span>
+                                                <span className="form-text text-muted">Por favor, selecciona el impuesto.</span>
                                             </div>
                                             <div className="col-md-4">
                                                 <Select 
@@ -411,9 +412,11 @@ class IngresosForm extends Component {
                                                     name="estatusCompra" 
                                                     value={form.estatusCompra} 
                                                     onChange={onChange}
+                                                    messageinc="Incorrecto. Selecciona el estatus de compra."
                                                     required
+                                                    iconclass={"flaticon2-time"}                                                    
                                                 />
-                                                <span className="form-text text-muted">Por favor, selecciona el estatus de compra. </span>
+                                            <span className="form-text text-muted">Por favor, selecciona el estatus de compra.</span>
                                             </div>                                            
                                         </div>
                                         <div className="separator separator-dashed mt-1 mb-2"></div>
@@ -428,7 +431,7 @@ class IngresosForm extends Component {
                                                 onChange={onChange}   
                                                 iconclass={" fas fa-money-check-alt"}
                                                 />
-                                            <span className="form-text text-muted">Por favor, ingresa el monto </span>
+                                            <span className="form-text text-muted">Por favor, ingresa el monto.</span>
                                             </div>
                                             <div className="col-md-4">
                                                 <FileInput
@@ -439,7 +442,7 @@ class IngresosForm extends Component {
                                                     accept="text/xml, application/pdf"
                                                     files={form['adjuntos']['presupuesto']['files']}
                                                     deleteAdjunto={clearFiles} />
-                                                <span className="form-text text-muted">Por favor, adjunta el documento. </span>
+                                                <span className="form-text text-muted">Por favor, adjunta el documento.</span>
                                             </div>
                                             <div className="col-md-4">
                                                 <FileInput
