@@ -920,6 +920,7 @@ class Cuentas extends Component {
                         </div>
                     </Form>
                     {/* estados.length > 0 &&  <NewTable columns={EDOS_CUENTAS_COLUMNS} data={estados} />*/}
+                    {estados.length > 0 && 
                     <TableForModals 
                             columns={EDOS_CUENTAS_COLUMNS} 
                             data={estados} 
@@ -931,6 +932,7 @@ class Cuentas extends Component {
 
                             idTable = 'kt_datatable_estado'
                         />
+                    }
                 </Modal>
             </Layout>
         )
