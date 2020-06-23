@@ -64,6 +64,8 @@ const Partidas = Loader( () => import('./pages/Catalogos/Partidas') )
 const Unidades = Loader( () => import('./pages/Catalogos/Unidades') )
 const TiposContratos = Loader( () => import('./pages/Catalogos/TiposContratos') )
 
+const Contabilidad = Loader( () => import('./pages/Reportes/Contabilidad') )
+
 class App extends Component{
     async componentDidMount(){
         const { access_token } = this.props.authUser
@@ -174,6 +176,8 @@ class App extends Component{
                 <Route path = "/catalogos/partidas" exact component ={ Partidas } />
                 <Route path = "/catalogos/unidades" exact component ={ Unidades } />
                 <Route path = "/catalogos/tipos-contratos" exact component ={ TiposContratos } />
+
+                <Route path = "/reportes/contabilidad" exact component ={ Contabilidad } />
             </>
         )
     }
