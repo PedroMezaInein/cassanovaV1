@@ -9,7 +9,7 @@ class ContactoLeadForm extends Component{
 
     updateTipoContacto = value => {
         const { onChangeContacto } = this.props
-        onChangeContacto( { target: { name: 'tipoContacto', value: value.value } } )
+        onChangeContacto( { target: { name: 'tipoContacto', value: value } } )
         if( value.value === 'New' ){
             this.setState({
                 newTipoContacto: true

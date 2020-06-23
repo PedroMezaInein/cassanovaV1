@@ -449,7 +449,7 @@ class Leads extends Component {
     onChangeContacto = event => {
         const { formContacto } = this.state
         const { name, value } = event.target
-        formContacto[name] = event.target.value
+        formContacto[name] = value
         this.setState({
             ... this.state,
             formContacto
