@@ -4,7 +4,7 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
-import { URL_DEV, UNIDADES_COLUMNS, GOLD } from '../../constants'
+import { URL_DEV, UNIDADES_COLUMNS, GOLD, URL_ASSETS } from '../../constants'
 
 // Functions
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setPercentTable, setArrayTable, setFacturaTable, setAdjuntosList, setListTable } from '../../functions/setters'
@@ -27,10 +27,71 @@ class Contabilidad extends Component {
             empresas: [],
             empresa: 0,
             fechaInicio: new Date,
-            fechaFin: new Date
+            fechaFin: new Date,
+            modulos: [
+                {
+                    text: 'Ventas',
+                    id: 'ventas',
+                    checked: false,
+                },
+                {
+                    text: 'Compras',
+                    id: 'compras',
+                    checked: false,
+                },
+                {
+                    text: 'Ingresos',
+                    id: 'ingresos',
+                    checked: false,
+                },
+                {
+                    text: 'Egresos',
+                    id: 'egresos',
+                    checked: false,
+                },
+                {
+                    text: 'Estados de cuenta',
+                    id: 'estados de cuenta',
+                    checked: false,
+                },
+                {
+                    text: 'Facturacion',
+                    id: 'facturacion',
+                    checked: false,
+                },
+            ],
+            archivos: [
+                {
+                    text: 'Presupuestos',
+                    id: 'presupuestos',
+                    checked: false,
+                },
+                {
+                    text: 'Pagos',
+                    id: 'pagos',
+                    checked: false,
+                },
+                {
+                    text: 'Facturas',
+                    id: 'facturas',
+                    checked: false,
+                }
+            ],
+            facturas: [
+                {
+                    text: 'Sin factura',
+                    id: 'Sin factura',
+                    checked: false,
+                },
+                {
+                    text: 'Con factura',
+                    id: 'Con factura',
+                    checked: false,
+                }
+            ]
         },
         options: {
-            empresas: []
+            empresas: [],
         },
         modal:{
             form: false,
@@ -101,6 +162,12 @@ class Contabilidad extends Component {
         })
     }
 
+    onSubmit = e => {
+        e.preventDefault()
+        waitAlert()
+        this.createReporteContabilidad()
+    }
+
     async getReportesContabilidadAxios(){
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'contabilidad', { headers: {Authorization:`Bearer ${access_token}`}}).then(
@@ -128,6 +195,34 @@ class Contabilidad extends Component {
         })
     }
 
+    async createReporteContabilidad(){
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        await axios.post(URL_DEV + 'contabilidad', form,  { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                swal.close()
+                const url = URL_ASSETS+'/storage/contabilidad.zip'
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'data.zip'); //or any other extension
+                document.body.appendChild(link);
+                link.click();
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render() {
         const { form, options } = this.state
         return (
@@ -135,7 +230,7 @@ class Contabilidad extends Component {
                 <Card className="m-2 p-2 m-md-4 p-md-4">
                     <Card.Body>
                         <ContabilidadForm form = { form } options = { options } onChangeEmpresa = { this.onChangeEmpresa } 
-                            updateEmpresa = { this.updateEmpresa } onChange = { this.onChange } />
+                            updateEmpresa = { this.updateEmpresa } onChange = { this.onChange } onSubmit = { this.onSubmit }/>
                     </Card.Body>
                 </Card>
             </Layout>
