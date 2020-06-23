@@ -5,30 +5,34 @@ import NumberFormat from 'react-number-format'
 let textoValido =false;
 class InputMoney extends Component{
 
-    /* constructor(props){
-        super(props)
-    } */
-    
-    validarInput(textoEscrito)
-    {
-        console.log(textoEscrito) 
-        if(textoEscrito =="") // validar expresion regular
-        { 
-            textoValido=false;
-        }
-        else
-        { 
-            textoValido=true;
+    state = {
+        inputMoneyValido: false
+    }
+
+    validarInputMoney(e){
+        const { value } = e.target   
+        if(value > 0){
+            this.setState({
+                inputMoneyValido: true
+            })
+        }else{
+            this.setState({
+                inputMoneyValido: false     
+                
+            })
         }
     }
 
     onChange = values => {
-        this.validarInput(values.value)
         const { onChange, name} = this.props
+        this.validarInputMoney({target:{value:values.value, name:name}})
         onChange({target:{value:values.value, name:name}})
+
     }
     render(){
         const { error, onChange, placeholder, value, prefix, thousandSeparator,iconclass } = this.props
+        const { inputMoneyValido } = this.state
+
         return(
             <div>
                 <Form.Label className="col-form-label">
@@ -47,7 +51,7 @@ class InputMoney extends Component{
                         thousandSeparator = { thousandSeparator ? thousandSeparator : false } 
                         prefix = { prefix }
                         //prefix={'$'} 
-                        className={textoValido?"w-100 form-control  is-valid":"w-100 form-control is-invalid"}
+                        className={ inputMoneyValido ? " form-control is-valid " : " form-control is-invalid" }
                         renderText = { value => <div> { value } </div> } 
                         onValueChange = { (values) => this.onChange(values)}
                         placeholder = {placeholder} /> 
