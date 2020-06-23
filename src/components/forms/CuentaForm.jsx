@@ -9,13 +9,28 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
 class LeadForm extends Component{
 
     constructor(props){
-        super(props)   
+        super(props) 
+        this.state = { validated: false };  
+    }
+    
+    handleKeyPress(event) {
+        const form = event.currentTarget;
+        if (form.checkValidity() === false) {
+        //event.preventDefault();
+        //event.stopPropagation();
+        }
+        this.setState({ validated: true });
     }
     
     render(){
+        const { validated } = this.state;
         const { bancos, estatus, tipos, title, form, onChange, onChangeEmpresa, updateEmpresa, empresas, ...props } = this.props
         return(
-            <Form { ... props}>
+            <Form { ... props}
+                noValidate
+                validated={validated}
+                onKeyPress={e => this.handleKeyPress(e)}
+            >
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-8">
                         <Input 
@@ -48,11 +63,13 @@ class LeadForm extends Component{
                         <Input 
                             required 
                             placeholder = "Ingresa el número de cuenta" 
-                            type = "text" 
+                            type = "number" 
                             name = "numero" 
                             value = { form.numero }
                             onChange = { onChange }
                             iconclass={" fas fa-id-card "} 
+                            pattern="[0-9]{1,18}"
+                            messageinc="Incorrecto. Solo debes ingresar números"
                         />
                         <span className="form-text text-muted">Por favor, ingrese el número de cuenta </span>
                     </div>
