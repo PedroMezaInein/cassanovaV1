@@ -6,7 +6,7 @@ import { Input, InputMoney, Select, Button } from '../form-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
-class LeadForm extends Component{
+class CuentaForm extends Component{
 
     constructor(props){
         super(props)   
@@ -142,4 +142,4 @@ class LeadForm extends Component{
     }
 }
 
-export default LeadForm
+export default CuentaForm
