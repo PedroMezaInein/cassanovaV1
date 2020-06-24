@@ -34,12 +34,13 @@ class Select extends Component{
             <>
                 <Form.Label className="col-form-label">{ placeholder }</Form.Label>
                 
-                <div className="input-group">
-                    <div className="input-group-prepend">
-                        <span className="input-group-text">
-                            <i className={iconclass+" kt-font-boldest text-primary"}></i>
-                        </span>
-                    </div>
+                
+                <div className="input-icon">       
+                        <span className="input-icon input-icon-right">
+                            <span>
+                                <i className={iconclass+" kt-font-boldest text-primary"}></i>
+                            </span>
+                        </span>  
                     <Form.Control 
                         className={ selectValido ? " form-control is-valid " : " form-control is-invalid" }
                         onChange={ (e) => { e.preventDefault(); this.validarSelect(e); onChange(e) }} 
@@ -58,9 +59,9 @@ class Select extends Component{
                                 )
                             })
                         }
-                    </Form.Control>                
-                    <div className="invalid-feedback msgValidation">{messageinc}</div>
-                </div>
+                    </Form.Control>                 
+                </div> 
+                <span className={ selectValido ? "form-text text-danger hidden" : "form-text text-danger" }> {messageinc} </span>
             </>
         )
     }
