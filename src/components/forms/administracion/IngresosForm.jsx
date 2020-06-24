@@ -5,6 +5,7 @@ import { SelectSearch, Select, Button, RadioGroup, Input, Calendar, InputMoney, 
 
 function openWizard1(){  
     document.getElementById('wizardP').setAttribute("data-wizard-state","first");
+    document.getElementById('wizard-1').setAttribute("data-wizard-state","current");
     document.getElementById('wizard-2').setAttribute("data-wizard-state","pending");
     document.getElementById('wizard-3').setAttribute("data-wizard-state","pending");
     document.getElementById('wizard-1-content').setAttribute("data-wizard-state","current");  
@@ -462,7 +463,7 @@ class IngresosForm extends Component {
                                             <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase"  onClick = { () => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
                                         </div>
                                         <div>
-                                            <Button icon='' className="mx-auto" type="submit" data-wizard-type="action-submit" text="Enviar" />
+                                            <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type="submit" data-wizard-type="action-submit" text="Enviar" />
                                         </div>
                                     </div>    
                                 </div>
