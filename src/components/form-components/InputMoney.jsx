@@ -39,12 +39,10 @@ class InputMoney extends Component{
                     {placeholder}
                 </Form.Label><br />
                 
-                <div className="input-group">
-                    <div className="input-group-prepend">
-                        <span className="input-group-text">
-                            <i className={iconclass+" kt-font-boldest text-primary"}></i>
-                        </span>
-                    </div>
+                <div className="input-icon">
+                    <span className="input-icon input-icon-right">
+                        <i className={iconclass+" kt-font-boldest text-primary"}></i> 
+                    </span>
                     <NumberFormat
                         value = { value } 
                         displayType = { 'input' } 
@@ -54,9 +52,10 @@ class InputMoney extends Component{
                         className={ inputMoneyValido ? " form-control is-valid " : " form-control is-invalid" }
                         renderText = { value => <div> { value } </div> } 
                         onValueChange = { (values) => this.onChange(values)}
-                        placeholder = {placeholder} /> 
-                    <div className="invalid-feedback msgValidation">Incorrecto, introduce la cantidad.</div>
+                        placeholder = {placeholder} 
+                    />
                 </div>
+                <span className={ inputMoneyValido ? "form-text text-danger hidden" : "form-text text-danger" }>Incorrecto. Ingresa la cantidad.</span>
             </div>
         )
     }
