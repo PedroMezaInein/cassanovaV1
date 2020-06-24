@@ -5,39 +5,58 @@ import Input from './Input'
 import '../../styles/select_custom.css';
 class SelectSearchForm extends Component{
 
+    renderFontValue(valueProps,onChange) {  
+        let validado=false;
+        if(onChange===null || onChange.value===null)
+        {
+            validado=false;
+        }
+        else
+        {
+            validado=true;
+        }  
+        return (           
+            <> 
+            <div className="input-icon">       
+                <span className="input-icon input-icon-right">
+                    <i className={"flaticon2-search-1 m-0 kt-font-boldest text-primary"}></i> 
+                </span>  
+                
+                <input   
+                    className={ validado ? " form-control is-valid " : " form-control is-invalid" }   
+                    {...valueProps}
+                />
+            </div>
+            <span className={ validado ? "form-text text-danger hidden" : "form-text text-danger" }> Selecciona una opción </span>
+            </>               
+        );
+    } 
+
     render(){
         
         const { name, onChange, options,  placeholder, value, iconclass} = this.props 
         
         return(
-            <div>
+            <>
                 { 
                     options.length > 0 ?
-                        <>
-                            <label className="col-form-label">{placeholder}</label>
-
-                            <div className="input-group">
-                                <div className="input-group-prepend">
-                                    <span className="input-group-text">
-                                    <i className={iconclass+" kt-font-boldest text-success"}></i>
-                                    </span>
-                                </div>
-
-                                <div className="dropdown bootstrap-select form-control">																	
-
-                                    <SelectSearch 
-                                        search
+                        <>  
+                                <label className="col-form-label">{placeholder}</label> 
+                                        <SelectSearch 
+                                        renderValue={this.renderFontValue}   
+                                        search 
                                         {...this.props}
-                                        />
-                                </div>    
-                            </div>
-                                
+                                        />   
                         </>
-                    :
-                    <Input readOnly type="text" { ...this.props }/>
+                    : 
+                    <Input 
+                    iconclass={iconclass}
+                    readOnly 
+                    type="text"
+                    { ...this.props }/>
                 }
                 
-            </div>
+            </>
             
         )
     }
