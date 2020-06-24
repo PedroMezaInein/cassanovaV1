@@ -44,6 +44,11 @@ export const ICONS_MODULES = {
     'faGavel':faGavel,
     'faAtlas':faAtlas, 'faCubes':faCubes
 }
+//Expresiones Regulares
+
+    export const RFC = '^([A-ZÑ\x26]{3,4}([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1]))([A-Z\d]{3})?$'
+    
+
 
 //Form
 
