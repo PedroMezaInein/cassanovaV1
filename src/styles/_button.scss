@@ -137,13 +137,3 @@
     font-size: 40px;
 }
 
-.hidden{
-    transition: all 0.5s;
-    width: 0px;
-    height: 0px;
-    overflow: hidden;
-    &.active{
-        width: auto;
-        height: auto;
-    }
-}
