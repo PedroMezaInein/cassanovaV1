@@ -170,22 +170,22 @@ class VentasForm extends Component {
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
-                    <div className="wizard-steps px-8 py-8 px-lg-15 py-lg-3"> 
-                        <div id="wizard-1" className="wizard-step" data-wizard-state="current" data-wizard-type="step" onClick = { () => { openWizard1() } }>
+                    <div className="wizard-steps px-8 py-0 px-lg-15 py-lg-0"> 
+                        <div id="wizard-1" className="wizard-step" data-wizard-state="current" data-wizard-type="step" style={{paddingTop:"0px"}} onClick = { () => { openWizard1() } }>
                             <div className="wizard-label">
                                 <h3 className="wizard-title">
                                 <span>1.</span> Datos de la factura</h3>
                                 <div className="wizard-bar"></div>
                             </div>
                         </div> 
-                        <div id="wizard-2" className="wizard-step" data-wizard-type="step" onClick = { () => { openWizard2() } }>
+                        <div id="wizard-2" className="wizard-step" data-wizard-type="step" style={{paddingTop:"0px"}} onClick = { () => { openWizard2() } }>
                             <div className="wizard-label">
                                 <h3 className="wizard-title">
                                 <span>2.</span> Área y fecha</h3>
                                 <div className="wizard-bar"></div>
                             </div>
                         </div> 
-                        <div id="wizard-3" className="wizard-step" data-wizard-type="step" onClick = { () => { openWizard3() } }>
+                        <div id="wizard-3" className="wizard-step" data-wizard-type="step" style={{paddingTop:"0px"}} onClick = { () => { openWizard3() } }>
                             <div className="wizard-label">
                                 <h3 className="wizard-title">
                                 <span>3.</span> Pago</h3>
@@ -236,7 +236,7 @@ class VentasForm extends Component {
                                                     files={form['adjuntos']['factura']['files']}
                                                     deleteAdjunto={clearFiles} multiple 
                                                 />
-                                            <span className="form-text text-muted">Por favor, adjunta el documento. </span>
+                                            {/*<span className="form-text text-muted">Por favor, adjunta el documento. </span>*/}
                                             </div>
                                         : ''
                                     }
@@ -253,7 +253,7 @@ class VentasForm extends Component {
                                                     messageinc="Incorrecto. Ej. ABCD001122ABC"
                                                     maxLength="13"
                                                 />
-                                                <span className="form-text text-muted">Por favor, ingresa el RFC. </span>
+                                                {/*<span className="form-text text-muted">Por favor, ingresa el RFC. </span>*/}
                                             </div>
                                         : ''
                                     }
@@ -280,7 +280,7 @@ class VentasForm extends Component {
                                                     iconclass={"far fa-user"}
                                                 />
                                         }
-                                        <span className="form-text text-muted">Por favor, selecciona el cliente.</span>                                        
+                                        {/*<span className="form-text text-muted">Por favor, selecciona el cliente.</span>*/}                                       
                                     </div>
                                     {
                                         form.cliente ?
@@ -293,7 +293,7 @@ class VentasForm extends Component {
                                                     onChange={this.updateProyecto}
                                                     iconclass={"far fa-folder-open"} 
                                                 />    
-                                                <span className="form-text text-muted">Por favor, selecciona el proyecto.</span>                                            
+                                                {/*<span className="form-text text-muted">Por favor, selecciona el proyecto.</span>*/}                                            
                                             </div>
                                             : ''
                                         
@@ -318,7 +318,7 @@ class VentasForm extends Component {
                                                     iconclass={"far fa-building"}
                                                 />
                                         }
-                                    <span className="form-text text-muted">Por favor, selecciona la empresa.</span>
+                                    {/*<span className="form-text text-muted">Por favor, selecciona la empresa.</span>*/}
                                     </div>
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
@@ -334,7 +334,7 @@ class VentasForm extends Component {
                                                     onChange={this.updateCuenta} 
                                                     iconclass={"far fa-credit-card"}
                                                 />
-                                                <span className="form-text text-muted">Por favor, selecciona la cuenta. </span>
+                                                {/*<span className="form-text text-muted">Por favor, selecciona la cuenta. </span>*/}
                                             </div>
                                         : ''
                                     }  
@@ -356,7 +356,7 @@ class VentasForm extends Component {
                                             name="fecha"
                                             value={form.fecha}
                                         />  
-                                        <span className="form-text text-muted">Por favor, selecciona la fecha. </span>
+                                        {/*<span className="form-text text-muted">Por favor, selecciona la fecha. </span>*/}
                                     </div>
                                     <div className="col-md-4">
                                         <SelectSearch 
@@ -367,7 +367,7 @@ class VentasForm extends Component {
                                             onChange={this.updateArea}
                                             iconclass={"far fa-window-maximize"}
                                         /> 
-                                        <span className="form-text text-muted">Por favor, selecciona el área. </span>
+                                        {/*<span className="form-text text-muted">Por favor, selecciona el área. </span>*/}
                                     </div>
                                     {
                                         form.area ?
@@ -380,7 +380,7 @@ class VentasForm extends Component {
                                                     onChange={this.updateSubarea}
                                                     iconclass={"far fa-window-restore"}
                                                 />
-                                                <span className="form-text text-muted">Por favor, selecciona la sub-área. </span>
+                                                {/*<span className="form-text text-muted">Por favor, selecciona la sub-área. </span>*/}
                                             </div>
                                             : ''
                                     }
@@ -394,9 +394,10 @@ class VentasForm extends Component {
                                             value={form.descripcion}
                                             name="descripcion"
                                             onChange={onChange}
-                                            iconclass={"far fa-file-alt"}  
+                                            style={{paddingLeft: "10px"}} 
+                                            messageinc="Incorrecto. Ingresa la descripción."
                                         />
-                                        <span className="form-text text-muted">Por favor, ingresa la descripción. </span>
+                                        {/*<span className="form-text text-muted">Por favor, ingresa la descripción. </span>*/}
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
@@ -422,7 +423,7 @@ class VentasForm extends Component {
                                             iconclass={"fas fa-coins"}
                                             required
                                         />
-                                        <span className="form-text text-muted">Por favor, selecciona el tipo de pago.</span>
+                                        {/*<span className="form-text text-muted">Por favor, selecciona el tipo de pago.</span>*/}
                                     </div>
                                     <div className="col-md-4">
                                         <Select
@@ -435,7 +436,7 @@ class VentasForm extends Component {
                                             iconclass={"fas fa-file-invoice-dollar"}
                                             required
                                         />
-                                        <span className="form-text text-muted">Por favor, selecciona el impuesto.</span>
+                                        {/*<span className="form-text text-muted">Por favor, selecciona el impuesto.</span>*/}
                                     </div>
                                     <div className="col-md-4">
                                         <Select
@@ -448,7 +449,7 @@ class VentasForm extends Component {
                                             required
                                             iconclass={"flaticon2-time"}
                                         />
-                                        <span className="form-text text-muted">Por favor, selecciona el estatus de compra.</span>
+                                        {/*<span className="form-text text-muted">Por favor, selecciona el estatus de compra.</span>*/}
                                     </div>
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
@@ -462,7 +463,7 @@ class VentasForm extends Component {
                                             onChange={onChange}
                                             iconclass={" fas fa-money-check-alt"}
                                         />
-                                        <span className="form-text text-muted">Por favor, ingresa el monto.</span>
+                                        {/*<span className="form-text text-muted">Por favor, ingresa el monto.</span>*/}
                                     </div>
                                     <div className="col-md-4">
                                         <SelectSearch 
@@ -473,7 +474,7 @@ class VentasForm extends Component {
                                             onChange={this.updateContrato} 
                                             iconclass={"far fa-file-alt"}
                                         />
-                                        <span className="form-text text-muted">Por favor, selecciona el contrato.</span>
+                                        {/*<span className="form-text text-muted">Por favor, selecciona el contrato.</span>*/}
                                     </div>
                                     <div className="col-md-4">
                                         <FileInput
@@ -485,7 +486,7 @@ class VentasForm extends Component {
                                             files={form['adjuntos']['presupuesto']['files']}
                                             deleteAdjunto={clearFiles} 
                                         />
-                                        <span className="form-text text-muted">Por favor, adjunta el documento.</span>
+                                        {/*<span className="form-text text-muted">Por favor, adjunta el documento.</span>*/}
                                     </div>
                                 </div>  
                                 <div className="form-group row form-group-marginless">
@@ -499,7 +500,7 @@ class VentasForm extends Component {
                                             files={form['adjuntos']['pago']['files']}
                                             deleteAdjunto={clearFiles}
                                         />
-                                        <span className="form-text text-muted">Por favor, adjunta el documento. </span>
+                                        {/*<span className="form-text text-muted">Por favor, adjunta el documento. </span>*/}
                                     </div>
                                 </div> 
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
