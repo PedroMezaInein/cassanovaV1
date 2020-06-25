@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperclip, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { DARK_BLUE } from '../../constants'
 import { Badge, Form } from 'react-bootstrap'
+import { DATE } from '../../constants'
 
 class TareaForm extends Component{
 
@@ -28,7 +29,7 @@ class TareaForm extends Component{
         const { title, cuentas, form, onChange, onChangeAdjunto, deleteAdjunto, ... props } = this.props
         return(
             <Form { ... props}>
-                <div className="form-group row form-group-marginless">
+                <div className="form-group row form-group-marginless pt-4">
                     <div className="col-md-6">
                         <SelectSearch 
                             options = { cuentas } 
@@ -70,14 +71,14 @@ class TareaForm extends Component{
                             onChangeCalendar = { this.changeDate }
                             name = "fecha" value = { form.fecha }
                             placeholder="Fecha de traspaso"
-                            iconclass={"far fa-calendar-alt"}
+                            patterns={DATE}
                         />
                         {/*<span className="form-text text-muted">Por favor, seleccione la fecha del transpaso </span>*/}
                     </div>
                     <div className="col-md-4">
                         <div className="image-upload d-flex align-items-center">
-                            <div className="no-label">
-                                <Input 
+                            <div className="no-label pt-5">
+                                <input 
                                     onChange = { onChangeAdjunto }
                                     value = { form.adjunto }
                                     name = "adjunto"
@@ -116,7 +117,8 @@ class TareaForm extends Component{
                             name = "comentario"
                             value = { form.comentario }
                             onChange = { onChange }                       
-                            style={{paddingLeft:"10px"}}
+                            messageinc="Incorrecto. Ingresa el comentario."
+                            style={{paddingLeft: "10px"}}    
                         />
                         {/*<span className="form-text text-muted">Por favor, ingrese su comentario</span>*/}
                     </div>

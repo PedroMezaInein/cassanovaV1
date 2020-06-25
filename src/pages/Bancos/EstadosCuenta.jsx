@@ -434,7 +434,7 @@ class EstadosCuenta extends Component {
                 <Modal title = {"Agregar estado de cuenta"} show={modal} handleClose={this.handleClose} >
                     
                     <Form onSubmit={this.submitForm}>
-                    <div className="form-group row form-group-marginless pt-3">
+                    <div className="form-group row form-group-marginless pt-4">
                         <div className="col-md-8">
                             <SelectSearch
                                 options={cuentas}
@@ -457,7 +457,7 @@ class EstadosCuenta extends Component {
                             {/*<span className="form-text text-muted">Por favor, seleccione la fecha. </span>*/}
                         </div>
                     </div>
-                    <div class="separator separator-dashed mt-1 mb-2 pt-2"></div>
+                    <div className="separator separator-dashed mt-1 mb-2 pt-2"></div>
                     <div className="form-group row form-group-marginless">
                         <div className="col-md-6">
                             <div className="px-2 d-flex align-items-center">
@@ -470,6 +470,7 @@ class EstadosCuenta extends Component {
                                                 type="file"
                                                 id="adjunto"
                                                 accept="application/pdf" 
+                                                className={"mr-3"}
                                                 />
                                             {/*<span className="form-text text-muted">Por favor, adjunte su documento. </span>*/}
                                         </div>
@@ -480,27 +481,20 @@ class EstadosCuenta extends Component {
                                         {
                                             
                                             adjuntoName &&
-                                            <div className="col-md--5">
-                                                <tags className="tagify form-control p-1" tabindex="-1">
-                                                        <tag 
-                                                            contenteditable="false" 
-                                                            spellcheck="false" 
-                                                            tabindex="-1" 
-                                                            className="tagify__tag tagify__tag--primary tagify--noAnim" 
-                                                            role="tag" 
-                                                            __isvalid="true"
-                                                            >
-                                                            <x 
+                                            <div className="">
+                                                <div className="tagify form-control p-1" tabIndex="-1">
+                                                        <div className="tagify__tag tagify__tag--primary tagify--noAnim">
+                                                            <div 
                                                                 title="Borrar archivo" 
                                                                 className="tagify__tag__removeBtn" 
                                                                 role="button" 
                                                                 aria-label="remove tag" 
                                                                 onClick={(e) => { e.preventDefault(); this.deleteAdjunto() }}
-                                                                pill>
-                                                            </x>                                                            
+                                                                >
+                                                            </div>                                                            
                                                                 <div><span className="tagify__tag-text p-1">{adjuntoName}</span></div>
-                                                        </tag>
-                                                </tags>
+                                                        </div>
+                                                </div>
                                             </div> 
                                         }
                                     </div>
