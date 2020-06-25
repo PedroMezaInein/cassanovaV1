@@ -390,7 +390,7 @@ updateArea = value => {
                                             rows="3" value={form.descripcion}
                                             name="descripcion" 
                                             onChange={onChange}
-                                            messageinc="Incorrecto. Introduce una descripción."
+                                            messageinc="Incorrecto. Ingresa una descripción."
                                             style={{paddingLeft:"10px"}} 
                                         />
                                         {/*<span className="form-text text-muted">Por favor, ingresa la descripción.</span>*/}
