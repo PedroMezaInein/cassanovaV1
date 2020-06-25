@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { Subtitle } from '../../texts'
+import { RFC, DATE } from '../../../constants'
 import { SelectSearch, Select, Button, RadioGroup, Input, Calendar, InputMoney, FileInput } from '../../form-components'
 
 function openWizard1(){  
@@ -35,6 +36,7 @@ class EgresosForm extends Component {
 
     handleChangeDate = date => {
         const { onChange } = this.props
+        console.log("Hola")
         onChange({ target: { value: date, name: 'fecha' } })
     }
 
@@ -211,7 +213,7 @@ class EgresosForm extends Component {
                                                     deleteAdjunto={clearFiles} multiple
                                                     messageinc="Incorrecto. Adjunta el documento."
                                                 />
-                                            <span className="form-text text-muted">Por favor, adjunta el documento. </span>
+                                            {/*<span className="form-text text-muted">Por favor, adjunta el documento. </span>*/}
                                             </div>
                                         : ''
                                     }
@@ -224,10 +226,11 @@ class EgresosForm extends Component {
                                                     value={form.rfc}
                                                     onChange={onChange}
                                                     iconclass={"far fa-file-alt"}
-                                                    messageinc="Incorrecto. Ej. ABCD001122ABC"
+                                                    pattern={RFC}
+                                                    messageinc="Incorrecto. Ej. ABCD001122ABC."
                                                     maxLength="13"
                                                 />
-                                            <span className="form-text text-muted">Por favor, ingresa el RFC. </span>
+                                            {/*<span className="form-text text-muted">Por favor, ingresa el RFC. </span>*/}
                                             </div>
                                         : ''
                                     }
@@ -245,7 +248,7 @@ class EgresosForm extends Component {
                                             messageinc="Incorrecto. Selecciona el proveedor."
                                             
                                         />
-                                    <span className="form-text text-muted">Por favor, selecciona el proveedor.</span>
+                                    {/*<span className="form-text text-muted">Por favor, selecciona el proveedor.</span>*/}
                                     </div>
                                     <div className="col-md-4">
                                         {
@@ -268,7 +271,7 @@ class EgresosForm extends Component {
                                                     messageinc="Incorrecto. Selecciona la empresa."
                                                 />
                                         }
-                                    <span className="form-text text-muted">Por favor, selecciona la empresa.</span>
+                                    {/*<span className="form-text text-muted">Por favor, selecciona la empresa.</span>*/}
                                     </div>
                                     {
                                         form.empresa ?
@@ -282,7 +285,7 @@ class EgresosForm extends Component {
                                                     iconclass={"far fa-credit-card"} 
                                                     messageinc="Incorrecto. Selecciona la cuenta."
                                                 />
-                                            <span className="form-text text-muted">Por favor, selecciona la cuenta.</span>
+                                            {/*<span className="form-text text-muted">Por favor, selecciona la cuenta.</span>*/}
                                             </div>
                                         : ''
                                     }
@@ -303,9 +306,9 @@ class EgresosForm extends Component {
                                             placeholder="Fecha"
                                             name="fecha"
                                             value={form.fecha}
-                                            messageinc="Incorrecto. Selecciona la fecha."
+                                            patterns={DATE}
                                         />
-                                        <span className="form-text text-muted">Por favor, selecciona la fecha.</span>
+                                        {/*<span className="form-text text-muted">Por favor, selecciona la fecha.</span>*/}
                                     </div>    
                                     <div className="col-md-4">
                                         <SelectSearch
@@ -317,7 +320,7 @@ class EgresosForm extends Component {
                                             iconclass={"far fa-window-maximize"}
                                             messageinc="Incorrecto. Selecciona el área."
                                         />
-                                    <span className="form-text text-muted">Por favor, selecciona el área.</span>
+                                    {/*<span className="form-text text-muted">Por favor, selecciona el área.</span>*/}
                                     </div>    
                                     {
                                         form.area ?
@@ -331,7 +334,7 @@ class EgresosForm extends Component {
                                                     iconclass={"far fa-window-restore"}
                                                     messageinc="Incorrecto. Selecciona el subárea."
                                                 />
-                                            <span className="form-text text-muted">Por favor, selecciona la sub-área.</span>
+                                            {/*<span className="form-text text-muted">Por favor, selecciona la sub-área.</span>*/}
                                             </div>
                                         : ''
                                     }    
@@ -346,10 +349,10 @@ class EgresosForm extends Component {
                                             value={form.descripcion}
                                             name="descripcion"
                                             onChange={onChange}
-                                            iconclass={"far fa-file-alt"} 
                                             messageinc="Incorrecto. Ingresa la descripción."
+                                            style={{paddingLeft: "10px"}}                                           
                                         />
-                                    <span className="form-text text-muted">Por favor, ingresa la descripción.</span>
+                                    {/*<span className="form-text text-muted">Por favor, ingresa la descripción.</span>*/}
                                     </div>
                                 </div> 
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
@@ -374,7 +377,7 @@ class EgresosForm extends Component {
                                             iconclass={"fas fa-coins"}
                                             messageinc="Incorrecto. Selecciona el tipo de pago."
                                         />
-                                    <span className="form-text text-muted">Por favor, selecciona el tipo de pago.</span>
+                                    {/*<span className="form-text text-muted">Por favor, selecciona el tipo de pago.</span>*/}
                                     </div>
                                     <div className="col-md-4">
                                         <Select
@@ -386,7 +389,7 @@ class EgresosForm extends Component {
                                             iconclass={"fas fa-file-invoice-dollar"}
                                             messageinc="Incorrecto. Selecciona el impuesto."
                                         />
-                                    <span className="form-text text-muted">Por favor, selecciona el impuesto.</span>
+                                    {/*<span className="form-text text-muted">Por favor, selecciona el impuesto.</span>*/}
                                     </div>
                                     <div className="col-md-4">
                                         <Select 
@@ -398,7 +401,7 @@ class EgresosForm extends Component {
                                             iconclass={"flaticon2-time"}  
                                             messageinc="Incorrecto. Selecciona el estatus de compra."
                                         />
-                                    <span className="form-text text-muted">Por favor, selecciona el estatus de compra.</span>
+                                    {/*<span className="form-text text-muted">Por favor, selecciona el estatus de compra.</span>*/}
                                     </div>
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
@@ -413,7 +416,7 @@ class EgresosForm extends Component {
                                             iconclass={" fas fa-money-check-alt"}
                                             messageinc="Incorrecto. Ingresa el monto."
                                         />
-                                    <span className="form-text text-muted">Por favor, ingresa el monto.</span>
+                                    {/*<span className="form-text text-muted">Por favor, ingresa el monto.</span>*/}
                                     </div>
                                     <div className="col-md-6">
                                         <InputMoney 
@@ -425,7 +428,7 @@ class EgresosForm extends Component {
                                             iconclass={"flaticon-coins"}
                                             messageinc="Incorrecto. Ingresa la comisión."
                                         />
-                                    <span className="form-text text-muted">Por favor, ingresa la comisión.</span>
+                                    {/*<span className="form-text text-muted">Por favor, ingresa la comisión.</span>*/}
                                     </div>                                            
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
@@ -441,7 +444,7 @@ class EgresosForm extends Component {
                                             deleteAdjunto={clearFiles}
                                             messageinc="Incorrecto. Adjunta el documento."
                                         />
-                                    <span className="form-text text-muted">Por favor, adjunta el documento.</span>
+                                    {/*<span className="form-text text-muted">Por favor, adjunta el documento.</span>*/}
                                     </div>
                                     <div className="col-md-6">
                                         <FileInput
@@ -454,7 +457,7 @@ class EgresosForm extends Component {
                                             deleteAdjunto={clearFiles} 
                                             messageinc="Incorrecto. Adjunta el documento."
                                         />
-                                    <span className="form-text text-muted">Por favor, adjunta el documento.</span>
+                                    {/*<span className="form-text text-muted">Por favor, adjunta el documento.</span>*/}
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
