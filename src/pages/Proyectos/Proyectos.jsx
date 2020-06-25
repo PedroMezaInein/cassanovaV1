@@ -1955,7 +1955,12 @@ class Proyectos extends Component {
                                                                     </div>
                                                                     <Accordion.Collapse eventKey={adjunto.id}>
                                                                         <div>
-                                                                            <ItemSlider items = { proyecto[adjunto.id] }  proyecto = { proyecto } />
+                                                                            {
+                                                                                proyecto ? 
+                                                                                    <ItemSlider items = { proyecto[adjunto.id] }  proyecto = { proyecto } />
+                                                                                : ''
+                                                                            }
+                                                                            
                                                                         </div>
                                                                     </Accordion.Collapse>
                                                                 </div>

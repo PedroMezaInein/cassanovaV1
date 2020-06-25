@@ -359,21 +359,20 @@ class ProyectosForm extends Component{
                                                             {
                                                                 grupo.adjuntos.map( (adjunto, key) => {
                                                                     return(
-                                                                        <div key = { key }>
-                                                                            <div className="col-md-6"  >
-                                                                                <FileInput 
-                                                                                    onChangeAdjunto = { onChangeAdjuntoGrupo } 
-                                                                                    placeholder = { adjunto.placeholder }
-                                                                                    value = { adjunto.value }
-                                                                                    name = { adjunto.id }
-                                                                                    id = { adjunto.id }
-                                                                                    accept = "image/*, application/pdf" 
-                                                                                    files = { adjunto.files }
-                                                                                    deleteAdjunto = { clearFilesGrupo }
-                                                                                    multiple
-                                                                                    iconclass={"fas fa-paperclip"}     
-                                                                                    />
-                                                                            </div>
+                                                                        
+                                                                        <div className="col-md-6"  key = { key }>
+                                                                            <FileInput 
+                                                                                onChangeAdjunto = { onChangeAdjuntoGrupo } 
+                                                                                placeholder = { adjunto.placeholder }
+                                                                                value = { adjunto.value }
+                                                                                name = { adjunto.id }
+                                                                                id = { adjunto.id }
+                                                                                accept = "image/*, application/pdf" 
+                                                                                files = { adjunto.files }
+                                                                                deleteAdjunto = { clearFilesGrupo }
+                                                                                multiple
+                                                                                iconclass={"fas fa-paperclip"}     
+                                                                                />
                                                                         </div>
                                                                     )
                                                                 })
