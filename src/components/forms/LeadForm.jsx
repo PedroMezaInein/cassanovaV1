@@ -81,7 +81,7 @@ class LeadForm extends Component{
                             <span className="form-text text-muted">Por favor, ingresa el teléfono. </span>
                     </div>
                 </div>
-                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Select 
@@ -119,7 +119,7 @@ class LeadForm extends Component{
                         <span className="form-text text-muted">Por favor, ingresa la fecha de ingreso. </span>
                     </div>
                 </div>
-                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-12">
                         <Input 
@@ -136,7 +136,7 @@ class LeadForm extends Component{
                         <span className="form-text text-muted">Por favor, ingresa un comentario</span>
                     </div>
                 </div>
-                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-12">
                         <OptionsCheckbox 

@@ -122,7 +122,7 @@ class ProyectosForm extends Component{
                                         {/*<span className="form-text text-muted">Por favor, selecciona el cliente</span>*/}
                                     </div>      
                                 </div>
-                                <div class="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-6">                                       
                                         <Input 
@@ -200,7 +200,7 @@ class ProyectosForm extends Component{
                                         {/*<span className="form-text text-muted">Por favor, ingresa el municipio/delegación. </span>*/}
                                     </div>
                                 </div>
-                                <div class="separator separator-dashed mt-1 mb-2" hidden={options.colonias.length <= 0 ? true : false}></div>
+                                <div className="separator separator-dashed mt-1 mb-2" hidden={options.colonias.length <= 0 ? true : false}></div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-5" hidden={options.colonias.length <= 0 ? true : false}>
                                         { 
@@ -290,7 +290,7 @@ class ProyectosForm extends Component{
                                         {/*<span className="form-text text-muted">Por favor, ingrese su imagen. </span>*/}
                                     </div>                                    
                                 </div>
-                                <div class="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">  
                                     <div className="col-md-4">
                                         <Calendar 
@@ -322,7 +322,7 @@ class ProyectosForm extends Component{
                                         {/*<span className="form-text text-muted">Por favor, ingrese su fecha de final. </span>*/}
                                     </div>
                                 </div>
-                                <div class="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">                                
                                     <div className="col-md-12">
                                         <Input 
@@ -359,8 +359,8 @@ class ProyectosForm extends Component{
                                                             {
                                                                 grupo.adjuntos.map( (adjunto, key) => {
                                                                     return(
-                                                                        <>
-                                                                            <div className="col-md-6" key = { key } >
+                                                                        <div key = { key }>
+                                                                            <div className="col-md-6"  >
                                                                                 <FileInput 
                                                                                     onChangeAdjunto = { onChangeAdjuntoGrupo } 
                                                                                     placeholder = { adjunto.placeholder }
@@ -374,7 +374,7 @@ class ProyectosForm extends Component{
                                                                                     iconclass={"fas fa-paperclip"}     
                                                                                     />
                                                                             </div>
-                                                                        </>
+                                                                        </div>
                                                                     )
                                                                 })
                                                             }

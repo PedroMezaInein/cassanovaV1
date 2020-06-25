@@ -51,7 +51,7 @@ class ConceptoForm extends Component {
                             <span className="form-text text-muted">Por favor, selecciona la unidad</span>
                         </div>
                     </div>
-                    <div class="separator separator-dashed mt-1 mb-2"></div>
+                    <div className="separator separator-dashed mt-1 mb-2"></div>
                     <div className="form-group row form-group-marginless">
                         <div className="col-md-4">
                             <InputMoney thousandSeparator={true} placeholder="Costo" value={form.costo} name="costo" onChange={onChange} iconclass={"fas fa-dollar-sign"}/>
@@ -63,7 +63,7 @@ class ConceptoForm extends Component {
                             <span className="form-text text-muted">Por favor, ingresa la descripción. </span>
                         </div>
                     </div>
-                    <div class="separator separator-dashed mt-1 mb-2"></div>
+                    <div className="separator separator-dashed mt-1 mb-2"></div>
                     
                 
                     <div className="d-flex justify-content-center my-3">

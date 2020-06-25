@@ -88,7 +88,7 @@ class ContratoForm extends Component {
                     </div>
                     
                 </div>
-                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Calendar 
@@ -122,7 +122,7 @@ class ContratoForm extends Component {
                         <span className="form-text text-muted">Por favor, ingrese el monto con IVA. </span>
                     </div>
                 </div>
-                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <SelectSearch 
@@ -136,14 +136,14 @@ class ContratoForm extends Component {
                         <span className="form-text text-muted">Por favor, seleccione el tipo de contrato. </span>
                     </div>
                 </div>
-                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-12">
                         <Input rows="3" as="textarea" placeholder="Descripción" name="descripcion" onChange={onChange} value={form.descripcion} iconclass={"fas fa-terminal"}/>
                         <span className="form-text text-muted">Por favor, ingrese su descripción. </span>
                     </div>
                 </div>
-                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="mt-3 text-center">
                     <Button icon='' className="mx-auto" type="submit" text="Enviar" />
                 </div>

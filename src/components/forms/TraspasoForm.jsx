@@ -51,7 +51,7 @@ class TareaForm extends Component{
                     </div>
                 </div>
 
-                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <InputMoney 
@@ -106,7 +106,7 @@ class TareaForm extends Component{
                         </div>
                     </div>                    
                 </div>
-                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-12">
                         <Input 
