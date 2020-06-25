@@ -31,7 +31,7 @@ class ClienteForm extends Component{
                         <span className="form-text text-muted">Por favor, ingrese el nombre del empleado</span>
                     </div>
                 </div>
-                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Input name="puesto" value={form.puesto} onChange={onChange} type="text" placeholder="Puesto del empleado" iconclass={" fas fa-user-tie"}/>
@@ -46,7 +46,7 @@ class ClienteForm extends Component{
                         <span className="form-text text-muted">Por favor, ingrese su estado. </span>
                     </div>
                 </div>
-                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Input readOnly={colonias.length <= 0 ? true : false} value={municipio} name="municipio" type="text" placeholder="Municipio/Delegación" iconclass={"fas fa-map-marker-alt"} />
@@ -63,7 +63,7 @@ class ClienteForm extends Component{
                         <span className="form-text text-muted">Por favor, ingrese su calle y número. </span>
                     </div>
                 </div>
-                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-12">
                         <Input rows="" as="textarea" placeholder="Perfil" name="perfil" value={form.perfil} onChange={onChange} iconclass={"fas fa-user-tag"}/>

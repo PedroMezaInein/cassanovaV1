@@ -240,7 +240,7 @@ updateArea = value => {
                                             : ''
                                     }
                                 </div>
-                                <div class="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <SelectSearch 
@@ -292,7 +292,7 @@ updateArea = value => {
                                     {
                                         form.empresa ?                                            
                                             <div className="col-md-4">
-                                                <div class="separator separator-dashed mt-1 mb-2"></div>
+                                                <div className="separator separator-dashed mt-1 mb-2"></div>
                                                 <SelectSearch 
                                                     options={options.cuentas} 
                                                     placeholder="Selecciona la cuenta"
@@ -353,7 +353,7 @@ updateArea = value => {
                                         : ''
                                     }
                                 </div>
-                                <div class="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-12">
                                         <Input 
@@ -424,7 +424,7 @@ updateArea = value => {
                                         {/*<span className="form-text text-muted">Por favor, selecciona el estatus de compra.</span>*/}
                                     </div>
                                 </div>
-                                <div class="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <InputMoney 
@@ -460,7 +460,7 @@ updateArea = value => {
                                         {/*<span className="form-text text-muted">Por favor, selecciona el contrato.</span>*/}
                                     </div>
                                 </div>
-                                <div class="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">                                
                                     <div className="col-md-6">
                                         <FileInput

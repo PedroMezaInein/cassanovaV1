@@ -58,7 +58,7 @@ class CuentaForm extends Component{
                         {/*<span className="form-text text-muted">Por favor, seleccione el banco </span>*/}
                     </div>
                 </div>
-                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Input 
@@ -101,7 +101,7 @@ class CuentaForm extends Component{
                         {/*<span className="form-text text-muted">Por favor, seleccione el estatus</span>*/}
                     </div>
                 </div>
-                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Select 
@@ -140,7 +140,7 @@ class CuentaForm extends Component{
                         }
                     </div>
                 </div>
-                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                     <div className="form-group row form-group-marginless">
                     <div className="col-md-12">
                         <Input 

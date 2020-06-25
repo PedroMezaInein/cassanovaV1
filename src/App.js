@@ -99,6 +99,15 @@ class App extends Component{
             })
         })
     }
+
+    shouldComponentUpdate(nextProps){
+        const { history } = this.props
+        if(nextProps.authUser.access_token === ''){
+            history.push('/login')
+        }
+        return false
+    }
+
     async logoutUser(){
         const { logout, authUser : {access_token: access_token}, history } = this.props
         
@@ -119,10 +128,7 @@ class App extends Component{
         })
     }
     render(){
-        const { authUser , history } = this.props
-        if(authUser.access_token === ''){
-            history.push('/login')
-        }
+        
         return(
             <>
                 

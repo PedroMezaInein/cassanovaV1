@@ -22,21 +22,21 @@ class Login extends Component{
         
         return(
             
-            <div class="vh-100 d-flex flex-column flex-root">
-                    <div class="login login-3 login-signin-on d-flex flex-row-fluid" id="kt_login" >
-                        <div class="d-flex flex-center bgi-size-cover bgi-no-repeat flex-row-fluid" style ={ { backgroundImage: "url('/bg-2.jpg')" } }>
-                            <div class="login-form text-center text-white p-7 position-relative overflow-hidden">
-                                <div class="d-flex flex-center mb-15">
+            <div className="vh-100 d-flex flex-column flex-root">
+                    <div className="login login-3 login-signin-on d-flex flex-row-fluid" id="kt_login" >
+                        <div className="d-flex flex-center bgi-size-cover bgi-no-repeat flex-row-fluid" style ={ { backgroundImage: "url('/bg-2.jpg')" } }>
+                            <div className="login-form text-center text-white p-7 position-relative overflow-hidden">
+                                <div className="d-flex flex-center mb-15">
                                     <a href="#" >
-                                        <img src="/inein.png" class="max-h-75px  mr-5" alt="" />
-                                        <img src="/im.png" class="max-h-75px ml-5 mr-5" alt="" />
-                                        <img src="/Rocco.png" class="max-h-75px ml-5" alt="" />
+                                        <img src="/inein.png" className="max-h-75px  mr-5" alt="" />
+                                        <img src="/im.png" className="max-h-75px ml-5 mr-5" alt="" />
+                                        <img src="/Rocco.png" className="max-h-75px ml-5" alt="" />
                                     </a>
                                 </div>
-                                <div class="login-signin">
-                                    <div class="mb-20">
-                                        <h3 class="opacity-40 font-weight-normal pt-5 pb-2">Iniciar sesión</h3>
-                                        <p class="opacity-40 pb-2 pt-1">Escribe tu correo y contraseña</p>
+                                <div className="login-signin">
+                                    <div className="mb-20">
+                                        <h3 className="opacity-40 font-weight-normal pt-5 pb-2">Iniciar sesión</h3>
+                                        <p className="opacity-40 pb-2 pt-1">Escribe tu correo y contraseña</p>
                                     </div>
                                         <div className=" align-items-center justify-content-center">
                                             <LoginForm { ... this.props} />
