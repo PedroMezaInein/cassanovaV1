@@ -61,7 +61,7 @@ class ProyectosForm extends Component{
     }
 
     render(){
-        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, options, ... props } = this.props
+        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, ... props } = this.props
         return(
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -302,7 +302,7 @@ class ProyectosForm extends Component{
                                             startDate={ form.fechaInicio }
                                             endDate={ form.fechaFin }
                                             iconclass={"far fa-calendar-alt"}
-                                            pattern={DATE}                        
+                                            /* pattern={DATE}        */                 
                                         />
                                         {/*<span className="form-text text-muted">Por favor, ingrese su fecha de inicio. </span>*/}
                                     </div>
@@ -317,7 +317,7 @@ class ProyectosForm extends Component{
                                             endDate={ form.fechaFin }
                                             minDate={ form.fechaInicio }
                                             iconclass={"far fa-calendar-alt"}
-                                            patterns={DATE}
+                                            /* patterns={DATE} */
                                         />
                                         {/*<span className="form-text text-muted">Por favor, ingrese su fecha de final. </span>*/}
                                     </div>
@@ -369,7 +369,7 @@ class ProyectosForm extends Component{
                                                                                     id = { adjunto.id }
                                                                                     accept = "image/*, application/pdf" 
                                                                                     files = { adjunto.files }
-                                                                                    deleteAdjunto = { clearFiles }
+                                                                                    deleteAdjunto = { clearFilesGrupo }
                                                                                     multiple
                                                                                     iconclass={"fas fa-paperclip"}     
                                                                                     />

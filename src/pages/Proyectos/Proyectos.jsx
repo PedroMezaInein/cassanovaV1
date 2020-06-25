@@ -19,6 +19,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList, setContactoTable } from '../../functions/setters'
 import NewTable from '../../components/tables/NewTable'
 import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert } from '../../functions/alert'
+import { forIn } from 'lodash'
 
 class Proyectos extends Component {
 
@@ -777,15 +778,25 @@ class Proyectos extends Component {
     clearFilesGrupo = (name, key) => {
         const { form } = this.state
         let aux = []
-        for (let counter = 0; counter < form['adjuntos'][name].files.length; counter++) {
+        let grupo = 0
+        let adjunto = 0
+        for(let i = 0; i < form.adjuntos_grupo.length; i++){
+            for(let j = 0; i < form.adjuntos_grupo[i].adjuntos.length; i++){
+                if(form.adjuntos_grupo[i].adjuntos[j].id === name){
+                    grupo = i;
+                    adjunto = j;
+                }
+            }
+        }
+        for (let counter = 0; counter < form.adjuntos_grupo[grupo].adjuntos[adjunto].files.length; counter++) {
             if (counter !== key) {
-                aux.push(form['adjuntos'][name].files[counter])
+                aux.push(form.adjuntos_grupo[grupo].adjuntos[adjunto].files[counter])
             }
         }
         if (aux.length < 1) {
-            form['adjuntos'][name].value = ''
+            form.adjuntos_grupo[grupo].adjuntos[adjunto].value = ''
         }
-        form['adjuntos'][name].files = aux
+        form.adjuntos_grupo[grupo].adjuntos[adjunto].files = aux
         this.setState({
             ... this.state,
             form
@@ -850,6 +861,7 @@ class Proyectos extends Component {
                     }]
                     break;
                 case 'adjuntos':
+                case 'adjuntos_grupo':
                     break;
                 default:
                     form[element] = ''
@@ -860,6 +872,12 @@ class Proyectos extends Component {
         aux.map((element) => {
             form.adjuntos[element].value = ''
             form.adjuntos[element].files = []
+        })
+        form.adjuntos_grupo.map( (grupo) => {
+            grupo.adjuntos.map( (adjunto) => {
+                adjunto.value = ''
+                adjunto.files = []
+            })
         })
         return form
     }
@@ -1280,6 +1298,7 @@ class Proyectos extends Component {
                     data.append(element, (new Date(form[element])).toDateString())
                     break
                 case 'adjuntos':
+                case 'adjuntos_grupo':
                     break;
                 default:
                     data.append(element, form[element])
@@ -1300,6 +1319,16 @@ class Proyectos extends Component {
         if (prospecto) {
             data.append('prospecto', prospecto.id)
         }
+        form.adjuntos_grupo.map( (grupo) => {
+            grupo.adjuntos.map( (adjunto) => {
+                adjunto.files.map((file)=> {
+                    data.append(`files_name_${adjunto.id}[]`, file.name)
+                    data.append(`files_${adjunto.id}[]`, file.file)
+                })
+                if(adjunto.files.length)
+                    data.append('adjuntos[]', adjunto.id)
+            })
+        })
         await axios.post(URL_DEV + 'proyectos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { proyectos, proyecto } = response.data
@@ -1659,7 +1688,8 @@ class Proyectos extends Component {
                 <Modal title = { title } show={modal} handleClose={this.handleClose}>
                     <ProyectosForm title={title} form={form} onChange={this.onChange} options={options}
                         onChangeAdjunto={this.onChangeAdjunto} clearFiles={this.clearFiles} onChangeCP={this.onChangeCP}
-                        onSubmit={this.onSubmit} onChangeAdjuntoGrupo = { this.onChangeAdjuntoGrupo } >
+                        onSubmit={this.onSubmit} onChangeAdjuntoGrupo = { this.onChangeAdjuntoGrupo } 
+                        clearFilesGrupo = { this.clearFilesGrupo } >
                         {
                             prospecto !== '' ?
                                 <Accordion>
