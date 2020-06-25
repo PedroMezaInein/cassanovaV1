@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { Subtitle } from '../../texts'
 import { SelectSearch, Select, Button, RadioGroup, Input, Calendar, InputMoney, FileInput } from '../../form-components'
+import { DATE } from '../../../constants'
 
 class ContratoForm extends Component {
 
@@ -38,11 +39,18 @@ class ContratoForm extends Component {
         const { title, options, form, onChange, tipo, ...props } = this.props
         return (
             <Form {...props}>
-                <div className="form-group row form-group-marginless">
+                <div className="form-group row form-group-marginless pt-4">
                 
                     <div className="col-md-4">
-                        <Input placeholder="Nombre" name="nombre" onChange={onChange} value={form.nombre} iconclass={"fas fa-person-booth"}/>
-                        <span className="form-text text-muted">Por favor, ingrese un nombre. </span>
+                        <Input 
+                            placeholder="Nombre" 
+                            name="nombre" 
+                            onChange={onChange} 
+                            value={form.nombre} 
+                            iconclass={"fas fa-person-booth"}
+                            messageinc="Incorrecto. Ingresa el nombre."
+                        />
+                        {/*<span className="form-text text-muted">Por favor, ingrese un nombre. </span>*/}
                     </div>
 
                     <div className="col-md-4">
@@ -66,14 +74,14 @@ class ContratoForm extends Component {
                                     iconclass={"far fa-user"}
                                     />
                         }
-                        <span className="form-text text-muted">Por favor, selecciona el 
+                        {/*<span className="form-text text-muted">Por favor, selecciona el 
                             {
                                 tipo === 'Cliente'?
                                     'cliente'
                                 :
                                     'proveedor'
                             }
-                        </span>
+                        </span>*/}
                     </div>
                     <div className="col-md-4">
                         <SelectSearch 
@@ -84,12 +92,24 @@ class ContratoForm extends Component {
                             onChange = { this.updateEmpresa }
                             iconclass={"far fa-building"}
                             />
-                        <span className="form-text text-muted">Por favor, selecciona la empresa.</span>
+                        {/*<span className="form-text text-muted">Por favor, selecciona la empresa.</span>*/}
                     </div>
                     
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
+                    <div className="col-md-4">
+                        <InputMoney 
+                                thousandSeparator={true}  
+                                prefix = { '$' } 
+                                name = "monto" 
+                                value = { form.monto } 
+                                onChange = { onChange } 
+                                placeholder="Monto con IVA" 
+                                iconclass={"fas fa-money-bill-wave-alt"}
+                        />
+                        {/*<span className="form-text text-muted">Por favor, ingrese el monto con IVA. </span>*/}
+                    </div>
                     <div className="col-md-4">
                         <Calendar 
                             onChangeCalendar = { this.handleChangeDateInicio }
@@ -99,9 +119,10 @@ class ContratoForm extends Component {
                             selectsStart
                             startDate={ form.fechaInicio }
                             endDate={ form.fechaFin }
-                            iconclass={"far fa-calendar-alt"}                            
+                            iconclass={"far fa-calendar-alt"}      
+                            patterns={DATE}                      
                         />
-                        <span className="form-text text-muted">Por favor, ingrese su fecha de inicio. </span>
+                        {/*<span className="form-text text-muted">Por favor, ingrese su fecha de inicio. </span>*/}
                     </div>
                     <div className="col-md-4">
                         <Calendar 
@@ -113,14 +134,12 @@ class ContratoForm extends Component {
                             startDate={ form.fechaInicio }
                             endDate={ form.fechaFin }
                             minDate={ form.fechaInicio }
-                            iconclass={"far fa-calendar-alt"}                          
+                            iconclass={"far fa-calendar-alt"} 
+                            patterns={DATE}                        
                         />
-                        <span className="form-text text-muted">Por favor, ingrese su fecha de fin. </span>
+                        {/*<span className="form-text text-muted">Por favor, ingrese su fecha de fin. </span>*/}
                     </div>
-                    <div className="col-md-4">
-                        <InputMoney thousandSeparator={true}  prefix = { '$' } name = "monto" value = { form.monto } onChange = { onChange } placeholder="Monto con IVA" iconclass={"fas fa-money-bill-wave-alt"}/>
-                        <span className="form-text text-muted">Por favor, ingrese el monto con IVA. </span>
-                    </div>
+                    
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
@@ -133,14 +152,23 @@ class ContratoForm extends Component {
                             onChange = { this.updateTipoContrato }
                             iconclass={"fas fa-pen-fancy"}
                             />
-                        <span className="form-text text-muted">Por favor, seleccione el tipo de contrato. </span>
+                        {/*<span className="form-text text-muted">Por favor, seleccione el tipo de contrato. </span>*/}
                     </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-12">
-                        <Input rows="3" as="textarea" placeholder="Descripción" name="descripcion" onChange={onChange} value={form.descripcion} iconclass={"fas fa-terminal"}/>
-                        <span className="form-text text-muted">Por favor, ingrese su descripción. </span>
+                        <Input 
+                            rows="3" 
+                            as="textarea" 
+                            placeholder="Descripción" 
+                            name="descripcion" 
+                            onChange={onChange} 
+                            value={form.descripcion} 
+                            messageinc="Incorrecto. Ingresa la descripción."
+                            style={{paddingLeft: "10px"}}   
+                        />
+                        {/*<span className="form-text text-muted">Por favor, ingrese su descripción. </span>*/}
                     </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
