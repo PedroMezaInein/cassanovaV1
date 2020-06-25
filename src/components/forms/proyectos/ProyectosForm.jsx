@@ -162,7 +162,7 @@ class ProyectosForm extends Component{
                                             placeholder="Número de contacto"
                                             iconclass={"fas fa-mobile-alt"}                                            
                                             messageinc="Incorrecto. Ingresa el número de contacto."
-                                            pattern={TEL}
+                                            patterns={TEL}
                                             maxLength="10"
                                         />
                                         {/*<span className="form-text text-muted">Por favor, ingresa el número de contacto. </span>*/}
@@ -345,7 +345,7 @@ class ProyectosForm extends Component{
                                             endDate={ form.fechaFin }
                                             minDate={ form.fechaInicio }
                                             iconclass={"far fa-calendar-alt"}
-                                            pattern={DATE}
+                                            patterns={DATE}
                                         />
                                         {/*<span className="form-text text-muted">Por favor, ingrese su fecha de final. </span>*/}
                                     </div>

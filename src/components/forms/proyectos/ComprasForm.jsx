@@ -350,7 +350,7 @@ updateArea = value => {
                                             placeholder="Fecha" 
                                             name="fecha" 
                                             value={form.fecha}
-                                            pattern={DATE}
+                                            patterns={DATE}
                                         />
                                         {/*<span className="form-text text-muted">Por favor, selecciona la fecha.</span>*/}
                                     </div>
