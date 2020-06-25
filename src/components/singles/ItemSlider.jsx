@@ -47,7 +47,7 @@ class ItemSlider extends Component{
     }
 
     handleChange = files => {
-        const {item, handleChange} = this.props
+        const { handleChange, item } = this.props
         handleChange(files, item)
     }
 
