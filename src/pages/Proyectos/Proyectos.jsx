@@ -79,6 +79,8 @@ class Proyectos extends Component {
             colonia: '',
             porcentaje: '',
             descripcion: '',
+            correos: [],
+            correo: '',
             adjuntos_grupo:[
                 {
                     text: 'Inicio y planeación',
@@ -889,6 +891,9 @@ class Proyectos extends Component {
                     break;
                 case 'adjuntos':
                 case 'adjuntos_grupo':
+                    break;
+                case 'correos':
+                    form[element] = []
                     break;
                 default:
                     form[element] = ''

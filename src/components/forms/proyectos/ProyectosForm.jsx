@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import { Form, Accordion } from 'react-bootstrap'
+import { Form, Accordion, Badge } from 'react-bootstrap'
 import {Subtitle, Small} from '../../texts'
 import {Input, Select, SelectSearch, Button, Calendar, InputMoney, FileInput } from '../../form-components'
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
-import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { DATE, TEL} from '../../../constants'
 import {openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function CustomToggle({ children, eventKey }) {
 
@@ -31,6 +32,26 @@ function CustomToggle({ children, eventKey }) {
 }
 
 class ProyectosForm extends Component{
+
+    addCorreo = () => {
+        const { onChange, form }  = this.props
+        let aux = false
+        let array = []
+        if(form.correo){
+            form.correos.map( (correo) => {
+                if(correo === form.correo){
+                    aux = true
+                }
+            })
+            if(!aux){
+                array = form.correos
+                array.push(form.correo)
+                onChange( { target: { name: 'correos', value: array } } )
+                onChange( { target: { name: 'correo', value: '' } } )
+            }
+        }
+        console.log('CORREOS', form.correos)
+    }
 
     handleChangeDateInicio = date => {
         const { onChange, form }  = this.props
@@ -151,6 +172,47 @@ class ProyectosForm extends Component{
                                         />
                                         {/*<span className="form-text text-muted">Por favor, ingresa el nombre del contacto. </span>*/}
                                     </div>                            
+                                </div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="form-group row form-group-marginless">
+                                    <div className="col-md-10">
+                                        <Input 
+                                            thousandSeparator={false}
+                                            prefix = { '' }
+                                            name = "correo"
+                                            value = { form.correo }
+                                            onChange = { onChange }
+                                            placeholder="Correo de contacto"
+                                            iconclass={"fas fa-envelope-open"}                                            
+                                            messageinc="Incorrecto. Ingresa un correo de contacto."
+                                            type="email"
+                                        />
+                                        {/*<span className="form-text text-muted">Por favor, ingresa el número de contacto. </span>*/}
+                                    </div>
+                                    <div className="col-md-2 d-flex align-items-center justify-content-start">
+                                        <span className = 'btn btn-hover btn-text-success' onClick={(e) => { e.preventDefault(); this.addCorreo() }}>
+                                            <i className="fas fa-play"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="form-group row form-group-marginless">
+                                    <div className="col-md-12 d-flex align-items-center image-upload">
+                                        {
+                                            form.correos.map((correo, key)=>{
+                                                return(
+                                                    <Badge variant = "light" key = { key } className="d-flex px-3 align-items-center" pill>
+                                                        <FontAwesomeIcon
+                                                            icon = { faTimes }
+                                                            onClick = { (e) => { e.preventDefault(); }}
+                                                            className = "small-button mr-2" />
+                                                            {
+                                                                correo
+                                                            }
+                                                    </Badge>
+                                                )
+                                            })
+                                        }
+                                    </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2"></div>
@@ -358,7 +420,6 @@ class ProyectosForm extends Component{
                                                         <div className="row mx-0">
                                                             {
                                                                 grupo.adjuntos.map( (adjunto, key) => {
-                                                                    console.log(adjunto)
                                                                     return(
                                                                         
                                                                         <div className="col-md-6"  key = { key }>
