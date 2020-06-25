@@ -369,45 +369,50 @@ class ProyectosForm extends Component{
                             {
                                 title !== 'Editar proyecto' ?
                                 <Accordion>
-                                    <div className="px-3 pt-2">
-                                        <CustomToggle eventKey="adjuntos" >
-                                            <strong>
-                                                <p className="label-form">
-                                                    Aquí puedes adjuntar los archivos
-                                                </p>
-                                            </strong>
-                                        </CustomToggle>
-                                    </div>
-                                    
-                                    <Accordion.Collapse eventKey="adjuntos">
-                                        <div className="row mx-0">
-                                            {
-                                                Object.keys(form.adjuntos).map((adjunto, key)=>{
-                                                    
-                                                    if(adjunto.toString() !== 'image'){
-                                                        let aux = adjunto.toString()
-                                                        return(
-                                                            <div className="col-md-6" key = { key } >
-                                                                <FileInput 
-                                                                    onChangeAdjunto = { onChangeAdjunto } 
-                                                                    placeholder = { form['adjuntos'][aux]['placeholder'] }
-                                                                    value = { form['adjuntos'][aux]['value'] }
-                                                                    name = { aux }
-                                                                    id = { aux }
-                                                                    accept = "image/*, application/pdf" 
-                                                                    files = { form['adjuntos'][aux]['files'] }
-                                                                    deleteAdjunto = { clearFiles }
-                                                                    multiple
-                                                                    iconclass={"fas fa-paperclip"}     
-                                                                    />
-                                                            </div>
-                                                            
-                                                        )
-                                                    }
-                                                })
-                                            }
-                                        </div>
-                                    </Accordion.Collapse>
+                                    {
+                                        form.adjuntos_grupo.map( (grupo, key) => {
+                                            return(
+                                                <div key = {key}>
+                                                    <div className="px-3 pt-2">
+                                                        <CustomToggle eventKey={grupo.id} >
+                                                            <strong>
+                                                                <p className="label-form">
+                                                                    {grupo.text}
+                                                                </p>
+                                                            </strong>
+                                                        </CustomToggle>
+                                                    </div>
+                                                    <Accordion.Collapse eventKey={grupo.id}>
+                                                        <div className="row mx-0">
+                                                            {
+                                                                grupo.adjuntos.map( (adjunto, key) => {
+                                                                    return(
+                                                                        <>
+                                                                            <div className="col-md-6" key = { key } >
+                                                                                <FileInput 
+                                                                                    onChangeAdjunto = { onChangeAdjunto } 
+                                                                                    placeholder = { adjunto.placeholder }
+                                                                                    value = { adjunto.value }
+                                                                                    name = { adjunto.id }
+                                                                                    id = { adjunto.id }
+                                                                                    accept = "image/*, application/pdf" 
+                                                                                    files = { adjunto.files }
+                                                                                    deleteAdjunto = { clearFiles }
+                                                                                    multiple
+                                                                                    iconclass={"fas fa-paperclip"}     
+                                                                                    />
+                                                                            </div>
+                                                                        </>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </div>
+                                                    </Accordion.Collapse>
+                                                </div>
+                                            )
+                                            
+                                        })
+                                    }
                                 </Accordion>
                                 : ''
                             }
