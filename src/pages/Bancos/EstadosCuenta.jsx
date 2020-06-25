@@ -470,6 +470,7 @@ class EstadosCuenta extends Component {
                                                 type="file"
                                                 id="adjunto"
                                                 accept="application/pdf" 
+                                                className={"mr-3"}
                                                 />
                                             {/*<span className="form-text text-muted">Por favor, adjunte su documento. </span>*/}
                                         </div>
@@ -480,7 +481,7 @@ class EstadosCuenta extends Component {
                                         {
                                             
                                             adjuntoName &&
-                                            <div className="col-md--5">
+                                            <div className="">
                                                 <div className="tagify form-control p-1" tabIndex="-1">
                                                         <div className="tagify__tag tagify__tag--primary tagify--noAnim">
                                                             <div 
