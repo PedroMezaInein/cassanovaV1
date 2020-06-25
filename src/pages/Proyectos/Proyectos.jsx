@@ -21,6 +21,7 @@ import NewTable from '../../components/tables/NewTable'
 import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert } from '../../functions/alert'
 import { forIn } from 'lodash'
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
+import ItemSlider from '../../components/singles/ItemSlider'
 
 function CustomToggle({ children, eventKey }) {
 
@@ -88,7 +89,7 @@ class Proyectos extends Component {
                         },
                         {
                             placeholder: 'Manuales de adaptación',
-                            id: 'manuales_de_adaptación',
+                            id: 'manuales_de_adaptacion',
                             value: '',
                             files: []
                         },
@@ -552,7 +553,7 @@ class Proyectos extends Component {
         let { adjuntos } = this.state
 
         let auxheaders = [
-            { name: 'cotizaciones', placeholder: 'Cotización', form: 'cotizacion' },
+            /* { name: 'cotizaciones', placeholder: 'Cotización', form: 'cotizacion' },
             { name: 'comprobante_pagos', placeholder: 'Comprobante de pagos', form: 'comprobantePagos' },
             { name: 'catalogo_conceptos', placeholder: 'Catálogo de conceptos', form: 'catalogoConceptos' },
             { name: 'programas_obra', placeholder: 'Programas de obra', form: 'programasObra' },
@@ -568,10 +569,10 @@ class Proyectos extends Component {
             { name: 'moodboard', placeholder: 'Moodboard', form: 'moodboard' },
             { name: 'diseños_aprobados', placeholder: 'Diseños aprobados por cliente', form: 'diseñosAprobados' },
             { name: 'garantia', placeholder: 'Garantía de vicios ocultos', form: 'garantia' },
-            { name: 'contratos', placeholder: 'Contratos', form: 'contratos' }
+            { name: 'contratos', placeholder: 'Contratos', form: 'contratos' } */
         ]
 
-        let aux = []
+        /* let aux = []
 
         auxheaders.map((element) => {
             aux.push({
@@ -584,7 +585,7 @@ class Proyectos extends Component {
         })
 
         adjuntos = aux;
-
+ */
         this.setState({
             ... this.state,
             modalAdjuntos: true,
@@ -597,7 +598,7 @@ class Proyectos extends Component {
     setAdjuntosSlider = proyecto => {
 
         let auxheaders = [
-            { name: 'cotizaciones', placeholder: 'Cotización', form: 'cotizacion' },
+            /* { name: 'cotizaciones', placeholder: 'Cotización', form: 'cotizacion' },
             { name: 'comprobante_pagos', placeholder: 'Comprobante de pagos', form: 'comprobantePagos' },
             { name: 'catalogo_conceptos', placeholder: 'Catálogo de conceptos', form: 'catalogoConceptos' },
             { name: 'programas_obra', placeholder: 'Programas de obra', form: 'programasObra' },
@@ -613,7 +614,7 @@ class Proyectos extends Component {
             { name: 'moodboard', placeholder: 'Moodboard', form: 'moodboard' },
             { name: 'diseños_aprobados', placeholder: 'Diseños aprobados por cliente', form: 'diseñosAprobados' },
             { name: 'garantia', placeholder: 'Garantía de vicios ocultos', form: 'garantia' },
-            { name: 'contratos', placeholder: 'Contratos', form: 'contratos' }
+            { name: 'contratos', placeholder: 'Contratos', form: 'contratos' } */
         ]
 
         let aux = []
@@ -1954,7 +1955,7 @@ class Proyectos extends Component {
                                                                     </div>
                                                                     <Accordion.Collapse eventKey={adjunto.id}>
                                                                         <div>
-                                                                            AYUDA
+                                                                            <ItemSlider items = { proyecto[adjunto.id] }  proyecto = { proyecto } />
                                                                         </div>
                                                                     </Accordion.Collapse>
                                                                 </div>

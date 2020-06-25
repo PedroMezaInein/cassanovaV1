@@ -52,7 +52,7 @@ class ItemSlider extends Component{
     }
 
     render(){
-        const { item, items, deleteFile } = this.props
+        const { items, deleteFile } = this.props
         const { active } = this.state
         return(
             <>
@@ -83,8 +83,8 @@ class ItemSlider extends Component{
                                     <>
                                         <div>
                                             {items[active].name.substring(items[active].name.length - 3) === 'pdf' ?
-                                                <div className="pdf-viewer w-100">
-                                                    <iframe src={items[active].url} className="w-100 h-100" />
+                                                <div className="pdf-viewer w-100 pb-2">
+                                                    <iframe src={items[active].url} className="w-100" />
                                                 </div>
                                             :
                                                 <img className="p-2 w-100" src={items[active].url} />}
