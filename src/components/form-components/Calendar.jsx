@@ -45,7 +45,6 @@ class Calendar extends Component{
                         selected={value}
                         onChange={(date) => {this.validarFecha(date); onChangeCalendar(date);}}
                         locale={'es'} 
-                        dateFormat="dd/MM/yyyy" 
                         peekNextMonth
                         showMonthDropdown
                         showYearDropdown
