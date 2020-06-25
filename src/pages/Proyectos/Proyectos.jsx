@@ -7,7 +7,7 @@ import { Button } from '../../components/form-components'
 import { faPlus, faTrash, faEdit, faMoneyBill, faFileAlt, faFileArchive, faEye, faPhone, faEnvelope, faLink, faList, faFolderOpen } from '@fortawesome/free-solid-svg-icons'
 import { ProyectosForm, AvanceForm } from '../../components/forms'
 import axios from 'axios'
-import { URL_DEV, CP_URL, GOLD, PROYECTOS_COLUMNS } from '../../constants'
+import { URL_DEV, CP_URL, GOLD, PROYECTOS_COLUMNS, URL_ASSETS } from '../../constants'
 import { DataTable } from '../../components/tables'
 import { Small, B, Subtitle, P } from '../../components/texts'
 import { FileInput } from '../../components/form-components'
@@ -79,6 +79,8 @@ class Proyectos extends Component {
             colonia: '',
             porcentaje: '',
             descripcion: '',
+            correos: [],
+            correo: '',
             adjuntos_grupo:[
                 {
                     text: 'Inicio y planeación',
@@ -890,6 +892,9 @@ class Proyectos extends Component {
                 case 'adjuntos':
                 case 'adjuntos_grupo':
                     break;
+                case 'correos':
+                    form[element] = []
+                    break;
                 default:
                     form[element] = ''
                     break;
@@ -1186,6 +1191,35 @@ class Proyectos extends Component {
                     data
 
                 })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async getProyectoAdjuntosZip(array) {
+        const { access_token } = this.props.authUser
+        const { proyecto } = this.state
+        let aux = { tipo: array }
+        waitAlert()
+        await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/adjuntos/zip', aux, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                swal.close()
+                const url =  URL_ASSETS+'/storage/adjuntos.zip'
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', proyecto.nombre+'.zip'); //or any other extension
+                document.body.appendChild(link);
+                link.click();
             },
             (error) => {
                 console.log(error, 'error')
@@ -1883,6 +1917,18 @@ class Proyectos extends Component {
                                                                         </div>
                                                                         <Accordion.Collapse eventKey={adjunto.id}>
                                                                             <div>
+                                                                                
+                                                                                {
+                                                                                    proyecto ? 
+                                                                                        proyecto[adjunto.id].length ?
+                                                                                            <div className="mt-2 d-flex justify-content-center">
+                                                                                                <span className = 'btn btn-hover btn-text-success' onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.id]) }}>
+                                                                                                    <i className="fas fa-file-archive"></i> Descargar ZIP
+                                                                                                </span>
+                                                                                            </div>
+                                                                                        : ''
+                                                                                    : ''
+                                                                                }
                                                                                 {
                                                                                     proyecto ? 
                                                                                         <ItemSlider items = { proyecto[adjunto.id] }  handleChange = { this.handleChange }
