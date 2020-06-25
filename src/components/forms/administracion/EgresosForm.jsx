@@ -143,7 +143,7 @@ class EgresosForm extends Component {
                         </div>
                     </div>
                 <div className="row justify-content-center py-10 px-8 py-lg-12 px-lg-10">
-                    <div className="col-xl-12 col-xxl-7">
+                    <div className="col-md-12">
                         <Form {...props}
                             >
                             <div id="wizard-1-content" className="pb-3" data-wizard-type="step-content" data-wizard-state="current">

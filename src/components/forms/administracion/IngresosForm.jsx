@@ -136,7 +136,7 @@ class IngresosForm extends Component {
                         </div>
                     </div>
                     <div className="row justify-content-center py-10 px-8 py-lg-12 px-lg-10">
-                        <div className="col-xl-12 col-xxl-7">
+                        <div className="col-md-12">
                             <Form 
                                 {...props}
                                 >
