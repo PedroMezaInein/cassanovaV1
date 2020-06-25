@@ -76,8 +76,8 @@ class TareaForm extends Component{
                     </div>
                     <div className="col-md-4">
                         <div className="image-upload d-flex align-items-center">
-                            <div className="no-label">
-                                <Input 
+                            <div className="no-label pt-5">
+                                <input 
                                     onChange = { onChangeAdjunto }
                                     value = { form.adjunto }
                                     name = "adjunto"
