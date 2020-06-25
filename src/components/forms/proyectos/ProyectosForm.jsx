@@ -61,7 +61,7 @@ class ProyectosForm extends Component{
     }
 
     render(){
-        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, clearFiles, options, ... props } = this.props
+        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, options, ... props } = this.props
         return(
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -362,7 +362,7 @@ class ProyectosForm extends Component{
                                                                         <>
                                                                             <div className="col-md-6" key = { key } >
                                                                                 <FileInput 
-                                                                                    onChangeAdjunto = { onChangeAdjunto } 
+                                                                                    onChangeAdjunto = { onChangeAdjuntoGrupo } 
                                                                                     placeholder = { adjunto.placeholder }
                                                                                     value = { adjunto.value }
                                                                                     name = { adjunto.id }

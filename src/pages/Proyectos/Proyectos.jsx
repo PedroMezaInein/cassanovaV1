@@ -715,6 +715,40 @@ class Proyectos extends Component {
         })
     }
 
+    onChangeAdjuntoGrupo = (e) => {
+        const { form } = this.state
+        const { files, value, name } = e.target
+        let grupo = 0
+        let adjunto = 0
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        for(let i = 0; i < form.adjuntos_grupo.length; i++){
+            for(let j = 0; i < form.adjuntos_grupo[i].adjuntos.length; i++){
+                if(form.adjuntos_grupo[i].adjuntos[j].id === name){
+                    grupo = i;
+                    adjunto = j;
+                }
+            }
+        }
+
+        form.adjuntos_grupo[grupo].adjuntos[adjunto].value = value
+        form.adjuntos_grupo[grupo].adjuntos[adjunto].files = aux
+        
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
     onChangeCP = event => {
         const { value, name } = event.target
         this.onChange({ target: { name: name, value: value } })
@@ -723,6 +757,24 @@ class Proyectos extends Component {
     }
 
     clearFiles = (name, key) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < form['adjuntos'][name].files.length; counter++) {
+            if (counter !== key) {
+                aux.push(form['adjuntos'][name].files[counter])
+            }
+        }
+        if (aux.length < 1) {
+            form['adjuntos'][name].value = ''
+        }
+        form['adjuntos'][name].files = aux
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
+    clearFilesGrupo = (name, key) => {
         const { form } = this.state
         let aux = []
         for (let counter = 0; counter < form['adjuntos'][name].files.length; counter++) {
@@ -1607,7 +1659,7 @@ class Proyectos extends Component {
                 <Modal title = { title } show={modal} handleClose={this.handleClose}>
                     <ProyectosForm title={title} form={form} onChange={this.onChange} options={options}
                         onChangeAdjunto={this.onChangeAdjunto} clearFiles={this.clearFiles} onChangeCP={this.onChangeCP}
-                        onSubmit={this.onSubmit} >
+                        onSubmit={this.onSubmit} onChangeAdjuntoGrupo = { this.onChangeAdjuntoGrupo } >
                         {
                             prospecto !== '' ?
                                 <Accordion>
