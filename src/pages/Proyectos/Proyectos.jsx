@@ -51,6 +51,40 @@ class Proyectos extends Component {
             colonia: '',
             porcentaje: '',
             descripcion: '',
+            adjuntos_grupo:[
+                {
+                    text: 'Inicio y planeación',
+                    id: 'inicio_y_planeacion',
+                    adjuntos:[
+                        {
+                            text: 'Fotografías levantamiento',
+                            id: 'fotografias_leva'
+                        }
+                    ]
+                },
+                {
+                    text: 'Ejecución de obra',
+                    id: 'ejecucion_de_obra',
+                    adjuntos:[
+                        
+                    ]
+                },
+                {
+                    text: 'Entrega',
+                    id: 'entrega',
+                    adjuntos:[
+                        
+                    ]
+                },
+                {
+                    text: 'Mantenimiento',
+                    id: 'mantenimiento',
+                    adjuntos:[
+                        
+                    ]
+                },
+
+            ],
             adjuntos: {
                 image: {
                     value: '',
@@ -1315,12 +1349,7 @@ class Proyectos extends Component {
         const { modal, modalDelete, modalAdjuntos, modalAvances, title, adjuntos, prospecto, form, options, proyectos, proyecto, data } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
-                {/*<div className="text-right">
-                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon = { faPlus } color="green" />
-                </div>
-                 */}
-                {/* <DataTable columns = {PROYECTOS_COLUMNS} data= {proyectos}/>*/}
-
+                
                 <NewTable columns={PROYECTOS_COLUMNS} data={proyectos}
                     title='Proyectos' subtitle='Listado de proyectos'
                     mostrar_boton={true}
