@@ -93,10 +93,6 @@ class ItemSlider extends Component{
                                         </div>
                                         <div className="d-flex justify-content-center">
 
-                                            <span className="btn btn-text-primary btn-hover-primary mr-2">
-                                                <i className='fas fa-download pr-0'></i> 
-                                            </span>
-
                                             <span className="btn btn-text-danger btn-hover-danger" onClick={(e) => { e.preventDefault(); deleteFile(items[active]) } } >
                                                 <i className='fas fa-trash pr-0'></i> 
                                             </span>
