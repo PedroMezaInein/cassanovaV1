@@ -31,7 +31,7 @@ class CuentaForm extends Component{
                 validated={validated}
                 onKeyPress={e => this.handleKeyPress(e)}
             >
-                <div className="form-group row form-group-marginless">
+                <div className="form-group row form-group-marginless pt-4">
                     <div className="col-md-8">
                         <Input 
                             required
@@ -40,7 +40,8 @@ class CuentaForm extends Component{
                             name = "nombre" 
                             value = { form.nombre } 
                             onChange = { onChange }
-                            iconclass={"far fa-credit-card"} 
+                            iconclass={"far fa-credit-card"}
+                            messageinc="Incorrecto. Ingresa el nombre de la cuenta."
                         />
                         {/*<span className="form-text text-muted">Por favor, ingrese el nombre de cuenta. </span>*/}
                     </div>
