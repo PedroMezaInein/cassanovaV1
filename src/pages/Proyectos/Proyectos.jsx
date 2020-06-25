@@ -4,7 +4,7 @@ import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { Modal, Card, Slider } from '../../components/singles'
 import { Button } from '../../components/form-components'
-import { faPlus, faTrash, faEdit, faMoneyBill, faFileAlt, faFileArchive, faEye, faPhone, faEnvelope, faLink } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faTrash, faEdit, faMoneyBill, faFileAlt, faFileArchive, faEye, faPhone, faEnvelope, faLink, faList, faFolderOpen } from '@fortawesome/free-solid-svg-icons'
 import { ProyectosForm, AvanceForm } from '../../components/forms'
 import axios from 'axios'
 import { URL_DEV, CP_URL, GOLD, PROYECTOS_COLUMNS } from '../../constants'
@@ -23,7 +23,7 @@ import { forIn } from 'lodash'
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import ItemSlider from '../../components/singles/ItemSlider'
 
-function CustomToggle({ children, eventKey }) {
+function CustomToggle({ children, eventKey, icon = faPlus, iconColor = 'transparent' }) {
 
     let variable = false
     
@@ -37,12 +37,15 @@ function CustomToggle({ children, eventKey }) {
 
     
     return (
-        <div className="d-flex justify-content-between">
-            <div>
-                {children}
+        <div>
+            <div className="d-flex justify-content-between">
+                <div>
+                    {children}
+                </div>
+                <Button name = { eventKey } className = " small-button " color = { iconColor } icon = { icon } text = '' onClick = { handleClick } />
             </div>
-            <Button name={eventKey} className="small-button " color="transparent" icon={faPlus} text='' onClick={handleClick} />
         </div>
+        
     );
 }
 class Proyectos extends Component {
@@ -1834,7 +1837,7 @@ class Proyectos extends Component {
                         <Button icon='' onClick={(e) => { this.safeDelete(e)() }} text="Continuar" color="red" />
                     </div>
                 </Modal>
-                <Modal show={modalAdjuntos} handleClose={this.handleCloseAdjuntos} >
+                <Modal title = "Adjuntos del proyecto" show={modalAdjuntos} handleClose={this.handleCloseAdjuntos} >
                     <div className="p-2">
                         {/* <Slider elements={adjuntos.length > 0 ? adjuntos : []}
                             deleteFile={this.deleteFile} handleChange={this.handleChange} /> */}
@@ -1844,47 +1847,58 @@ class Proyectos extends Component {
                                 return(
                                     <div key = {key}>
                                         <div className="px-3 pt-2">
-                                            <CustomToggle eventKey={grupo.id} >
+                                            {
+                                                key > 0 ?
+                                                    <div className="separator separator-dashed mt-1 mb-2"></div>
+                                                : ''
+                                            }
+                                            <CustomToggle icon = { faList } iconColor = 'gold' iconColor = 'transparent' eventKey={grupo.id} >
                                                 <strong>
                                                     <p className="label-form">
                                                         {grupo.text}
                                                     </p>
                                                 </strong>
                                             </CustomToggle>
+                                            
                                         </div>
                                         <Accordion.Collapse eventKey={grupo.id}>
-                                            <div className="row mx-0 px-3 py-2">
-                                                <Accordion className="w-100">
-                                                    {
-                                                        grupo.adjuntos.map( (adjunto, key) => {
-                                                            return(
-                                                                <div key = {key}>
-                                                                    <div className="px-3 pt-2">
-                                                                        <CustomToggle eventKey={adjunto.id} >
-                                                                            <strong>
-                                                                                <p className="label-form">
-                                                                                    {adjunto.placeholder}
-                                                                                </p>
-                                                                            </strong>
-                                                                        </CustomToggle>
-                                                                    </div>
-                                                                    <Accordion.Collapse eventKey={adjunto.id}>
-                                                                        <div>
+                                            <div>
+                                                <div className="row mx-0 pl-2 py-2">
+                                                    <Accordion className="w-100">
+                                                        {
+                                                            grupo.adjuntos.map( (adjunto, key) => {
+                                                                return(
+                                                                    <div key = {key}>
+                                                                        <div className="px-3 pt-2">
+                                                                            <CustomToggle icon = { faFolderOpen } eventKey = { adjunto.id } >
+                                                                                <strong>
+                                                                                    <p className="label-form">
+                                                                                        {adjunto.placeholder}
+                                                                                    </p>
+                                                                                </strong>
+                                                                            </CustomToggle>
                                                                             {
-                                                                                proyecto ? 
-                                                                                    <ItemSlider items = { proyecto[adjunto.id] }  handleChange = { this.handleChange }
-                                                                                     item = {adjunto.id} deleteFile = { this.deleteFile } />
-                                                                                : ''
+                                                                                <div className="separator separator-dashed separator-secondary mt-1 mb-2"></div>
                                                                             }
-                                                                            
                                                                         </div>
-                                                                    </Accordion.Collapse>
-                                                                </div>
-                                                            )
-                                                        } )
-                                                    }
-                                                </Accordion>            
+                                                                        <Accordion.Collapse eventKey={adjunto.id}>
+                                                                            <div>
+                                                                                {
+                                                                                    proyecto ? 
+                                                                                        <ItemSlider items = { proyecto[adjunto.id] }  handleChange = { this.handleChange }
+                                                                                        item = {adjunto.id} deleteFile = { this.deleteFile } />
+                                                                                    : ''
+                                                                                }
+                                                                            </div>
+                                                                        </Accordion.Collapse>
+                                                                    </div>
+                                                                )
+                                                            } )
+                                                        }
+                                                    </Accordion>            
+                                                </div>
                                             </div>
+                                            
                                         </Accordion.Collapse>
                                     </div>
                                 )
