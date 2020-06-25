@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperclip, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { DARK_BLUE } from '../../constants'
 import { Badge, Form } from 'react-bootstrap'
+import { DATE } from '../../constants'
 
 class TareaForm extends Component{
 
@@ -70,7 +71,7 @@ class TareaForm extends Component{
                             onChangeCalendar = { this.changeDate }
                             name = "fecha" value = { form.fecha }
                             placeholder="Fecha de traspaso"
-                            iconclass={"far fa-calendar-alt"}
+                            patterns={DATE}
                         />
                         {/*<span className="form-text text-muted">Por favor, seleccione la fecha del transpaso </span>*/}
                     </div>
@@ -116,7 +117,8 @@ class TareaForm extends Component{
                             name = "comentario"
                             value = { form.comentario }
                             onChange = { onChange }                       
-                            style={{paddingLeft:"10px"}}
+                            messageinc="Incorrecto. Ingresa el comentario."
+                            style={{paddingLeft: "10px"}}    
                         />
                         {/*<span className="form-text text-muted">Por favor, ingrese su comentario</span>*/}
                     </div>
