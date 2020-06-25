@@ -47,12 +47,12 @@ class ItemSlider extends Component{
     }
 
     handleChange = files => {
-        const {item, handleChange} = this.props
+        const { handleChange, item } = this.props
         handleChange(files, item)
     }
 
     render(){
-        const { item, items, deleteFile } = this.props
+        const { items, deleteFile } = this.props
         const { active } = this.state
         return(
             <>
@@ -83,15 +83,15 @@ class ItemSlider extends Component{
                                     <>
                                         <div>
                                             {items[active].name.substring(items[active].name.length - 3) === 'pdf' ?
-                                                <div className="pdf-viewer w-100">
-                                                    <iframe src={items[active].url} className="w-100 h-100" />
+                                                <div className="pdf-viewer w-100 pb-2">
+                                                    <iframe src={items[active].url} className="w-100" />
                                                 </div>
                                             :
                                                 <img className="p-2 w-100" src={items[active].url} />}
                                         </div>
                                         <div className="d-flex justify-content-center">
-                                            <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => { e.preventDefault(); deleteFile(items[active]) } } 
-                                                text='' icon={faTrash} color="red" tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
+                                            <Button className="mx-2 my-2 my-md-0 small-button btn-text-danger btn-hover-danger" onClick={(e) => { e.preventDefault(); deleteFile(items[active]) } } 
+                                                text='' icon={faTrash} color="transparent" tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
                                         </div>
                                     </>
                                 : ''
@@ -109,9 +109,11 @@ class ItemSlider extends Component{
                     {
                         items.length > 0 && active !== items.length ?
                             <Small className="text-center" color="gold">
-                                {
-                                    items[active].name
-                                }
+                                <a href = {items[active].url} target = '_blank'>
+                                    {
+                                        items[active].name
+                                    }        
+                                </a>
                             </Small>
                         : ''
                     }

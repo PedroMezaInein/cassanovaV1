@@ -4,7 +4,7 @@ import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { Modal, Card, Slider } from '../../components/singles'
 import { Button } from '../../components/form-components'
-import { faPlus, faTrash, faEdit, faMoneyBill, faFileAlt, faFileArchive, faEye, faPhone, faEnvelope, faLink } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faTrash, faEdit, faMoneyBill, faFileAlt, faFileArchive, faEye, faPhone, faEnvelope, faLink, faList, faFolderOpen } from '@fortawesome/free-solid-svg-icons'
 import { ProyectosForm, AvanceForm } from '../../components/forms'
 import axios from 'axios'
 import { URL_DEV, CP_URL, GOLD, PROYECTOS_COLUMNS } from '../../constants'
@@ -20,7 +20,34 @@ import { setOptions, setSelectOptions, setTextTable, setDateTable, setListTable,
 import NewTable from '../../components/tables/NewTable'
 import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert } from '../../functions/alert'
 import { forIn } from 'lodash'
+import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
+import ItemSlider from '../../components/singles/ItemSlider'
 
+function CustomToggle({ children, eventKey, icon = faPlus, iconColor = 'transparent' }) {
+
+    let variable = false
+    
+    const handleClick = useAccordionToggle(eventKey, (e) => {
+        if(variable){
+            variable = false
+        }else{
+            variable = true
+        }
+    },);
+
+    
+    return (
+        <div>
+            <div className="d-flex justify-content-between">
+                <div>
+                    {children}
+                </div>
+                <Button name = { eventKey } className = " small-button " color = { iconColor } icon = { icon } text = '' onClick = { handleClick } />
+            </div>
+        </div>
+        
+    );
+}
 class Proyectos extends Component {
 
     state = {
@@ -65,7 +92,7 @@ class Proyectos extends Component {
                         },
                         {
                             placeholder: 'Manuales de adaptación',
-                            id: 'manuales_de_adaptación',
+                            id: 'manuales_de_adaptacion',
                             value: '',
                             files: []
                         },
@@ -529,7 +556,7 @@ class Proyectos extends Component {
         let { adjuntos } = this.state
 
         let auxheaders = [
-            { name: 'cotizaciones', placeholder: 'Cotización', form: 'cotizacion' },
+            /* { name: 'cotizaciones', placeholder: 'Cotización', form: 'cotizacion' },
             { name: 'comprobante_pagos', placeholder: 'Comprobante de pagos', form: 'comprobantePagos' },
             { name: 'catalogo_conceptos', placeholder: 'Catálogo de conceptos', form: 'catalogoConceptos' },
             { name: 'programas_obra', placeholder: 'Programas de obra', form: 'programasObra' },
@@ -545,10 +572,10 @@ class Proyectos extends Component {
             { name: 'moodboard', placeholder: 'Moodboard', form: 'moodboard' },
             { name: 'diseños_aprobados', placeholder: 'Diseños aprobados por cliente', form: 'diseñosAprobados' },
             { name: 'garantia', placeholder: 'Garantía de vicios ocultos', form: 'garantia' },
-            { name: 'contratos', placeholder: 'Contratos', form: 'contratos' }
+            { name: 'contratos', placeholder: 'Contratos', form: 'contratos' } */
         ]
 
-        let aux = []
+        /* let aux = []
 
         auxheaders.map((element) => {
             aux.push({
@@ -561,7 +588,7 @@ class Proyectos extends Component {
         })
 
         adjuntos = aux;
-
+ */
         this.setState({
             ... this.state,
             modalAdjuntos: true,
@@ -574,7 +601,7 @@ class Proyectos extends Component {
     setAdjuntosSlider = proyecto => {
 
         let auxheaders = [
-            { name: 'cotizaciones', placeholder: 'Cotización', form: 'cotizacion' },
+            /* { name: 'cotizaciones', placeholder: 'Cotización', form: 'cotizacion' },
             { name: 'comprobante_pagos', placeholder: 'Comprobante de pagos', form: 'comprobantePagos' },
             { name: 'catalogo_conceptos', placeholder: 'Catálogo de conceptos', form: 'catalogoConceptos' },
             { name: 'programas_obra', placeholder: 'Programas de obra', form: 'programasObra' },
@@ -590,7 +617,7 @@ class Proyectos extends Component {
             { name: 'moodboard', placeholder: 'Moodboard', form: 'moodboard' },
             { name: 'diseños_aprobados', placeholder: 'Diseños aprobados por cliente', form: 'diseñosAprobados' },
             { name: 'garantia', placeholder: 'Garantía de vicios ocultos', form: 'garantia' },
-            { name: 'contratos', placeholder: 'Contratos', form: 'contratos' }
+            { name: 'contratos', placeholder: 'Contratos', form: 'contratos' } */
         ]
 
         let aux = []
@@ -733,7 +760,7 @@ class Proyectos extends Component {
             )
         }
         for(let i = 0; i < form.adjuntos_grupo.length; i++){
-            for(let j = 0; i < form.adjuntos_grupo[i].adjuntos.length; i++){
+            for(let j = 0; j < form.adjuntos_grupo[i].adjuntos.length; j++){
                 if(form.adjuntos_grupo[i].adjuntos[j].id === name){
                     grupo = i;
                     adjunto = j;
@@ -781,7 +808,7 @@ class Proyectos extends Component {
         let grupo = 0
         let adjunto = 0
         for(let i = 0; i < form.adjuntos_grupo.length; i++){
-            for(let j = 0; i < form.adjuntos_grupo[i].adjuntos.length; i++){
+            for(let j = 0; j < form.adjuntos_grupo[i].adjuntos.length; j++){
                 if(form.adjuntos_grupo[i].adjuntos[j].id === name){
                     grupo = i;
                     adjunto = j;
@@ -909,7 +936,7 @@ class Proyectos extends Component {
     }
 
     handleChange = (files, item) => {
-        this.onChangeAdjunto({ target: { name: item.form, value: files, files: files } })
+        this.onChangeAdjuntoGrupo({ target: { name: item, value: files, files: files } })
         swal({
             title: '¿Confirmas el envio de adjuntos?',
             buttons: {
@@ -930,7 +957,7 @@ class Proyectos extends Component {
             }
         }).then((result) => {
             if (result) {
-                this.addProyectoAdjuntoAxios(item.form)
+                this.addProyectoAdjuntoAxios(item)
             }
         })
     }
@@ -1162,29 +1189,15 @@ class Proyectos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error'
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            console.log('error catch', error)
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',
-
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -1210,29 +1223,15 @@ class Proyectos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error'
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            console.log('error catch', error)
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',
-
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -1260,29 +1259,15 @@ class Proyectos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error'
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            console.log('error catch', error)
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',
-
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -1352,28 +1337,15 @@ class Proyectos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error'
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            console.log('error catch', error)
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -1452,10 +1424,20 @@ class Proyectos extends Component {
         const { form, proyecto } = this.state
         const data = new FormData();
         data.append('tipo', name)
-        for (var i = 0; i < form.adjuntos[name].files.length; i++) {
-            data.append(`files_name_${name}[]`, form.adjuntos[name].files[i].name)
-            data.append(`files_${name}[]`, form.adjuntos[name].files[i].file)
+        let grupo = 0
+        let adjunto = 0
+        for(let i = 0; i < form.adjuntos_grupo.length; i++){
+            for(let j = 0; j < form.adjuntos_grupo[i].adjuntos.length; j++){
+                if(form.adjuntos_grupo[i].adjuntos[j].id === name){
+                    grupo = i;
+                    adjunto = j;
+                }
+            }
         }
+        form.adjuntos_grupo[grupo].adjuntos[adjunto].files.map( (file) => {
+            data.append(`files_name_${form.adjuntos_grupo[grupo].adjuntos[adjunto].id}[]`, file.name)
+            data.append(`files_${form.adjuntos_grupo[grupo].adjuntos[adjunto].id}[]`, file.file)
+        })
 
         await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -1479,28 +1461,15 @@ class Proyectos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error'
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            console.log('error catch', error)
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -1559,28 +1528,15 @@ class Proyectos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error'
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            console.log('error catch', error)
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -1610,29 +1566,15 @@ class Proyectos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error'
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            console.log('error catch', error)
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',
-
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -1895,10 +1837,75 @@ class Proyectos extends Component {
                         <Button icon='' onClick={(e) => { this.safeDelete(e)() }} text="Continuar" color="red" />
                     </div>
                 </Modal>
-                <Modal show={modalAdjuntos} handleClose={this.handleCloseAdjuntos} >
+                <Modal title = "Adjuntos del proyecto" show={modalAdjuntos} handleClose={this.handleCloseAdjuntos} >
                     <div className="p-2">
-                        <Slider elements={adjuntos.length > 0 ? adjuntos : []}
-                            deleteFile={this.deleteFile} handleChange={this.handleChange} />
+                        {/* <Slider elements={adjuntos.length > 0 ? adjuntos : []}
+                            deleteFile={this.deleteFile} handleChange={this.handleChange} /> */}
+                        <Accordion>
+                        {
+                            form.adjuntos_grupo.map( (grupo, key) => {
+                                return(
+                                    <div key = {key}>
+                                        <div className="px-3 pt-2">
+                                            {
+                                                key > 0 ?
+                                                    <div className="separator separator-dashed mt-1 mb-2"></div>
+                                                : ''
+                                            }
+                                            <CustomToggle icon = { faList } iconColor = 'gold' iconColor = 'transparent' eventKey={grupo.id} >
+                                                <strong>
+                                                    <p className="label-form">
+                                                        {grupo.text}
+                                                    </p>
+                                                </strong>
+                                            </CustomToggle>
+                                            
+                                        </div>
+                                        <Accordion.Collapse eventKey={grupo.id}>
+                                            <div>
+                                                <div className="row mx-0 pl-2 py-2">
+                                                    <Accordion className="w-100">
+                                                        {
+                                                            grupo.adjuntos.map( (adjunto, key) => {
+                                                                return(
+                                                                    <div key = {key}>
+                                                                        <div className="px-3 pt-2">
+                                                                            <CustomToggle icon = { faFolderOpen } eventKey = { adjunto.id } >
+                                                                                <strong>
+                                                                                    <p className="label-form">
+                                                                                        {adjunto.placeholder}
+                                                                                    </p>
+                                                                                </strong>
+                                                                            </CustomToggle>
+                                                                            {
+                                                                                <div className="separator separator-dashed separator-secondary mt-1 mb-2"></div>
+                                                                            }
+                                                                        </div>
+                                                                        <Accordion.Collapse eventKey={adjunto.id}>
+                                                                            <div>
+                                                                                {
+                                                                                    proyecto ? 
+                                                                                        <ItemSlider items = { proyecto[adjunto.id] }  handleChange = { this.handleChange }
+                                                                                        item = {adjunto.id} deleteFile = { this.deleteFile } />
+                                                                                    : ''
+                                                                                }
+                                                                            </div>
+                                                                        </Accordion.Collapse>
+                                                                    </div>
+                                                                )
+                                                            } )
+                                                        }
+                                                    </Accordion>            
+                                                </div>
+                                            </div>
+                                            
+                                        </Accordion.Collapse>
+                                    </div>
+                                )
+                                            
+                            })
+                        }
+                        </Accordion>
                     </div>
                 </Modal>
                 <Modal title = { title } show = { modalAvances } handleClose = { this.handleCloseAvances }>
