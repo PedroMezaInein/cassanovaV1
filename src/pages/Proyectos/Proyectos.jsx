@@ -20,7 +20,30 @@ import { setOptions, setSelectOptions, setTextTable, setDateTable, setListTable,
 import NewTable from '../../components/tables/NewTable'
 import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert } from '../../functions/alert'
 import { forIn } from 'lodash'
+import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 
+function CustomToggle({ children, eventKey }) {
+
+    let variable = false
+    
+    const handleClick = useAccordionToggle(eventKey, (e) => {
+        if(variable){
+            variable = false
+        }else{
+            variable = true
+        }
+    },);
+
+    
+    return (
+        <div className="d-flex justify-content-between">
+            <div>
+                {children}
+            </div>
+            <Button name={eventKey} className="small-button " color="transparent" icon={faPlus} text='' onClick={handleClick} />
+        </div>
+    );
+}
 class Proyectos extends Component {
 
     state = {
@@ -1897,8 +1920,56 @@ class Proyectos extends Component {
                 </Modal>
                 <Modal show={modalAdjuntos} handleClose={this.handleCloseAdjuntos} >
                     <div className="p-2">
-                        <Slider elements={adjuntos.length > 0 ? adjuntos : []}
-                            deleteFile={this.deleteFile} handleChange={this.handleChange} />
+                        {/* <Slider elements={adjuntos.length > 0 ? adjuntos : []}
+                            deleteFile={this.deleteFile} handleChange={this.handleChange} /> */}
+                        <Accordion>
+                        {
+                            form.adjuntos_grupo.map( (grupo, key) => {
+                                return(
+                                    <div key = {key}>
+                                        <div className="px-3 pt-2">
+                                            <CustomToggle eventKey={grupo.id} >
+                                                <strong>
+                                                    <p className="label-form">
+                                                        {grupo.text}
+                                                    </p>
+                                                </strong>
+                                            </CustomToggle>
+                                        </div>
+                                        <Accordion.Collapse eventKey={grupo.id}>
+                                            <div className="row mx-0 px-3 py-2">
+                                                <Accordion className="w-100">
+                                                    {
+                                                        grupo.adjuntos.map( (adjunto, key) => {
+                                                            return(
+                                                                <div key = {key}>
+                                                                    <div className="px-3 pt-2">
+                                                                        <CustomToggle eventKey={adjunto.id} >
+                                                                            <strong>
+                                                                                <p className="label-form">
+                                                                                    {adjunto.placeholder}
+                                                                                </p>
+                                                                            </strong>
+                                                                        </CustomToggle>
+                                                                    </div>
+                                                                    <Accordion.Collapse eventKey={adjunto.id}>
+                                                                        <div>
+                                                                            AYUDA
+                                                                        </div>
+                                                                    </Accordion.Collapse>
+                                                                </div>
+                                                            )
+                                                        } )
+                                                    }
+                                                </Accordion>            
+                                            </div>
+                                        </Accordion.Collapse>
+                                    </div>
+                                )
+                                            
+                            })
+                        }
+                        </Accordion>
                     </div>
                 </Modal>
                 <Modal title = { title } show = { modalAvances } handleClose = { this.handleCloseAvances }>
