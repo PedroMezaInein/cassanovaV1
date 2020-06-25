@@ -60,7 +60,9 @@ class ItemSlider extends Component{
                     {
                         items.length > 0 ?
                             <div className="cursor" onClick={ (e) => { e.preventDefault(); this.sliderBack();} }>
-                                <FontAwesomeIcon icon={faCaretSquareLeft} className="mr-2 text-color__dark-blue" />
+                                <span className="btn btn-text-white btn-bg-blue btn-hover-white small-button">
+                                    <i className='fas fa-arrow-left pr-0'></i> 
+                                </span>
                             </div>
                         : ''
                     }
@@ -90,8 +92,15 @@ class ItemSlider extends Component{
                                                 <img className="p-2 w-100" src={items[active].url} />}
                                         </div>
                                         <div className="d-flex justify-content-center">
-                                            <Button className="mx-2 my-2 my-md-0 small-button btn-text-danger btn-hover-danger" onClick={(e) => { e.preventDefault(); deleteFile(items[active]) } } 
-                                                text='' icon={faTrash} color="transparent" tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
+
+                                            <span className="btn btn-text-primary btn-hover-primary mr-2">
+                                                <i className='fas fa-download pr-0'></i> 
+                                            </span>
+
+                                            <span className="btn btn-text-danger btn-hover-danger" onClick={(e) => { e.preventDefault(); deleteFile(items[active]) } } >
+                                                <i className='fas fa-trash pr-0'></i> 
+                                            </span>
+
                                         </div>
                                     </>
                                 : ''
@@ -100,7 +109,9 @@ class ItemSlider extends Component{
                     {
                         items.length > 0  ?
                             <div className="cursor" onClick={ (e) => { e.preventDefault(); this.sliderNext();} }>
-                                <FontAwesomeIcon icon={faCaretSquareRight} className="mr-2 text-color__dark-blue" />
+                                <span className="btn btn-text-white btn-bg-blue btn-hover-white small-button">
+                                    <i className='fas fa-arrow-right pr-0'></i> 
+                                </span>
                             </div>
                         : ''
                     }
