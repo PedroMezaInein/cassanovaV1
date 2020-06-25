@@ -35,6 +35,7 @@ class Calendar extends Component{
 
     render(){
         const { placeholder, onChangeCalendar, name, value, messageinc, iconclass, ...props } = this.props
+        const { onChangeCalendar: { onChangeCalendar2}, minDate, endDate, selectsEnd, startDate, selectsStart, ... props2} = this.props
         const { calendarValido } = this.state
         return(
             <div>  
@@ -53,7 +54,7 @@ class Calendar extends Component{
                         
                         <Form.Control    
                             className = { calendarValido ? " form-control is-valid " : " form-control is-invalid" }
-                            {...this.props} 
+                            {...props2} 
                         />  
                         }
                     /> 
