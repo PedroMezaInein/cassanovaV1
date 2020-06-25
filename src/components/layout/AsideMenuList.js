@@ -24,7 +24,7 @@ function openSubmenu(modulo){
 }
 
 export function AsideMenuList({ props }) {
-    const location = useLocation();
+    /* const location = useLocation();
     const getMenuItemActive = (url) => {
         return checkIsActive(location, url)
             ? " menu-item-active menu-item-open "
@@ -94,5 +94,6 @@ export function AsideMenuList({ props }) {
                 }
             </ul>
         </>
-    );
+    ); */
+    return false
 }
