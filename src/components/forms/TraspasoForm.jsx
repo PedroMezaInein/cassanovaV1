@@ -29,7 +29,7 @@ class TareaForm extends Component{
         const { title, cuentas, form, onChange, onChangeAdjunto, deleteAdjunto, ... props } = this.props
         return(
             <Form { ... props}>
-                <div className="form-group row form-group-marginless">
+                <div className="form-group row form-group-marginless pt-4">
                     <div className="col-md-6">
                         <SelectSearch 
                             options = { cuentas } 
