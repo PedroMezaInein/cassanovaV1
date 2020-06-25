@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Subtitle } from '../../texts'
 import { SelectSearch, Select, Calendar, RadioGroup, FileInput, Button, Input, InputMoney } from '../../form-components'
 import { Form } from 'react-bootstrap'
-import { RFC } from '../../../constants'
+import { RFC, DATE } from '../../../constants'
 
 function openWizard1(){  
     document.getElementById('wizardP').setAttribute("data-wizard-state","first");
@@ -355,6 +355,7 @@ class VentasForm extends Component {
                                             placeholder="Fecha"
                                             name="fecha"
                                             value={form.fecha}
+                                            patterns={DATE}
                                         />  
                                         {/*<span className="form-text text-muted">Por favor, selecciona la fecha. </span>*/}
                                     </div>
