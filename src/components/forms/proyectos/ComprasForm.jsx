@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Subtitle } from '../../texts'
 import { SelectSearch, Select, Calendar, RadioGroup, FileInput, Button, Input, InputMoney } from '../../form-components'
 import { Form } from 'react-bootstrap'
-import { RFC } from '../../../constants'
+import { RFC, DATE } from '../../../constants'
 
 function openWizard1(){  
     document.getElementById('wizardP').setAttribute("data-wizard-state","first");
@@ -350,6 +350,7 @@ updateArea = value => {
                                             placeholder="Fecha" 
                                             name="fecha" 
                                             value={form.fecha}
+                                            pattern={DATE}
                                         />
                                         {/*<span className="form-text text-muted">Por favor, selecciona la fecha.</span>*/}
                                     </div>
@@ -386,9 +387,10 @@ updateArea = value => {
                                         <Input 
                                             as="textarea" 
                                             placeholder="Descripción" 
-                                            rows="2" value={form.descripcion}
+                                            rows="3" value={form.descripcion}
                                             name="descripcion" 
                                             onChange={onChange}
+                                            messageinc="Incorrecto. Introduce una descripción."
                                             style={{paddingLeft:"10px"}} 
                                         />
                                         {/*<span className="form-text text-muted">Por favor, ingresa la descripción.</span>*/}
