@@ -434,7 +434,7 @@ class EstadosCuenta extends Component {
                 <Modal title = {"Agregar estado de cuenta"} show={modal} handleClose={this.handleClose} >
                     
                     <Form onSubmit={this.submitForm}>
-                    <div className="form-group row form-group-marginless pt-3">
+                    <div className="form-group row form-group-marginless pt-4">
                         <div className="col-md-8">
                             <SelectSearch
                                 options={cuentas}
