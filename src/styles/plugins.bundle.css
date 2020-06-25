@@ -5790,9 +5790,9 @@ Build date: 2019-12-19 16:51:02
   --tag-inset-shadow-size:1.1em;
   --tag-invalid-color:#D39494;
   --tag-invalid-bg:rgba(211, 148, 148, 0.5);
-  --tag-remove-bg:rgba(211, 148, 148, 0.3);
+  /*--tag-remove-bg:rgba(211, 148, 148, 0.3);*/
   --tag-remove-btn-bg:none;
-  --tag-remove-btn-bg--hover:#c77777;
+  /*--tag-remove-btn-bg--hover:#c77777;*/
   --tag--min-width:1ch;
   --tag--max-width:auto;
   --tag-hide-transition:.3s;
