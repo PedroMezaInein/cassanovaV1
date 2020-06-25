@@ -3,36 +3,7 @@ import { Form } from 'react-bootstrap'
 import { Subtitle } from '../../texts'
 import { RFC, DATE } from '../../../constants'
 import { SelectSearch, Select, Button, RadioGroup, Input, Calendar, InputMoney, FileInput } from '../../form-components'
-
-function openWizard1(){  
-    document.getElementById('wizardP').setAttribute("data-wizard-state","first");
-    document.getElementById('wizard-1').setAttribute("data-wizard-state","current");
-    document.getElementById('wizard-2').setAttribute("data-wizard-state","pending");
-    document.getElementById('wizard-3').setAttribute("data-wizard-state","pending");
-    document.getElementById('wizard-1-content').setAttribute("data-wizard-state","current");  
-    document.getElementById("wizard-2-content").removeAttribute("data-wizard-state");
-    document.getElementById("wizard-3-content").removeAttribute("data-wizard-state");
-}
-function openWizard2(){  
-    document.getElementById('wizardP').setAttribute("data-wizard-state","between");
-    document.getElementById('wizard-1').setAttribute("data-wizard-state","done");
-    document.getElementById('wizard-2').setAttribute("data-wizard-state","current");
-    document.getElementById('wizard-3').setAttribute("data-wizard-state","pending");
-    document.getElementById('wizard-2-content').setAttribute("data-wizard-state","current");
-    document.getElementById("wizard-1-content").removeAttribute("data-wizard-state");
-    document.getElementById("wizard-3-content").removeAttribute("data-wizard-state");
-}
-
-function openWizard3(){  
-    document.getElementById('wizardP').setAttribute("data-wizard-state","last");
-    document.getElementById('wizard-1').setAttribute("data-wizard-state","done");
-    document.getElementById('wizard-2').setAttribute("data-wizard-state","done");
-    document.getElementById('wizard-3').setAttribute("data-wizard-state","current");
-    document.getElementById('wizard-3-content').setAttribute("data-wizard-state","current"); 
-    document.getElementById("wizard-1-content").removeAttribute("data-wizard-state");
-    document.getElementById("wizard-2-content").removeAttribute("data-wizard-state");   
-}
-
+import {openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 
 
 class IngresosForm extends Component {
