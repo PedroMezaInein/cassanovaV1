@@ -358,6 +358,7 @@ class ProyectosForm extends Component{
                                                         <div className="row mx-0">
                                                             {
                                                                 grupo.adjuntos.map( (adjunto, key) => {
+                                                                    console.log(adjunto)
                                                                     return(
                                                                         
                                                                         <div className="col-md-6"  key = { key }>

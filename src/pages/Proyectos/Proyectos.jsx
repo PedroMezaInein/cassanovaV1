@@ -757,7 +757,7 @@ class Proyectos extends Component {
             )
         }
         for(let i = 0; i < form.adjuntos_grupo.length; i++){
-            for(let j = 0; i < form.adjuntos_grupo[i].adjuntos.length; i++){
+            for(let j = 0; j < form.adjuntos_grupo[i].adjuntos.length; j++){
                 if(form.adjuntos_grupo[i].adjuntos[j].id === name){
                     grupo = i;
                     adjunto = j;
@@ -805,7 +805,7 @@ class Proyectos extends Component {
         let grupo = 0
         let adjunto = 0
         for(let i = 0; i < form.adjuntos_grupo.length; i++){
-            for(let j = 0; i < form.adjuntos_grupo[i].adjuntos.length; i++){
+            for(let j = 0; j < form.adjuntos_grupo[i].adjuntos.length; j++){
                 if(form.adjuntos_grupo[i].adjuntos[j].id === name){
                     grupo = i;
                     adjunto = j;
