@@ -84,7 +84,7 @@ class Layout extends Component {
                 <div className="d-flex flex-row flex-column-fluid page">
                   {/*  <MenuResponsive expanded={menu ? 'expanded' : ''} clickResponsiveMenu={this.clickResponsiveMenu} {... this.props} /> */}
                     
-                    {/* <NewAsideMenu props =  {this.props} />  */}
+                    <NewAsideMenu props =  {this.props} /> 
                     <div id="showaside" onClick = { () => { clickShowAside() } }></div>
                     <div className="d-flex flex-column flex-row-fluid wrapper"> 
                         <div  className="header header-fixed">

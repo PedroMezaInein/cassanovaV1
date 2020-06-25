@@ -55,7 +55,7 @@ export default function NewAsideMenu({props}) {
             <div className="aside-menu-wrapper flex-column-fluid">     
               <div className="aside-menu h-90" >
               <ScrollBar>
-                {/* <AsideMenuList  props = {props}/> */}
+                <AsideMenuList  props = {props}/>
               </ScrollBar>            
               </div>              
             </div>
