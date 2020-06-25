@@ -349,7 +349,7 @@ class IngresosForm extends Component {
                                                     name="descripcion" 
                                                     onChange={onChange}
                                                     style={{paddingLeft:"10px"}} 
-                                                    messageinc="Incorrecto. Introduce una descripción."                                                                                          
+                                                    messageinc="Incorrecto. Ingresa la descripción."                                                                                          
                                                     />
                                                 {/*<span className="form-text text-muted">Por favor, ingresa la descripción. </span>*/}
                                                 </div>
