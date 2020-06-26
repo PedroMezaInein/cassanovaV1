@@ -932,6 +932,53 @@ export const SOLICITUD_COMPRA_COLUMNS = [
     }
 ]
 
+export const SOLICITUD_VENTA_COLUMNS = [
+    {
+        Header: 'OPCIONES',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Proyecto',
+        accessor: 'proyecto'
+    },
+    {
+        Header: 'Empresa',
+        accessor: 'empresa'
+    },
+    {
+        Header: 'Monto',
+        accessor: 'monto'
+    },
+    {
+        Header: 'Factura',
+        accessor: 'factura'
+    },
+    {
+        Header: 'Tipo de pago',
+        accessor: 'tipoPago'
+    },
+    {
+        Header: 'Descripción',
+        accessor: 'descripcion'
+    },
+    {
+        Header: 'Área',
+        accessor: 'area'
+    },
+    {
+        Header: 'Sub-Área',
+        accessor: 'subarea'
+    },
+    {
+        Header: 'Adjunto',
+        accessor: 'adjunto'
+    },
+    {
+        Header: 'Fecha',
+        accessor: 'fecha',
+    },
+]
+
 export const CONCEPTOS_COLUMNS = [
     {
         Header: 'OPCIONES',
