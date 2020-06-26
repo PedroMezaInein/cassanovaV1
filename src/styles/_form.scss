@@ -121,11 +121,11 @@
 }
 
 .button-hover{
-    width: 0.7rem;
+/*     width: 0.7rem; */
     transition: all 0.5s;
     &:hover{
         cursor: pointer;
-        width: 1rem;
+        /* width: 1rem; */
     }
 }
 

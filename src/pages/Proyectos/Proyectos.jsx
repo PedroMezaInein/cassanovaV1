@@ -4,10 +4,10 @@ import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { Modal, Card, Slider } from '../../components/singles'
 import { Button } from '../../components/form-components'
-import { faPlus, faTrash, faEdit, faMoneyBill, faFileAlt, faFileArchive, faEye, faPhone, faEnvelope, faLink } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faTrash, faEdit, faMoneyBill, faFileAlt, faFileArchive, faEye, faPhone, faEnvelope, faLink, faList, faFolderOpen } from '@fortawesome/free-solid-svg-icons'
 import { ProyectosForm, AvanceForm } from '../../components/forms'
 import axios from 'axios'
-import { URL_DEV, CP_URL, GOLD, PROYECTOS_COLUMNS } from '../../constants'
+import { URL_DEV, CP_URL, GOLD, PROYECTOS_COLUMNS, URL_ASSETS } from '../../constants'
 import { DataTable } from '../../components/tables'
 import { Small, B, Subtitle, P } from '../../components/texts'
 import { FileInput } from '../../components/form-components'
@@ -19,7 +19,35 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList, setContactoTable } from '../../functions/setters'
 import NewTable from '../../components/tables/NewTable'
 import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert } from '../../functions/alert'
+import { forIn } from 'lodash'
+import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
+import ItemSlider from '../../components/singles/ItemSlider'
 
+function CustomToggle({ children, eventKey, icon = faPlus, iconColor = 'transparent' }) {
+
+    let variable = false
+    
+    const handleClick = useAccordionToggle(eventKey, (e) => {
+        if(variable){
+            variable = false
+        }else{
+            variable = true
+        }
+    },);
+
+    
+    return (
+        <div>
+            <div className="d-flex justify-content-between">
+                <div>
+                    {children}
+                </div>
+                <Button name = { eventKey } className = " small-button " color = { iconColor } icon = { icon } text = '' onClick = { handleClick } />
+            </div>
+        </div>
+        
+    );
+}
 class Proyectos extends Component {
 
     state = {
@@ -51,6 +79,281 @@ class Proyectos extends Component {
             colonia: '',
             porcentaje: '',
             descripcion: '',
+            correos: [],
+            correo: '',
+            adjuntos_grupo:[
+                {
+                    text: 'Inicio y planeación',
+                    id: 'inicio_y_planeacion',
+                    adjuntos:[
+                        {
+                            placeholder: 'Fotografías levantamiento',
+                            id: 'fotografias_levantamiento',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Manuales de adaptación',
+                            id: 'manuales_de_adaptacion',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Minutas',
+                            id: 'minutas',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Oficios',
+                            id: 'oficios',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Planos entregados por cliente',
+                            id: 'planos_entregados_por_cliente',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Propuestas arquitectónicas preliminares',
+                            id: 'propuestas_arquitectonicas_preliminares',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Referencias del diseño del proyecto',
+                            id: 'referencias_del_diseño_del_proyecto',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Renders',
+                            id: 'renders',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Sketch Up',
+                            id: 'sketch_up',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Presupuestos preliminares',
+                            id: 'presupuestos_preliminares',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Carta oferta',
+                            id: 'carta_oferta',
+                            value: '',
+                            files: []
+                        }
+                    ]
+                },
+                {
+                    text: 'Ejecución de obra',
+                    id: 'ejecucion_de_obra',
+                    adjuntos:[
+                        {
+                            placeholder: 'Datos de cliente',
+                            id: 'datos_de_cliente',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Contrato cliente',
+                            id: 'contrato_cliente',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Contrato proveedores y contratistas',
+                            id: 'contrato_proveedores_y_contratistas',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Firmas de aprobación',
+                            id: 'firmas_de_aprobacion',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Reporte fotográfico de avance de obra',
+                            id: 'reporte_fotografico_de_avance_de_obra',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Reporte de materiales',
+                            id: 'reporte_de_materiales',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Reporte de proyecto vs ejecutado',
+                            id: 'reporte_de_proyecto_vs_ejecutado',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Minutas de obra',
+                            id: 'minutas_de_obra',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Presupuesto aprobado por cliente',
+                            id: 'presupuesto_aprobado_por_cliente',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Programa de obra',
+                            id: 'programa_de_obra',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Planos durante obra',
+                            id: 'planos_durante_obra',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Sketch Up aprobados',
+                            id: 'sketch_up_aprobados',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Renders aprobados',
+                            id: 'renders_aprobados',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Estados de cuenta',
+                            id: 'estados_de_cuenta',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Fianzas y seguros',
+                            id: 'fianzas_y_seguros',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Permisos de obra ante dependencias',
+                            id: 'permisos_de_obra_ante_dependencias',
+                            value: '',
+                            files: []
+                        }
+                    ]
+                },
+                {
+                    text: 'Entrega',
+                    id: 'entrega',
+                    adjuntos:[
+                        {
+                            placeholder: 'Catálogo de conceptos ASBUILT',
+                            id: 'catalogo_de_conceptos_asbuilt',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Consignas de matenimiento',
+                            id: 'consignas_de_matenimiento',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Planos aprobados',
+                            id: 'planos_aprobados',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Garantía de los equipos',
+                            id: 'garantia_de_los_equipos',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Garantía de vicios ocultos',
+                            id: 'garantia_de_vicios_ocultos',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Memorias de cálculo',
+                            id: 'memorias_de_calculo',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Memorias descriptivas',
+                            id: 'memorias_descriptivas',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Fichas técnicas',
+                            id: 'fichas_tecnicas',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Pruebas de instalaciones',
+                            id: 'pruebas_de_instalaciones',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Fotografías fin de obra',
+                            id: 'fotografias_fin_de_obra',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Acta de entrega',
+                            id: 'acta_de_entrega',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Carpeta de entrega ZIP',
+                            id: 'carpeta_de_entrega_zip',
+                            value: '',
+                            files: []
+                        },
+                    ]
+                },
+                {
+                    text: 'Mantenimiento',
+                    id: 'mantenimiento',
+                    adjuntos:[
+                        {
+                            placeholder: 'Mantenimiento preventivo',
+                            id: 'mantenimiento_preventivo',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Mantenimiento correctivo',
+                            id: 'mantenimiento_correctivo',
+                            value: '',
+                            files: []
+                        },
+                    ]
+                },
+
+            ],
             adjuntos: {
                 image: {
                     value: '',
@@ -461,7 +764,7 @@ class Proyectos extends Component {
             { name: 'contratos', placeholder: 'Contratos', form: 'contratos' } */
         ]
 
-        let aux = []
+        /* let aux = []
 
         auxheaders.map((element) => {
             aux.push({
@@ -474,7 +777,7 @@ class Proyectos extends Component {
         })
 
         adjuntos = aux;
-
+ */
         this.setState({
             ... this.state,
             modalAdjuntos: true,
@@ -661,6 +964,40 @@ class Proyectos extends Component {
         })
     }
 
+    onChangeAdjuntoGrupo = (e) => {
+        const { form } = this.state
+        const { files, value, name } = e.target
+        let grupo = 0
+        let adjunto = 0
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        for(let i = 0; i < form.adjuntos_grupo.length; i++){
+            for(let j = 0; j < form.adjuntos_grupo[i].adjuntos.length; j++){
+                if(form.adjuntos_grupo[i].adjuntos[j].id === name){
+                    grupo = i;
+                    adjunto = j;
+                }
+            }
+        }
+
+        form.adjuntos_grupo[grupo].adjuntos[adjunto].value = value
+        form.adjuntos_grupo[grupo].adjuntos[adjunto].files = aux
+        
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
     onChangeCP = event => {
         const { value, name } = event.target
         this.onChange({ target: { name: name, value: value } })
@@ -688,26 +1025,26 @@ class Proyectos extends Component {
 
     clearFilesGrupo = (name, key) => {
         const { form } = this.state
+        let aux = []
         let grupo = 0
         let adjunto = 0
-        for(let i = 0; i < form.adjuntos_grupos.length; i++ ){
-            for(let j = 0; j < form.adjuntos_grupos[i].adjuntos.length; j++ ){
-                if(form.adjuntos_grupos[i].adjuntos[j].id.toString() === name.toString()){
+        for(let i = 0; i < form.adjuntos_grupo.length; i++){
+            for(let j = 0; j < form.adjuntos_grupo[i].adjuntos.length; j++){
+                if(form.adjuntos_grupo[i].adjuntos[j].id === name){
                     grupo = i;
                     adjunto = j;
                 }
             }
         }
-        let aux = []
-        for (let counter = 0; counter < form['adjuntos_grupos'][grupo]['adjuntos'][adjunto].files.length; counter++) {
+        for (let counter = 0; counter < form.adjuntos_grupo[grupo].adjuntos[adjunto].files.length; counter++) {
             if (counter !== key) {
-                aux.push(form['adjuntos_grupos'][grupo]['adjuntos'][adjunto].files[counter])
+                aux.push(form.adjuntos_grupo[grupo].adjuntos[adjunto].files[counter])
             }
         }
         if (aux.length < 1) {
-            form['adjuntos_grupos'][grupo]['adjuntos'][adjunto].value = ''
+            form.adjuntos_grupo[grupo].adjuntos[adjunto].value = ''
         }
-        form['adjuntos_grupos'][grupo]['adjuntos'][adjunto].files = aux
+        form.adjuntos_grupo[grupo].adjuntos[adjunto].files = aux
         this.setState({
             ... this.state,
             form
@@ -772,6 +1109,10 @@ class Proyectos extends Component {
                     }]
                     break;
                 case 'adjuntos':
+                case 'adjuntos_grupo':
+                    break;
+                case 'correos':
+                    form[element] = []
                     break;
                 case 'adjuntos_grupos':
                     break;
@@ -785,10 +1126,10 @@ class Proyectos extends Component {
             form.adjuntos[element].value = ''
             form.adjuntos[element].files = []
         })
-        form.adjuntos_grupos.map( (grupo, key) => {
-            grupo.adjuntos.map( ( adjunto, key ) => {
-                adjunto.files = []
+        form.adjuntos_grupo.map( (grupo) => {
+            grupo.adjuntos.map( (adjunto) => {
                 adjunto.value = ''
+                adjunto.files = []
             })
         })
         return form
@@ -821,7 +1162,7 @@ class Proyectos extends Component {
     }
 
     handleChange = (files, item) => {
-        this.onChangeAdjunto({ target: { name: item.form, value: files, files: files } })
+        this.onChangeAdjuntoGrupo({ target: { name: item, value: files, files: files } })
         swal({
             title: '¿Confirmas el envio de adjuntos?',
             buttons: {
@@ -842,7 +1183,7 @@ class Proyectos extends Component {
             }
         }).then((result) => {
             if (result) {
-                this.addProyectoAdjuntoAxios(item.form)
+                this.addProyectoAdjuntoAxios(item)
             }
         })
     }
@@ -1074,29 +1415,44 @@ class Proyectos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error'
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            console.log('error catch', error)
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
 
-            })
+    async getProyectoAdjuntosZip(array) {
+        const { access_token } = this.props.authUser
+        const { proyecto } = this.state
+        let aux = { tipo: array }
+        waitAlert()
+        await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/adjuntos/zip', aux, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                swal.close()
+                const url =  URL_ASSETS+'/storage/adjuntos.zip'
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', proyecto.nombre+'.zip'); //or any other extension
+                document.body.appendChild(link);
+                link.click();
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -1122,29 +1478,15 @@ class Proyectos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error'
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            console.log('error catch', error)
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',
-
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -1172,29 +1514,15 @@ class Proyectos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error'
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            console.log('error catch', error)
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',
-
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -1210,6 +1538,7 @@ class Proyectos extends Component {
                     data.append(element, (new Date(form[element])).toDateString())
                     break
                 case 'adjuntos':
+                case 'adjuntos_grupo':
                     break;
                 default:
                     data.append(element, form[element])
@@ -1230,12 +1559,12 @@ class Proyectos extends Component {
         if (prospecto) {
             data.append('prospecto', prospecto.id)
         }
-        form.adjuntos_grupos.map( (grupo, key) => {
-            grupo.adjuntos.map( (adjunto, key) => {
-                for(var i = 0; i < adjunto.files.length; i++){
-                    data.append(`files_name_${adjunto.id}[]`, adjunto.files[i].name)
-                    data.append(`files_${adjunto.id}[]`, adjunto.files[i].file)
-                }
+        form.adjuntos_grupo.map( (grupo) => {
+            grupo.adjuntos.map( (adjunto) => {
+                adjunto.files.map((file)=> {
+                    data.append(`files_name_${adjunto.id}[]`, file.name)
+                    data.append(`files_${adjunto.id}[]`, file.file)
+                })
                 if(adjunto.files.length)
                     data.append('adjuntos[]', adjunto.id)
             })
@@ -1263,28 +1592,15 @@ class Proyectos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error'
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            console.log('error catch', error)
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -1363,10 +1679,20 @@ class Proyectos extends Component {
         const { form, proyecto } = this.state
         const data = new FormData();
         data.append('tipo', name)
-        for (var i = 0; i < form.adjuntos[name].files.length; i++) {
-            data.append(`files_name_${name}[]`, form.adjuntos[name].files[i].name)
-            data.append(`files_${name}[]`, form.adjuntos[name].files[i].file)
+        let grupo = 0
+        let adjunto = 0
+        for(let i = 0; i < form.adjuntos_grupo.length; i++){
+            for(let j = 0; j < form.adjuntos_grupo[i].adjuntos.length; j++){
+                if(form.adjuntos_grupo[i].adjuntos[j].id === name){
+                    grupo = i;
+                    adjunto = j;
+                }
+            }
         }
+        form.adjuntos_grupo[grupo].adjuntos[adjunto].files.map( (file) => {
+            data.append(`files_name_${form.adjuntos_grupo[grupo].adjuntos[adjunto].id}[]`, file.name)
+            data.append(`files_${form.adjuntos_grupo[grupo].adjuntos[adjunto].id}[]`, file.file)
+        })
 
         await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -1390,28 +1716,15 @@ class Proyectos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error'
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            console.log('error catch', error)
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -1470,28 +1783,15 @@ class Proyectos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error'
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            console.log('error catch', error)
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -1521,29 +1821,15 @@ class Proyectos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error'
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            console.log('error catch', error)
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',
-
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -1580,12 +1866,7 @@ class Proyectos extends Component {
         const { modal, modalDelete, modalAdjuntos, modalAvances, title, adjuntos, prospecto, form, options, proyectos, proyecto, data } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
-                {/*<div className="text-right">
-                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon = { faPlus } color="green" />
-                </div>
-                 */}
-                {/* <DataTable columns = {PROYECTOS_COLUMNS} data= {proyectos}/>*/}
-
+                
                 <NewTable columns={PROYECTOS_COLUMNS} data={proyectos}
                     title='Proyectos' subtitle='Listado de proyectos'
                     mostrar_boton={true}
@@ -1604,7 +1885,7 @@ class Proyectos extends Component {
                 <Modal title = { title } show={modal} handleClose={this.handleClose}>
                     <ProyectosForm title={title} form={form} onChange={this.onChange} options={options}
                         onChangeAdjunto={this.onChangeAdjunto} clearFiles={this.clearFiles} onChangeCP={this.onChangeCP}
-                        onSubmit={this.onSubmit} onChangeAdjuntoGrupo = { this.onChangeAdjuntoGrupo }
+                        onSubmit={this.onSubmit} onChangeAdjuntoGrupo = { this.onChangeAdjuntoGrupo } 
                         clearFilesGrupo = { this.clearFilesGrupo } >
                         {
                             prospecto !== '' ?
@@ -1811,10 +2092,87 @@ class Proyectos extends Component {
                         <Button icon='' onClick={(e) => { this.safeDelete(e)() }} text="Continuar" color="red" />
                     </div>
                 </Modal>
-                <Modal show={modalAdjuntos} handleClose={this.handleCloseAdjuntos} >
+                <Modal title = "Adjuntos del proyecto" show={modalAdjuntos} handleClose={this.handleCloseAdjuntos} >
                     <div className="p-2">
-                        <Slider elements={adjuntos.length > 0 ? adjuntos : []}
-                            deleteFile={this.deleteFile} handleChange={this.handleChange} />
+                        {/* <Slider elements={adjuntos.length > 0 ? adjuntos : []}
+                            deleteFile={this.deleteFile} handleChange={this.handleChange} /> */}
+                        <Accordion>
+                        {
+                            form.adjuntos_grupo.map( (grupo, key) => {
+                                return(
+                                    <div key = {key}>
+                                        <div className="px-3 pt-2">
+                                            {
+                                                key > 0 ?
+                                                    <div className="separator separator-dashed mt-1 mb-2"></div>
+                                                : ''
+                                            }
+                                            <CustomToggle icon = { faList } iconColor = 'gold' iconColor = 'transparent' eventKey={grupo.id} >
+                                                <strong>
+                                                    <p className="label-form">
+                                                        {grupo.text}
+                                                    </p>
+                                                </strong>
+                                            </CustomToggle>
+                                            
+                                        </div>
+                                        <Accordion.Collapse eventKey={grupo.id}>
+                                            <div>
+                                                <div className="row mx-0 pl-2 py-2">
+                                                    <Accordion className="w-100">
+                                                        {
+                                                            grupo.adjuntos.map( (adjunto, key) => {
+                                                                return(
+                                                                    <div key = {key}>
+                                                                        <div className="px-3 pt-2">
+                                                                            <CustomToggle icon = { faFolderOpen } eventKey = { adjunto.id } >
+                                                                                <strong>
+                                                                                    <p className="label-form">
+                                                                                        {adjunto.placeholder}
+                                                                                    </p>
+                                                                                </strong>
+                                                                            </CustomToggle>
+                                                                            {
+                                                                                <div className="separator separator-dashed separator-secondary mt-1 mb-2"></div>
+                                                                            }
+                                                                        </div>
+                                                                        <Accordion.Collapse eventKey={adjunto.id}>
+                                                                            <div>
+                                                                                
+                                                                                {
+                                                                                    proyecto ? 
+                                                                                        proyecto[adjunto.id].length ?
+                                                                                            <div className="mt-2 d-flex justify-content-center">
+                                                                                                <span className = 'btn btn-hover btn-text-success' onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.id]) }}>
+                                                                                                    <i className="fas fa-file-archive"></i> Descargar ZIP
+                                                                                                </span>
+                                                                                            </div>
+                                                                                        : ''
+                                                                                    : ''
+                                                                                }
+                                                                                {
+                                                                                    proyecto ? 
+                                                                                        <ItemSlider items = { proyecto[adjunto.id] }  handleChange = { this.handleChange }
+                                                                                        item = {adjunto.id} deleteFile = { this.deleteFile } />
+                                                                                    : ''
+                                                                                }
+                                                                            </div>
+                                                                        </Accordion.Collapse>
+                                                                    </div>
+                                                                )
+                                                            } )
+                                                        }
+                                                    </Accordion>            
+                                                </div>
+                                            </div>
+                                            
+                                        </Accordion.Collapse>
+                                    </div>
+                                )
+                                            
+                            })
+                        }
+                        </Accordion>
                     </div>
                 </Modal>
                 <Modal title = { title } show = { modalAvances } handleClose = { this.handleCloseAvances }>

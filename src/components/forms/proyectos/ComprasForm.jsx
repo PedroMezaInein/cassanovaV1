@@ -2,36 +2,8 @@ import React, { Component } from 'react'
 import { Subtitle } from '../../texts'
 import { SelectSearch, Select, Calendar, RadioGroup, FileInput, Button, Input, InputMoney } from '../../form-components'
 import { Form } from 'react-bootstrap'
-import { RFC } from '../../../constants'
-
-function openWizard1(){  
-    document.getElementById('wizardP').setAttribute("data-wizard-state","first");
-    document.getElementById('wizard-1').setAttribute("data-wizard-state","current");
-    document.getElementById('wizard-2').setAttribute("data-wizard-state","pending");
-    document.getElementById('wizard-3').setAttribute("data-wizard-state","pending");
-    document.getElementById('wizard-1-content').setAttribute("data-wizard-state","current");  
-    document.getElementById("wizard-2-content").removeAttribute("data-wizard-state");
-    document.getElementById("wizard-3-content").removeAttribute("data-wizard-state");
-}
-function openWizard2(){  
-    document.getElementById('wizardP').setAttribute("data-wizard-state","between");
-    document.getElementById('wizard-1').setAttribute("data-wizard-state","done");
-    document.getElementById('wizard-2').setAttribute("data-wizard-state","current");
-    document.getElementById('wizard-3').setAttribute("data-wizard-state","pending");
-    document.getElementById('wizard-2-content').setAttribute("data-wizard-state","current");
-    document.getElementById("wizard-1-content").removeAttribute("data-wizard-state");
-    document.getElementById("wizard-3-content").removeAttribute("data-wizard-state");
-}
-
-function openWizard3(){  
-    document.getElementById('wizardP').setAttribute("data-wizard-state","last");
-    document.getElementById('wizard-1').setAttribute("data-wizard-state","done");
-    document.getElementById('wizard-2').setAttribute("data-wizard-state","done");
-    document.getElementById('wizard-3').setAttribute("data-wizard-state","current");
-    document.getElementById('wizard-3-content').setAttribute("data-wizard-state","current"); 
-    document.getElementById("wizard-1-content").removeAttribute("data-wizard-state");
-    document.getElementById("wizard-2-content").removeAttribute("data-wizard-state");   
-}
+import { RFC, DATE } from '../../../constants'
+import {openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 
 class ComprasForm extends Component {
 
@@ -181,22 +153,22 @@ updateArea = value => {
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
-                    <div className="wizard-steps px-8 py-8 px-lg-15 py-lg-3"> 
-                        <div id="wizard-1" className="wizard-step" data-wizard-state="current" data-wizard-type="step" onClick = { () => { openWizard1() } }>
+                    <div className="wizard-steps px-8 py-0 px-lg-15 py-lg-0"> 
+                        <div id="wizard-1" className="wizard-step" data-wizard-state="current" data-wizard-type="step" style={{paddingTop:"0px"}} onClick = { () => { openWizard1() } }>
                             <div className="wizard-label">
                                 <h3 className="wizard-title">
                                 <span>1.</span> Datos de la factura</h3>
                                 <div className="wizard-bar"></div>
                             </div>
                         </div> 
-                        <div id="wizard-2" className="wizard-step" data-wizard-type="step" onClick = { () => { openWizard2() } }>
+                        <div id="wizard-2" className="wizard-step" data-wizard-type="step" style={{paddingTop:"0px"}} onClick = { () => { openWizard2() } }>
                             <div className="wizard-label">
                                 <h3 className="wizard-title">
                                 <span>2.</span> Área y fecha</h3>
                                 <div className="wizard-bar"></div>
                             </div>
                         </div> 
-                        <div id="wizard-3" className="wizard-step" data-wizard-type="step" onClick = { () => { openWizard3() } }>
+                        <div id="wizard-3" className="wizard-step" data-wizard-type="step" style={{paddingTop:"0px"}} onClick = { () => { openWizard3() } }>
                             <div className="wizard-label">
                                 <h3 className="wizard-title">
                                 <span>3.</span> Pago</h3>
@@ -206,7 +178,7 @@ updateArea = value => {
                     </div>
                 </div>
                 <div className="row justify-content-center py-10 px-8 py-lg-12 px-lg-10">
-                    <div className="col-xl-12 col-xxl-7">                   
+                    <div className="col-md-12">                   
                         <Form 
                             {...props}
                             >
@@ -246,7 +218,7 @@ updateArea = value => {
                                                     files={form['adjuntos']['factura']['files']}
                                                     deleteAdjunto={clearFiles} multiple 
                                                 />
-                                                <span className="form-text text-muted">Por favor, adjunta el documento. </span>
+                                                {/*<span className="form-text text-muted">Por favor, adjunta el documento. </span>*/}
                                             </div>
                                         : ''
                                     }
@@ -263,12 +235,12 @@ updateArea = value => {
                                                     messageinc="Incorrecto. Ej. ABCD001122ABC"
                                                     maxLength="13"
                                                 />
-                                                <span className="form-text text-muted">Por favor, ingresa el RFC. </span>
+                                                {/*<span className="form-text text-muted">Por favor, ingresa el RFC. </span>*/}
                                             </div>
                                             : ''
                                     }
                                 </div>
-                                <div class="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <SelectSearch 
@@ -279,7 +251,7 @@ updateArea = value => {
                                             onChange={this.updateProveedor} 
                                             iconclass={"far fa-user"}
                                         />
-                                        <span className="form-text text-muted">Por favor, selecciona el proveedor</span>
+                                        {/*<span className="form-text text-muted">Por favor, selecciona el proveedor</span>*/}
                                     </div>
                                     <div className="col-md-4">
                                         <SelectSearch 
@@ -290,7 +262,7 @@ updateArea = value => {
                                             onChange={this.updateProyecto}
                                             iconclass={"far fa-folder-open"} 
                                         />
-                                        <span className="form-text text-muted">Por favor, selecciona el proyecto.</span>
+                                        {/*<span className="form-text text-muted">Por favor, selecciona el proyecto.</span>*/}
                                     </div>
                                     <div className="col-md-4">
                                         {
@@ -313,14 +285,14 @@ updateArea = value => {
                                                     iconclass={"far fa-building"}
                                                 />
                                         }
-                                        <span className="form-text text-muted">Por favor, selecciona la empresa.</span>
+                                        {/*<span className="form-text text-muted">Por favor, selecciona la empresa.</span>*/}
                                     </div>
                                 </div>                                
                                 <div className="form-group row form-group-marginless">
                                     {
                                         form.empresa ?                                            
                                             <div className="col-md-4">
-                                                <div class="separator separator-dashed mt-1 mb-2"></div>
+                                                <div className="separator separator-dashed mt-1 mb-2"></div>
                                                 <SelectSearch 
                                                     options={options.cuentas} 
                                                     placeholder="Selecciona la cuenta"
@@ -329,7 +301,7 @@ updateArea = value => {
                                                     onChange={this.updateCuenta}
                                                     iconclass={"far fa-credit-card"} 
                                                 />
-                                                <span className="form-text text-muted">Por favor, selecciona la cuenta.</span>
+                                                {/*<span className="form-text text-muted">Por favor, selecciona la cuenta.</span>*/}
                                             </div>
                                         : ''
                                     }
@@ -350,8 +322,9 @@ updateArea = value => {
                                             placeholder="Fecha" 
                                             name="fecha" 
                                             value={form.fecha}
+                                            patterns={DATE}
                                         />
-                                        <span className="form-text text-muted">Por favor, selecciona la fecha.</span>
+                                        {/*<span className="form-text text-muted">Por favor, selecciona la fecha.</span>*/}
                                     </div>
                                     <div className="col-md-4">
                                         <SelectSearch 
@@ -362,7 +335,7 @@ updateArea = value => {
                                             onChange={this.updateArea}
                                             iconclass={"far fa-window-maximize"} 
                                         />
-                                        <span className="form-text text-muted">Por favor, selecciona el área.</span>
+                                        {/*<span className="form-text text-muted">Por favor, selecciona el área.</span>*/}
                                     </div>
                                     {
                                         form.area ?
@@ -375,23 +348,24 @@ updateArea = value => {
                                                     onChange={this.updateSubarea}
                                                     iconclass={"far fa-window-restore"} 
                                                 />
-                                                <span className="form-text text-muted">Por favor, selecciona la sub-área.</span>
+                                                {/*<span className="form-text text-muted">Por favor, selecciona la sub-área.</span>*/}
                                             </div>
                                         : ''
                                     }
                                 </div>
-                                <div class="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-12">
                                         <Input 
                                             as="textarea" 
                                             placeholder="Descripción" 
-                                            rows="2" value={form.descripcion}
+                                            rows="3" value={form.descripcion}
                                             name="descripcion" 
                                             onChange={onChange}
-                                            iconclass={"far fa-file-alt"}
+                                            messageinc="Incorrecto. Ingresa una descripción."
+                                            style={{paddingLeft:"10px"}} 
                                         />
-                                        <span className="form-text text-muted">Por favor, ingresa la descripción.</span>
+                                        {/*<span className="form-text text-muted">Por favor, ingresa la descripción.</span>*/}
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
@@ -419,7 +393,7 @@ updateArea = value => {
                                                     iconclass={"fas fa-coins"}
                                                     required
                                                 />
-                                                <span className="form-text text-muted">Por favor, selecciona el tipo de pago.</span>
+                                                {/*<span className="form-text text-muted">Por favor, selecciona el tipo de pago.</span>*/}
                                             </div>
                                             : ''
                                     }
@@ -434,7 +408,7 @@ updateArea = value => {
                                             iconclass={"fas fa-file-invoice-dollar"}
                                             required
                                         />
-                                        <span className="form-text text-muted">Por favor, selecciona el impuesto.</span>
+                                        {/*<span className="form-text text-muted">Por favor, selecciona el impuesto.</span>*/}
                                     </div>
                                     <div className="col-md-4">
                                         <Select 
@@ -447,10 +421,10 @@ updateArea = value => {
                                             required
                                             iconclass={"flaticon2-time"}
                                         />
-                                        <span className="form-text text-muted">Por favor, selecciona el estatus de compra.</span>
+                                        {/*<span className="form-text text-muted">Por favor, selecciona el estatus de compra.</span>*/}
                                     </div>
                                 </div>
-                                <div class="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <InputMoney 
@@ -460,9 +434,8 @@ updateArea = value => {
                                             name="total" 
                                             onChange={onChange}
                                             iconclass={"fas fa-money-check-alt"}
-
                                         />
-                                        <span className="form-text text-muted">Por favor, ingresa el monto.</span>
+                                        {/*<span className="form-text text-muted">Por favor, ingresa el monto.</span>*/}
                                     </div>
                                     <div className="col-md-4">
                                         <InputMoney 
@@ -473,7 +446,7 @@ updateArea = value => {
                                             onChange={onChange} 
                                             iconclass={"fas fa-money-bill-alt"} 
                                         />
-                                        <span className="form-text text-muted">Por favor, ingresa la comisión.</span>
+                                        {/*<span className="form-text text-muted">Por favor, ingresa la comisión.</span>*/}
                                     </div>
                                     <div className="col-md-4">
                                         <SelectSearch 
@@ -484,10 +457,10 @@ updateArea = value => {
                                             onChange={this.updateContrato} 
                                             iconclass={"fas fa-file-signature"}
                                         />
-                                        <span className="form-text text-muted">Por favor, selecciona el contrato.</span>
+                                        {/*<span className="form-text text-muted">Por favor, selecciona el contrato.</span>*/}
                                     </div>
                                 </div>
-                                <div class="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">                                
                                     <div className="col-md-6">
                                         <FileInput
@@ -499,7 +472,7 @@ updateArea = value => {
                                             files={form['adjuntos']['presupuesto']['files']}
                                             deleteAdjunto={clearFiles} 
                                         />
-                                        <span className="form-text text-muted">Por favor, adjunta el documento.</span>
+                                        {/*<span className="form-text text-muted">Por favor, adjunta el documento.</span>*/}
                                     </div>
                                     <div className="col-md-6">
                                         <FileInput
@@ -511,7 +484,7 @@ updateArea = value => {
                                             files={form['adjuntos']['pago']['files']}
                                             deleteAdjunto={clearFiles} 
                                         />
-                                        <span className="form-text text-muted">Por favor, adjunta el documento.</span>
+                                        {/*<span className="form-text text-muted">Por favor, adjunta el documento.</span>*/}
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">

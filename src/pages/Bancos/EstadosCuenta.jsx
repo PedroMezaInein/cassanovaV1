@@ -434,7 +434,7 @@ class EstadosCuenta extends Component {
                 <Modal title = {"Agregar estado de cuenta"} show={modal} handleClose={this.handleClose} >
                     
                     <Form onSubmit={this.submitForm}>
-                    <div className="form-group row form-group-marginless">
+                    <div className="form-group row form-group-marginless pt-4">
                         <div className="col-md-8">
                             <SelectSearch
                                 options={cuentas}
@@ -444,7 +444,7 @@ class EstadosCuenta extends Component {
                                 onChange={this.updateCuenta}
                                 iconclass={"far fa-credit-card"} 
                                 />
-                            <span className="form-text text-muted">Por favor, seleccione la cuenta. </span>
+                            {/*<span className="form-text text-muted">Por favor, seleccione la cuenta. </span>*/}
                         </div>
                         <div className="col-md-4">
                             <Calendar
@@ -454,37 +454,48 @@ class EstadosCuenta extends Component {
                                 value={fecha}
                                 iconclass={"far fa-calendar-alt"} 
                             />
-                            <span className="form-text text-muted">Por favor, seleccione la fecha. </span>
+                            {/*<span className="form-text text-muted">Por favor, seleccione la fecha. </span>*/}
                         </div>
                     </div>
-                    <div class="separator separator-dashed mt-1 mb-2"></div>
+                    <div className="separator separator-dashed mt-1 mb-2 pt-2"></div>
                     <div className="form-group row form-group-marginless">
-                        <div className="col-md-12">
+                        <div className="col-md-6">
                             <div className="px-2 d-flex align-items-center">
                                     <div className="image-upload d-flex align-items-center">
                                         <div className="no-label">
-                                            <Input
+                                            <input
                                                 onChange={this.onChangeAdjunto}
                                                 value={adjunto}
                                                 name="adjunto"
                                                 type="file"
                                                 id="adjunto"
                                                 accept="application/pdf" 
+                                                className={"mr-3"}
                                                 />
-                                            <span className="form-text text-muted">Por favor, adjunte su documento. </span>
+                                            {/*<span className="form-text text-muted">Por favor, adjunte su documento. </span>*/}
                                         </div>
                                         {/*<label htmlFor="adjunto">
                                             <FontAwesomeIcon className="p-0 font-unset mr-2" icon={faPaperclip} color={DARK_BLUE} />
                                         </label>
                                         */}
                                         {
+                                            
                                             adjuntoName &&
-                                            <Badge variant="light" className="d-flex px-3 align-items-center" pill>
-                                                <FontAwesomeIcon icon={faTimes} onClick={(e) => { e.preventDefault(); this.deleteAdjunto() }} className=" small-button mr-2" />
-                                                {
-                                                    adjuntoName
-                                                }
-                                            </Badge>
+                                            <div className="">
+                                                <div className="tagify form-control p-1" tabIndex="-1">
+                                                        <div className="tagify__tag tagify__tag--primary tagify--noAnim">
+                                                            <div 
+                                                                title="Borrar archivo" 
+                                                                className="tagify__tag__removeBtn" 
+                                                                role="button" 
+                                                                aria-label="remove tag" 
+                                                                onClick={(e) => { e.preventDefault(); this.deleteAdjunto() }}
+                                                                >
+                                                            </div>                                                            
+                                                                <div><span className="tagify__tag-text p-1">{adjuntoName}</span></div>
+                                                        </div>
+                                                </div>
+                                            </div> 
                                         }
                                     </div>
                                 </div>

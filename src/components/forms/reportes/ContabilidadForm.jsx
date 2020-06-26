@@ -62,7 +62,7 @@ class ContabilidadForm extends Component{
                         <span className="form-text text-muted">Por favor, ingrese su fecha de fin. </span>
                     </div>
                 </div>
-                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Select 
@@ -100,7 +100,7 @@ class ContabilidadForm extends Component{
                         }
                     </div>
                 </div>
-                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <OptionsCheckbox placeholder="Selecciona los modulos a importar" 

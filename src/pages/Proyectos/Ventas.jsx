@@ -1079,8 +1079,8 @@ class Ventas extends Component{
                     elements={data.ventas}
                 />
 
-                <Modal show = {modal} handleClose = { this.handleClose } >
-                    <VentasForm title = { title } options = {options} form = {form} setOptions = {this.setOptions} 
+                <Modal show = {modal} handleClose = { this.handleClose } title = { title } >
+                    <VentasForm options = {options} form = {form} setOptions = {this.setOptions} 
                         onChange = { this.onChange } onChangeAdjunto = { this.onChangeAdjunto } clearFiles = {this.clearFiles}
                         onSubmit = { this.onSubmit } />
                 </Modal>

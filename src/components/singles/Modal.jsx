@@ -25,7 +25,7 @@ class modal extends Component{
                 <Modal.Header closeButton>
                     <Modal.Title>{title}</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
+                <Modal.Body style={{paddingTop:"0px"}}>
                     { children }
                 </Modal.Body>               
             </Modal>

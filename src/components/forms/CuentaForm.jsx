@@ -31,7 +31,7 @@ class CuentaForm extends Component{
                 validated={validated}
                 onKeyPress={e => this.handleKeyPress(e)}
             >
-                <div className="form-group row form-group-marginless">
+                <div className="form-group row form-group-marginless pt-4">
                     <div className="col-md-8">
                         <Input 
                             required
@@ -40,9 +40,10 @@ class CuentaForm extends Component{
                             name = "nombre" 
                             value = { form.nombre } 
                             onChange = { onChange }
-                            iconclass={"far fa-credit-card"} 
+                            iconclass={"far fa-credit-card"}
+                            messageinc="Incorrecto. Ingresa el nombre de la cuenta."
                         />
-                        <span className="form-text text-muted">Por favor, ingrese el nombre de cuenta. </span>
+                        {/*<span className="form-text text-muted">Por favor, ingrese el nombre de cuenta. </span>*/}
                     </div>
                     <div className="col-md-4">
                         <Select 
@@ -53,25 +54,26 @@ class CuentaForm extends Component{
                             value = { form.banco }
                             onChange = { onChange }
                             iconclass={" fab fa-cc-discover"}
+                            messageinc="Incorrecto. Selecciona el banco."
                         />
-                        <span className="form-text text-muted">Por favor, seleccione el banco </span>
+                        {/*<span className="form-text text-muted">Por favor, seleccione el banco </span>*/}
                     </div>
                 </div>
-                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Input 
                             required 
                             placeholder = "Ingresa el número de cuenta" 
-                            type = "number" 
+                            type = "text" 
                             name = "numero" 
                             value = { form.numero }
                             onChange = { onChange }
                             iconclass={" fas fa-id-card "} 
                             pattern="[0-9]{1,18}"
-                            messageinc="Incorrecto. Solo debes ingresar números"
+                            messageinc="Incorrecto. Ingresa el número de cuenta."
                         />
-                        <span className="form-text text-muted">Por favor, ingrese el número de cuenta </span>
+                        {/*<span className="form-text text-muted">Por favor, ingrese el número de cuenta </span>*/}
                     </div>
                     <div className="col-md-4">
                         <Select 
@@ -82,8 +84,9 @@ class CuentaForm extends Component{
                             value = { form.tipo }
                             onChange = { onChange } 
                             iconclass={" far fa-address-card"}
+                            messageinc="Incorrecto. Selecciona el tipo de cuenta."
                         />
-                        <span className="form-text text-muted">Por favor, ingrese el tipo de cuenta</span>
+                        {/*<span className="form-text text-muted">Por favor, ingrese el tipo de cuenta</span>*/}
                     </div>
                     <div className="col-md-4">
                         <Select 
@@ -94,11 +97,12 @@ class CuentaForm extends Component{
                             value = { form.estatus }
                             onChange = { onChange } 
                             iconclass={" far fa-check-square "}
+                            messageinc="Incorrecto. Selecciona el estatus."
                         />
-                        <span className="form-text text-muted">Por favor, seleccione el estatus</span>
+                        {/*<span className="form-text text-muted">Por favor, seleccione el estatus</span>*/}
                     </div>
                 </div>
-                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Select 
@@ -109,8 +113,9 @@ class CuentaForm extends Component{
                             value = { form.empresa }
                             onChange = { onChangeEmpresa } 
                             iconclass={"far fa-building"} 
+                            messageinc="Incorrecto. Selecciona la(s) empresas."
                         />
-                        <span className="form-text text-muted">Por favor, seleccione la(s) empresa(s)</span>
+                        {/*<span className="form-text text-muted">Por favor, seleccione la(s) empresa(s)</span>*/}
                     </div>
                     <div className="col-md-8">
                         {
@@ -136,19 +141,20 @@ class CuentaForm extends Component{
                         }
                     </div>
                 </div>
-                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                     <div className="form-group row form-group-marginless">
                     <div className="col-md-12">
                         <Input 
-                            rows = "2" 
+                            rows = "3" 
                             as = "textarea" 
                             placeholder = "Descripción" 
                             name = "descripcion" 
                             value = { form.descripcion }
                             onChange = { onChange } 
-                            iconclass={"far fa-file-alt"} 
+                            style={{paddingLeft:"10px"}}
+                            messageinc="Incorrecto. Ingresa la descripción."
                         />
-                        <span className="form-text text-muted">Por favor, ingrese su descripción. </span>
+                        {/*<span className="form-text text-muted">Por favor, ingrese su descripción. </span>*/}
                     </div>
                 </div>
                 <div className="mt-3 text-center">

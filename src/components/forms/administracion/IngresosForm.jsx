@@ -1,50 +1,12 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { Subtitle } from '../../texts'
+import { RFC, DATE } from '../../../constants'
 import { SelectSearch, Select, Button, RadioGroup, Input, Calendar, InputMoney, FileInput } from '../../form-components'
-
-function openWizard1(){  
-    document.getElementById('wizardP').setAttribute("data-wizard-state","first");
-    document.getElementById('wizard-1').setAttribute("data-wizard-state","current");
-    document.getElementById('wizard-2').setAttribute("data-wizard-state","pending");
-    document.getElementById('wizard-3').setAttribute("data-wizard-state","pending");
-    document.getElementById('wizard-1-content').setAttribute("data-wizard-state","current");  
-    document.getElementById("wizard-2-content").removeAttribute("data-wizard-state");
-    document.getElementById("wizard-3-content").removeAttribute("data-wizard-state");
-}
-function openWizard2(){  
-    document.getElementById('wizardP').setAttribute("data-wizard-state","between");
-    document.getElementById('wizard-1').setAttribute("data-wizard-state","done");
-    document.getElementById('wizard-2').setAttribute("data-wizard-state","current");
-    document.getElementById('wizard-3').setAttribute("data-wizard-state","pending");
-    document.getElementById('wizard-2-content').setAttribute("data-wizard-state","current");
-    document.getElementById("wizard-1-content").removeAttribute("data-wizard-state");
-    document.getElementById("wizard-3-content").removeAttribute("data-wizard-state");
-}
-
-function openWizard3(){  
-    document.getElementById('wizardP').setAttribute("data-wizard-state","last");
-    document.getElementById('wizard-1').setAttribute("data-wizard-state","done");
-    document.getElementById('wizard-2').setAttribute("data-wizard-state","done");
-    document.getElementById('wizard-3').setAttribute("data-wizard-state","current");
-    document.getElementById('wizard-3-content').setAttribute("data-wizard-state","current"); 
-    document.getElementById("wizard-1-content").removeAttribute("data-wizard-state");
-    document.getElementById("wizard-2-content").removeAttribute("data-wizard-state");   
-}
-
+import {openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 
 
 class IngresosForm extends Component {
-
-    state = {
-        validated: false
-    }
-    constructor(...args) {
-        super(...args);
-    
-        this.state = { validated: false };
-    }
-    
     
     handleChangeDate = date => {
         const { onChange } = this.props
@@ -143,13 +105,8 @@ class IngresosForm extends Component {
         });
         onChange({ target: { value: aux, name: 'tipoImpuesto' } })
     }
-
-    handleKeyPress(event) {
-        const form = event.currentTarget;
-    }
     
     render() {
-        const { validated } = this.state;
         const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, sendFactura, ...props } = this.props
         return (
                 <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
@@ -179,10 +136,9 @@ class IngresosForm extends Component {
                         </div>
                     </div>
                     <div className="row justify-content-center py-10 px-8 py-lg-12 px-lg-10">
-                        <div className="col-xl-12 col-xxl-7">
-                            <Form {...props}
-                                noValidate
-                                validated={validated}
+                        <div className="col-md-12">
+                            <Form 
+                                {...props}
                                 >
                                 <div id="wizard-1-content" className="pb-3" data-wizard-type="step-content" data-wizard-state="current">
                                     <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos de la factura</h5>
@@ -223,7 +179,7 @@ class IngresosForm extends Component {
                                                     files={form['adjuntos']['factura']['files']}
                                                     deleteAdjunto={clearFiles} multiple 
                                                     />
-                                                <span className="form-text text-muted">Por favor, adjunta el documento. </span>
+                                                {/*<span className="form-text text-muted">Por favor, adjunta el documento. </span>*/}
                                                 </div>
                                             : ''
                                         }
@@ -236,11 +192,11 @@ class IngresosForm extends Component {
                                                         value={form.rfc} 
                                                         onChange={onChange}                                                         
                                                         iconclass={"far fa-file-alt"} 
-                                                        pattern="^([A-ZÑ\x26]{3,4}([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1]))([A-Z\d]{3})?$"
-                                                        messageinc="Incorrecto. Ej. ABCD001122ABC"
+                                                        pattern={RFC}
+                                                        messageinc="Incorrecto. Ej. ABCD001122ABC."
                                                         maxLength="13"
                                                     />
-                                                <span className="form-text text-muted">Por favor, ingresa el RFC. </span>
+                                                {/*<span className="form-text text-muted">Por favor, ingresa el RFC. </span>*/}
                                                 </div>
                                             : ''
                                         }
@@ -268,7 +224,7 @@ class IngresosForm extends Component {
                                                         iconclass={"far fa-user"}
                                                     />                                
                                             }
-                                            <span className="form-text text-muted">Por favor, selecciona el cliente.</span>
+                                            {/*<span className="form-text text-muted">Por favor, selecciona el cliente.</span>*/}
                                         </div>
                                         <div className="col-md-4">
                                             {
@@ -289,7 +245,7 @@ class IngresosForm extends Component {
                                                         onChange={this.updateEmpresa} 
                                                         iconclass={"far fa-building"}/>
                                             }
-                                        <span className="form-text text-muted">Por favor, selecciona la empresa.</span>
+                                        {/*<span className="form-text text-muted">Por favor, selecciona la empresa.</span>*/}
                                         </div>                    
                                             {
                                                 form.empresa ?
@@ -302,7 +258,7 @@ class IngresosForm extends Component {
                                                             onChange={this.updateCuenta} 
                                                             iconclass={"far fa-credit-card"} 
                                                         />
-                                                    <span className="form-text text-muted">Por favor, selecciona la cuenta. </span>
+                                                    {/*<span className="form-text text-muted">Por favor, selecciona la cuenta. </span>*/}
                                                     </div>
                                                 : ''
                                             }
@@ -322,9 +278,10 @@ class IngresosForm extends Component {
                                                     onChangeCalendar={this.handleChangeDate} 
                                                     placeholder="Fecha"
                                                     name="fecha" 
+                                                    patterns={DATE}
                                                     value={form.fecha} 
                                                 />
-                                            <span className="form-text text-muted">Por favor, selecciona la fecha. </span>
+                                            {/*<span className="form-text text-muted">Por favor, selecciona la fecha. </span>*/}
                                         </div>
                                             <div className="col-md-4">
                                                 <SelectSearch 
@@ -335,7 +292,7 @@ class IngresosForm extends Component {
                                                     onChange={this.updateArea} 
                                                     iconclass={"far fa-window-maximize"}
                                                 />
-                                                <span className="form-text text-muted">Por favor, selecciona el área. </span>
+                                                {/*<span className="form-text text-muted">Por favor, selecciona el área. </span>*/}
                                             </div>
                                             {
                                                 form.area ?
@@ -348,7 +305,7 @@ class IngresosForm extends Component {
                                                             onChange={this.updateSubarea} 
                                                             iconclass={"far fa-window-restore"}
                                                         />
-                                                        <span className="form-text text-muted">Por favor, selecciona la sub-área. </span>
+                                                        {/*<span className="form-text text-muted">Por favor, selecciona la sub-área. </span>*/}
                                                     </div>
                                                 : ''
                                             }                    
@@ -362,9 +319,10 @@ class IngresosForm extends Component {
                                                     rows="3" value={form.descripcion}
                                                     name="descripcion" 
                                                     onChange={onChange}
-                                                    iconclass={"far fa-file-alt"}                                                     
+                                                    style={{paddingLeft:"10px"}} 
+                                                    messageinc="Incorrecto. Ingresa la descripción."                                                                                          
                                                     />
-                                                <span className="form-text text-muted">Por favor, ingresa la descripción. </span>
+                                                {/*<span className="form-text text-muted">Por favor, ingresa la descripción. </span>*/}
                                                 </div>
                                             </div>
                                     
@@ -391,7 +349,7 @@ class IngresosForm extends Component {
                                                     iconclass={"fas fa-coins"}
                                                     required
                                                 />
-                                                <span className="form-text text-muted">Por favor, selecciona el tipo de pago.</span>
+                                                {/*<span className="form-text text-muted">Por favor, selecciona el tipo de pago.</span>*/}
                                             </div>
                                             <div className="col-md-4">
                                                 <Select 
@@ -404,7 +362,7 @@ class IngresosForm extends Component {
                                                     iconclass={"fas fa-file-invoice-dollar"}
                                                     required
                                                 />
-                                                <span className="form-text text-muted">Por favor, selecciona el impuesto.</span>
+                                                {/*<span className="form-text text-muted">Por favor, selecciona el impuesto.</span>*/}
                                             </div>
                                             <div className="col-md-4">
                                                 <Select 
@@ -417,7 +375,7 @@ class IngresosForm extends Component {
                                                     required
                                                     iconclass={"flaticon2-time"}                                                    
                                                 />
-                                            <span className="form-text text-muted">Por favor, selecciona el estatus de compra.</span>
+                                            {/*<span className="form-text text-muted">Por favor, selecciona el estatus de compra.</span>*/}
                                             </div>                                            
                                         </div>
                                         <div className="separator separator-dashed mt-1 mb-2"></div>
@@ -432,7 +390,7 @@ class IngresosForm extends Component {
                                                 onChange={onChange}   
                                                 iconclass={" fas fa-money-check-alt"}
                                                 />
-                                            <span className="form-text text-muted">Por favor, ingresa el monto.</span>
+                                            {/*<span className="form-text text-muted">Por favor, ingresa el monto.</span>*/}
                                             </div>
                                             <div className="col-md-4">
                                                 <FileInput
@@ -443,7 +401,7 @@ class IngresosForm extends Component {
                                                     accept="text/xml, application/pdf"
                                                     files={form['adjuntos']['presupuesto']['files']}
                                                     deleteAdjunto={clearFiles} />
-                                                <span className="form-text text-muted">Por favor, adjunta el documento.</span>
+                                                {/*<span className="form-text text-muted">Por favor, adjunta el documento.</span>*/}
                                             </div>
                                             <div className="col-md-4">
                                                 <FileInput
@@ -455,7 +413,7 @@ class IngresosForm extends Component {
                                                     files={form['adjuntos']['pago']['files']}
                                                     deleteAdjunto={clearFiles} 
                                                 />
-                                                <span className="form-text text-muted">Por favor, adjunta el documento. </span>
+                                                {/*<span className="form-text text-muted">Por favor, adjunta el documento. </span>*/}
                                             </div>
                                         </div>
                                     <div className="d-flex justify-content-between border-top mt-3 pt-3">

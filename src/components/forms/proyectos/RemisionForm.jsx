@@ -53,37 +53,31 @@ class ConceptoForm extends Component{
                     }
                 </Subtitle>
                 <div className="form-group row form-group-marginless mt-5">
-                    <div className="col-md-4">
-                        <SelectSearch options={options.proyectos} placeholder = "Selecciona el proyecto" 
-                            name = "proyecto" value = { form.proyecto } onChange = { this.updateProyecto } iconclass={"far fa-folder-open"} />
-                        <span className="form-text text-muted">Por favor, ingrese su nombre del proyecto. </span>
+                    <div className="col-md-8">
+                        <SelectSearch 
+                            options={options.proyectos}
+                            placeholder = "Selecciona el proyecto" 
+                            name = "proyecto"
+                            value = { form.proyecto }
+                            onChange = { this.updateProyecto }
+                            iconclass={"far fa-folder-open"} 
+                        />
+                        {/*<span className="form-text text-muted">Por favor, ingrese su nombre del proyecto. </span>*/}
                     </div>
                     <div className="col-md-4">
-                        <Calendar onChangeCalendar = { this.handleChangeDate } placeholder = "Fecha"
-                            name = "fecha" value = { form.fecha } iconclass={"far fa-calendar-alt"}/>
-                        <span className="form-text text-muted">Por favor, seleccione su fecha. </span>
+                        <Calendar 
+                            onChangeCalendar = { this.handleChangeDate }
+                            placeholder = "Fecha"
+                            name = "fecha"
+                            value = { form.fecha }
+                            iconclass={"far fa-calendar-alt"}
+                        />
+                        {/*<span className="form-text text-muted">Por favor, seleccione su fecha. </span>*/}
                         
-                    </div>
-                    <div className="col-md-4">
-                        <SelectSearch options={options.areas} placeholder = "Selecciona el área" 
-                            name = "area" value = { form.area } onChange = { this.updateArea } iconclass={"far fa-window-maximize"}/>
-                        <span className="form-text text-muted">Por favor, seleccione el área </span>
                     </div>
                 </div>
-
-                <div class="separator separator-dashed mt-1 mb-2"></div>
-
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-4">
-                    {
-                        form.area ?
-                            
-                            <SelectSearch options={options.subareas} placeholder = "Selecciona el subárea" 
-                                name = "subarea" value = { form.subarea } onChange = { this.updateSubarea } iconclass={"far fa-window-restore"} />      
-                            : ''
-                        
-                    }<span className="form-text text-muted">Por favor, seleccione el sub-área </span>               
-                    </div>
                     <div className="col-md-4">
                         <FileInput 
                             onChangeAdjunto = { onChangeAdjunto } 
@@ -93,16 +87,50 @@ class ConceptoForm extends Component{
                             accept = "image/*, application/pdf" 
                             files = { form.adjuntos.adjunto.files }
                             deleteAdjunto = { clearFiles } multiple />
-                        <span className="form-text text-muted">Por favor, adjunte su documento. </span>
-                    </div>                   
+                        {/*<span className="form-text text-muted">Por favor, adjunte su documento. </span>*/}
+                    </div> 
+                    <div className="col-md-4">
+                        <SelectSearch 
+                            options={options.areas}
+                            placeholder = "Selecciona el área" 
+                            name = "area"
+                            value = { form.area }
+                            onChange = { this.updateArea }
+                            iconclass={"far fa-window-maximize"}
+                        />
+                        {/*<span className="form-text text-muted">Por favor, seleccione el área </span>*/}
+                    </div>
+                    <div className="col-md-4">
+                    {
+                        form.area ?
+                            
+                            <SelectSearch
+                                options={options.subareas}
+                                placeholder = "Selecciona el subárea" 
+                                name = "subarea"
+                                value = { form.subarea }
+                                onChange = { this.updateSubarea }
+                                iconclass={"far fa-window-restore"} 
+                            />      
+                            : ''
+                        
+                    }
+                    {/*<span className="form-text text-muted">Por favor, seleccione el sub-área </span>*/}              
+                    </div>   
                 </div>
 
-                <div class="separator separator-dashed mt-1 mb-2"></div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-12">
-                        <Input as = "textarea" placeholder = "Descripción" rows = "3" value = { form.descripcion }
-                            name = "descripcion" onChange = { onChange } iconclass={"far fa-file-alt"} />
-                        <span className="form-text text-muted">Por favor, ingrese su descripción. </span>
+                        <Input 
+                            as = "textarea" 
+                            placeholder = "Descripción" 
+                            rows = "3" value = { form.descripcion }
+                            name = "descripcion"
+                            onChange = { onChange } 
+                            messageinc="Incorrecto. Ingresa una descripción."
+                            style={{paddingLeft:"10px"}}  />
+                        {/*<span className="form-text text-muted">Por favor, ingrese su descripción. </span>*/}
                     </div>
                 </div>
                 

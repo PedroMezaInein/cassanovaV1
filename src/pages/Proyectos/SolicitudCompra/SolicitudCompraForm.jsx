@@ -404,11 +404,11 @@ class SolicitudCompraForm extends Component{
         const { form, title, options, remision } = this.state
 
         return(
-            <Layout active={'administracion'}  { ...this.props}>
+            <Layout active={'proyectos'}  { ...this.props}>
 
                 
-                <Card className="m-2 p-2 m-md-4 p-md-4">
-                    <Card.Body>
+                <Card className="pt-0">
+                    <Card.Body className="pt-0">
                         <SolicitudCompraFormulario 
                             title = { title } 
                             form = { form }
