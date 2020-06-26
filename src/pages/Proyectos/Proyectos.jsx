@@ -718,6 +718,13 @@ class Proyectos extends Component {
             form.adjuntos.image.files = [{ name: proyecto.imagen.name, file: '', url: proyecto.imagen.url, key: 0 }]
         }
 
+        let aux = []
+        if(proyecto.contactos){
+            proyecto.contactos.map( (contacto)=>{
+                aux.push(contacto.correo)
+            })
+            form.correos = aux
+        }
 
         this.setState({
             ... this.state,
@@ -1539,6 +1546,9 @@ class Proyectos extends Component {
                     break
                 case 'adjuntos':
                 case 'adjuntos_grupo':
+                    break;
+                case 'correos':
+                    data.append(element, JSON.stringify(form[element]))
                     break;
                 default:
                     data.append(element, form[element])
