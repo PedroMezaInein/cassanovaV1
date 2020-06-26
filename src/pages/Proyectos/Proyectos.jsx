@@ -1872,6 +1872,32 @@ class Proyectos extends Component {
         })
     }
 
+    sendMail = avance => {
+        waitAlert();
+        this.sendMailAvanceAxios(avance);
+    }
+
+    async sendMailAvanceAxios(avance){
+        const { access_token } = this.props.authUser
+        const { proyecto } = this.state
+        await axios.get(URL_DEV + 'proyectos/' + proyecto.id + '/avances/' + avance , { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                alert('aqui')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render() {
         const { modal, modalDelete, modalAdjuntos, modalAvances, title, adjuntos, prospecto, form, options, proyectos, proyecto, data } = this.state
         return (
@@ -2188,7 +2214,7 @@ class Proyectos extends Component {
                 <Modal title = { title } show = { modalAvances } handleClose = { this.handleCloseAvances }>
                     <AvanceForm form = { form } onChangeAvance =  { this.onChangeAvance } onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance } 
                         clearFilesAvances = { this.clearFilesAvances } addRowAvance = { this.addRowAvance } onSubmit = { this.onSubmitAvance }
-                        onChange = { this.onChange } proyecto = { proyecto } />
+                        onChange = { this.onChange } proyecto = { proyecto } sendMail = { this.sendMail } />
                 </Modal>
             </Layout>
         )
