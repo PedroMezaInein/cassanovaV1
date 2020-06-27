@@ -9,8 +9,8 @@ class Input extends Component {
 
     validarInput(e){
         const { value } = e.target
-        const {pattern}= this.props
-        var expRegular = new RegExp(pattern);         
+        const {patterns}= this.props
+        var expRegular = new RegExp(patterns);         
             if(expRegular.test(value)){
                 this.setState({
                     inputValido: true
