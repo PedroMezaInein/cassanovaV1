@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 import { Button, Input, Calendar, Select, OptionsCheckbox } from '../form-components'
 import { Subtitle } from '../texts'
+import { DATE, TEL, EMAIL} from '../../constants'
 
 class LeadForm extends Component{
 
@@ -50,25 +51,27 @@ class LeadForm extends Component{
                             value={ form.nombre } 
                             onChange = { onChange } 
                             iconclass={"far fa-user"} 
-                            messageinc="Incorrecto. Introduce el nombre del lead"
+                            messageinc="Incorrecto. Introduce el nombre del lead."
                         />
-                        <span className="form-text text-muted">Por favor, ingresa el nombre del lead. </span>
+                        {/*<span className="form-text text-muted">Por favor, ingresa el nombre del lead. </span>*/}
                     </div>
                     <div className="col-md-4">
                         <Input 
-                            required type="email" 
+                            required 
+                            type="email" 
                             placeholder="Correo electrónico"
                             name="email" 
                             value={ form.email } 
                             onChange = { onChange } 
                             iconclass={"far fa-envelope"} 
-                            messageinc="Incorrecto. Ej. email@dominio.com"
+                            messageinc="Incorrecto. Ej. usuario@dominio"
                         />
-                        <span className="form-text text-muted">Por favor, ingresa el correo electrónico. </span>
+                        {/*<span className="form-text text-muted">Por favor, ingresa el correo electrónico. </span>*/}
                     </div>
                     <div className="col-md-4">
                             <Input 
-                                required type="text" 
+                                required 
+                                type="text" 
                                 placeholder="Teléfono"
                                 name="telefono" 
                                 value={ form.telefono } 
@@ -78,7 +81,7 @@ class LeadForm extends Component{
                                 messageinc="Incorrecto. Ej. 1234567890"
                                 maxLength="10"
                             />
-                            <span className="form-text text-muted">Por favor, ingresa el teléfono. </span>
+                            {/*<span className="form-text text-muted">Por favor, ingresa el teléfono. </span>*/}
                     </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
@@ -91,8 +94,9 @@ class LeadForm extends Component{
                             value = { form.empresa } 
                             onChange = { onChange } 
                             iconclass={"far fa-building"} 
+                            messageinc="Incorrecto. Selecciona la empresa para el lead."
                         />
-                        <span className="form-text text-muted">Por favor, selecciona la empresa para el lead. </span>
+                        {/*<span className="form-text text-muted">Por favor, selecciona la empresa para el lead. </span>*/}
                     </div>
                     <div className="col-md-4">
                         <Select 
@@ -101,9 +105,10 @@ class LeadForm extends Component{
                             name="origen" 
                             value = { form.origen } 
                             onChange = { onChange } 
-                            iconclass={" fas fa-mail-bulk "}
+                            iconclass={" fas fa-mail-bulk"}
+                            messageinc="Incorrecto. Selecciona el origen para el lead."
                         />
-                        <span className="form-text text-muted">Por favor, selecciona el origen para el lead. </span>
+                        {/*<span className="form-text text-muted">Por favor, selecciona el origen para el lead. </span>*/}
                     </div>
                     <div className="col-md-4">
                         <Calendar 
@@ -112,11 +117,9 @@ class LeadForm extends Component{
                             placeholder="Fecha de ingreso"
                             name="fecha"
                             value={form.fecha}
-                            iconclass={"far fa-calendar-alt"}
-                            messageinc="Incorrecto. Introduce la fecha de ingreso"
-                            
+                            patterns={DATE}
                             />
-                        <span className="form-text text-muted">Por favor, ingresa la fecha de ingreso. </span>
+                        {/*<span className="form-text text-muted">Por favor, ingresa la fecha de ingreso. </span>*/}
                     </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
@@ -130,10 +133,10 @@ class LeadForm extends Component{
                             name="comentario"  
                             value = { form.comentario } 
                             onChange = { onChange } 
-                            iconclass={" far fa-comment-dots"}
-                            messageinc="Incorrecto. Introduce un comentario"
+                            messageinc="Incorrecto. Ingresa el comentario."
+                            style={{paddingLeft: "10px"}}
                         />
-                        <span className="form-text text-muted">Por favor, ingresa un comentario</span>
+                        {/*<span className="form-text text-muted">Por favor, ingresa un comentario</span>*/}
                     </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
