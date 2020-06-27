@@ -4,7 +4,7 @@ import {Subtitle, Small} from '../../texts'
 import {Input, Select, SelectSearch, Button, Calendar, InputMoney, FileInput } from '../../form-components'
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons'
-import { DATE, TEL} from '../../../constants'
+import { DATE, TEL, EMAIL} from '../../../constants'
 import {openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -183,9 +183,9 @@ class ProyectosForm extends Component{
                                             value = { form.correo }
                                             onChange = { onChange }
                                             placeholder="Correo de contacto"
-                                            iconclass={"fas fa-envelope-open"}                                            
-                                            messageinc="Incorrecto. Ingresa un correo de contacto."
-                                            type="email"
+                                            iconclass={"fas fa-envelope"}                                            
+                                            messageinc="Incorrecto. Ej. usuario@dominio.com"
+                                            patterns={EMAIL}
                                         />
                                         {/*<span className="form-text text-muted">Por favor, ingresa el número de contacto. </span>*/}
                                     </div>
@@ -363,8 +363,7 @@ class ProyectosForm extends Component{
                                             selectsStart
                                             startDate={ form.fechaInicio }
                                             endDate={ form.fechaFin }
-                                            iconclass={"far fa-calendar-alt"}
-                                            /* pattern={DATE}        */                 
+                                            patterns={DATE}                 
                                         />
                                         {/*<span className="form-text text-muted">Por favor, ingrese su fecha de inicio. </span>*/}
                                     </div>
@@ -379,7 +378,7 @@ class ProyectosForm extends Component{
                                             endDate={ form.fechaFin }
                                             minDate={ form.fechaInicio }
                                             iconclass={"far fa-calendar-alt"}
-                                            /* patterns={DATE} */
+                                            patterns={DATE}
                                         />
                                         {/*<span className="form-text text-muted">Por favor, ingrese su fecha de final. </span>*/}
                                     </div>
