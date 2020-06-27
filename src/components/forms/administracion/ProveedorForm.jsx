@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { Subtitle } from '../../texts'
 import { Input, Select, SelectSearch, Button } from '../../form-components'
+import { RFC, TEL, EMAIL} from '../../../constants'
 
 class ProveedorForm extends Component {
 
@@ -35,33 +36,73 @@ class ProveedorForm extends Component {
                     }
                 </Subtitle>
                 <div className="">
-
                     <div className="form-group row form-group-marginless mt-5">
                         <div className="col-md-4">
-                            <Input name="nombre" value={form.nombre} placeholder="Nombre" onChange={onChange} iconclass={"far fa-user"}/>
-                            <span className="form-text text-muted">Por favor, ingrese el nombre. </span>
+                            <Input 
+                                name="nombre" 
+                                value={form.nombre} 
+                                placeholder="Nombre" 
+                                onChange={onChange} 
+                                iconclass={"far fa-user"}
+                                messageinc="Incorrecto. Ingresa el nombre."
+                            />
+                            {/*<span className="form-text text-muted">Por favor, ingrese el nombre. </span>*/}
                         </div>
 
                         <div className="col-md-4">
-                            <Input name="razonSocial" value={form.razonSocial} placeholder="Razón social" onChange={onChange} iconclass={"far fa-building"}/>
-                            <span className="form-text text-muted">Por favor, ingrese su razón social. </span>
+                            <Input 
+                                name="razonSocial"
+                                value={form.razonSocial}
+                                placeholder="Razón social"
+                                onChange={onChange}
+                                iconclass={"far fa-building"}
+                                messageinc="Incorrecto. Ingresa la razón social."
+                            />
+                            {/*<span className="form-text text-muted">Por favor, ingrese su razón social. </span>*/}
                         </div>
 
                         <div className="col-md-4">
-                            <Input name="rfc" value={form.rfc} placeholder="RFC" onChange={onChange} iconclass={"far fa-file-alt"} />
-                            <span className="form-text text-muted">Por favor, ingrese su RFC. </span>
+                            <Input 
+                                name="rfc"
+                                value={form.rfc}
+                                placeholder="RFC"
+                                onChange={onChange}
+                                iconclass={"far fa-file-alt"}
+                                patterns={RFC}
+                                messageinc="Incorrecto. Ej. ABCD001122ABC"
+                                maxLength="13"
+                            />
+                            {/*<span className="form-text text-muted">Por favor, ingrese su RFC. </span>*/}
                         </div>
                     </div>
 
                     <div className="form-group row form-group-marginless">
                         <div className="col-md-4">
-                            <Input name="correo" value={form.correo} placeholder="Correo electrónico" type="email" onChange={onChange} iconclass={"far fa-envelope"}/>
-                            <span className="form-text text-muted">Por favor, ingrese su correo electrónico. </span>
+                            <Input 
+                                name="correo" 
+                                value={form.correo} 
+                                placeholder="Correo electrónico" 
+                                type="email" 
+                                onChange={onChange} 
+                                iconclass={"fas fa-envelope"}                                            
+                                messageinc="Incorrecto. Ej. usuario@dominio.com"
+                                patterns={EMAIL}
+                            />
+                            {/*<span className="form-text text-muted">Por favor, ingrese su correo electrónico. </span>*/}
                         </div>
 
                         <div className="col-md-4">
-                            <Input name="telefono" value={form.telefono} placeholder="Teléfono" onChange={onChange} iconclass={"fas fa-mobile-alt"}/>
-                            <span className="form-text text-muted">Por favor, ingrese su teléfono. </span>
+                            <Input 
+                                name="telefono" 
+                                value={form.telefono}
+                                placeholder="Teléfono" 
+                                onChange={onChange} 
+                                iconclass={"fas fa-mobile-alt"}
+                                messageinc="Incorrecto. Ingresa el número de contacto."
+                                patterns={TEL}
+                                maxLength="10"
+                            />
+                            {/*<span className="form-text text-muted">Por favor, ingrese su teléfono. </span>*/}
                         </div>
 
                         {/* <div className="col-md-4">
@@ -69,40 +110,78 @@ class ProveedorForm extends Component {
                         </div> */}
 
                         <div className="col-md-4">
-                            <Input name="numCuenta" value={form.numCuenta} placeholder="Número de cuenta" onChange={onChange} iconclass={" fas fa-id-card "} />
-                            <span className="form-text text-muted">Por favor, ingrese el número de cuenta </span>
+                            <Input 
+                                name="numCuenta" 
+                                value={form.numCuenta}
+                                placeholder="Número de cuenta"
+                                onChange={onChange}
+                                iconclass={" fas fa-id-card "}
+                                messageinc="Incorrecto. Ingresa el número de cuenta."
+                            />
+                            {/*<span className="form-text text-muted">Por favor, ingrese el número de cuenta </span>*/}
                         </div>
                     </div>
 
                     <div className="form-group row form-group-marginless">
                         <div className="col-md-4">
-                            <Select required name='tipo' options={options.tipos} placeholder='Selecciona el tipo de cuenta' value={form.tipo}
-                                onChange={onChange} iconclass={" far fa-address-card"}/>
-                            <span className="form-text text-muted">Por favor, ingrese el tipo de cuenta </span>
+                            <Select 
+                                required 
+                                name='tipo' 
+                                options={options.tipos} 
+                                placeholder='Selecciona el tipo de cuenta' 
+                                value={form.tipo}
+                                onChange={onChange} 
+                                iconclass={" far fa-address-card"}
+                            />
+                            {/*<span className="form-text text-muted">Por favor, ingrese el tipo de cuenta </span>*/}
                         </div>
                         <div className="col-md-4">
-                            <Select required name='banco' options={options.bancos} placeholder='Selecciona el banco' value={form.banco}
-                                onChange={onChange} iconclass={" fab fa-cc-discover "}/>
-                            <span className="form-text text-muted">Por favor, seleccione el banco </span>
+                            <Select 
+                                required 
+                                name='banco' 
+                                options={options.bancos} 
+                                placeholder='Selecciona el banco' 
+                                value={form.banco}
+                                onChange={onChange} 
+                                iconclass={" fab fa-cc-discover "}
+                            />
+                            {/*<span className="form-text text-muted">Por favor, seleccione el banco </span>*/}
                         </div>
                         {
                             form.leadId ?
-                                <Input name="leadId" value={form.leadIn} readOnly hidden />
+                                <Input 
+                                    name="leadId" 
+                                    value={form.leadIn} 
+                                    readOnly 
+                                    hidden 
+                                />
                                 : ''
                         }
                         <div className="col-md-4">
-                            <SelectSearch options={options.areas} placeholder="Selecciona el área"
-                                name="area" value={form.area} onChange={this.updateArea} iconclass={"far fa-window-maximize"} />
-                            <span className="form-text text-muted">Por favor, ingrese el área </span>
+                            <SelectSearch 
+                                options={options.areas}
+                                placeholder="Selecciona el área"
+                                name="area" 
+                                value={form.area} 
+                                onChange={this.updateArea} 
+                                iconclass={"far fa-window-maximize"}
+                            />
+                            {/*<span className="form-text text-muted">Por favor, ingrese el área </span>*/}
                         </div>
                     </div>
                     <div className="form-group row form-group-marginless">
                         {
                             form.area ?
                                 <div className="col-md-4">
-                                    <SelectSearch options={options.subareas} placeholder="Selecciona el subárea"
-                                        name="subarea" value={form.subarea} onChange={this.updateSubarea} iconclass={"far fa-window-restore"}/>
-                                    <span className="form-text text-muted">Por favor, ingrese la sub-área </span>
+                                    <SelectSearch 
+                                        options={options.subareas} 
+                                        placeholder="Selecciona el subárea"
+                                        name="subarea" 
+                                        value={form.subarea} 
+                                        onChange={this.updateSubarea} 
+                                        iconclass={"far fa-window-restore"}
+                                    />
+                                    {/*<span className="form-text text-muted">Por favor, ingrese la sub-área </span>*/}
                                 </div>
                                 : ''
                         }

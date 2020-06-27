@@ -6,6 +6,8 @@ import axios from 'axios'
 import { CP_URL } from '../../constants'
 import swal from 'sweetalert'
 import { ContactoLeadForm, ClienteForm } from '../forms'
+import {openWizard1, openWizard2, openWizard3 } from '../../functions/wizard'
+
 class ProspectoForm extends Component{
 
  
@@ -125,110 +127,244 @@ class ProspectoForm extends Component{
         const { title, form, formCliente, children, vendedores, estatusProspectos, clientes, tipoProyecto, estatusContratacion, tiposContactos, onChange, onChangeCliente, onChangeContacto, formContacto, ...props } = this.props
         const { newClient, newEstatusProspectos, newTipoProyecto, newEstatusContratacion, municipio, estado, colonias } = this.state
         return(
-            <Form { ... props}>
-
-                <Subtitle className="text-center" color="gold">
-                    {title}
-                </Subtitle>
-                { children }
-                <div className="row my-3 mx-0">
-                    <div className="px-2 col-md-12">
-                        <Input rows="3" as="textarea" placeholder="Descripción del prospecto" name="descripcion"
-                            onChange={onChange} value={form.descripcion} />
-                    </div>
-                    <div className="px-2 col-md-6">
-                        { 
-                            vendedores && 
-                                <SelectSearch options = { vendedores } placeholder = "Selecciona al vendedor"
-                                    name="vendedor" value={form.vendedor} onChange={this.updateVendedor}/> 
-                        }
-                    </div>
-                    <div className="px-2 col-md-6">
-                        { 
-                            estatusProspectos && 
-                                <SelectSearch options = { estatusProspectos } placeholder = "Selecciona el estatus del prospecto" onChange={this.updateEstatusProspectos}
-                                    name="estatusProspecto" value={form.estatusProspecto} /> 
-                        }
-                    </div>
-                    {
-                        newEstatusProspectos && 
-                            <div className="px-2 col-md-6">
-                                <Input name="newEstatusProspecto" type="text" placeholder="Nuevo estatus prospecto" onChange={onChange} value={form.newEstatusProspectos} />
+            <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
+                <div className="wizard-nav">
+                    <div className="wizard-steps px-8 py-0 px-lg-15 py-lg-0"> 
+                        <div id="wizard-1" className="wizard-step" data-wizard-state="current" data-wizard-type="step" style={{paddingTop:"0px"}} onClick = { () => { openWizard1() } }>
+                            <div className="wizard-label">
+                                <h3 className="wizard-title">
+                                <span>1.</span> Datos generales</h3>
+                                <div className="wizard-bar"></div>
                             </div>
-                    }
-                    <div className="px-2 col-md-6">
-                        { 
-                            clientes && 
-                                <SelectSearch options = { clientes } placeholder = "Selecciona el cliente" onChange={this.updateCliente}
-                                    name="cliente" value={form.cliente} /> 
-                        }
-                    </div>
-                    <div className="col-md-6 px-2">
-                        { 
-                            tipoProyecto && 
-                                <SelectSearch options = { tipoProyecto } placeholder = "Selecciona el tipo de proyecto" onChange={this.updateTipoProyecto} 
-                                    name="tipoProyecto" value={form.tipoProyecto} /> 
-                        }
-                    </div>
-                    
-                    { 
-                        newTipoProyecto && 
-                            <div className="col-md-6 px-2">
-                                <Input name="newTipoProyecto" onChange={onChange} value={form.newTipoProyecto} type="text" placeholder="Nuevo tipo de proyecto"/> 
+                        </div> 
+                        <div id="wizard-2" className="wizard-step" data-wizard-type="step" style={{paddingTop:"0px"}} onClick = { () => { openWizard2() } }>
+                            <div className="wizard-label">
+                                <h3 className="wizard-title">
+                                <span>2.</span> Descripción y el motivo</h3>
+                                <div className="wizard-bar"></div>
                             </div>
-                    }
-                    <div className="px-2 col-md-6">
-                        <Input name="preferencia" type="text" placeholder="Perefencia de contacto"
-                            onChange={onChange} value={form.preferencia} />
-                    </div>
-                    <div className="px-2 col-md-6">
-                        { 
-                            estatusContratacion && 
-                                <SelectSearch options = { estatusContratacion } placeholder = "Selecciona el estatus de contratación" 
-                                    name='estatusContratacion' value={form.estatusContratacion} onChange={this.updateEstatusContratacion} /> }
-                    </div>
-                    {
-                        newEstatusContratacion && 
-                            <div className="col-md-6">
-                                <Input name="newEstatusContratacion" onChange={onChange} value={form.newEstatusContratacion} type="text" placeholder="Nuevo estatus de contratacion"/>
+                        </div> 
+                        <div id="wizard-3" className="wizard-step" data-wizard-type="step" style={{paddingTop:"0px"}} onClick = { () => { openWizard3() } }>
+                            <div className="wizard-label">
+                                <h3 className="wizard-title">
+                                <span>3.</span>Información del contacto</h3>
+                                <div className="wizard-bar"></div>
                             </div>
-                    }
-                    <div className="px-2 col-md-12">
-                        <Input rows="3" as="textarea" placeholder="Motivo de contratación o rechazo" name="motivo" onChange={onChange} value={form.motivo}/>
+                        </div>   
                     </div>
-                    {
-                        newClient &&
-                            <ClienteForm 
-                                onChange = { onChangeCliente } 
-                                title = 'Información del cliente'
-                                form = { formCliente }
-                                changeCP = { this.changeCP }
-                                estado = { estado }
-                                municipio = { municipio }
-                                colonias = { colonias }
-                                updateColonia = { this.updateColonia }
-                                />
-                    }
-                    {
-                        title !== 'Editar prospecto' &&
-                        <>
-                            <div className="col-md-12">
-                                <Subtitle className="text-left my-3" color="gold">
-                                    Información del contacto
-                                </Subtitle>
-                            </div>
-                            <div className="col-md-12 p-0">
-                                <ContactoLeadForm tiposContactos = { tiposContactos } formContacto = { formContacto } onChangeContacto = { onChangeContacto } />
-                            </div>
-                        </>
-                    }
-                </div>   
-                
-                <div className="mt-3 text-center">
-                    <Button icon='' className="mx-auto" type="submit" text="Enviar" />
                 </div>
-
-            </Form>
+                <div className="row justify-content-center py-10 px-8 py-lg-12 px-lg-10">
+                    <div className="col-md-12">
+                        <Form 
+                            { ... props}
+                            >
+                            { children }
+                            <div id="wizard-1-content" className="pb-3" data-wizard-type="step-content" data-wizard-state="current">
+                                <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos de generales</h5>
+                                <div className="form-group row form-group-marginless">
+                                    <div className="col-md-4">
+                                        { 
+                                            vendedores && 
+                                                <SelectSearch 
+                                                    options = { vendedores } 
+                                                    placeholder = "Selecciona al vendedor"
+                                                    name="vendedor" 
+                                                    value={form.vendedor} 
+                                                    onChange={this.updateVendedor}
+                                                /> 
+                                        }
+                                    </div>
+                                    <div className="col-md-4">
+                                        { 
+                                            estatusProspectos && 
+                                                <SelectSearch 
+                                                    options = { estatusProspectos } 
+                                                    placeholder = "Selecciona el estatus del prospecto" 
+                                                    onChange={this.updateEstatusProspectos}
+                                                    name="estatusProspecto" 
+                                                    value={form.estatusProspecto}
+                                                /> 
+                                        }
+                                    </div>
+                                    {
+                                        newEstatusProspectos && 
+                                            <div className="col-md-4">
+                                                <Input 
+                                                    name="newEstatusProspecto"
+                                                    type="text" 
+                                                    placeholder="Nuevo estatus prospecto"
+                                                    onChange={onChange}
+                                                    value={form.newEstatusProspectos}
+                                                />
+                                            </div>
+                                    }
+                                </div>  
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="form-group row form-group-marginless">
+                                    <div className="col-md-4">
+                                        { 
+                                            clientes && 
+                                                <SelectSearch
+                                                    options = { clientes }
+                                                    placeholder = "Selecciona el cliente"
+                                                    onChange={this.updateCliente}
+                                                    name="cliente"
+                                                    value={form.cliente}
+                                                /> 
+                                        }
+                                    </div>  
+                                    <div className="col-md-4">
+                                        { 
+                                            tipoProyecto && 
+                                                <SelectSearch 
+                                                    options = { tipoProyecto } 
+                                                    placeholder = "Selecciona el tipo de proyecto" 
+                                                    onChange={this.updateTipoProyecto} 
+                                                    name="tipoProyecto" 
+                                                    value={form.tipoProyecto} 
+                                                /> 
+                                        }
+                                    </div> 
+                                    { 
+                                        newTipoProyecto && 
+                                            <div className="col-md-4">
+                                                <Input 
+                                                    name="newTipoProyecto"
+                                                    onChange={onChange}
+                                                    value={form.newTipoProyecto}
+                                                    type="text"
+                                                    placeholder="Nuevo tipo de proyecto"
+                                                /> 
+                                            </div>
+                                    } 
+                                </div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="form-group row form-group-marginless">
+                                    <div className="col-md-4">
+                                        <Input 
+                                            name="preferencia"
+                                            type="text"
+                                            placeholder="Perefencia de contacto"
+                                            onChange={onChange}
+                                            value={form.preferencia}
+                                            iconclass={"fas fa-mail-bulk"}
+                                            messageinc="Incorrecto. Ingresa la preferencia de contacto."
+                                        />
+                                    </div>
+                                    <div className="col-md-4">
+                                        { 
+                                            estatusContratacion && 
+                                                <SelectSearch 
+                                                    options = { estatusContratacion } 
+                                                    placeholder = "Selecciona el estatus de contratación" 
+                                                    name='estatusContratacion'
+                                                    value={form.estatusContratacion}
+                                                    onChange={this.updateEstatusContratacion} 
+                                                />
+                                        }
+                                    </div>
+                                    {
+                                        newEstatusContratacion && 
+                                            <div className="col-md-4">
+                                                <Input 
+                                                    name="newEstatusContratacion" 
+                                                    onChange={onChange} 
+                                                    value={form.newEstatusContratacion} 
+                                                    type="text" 
+                                                    placeholder="Nuevo estatus de contratacion"
+                                                />
+                                            </div>
+                                    }
+                                </div>
+                                <div className="d-flex justify-content-between border-top mt-3 pt-3">
+                                    <div className="mr-2"></div>
+                                    <div>
+                                        <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick = { () => { openWizard2() }} data-wizard-type="action-next">Siguiente</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="wizard-2-content" className="pb-3" data-wizard-type="step-content">
+                                <h5 className="mb-4 font-weight-bold text-dark">Ingresa la descripción y el motivo</h5>
+                                <div className="form-group row form-group-marginless">
+                                    <div className="col-md-12">
+                                        <Input 
+                                            rows="3" 
+                                            as="textarea" 
+                                            placeholder="Descripción del prospecto" 
+                                            name="descripcion"
+                                            onChange={onChange} 
+                                            value={form.descripcion}
+                                            style={{paddingLeft:"10px"}}
+                                            messageinc="Incorrecto. Ingresa una descripción."
+                                        />
+                                    </div>
+                                </div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="form-group row form-group-marginless">
+                                    <div className="col-md-12">
+                                        <Input 
+                                            rows="3" 
+                                            as="textarea" 
+                                            placeholder="Motivo de contratación o rechazo" 
+                                            name="motivo" 
+                                            onChange={onChange} 
+                                            value={form.motivo}
+                                            style={{paddingLeft:"10px"}}
+                                            messageinc="Incorrecto. Ingresa el motivo."
+                                        />
+                                    </div>
+                                </div>
+                                <div className="d-flex justify-content-between border-top mt-3 pt-3">
+                                    <div className="mr-2">
+                                        <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick = { () => { openWizard1() }} data-wizard-type="action-prev">Anterior</button>
+                                    </div>
+                                    <div>
+                                        <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick = { () => { openWizard3() }} data-wizard-type="action-next">Siguiente</button>
+                                    </div>
+                                </div>
+                            </div>  
+                            <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
+                                <h5 className="mb-4 font-weight-bold text-dark">Información del contacto</h5>
+                                    {
+                                        newClient &&
+                                            <ClienteForm 
+                                                onChange = { onChangeCliente } 
+                                                title = 'Información del cliente'
+                                                form = { formCliente }
+                                                changeCP = { this.changeCP }
+                                                estado = { estado }
+                                                municipio = { municipio }
+                                                colonias = { colonias }
+                                                updateColonia = { this.updateColonia }
+                                                />
+                                    }
+                                    {
+                                        title !== 'Editar prospecto' &&
+                                        <>
+                                            <div className="">
+                                                <ContactoLeadForm 
+                                                    tiposContactos = { tiposContactos } 
+                                                    formContacto = { formContacto } 
+                                                    onChangeContacto = { onChangeContacto } 
+                                                />
+                                            </div>
+                                        </>
+                                    }
+                                    <div className="col-md-4">
+                                    </div>  
+                                <div className="d-flex justify-content-between border-top mt-3 pt-3">
+                                    <div className="mr-2">
+                                        <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase"  onClick = { () => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
+                                    </div>
+                                    <div>
+                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type="submit" data-wizard-type="action-submit" text="Enviar" />
+                                    </div>
+                                </div> 
+                            </div>  
+                        </Form>
+                    </div>
+                </div>
+            </div>
         )
     }
 }

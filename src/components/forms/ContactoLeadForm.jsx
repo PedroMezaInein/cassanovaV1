@@ -30,29 +30,10 @@ class ContactoLeadForm extends Component{
         const { tiposContactos, formContacto, onChangeContacto } = this.props
         const { newTipoContacto } = this.state
         return(
-            <div className="row mx-0">
-                <div className="col-md-6 px-2">
-                    
-                        <SelectSearch 
-                            options={tiposContactos} 
-                            placeholder = "Selecciona el medio de contacto" 
-                            name = "tipoContacto" 
-                            value = { formContacto.tipoContacto } 
-                            /* defaultValue = { formContacto.tipoContacto }  */
-                            onChange = { this.updateTipoContacto }
-                            />
-                        
-                    
-                </div>
-                <div className="col-md-6 px-2">
-                    <Calendar 
-                        onChangeCalendar = { this.handleChangeDate }
-                        placeholder = "Fecha de contacto"
-                        name = "fechaContacto"
-                        value = { formContacto.fechaContacto }
-                        />
-                </div>
-                <div className="col-md-6 px-2">
+            <div className="">
+                <div className="form-group row form-group-marginless">
+                <div className="col-md-12">
+                    <p className="m-0">Selecciona el estatus del intento de contacto</p>
                     <RadioGroup
                         name = { 'success' }
                         onChange = { onChangeContacto }
@@ -68,13 +49,25 @@ class ContactoLeadForm extends Component{
                                 }
                             ]
                         }
-                        placeholder = { ' Selecciona el estatus del intento de contacto ' }
                         value = { formContacto.success }
-                        />
+                    />
+                </div>
+            </div>
+            <div className="separator separator-dashed mt-1 mb-2"></div>
+            <div className="form-group row form-group-marginless">
+                <div className="col-md-4">
+                    <SelectSearch 
+                        options={tiposContactos} 
+                        placeholder = "Selecciona el medio de contacto" 
+                        name = "tipoContacto" 
+                        value = { formContacto.tipoContacto } 
+                        /* defaultValue = { formContacto.tipoContacto }  */
+                        onChange = { this.updateTipoContacto }
+                    />
                 </div>
                 {
                     newTipoContacto &&
-                        <div className="col-md-6 px-2">
+                        <div className="col-md-4">
                             <Input 
                                 onChange={ onChangeContacto } 
                                 name="newTipoContacto" 
@@ -83,7 +76,18 @@ class ContactoLeadForm extends Component{
                                 placeholder="Nuevo tipo de contacto"/>
                         </div>
                 }
-                <div className="col-md-12 px-2">
+                <div className="col-md-4">
+                    <Calendar 
+                        onChangeCalendar = { this.handleChangeDate }
+                        placeholder = "Fecha de contacto"
+                        name = "fechaContacto"
+                        value = { formContacto.fechaContacto }
+                    />
+                </div>
+            </div>
+            <div className="separator separator-dashed mt-1 mb-2"></div>
+            <div className="form-group row form-group-marginless">
+                <div className="col-md-12">
                     <Input
                         as = 'textarea'
                         name = 'descripcion'
@@ -91,9 +95,12 @@ class ContactoLeadForm extends Component{
                         onChange = { onChangeContacto }
                         value = { formContacto.descripcion }
                         rows = '3'
-                        />
+                        style={{paddingLeft:"10px"}}
+                        messageinc="Incorrecto. Ingresa una descripción."
+                    />
                 </div>
             </div>
+        </div>
         )
     }
 }
