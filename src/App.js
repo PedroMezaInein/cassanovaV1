@@ -56,6 +56,8 @@ const Utilidad = Loader(() => import('./pages/Proyectos/Utilidad') )
 const SolicitudCompra = Loader(() => import('./pages/Proyectos/SolicitudCompra/SolicitudCompra') )
 const SolicitudCompraForm = Loader(() => import('./pages/Proyectos/SolicitudCompra/SolicitudCompraForm') )
 
+const SolicitudVenta = Loader(() => import('./pages/Proyectos/SolicitudVenta') )
+
 const Remision = Loader(() => import('./pages/Proyectos/Remision/Remision') )
 const RemisionForm = Loader(() => import('./pages/Proyectos/Remision/RemisionForm') )
 
@@ -156,6 +158,8 @@ class App extends Component{
                 <Route path = "/proyectos/solicitud-compra" exact component ={ SolicitudCompra } />
                 <Route path = "/proyectos/solicitud-compra/:action" exact component ={ SolicitudCompraForm } />
                 
+                <Route path = "/proyectos/solicitud-venta" exact component ={ SolicitudVenta } />
+
                 <Route path = "/administracion/egresos" exact component ={ Egresos } />
                 <Route path = "/administracion/egresos/:action" exact component ={ EgresosForm } />
 

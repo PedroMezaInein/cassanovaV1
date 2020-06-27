@@ -223,6 +223,13 @@ class SolicitudCompraForm extends Component{
         form.descripcion = solicitud.descripcion
         form.fecha = new Date(solicitud.created_at)
         form.total = solicitud.monto
+
+        if(solicitud.adjunto){
+            form.adjuntos.adjunto.files = [{
+                name: solicitud.adjunto.name,
+                url: solicitud.adjunto.url
+            }]
+        }
         
         let aux = [];
         aux.form = form

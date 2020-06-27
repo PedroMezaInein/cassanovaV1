@@ -39,7 +39,7 @@ class AvanceForm extends Component {
     }
 
     render(){
-        const { form, onChangeAdjuntoAvance, onChangeAvance, clearFilesAvances, addRowAvance, onChange, proyecto, ... props } = this.props    
+        const { form, onChangeAdjuntoAvance, onChangeAvance, clearFilesAvances, addRowAvance, onChange, proyecto, sendMail, ... props } = this.props    
         const { activeKey } = this.state
         return(
             <>
@@ -144,9 +144,20 @@ class AvanceForm extends Component {
                                                             <Accordion.Collapse eventKey={avance.id}>
                                                                 <div>
                                                                     <div className="d-flex justify-content-center">
-                                                                        <a href={avance.pdf} target="_blank">
+                                                                        <a  className = 'btn btn-hover btn-text-blue' href={avance.pdf} target="_blank">
                                                                             <i className="flaticon-file-2"></i> Descargar PDF
                                                                         </a>
+                                                                        {
+                                                                            proyecto ?
+                                                                                proyecto.contactos.length ?
+                                                                                    <span className = 'btn btn-hover btn-text-blue' onClick={(e) => { e.preventDefault(); sendMail(avance.id) }}>
+                                                                                        <i className="fas fa-envelope-open"></i> Enviar por correo
+                                                                                    </span>
+                                                                                :
+                                                                                    ''
+                                                                            : ''
+                                                                        }
+                                                                        
                                                                     </div>
                                                                     <div>
                                                                         <SliderImages elements = {avance.adjuntos} />

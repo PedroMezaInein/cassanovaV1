@@ -22,6 +22,7 @@ import ventasForm from './proyectos/VentasForm'
 import comprasForm from './proyectos/ComprasForm'
 import facturaForm from './administracion/FacturaForm'
 import solicitudCompraForm from './proyectos/SolicitudCompraForm'
+import solicitudVentaForm from './proyectos/SolicitudVentaForm'
 import conceptoForm from './presupuesto/ConceptoForm'
 import rendimientoForm from './presupuesto/RendimientoForm'
 import remisionForm from './proyectos/RemisionForm'
@@ -51,6 +52,7 @@ export const VentasForm = ventasForm
 export const ComprasForm = comprasForm
 export const FacturaForm = facturaForm
 export const SolicitudCompraForm = solicitudCompraForm
+export const SolicitudVentaForm = solicitudVentaForm
 export const ConceptoForm = conceptoForm
 export const RendimientoForm = rendimientoForm
 export const RemisionForm = remisionForm
