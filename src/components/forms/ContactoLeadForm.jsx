@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { RadioGroup, Calendar, SelectSearch, Input } from '../form-components'
+import { DATE } from '../../constants'
 
 class ContactoLeadForm extends Component{
 
@@ -82,6 +83,7 @@ class ContactoLeadForm extends Component{
                         placeholder = "Fecha de contacto"
                         name = "fechaContacto"
                         value = { formContacto.fechaContacto }
+                        patterns={DATE}
                     />
                 </div>
             </div>
