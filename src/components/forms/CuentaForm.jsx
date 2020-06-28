@@ -2,34 +2,17 @@ import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 import Badge from 'react-bootstrap/Badge'
 import { Subtitle } from '../texts'
-import { Input, InputMoney, Select, Button } from '../form-components'
+import { Input, InputMoney, Select, Button, InputNumber } from '../form-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 class CuentaForm extends Component{
-
-    constructor(props){
-        super(props) 
-        this.state = { validated: false };  
-    }
-    
-    handleKeyPress(event) {
-        const form = event.currentTarget;
-        if (form.checkValidity() === false) {
-        //event.preventDefault();
-        //event.stopPropagation();
-        }
-        this.setState({ validated: true });
-    }
     
     render(){
-        const { validated } = this.state;
         const { bancos, estatus, tipos, title, form, onChange, onChangeEmpresa, updateEmpresa, empresas, ...props } = this.props
         return(
-            <Form { ... props}
-                noValidate
-                validated={validated}
-                onKeyPress={e => this.handleKeyPress(e)}
+            <Form 
+                { ... props}
             >
                 <div className="form-group row form-group-marginless pt-4">
                     <div className="col-md-8">
@@ -62,7 +45,7 @@ class CuentaForm extends Component{
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
-                        <Input 
+                        <InputNumber 
                             required 
                             placeholder = "Ingresa el número de cuenta" 
                             type = "text" 
@@ -70,7 +53,6 @@ class CuentaForm extends Component{
                             value = { form.numero }
                             onChange = { onChange }
                             iconclass={" fas fa-id-card "} 
-                            pattern="[0-9]{1,18}"
                             messageinc="Incorrecto. Ingresa el número de cuenta."
                         />
                         {/*<span className="form-text text-muted">Por favor, ingrese el número de cuenta </span>*/}
