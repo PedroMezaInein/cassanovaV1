@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form, Accordion, Badge } from 'react-bootstrap'
 import {Subtitle, Small} from '../../texts'
-import {Input, Select, SelectSearch, Button, Calendar, InputMoney, FileInput, InputNumber} from '../../form-components'
+import {Input, Select, SelectSearch, Button, Calendar, InputMoney, FileInput, InputNumber, InputPhone} from '../../form-components'
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { DATE, TEL, EMAIL} from '../../../constants'
@@ -146,7 +146,7 @@ class ProyectosForm extends Component{
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-6">                                       
-                                        <Input 
+                                        <InputPhone 
                                             thousandSeparator={false}
                                             prefix = { '' }
                                             name = "numeroContacto"
@@ -156,7 +156,6 @@ class ProyectosForm extends Component{
                                             iconclass={"fas fa-mobile-alt"}                                            
                                             messageinc="Incorrecto. Ingresa el número de contacto."
                                             patterns={TEL}
-                                            maxLength="10"
                                         />
                                         {/*<span className="form-text text-muted">Por favor, ingresa el número de contacto. </span>*/}
                                     </div>

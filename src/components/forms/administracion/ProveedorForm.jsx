@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { Subtitle } from '../../texts'
-import { Input, Select, SelectSearch, Button, InputNumber } from '../../form-components'
+import { Input, Select, SelectSearch, Button, InputNumber, InputPhone} from '../../form-components'
 import { RFC, TEL, EMAIL} from '../../../constants'
 
 class ProveedorForm extends Component {
@@ -92,15 +92,16 @@ class ProveedorForm extends Component {
                         </div>
 
                         <div className="col-md-4">
-                            <Input 
+                            <InputPhone 
+                                thousandSeparator={false}
+                                prefix = { '' }
                                 name="telefono" 
                                 value={form.telefono}
                                 placeholder="Teléfono" 
                                 onChange={onChange} 
-                                iconclass={"fas fa-mobile-alt"}
-                                messageinc="Incorrecto. Ingresa el número de contacto."
+                                iconclass={"fas fa-mobile-alt"}                                            
+                                messageinc="Incorrecto. Ingresa el número de teléfono."
                                 patterns={TEL}
-                                maxLength="10"
                             />
                             {/*<span className="form-text text-muted">Por favor, ingrese su teléfono. </span>*/}
                         </div>
