@@ -221,8 +221,8 @@ class VentasForm extends Component {
                                                     name="rfc"
                                                     value={form.rfc}
                                                     onChange={onChange}
-                                                    pattern={RFC}
                                                     iconclass={"far fa-file-alt"}
+                                                    patterns={RFC}
                                                     messageinc="Incorrecto. Ej. ABCD001122ABC"
                                                     maxLength="13"
                                                 />

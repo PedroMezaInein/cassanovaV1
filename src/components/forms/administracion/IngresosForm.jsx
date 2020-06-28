@@ -192,8 +192,8 @@ class IngresosForm extends Component {
                                                         value={form.rfc} 
                                                         onChange={onChange}                                                         
                                                         iconclass={"far fa-file-alt"} 
-                                                        pattern={RFC}
-                                                        messageinc="Incorrecto. Ej. ABCD001122ABC."
+                                                        patterns={RFC}
+                                                        messageinc="Incorrecto. Ej. ABCD001122ABC"
                                                         maxLength="13"
                                                     />
                                                 {/*<span className="form-text text-muted">Por favor, ingresa el RFC. </span>*/}
