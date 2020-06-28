@@ -9,6 +9,8 @@ import optionsCheckbox from './OptionsCheckbox'
 import selectSearch from './SelectSearch'
 import fileInput from './FileInput'
 import dropZone from './DropZone'
+import inputImage from './InputImage'
+import inputNumber from './InputNumber'
 
 export const Button = button
 export const Input = input
@@ -21,3 +23,5 @@ export const OptionsCheckbox = optionsCheckbox
 export const SelectSearch = selectSearch
 export const FileInput = fileInput
 export const DropZone = dropZone
+export const InputImage = inputImage
+export const InputNumber = inputNumber
