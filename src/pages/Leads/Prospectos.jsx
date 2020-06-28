@@ -806,10 +806,9 @@ class Leads extends Component {
                             elements = { data.prospectos }
                             />
 
-                <Modal show={modal} handleClose={this.handleCloseModal} >
+                <Modal title={title} show={modal} handleClose={this.handleCloseModal} >
                     <ProspectoForm
-                        className=" px-3 "
-                        title={title}
+                        className=" px-3 "                        
                         vendedores={vendedores}
                         estatusProspectos={estatusProspectos}
                         clientes={clientes}
