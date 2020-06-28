@@ -36,7 +36,7 @@ class Input extends Component {
                         <Form.Control 
                             placeholder={placeholder} 
                             className={ inputValido ? " form-control is-valid " : " form-control is-invalid" }
-                            onChange={(e) => { console.log("onChange");e.preventDefault(); this.validarInput(e); onChange(e) }} 
+                            onChange={(e) => { e.preventDefault(); this.validarInput(e); onChange(e) }} 
                             {...props} 
                         /> 
                     </div>
