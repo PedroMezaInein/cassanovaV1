@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { Subtitle } from '../../texts'
-import { Input, Select, SelectSearch, Button } from '../../form-components'
+import { Input, Select, SelectSearch, Button, InputNumber } from '../../form-components'
 import { RFC, TEL, EMAIL} from '../../../constants'
 
 class ProveedorForm extends Component {
@@ -110,7 +110,7 @@ class ProveedorForm extends Component {
                         </div> */}
 
                         <div className="col-md-4">
-                            <Input 
+                            <InputNumber 
                                 name="numCuenta" 
                                 value={form.numCuenta}
                                 placeholder="Número de cuenta"
