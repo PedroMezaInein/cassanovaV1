@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form, Accordion, Badge } from 'react-bootstrap'
 import {Subtitle, Small} from '../../texts'
-import {Input, Select, SelectSearch, Button, Calendar, InputMoney, FileInput } from '../../form-components'
+import {Input, Select, SelectSearch, Button, Calendar, InputMoney, FileInput, InputNumber} from '../../form-components'
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { DATE, TEL, EMAIL} from '../../../constants'
@@ -225,7 +225,7 @@ class ProyectosForm extends Component{
                                 <h5 className="mb-4 font-weight-bold text-dark">Escribe la ubicación</h5>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
-                                        <Input 
+                                        <InputNumber 
                                             name="cp"
                                             onChange={onChangeCP}
                                             value={form.cp}
