@@ -11,6 +11,7 @@ import fileInput from './FileInput'
 import dropZone from './DropZone'
 import inputImage from './InputImage'
 import inputNumber from './InputNumber'
+import inputPhone from './InputPhone'
 
 export const Button = button
 export const Input = input
@@ -25,3 +26,4 @@ export const FileInput = fileInput
 export const DropZone = dropZone
 export const InputImage = inputImage
 export const InputNumber = inputNumber
+export const InputPhone = inputPhone
