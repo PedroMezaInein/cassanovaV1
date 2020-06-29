@@ -577,9 +577,9 @@ class Usuarios extends Component{
                             )
                         })
                     }
-                    <Modal show={modalActive} handleClose={this.handleCloseModal}>
+                    <Modal title="Registrar usuario" show={modalActive} handleClose={this.handleCloseModal}>
                         <RegisterUserForm className="px-3" form={ form } options={options} onSubmit={ this.handleSubmitAddUser} 
-                            onChange={(e) => {e.preventDefault(); this.handleChangeInput(e)}} title="Registrar usuario">
+                            onChange={(e) => {e.preventDefault(); this.handleChangeInput(e)}}>
                             {
                                 tipo_form < 3 && tipo_form > 0 &&
                                 <EmpleadoForm 
