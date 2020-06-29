@@ -1632,6 +1632,9 @@ class Proyectos extends Component {
                     break;
                     /* data.append(element, JSON.stringify(form[element]))
                     break; */
+                case 'correos':
+                    data.append(element, JSON.stringify(form[element]))
+                    break;
                 default:
                     break
             }
@@ -1751,6 +1754,10 @@ class Proyectos extends Component {
                     break
                 case 'adjuntos':
                     break;
+                case 'correos':
+                    data.append(element, JSON.stringify(form[element]))
+                    break;
+                    
                 default:
                     data.append(element, form[element])
                     break
@@ -1904,6 +1911,21 @@ class Proyectos extends Component {
         })
     }
 
+    removeCorreo = value => {
+        const { form } = this.state
+        let aux = []
+        form.correos.map( (correo, key) => {
+            if(correo !== value){
+                aux.push(correo)
+            }
+        })
+        form.correos = aux
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
     render() {
         const { modal, modalDelete, modalAdjuntos, modalAvances, title, adjuntos, prospecto, form, options, proyectos, proyecto, data } = this.state
         return (
@@ -1928,7 +1950,7 @@ class Proyectos extends Component {
                     <ProyectosForm title={title} form={form} onChange={this.onChange} options={options}
                         onChangeAdjunto={this.onChangeAdjunto} clearFiles={this.clearFiles} onChangeCP={this.onChangeCP}
                         onSubmit={this.onSubmit} onChangeAdjuntoGrupo = { this.onChangeAdjuntoGrupo } 
-                        clearFilesGrupo = { this.clearFilesGrupo } >
+                        clearFilesGrupo = { this.clearFilesGrupo } removeCorreo = {this.removeCorreo} >
                         {
                             prospecto !== '' ?
                                 <Accordion>
