@@ -35,7 +35,6 @@ class SelectSearchForm extends Component{
     render(){
         
         const { name, onChange, options,  placeholder, value, iconclass} = this.props 
-        
         return(
             <>
                 { 
