@@ -44,6 +44,7 @@ const EgresosForm = Loader(() => import('./pages/Administracion/Egresos/EgresosF
 
 const Facturacion = Loader(() => import('./pages/Administracion/Facturacion') )
 const Contratos = Loader(() => import('./pages/Administracion/Contratos') )
+const Flujos = Loader(() => import('./pages/Administracion/Flujos') )
 
 const Proveedores = Loader(() => import('./pages/Administracion/Proveedor/Proveedor') )
 const ProveedoresForm = Loader(() => import('./pages/Administracion/Proveedor/ProveedorForm') )
@@ -168,6 +169,7 @@ class App extends Component{
                 
                 <Route path = "/administracion/facturacion" exact component ={ Facturacion } />
                 <Route path = "/administracion/contratos" exact component ={ Contratos } />
+                <Route path = "/administracion/flujos" exact component ={ Flujos } />
 
                 <Route path = "/administracion/proveedores" exact component ={ Proveedores } />
                 <Route path = "/administracion/proveedores/:action" exact component ={ ProveedoresForm } />
