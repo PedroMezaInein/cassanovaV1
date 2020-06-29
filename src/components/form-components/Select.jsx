@@ -9,7 +9,43 @@ class Select extends Component{
         selectValido: !this.props.requirevalidation
     }
 
-    validarSelect(e){
+    validarSelect(e){         
+        const { value } = e.target 
+        const {requirevalidation}= this.props
+        if(value !== '' && value !== null && value !== undefined)
+        {
+            if(requirevalidation){    
+                    if(value > 0){
+                        this.setState({
+                            selectValido: true
+                        })
+                    }else{
+                        this.setState({
+                            selectValido: false     
+                            
+                        })
+                    } 
+            }else{
+                this.setState({
+                    selectValido: true     
+                    
+                })
+            }
+        }else{
+            if(requirevalidation){
+                this.setState({
+                    selectValido: false
+                })
+            }else{
+                this.setState({
+                    selectValido: true
+                })
+            }
+            
+        }
+    }
+
+    /*validarSelect(e){
         const { value } = e.target
         const {requirevalidation}= this.props
         if(requirevalidation){
@@ -29,10 +65,10 @@ class Select extends Component{
                 
             })
         }
-    }
+    }*/
     
     componentDidUpdate(nextProps){
-        if(nextProps.formeditado !== this.props.formeditado && nextProps.formeditado === 1)
+        if(nextProps.value !== this.props.value)
             if(!nextProps.requirevalidation)
             {
                 this.setState({
@@ -40,22 +76,19 @@ class Select extends Component{
                     selectValido: true
                 })
             }else{
-                this.validarSelect({ target: { value: nextProps.value } })
+                if(this.props.value !== '')
+                {
+                    this.validarSelect({ target: { value: this.props.value } })
+                }
             }
             
     }
-
-    componentDidUpdate(nextProps){
-        if(nextProps.formeditado !== this.props.formeditado)
-            if(!nextProps.requirevalidation)
-            {
-                this.setState({
-                    ... this.state,
-                    inputMoneyValido: true
-                })
-            }else{
-                this.validarSelect({ target: { value: nextProps.value } })
-            }
+    
+    componentDidMount(){
+        const { formeditado, value, name } = this.props
+        if(formeditado){
+            this.validarSelect({ target: { value: value } })
+        }
     }
 
     render(){
