@@ -23,6 +23,7 @@ import NewTable from '../../components/tables/NewTable'
 class Ventas extends Component{
 
     state = {
+        solicitud: '',
         modal: false,
         modalDelete: false,
         modalFacturas: false,
@@ -52,6 +53,7 @@ class Ventas extends Component{
             ventas: []
         },
         form:{
+            solicitud: '',
             factura: 'Sin factura',
             facturaObject: '',
             rfc: '',
@@ -105,6 +107,12 @@ class Ventas extends Component{
         if(!egresos)
             history.push('/')
         this.getVentasAxios()
+        const { state } = this.props.location
+        if(state){
+            if(state.solicitud){
+                this.getSolicitudVentaAxios(state.solicitud.id)
+            }
+        }
     }
 
     // Modal
@@ -1049,6 +1057,79 @@ class Ventas extends Component{
         ).catch((error) => {
             console.log(error, 'CATCH ERROR')
             errorAlert('Ocurrió un error desconocido, intenta de nuevo')
+        })
+    }
+
+    // Solicitud compra
+    async getSolicitudVentaAxios(id){
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'solicitud-venta/'+id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { solicitud } = response.data
+                const { options, form } = this.state
+                form.solicitud = solicitud.id
+                form.factura = solicitud.factura ? 'Con factura' : 'Sin factura'
+                if(solicitud.factura){
+                    let aux = ''
+                    options.tiposImpuestos.find(function(element, index) {        
+                        if(element.text === 'IVA')
+                            aux = element.value
+                    });
+                    form.tipoImpuesto = aux
+                }
+                if(solicitud.proyecto){
+                    if(solicitud.proyecto.cliente){
+                        if(solicitud.proyecto.cliente.proyectos){
+                            options['proyectos'] = setOptions(solicitud.proyecto.cliente.proyectos, 'nombre', 'id')
+                            /* form.cliente = solicitud.proyecto.cliente.id.toString() */
+                            form.proyecto = solicitud.proyecto.id.toString()
+                        }
+                    }
+                }
+                if(solicitud.empresa){
+                    if(solicitud.empresa.cuentas){
+                        options['cuentas'] = setOptions(solicitud.empresa.cuentas, 'nombre', 'id')
+                        form.empresa = solicitud.empresa.id.toString()
+                    }
+                }
+                if(solicitud.subarea){
+                    if(solicitud.subarea.area){
+                        if(solicitud.subarea.area.subareas){
+                            options['subareas'] = setOptions(solicitud.subarea.area.subareas, 'nombre', 'id')
+                            form.area = solicitud.subarea.area.id.toString()
+                            form.subarea = solicitud.subarea.id.toString()
+                        }
+                    }
+                }
+                if(solicitud.tipo_pago){
+                    form.tipoPago = solicitud.tipo_pago.id
+                }
+                if(solicitud.monto){
+                    form.total = solicitud.monto
+                }
+                if(solicitud.descripcion){
+                    form.descripcion = solicitud.descripcion
+                }
+                this.setState({
+                    ... this.state,
+                    title: 'Convierte la solicitud de venta',
+                    solicitud: solicitud,
+                    modal: true,
+                    form,
+                    options
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 

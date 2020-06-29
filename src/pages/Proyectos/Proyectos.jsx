@@ -1882,7 +1882,13 @@ class Proyectos extends Component {
         const { proyecto } = this.state
         await axios.get(URL_DEV + 'proyectos/' + proyecto.id + '/avances/' + avance , { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                alert('aqui')
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El proyecto fue editado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
             },
             (error) => {
                 console.log(error, 'error')
