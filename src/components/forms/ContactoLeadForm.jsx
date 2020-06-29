@@ -58,6 +58,7 @@ class ContactoLeadForm extends Component{
             <div className="form-group row form-group-marginless">
                 <div className="col-md-4">
                     <SelectSearch 
+                        requirevalidation={1}
                         options={tiposContactos} 
                         placeholder = "Selecciona el medio de contacto" 
                         name = "tipoContacto" 
@@ -70,6 +71,7 @@ class ContactoLeadForm extends Component{
                     newTipoContacto &&
                         <div className="col-md-4">
                             <Input 
+                                requirevalidation={1}
                                 onChange={ onChangeContacto } 
                                 name="newTipoContacto" 
                                 type="text" 
@@ -91,6 +93,7 @@ class ContactoLeadForm extends Component{
             <div className="form-group row form-group-marginless">
                 <div className="col-md-12">
                     <Input
+                        requirevalidation={1}
                         as = 'textarea'
                         name = 'descripcion'
                         placeholder = 'Descripción del contacto'
