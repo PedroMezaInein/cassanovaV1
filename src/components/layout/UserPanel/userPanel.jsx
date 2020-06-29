@@ -21,7 +21,7 @@ class UserPanel extends Component {
 			<div className="scroll scroll-pull offcanvas offcanvas-right p-5   ">
 				<div className="offcanvas-header d-flex align-items-center justify-content-between pb-3">
 					<h3 className="font-weight-bold m-0">Perfil de usuario
-					<small className="text-muted font-size-sm ml-2">12 pendientes</small></h3>
+					<small className="text-muted font-size-sm ml-2"></small></h3>
 					<button  className="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_user_close" onClick = { () => { closeButton() } } >
 						<i className="ki ki-close icon-xs text-muted"></i>
 					</button>
@@ -29,15 +29,15 @@ class UserPanel extends Component {
 				<div className="offcanvas-content pr-3 mr-n3">
 					<div className="d-flex align-items-center mt-3">
 						<div className="symbol symbol-100 mr-3">
-						<img className="symbol-label"  src="/300_13.jpg" />
+						<img className="symbol-label"  src="/default.jpg" />
 							<i className="symbol-badge bg-success"></i>
 						</div>
 						<CustomUser clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {... this.props}/>
 					</div>
 					<div className="separator separator-dashed mt-4 mb-3"></div>
-					<NavUser/>
+					{/*<NavUser/>
 					<div className="separator separator-dashed mt-4 mb-4"></div>
-					<UserNotifications/>		
+					<UserNotifications/>*/}	
 				</div>
 			</div>
 		</>
