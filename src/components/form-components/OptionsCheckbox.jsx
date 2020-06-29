@@ -11,11 +11,11 @@ class Input extends Component{
         const { error, onChange, placeholder, options  } = this.props
         return(
             <div>
-                <Form.Label className="mt-2 mb-1 label-form">
-                    {placeholder}
-                </Form.Label>
+                <Form.Label className="col-form-label">{placeholder}</Form.Label>
+
                 <Form.Group id="formGridCheckbox">
                     {
+                        
                         options.map((option, key) => {
                             return(
                                 <Form.Check 
