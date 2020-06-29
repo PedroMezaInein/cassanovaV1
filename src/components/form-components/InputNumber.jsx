@@ -8,7 +8,7 @@ class InputNumber extends Component {
         inputValido: !this.props.requirevalidation
     }
 
-    validarInput(e){
+    /*validarInput(e){
         const { value } = e.target  
         const {patterns, requirevalidation}= this.props
         if(requirevalidation){ 
@@ -28,10 +28,46 @@ class InputNumber extends Component {
                 
             })
         }
+    }*/
+
+    validarInput(e){         
+        const { value } = e.target 
+        const {requirevalidation}= this.props
+        if(value !== '' && value !== null && value !== undefined)
+        {
+            if(requirevalidation){
+                    if(value > 0){
+                        this.setState({
+                            inputValido: true
+                        })
+                    }else{
+                        this.setState({
+                            inputValido: false     
+                            
+                        })
+                    } 
+            }else{
+                this.setState({
+                    inputValido: true     
+                    
+                })
+            }
+        }else{
+            if(requirevalidation){
+                this.setState({
+                    inputValido: false
+                })
+            }else{
+                this.setState({
+                    inputValido: true
+                })
+            }
+            
+        }
     }
 
     componentDidUpdate(nextProps){
-        if(nextProps.formeditado !== this.props.formeditado && nextProps.formeditado === 1)
+        if(nextProps.value !== this.props.value)
             if(!nextProps.requirevalidation)
             {
                 this.setState({
@@ -39,13 +75,16 @@ class InputNumber extends Component {
                     inputValido: true
                 })
             }else{
-                this.validarInput({ target: { value: nextProps.value } })
+                if(this.props.value !== '')
+                {
+                    this.validarInput({ target: { value: this.props.value } })
+                }
             }
             
     }
-
+    
     componentDidMount(){
-        const { formeditado, value } = this.props
+        const { formeditado, value, name } = this.props
         if(formeditado){
             this.validarInput({ target: { value: value } })
         }
