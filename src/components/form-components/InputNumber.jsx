@@ -32,10 +32,16 @@ class InputNumber extends Component {
 
     componentDidUpdate(nextProps){
         if(nextProps.formeditado !== this.props.formeditado)
-            this.setState({
-                ... this.state,
-                inputValido: true
-            })
+            if(!nextProps.requirevalidation)
+            {
+                this.setState({
+                    ... this.state,
+                    inputValido: true
+                })
+            }else{
+                this.validarInput({ target: { value: nextProps.value } })
+            }
+            
     }
 
     render() {

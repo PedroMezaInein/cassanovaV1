@@ -4,9 +4,6 @@ import Form from 'react-bootstrap/Form'
 import '../../styles/select_custom.css';
  
 class Select extends Component{
-    /* constructor(props){
-        super(props)
-    } */ 
 
     state = {
         selectValido: !this.props.requirevalidation
@@ -33,12 +30,19 @@ class Select extends Component{
             })
         }
     }
+    
     componentDidUpdate(nextProps){
         if(nextProps.formeditado !== this.props.formeditado)
-            this.setState({
-                ... this.state,
-                selectValido: true
-            })
+            if(!nextProps.requirevalidation)
+            {
+                this.setState({
+                    ... this.state,
+                    selectValido: true
+                })
+            }else{
+                this.validarSelect({ target: { value: nextProps.value } })
+            }
+            
     }
 
     render(){
