@@ -16,6 +16,7 @@ import { Modal } from '../../components/singles'
 import NewTable from '../../components/tables/NewTable'
 
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
+import { validateAlert } from '../../functions/alert'
 
 class Leads extends Component {
 
@@ -493,6 +494,16 @@ class Leads extends Component {
         })
     }
 
+    onSubmit = e => {
+        e.preventDefault();
+        const { typeForm } = this.state
+        if(typeForm === 'Add'){
+            this.submitForm(e)
+        }else{
+            this.submitEditForm(e)
+        }
+    }
+
     render() {
         const { clientes, modal, typeForm, form, estado, municipio, colonias, modalDelete, cliente, data, formeditado, onSubmit} = this.state
         return (
@@ -519,18 +530,12 @@ class Leads extends Component {
 
                 <Modal  title={typeForm === 'Add' ? 'Registrar nuevo cliente' : 'Editar cliente'} show={modal} handleClose={this.handleCloseModal}>
                     <Form id="form-cliente"
-                    onSubmit = { 
+                        onSubmit = { 
                                     (e) => {
                                         e.preventDefault(); 
-                                        var elementsInvalid = document.getElementById("form-cliente").getElementsByClassName("is-invalid"); 
-                                        if(elementsInvalid.length===0){   
-                                            onSubmit(e)
-                                        }else{ 
-                                            alert("Rellena todos los campos")
-                                        } 
+                                        validateAlert(this.onSubmit, e, 'form-cliente')
                                     }
-                                }
-                        onSubmit={typeForm === 'Add' ? this.submitForm : this.submitEditForm}>
+                                }>
                         <div className="">
                             <ClienteForm 
                                 formeditado={formeditado}

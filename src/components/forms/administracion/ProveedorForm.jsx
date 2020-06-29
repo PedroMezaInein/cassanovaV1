@@ -3,6 +3,7 @@ import { Form } from 'react-bootstrap'
 import { Subtitle } from '../../texts'
 import { Input, Select, SelectSearch, Button, InputNumber, InputPhone} from '../../form-components'
 import { RFC, TEL, EMAIL} from '../../../constants'
+import { validateAlert } from '../../../functions/alert'
 
 class ProveedorForm extends Component {
 
@@ -33,13 +34,15 @@ class ProveedorForm extends Component {
             <Form id="form-proveedor"
                 onSubmit = { 
                     (e) => {
-                        e.preventDefault(); 
+                        /* e.preventDefault(); 
                         var elementsInvalid = document.getElementById("form-proveedor").getElementsByClassName("is-invalid"); 
                         if(elementsInvalid.length===0){   
                             onSubmit(e)
                         }else{ 
                             alert("Rellena todos los campos")
-                        } 
+                        }  */
+                        e.preventDefault(); 
+                        validateAlert(onSubmit, e, 'form-proveedor')
                     }
                 }
                 {...props}

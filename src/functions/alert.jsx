@@ -78,3 +78,12 @@ export function forbiddenAccessAlert(){
         confirmButtonText: 'Inicia sesión'
     });
 }
+
+export function validateAlert(success, e, name){
+    var elementsInvalid = document.getElementById(name).getElementsByClassName("is-invalid"); 
+    if(elementsInvalid.length===0){   
+        success(e)
+    }else{ 
+        alert("Rellena todos los campos")
+    } 
+}
