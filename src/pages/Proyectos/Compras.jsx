@@ -1040,7 +1040,7 @@ class Compras extends Component{
 
 
                 <Modal title = { title } show = {modal} handleClose = { this.handleClose } >
-                    <ComprasForm  options = {options} form = {form} setOptions = {this.setOptions} data = { data }
+                        <ComprasForm  options = {options} form = {form} setOptions = {this.setOptions} data = { data }
                         onChange = { this.onChange } onChangeAdjunto = { this.onChangeAdjunto } clearFiles = {this.clearFiles}
                         sendFactura = { () => { this.sendFactura() } } onSubmit = { this.onSubmit } >
                         {
