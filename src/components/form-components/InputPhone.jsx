@@ -8,7 +8,44 @@ class InputPhone extends Component {
         inputPhone: !this.props.requirevalidation
     }
 
-    validarPhone(e){
+    validarPhone(e){         
+        const { value } = e.target 
+        const {patterns, requirevalidation}= this.props
+        if(value !== '' && value !== null && value !== undefined)
+        {
+            if(requirevalidation){
+                var expRegular = new RegExp(patterns);       
+                    if(value > 0 && expRegular.test(value)){
+                        this.setState({
+                            inputPhone: true
+                        })
+                    }else{
+                        this.setState({
+                            inputPhone: false     
+                            
+                        })
+                    } 
+            }else{
+                this.setState({
+                    inputPhone: true     
+                    
+                })
+            }
+        }else{
+            if(requirevalidation){
+                this.setState({
+                    inputPhone: false
+                })
+            }else{
+                this.setState({
+                    inputPhone: true
+                })
+            }
+            
+        }
+    }
+    
+    /*validarPhone(e){
         const { value } = e.target
         const {patterns, requirevalidation}= this.props
         var expRegular = new RegExp(patterns);  
@@ -29,10 +66,10 @@ class InputPhone extends Component {
                 
             })
         }
-    }
+    }*/
 
     componentDidUpdate(nextProps){
-        if(nextProps.formeditado !== this.props.formeditado && nextProps.formeditado === 1)
+        if(nextProps.value !== this.props.value)
             if(!nextProps.requirevalidation)
             {
                 this.setState({
@@ -40,22 +77,19 @@ class InputPhone extends Component {
                     inputPhone: true
                 })
             }else{
-                this.validarPhone({ target: { value: nextProps.value } })
+                if(this.props.value !== '')
+                {
+                    this.validarPhone({ target: { value: this.props.value } })
+                }
             }
             
     }
-
-    componentDidUpdate(nextProps){
-        if(nextProps.formeditado !== this.props.formeditado)
-            if(!nextProps.requirevalidation)
-            {
-                this.setState({
-                    ... this.state,
-                    inputMoneyValido: true
-                })
-            }else{
-                this.validarPhone({ target: { value: nextProps.value } })
-            }
+    
+    componentDidMount(){
+        const { formeditado, value, name } = this.props
+        if(formeditado){
+            this.validarPhone({ target: { value: value } })
+        }
     }
 
     onChange = values => {
