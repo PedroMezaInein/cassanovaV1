@@ -31,9 +31,16 @@ class Input extends Component {
                 })
             }
         }else{
-            this.setState({
-                inputValido: false
-            })
+            if(requirevalidation){
+                this.setState({
+                    inputValido: false
+                })
+            }else{
+                this.setState({
+                    inputValido: true
+                })
+            }
+            
         }
     }
 
