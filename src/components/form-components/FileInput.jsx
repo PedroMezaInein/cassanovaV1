@@ -12,7 +12,43 @@ class FileInput extends Component{
         fileValido: !this.props.requirevalidation
     }
 
-    validarFileInput(e){
+    validarFileInput(e){         
+        const { value } = e.target 
+        const {requirevalidation}= this.props
+        if(value !== '' && value !== null && value !== undefined)
+        {
+            if(requirevalidation){      
+                    if(value > 0){
+                        this.setState({
+                            fileValido: true
+                        })
+                    }else{
+                        this.setState({
+                            fileValido: false     
+                            
+                        })
+                    } 
+            }else{
+                this.setState({
+                    fileValido: true     
+                    
+                })
+            }
+        }else{
+            if(requirevalidation){
+                this.setState({
+                    fileValido: false
+                })
+            }else{
+                this.setState({
+                    fileValido: true
+                })
+            }
+            
+        }
+    }
+
+    /*validarFileInput(e){
         const { value } = e.target
         const {requirevalidation}= this.props
         if(requirevalidation){        
@@ -31,10 +67,10 @@ class FileInput extends Component{
                 fileValido: true  
             })
         }
-    }
+    }*/
 
     componentDidUpdate(nextProps){
-        if(nextProps.formeditado !== this.props.formeditado)
+        if(nextProps.value !== this.props.value)
             if(!nextProps.requirevalidation)
             {
                 this.setState({
@@ -42,22 +78,19 @@ class FileInput extends Component{
                     fileValido: true
                 })
             }else{
-                this.validarFileInput({ target: { value: nextProps.value } })
+                if(this.props.value !== '')
+                {
+                    this.validarFileInput({ target: { value: this.props.value } })
+                }
             }
             
     }
-
-    componentDidUpdate(nextProps){
-        if(nextProps.formeditado !== this.props.formeditado)
-            if(!nextProps.requirevalidation)
-            {
-                this.setState({
-                    ... this.state,
-                    inputMoneyValido: true
-                })
-            }else{
-                this.validarFileInput({ target: { value: nextProps.value } })
-            }
+    
+    componentDidMount(){
+        const { formeditado, value, name } = this.props
+        if(formeditado){
+            this.validarFileInput({ target: { value: value } })
+        }
     }
 
     render(){
