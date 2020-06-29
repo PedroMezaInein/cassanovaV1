@@ -304,8 +304,8 @@ class ProveedorForm extends Component{
     render(){
         const { form, title, options } = this.state
         return(
-            <Layout active={'administracion'}  { ...this.props}>
-                <Card className="m-2 p-2 m-md-4 p-md-4">
+            <Layout active={'leads'}  { ...this.props}>
+                <Card className="pt-0">
                     <Card.Body>
                         <ProveedorFormulario 
                             title = { title } 
