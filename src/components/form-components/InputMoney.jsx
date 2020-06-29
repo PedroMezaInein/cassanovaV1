@@ -32,7 +32,7 @@ class InputMoney extends Component{
     }
 
     componentDidUpdate(nextProps){
-        if(nextProps.formeditado !== this.props.formeditado)
+        if(nextProps.formeditado !== this.props.formeditado && nextProps.formeditado === 1)
             if(!nextProps.requirevalidation)
             {
                 this.setState({
@@ -43,6 +43,13 @@ class InputMoney extends Component{
                 this.validarInputMoney({ target: { value: nextProps.value } })
             }
             
+    }
+
+    componentDidMount(){
+        const { formeditado, value } = this.props
+        if(formeditado){
+            this.validarInputMoney({ target: { value: value } })
+        }
     }
 
     onChange = values => {

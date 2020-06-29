@@ -47,6 +47,19 @@ class FileInput extends Component{
             
     }
 
+    componentDidUpdate(nextProps){
+        if(nextProps.formeditado !== this.props.formeditado)
+            if(!nextProps.requirevalidation)
+            {
+                this.setState({
+                    ... this.state,
+                    inputMoneyValido: true
+                })
+            }else{
+                this.validarFileInput({ target: { value: nextProps.value } })
+            }
+    }
+
     render(){
         const { onChangeAdjunto, placeholder, value, name, id, accept, files, deleteAdjunto, messageinc, deleteAdjuntoAvance, _key, ... props} = this.props
         const { fileValido } = this.state
