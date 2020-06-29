@@ -105,8 +105,10 @@ class Leads extends Component {
     handleCloseModal = () => {
         this.setState({
             ... this.state,
-            modal: !this.state.modal,
-            typeForm: ''
+            modal: false,
+            typeForm: '',
+            estado: '',
+            municipio: ''
         })
         this.clearForm('form', EMPTY_CLIENTE)
     }
@@ -515,7 +517,7 @@ class Leads extends Component {
                     elements={data.clientes}
                 />
 
-                <Modal  title={typeForm === 'Add' ? 'Registrar nuevo cliente' : 'Editar usuario'} show={modal} handleClose={this.handleCloseModal}>
+                <Modal  title={typeForm === 'Add' ? 'Registrar nuevo cliente' : 'Editar cliente'} show={modal} handleClose={this.handleCloseModal}>
                     <Form id="form-cliente"
                     onSubmit = { 
                                     (e) => {

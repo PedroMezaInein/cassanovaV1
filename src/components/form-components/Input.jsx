@@ -10,22 +10,29 @@ class Input extends Component {
     validarInput(e){         
         const { value } = e.target 
         const {patterns, requirevalidation}= this.props
-        if(requirevalidation){
-            var expRegular = new RegExp(patterns);       
-                if(expRegular.test(value)){
-                    this.setState({
-                        inputValido: true
-                    })
-                }else{
-                    this.setState({
-                        inputValido: false     
-                        
-                    })
-                } 
+        if(value !== '' && value !== null && value !== undefined)
+        {
+            if(requirevalidation){
+                var expRegular = new RegExp(patterns);       
+                    if(expRegular.test(value)){
+                        this.setState({
+                            inputValido: true
+                        })
+                    }else{
+                        this.setState({
+                            inputValido: false     
+                            
+                        })
+                    } 
+            }else{
+                this.setState({
+                    inputValido: true     
+                    
+                })
+            }
         }else{
             this.setState({
-                inputValido: true     
-                
+                inputValido: false
             })
         }
     }
@@ -48,7 +55,7 @@ class Input extends Component {
     }
     
     componentDidMount(){
-        const { formeditado, value } = this.props
+        const { formeditado, value, name } = this.props
         if(formeditado){
             this.validarInput({ target: { value: value } })
         }
