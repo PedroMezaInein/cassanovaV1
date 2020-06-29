@@ -63,8 +63,9 @@ class LeadForm extends Component{
                             name="email" 
                             value={ form.email } 
                             onChange = { onChange } 
-                            iconclass={"far fa-envelope"} 
-                            messageinc="Incorrecto. Ej. usuario@dominio"
+                            iconclass={"fas fa-envelope"}                                            
+                            messageinc="Incorrecto. Ej. usuario@dominio.com"
+                            patterns={EMAIL}
                         />
                         {/*<span className="form-text text-muted">Por favor, ingresa el correo electrónico. </span>*/}
                     </div>
