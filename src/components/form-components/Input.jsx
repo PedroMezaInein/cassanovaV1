@@ -31,7 +31,7 @@ class Input extends Component {
     }
 
     componentDidUpdate(nextProps){
-        if(nextProps.formeditado !== this.props.formeditado)
+        if(nextProps.value !== this.props.value)
             if(!nextProps.requirevalidation)
             {
                 this.setState({
@@ -39,7 +39,10 @@ class Input extends Component {
                     inputValido: true
                 })
             }else{
-                this.validarInput({ target: { value: nextProps.value } })
+                if(this.props.value !== '')
+                {
+                    this.validarInput({ target: { value: this.props.value } })
+                }
             }
             
     }
