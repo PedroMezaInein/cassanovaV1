@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { Button, SelectSearch, Input } from '../form-components'
+import { Button, SelectSearch, Input, InputNumber} from '../form-components'
 import { Subtitle } from '../texts'
 import { RFC} from '../../constants'
 
@@ -8,7 +8,6 @@ class ClienteForm extends Component{
 
     constructor(props){
         super(props)
-        
     }
 
     render(){
@@ -97,7 +96,7 @@ class ClienteForm extends Component{
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                 <div className="col-md-4">
-                        <Input 
+                        <InputNumber 
                             requirevalidation={1}
                             formeditado={formeditado}
                             name="cp" 
