@@ -6,10 +6,6 @@ import { DATE, TEL, EMAIL} from '../../constants'
 
 class LeadForm extends Component{
 
-    constructor(props){
-        super(props)
-        this.state = { validated: false };
-    }
 
     handleChangeCheckbox = e => {
         const { name, value, checked } = e.target
@@ -23,23 +19,11 @@ class LeadForm extends Component{
         onChangeCheckboxes(aux)
     }
 
-    handleKeyPress(event) {
-        const form = event.currentTarget;
-        if (form.checkValidity() === false) {
-        //event.preventDefault();
-        //event.stopPropagation();
-        }
-        this.setState({ validated: true });
-    }
     
     render(){
-        const { validated } = this.state;
         const { title, servicios, empresas, origenes, form, onChange, onChangeCalendar, onChangeCheckboxes, ...props } = this.props
         return(
             <Form { ... props}
-                noValidate
-                validated={validated}
-                onKeyPress={e => this.handleKeyPress(e)}
                 >
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
