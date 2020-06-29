@@ -32,6 +32,7 @@ class Contratos extends Component {
                 proveedores: []
             }
         },
+        formeditado:0,
         modal:{
             form: false,
             delete: false
@@ -81,7 +82,8 @@ class Contratos extends Component {
             form: this.clearForm(),
             modal,
             tipo: 'Cliente',
-            title: 'Nuevo contrato de cliente'
+            title: 'Nuevo contrato de cliente',
+            formeditado:0
         })
     }
 
@@ -107,7 +109,8 @@ class Contratos extends Component {
             tipo: 'Cliente',
             title: 'Editar contrato de cliente',
             contrato: contrato,
-            form
+            form,
+            formeditado:1
         })
     }
 
@@ -133,7 +136,8 @@ class Contratos extends Component {
             modal,
             tipo: 'Proveedor',
             title: 'Editar contrato de proveedor',
-            contrato: contrato
+            contrato: contrato,
+            formeditado:1
         })
     }
 
@@ -167,7 +171,8 @@ class Contratos extends Component {
             form: this.clearForm(),
             modal,
             tipo: 'Proveedor',
-            title: 'Nuevo contrato de proveedor'
+            title: 'Nuevo contrato de proveedor',
+            formeditado:0
         })
     }
 
@@ -465,7 +470,7 @@ class Contratos extends Component {
     }
 
     render() {
-        const { data, contratos, title, options, form, modal, tipo } = this.state
+        const { data, contratos, title, options, form, modal, tipo, formeditado } = this.state
         return (
             <Layout active={'administracion'}  {...this.props}>
 
@@ -517,7 +522,7 @@ class Contratos extends Component {
                 </Tabs>
                 <Modal title = { title } show = { modal.form } handleClose = { this.handleCloseModal }>
                     <ContratoForm tipo = { tipo } options = { options } form = { form } onChange = { this.onChange } 
-                        onSubmit = { this.onSubmit } />
+                        onSubmit = { this.onSubmit } formeditado={formeditado}/>
                 </Modal>
                 <ModalDelete show = { modal.delete } handleClose = { this.handleCloseDelete } onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteContratoAxios() }}>
                     <Subtitle className="my-3 text-center">

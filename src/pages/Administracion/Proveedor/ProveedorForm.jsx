@@ -89,7 +89,7 @@ class ProveedorForm extends Component{
                         this.setState({
                             ... this.state,
                             title: 'Convertir lead en proveedor',
-                            formeditado:0
+                            formeditado:1
                         })
                     }
                     else
@@ -307,7 +307,6 @@ class ProveedorForm extends Component{
 
     render(){
         const { form, title, options,formeditado } = this.state
-        console.log("Form editar: "+formeditado)
         return(
             <Layout active={'leads'}  { ...this.props}>
                 <Card className="pt-0">

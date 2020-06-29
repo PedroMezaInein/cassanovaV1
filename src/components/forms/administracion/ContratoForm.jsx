@@ -36,13 +36,27 @@ class ContratoForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, tipo, ...props } = this.props
+        const { title, options, form, onChange, tipo, onSubmit, formeditado, ...props } = this.props
         return (
-            <Form {...props}>
+            <Form id="form-contrato"
+                onSubmit = { 
+                    (e) => {
+                        e.preventDefault(); 
+                        var elementsInvalid = document.getElementById("form-contrato").getElementsByClassName("is-invalid"); 
+                        if(elementsInvalid.length===0){   
+                            onSubmit(e)
+                        }else{ 
+                            alert("Rellena todos los campos")
+                        } 
+                    }
+                }
+                {...props}>
                 <div className="form-group row form-group-marginless pt-4">
                 
                     <div className="col-md-4">
                         <Input 
+                            requirevalidation={1}
+                            formeditado={formeditado}
                             placeholder="Nombre" 
                             name="nombre" 
                             onChange={onChange} 
@@ -100,6 +114,8 @@ class ContratoForm extends Component {
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <InputMoney 
+                                requirevalidation={1}
+                                formeditado={formeditado}
                                 thousandSeparator={true}  
                                 prefix = { '$' } 
                                 name = "monto" 
@@ -159,6 +175,8 @@ class ContratoForm extends Component {
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-12">
                         <Input 
+                            requirevalidation={1}
+                            formeditado={formeditado}
                             rows="3" 
                             as="textarea" 
                             placeholder="Descripción" 
