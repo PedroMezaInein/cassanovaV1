@@ -31,7 +31,7 @@ class Input extends Component {
     }
 
     componentDidUpdate(nextProps){
-        if(nextProps.formeditado !== this.props.formeditado && nextProps.formeditado === 1)
+        if(nextProps.formeditado !== this.props.formeditado)
             if(!nextProps.requirevalidation)
             {
                 this.setState({
