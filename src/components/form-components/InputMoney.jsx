@@ -9,7 +9,44 @@ class InputMoney extends Component{
         inputMoneyValido: !this.props.requirevalidation
     }
 
-    validarInputMoney(e){
+    validarInputMoney(e){         
+        const { value } = e.target 
+        const {requirevalidation}= this.props
+        if(value !== '' && value !== null && value !== undefined)
+        {
+            if(requirevalidation){      
+                    if(value > 0){
+                        this.setState({
+                            inputMoneyValido: true
+                        })
+                    }else{
+                        this.setState({
+                            inputMoneyValido: false     
+                            
+                        })
+                    } 
+            }else{
+                this.setState({
+                    inputMoneyValido: true     
+                    
+                })
+            }
+        }else{
+            if(requirevalidation){
+                this.setState({
+                    inputMoneyValido: false
+                })
+            }else{
+                this.setState({
+                    inputMoneyValido: true
+                })
+            }
+            
+        }
+    }
+
+
+    /*validarInputMoney(e){
         const { value } = e.target   
         const {requirevalidation}= this.props
         if(requirevalidation){
@@ -29,10 +66,10 @@ class InputMoney extends Component{
                 
             })
         }
-    }
+    }*/
 
     componentDidUpdate(nextProps){
-        if(nextProps.formeditado !== this.props.formeditado && nextProps.formeditado === 1)
+        if(nextProps.value !== this.props.value)
             if(!nextProps.requirevalidation)
             {
                 this.setState({
@@ -40,13 +77,16 @@ class InputMoney extends Component{
                     inputMoneyValido: true
                 })
             }else{
-                this.validarInputMoney({ target: { value: nextProps.value } })
+                if(this.props.value !== '')
+                {
+                    this.validarInputMoney({ target: { value: this.props.value } })
+                }
             }
             
     }
-
+    
     componentDidMount(){
-        const { formeditado, value } = this.props
+        const { formeditado, value, name } = this.props
         if(formeditado){
             this.validarInputMoney({ target: { value: value } })
         }
