@@ -145,6 +145,7 @@ class ClienteForm extends Component{
                         { 
                             colonias.length > 0 && 
                                 <SelectSearch
+                                    formeditado={formeditado}
                                     options = { colonias } 
                                     placeholder = "Selecciona la colonia" 
                                     name="colonia"  
