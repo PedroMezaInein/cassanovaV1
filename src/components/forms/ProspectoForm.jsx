@@ -124,7 +124,7 @@ class ProspectoForm extends Component{
     }
 
     render(){
-        const { title, form, formCliente, children, vendedores, estatusProspectos, clientes, tipoProyecto, estatusContratacion, tiposContactos, onChange, onChangeCliente, onChangeContacto, formContacto, ...props } = this.props
+        const { title, form, formCliente, children, vendedores, estatusProspectos, clientes, tipoProyecto, estatusContratacion, tiposContactos, onChange, onChangeCliente, onChangeContacto, formContacto, onSubmit, ...props } = this.props
         const { newClient, newEstatusProspectos, newTipoProyecto, newEstatusContratacion, municipio, estado, colonias } = this.state
         return(
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
@@ -156,6 +156,17 @@ class ProspectoForm extends Component{
                 <div className="row justify-content-center py-10 px-8 py-lg-12 px-lg-10">
                     <div className="col-md-12">
                         <Form 
+                            onSubmit = { 
+                                (e) => {
+                                    e.preventDefault(); 
+                                    var elementsInvalid = document.getElementById("wizard-3-content").getElementsByClassName("is-invalid"); 
+                                    if(elementsInvalid.length===0){   
+                                        onSubmit(e)
+                                    }else{ 
+                                        alert("Rellena todos los campos")
+                                    } 
+                                }
+                            }
                             { ... props}
                             >
                             { children }
@@ -190,6 +201,7 @@ class ProspectoForm extends Component{
                                         newEstatusProspectos && 
                                             <div className="col-md-4">
                                                 <Input 
+                                                    requirevalidation={1}
                                                     name="newEstatusProspecto"
                                                     type="text" 
                                                     placeholder="Nuevo estatus prospecto"
@@ -229,6 +241,7 @@ class ProspectoForm extends Component{
                                         newTipoProyecto && 
                                             <div className="col-md-4">
                                                 <Input 
+                                                    requirevalidation={1}
                                                     name="newTipoProyecto"
                                                     onChange={onChange}
                                                     value={form.newTipoProyecto}
@@ -242,6 +255,7 @@ class ProspectoForm extends Component{
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <Input 
+                                            requirevalidation={1}
                                             name="preferencia"
                                             type="text"
                                             placeholder="Perefencia de contacto"
@@ -267,6 +281,7 @@ class ProspectoForm extends Component{
                                         newEstatusContratacion && 
                                             <div className="col-md-4">
                                                 <Input 
+                                                    requirevalidation={1}
                                                     name="newEstatusContratacion" 
                                                     onChange={onChange} 
                                                     value={form.newEstatusContratacion} 
@@ -288,6 +303,7 @@ class ProspectoForm extends Component{
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-12">
                                         <Input 
+                                            requirevalidation={0}
                                             rows="3" 
                                             as="textarea" 
                                             placeholder="Descripción del prospecto" 
@@ -303,6 +319,7 @@ class ProspectoForm extends Component{
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-12">
                                         <Input 
+                                            requirevalidation={0}
                                             rows="3" 
                                             as="textarea" 
                                             placeholder="Motivo de contratación o rechazo" 
@@ -357,7 +374,7 @@ class ProspectoForm extends Component{
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase"  onClick = { () => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
                                     </div>
                                     <div>
-                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type="submit" data-wizard-type="action-submit" text="Enviar" />
+                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type="submit" text="Enviar" />
                                     </div>
                                 </div> 
                             </div>  

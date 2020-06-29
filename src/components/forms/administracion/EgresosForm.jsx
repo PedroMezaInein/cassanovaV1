@@ -114,7 +114,7 @@ class EgresosForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, ...props } = this.props
+        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -144,7 +144,19 @@ class EgresosForm extends Component {
                     </div>
                 <div className="row justify-content-center py-10 px-8 py-lg-12 px-lg-10">
                     <div className="col-md-12">
-                        <Form {...props}
+                        <Form  
+                            onSubmit = { 
+                                (e) => {
+                                    e.preventDefault(); 
+                                    var elementsInvalid = document.getElementById("wizard-3-content").getElementsByClassName("is-invalid"); 
+                                    if(elementsInvalid.length===0){   
+                                        onSubmit(e)
+                                    }else{ 
+                                        alert("Rellena todos los campos")
+                                    } 
+                                }
+                            }
+                            {...props}
                             >
                             <div id="wizard-1-content" className="pb-3" data-wizard-type="step-content" data-wizard-state="current">
                                 <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos de la factura</h5>
@@ -177,6 +189,7 @@ class EgresosForm extends Component {
                                         form.factura === 'Con factura' && title !== 'Editar egreso' ?
                                             <div className="col-md-4">
                                                 <FileInput
+                                                    requirevalidation={1}
                                                     onChangeAdjunto={onChangeAdjunto}
                                                     placeholder={form['adjuntos']['factura']['placeholder']}
                                                     value={form['adjuntos']['factura']['value']}
@@ -194,6 +207,7 @@ class EgresosForm extends Component {
                                         form.factura === 'Con factura' && title !== 'Editar egreso' ?
                                             <div className="col-md-4">
                                                 <Input 
+                                                    requirevalidation={1}
                                                     placeholder="RFC"
                                                     name="rfc"
                                                     value={form.rfc}
@@ -316,6 +330,7 @@ class EgresosForm extends Component {
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-12">
                                         <Input 
+                                            requirevalidation={0}
                                             as="textarea"
                                             placeholder="Descripción"
                                             rows="3"
@@ -342,6 +357,7 @@ class EgresosForm extends Component {
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <Select 
+                                            requirevalidation={1}
                                             placeholder="Selecciona el tipo de pago"
                                             options={options.tiposPagos}
                                             name="tipoPago"
@@ -354,6 +370,7 @@ class EgresosForm extends Component {
                                     </div>
                                     <div className="col-md-4">
                                         <Select
+                                            requirevalidation={1}
                                             placeholder="Selecciona el impuesto"
                                             options={options.tiposImpuestos}
                                             name="tipoImpuesto"
@@ -366,6 +383,7 @@ class EgresosForm extends Component {
                                     </div>
                                     <div className="col-md-4">
                                         <Select 
+                                            requirevalidation={1}
                                             placeholder="Selecciona el estatus de compra"
                                             options={options.estatusCompras}
                                             name="estatusCompra"
@@ -381,6 +399,7 @@ class EgresosForm extends Component {
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-6">
                                         <InputMoney 
+                                            requirevalidation={1}
                                             thousandSeparator={true}
                                             placeholder="Monto"
                                             value={form.total}
@@ -393,6 +412,7 @@ class EgresosForm extends Component {
                                     </div>
                                     <div className="col-md-6">
                                         <InputMoney 
+                                            requirevalidation={1}
                                             thousandSeparator={true}
                                             placeholder="Comisión"
                                             value={form.comision}
@@ -408,6 +428,7 @@ class EgresosForm extends Component {
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-6">
                                         <FileInput
+                                            requirevalidation={1}
                                             onChangeAdjunto={onChangeAdjunto}
                                             placeholder={form['adjuntos']['presupuesto']['placeholder']}
                                             value={form['adjuntos']['presupuesto']['value']}
@@ -421,6 +442,7 @@ class EgresosForm extends Component {
                                     </div>
                                     <div className="col-md-6">
                                         <FileInput
+                                            requirevalidation={1}
                                             onChangeAdjunto={onChangeAdjunto}
                                             placeholder={form['adjuntos']['pago']['placeholder']}
                                             value={form['adjuntos']['pago']['value']}
@@ -438,7 +460,7 @@ class EgresosForm extends Component {
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase"  onClick = { () => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
                                     </div>
                                     <div>
-                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type="submit" data-wizard-type="action-submit" text="Enviar" />
+                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type="submit"  text="Enviar" />
                                     </div>
                                 </div> 
                             </div>

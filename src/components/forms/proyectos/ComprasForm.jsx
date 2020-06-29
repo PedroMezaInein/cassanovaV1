@@ -149,7 +149,7 @@ updateArea = value => {
     }
 
     render() {
-        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, ...props } = this.props
+        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -180,6 +180,17 @@ updateArea = value => {
                 <div className="row justify-content-center py-10 px-8 py-lg-12 px-lg-10">
                     <div className="col-md-12">                   
                         <Form 
+                            onSubmit = { 
+                                (e) => {
+                                    e.preventDefault(); 
+                                    var elementsInvalid = document.getElementById("wizard-3-content").getElementsByClassName("is-invalid"); 
+                                    if(elementsInvalid.length===0){   
+                                        onSubmit(e)
+                                    }else{ 
+                                        alert("Rellena todos los campos")
+                                    } 
+                                }
+                            }
                             {...props}
                             >
                             {/*<Subtitle className="text-center" color="gold">{title}</Subtitle>*/}
@@ -210,6 +221,7 @@ updateArea = value => {
                                         form.factura === 'Con factura' && title !== 'Editar compra' ?
                                             <div className="col-md-4">
                                                 <FileInput
+                                                    requirevalidation={1}
                                                     onChangeAdjunto={onChangeAdjunto}
                                                     placeholder={form['adjuntos']['factura']['placeholder']}
                                                     value={form['adjuntos']['factura']['value']}
@@ -226,6 +238,7 @@ updateArea = value => {
                                         form.factura === 'Con factura' && title !== 'Editar compra' ?
                                             <div className="col-md-4">
                                                 <Input 
+                                                    requirevalidation={1}
                                                     placeholder="RFC" 
                                                     name="rfc" 
                                                     value={form.rfc} 
@@ -357,6 +370,7 @@ updateArea = value => {
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-12">
                                         <Input 
+                                            requirevalidation={0}
                                             as="textarea" 
                                             placeholder="Descripción" 
                                             rows="3" value={form.descripcion}
@@ -384,6 +398,7 @@ updateArea = value => {
                                         options.tiposPagos.length > 0 ?
                                             <div className="col-md-4">
                                                 <Select 
+                                                    requirevalidation={1}
                                                     placeholder="Selecciona el tipo de pago" 
                                                     options={options.tiposPagos}
                                                     name="tipoPago" 
@@ -399,6 +414,7 @@ updateArea = value => {
                                     }
                                     <div className="col-md-4">
                                         <Select 
+                                            requirevalidation={1}
                                             placeholder="Selecciona el impuesto" 
                                             options={options.tiposImpuestos}
                                             name="tipoImpuesto" 
@@ -412,6 +428,7 @@ updateArea = value => {
                                     </div>
                                     <div className="col-md-4">
                                         <Select 
+                                            requirevalidation={1}
                                             placeholder="Selecciona el estatus de compra" 
                                             options={options.estatusCompras}
                                             name="estatusCompra" 
@@ -428,6 +445,7 @@ updateArea = value => {
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <InputMoney 
+                                            requirevalidation={1}
                                             thousandSeparator={true} 
                                             placeholder="Monto" 
                                             value={form.total} 
@@ -439,6 +457,7 @@ updateArea = value => {
                                     </div>
                                     <div className="col-md-4">
                                         <InputMoney 
+                                            requirevalidation={1}
                                             thousandSeparator={true} 
                                             placeholder="Comisión" 
                                             value={form.comision} 
@@ -464,6 +483,7 @@ updateArea = value => {
                                 <div className="form-group row form-group-marginless">                                
                                     <div className="col-md-6">
                                         <FileInput
+                                            requirevalidation={1}
                                             onChangeAdjunto={onChangeAdjunto}
                                             placeholder={form['adjuntos']['presupuesto']['placeholder']}
                                             value={form['adjuntos']['presupuesto']['value']}
@@ -476,6 +496,7 @@ updateArea = value => {
                                     </div>
                                     <div className="col-md-6">
                                         <FileInput
+                                            requirevalidation={1}
                                             onChangeAdjunto={onChangeAdjunto}
                                             placeholder={form['adjuntos']['pago']['placeholder']}
                                             value={form['adjuntos']['pago']['value']}
@@ -492,7 +513,7 @@ updateArea = value => {
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase"  onClick = { () => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
                                     </div>
                                     <div>
-                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type="submit" data-wizard-type="action-submit" text="Enviar" />
+                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type="submit" text="Enviar" />
                                     </div>
                                 </div>                                    
                             </div>

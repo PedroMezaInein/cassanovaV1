@@ -82,7 +82,7 @@ class ProyectosForm extends Component{
     }
 
     render(){
-        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, ... props } = this.props
+        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, ... props } = this.props
         return(
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -113,6 +113,17 @@ class ProyectosForm extends Component{
                 <div className="row justify-content-center py-10 px-8 py-lg-12 px-lg-10">
                     <div className="col-md-12">             
                         <Form 
+                            onSubmit = { 
+                                (e) => {
+                                    e.preventDefault(); 
+                                    var elementsInvalid = document.getElementById("wizard-3-content").getElementsByClassName("is-invalid"); 
+                                    if(elementsInvalid.length===0){   
+                                        onSubmit(e)
+                                    }else{ 
+                                        alert("Rellena todos los campos")
+                                    } 
+                                }
+                            }
                             { ... props}
                             >
                             {children}
@@ -121,6 +132,7 @@ class ProyectosForm extends Component{
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-6">
                                         <Input 
+                                            requirevalidation={1}
                                             name="nombre"
                                             value={form.nombre}
                                             onChange={onChange}
@@ -147,6 +159,7 @@ class ProyectosForm extends Component{
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-6">                                       
                                         <InputPhone 
+                                            requirevalidation={1}
                                             thousandSeparator={false}
                                             prefix = { '' }
                                             name = "numeroContacto"
@@ -161,6 +174,7 @@ class ProyectosForm extends Component{
                                     </div>
                                     <div className="col-md-6">
                                         <Input 
+                                            requirevalidation={1}
                                             name="contacto"
                                             value={form.contacto}
                                             onChange={onChange}
@@ -176,6 +190,7 @@ class ProyectosForm extends Component{
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-10">
                                         <Input 
+                                            requirevalidation={1}
                                             thousandSeparator={false}
                                             prefix = { '' }
                                             name = "correo"
@@ -225,6 +240,7 @@ class ProyectosForm extends Component{
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <InputNumber 
+                                            requirevalidation={1}
                                             name="cp"
                                             onChange={onChangeCP}
                                             value={form.cp}
@@ -238,6 +254,7 @@ class ProyectosForm extends Component{
                                     </div>
                                     <div className="col-md-4" hidden={options.colonias.length <= 0 ? true : false}>
                                         <Input 
+                                            requirevalidation={0}
                                             readOnly={options.colonias.length <= 0 ? true : false}
                                             value={form.estado}
                                             name="estado"
@@ -250,6 +267,7 @@ class ProyectosForm extends Component{
                                     </div>
                                     <div className="col-md-4" hidden={options.colonias.length <= 0 ? true : false}>
                                         <Input 
+                                            requirevalidation={0}
                                             readOnly={options.colonias.length <= 0 ? true : false}
                                             value={form.municipio}
                                             name="municipio"
@@ -279,6 +297,7 @@ class ProyectosForm extends Component{
                                         { 
                                             options.colonias.length <= 0 && 
                                                 <Input 
+                                                    requirevalidation={1}
                                                     readOnly
                                                     value={form.colonia}
                                                     name="colonia" type="text"
@@ -290,6 +309,7 @@ class ProyectosForm extends Component{
                                     </div>  
                                     <div className="col-md-7" hidden={options.colonias.length <= 0 ? true : false}>
                                         <Input 
+                                            requirevalidation={1}
                                             name="calle"
                                             value={form.calle}
                                             onChange={onChange}
@@ -326,6 +346,7 @@ class ProyectosForm extends Component{
                                     </div>
                                     <div className="col-md-4">
                                         <InputMoney 
+                                            requirevalidation={1}
                                             prefix = { '%' }
                                             thousandSeparator = {false}
                                             name = "porcentaje"
@@ -338,6 +359,7 @@ class ProyectosForm extends Component{
                                     </div>
                                     <div className="col-md-4">
                                         <FileInput 
+                                            requirevalidation={1}
                                             onChangeAdjunto = { onChangeAdjunto } 
                                             placeholder = "Imagen"
                                             value = {form.adjuntos.image.value}
@@ -386,6 +408,7 @@ class ProyectosForm extends Component{
                                 <div className="form-group row form-group-marginless">                                
                                     <div className="col-md-12">
                                         <Input 
+                                            requirevalidation={0}
                                             rows="3"
                                             as="textarea"
                                             placeholder="Descripción"
@@ -452,7 +475,7 @@ class ProyectosForm extends Component{
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase"  onClick = { () => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
                                     </div>
                                     <div>
-                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type="submit" data-wizard-type="action-submit" text="Enviar" />
+                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type="submit" text="Enviar" />
                                     </div>
                                 </div> 
                             </div> 

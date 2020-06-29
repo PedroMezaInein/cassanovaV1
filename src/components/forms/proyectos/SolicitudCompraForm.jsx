@@ -81,7 +81,7 @@ class SolicitudCompraForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, children, onChangeAdjunto, clearFiles, ...props } = this.props
+        const { title, options, form, onChange, children, onChangeAdjunto, clearFiles, onSubmit, ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -112,6 +112,17 @@ class SolicitudCompraForm extends Component {
                 <div className="row justify-content-center py-10 px-8 py-lg-12 px-lg-10">
                     <div className="col-md-12">
                         <Form 
+                            onSubmit = { 
+                                (e) => {
+                                    e.preventDefault(); 
+                                    var elementsInvalid = document.getElementById("wizard-3-content").getElementsByClassName("is-invalid"); 
+                                    if(elementsInvalid.length===0){   
+                                        onSubmit(e)
+                                    }else{ 
+                                        alert("Rellena todos los campos")
+                                    } 
+                                }
+                            }
                             {...props}
                             >
                             {/*<Subtitle className="text-center" color="gold">{title}</Subtitle>*/}
@@ -151,6 +162,7 @@ class SolicitudCompraForm extends Component {
                                     </div>
                                     <div className="col-md-4">
                                         <InputMoney 
+                                            requirevalidation={1}
                                             thousandSeparator={true}
                                             placeholder="Monto"
                                             value={form.total}
@@ -160,6 +172,7 @@ class SolicitudCompraForm extends Component {
                                     </div>
                                     <div className="col-md-4">
                                         <Select
+                                            requirevalidation={1}
                                             placeholder="Selecciona el tipo de pago"
                                             options={options.tiposPagos}
                                             name="tipoPago"
@@ -216,6 +229,7 @@ class SolicitudCompraForm extends Component {
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-12">
                                         <Input 
+                                            requirevalidation={0}
                                             as="textarea"
                                             placeholder="Descripción"
                                             rows="3"
@@ -261,6 +275,7 @@ class SolicitudCompraForm extends Component {
                                     </div>
                                     <div className="col-md-4">
                                         <FileInput
+                                            requirevalidation={1}
                                             onChangeAdjunto={onChangeAdjunto}
                                             placeholder={form.adjuntos.adjunto.placeholder}
                                             value={form.adjuntos.adjunto.value}
@@ -276,7 +291,7 @@ class SolicitudCompraForm extends Component {
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase"  onClick = { () => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
                                     </div>
                                     <div>
-                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type="submit" data-wizard-type="action-submit" text="Enviar" />
+                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type="submit" text="Enviar" />
                                     </div>
                                 </div>
                             </div>
