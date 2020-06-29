@@ -4,9 +4,10 @@ import Form from 'react-bootstrap/Form'
 class Input extends Component {
 
     state = {
-        inputValido: this.props.requirevalidation ?
+        /* inputValido: !this.props.requirevalidation ?
                 (this.props.formeditado===1? true:false) //Validar todos al principio si es un Form Editar
-            :true
+            :true */
+        inputValido: !this.props.requirevalidation
     }  
     validarInput(e){         
         const { value } = e.target 
@@ -49,11 +50,28 @@ class Input extends Component {
         }
     }
     */
-   componentDidMount()
-   {
-    const { formeditado } =  this.props 
+   /* componentDidMount()
+    {
+        const { formeditado } =  this.props 
         console.log("Input - Form editar "+formeditado)
-   }
+        if(formeditado){
+            this.setState({
+                inputValido: true     
+                
+            })
+        }
+    } */
+
+    componentDidUpdate(nextProps)
+    {
+        console.log(nextProps, 'next')
+        if(nextProps.formeditado !== this.props.formeditado)
+            this.setState({
+                ... this.state,
+                inputValido: true
+            })
+    }
+    
     render() {
         const { error, onChange, placeholder, iconclass, messageinc, ...props } = this.props 
         const { inputValido } =  this.state  
