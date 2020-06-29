@@ -31,9 +31,22 @@ class ConceptoForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, ...props } = this.props
+        const { title, options, form, onChange, onSubmit, ...props } = this.props
         return (
-            <Form {...props}>
+            <Form id="form-concepto"
+                onSubmit = { 
+                    (e) => {
+                        e.preventDefault(); 
+                        var elementsInvalid = document.getElementById("form-concepto").getElementsByClassName("is-invalid"); 
+                        if(elementsInvalid.length===0){   
+                            onSubmit(e)
+                        }else{ 
+                            alert("Rellena todos los campos")
+                        } 
+                    }
+                }
+                {...props}
+                >
                     <div className="form-group row form-group-marginless pt-4">
                         <div className="col-md-6">
                             <SelectSearch 
@@ -73,6 +86,7 @@ class ConceptoForm extends Component {
                         </div>
                         <div className="col-md-6">
                             <InputMoney 
+                                requirevalidation={1}
                                 thousandSeparator={true}
                                 placeholder="Costo"
                                 value={form.costo}
@@ -87,6 +101,7 @@ class ConceptoForm extends Component {
                         <div className="form-group row form-group-marginless">
                             <div className="col-md-12">
                                 <Input 
+                                    requirevalidation={1}
                                     as="textarea" 
                                     placeholder="Descripción"
                                     rows="3"
