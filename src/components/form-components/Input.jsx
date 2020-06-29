@@ -31,7 +31,6 @@ class Input extends Component {
     }
 
     componentDidUpdate(nextProps){
-        console.log(nextProps, 'next')
         if(nextProps.formeditado !== this.props.formeditado)
             if(!nextProps.requirevalidation)
             {

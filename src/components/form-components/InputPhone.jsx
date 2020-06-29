@@ -33,10 +33,16 @@ class InputPhone extends Component {
 
     componentDidUpdate(nextProps){
         if(nextProps.formeditado !== this.props.formeditado)
-            this.setState({
-                ... this.state,
-                inputPhone: true
-            })
+            if(!nextProps.requirevalidation)
+            {
+                this.setState({
+                    ... this.state,
+                    inputPhone: true
+                })
+            }else{
+                this.validarPhone({ target: { value: nextProps.value } })
+            }
+            
     }
 
     onChange = values => {
