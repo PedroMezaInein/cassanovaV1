@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 import { Input, Button, Select } from '../form-components'
 import { Subtitle, P } from '../texts'
+import {EMAIL} from '../../constants'
 
 class RegisterUserForm extends Component{
 
@@ -12,21 +13,47 @@ class RegisterUserForm extends Component{
     render(){
         const { children, options, form, onChange, title } = this.props
         return(
-            <Form { ... this.props}>
-                <Subtitle className="text-center" color="gold">
-                    {title}
-                </Subtitle>
-                <div className="row mx-0 mt-3 ,b-2">
-                    <div className="col-md-6 px-2">
-                        <Input onChange={ onChange } required name="name" type="text" value={ form.name } placeholder="Nombre"/>
+            <Form 
+                { ... this.props}
+                >
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-4">
+                        <Input 
+                            onChange={ onChange } 
+                            required 
+                            name="name" 
+                            type="text" 
+                            value={ form.name } 
+                            placeholder="Nombre"
+                            iconclass={"fas fa-user"}
+                            messageinc="Incorrecto. Ingresa el nombre."
+                        />
                     </div>
-                    <div className="col-md-6 px-2">
-                        <Input onChange={ onChange } required name="email" type="email" value={ form.email } placeholder="Email"/>
+                    <div className="col-md-4">
+                        <Input 
+                            onChange={ onChange } 
+                            required 
+                            name="email" 
+                            type="email" 
+                            value={ form.email }
+                            placeholder="Email"
+                            iconclass={"fas fa-envelope"}                                            
+                            messageinc="Incorrecto. Ej. usuario@dominio.com"
+                            patterns={EMAIL}
+                        />
                     </div>
-                    <div className="col-md-6 px-2">
-                        <Select onChange={ onChange } name="tipo" value={ form.tipo } placeholder="Selecciona el tipo de usuario" options={options} />
+                    <div className="col-md-4">
+                        <Select 
+                            onChange={ onChange } 
+                            name="tipo" 
+                            value={ form.tipo } 
+                            placeholder="Selecciona el tipo de usuario" 
+                            options={options} 
+                            iconclass={"fas fa-user-cog"}
+                            messageinc="Incorrecto. Selecciona el tipo de usuario."
+                        />
                     </div>
-                </div>
+                </div> 
                 { children }
                 <div className="mt-3 text-center">
                     <Button icon='' className="mx-auto" type="submit" text="Enviar" />
