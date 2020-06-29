@@ -17,7 +17,7 @@ class CuentaForm extends Component{
                 <div className="form-group row form-group-marginless pt-4">
                     <div className="col-md-8">
                         <Input 
-                            required
+                            requirevalidation={1}
                             placeholder = "Ingrese el nombre de la cuenta" 
                             type = "text"
                             name = "nombre" 
@@ -30,7 +30,7 @@ class CuentaForm extends Component{
                     </div>
                     <div className="col-md-4">
                         <Select 
-                            required 
+                            requirevalidation={1} 
                             name = 'banco' 
                             options = { bancos } 
                             placeholder = 'Selecciona el banco' 
@@ -46,7 +46,7 @@ class CuentaForm extends Component{
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <InputNumber 
-                            required 
+                            requirevalidation={1} 
                             placeholder = "Ingresa el número de cuenta" 
                             type = "text" 
                             name = "numero" 
@@ -59,7 +59,7 @@ class CuentaForm extends Component{
                     </div>
                     <div className="col-md-4">
                         <Select 
-                            required 
+                            requirevalidation={1} 
                             name = 'tipo' 
                             options = { tipos } 
                             placeholder = 'Selecciona el tipo' 
@@ -72,7 +72,7 @@ class CuentaForm extends Component{
                     </div>
                     <div className="col-md-4">
                         <Select 
-                            required 
+                            requirevalidation={1} 
                             name = 'estatus' 
                             options = { estatus } 
                             placeholder = 'Selecciona el estatus' 
@@ -88,7 +88,7 @@ class CuentaForm extends Component{
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Select 
-                            required 
+                            requirevalidation={1} 
                             name = 'empresa' 
                             options = { empresas } 
                             placeholder = 'Selecciona la(s) empresa(s)' 
@@ -127,6 +127,7 @@ class CuentaForm extends Component{
                     <div className="form-group row form-group-marginless">
                     <div className="col-md-12">
                         <Input 
+                            requirevalidation={1}
                             rows = "3" 
                             as = "textarea" 
                             placeholder = "Descripción" 
