@@ -9,20 +9,26 @@ import {  Small } from '../texts'
 class FileInput extends Component{
     
     state = {
-        fileValido: false
+        fileValido: this.props.requirevalidation ? false : true
     }
 
     validarFileInput(e){
         const { value } = e.target
-        
-        if(value > 0){
-            this.setState({
-                fileValido: false
-            })
+        const {requirevalidation}= this.props
+        if(requirevalidation){        
+            if(value > 0){
+                this.setState({
+                    fileValido: false
+                })
+            }else{
+                this.setState({
+                    fileValido: true     
+                    
+                })
+            }
         }else{
             this.setState({
-                fileValido: true     
-                
+                fileValido: true  
             })
         }
     }
@@ -32,11 +38,11 @@ class FileInput extends Component{
         return(
             <>
                 <label className = "col-form-label ">{placeholder}</label>
-                <div className="input-group mb-3 ">
-                    <div className="input-group-prepend">
-                        <span className="input-group-text"><i className={"fas fa-paperclip kt-font-boldest text-primary"}></i></span>
-                    </div>
-                    <div className={'custom-file'}>
+                <div className="input-icon">
+                    <span className="input-icon input-icon-right">
+                        <i className={"fas fa-paperclip m-0 kt-font-boldest text-primary"}></i> 
+                    </span>
+                    <div className={'custom-file'}> 
                         <input 
                             //onChange = { onChangeAdjunto }
                             onChange={ (e) => { e.preventDefault(); this.validarFileInput(e); onChangeAdjunto(e) }} 
@@ -47,14 +53,12 @@ class FileInput extends Component{
                             accept = { accept }
                             { ... props}
                             className={ fileValido ? " custom-file-input is-valid " : " custom-file-input is-invalid" }
-                        />  
+                        /> 
                         <label className="custom-file-label" htmlFor="customFile"></label>
-                    </div>
-
-                    {/*<label htmlFor = {id}>
-                        <FontAwesomeIcon className = "p-0 font-unset mr-2" icon={  faPaperclip } color={ DARK_BLUE } />
-                    </label>*/}
-                    <div className="flex-wrap d-flex">
+                    </div>                    
+                </div>
+                <span className={ fileValido ? "form-text text-danger hidden" : "form-text text-danger"}> {messageinc} </span>
+                <div className="flex-wrap d-flex">
                     {
                         files.map((file, key) => {
                             return(
@@ -91,7 +95,7 @@ class FileInput extends Component{
                             )
                         })
                     }</div>
-                </div>
+
             </>
         )
     }
