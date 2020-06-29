@@ -21,7 +21,8 @@ import RemisionCard from '../../components/cards/Proyectos/RemisionCard'
 import { Accordion } from 'react-bootstrap'
 import { faEye } from '@fortawesome/free-regular-svg-icons'
 import NewTable from '../../components/tables/NewTable'
-import SolicitudVentaForm from '../../components/forms/proyectos/SolicitudVentaForm'
+import {SolicitudVentaForm} from '../../components/forms'
+import {SolicitudVentaCard} from '../../components/cards'
 
 class SolicitudVenta extends Component{
 
@@ -74,6 +75,19 @@ class SolicitudVenta extends Component{
         });
         if(!solicitud)
             history.push('/')
+        let queryString = this.props.history.location.search
+        if(queryString){
+            let params = new URLSearchParams(queryString)
+            let id = parseInt(params.get("id"))
+            if(id){
+                
+                this.setState({
+                    ... this.state,
+                    modalSingle: true
+                })
+                this.getSolicitudVentaAxios(id)
+            }
+        }
         this.getSolicitudesVentaAxios()
     }
 
@@ -92,8 +106,8 @@ class SolicitudVenta extends Component{
                     form[element] = 'Sin factura'
                     break;
                 case 'adjuntos':
-                    /* form['adjuntos'].adjunto.value = ''
-                    form['adjuntos'].adjunto.files = [] */
+                    form['adjuntos'].adjunto.value = ''
+                    form['adjuntos'].adjunto.files = []
                     break;
                 default:
                     form[element] = ''
@@ -162,6 +176,14 @@ class SolicitudVenta extends Component{
         })
     }
 
+    openModalSingle = ( solicitud ) => {
+        this.setState({
+            ... this.state,
+            modalSingle: true,
+            solicitud: solicitud
+        })
+    }
+
     handleClose = () => {
         this.setState({
             ... this.state,
@@ -173,13 +195,30 @@ class SolicitudVenta extends Component{
     }
 
     handleCloseDelete = () => {
-        const { modal } = this.state
+        const { modalDelete } = this.state
         this.setState({
             ... this.state,
-            modal: !modal,
+            modalDelete: !modalDelete,
             form: this.clearForm(),
             solicitud: ''
         })
+    }
+
+    handleCloseSingle = () => {
+        const { modalSingle } = this.state
+        this.setState({
+            ... this.state,
+            modalSingle: !modalSingle,
+            solicitud: ''
+        })
+    }
+
+    changePageConvert = solicitud => {
+        const { history } = this.props
+        history.push({
+            pathname: '/proyectos/ventas',
+            state: { solicitud: solicitud}
+        });
     }
 
     onChange = e => {
@@ -302,6 +341,13 @@ class SolicitudVenta extends Component{
                     iconclass: 'flaticon2-refresh',                  
                     action: 'convert',
                     tooltip: {id:'convert', text:'Convertir', type:'success'},
+                },
+                {
+                    text: 'Ver',
+                    btnclass: 'primary',
+                    iconclass: 'flaticon2-expand',                  
+                    action: 'see',
+                    tooltip: {id:'see', text:'Mostrar', type:'success'},
                 }
         )
         return aux
@@ -339,6 +385,32 @@ class SolicitudVenta extends Component{
         })
     }
 
+    async getSolicitudVentaAxios(id){
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'solicitud-venta/'+id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { data } = this.state
+                const { solicitud } = response.data
+                data.solicitud = solicitud
+                this.setState({
+                    ... this.state,
+                    solicitud: solicitud,
+                    data
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     async addSolicitudVentaAxios(){
         
         const { access_token } = this.props.authUser
@@ -509,7 +581,7 @@ class SolicitudVenta extends Component{
 
     render(){
 
-        const { data, solicitudes, modal, modalDelete, title, form, options } = this.state
+        const { data, solicitudes, modal, modalDelete, title, form, options, solicitud, modalSingle } = this.state
         return(
             <Layout active={'proyectos'}  { ...this.props}>
                 <NewTable 
@@ -524,7 +596,8 @@ class SolicitudVenta extends Component{
                     actions = {{
                         'edit': {function: this.openModalEdit},
                         'delete': {function: this.openModalDelete},
-                        'convert': {function: this.changePageConvert}
+                        'convert': {function: this.changePageConvert},
+                        'see': {function: this.openModalSingle}
                     }}
                     elements = { data.solicitudes } />
                 <Modal show = { modal } handleClose = { this.handleClose } title = { title }>
@@ -537,6 +610,18 @@ class SolicitudVenta extends Component{
                         ¿Estás seguro que deseas eliminar la solicitud de venta?
                     </Subtitle>
                 </ModalDelete>
+                <Modal title = "Solicitud de venta" show = { modalSingle } handleClose = { this.handleCloseSingle } >
+                    <SolicitudVentaCard data = { solicitud }>
+                        {
+                            solicitud.convertido ? '' :
+                                <div className="col-md-12 mb-3 d-flex justify-content-end">
+                                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.changePageConvert(solicitud)} } text='' icon={faSync} color="transparent" 
+                                        tooltip={{id:'convertir', text:'Comprar', type:'success'}} />
+                                </div>
+                        }
+                        
+                    </SolicitudVentaCard>
+                </Modal>
             </Layout>
         )
     }
