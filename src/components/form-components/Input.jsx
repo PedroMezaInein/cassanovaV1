@@ -4,14 +4,15 @@ import Form from 'react-bootstrap/Form'
 class Input extends Component {
 
     state = {
-        inputValido: this.props.requirevalidation ? false : true
-    }
-
-    validarInput(e){        
-        const { value } = e.target
+        inputValido: this.props.requirevalidation ?
+                (this.props.formeditado===1? true:false) //Validar todos al principio si es un Form Editar
+            :true
+    }  
+    validarInput(e){         
+        const { value } = e.target 
         const {patterns, requirevalidation}= this.props
         if(requirevalidation){
-            var expRegular = new RegExp(patterns);         
+            var expRegular = new RegExp(patterns);       
                 if(expRegular.test(value)){
                     this.setState({
                         inputValido: true
@@ -29,10 +30,35 @@ class Input extends Component {
             })
         }
     }
-
+ 
+     /*
+    componentDidUpdate()
+    {
+        const { primeravalidacion } =  this.state 
+        const { formeditado } =  this.props 
+        if(formeditado)
+        {
+            if(primeravalidacion)
+            {
+                this.setState({
+                    inputValido: true     
+                    
+                })
+                console.log(this.state) 
+            }
+        }
+    }
+    */
+   componentDidMount()
+   {
+    const { formeditado } =  this.props 
+        console.log("Input - Form editar "+formeditado)
+   }
     render() {
-        const { error, onChange, placeholder, iconclass, messageinc,  ...props } = this.props 
-        const { inputValido } =  this.state        
+        const { error, onChange, placeholder, iconclass, messageinc, ...props } = this.props 
+        const { inputValido } =  this.state  
+        
+      //  let  inputValido   = this.props.value!==""? true : this.state.inputValido 
         return (
             <div >
                 <label className="col-form-label">{placeholder}</label>
@@ -43,7 +69,7 @@ class Input extends Component {
                         <Form.Control 
                             placeholder={placeholder} 
                             className={ inputValido ? " form-control is-valid " : " form-control is-invalid" }
-                            onChange={(e) => { e.preventDefault(); this.validarInput(e); onChange(e) }} 
+                            onChange={(e) => { e.preventDefault(); this.validarInput(e); onChange(e) }}  
                             {...props} 
                         /> 
                     </div>

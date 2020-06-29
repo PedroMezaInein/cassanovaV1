@@ -9,7 +9,9 @@ class Select extends Component{
     } */ 
 
     state = {
-        selectValido: this.props.requirevalidation ? false : true
+        selectValido: this.props.requirevalidation ? 
+            (this.props.formeditado? true:false)
+        : true
     }
 
     validarSelect(e){
@@ -36,7 +38,7 @@ class Select extends Component{
 
     render(){
         const { options, placeholder, value, name, onChange, iconclass, messageinc, ...props } = this.props
-        const { selectValido } = this.state
+        const { selectValido } = this.state 
         return(
             <>
                 <Form.Label className="col-form-label">{ placeholder }</Form.Label>
