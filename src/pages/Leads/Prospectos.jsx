@@ -16,6 +16,7 @@ import Moment from 'react-moment'
 import { DataTable } from '../../components/tables'
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList, setContactoTable } from '../../functions/setters'
 import NewTable from '../../components/tables/NewTable'
+import TableForModals from '../../components/tables/TableForModals'
 class Leads extends Component {
 
     state = {
@@ -40,7 +41,9 @@ class Leads extends Component {
         contactHistory: [],
         data: {
             prospecto: []
-        }
+        },
+        formeditado:0
+
     }
 
     constructor(props) {
@@ -86,16 +89,16 @@ class Leads extends Component {
         })
     }
 
-    activeModalHistory = e => contactos => {
+    activeModalHistory =  prospecto => {
         let aux = []
-        contactos.map((contacto) => {
+        prospecto.contactos.map((contacto) => {
             aux.push(
                 {
-                    usuario: this.setText(contacto.user.name),
-                    fecha: this.setDateTable(contacto.created_at),
-                    medio: this.setText(contacto.tipo_contacto.tipo),
-                    estado: contacto.success ? this.setText('Contactado') : this.setText('Sin respuesta'),
-                    comentario: this.setText(contacto.comentario)
+                    usuario: renderToString(this.setText(contacto.user.name)),
+                    fecha: renderToString(this.setDateTable(contacto.created_at)),
+                    medio: renderToString(this.setText(contacto.tipo_contacto.tipo)),
+                    estado: contacto.success ? renderToString(this.setText('Contactado')) : renderToString(this.setText('Sin respuesta')),
+                    comentario: renderToString(this.setText(contacto.comentario)),
                 }
             )
         })
@@ -106,11 +109,33 @@ class Leads extends Component {
         })
     }
 
-    activeFormContact = e => prospecto => {
+    /*activeModalHistory = contactos => {
+        let aux = []
+        contactos.map((contacto) => {
+            aux.push(
+                {
+                    usuario: renderToString(this.setText(contacto.user.name)),
+                    fecha: renderToString(this.setDateTable(contacto.created_at)),
+                    medio: renderToString(this.setText(contacto.tipo_contacto.tipo)),
+                    estado: contacto.success ? renderToString(this.setText('Contactado')) : renderToString(this.setText('Sin respuesta')),
+                    comentario: renderToString(this.setText(contacto.comentario)),
+                    //id: contacto.id
+                }
+            )
+        })
+        this.setState({
+            ... this.state,
+            modalHistoryContact: true,
+            contactHistory: aux
+        })
+    }*/
+
+    activeFormContact = prospecto => {
         this.clearForm('formContacto', EMPTY_CONTACTO)
         this.setState({
             prospecto,
             modalContactForm: true,
+            formeditado:0
         })
     }
 
@@ -138,7 +163,7 @@ class Leads extends Component {
         })
     }
 
-    openSafeDelete = e => (prospecto) => {
+    openSafeDelete = (prospecto) => {
         this.setState({
             ... this.state,
             modalDelete: true,
@@ -146,7 +171,7 @@ class Leads extends Component {
         })
     }
 
-    openEdit = e => (prospecto) => {
+    openEdit = (prospecto) => {
         const { form } = this.state
         form['descripcion'] = prospecto.descripcion
         form['preferencia'] = prospecto.preferencia
@@ -172,14 +197,16 @@ class Leads extends Component {
             modal: true,
             prospecto,
             title: 'Editar prospecto',
-            form
+            form,
+            formeditado:1
         })
     }
 
-    openConvert = e => (prospecto) => {
+    openConvert = (prospecto) => {
         this.setState({
             modalConvert: true,
-            prospecto: prospecto
+            prospecto: prospecto,
+            formeditado:1
         })
     }
 
@@ -299,8 +326,8 @@ class Leads extends Component {
             },                
             {
                 text: 'Convertir&nbsp;en&nbsp;proyecto',
-                btnclass: 'warning',
-                iconclass: 'flaticon2-rubbish-bin', 
+                btnclass: 'dark',
+                iconclass: 'flaticon-folder-1', 
                 action: 'convert',
                 tooltip: {id:'convert', text:'Convertir en proyecto'}
             }
@@ -310,9 +337,9 @@ class Leads extends Component {
             {
                 text: 'Historial&nbsp;de&nbsp;contacto',
                 btnclass: 'info',
-                iconclass: 'flaticon2-rubbish-bin', 
-                action: 'delete',
-                tooltip: {id:'delete', text:'Historial de contacto'}
+                iconclass: 'flaticon-list-1', 
+                action: 'historial',
+                tooltip: {id:'historial', text:'Historial de contacto'}
             }
         )        
     }
@@ -496,7 +523,8 @@ class Leads extends Component {
                 this.setProspectos(prospectos)
                 this.setState({
                     ... this.state,
-                    clientes: setOptions(clientes, 'nombre', 'id')
+                    clientes: setOptions(clientes, 'nombre', 'id'),
+                    data
                     //prospectos: this.setProspectos(prospectos)
                 })
 
@@ -782,7 +810,7 @@ class Leads extends Component {
 
     render() {
         const { modal, modalConvert, title, lead, vendedores, estatusProspectos, clientes, tipoProyectos, estatusContratacion, tiposContactos, form, formCliente, formContacto,
-            prospectos, modalHistoryContact, contactHistory, modalContactForm, modalDelete, prospecto, data } = this.state
+            prospectos, modalHistoryContact, contactHistory, modalContactForm, modalDelete, prospecto, data, formeditado} = this.state
 
         return (
             <Layout active={'leads'}  {...this.props}>
@@ -808,6 +836,7 @@ class Leads extends Component {
 
                 <Modal title={title} show={modal} handleClose={this.handleCloseModal} >
                     <ProspectoForm
+                        formeditado={formeditado}
                         className=" px-3 "                        
                         vendedores={vendedores}
                         estatusProspectos={estatusProspectos}
@@ -922,43 +951,35 @@ class Leads extends Component {
                         }
                     </ProspectoForm>
                 </Modal>
-                <Modal show={modalHistoryContact} handleClose={this.handleCloseHistoryModal}>
-                    <Subtitle className="my-3">
-                        Historial de contacto
-                    </Subtitle>
+                <Modal show={modalHistoryContact} handleClose={this.handleCloseHistoryModal} title={"Historial de contacto"}>
                     {
                         contactHistory &&
-                        <DataTable columns={CONTACTO_COLUMNS} data={contactHistory} />
+                        <TableForModals
+                            columns={CONTACTO_COLUMNS} 
+                            data={contactHistory} 
+                            elements = { data.contactHistory }
+                        />
                     }
 
                 </Modal>
-                <Modal show={modalContactForm} handleClose={this.handleCloseFormContact}>
+                <Modal title={"Agregar un nuevo contacto"} show={modalContactForm} handleClose={this.handleCloseFormContact}>
                     <Form className="mx-3" onSubmit={this.submitContactForm}>
-                        <Subtitle className="mb-3">
-                            Agregar un nuevo contacto
-                        </Subtitle>
                         <ContactoLeadForm tiposContactos={tiposContactos} formContacto={formContacto} onChangeContacto={this.onChangeContacto} />
                         <div className="mt-3 text-center">
                             <Button icon='' className="mx-auto" type="submit" text="Enviar" />
                         </div>
                     </Form>
-                </Modal>
-                <Modal show={modalDelete} handleClose={this.handleDeleteModal} >
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas eliminarel prospecto?
-                    </Subtitle>
+                </Modal> 
+                    <Modal title={"¿Estás seguro que deseas eliminar el prospecto?"} show={modalDelete} handleClose={this.handleDeleteModal} className={"text-center"}>
                     <div className="d-flex justify-content-center mt-3">
-                        <Button icon='' onClick={this.handleDeleteModal} text="Cancelar" className="mr-3" color="green" />
-                        <Button icon='' onClick={(e) => { this.safeDelete(e)(prospecto.id) }} text="Continuar" color="red" />
+                        <Button icon='' onClick={this.handleDeleteModal} text="Cancelar" className={"btn btn-light-primary font-weight-bolder mr-3"} />
+                        <Button icon='' onClick={(e) => { this.safeDelete(e)(prospecto.id) }} text="Continuar" className={"btn btn-success font-weight-bold mr-2"} />
                     </div>
-                </Modal>
-                <Modal show={modalConvert} handleClose={this.handleCloseConvertModal}>
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas convertir el prospecto en un proyecto?
-                    </Subtitle>
+                </Modal> 
+                <Modal show={modalConvert} handleClose={this.handleCloseConvertModal} title={"¿Estás seguro que deseas convertir el prospecto en un proyecto?"}>
                     <div className="d-flex justify-content-center mt-3">
-                        <Button icon='' onClick={this.handleCloseConvertModal} text="Cancelar" className="mr-3" color="red" />
-                        <Button icon='' onClick={(e) => { this.safeConvert(e)(prospecto) }} text="Continuar" />
+                        <Button icon='' onClick={this.handleCloseConvertModal} text="Cancelar" className="mr-3" className={"btn btn-light-primary font-weight-bolder mr-3"} />
+                        <Button icon='' onClick={(e) => { this.safeConvert(e)(prospecto) }} text="Continuar" className={"btn btn-success font-weight-bold mr-2"}/>
                     </div>
                 </Modal>
             </Layout>

@@ -6,7 +6,8 @@ import axios from 'axios'
 import { CP_URL } from '../../constants'
 import swal from 'sweetalert'
 import { ContactoLeadForm, ClienteForm } from '../forms'
-import {openWizard1, openWizard2, openWizard3 } from '../../functions/wizard'
+import { openWizard1, openWizard2, openWizard3 } from '../../functions/wizard'
+import { validateAlert } from '../../functions/alert'
 
 class ProspectoForm extends Component{
 
@@ -124,7 +125,7 @@ class ProspectoForm extends Component{
     }
 
     render(){
-        const { title, form, formCliente, children, vendedores, estatusProspectos, clientes, tipoProyecto, estatusContratacion, tiposContactos, onChange, onChangeCliente, onChangeContacto, formContacto, onSubmit, ...props } = this.props
+        const { title, form, formCliente, children, vendedores, estatusProspectos, clientes, tipoProyecto, estatusContratacion, tiposContactos, onChange, onChangeCliente, onChangeContacto, formContacto, onSubmit, formeditado, ...props } = this.props
         const { newClient, newEstatusProspectos, newTipoProyecto, newEstatusContratacion, municipio, estado, colonias } = this.state
         return(
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
@@ -159,12 +160,7 @@ class ProspectoForm extends Component{
                             onSubmit = { 
                                 (e) => {
                                     e.preventDefault(); 
-                                    var elementsInvalid = document.getElementById("wizard-3-content").getElementsByClassName("is-invalid"); 
-                                    if(elementsInvalid.length===0){   
-                                        onSubmit(e)
-                                    }else{ 
-                                        alert("Rellena todos los campos")
-                                    } 
+                                    validateAlert(onSubmit, e, 'wizard-3-content')
                                 }
                             }
                             { ... props}
@@ -177,6 +173,7 @@ class ProspectoForm extends Component{
                                         { 
                                             vendedores && 
                                                 <SelectSearch 
+                                                    formeditado={formeditado}
                                                     options = { vendedores } 
                                                     placeholder = "Selecciona al vendedor"
                                                     name="vendedor" 
@@ -189,6 +186,7 @@ class ProspectoForm extends Component{
                                         { 
                                             estatusProspectos && 
                                                 <SelectSearch 
+                                                    formeditado={formeditado}
                                                     options = { estatusProspectos } 
                                                     placeholder = "Selecciona el estatus del prospecto" 
                                                     onChange={this.updateEstatusProspectos}
@@ -201,6 +199,7 @@ class ProspectoForm extends Component{
                                         newEstatusProspectos && 
                                             <div className="col-md-4">
                                                 <Input 
+                                                    formeditado={formeditado}
                                                     requirevalidation={1}
                                                     name="newEstatusProspecto"
                                                     type="text" 
@@ -217,6 +216,7 @@ class ProspectoForm extends Component{
                                         { 
                                             clientes && 
                                                 <SelectSearch
+                                                    formeditado={formeditado}
                                                     options = { clientes }
                                                     placeholder = "Selecciona el cliente"
                                                     onChange={this.updateCliente}
@@ -229,6 +229,7 @@ class ProspectoForm extends Component{
                                         { 
                                             tipoProyecto && 
                                                 <SelectSearch 
+                                                    formeditado={formeditado}
                                                     options = { tipoProyecto } 
                                                     placeholder = "Selecciona el tipo de proyecto" 
                                                     onChange={this.updateTipoProyecto} 
@@ -241,6 +242,7 @@ class ProspectoForm extends Component{
                                         newTipoProyecto && 
                                             <div className="col-md-4">
                                                 <Input 
+                                                    formeditado={formeditado}
                                                     requirevalidation={1}
                                                     name="newTipoProyecto"
                                                     onChange={onChange}
@@ -255,6 +257,7 @@ class ProspectoForm extends Component{
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <Input 
+                                            formeditado={formeditado}
                                             requirevalidation={1}
                                             name="preferencia"
                                             type="text"
@@ -269,6 +272,7 @@ class ProspectoForm extends Component{
                                         { 
                                             estatusContratacion && 
                                                 <SelectSearch 
+                                                    formeditado={formeditado}
                                                     options = { estatusContratacion } 
                                                     placeholder = "Selecciona el estatus de contratación" 
                                                     name='estatusContratacion'
@@ -281,6 +285,7 @@ class ProspectoForm extends Component{
                                         newEstatusContratacion && 
                                             <div className="col-md-4">
                                                 <Input 
+                                                    formeditado={formeditado}
                                                     requirevalidation={1}
                                                     name="newEstatusContratacion" 
                                                     onChange={onChange} 
@@ -303,6 +308,7 @@ class ProspectoForm extends Component{
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-12">
                                         <Input 
+                                            formeditado={formeditado}
                                             requirevalidation={0}
                                             rows="3" 
                                             as="textarea" 
@@ -319,6 +325,7 @@ class ProspectoForm extends Component{
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-12">
                                         <Input 
+                                            formeditado={formeditado}
                                             requirevalidation={0}
                                             rows="3" 
                                             as="textarea" 
@@ -345,14 +352,14 @@ class ProspectoForm extends Component{
                                     {
                                         newClient &&
                                             <ClienteForm 
-                                                onChange = { onChangeCliente } 
-                                                title = 'Información del cliente'
-                                                form = { formCliente }
-                                                changeCP = { this.changeCP }
-                                                estado = { estado }
-                                                municipio = { municipio }
-                                                colonias = { colonias }
-                                                updateColonia = { this.updateColonia }
+                                                    onChange = { onChangeCliente } 
+                                                    title = 'Información del cliente'
+                                                    form = { formCliente }
+                                                    changeCP = { this.changeCP }
+                                                    estado = { estado }
+                                                    municipio = { municipio }
+                                                    colonias = { colonias }
+                                                    updateColonia = { this.updateColonia }
                                                 />
                                     }
                                     {

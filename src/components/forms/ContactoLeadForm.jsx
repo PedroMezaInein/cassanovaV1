@@ -28,14 +28,15 @@ class ContactoLeadForm extends Component{
     }
 
     render(){
-        const { tiposContactos, formContacto, onChangeContacto } = this.props
+        const { tiposContactos, formContacto, onChangeContacto, formeditado} = this.props
         const { newTipoContacto } = this.state
         return(
             <div className="">
-                <div className="form-group row form-group-marginless">
+                <div className="form-group row form-group-marginless pt-4">
                 <div className="col-md-12">
                     <p className="m-0">Selecciona el estatus del intento de contacto</p>
                     <RadioGroup
+                        formeditado={formeditado}
                         name = { 'success' }
                         onChange = { onChangeContacto }
                         options = {
@@ -58,6 +59,7 @@ class ContactoLeadForm extends Component{
             <div className="form-group row form-group-marginless">
                 <div className="col-md-4">
                     <SelectSearch 
+                        formeditado={formeditado}
                         requirevalidation={1}
                         options={tiposContactos} 
                         placeholder = "Selecciona el medio de contacto" 
@@ -71,6 +73,7 @@ class ContactoLeadForm extends Component{
                     newTipoContacto &&
                         <div className="col-md-4">
                             <Input 
+                                formeditado={formeditado}
                                 requirevalidation={1}
                                 onChange={ onChangeContacto } 
                                 name="newTipoContacto" 
@@ -81,6 +84,7 @@ class ContactoLeadForm extends Component{
                 }
                 <div className="col-md-4">
                     <Calendar 
+                        formeditado={formeditado}
                         onChangeCalendar = { this.handleChangeDate }
                         placeholder = "Fecha de contacto"
                         name = "fechaContacto"
@@ -93,6 +97,7 @@ class ContactoLeadForm extends Component{
             <div className="form-group row form-group-marginless">
                 <div className="col-md-12">
                     <Input
+                        formeditado={formeditado}
                         requirevalidation={1}
                         as = 'textarea'
                         name = 'descripcion'
