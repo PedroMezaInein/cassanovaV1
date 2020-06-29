@@ -31,6 +31,7 @@ class Leads extends Component {
         data: {
             clientes: []
         },
+        formeditado:0,
         colonias: []
     }
 
@@ -123,7 +124,8 @@ class Leads extends Component {
         this.setState({
             ... this.state,
             modal: true,
-            typeForm: 'Add'
+            typeForm: 'Add',
+            formeditado:0
         })
         this.clearForm('form', EMPTY_CLIENTE)
     }
@@ -162,7 +164,8 @@ class Leads extends Component {
             modal: true,
             typeForm: 'Edit',
             form,
-            cliente
+            cliente,
+            formeditado:1
         })
     }
 
@@ -489,7 +492,7 @@ class Leads extends Component {
     }
 
     render() {
-        const { clientes, modal, typeForm, form, estado, municipio, colonias, modalDelete, cliente, data } = this.state
+        const { clientes, modal, typeForm, form, estado, municipio, colonias, modalDelete, cliente, data, formeditado, onSubmit} = this.state
         return (
             <Layout active={'leads'}  {...this.props}>
                 {/*<div className="text-right">
@@ -513,9 +516,22 @@ class Leads extends Component {
                 />
 
                 <Modal  title={typeForm === 'Add' ? 'Registrar nuevo cliente' : 'Editar usuario'} show={modal} handleClose={this.handleCloseModal}>
-                    <Form onSubmit={typeForm === 'Add' ? this.submitForm : this.submitEditForm}>
+                    <Form id="form-cliente"
+                    onSubmit = { 
+                                    (e) => {
+                                        e.preventDefault(); 
+                                        var elementsInvalid = document.getElementById("form-cliente").getElementsByClassName("is-invalid"); 
+                                        if(elementsInvalid.length===0){   
+                                            onSubmit(e)
+                                        }else{ 
+                                            alert("Rellena todos los campos")
+                                        } 
+                                    }
+                                }
+                        onSubmit={typeForm === 'Add' ? this.submitForm : this.submitEditForm}>
                         <div className="">
-                            <ClienteForm
+                            <ClienteForm 
+                                formeditado={formeditado}
                                 onChange={this.onChange}                               
                                 form={form}
                                 changeCP={this.changeCP}
