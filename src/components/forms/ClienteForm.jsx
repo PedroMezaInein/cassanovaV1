@@ -13,13 +13,14 @@ class ClienteForm extends Component{
 
     render(){
 
-        const { title, form, onChange, changeCP, estado, municipio, colonias, updateColonia } = this.props
+        const { title, form, onChange, changeCP, estado, municipio, colonias, updateColonia, formeditado } = this.props
         return(
             <>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Input 
                             requirevalidation={1}
+                            formeditado={formeditado}
                             name="empresa" 
                             value={form.empresa} 
                             onChange={onChange} 
@@ -32,7 +33,8 @@ class ClienteForm extends Component{
                     </div>
                     <div className="col-md-4">
                         <Input 
-                            requirevalidation={1}
+                            requirevalidation={0}
+                            formeditado={formeditado}
                             name="rfc" 
                             value={form.rfc} 
                             onChange={onChange} 
@@ -48,6 +50,7 @@ class ClienteForm extends Component{
                     <div className="col-md-4">
                         <Input 
                             requirevalidation={1}
+                            formeditado={formeditado}
                             name="nombre" 
                             value={form.nombre} 
                             onChange={onChange} 
@@ -64,6 +67,7 @@ class ClienteForm extends Component{
                     <div className="col-md-4">
                         <Input 
                             requirevalidation={1}
+                            formeditado={formeditado}
                             name="puesto" 
                             value={form.puesto} 
                             onChange={onChange} 
@@ -77,6 +81,7 @@ class ClienteForm extends Component{
                     <div className="col-md-8">
                         <Input 
                             requirevalidation={1}
+                            formeditado={formeditado}
                             rows="1" 
                             as="textarea" 
                             placeholder="Perfil"
@@ -94,6 +99,7 @@ class ClienteForm extends Component{
                 <div className="col-md-4">
                         <Input 
                             requirevalidation={1}
+                            formeditado={formeditado}
                             name="cp" 
                             onChange={changeCP}
                             value={form.cp} 
@@ -108,6 +114,7 @@ class ClienteForm extends Component{
                     <div className="col-md-4" hidden={colonias.length <= 0 ? true : false}>
                         <Input 
                             requirevalidation={0}
+                            formeditado={formeditado}
                             readOnly={colonias.length <= 0 ? true : false} 
                             value={estado} 
                             name="estado" 
@@ -121,6 +128,7 @@ class ClienteForm extends Component{
                     <div className="col-md-4" hidden={colonias.length <= 0 ? true : false}>
                         <Input 
                             requirevalidation={0}
+                            formeditado={formeditado}
                             readOnly={colonias.length <= 0 ? true : false} 
                             value={municipio} 
                             name="municipio" 
@@ -151,6 +159,7 @@ class ClienteForm extends Component{
                             colonias.length <= 0 && 
                                 <Input 
                                     requirevalidation={1}
+                                    formeditado={formeditado}
                                     readOnly 
                                     value={form.colonia} 
                                     name="colonia" 
@@ -164,6 +173,7 @@ class ClienteForm extends Component{
                     <div className="col-md-7" hidden={colonias.length <= 0 ? true : false}>
                         <Input 
                             requirevalidation={1}
+                            formeditado={formeditado}
                             name="calle" 
                             value={form.calle} 
                             onChange={onChange} 
