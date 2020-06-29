@@ -44,6 +44,7 @@ class Leads extends Component{
         data:{
             leads: []
         },
+        formeditado:0,
         leadId : '',
         convertir: ''
     }
@@ -260,7 +261,8 @@ class Leads extends Component{
             ... this.state,
             modalAdd: !this.state.modalAdd,
             title: 'Registrar nuevo lead',
-            tipoForm: 'Add'
+            tipoForm: 'Add',
+            formeditado:0
         })
     }
 
@@ -306,7 +308,8 @@ class Leads extends Component{
             form,
             title: 'Editar lead',
             tipoForm: 'Edit',
-            leadId
+            leadId,
+            formeditado:1
         })
     }
 
@@ -318,7 +321,7 @@ class Leads extends Component{
         this.setState({
             ... this.state,
             modalDelete: true,
-            leadId
+            leadId,
         })
 
     }
@@ -330,7 +333,8 @@ class Leads extends Component{
             ... this.state,
             modalConvert: true,
             convertir: 'Prospecto',
-            leadId
+            leadId,
+            formeditado:0
         })
     }
 
@@ -341,7 +345,8 @@ class Leads extends Component{
             ... this.state,
             modalConvert: true,
             convertir: 'Proveedor',
-            leadId
+            leadId,
+            formeditado:1
         })
     }
 
@@ -686,7 +691,7 @@ class Leads extends Component{
     }
 
     render(){
-        const { leads, modalAdd, form, origenes, empresas, servicios, title, tipoForm, modalDelete, leadId, modalConvert, convertir,data } = this.state
+        const { leads, modalAdd, form, origenes, empresas, servicios, title, tipoForm, modalDelete, leadId, modalConvert, convertir,data, formeditado } = this.state
         return(
             <Layout active={'leads'}  { ...this.props}>
                 {/*<div className="text-right d-flex justify-content-end">
@@ -729,6 +734,7 @@ class Leads extends Component{
                         onChange = { (e) => { e.preventDefault(); this.handleChangeInput(e) } } 
                         onChangeCalendar = { this.handleChangeDate }
                         onChangeCheckboxes = { this.handleChangeCheckbox }
+                        formeditado={formeditado}
                         >
                     </LeadForm>
                 </Modal>

@@ -3,6 +3,7 @@ import Form from 'react-bootstrap/Form'
 import { Button, Input, Calendar, Select, OptionsCheckbox } from '../form-components'
 import { Subtitle } from '../texts'
 import { DATE, TEL, EMAIL} from '../../constants'
+import { validateAlert } from '../../functions/alert'
 
 class LeadForm extends Component{
 
@@ -21,14 +22,22 @@ class LeadForm extends Component{
 
     
     render(){
-        const { title, servicios, empresas, origenes, form, onChange, onChangeCalendar, onChangeCheckboxes, ...props } = this.props
+        const { title, servicios, empresas, origenes, form, onChange, onChangeCalendar, onChangeCheckboxes, onSubmit, formeditado, ...props } = this.props
         return(
-            <Form { ... props}
+            <Form id="form-lead"
+                onSubmit = { 
+                    (e) => {
+                        e.preventDefault(); 
+                        validateAlert(onSubmit, e, 'form-lead')
+                    }
+                }
+                { ... props}
                 >
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Input 
                             requirevalidation={1} 
+                            formeditado={formeditado}
                             type="text" 
                             placeholder="Nombre del lead"
                             name="nombre" 
@@ -42,7 +51,8 @@ class LeadForm extends Component{
                     </div>
                     <div className="col-md-4">
                         <Input 
-                            requirevalidation={1} 
+                            requirevalidation={1}
+                            formeditado={formeditado} 
                             type="email" 
                             placeholder="Correo electrónico"
                             name="email" 
@@ -57,6 +67,7 @@ class LeadForm extends Component{
                     <div className="col-md-4">
                             <Input 
                                 requirevalidation={1} 
+                                formeditado={formeditado}
                                 type="text" 
                                 placeholder="Teléfono"
                                 name="telefono" 
@@ -75,6 +86,7 @@ class LeadForm extends Component{
                     <div className="col-md-4">
                         <Select 
                             requirevalidation={1}
+                            formeditado={formeditado}
                             placeholder="Selecciona la empresa para el lead" 
                             options = { empresas } 
                             name="empresa" 
@@ -88,6 +100,7 @@ class LeadForm extends Component{
                     <div className="col-md-4">
                         <Select 
                             requirevalidation={1}
+                            formeditado={formeditado}
                             placeholder="Selecciona el origen para el lead" 
                             options = { origenes } 
                             name="origen" 
@@ -101,6 +114,7 @@ class LeadForm extends Component{
                     <div className="col-md-4">
                         <Calendar 
                             required
+                            formeditado={formeditado}
                             onChangeCalendar ={ onChangeCalendar }    
                             placeholder="Fecha de ingreso"
                             name="fecha"
@@ -114,7 +128,8 @@ class LeadForm extends Component{
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-12">
                         <Input 
-                            requirevalidation={1} 
+                            requirevalidation={0} 
+                            formeditado={formeditado}
                             rows="3" 
                             as="textarea" 
                             placeholder="Comentario"
@@ -131,6 +146,8 @@ class LeadForm extends Component{
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-12">
                         <OptionsCheckbox 
+                            requirevalidation={0}
+                            formeditado={formeditado}
                             placeholder="Selecciona los serivicios de interés" 
                             options = { form.servicios } 
                             name="servicios" 
