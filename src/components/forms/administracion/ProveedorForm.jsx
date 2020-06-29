@@ -27,9 +27,23 @@ class ProveedorForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, setOptions, ...props } = this.props
+        const { title, options, form, onChange, setOptions, onSubmit, formeditado, ...props } = this.props 
+       // const formeditado = 1;
         return (
-            <Form {...props}>
+            <Form id="form-proveedor"
+                onSubmit = { 
+                    (e) => {
+                        e.preventDefault(); 
+                        var elementsInvalid = document.getElementById("form-proveedor").getElementsByClassName("is-invalid"); 
+                        if(elementsInvalid.length===0){   
+                            onSubmit(e)
+                        }else{ 
+                            alert("Rellena todos los campos")
+                        } 
+                    }
+                }
+                {...props}
+                >
                 <Subtitle className="text-center">
                     {
                         title
@@ -39,23 +53,26 @@ class ProveedorForm extends Component {
                     <div className="form-group row form-group-marginless mt-5">
                         <div className="col-md-4">
                             <Input 
+                                requirevalidation={1}
                                 name="nombre" 
-                                value={form.nombre} 
+                                value={form.nombre===null?"":form.nombre} 
                                 placeholder="Nombre" 
                                 onChange={onChange} 
                                 iconclass={"far fa-user"}
+                                formeditado={formeditado}
                                 messageinc="Incorrecto. Ingresa el nombre."
                             />
                             {/*<span className="form-text text-muted">Por favor, ingrese el nombre. </span>*/}
                         </div>
 
                         <div className="col-md-4">
-                            <Input 
+                            <Input                             
                                 name="razonSocial"
-                                value={form.razonSocial}
+                                value={form.razonSocial===null?"":form.razonSocial}
                                 placeholder="Razón social"
                                 onChange={onChange}
                                 iconclass={"far fa-building"}
+                                formeditado={formeditado}
                                 messageinc="Incorrecto. Ingresa la razón social."
                             />
                             {/*<span className="form-text text-muted">Por favor, ingrese su razón social. </span>*/}
@@ -64,11 +81,12 @@ class ProveedorForm extends Component {
                         <div className="col-md-4">
                             <Input 
                                 name="rfc"
-                                value={form.rfc}
+                                value={form.rfc===null?"":form.rfc}
                                 placeholder="RFC"
                                 onChange={onChange}
                                 iconclass={"far fa-file-alt"}
                                 patterns={RFC}
+                                formeditado={formeditado}
                                 messageinc="Incorrecto. Ej. ABCD001122ABC"
                                 maxLength="13"
                             />
@@ -79,6 +97,7 @@ class ProveedorForm extends Component {
                     <div className="form-group row form-group-marginless">
                         <div className="col-md-4">
                             <Input 
+                                requirevalidation={1}
                                 name="correo" 
                                 value={form.correo} 
                                 placeholder="Correo electrónico" 
@@ -87,12 +106,14 @@ class ProveedorForm extends Component {
                                 iconclass={"fas fa-envelope"}                                            
                                 messageinc="Incorrecto. Ej. usuario@dominio.com"
                                 patterns={EMAIL}
+                                formeditado={formeditado}
                             />
                             {/*<span className="form-text text-muted">Por favor, ingrese su correo electrónico. </span>*/}
                         </div>
 
                         <div className="col-md-4">
                             <InputPhone 
+                                requirevalidation={1}
                                 thousandSeparator={false}
                                 prefix = { '' }
                                 name="telefono" 
@@ -102,6 +123,7 @@ class ProveedorForm extends Component {
                                 iconclass={"fas fa-mobile-alt"}                                            
                                 messageinc="Incorrecto. Ingresa el número de teléfono."
                                 patterns={TEL}
+                                formeditado={formeditado}
                             />
                             {/*<span className="form-text text-muted">Por favor, ingrese su teléfono. </span>*/}
                         </div>
@@ -112,11 +134,13 @@ class ProveedorForm extends Component {
 
                         <div className="col-md-4">
                             <InputNumber 
+                                requirevalidation={1}
                                 name="numCuenta" 
                                 value={form.numCuenta}
                                 placeholder="Número de cuenta"
                                 onChange={onChange}
                                 iconclass={" fas fa-id-card "}
+                                formeditado={formeditado}
                                 messageinc="Incorrecto. Ingresa el número de cuenta."
                             />
                             {/*<span className="form-text text-muted">Por favor, ingrese el número de cuenta </span>*/}
@@ -126,24 +150,26 @@ class ProveedorForm extends Component {
                     <div className="form-group row form-group-marginless">
                         <div className="col-md-4">
                             <Select 
-                                required 
+                                requirevalidation={1} 
                                 name='tipo' 
                                 options={options.tipos} 
                                 placeholder='Selecciona el tipo de cuenta' 
                                 value={form.tipo}
                                 onChange={onChange} 
+                                formeditado={formeditado}
                                 iconclass={" far fa-address-card"}
                             />
                             {/*<span className="form-text text-muted">Por favor, ingrese el tipo de cuenta </span>*/}
                         </div>
                         <div className="col-md-4">
                             <Select 
-                                required 
+                                requirevalidation={1} 
                                 name='banco' 
                                 options={options.bancos} 
                                 placeholder='Selecciona el banco' 
                                 value={form.banco}
                                 onChange={onChange} 
+                                formeditado={formeditado}
                                 iconclass={" fab fa-cc-discover "}
                             />
                             {/*<span className="form-text text-muted">Por favor, seleccione el banco </span>*/}
@@ -160,11 +186,13 @@ class ProveedorForm extends Component {
                         }
                         <div className="col-md-4">
                             <SelectSearch 
+                                required
                                 options={options.areas}
                                 placeholder="Selecciona el área"
                                 name="area" 
                                 value={form.area} 
                                 onChange={this.updateArea} 
+                                formeditado={formeditado}
                                 iconclass={"far fa-window-maximize"}
                             />
                             {/*<span className="form-text text-muted">Por favor, ingrese el área </span>*/}
@@ -175,11 +203,13 @@ class ProveedorForm extends Component {
                             form.area ?
                                 <div className="col-md-4">
                                     <SelectSearch 
+                                        required
                                         options={options.subareas} 
                                         placeholder="Selecciona el subárea"
                                         name="subarea" 
                                         value={form.subarea} 
                                         onChange={this.updateSubarea} 
+                                        formeditado={formeditado}
                                         iconclass={"far fa-window-restore"}
                                     />
                                     {/*<span className="form-text text-muted">Por favor, ingrese la sub-área </span>*/}

@@ -37,6 +37,7 @@ class ProveedorForm extends Component{
         data:{
             proveedores: []
         },
+        formeditado:0,
         options: {
             areas: [],
             subareas: [],
@@ -60,7 +61,8 @@ class ProveedorForm extends Component{
             case 'add':
                 this.setState({
                     ... this.state,
-                    title: 'Nuevo proveedor'
+                    title: 'Nuevo proveedor',
+                    formeditado:0
                 })
                 break;
             case 'edit':
@@ -70,7 +72,8 @@ class ProveedorForm extends Component{
                         this.setProveedor(state.proveedor)
                         this.setState({
                             ... this.state,
-                            title: 'Editar proveedor'
+                            title: 'Editar proveedor',
+                            formeditado:1
                         })
                     }
                     else
@@ -85,7 +88,8 @@ class ProveedorForm extends Component{
                         this.setLead(state.lead)
                         this.setState({
                             ... this.state,
-                            title: 'Convertir lead en proveedor'
+                            title: 'Convertir lead en proveedor',
+                            formeditado:0
                         })
                     }
                     else
@@ -302,12 +306,14 @@ class ProveedorForm extends Component{
     }
 
     render(){
-        const { form, title, options } = this.state
+        const { form, title, options,formeditado } = this.state
+        console.log("Form editar: "+formeditado)
         return(
             <Layout active={'leads'}  { ...this.props}>
                 <Card className="pt-0">
                     <Card.Body>
                         <ProveedorFormulario 
+                            formeditado={formeditado}
                             title = { title } 
                             form = { form }
                             onChange = { this.onChange } 
