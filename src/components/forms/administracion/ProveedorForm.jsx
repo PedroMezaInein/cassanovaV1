@@ -55,7 +55,7 @@ class ProveedorForm extends Component {
                             <Input 
                                 requirevalidation={1}
                                 name="nombre" 
-                                value={form.nombre===null?"":form.nombre} 
+                                value={form.nombre} 
                                 placeholder="Nombre" 
                                 onChange={onChange} 
                                 iconclass={"far fa-user"}
@@ -68,7 +68,7 @@ class ProveedorForm extends Component {
                         <div className="col-md-4">
                             <Input                             
                                 name="razonSocial"
-                                value={form.razonSocial===null?"":form.razonSocial}
+                                value={form.razonSocial}
                                 placeholder="Razón social"
                                 onChange={onChange}
                                 iconclass={"far fa-building"}
@@ -81,7 +81,7 @@ class ProveedorForm extends Component {
                         <div className="col-md-4">
                             <Input 
                                 name="rfc"
-                                value={form.rfc===null?"":form.rfc}
+                                value={form.rfc}
                                 placeholder="RFC"
                                 onChange={onChange}
                                 iconclass={"far fa-file-alt"}

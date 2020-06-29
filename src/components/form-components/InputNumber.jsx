@@ -5,9 +5,7 @@ import NumberFormat from 'react-number-format'
 class InputNumber extends Component {
 
     state = {
-        inputValido: this.props.requirevalidation ? 
-            (this.props.formeditado? true:false)
-        : true
+        inputValido: !this.props.requirevalidation
     }
 
     validarInput(e){
@@ -30,6 +28,14 @@ class InputNumber extends Component {
                 
             })
         }
+    }
+
+    componentDidUpdate(nextProps){
+        if(nextProps.formeditado !== this.props.formeditado)
+            this.setState({
+                ... this.state,
+                inputValido: true
+            })
     }
 
     render() {

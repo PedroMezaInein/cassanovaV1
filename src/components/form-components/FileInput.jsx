@@ -9,7 +9,7 @@ import {  Small } from '../texts'
 class FileInput extends Component{
     
     state = {
-        fileValido: this.props.requirevalidation ? false : true
+        fileValido: !this.props.requirevalidation
     }
 
     validarFileInput(e){
@@ -31,6 +31,14 @@ class FileInput extends Component{
                 fileValido: true  
             })
         }
+    }
+
+    componentDidUpdate(nextProps){
+        if(nextProps.formeditado !== this.props.formeditado)
+            this.setState({
+                ... this.state,
+                fileValido: true
+            })
     }
     render(){
         const { onChangeAdjunto, placeholder, value, name, id, accept, files, deleteAdjunto, messageinc, deleteAdjuntoAvance, _key, ... props} = this.props

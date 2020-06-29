@@ -9,9 +9,7 @@ class Select extends Component{
     } */ 
 
     state = {
-        selectValido: this.props.requirevalidation ? 
-            (this.props.formeditado? true:false)
-        : true
+        selectValido: !this.props.requirevalidation
     }
 
     validarSelect(e){
@@ -34,6 +32,13 @@ class Select extends Component{
                 
             })
         }
+    }
+    componentDidUpdate(nextProps){
+        if(nextProps.formeditado !== this.props.formeditado)
+            this.setState({
+                ... this.state,
+                selectValido: true
+            })
     }
 
     render(){

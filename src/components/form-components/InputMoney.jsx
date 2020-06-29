@@ -6,7 +6,7 @@ let textoValido =false;
 class InputMoney extends Component{
 
     state = {
-        inputMoneyValido: this.props.requirevalidation ? false : true
+        inputMoneyValido: !this.props.requirevalidation
     }
 
     validarInputMoney(e){
@@ -29,6 +29,14 @@ class InputMoney extends Component{
                 
             })
         }
+    }
+
+    componentDidUpdate(nextProps){
+        if(nextProps.formeditado !== this.props.formeditado)
+            this.setState({
+                ... this.state,
+                inputMoneyValido: true
+            })
     }
 
     onChange = values => {

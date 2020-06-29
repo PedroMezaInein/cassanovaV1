@@ -5,9 +5,7 @@ import NumberFormat from 'react-number-format'
 class InputPhone extends Component {
 
     state = {
-        inputPhone: this.props.requirevalidation ? 
-            (this.props.formeditado? true:false)
-        : true
+        inputPhone: !this.props.requirevalidation
     }
 
     validarPhone(e){
@@ -33,6 +31,14 @@ class InputPhone extends Component {
         }
     }
 
+    componentDidUpdate(nextProps){
+        if(nextProps.formeditado !== this.props.formeditado)
+            this.setState({
+                ... this.state,
+                inputPhone: true
+            })
+    }
+
     onChange = values => {
         const { onChange, name} = this.props
         this.validarPhone({target:{value:values.value, name:name}})
@@ -44,7 +50,7 @@ class InputPhone extends Component {
     render() {
         const { error, onChange, placeholder, iconclass, messageinc, value, thousandSeparator,  ...props } = this.props 
         const { inputPhone } = this.state
-         
+        
         return (
             <div >
                 <label className="col-form-label">{placeholder}</label>
