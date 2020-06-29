@@ -82,7 +82,7 @@ class ProyectosForm extends Component{
     }
 
     render(){
-        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, ... props } = this.props
+        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, removeCorreo, ... props } = this.props
         return(
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -217,7 +217,7 @@ class ProyectosForm extends Component{
                                                     <Badge variant = "light" key = { key } className="d-flex px-3 align-items-center" pill>
                                                         <FontAwesomeIcon
                                                             icon = { faTimes }
-                                                            onClick = { (e) => { e.preventDefault(); }}
+                                                            onClick = { (e) => { e.preventDefault(); removeCorreo(correo)}}
                                                             className = "small-button mr-2" />
                                                             {
                                                                 correo
