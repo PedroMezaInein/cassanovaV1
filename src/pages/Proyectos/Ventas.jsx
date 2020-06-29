@@ -1069,14 +1069,6 @@ class Ventas extends Component{
                 const { options, form } = this.state
                 form.solicitud = solicitud.id
                 form.factura = solicitud.factura ? 'Con factura' : 'Sin factura'
-                if(solicitud.factura){
-                    let aux = ''
-                    options.tiposImpuestos.find(function(element, index) {        
-                        if(element.text === 'IVA')
-                            aux = element.value
-                    });
-                    form.tipoImpuesto = aux
-                }
                 if(solicitud.proyecto){
                     if(solicitud.proyecto.cliente){
                         if(solicitud.proyecto.cliente.proyectos){
