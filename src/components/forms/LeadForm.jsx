@@ -44,7 +44,7 @@ class LeadForm extends Component{
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Input 
-                            required 
+                            requirevalidation={1} 
                             type="text" 
                             placeholder="Nombre del lead"
                             name="nombre" 
@@ -52,12 +52,13 @@ class LeadForm extends Component{
                             onChange = { onChange } 
                             iconclass={"far fa-user"} 
                             messageinc="Incorrecto. Introduce el nombre del lead."
+                            completeelement={1}
                         />
                         {/*<span className="form-text text-muted">Por favor, ingresa el nombre del lead. </span>*/}
                     </div>
                     <div className="col-md-4">
                         <Input 
-                            required 
+                            requirevalidation={1} 
                             type="email" 
                             placeholder="Correo electrónico"
                             name="email" 
@@ -71,7 +72,7 @@ class LeadForm extends Component{
                     </div>
                     <div className="col-md-4">
                             <Input 
-                                required 
+                                requirevalidation={1} 
                                 type="text" 
                                 placeholder="Teléfono"
                                 name="telefono" 
@@ -89,6 +90,7 @@ class LeadForm extends Component{
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Select 
+                            requirevalidation={1}
                             placeholder="Selecciona la empresa para el lead" 
                             options = { empresas } 
                             name="empresa" 
@@ -101,6 +103,7 @@ class LeadForm extends Component{
                     </div>
                     <div className="col-md-4">
                         <Select 
+                            requirevalidation={1}
                             placeholder="Selecciona el origen para el lead" 
                             options = { origenes } 
                             name="origen" 
@@ -127,7 +130,7 @@ class LeadForm extends Component{
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-12">
                         <Input 
-                            required 
+                            requirevalidation={1} 
                             rows="3" 
                             as="textarea" 
                             placeholder="Comentario"
