@@ -5,18 +5,26 @@ import NumberFormat from 'react-number-format'
 class InputNumber extends Component {
 
     state = {
-        inputValido: false
+        inputValido: this.props.requirevalidation ? false : true
     }
 
     validarInput(e){
-        const { value } = e.target   
-        if(value > 0){
-            this.setState({
-                inputValido: true
-            })
+        const { value } = e.target  
+        const {patterns, requirevalidation}= this.props
+        if(requirevalidation){ 
+            if(value > 0){
+                this.setState({
+                    inputValido: true
+                })
+            }else{
+                this.setState({
+                    inputValido: false     
+                    
+                })
+            }
         }else{
             this.setState({
-                inputValido: false     
+                inputValido: true     
                 
             })
         }

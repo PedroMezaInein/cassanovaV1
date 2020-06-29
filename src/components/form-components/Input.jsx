@@ -4,28 +4,35 @@ import Form from 'react-bootstrap/Form'
 class Input extends Component {
 
     state = {
-        inputValido: false
+        inputValido: this.props.requirevalidation ? false : true
     }
 
-    validarInput(e){
+    validarInput(e){        
         const { value } = e.target
-        const {patterns}= this.props
-        var expRegular = new RegExp(patterns);         
-            if(expRegular.test(value)){
-                this.setState({
-                    inputValido: true
-                })
-            }else{
-                this.setState({
-                    inputValido: false     
-                    
-                })
-            } 
+        const {patterns, requirevalidation}= this.props
+        if(requirevalidation){
+            var expRegular = new RegExp(patterns);         
+                if(expRegular.test(value)){
+                    this.setState({
+                        inputValido: true
+                    })
+                }else{
+                    this.setState({
+                        inputValido: false     
+                        
+                    })
+                } 
+        }else{
+            this.setState({
+                inputValido: true     
+                
+            })
+        }
     }
 
     render() {
-        const { error, onChange, placeholder, iconclass, messageinc, ...props } = this.props 
-        const { inputValido } = this.state
+        const { error, onChange, placeholder, iconclass, messageinc,  ...props } = this.props 
+        const { inputValido } =  this.state        
         return (
             <div >
                 <label className="col-form-label">{placeholder}</label>

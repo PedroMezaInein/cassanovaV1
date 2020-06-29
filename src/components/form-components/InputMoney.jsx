@@ -6,18 +6,26 @@ let textoValido =false;
 class InputMoney extends Component{
 
     state = {
-        inputMoneyValido: false
+        inputMoneyValido: this.props.requirevalidation ? false : true
     }
 
     validarInputMoney(e){
         const { value } = e.target   
-        if(value > 0){
-            this.setState({
-                inputMoneyValido: true
-            })
+        const {requirevalidation}= this.props
+        if(requirevalidation){
+            if(value > 0){
+                this.setState({
+                    inputMoneyValido: true
+                })
+            }else{
+                this.setState({
+                    inputMoneyValido: false     
+                    
+                })
+            }
         }else{
             this.setState({
-                inputMoneyValido: false     
+                inputMoneyValido: true     
                 
             })
         }

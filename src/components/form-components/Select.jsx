@@ -9,19 +9,26 @@ class Select extends Component{
     } */ 
 
     state = {
-        selectValido: false
+        selectValido: this.props.requirevalidation ? false : true
     }
 
     validarSelect(e){
         const { value } = e.target
-        
-        if(value > 0){
-            this.setState({
-                selectValido: true
-            })
+        const {requirevalidation}= this.props
+        if(requirevalidation){
+            if(value > 0){
+                this.setState({
+                    selectValido: true
+                })
+            }else{
+                this.setState({
+                    selectValido: false     
+                    
+                })
+            }
         }else{
             this.setState({
-                selectValido: false     
+                selectValido: true     
                 
             })
         }

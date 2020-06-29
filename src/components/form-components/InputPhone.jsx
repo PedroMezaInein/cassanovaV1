@@ -5,20 +5,27 @@ import NumberFormat from 'react-number-format'
 class InputPhone extends Component {
 
     state = {
-        inputPhone: false
+        inputPhone: this.props.requirevalidation ? false : true
     }
 
     validarPhone(e){
         const { value } = e.target
-        const {patterns}= this.props
+        const {patterns, requirevalidation}= this.props
         var expRegular = new RegExp(patterns);  
-        if(value > 0 && expRegular.test(value)){
-            this.setState({
-                inputPhone: true
-            })
+        if(requirevalidation){
+            if(value > 0 && expRegular.test(value)){
+                this.setState({
+                    inputPhone: true
+                })
+            }else{
+                this.setState({
+                    inputPhone: false     
+                    
+                })
+            }
         }else{
             this.setState({
-                inputPhone: false     
+                inputPhone: true     
                 
             })
         }
