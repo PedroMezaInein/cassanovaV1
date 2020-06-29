@@ -19,6 +19,7 @@ class ClienteForm extends Component{
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Input 
+                            requirevalidation={1}
                             name="empresa" 
                             value={form.empresa} 
                             onChange={onChange} 
@@ -31,6 +32,7 @@ class ClienteForm extends Component{
                     </div>
                     <div className="col-md-4">
                         <Input 
+                            requirevalidation={1}
                             name="rfc" 
                             value={form.rfc} 
                             onChange={onChange} 
@@ -45,6 +47,7 @@ class ClienteForm extends Component{
                     </div>
                     <div className="col-md-4">
                         <Input 
+                            requirevalidation={1}
                             name="nombre" 
                             value={form.nombre} 
                             onChange={onChange} 
@@ -60,6 +63,7 @@ class ClienteForm extends Component{
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Input 
+                            requirevalidation={1}
                             name="puesto" 
                             value={form.puesto} 
                             onChange={onChange} 
@@ -72,6 +76,7 @@ class ClienteForm extends Component{
                     </div>
                     <div className="col-md-8">
                         <Input 
+                            requirevalidation={1}
                             rows="1" 
                             as="textarea" 
                             placeholder="Perfil"
@@ -88,6 +93,7 @@ class ClienteForm extends Component{
                 <div className="form-group row form-group-marginless">
                 <div className="col-md-4">
                         <Input 
+                            requirevalidation={1}
                             name="cp" 
                             onChange={changeCP}
                             value={form.cp} 
@@ -101,6 +107,7 @@ class ClienteForm extends Component{
                     </div>
                     <div className="col-md-4" hidden={colonias.length <= 0 ? true : false}>
                         <Input 
+                            requirevalidation={0}
                             readOnly={colonias.length <= 0 ? true : false} 
                             value={estado} 
                             name="estado" 
@@ -113,6 +120,7 @@ class ClienteForm extends Component{
                     </div>
                     <div className="col-md-4" hidden={colonias.length <= 0 ? true : false}>
                         <Input 
+                            requirevalidation={0}
                             readOnly={colonias.length <= 0 ? true : false} 
                             value={municipio} 
                             name="municipio" 
@@ -142,6 +150,7 @@ class ClienteForm extends Component{
                         { 
                             colonias.length <= 0 && 
                                 <Input 
+                                    requirevalidation={1}
                                     readOnly 
                                     value={form.colonia} 
                                     name="colonia" 
@@ -154,6 +163,7 @@ class ClienteForm extends Component{
                     </div>
                     <div className="col-md-7" hidden={colonias.length <= 0 ? true : false}>
                         <Input 
+                            requirevalidation={1}
                             name="calle" 
                             value={form.calle} 
                             onChange={onChange} 
