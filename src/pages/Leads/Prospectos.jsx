@@ -956,6 +956,9 @@ class Leads extends Component {
                     {
                         contactHistory &&
                         <TableForModals
+                            mostrar_boton={false}
+                            abrir_modal={false}
+                            mostrar_acciones={false}
                             columns={CONTACTO_COLUMNS} 
                             data={contactHistory} 
                             elements = { data.contactHistory }
@@ -975,7 +978,7 @@ class Leads extends Component {
                 <Modal title={"¿Estás seguro que deseas eliminar el prospecto?"} show={modalDelete} handleClose={this.handleDeleteModal}>
                     <div className="d-flex justify-content-center mt-3">
                         <Button icon='' onClick={this.handleDeleteModal} text="Cancelar" className={"btn btn-light-primary font-weight-bolder mr-3"} />
-                        <Button icon='' onClick={(e) => { this.safeDelete(e)(prospecto.id) }} text="Continuar" className={"btn btn-success font-weight-bold mr-2"} />
+                        <Button icon='' onClick={(e) => { this.safeDelete(e)(prospecto.id) }} text="Continuar" className={"btn btn-danger font-weight-bold mr-2"} />
                     </div>
                 </Modal> 
                 <Modal show={modalConvert} handleClose={this.handleCloseConvertModal} title={"¿Estás seguro que deseas convertir el prospecto en un proyecto?"}>
