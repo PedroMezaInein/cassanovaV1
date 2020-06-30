@@ -36,6 +36,7 @@ class IngresosForm extends Component{
             clientes:[],
             empresas: []
         },
+        formeditado:0,
         form:{
             factura: 'Sin factura',
             
@@ -95,7 +96,8 @@ class IngresosForm extends Component{
             case 'add':
                 this.setState({
                     ... this.state,
-                    title: 'Nuevo ingreso'
+                    title: 'Nuevo ingreso',
+                    formeditado:0
                 })
                 break;
             case 'edit':
@@ -138,7 +140,8 @@ class IngresosForm extends Component{
                             title: 'Editar ingreso',
                             form,
                             options,
-                            ingreso: ingreso
+                            ingreso: ingreso,
+                            formeditado:1
                         })
                     }
                     else
@@ -561,12 +564,13 @@ class IngresosForm extends Component{
     }
     
     render(){
-        const { form, title, options } = this.state
+        const { form, title, options, formeditado } = this.state
         return(
             <Layout active={'administracion'}  { ...this.props}>
                 <Card className="pt-0">
                     <Card.Body className="pt-0">
                     <IngresosFormulario 
+                        formeditado={formeditado}
                         title = { title } 
                         form = { form }
                         onChange = { this.onChange } 
