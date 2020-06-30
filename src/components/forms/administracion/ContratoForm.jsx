@@ -3,6 +3,7 @@ import { Form } from 'react-bootstrap'
 import { Subtitle } from '../../texts'
 import { SelectSearch, Select, Button, RadioGroup, Input, Calendar, InputMoney, FileInput } from '../../form-components'
 import { DATE } from '../../../constants'
+import { validateAlert } from '../../../functions/alert'
 
 class ContratoForm extends Component {
 
@@ -42,12 +43,7 @@ class ContratoForm extends Component {
                 onSubmit = { 
                     (e) => {
                         e.preventDefault(); 
-                        var elementsInvalid = document.getElementById("form-contrato").getElementsByClassName("is-invalid"); 
-                        if(elementsInvalid.length===0){   
-                            onSubmit(e)
-                        }else{ 
-                            alert("Rellena todos los campos")
-                        } 
+                        validateAlert(onSubmit, e, 'form-contrato')
                     }
                 }
                 {...props}>
@@ -71,6 +67,7 @@ class ContratoForm extends Component {
                         {
                             tipo === 'Cliente' ?
                                 <SelectSearch 
+                                    formeditado={formeditado}
                                     options={options.clientes} 
                                     placeholder = "Selecciona la el cliente" 
                                     name = "cliente" 
@@ -80,6 +77,7 @@ class ContratoForm extends Component {
                                     />
                             : 
                                 <SelectSearch 
+                                    formeditado={formeditado}
                                     options={options.proveedores} 
                                     placeholder = "Selecciona el proveedor" 
                                     name = "proveedor" 
@@ -99,6 +97,7 @@ class ContratoForm extends Component {
                     </div>
                     <div className="col-md-4">
                         <SelectSearch 
+                            formeditado={formeditado}
                             options={options.empresas} 
                             placeholder = "Selecciona la empresa" 
                             name = "empresa" 
@@ -128,6 +127,7 @@ class ContratoForm extends Component {
                     </div>
                     <div className="col-md-4">
                         <Calendar 
+                            formeditado={formeditado}
                             onChangeCalendar = { this.handleChangeDateInicio }
                             placeholder = "Fecha de inicio"
                             name = "fechaInicio"
@@ -142,6 +142,7 @@ class ContratoForm extends Component {
                     </div>
                     <div className="col-md-4">
                         <Calendar 
+                            formeditado={formeditado}
                             onChangeCalendar = { this.handleChangeDateFin }
                             placeholder = "Fecha final"
                             name = "fechaFin"
@@ -161,6 +162,7 @@ class ContratoForm extends Component {
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <SelectSearch 
+                            formeditado={formeditado}
                             options={options.tiposContratos} 
                             placeholder = "Selecciona el tipo de contrato" 
                             name = "tipoContrato" 
