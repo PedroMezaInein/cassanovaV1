@@ -17,6 +17,7 @@ import { DataTable } from '../../components/tables'
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList, setContactoTable } from '../../functions/setters'
 import NewTable from '../../components/tables/NewTable'
 import TableForModals from '../../components/tables/TableForModals'
+
 class Leads extends Component {
 
     state = {
@@ -970,7 +971,8 @@ class Leads extends Component {
                         </div>
                     </Form>
                 </Modal> 
-                    <Modal title={"¿Estás seguro que deseas eliminar el prospecto?"} show={modalDelete} handleClose={this.handleDeleteModal} className={"text-center"}>
+                
+                <Modal title={"¿Estás seguro que deseas eliminar el prospecto?"} show={modalDelete} handleClose={this.handleDeleteModal}>
                     <div className="d-flex justify-content-center mt-3">
                         <Button icon='' onClick={this.handleDeleteModal} text="Cancelar" className={"btn btn-light-primary font-weight-bolder mr-3"} />
                         <Button icon='' onClick={(e) => { this.safeDelete(e)(prospecto.id) }} text="Continuar" className={"btn btn-success font-weight-bold mr-2"} />
