@@ -4,6 +4,7 @@ import { Subtitle } from '../../texts'
 import { RFC, DATE } from '../../../constants'
 import { SelectSearch, Select, Button, RadioGroup, Input, Calendar, InputMoney, FileInput } from '../../form-components'
 import {openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
+import { validateAlert } from '../../../functions/alert'
 
 class EgresosForm extends Component {
 
@@ -114,7 +115,7 @@ class EgresosForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, ...props } = this.props
+        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, formeditado, ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -144,16 +145,11 @@ class EgresosForm extends Component {
                     </div>
                 <div className="row justify-content-center py-10 px-8 py-lg-12 px-lg-10">
                     <div className="col-md-12">
-                        <Form  
+                        <Form
                             onSubmit = { 
                                 (e) => {
                                     e.preventDefault(); 
-                                    var elementsInvalid = document.getElementById("wizard-3-content").getElementsByClassName("is-invalid"); 
-                                    if(elementsInvalid.length===0){   
-                                        onSubmit(e)
-                                    }else{ 
-                                        alert("Rellena todos los campos")
-                                    } 
+                                    validateAlert(onSubmit, e, 'wizard-3-content')
                                 }
                             }
                             {...props}
@@ -189,7 +185,8 @@ class EgresosForm extends Component {
                                         form.factura === 'Con factura' && title !== 'Editar egreso' ?
                                             <div className="col-md-4">
                                                 <FileInput
-                                                    requirevalidation={1}
+                                                    requirevalidation={0}
+                                                    formeditado={formeditado}
                                                     onChangeAdjunto={onChangeAdjunto}
                                                     placeholder={form['adjuntos']['factura']['placeholder']}
                                                     value={form['adjuntos']['factura']['value']}
@@ -208,6 +205,7 @@ class EgresosForm extends Component {
                                             <div className="col-md-4">
                                                 <Input 
                                                     requirevalidation={1}
+                                                    formeditado={formeditado}
                                                     placeholder="RFC"
                                                     name="rfc"
                                                     value={form.rfc}
@@ -226,6 +224,7 @@ class EgresosForm extends Component {
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <SelectSearch 
+                                            formeditado={formeditado}
                                             options={options.proveedores}
                                             placeholder="Selecciona el proveedor"
                                             name="proveedores"
@@ -249,6 +248,7 @@ class EgresosForm extends Component {
                                                 />
                                                 :
                                                 <SelectSearch 
+                                                    formeditado={formeditado}
                                                     options={options.empresas}
                                                     placeholder="Selecciona la empresa"
                                                     name="empresa"
@@ -264,6 +264,7 @@ class EgresosForm extends Component {
                                         form.empresa ?
                                             <div className="col-md-4">
                                                 <SelectSearch 
+                                                    formeditado={formeditado}
                                                     options={options.cuentas} 
                                                     placeholder="Selecciona la cuenta"
                                                     name="cuenta" 
@@ -289,6 +290,7 @@ class EgresosForm extends Component {
 								<div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <Calendar
+                                            formeditado={formeditado}
                                             onChangeCalendar={this.handleChangeDate}
                                             placeholder="Fecha"
                                             name="fecha"
@@ -299,6 +301,7 @@ class EgresosForm extends Component {
                                     </div>    
                                     <div className="col-md-4">
                                         <SelectSearch
+                                            formeditado={formeditado}
                                             options={options.areas}
                                             placeholder="Selecciona el área"
                                             name="area"
@@ -313,6 +316,7 @@ class EgresosForm extends Component {
                                         form.area ?
                                             <div className="col-md-4">
                                                 <SelectSearch
+                                                    formeditado={formeditado}
                                                     options={options.subareas}
                                                     placeholder="Selecciona el subárea"
                                                     name="subarea"
@@ -331,6 +335,7 @@ class EgresosForm extends Component {
                                     <div className="col-md-12">
                                         <Input 
                                             requirevalidation={0}
+                                            formeditado={formeditado}
                                             as="textarea"
                                             placeholder="Descripción"
                                             rows="3"
@@ -358,6 +363,7 @@ class EgresosForm extends Component {
                                     <div className="col-md-4">
                                         <Select 
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             placeholder="Selecciona el tipo de pago"
                                             options={options.tiposPagos}
                                             name="tipoPago"
@@ -371,6 +377,7 @@ class EgresosForm extends Component {
                                     <div className="col-md-4">
                                         <Select
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             placeholder="Selecciona el impuesto"
                                             options={options.tiposImpuestos}
                                             name="tipoImpuesto"
@@ -384,6 +391,7 @@ class EgresosForm extends Component {
                                     <div className="col-md-4">
                                         <Select 
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             placeholder="Selecciona el estatus de compra"
                                             options={options.estatusCompras}
                                             name="estatusCompra"
@@ -400,6 +408,7 @@ class EgresosForm extends Component {
                                     <div className="col-md-6">
                                         <InputMoney 
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             thousandSeparator={true}
                                             placeholder="Monto"
                                             value={form.total}
@@ -413,6 +422,7 @@ class EgresosForm extends Component {
                                     <div className="col-md-6">
                                         <InputMoney 
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             thousandSeparator={true}
                                             placeholder="Comisión"
                                             value={form.comision}
@@ -428,7 +438,8 @@ class EgresosForm extends Component {
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-6">
                                         <FileInput
-                                            requirevalidation={1}
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
                                             onChangeAdjunto={onChangeAdjunto}
                                             placeholder={form['adjuntos']['presupuesto']['placeholder']}
                                             value={form['adjuntos']['presupuesto']['value']}
@@ -442,7 +453,8 @@ class EgresosForm extends Component {
                                     </div>
                                     <div className="col-md-6">
                                         <FileInput
-                                            requirevalidation={1}
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
                                             onChangeAdjunto={onChangeAdjunto}
                                             placeholder={form['adjuntos']['pago']['placeholder']}
                                             value={form['adjuntos']['pago']['value']}
