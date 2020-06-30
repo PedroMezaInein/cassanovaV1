@@ -524,16 +524,7 @@ class Contratos extends Component {
                     <ContratoForm tipo = { tipo } options = { options } form = { form } onChange = { this.onChange } 
                         onSubmit = { this.onSubmit } formeditado={formeditado}/>
                 </Modal>
-                <ModalDelete show = { modal.delete } handleClose = { this.handleCloseDelete } onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteContratoAxios() }}>
-                    <Subtitle className="my-3 text-center">
-                        {
-                            tipo === 'Cliente' ? 
-                                '¿Estás seguro que deseas eliminar el contrato de cliente?'
-                            :
-                                '¿Estás seguro que deseas eliminar el contrato de proveedor?'
-                        }
-                        
-                    </Subtitle>
+                <ModalDelete title={tipo === 'Cliente' ? '¿Quieres eliminar el contrato de cliente?' : '¿Quieres eliminar el contrato de proveedor?'} show = { modal.delete } handleClose = { this.handleCloseDelete } onClick=  { (e) => { e.preventDefault(); waitAlert(); this.deleteContratoAxios() }}>
                 </ModalDelete>
             </Layout>
         )

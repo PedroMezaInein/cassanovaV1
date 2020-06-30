@@ -141,7 +141,7 @@ class ProspectoForm extends Component{
                         <div id="wizard-2" className="wizard-step" data-wizard-type="step" style={{paddingTop:"0px"}} onClick = { () => { openWizard2() } }>
                             <div className="wizard-label">
                                 <h3 className="wizard-title">
-                                <span>2.</span> Descripción y el motivo</h3>
+                                <span>2.</span> Descripción y motivo</h3>
                                 <div className="wizard-bar"></div>
                             </div>
                         </div> 
@@ -171,6 +171,19 @@ class ProspectoForm extends Component{
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         { 
+                                            clientes && 
+                                                <SelectSearch
+                                                    formeditado={formeditado}
+                                                    options = { clientes }
+                                                    placeholder = "Selecciona el cliente"
+                                                    onChange={this.updateCliente}
+                                                    name="cliente"
+                                                    value={form.cliente}
+                                                /> 
+                                        }
+                                    </div> 
+                                    <div className="col-md-4">
+                                        { 
                                             vendedores && 
                                                 <SelectSearch 
                                                     formeditado={formeditado}
@@ -182,6 +195,23 @@ class ProspectoForm extends Component{
                                                 /> 
                                         }
                                     </div>
+
+                                    <div className="col-md-4">
+                                        <Input 
+                                            formeditado={formeditado}
+                                            requirevalidation={1}
+                                            name="preferencia"
+                                            type="text"
+                                            placeholder="Perefencia de contacto"
+                                            onChange={onChange}
+                                            value={form.preferencia}
+                                            iconclass={"fas fa-mail-bulk"}
+                                            messageinc="Incorrecto. Ingresa la preferencia de contacto."
+                                        />
+                                    </div>
+                                </div>  
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         { 
                                             estatusProspectos && 
@@ -209,33 +239,17 @@ class ProspectoForm extends Component{
                                                 />
                                             </div>
                                     }
-                                </div>  
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         { 
-                                            clientes && 
-                                                <SelectSearch
-                                                    formeditado={formeditado}
-                                                    options = { clientes }
-                                                    placeholder = "Selecciona el cliente"
-                                                    onChange={this.updateCliente}
-                                                    name="cliente"
-                                                    value={form.cliente}
-                                                /> 
-                                        }
-                                    </div>  
-                                    <div className="col-md-4">
-                                        { 
-                                            tipoProyecto && 
-                                                <SelectSearch 
-                                                    formeditado={formeditado}
-                                                    options = { tipoProyecto } 
-                                                    placeholder = "Selecciona el tipo de proyecto" 
-                                                    onChange={this.updateTipoProyecto} 
-                                                    name="tipoProyecto" 
-                                                    value={form.tipoProyecto} 
-                                                /> 
+                                                tipoProyecto && 
+                                                    <SelectSearch 
+                                                        formeditado={formeditado}
+                                                        options = { tipoProyecto } 
+                                                        placeholder = "Selecciona el tipo de proyecto" 
+                                                        onChange={this.updateTipoProyecto} 
+                                                        name="tipoProyecto" 
+                                                        value={form.tipoProyecto} 
+                                                    /> 
                                         }
                                     </div> 
                                     { 
@@ -255,19 +269,8 @@ class ProspectoForm extends Component{
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
-                                    <div className="col-md-4">
-                                        <Input 
-                                            formeditado={formeditado}
-                                            requirevalidation={1}
-                                            name="preferencia"
-                                            type="text"
-                                            placeholder="Perefencia de contacto"
-                                            onChange={onChange}
-                                            value={form.preferencia}
-                                            iconclass={"fas fa-mail-bulk"}
-                                            messageinc="Incorrecto. Ingresa la preferencia de contacto."
-                                        />
-                                    </div>
+                                
+                                    
                                     <div className="col-md-4">
                                         { 
                                             estatusContratacion && 
@@ -304,7 +307,7 @@ class ProspectoForm extends Component{
                                 </div>
                             </div>
                             <div id="wizard-2-content" className="pb-3" data-wizard-type="step-content">
-                                <h5 className="mb-4 font-weight-bold text-dark">Ingresa la descripción y el motivo</h5>
+                                <h5 className="mb-4 font-weight-bold text-dark">Ingresa la descripción y motivo</h5>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-12">
                                         <Input 
