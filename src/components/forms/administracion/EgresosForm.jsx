@@ -245,6 +245,7 @@ class EgresosForm extends Component {
                                                     readOnly
                                                     value={form.empresa}
                                                     onChange={onChange}
+                                                    iconclass={"far fa-building"}
                                                 />
                                                 :
                                                 <SelectSearch 
