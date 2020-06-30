@@ -57,7 +57,7 @@ class ContratoForm extends Component {
                             name="nombre" 
                             onChange={onChange} 
                             value={form.nombre} 
-                            iconclass={"fas fa-person-booth"}
+                            iconclass={"far fa-user"}
                             messageinc="Incorrecto. Ingresa el nombre."
                         />
                         {/*<span className="form-text text-muted">Por favor, ingrese un nombre. </span>*/}
