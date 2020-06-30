@@ -10,7 +10,7 @@ class modal extends Component{
     }
 
     render(){
-        const { show, handleClose, children, title,  setShow} = this.props
+        const { show, handleClose, children, title, setShow} = this.props
 
         return(
             <>
