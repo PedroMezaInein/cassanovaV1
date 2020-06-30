@@ -738,10 +738,7 @@ class Ingresos extends Component {
                     }}
                     elements={data.ingresos} />
 
-                <ModalDelete show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteIngresoAxios() }}>
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas eliminar el ingreso?
-                    </Subtitle>
+                <ModalDelete title={"¿Estás seguro que deseas eliminar el ingreso?"}show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteIngresoAxios() }}>
                 </ModalDelete>
 
                 <Modal show={modalFacturas} handleClose={this.handleCloseFacturas}>
