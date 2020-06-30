@@ -738,22 +738,16 @@ class Leads extends Component{
                         >
                     </LeadForm>
                 </Modal>
-                <Modal show={modalDelete} handleClose={this.handleCloseDeleteModal}>
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas eliminar el lead <B color="red">{leadId.nombre}</B>?
-                    </Subtitle>
+                <Modal title= {leadId === null ? "¿Estás seguro que deseas eliminar el lead": "¿Estás seguro que deseas eliminar el lead "+leadId.nombre +"?"} show={modalDelete} handleClose={this.handleCloseDeleteModal}>
                     <div className="d-flex justify-content-center mt-3">
-                        <Button icon='' onClick={this.handleCloseDeleteModal} text="Cancelar" className="mr-3" color="green"/>
-                        <Button icon='' onClick={(e) => { this.safeDeleteLead(e)(leadId.id) }} text="Continuar" color="red"/>
+                        <Button icon='' onClick={this.handleCloseDeleteModal} text="Cancelar" className={"btn btn-light-primary font-weight-bolder mr-3"}/>
+                        <Button icon='' onClick={(e) => { this.safeDeleteLead(e)(leadId.id) }} text="Continuar" className={"btn btn-danger font-weight-bold mr-2"}/>
                     </div>
                 </Modal>
-                <Modal show={modalConvert} handleClose={this.handleCloseConvertModal}>
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas convertir el lead <B color="red">{leadId.nombre}</B> en un {convertir}?
-                    </Subtitle>
+                <Modal title= {leadId === null ? "¿Estás seguro que deseas convertir el lead": "¿Estás seguro que deseas convertir el lead "+leadId.nombre +" en un "+convertir+"?"} show={modalConvert} handleClose={this.handleCloseConvertModal}>
                     <div className="d-flex justify-content-center mt-3">
-                        <Button icon='' onClick={this.handleCloseConvertModal} text="Cancelar" className="mr-3" color="red"/>
-                        <Button icon='' onClick={(e) => { this.safeConvertLead(e)(leadId) }} text="Continuar" />
+                        <Button icon='' onClick={this.handleCloseConvertModal} text="Cancelar" className={"btn btn-light-primary font-weight-bolder mr-3"}/>
+                        <Button icon='' onClick={(e) => { this.safeConvertLead(e)(leadId) }} text="Continuar" className={"btn btn-success font-weight-bold mr-2"}/>
                     </div>
                 </Modal>
             </Layout>
