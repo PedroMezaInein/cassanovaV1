@@ -10,7 +10,6 @@ class EgresosForm extends Component {
 
     handleChangeDate = date => {
         const { onChange } = this.props
-        console.log("Hola")
         onChange({ target: { value: date, name: 'fecha' } })
     }
 
