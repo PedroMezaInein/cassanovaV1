@@ -73,7 +73,8 @@ class EgresosForm extends Component{
         data:{
             proveedores:[],
             empresas: []
-        }
+        },
+        formeditado:0
     }
 
     // On change
@@ -286,7 +287,8 @@ class EgresosForm extends Component{
             case 'add':
                 this.setState({
                     ... this.state,
-                    title: 'Nuevo egreso'
+                    title: 'Nuevo egreso',
+                    formeditado:0
                 })
                 break;
             case 'edit':
@@ -330,7 +332,8 @@ class EgresosForm extends Component{
                             title: 'Editar egreso',
                             form,
                             options,
-                            egreso: egreso
+                            egreso: egreso,
+                            formeditado:1
                         })
                     }
                     else
@@ -558,52 +561,13 @@ class EgresosForm extends Component{
     }
 
     render(){
-        const { form, title, options } = this.state
+        const { form, title, options, formeditado } = this.state
         return(
             <Layout active={'administracion'}  { ...this.props}>
-                    
-             {/* <NewTable columns = {['Proyecto', 'Proveedor', 'Cuenta','Factura','Monto','Comisión','Impuesto','Total','Tipo de pago','Descripción','Área','Sub-Área','Estatus compra','Adjuntos','Fecha','Opciones']} 
-
-                    data = {
-                        [
-                            [
-                                'Proyecto 1','Galt Asset Management S.A.P.I. DE C.V.','Empresa:INEIN','Con factura','$18,750','$1,000','IVA','$22,750','Total','Testing factura','Acabados','Equipos','Completo','Pago Presupuesto','20/05/2020','1'
-                            ],
-                            [
-                                'Proyecto 2','Galt Asset Management S.A.P.I. DE C.V.','Empresa:INEIN','Con factura','$100,000','$1,000','IVA','$117,000','Avance','Nueva factura','Acessorios','Mano de obra','Completo','Pago Presupuesto','21/05/2020','1'
-                            ],
-                            [
-                                'Proyecto 2','Galt Asset Management S.A.P.I. DE C.V.','Empresa:INEIN','Con factura','$100,000','$1,000','IVA','$117,000','Avance','Nueva factura','Acessorios','Mano de obra','Completo','Pago Presupuesto','21/05/2020','1'
-                            ],
-                            [
-                                'Proyecto 2','Galt Asset Management S.A.P.I. DE C.V.','Empresa:INEIN','Con factura','$100,000','$1,000','IVA','$117,000','Avance','Nueva factura','Acessorios','Mano de obra','Completo','Pago Presupuesto','21/05/2020','1'
-                            ],
-                            [
-                                'Proyecto 2','Galt Asset Management S.A.P.I. DE C.V.','Empresa:INEIN','Con factura','$100,000','$1,000','IVA','$117,000','Avance','Nueva factura','Acessorios','Mano de obra','Completo','Pago Presupuesto','21/05/2020','1'
-                            ],
-                            [
-                                'Proyecto 2','Galt Asset Management S.A.P.I. DE C.V.','Empresa:INEIN','Con factura','$100,000','$1,000','IVA','$117,000','Avance','Nueva factura','Acessorios','Mano de obra','Completo','Pago Presupuesto','21/05/2020','1'
-                            ],
-                            [
-                                'Proyecto 2','Galt Asset Management S.A.P.I. DE C.V.','Empresa:INEIN','Con factura','$100,000','$1,000','IVA','$117,000','Avance','Nueva factura','Acessorios','Mano de obra','Completo','Pago Presupuesto','21/05/2020','1'
-                            ],
-                            [
-                                'Proyecto 2','Galt Asset Management S.A.P.I. DE C.V.','Empresa:INEIN','Con factura','$100,000','$1,000','IVA','$117,000','Avance','Nueva factura','Acessorios','Mano de obra','Completo','Pago Presupuesto','21/05/2020','1'
-                            ],
-                            [
-                                'Proyecto 2','Galt Asset Management S.A.P.I. DE C.V.','Empresa:INEIN','Con factura','$100,000','$1,000','IVA','$117,000','Avance','Nueva factura','Acessorios','Mano de obra','Completo','Pago Presupuesto','21/05/2020','1'
-                            ],
-                            [
-                                'Proyecto 2','Galt Asset Management S.A.P.I. DE C.V.','Empresa:INEIN','Con factura','$100,000','$1,000','IVA','$117,000','Avance','Nueva factura','Acessorios','Mano de obra','Completo','Pago Presupuesto','21/05/2020','1'
-                            ],
-                            [
-                                'Proyecto 2','Galt Asset Management S.A.P.I. DE C.V.','Empresa:INEIN','Con factura','$100,000','$1,000','IVA','$117,000','Avance','Nueva factura','Acessorios','Mano de obra','Completo','Pago Presupuesto','21/05/2020','1'
-                            ],
-                        ]
-                    }/> */}
                 <Card className="pt-0">
                     <Card.Body className="pt-0">
                         <EgresosFormulario 
+                            formeditado={formeditado}
                             title = { title } 
                             form = { form }
                             onChange = { this.onChange } 
