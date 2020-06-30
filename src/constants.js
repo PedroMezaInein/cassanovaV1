@@ -1206,3 +1206,34 @@ export const UTILIDADES_COLUMNS = [
         accessor: 'margen'
     }
 ]
+
+export const FLUJOS_COLUMNS = [
+    {
+        Header: 'Cuenta',
+        accessor: 'cuenta',
+    },
+    {
+        Header: 'Ingresos',
+        accessor: 'ingresos'
+    },
+    {
+        Header: 'Egresos',
+        accessor: 'egresos'
+    },
+    {
+        Header: 'Ventas',
+        accessor: 'ventas'
+    },
+    {
+        Header: 'Compras',
+        accessor: 'compras'
+    },
+    {
+        Header: 'Traspasos',
+        accessor: 'traspasos'
+    },
+    {
+        Header: 'Total',
+        accessor: 'total'
+    }
+]

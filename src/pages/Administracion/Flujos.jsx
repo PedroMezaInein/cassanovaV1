@@ -4,7 +4,7 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
-import { URL_DEV, URL_ASSETS } from '../../constants'
+import { URL_DEV, URL_ASSETS, FLUJOS_COLUMNS } from '../../constants'
 
 // Functions
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setPercentTable, setArrayTable, setFacturaTable, setAdjuntosList, setListTable } from '../../functions/setters'
@@ -13,22 +13,25 @@ import { waitAlert, errorAlert, createAlert,forbiddenAccessAlert } from '../../f
 import Layout from '../../components/layout/layout'
 import { Card } from 'react-bootstrap'
 import { FlujosForm } from '../../components/forms'
+import NewTable from '../../components/tables/NewTable'
 
 class Flujos extends Component {
 
     state = {
         form: {
-            empresas: [],
-            empresa: '',
             cuentas: [],
             cuenta: '',
             fechaInicio: new Date,
             fechaFin: new Date
         },
         options: {
-            empresas: [],
             cuentas: []
-        }
+        },
+        data:{
+            cuentas: [],
+            flujos: []
+        },
+        flujos: []
     }
 
     componentDidMount() {
@@ -76,7 +79,7 @@ class Flujos extends Component {
         })
     }
 
-    updateEmpresa = (option, arreglo) => {
+    deleteOption = (option, arreglo) => {
         const { form, options } = this.state
         let aux = []
         form[arreglo].map((element, key) => {
@@ -94,17 +97,95 @@ class Flujos extends Component {
         })
     }
 
+    setFlujos = flujos => {
+        let aux = []
+        flujos.map((flujo) => {
+            aux.push({
+                ingresos: renderToString(setMoneyTable(flujo.ingresos_count)),
+                egresos: renderToString(setMoneyTable(flujo.egresos_count)),
+                ventas: renderToString(setMoneyTable(flujo.ventas_count)),
+                compras: renderToString(setMoneyTable(flujo.compras_count)),
+                traspasos: renderToString(setMoneyTable(flujo.traspasos_destino_count - flujo.traspasos_origen_count)),
+                total: renderToString(
+                    setMoneyTable(
+                        flujo.ingresos_count +
+                        flujo.ventas_count -
+                        flujo.egresos_count -
+                        flujo.compras_count +
+                        flujo.traspasos_destino_count - flujo.traspasos_origen_count
+                    )
+                ),
+                cuenta: renderToString(setTextTable(flujo.nombre)),
+                id: flujo.id
+            })
+        })
+        return aux
+    }
+
+    clear = () => {
+        const { data, form, options } = this.state
+        options.cuentas = setOptions(data.cuentas, 'nombre', 'id')
+        form.cuenta = ''
+        form.cuentas = []
+        form.fechaInicio = new Date
+        form.fechaFin = new Date
+        data.flujos = []
+        this.setState({
+            ... this.state,
+            options,
+            form,
+            flujos: [],
+            data
+        })
+    }
+
+    onSubmit = e => {
+        e.preventDefault()
+        waitAlert()
+        this.askFlujosAxios()
+    }
+
     async getFlujosAxios(){
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'flujos', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { empresas } = response.data
-                const { options } = this.state
-
-                options.empresas = setOptions(empresas, 'name', 'id')
+                const { cuentas } = response.data
+                const { options, data } = this.state
+                data.cuentas = cuentas
+                options.cuentas = setOptions(cuentas, 'nombre', 'id')
                 this.setState({
                     ... this.state,
-                    options
+                    options,
+                    data
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async askFlujosAxios(){
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        await axios.post(URL_DEV + 'flujos', form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { data } = this.state
+                const { flujos } = response.data
+                data.flujos = flujos
+                swal.close()
+                this.setState({
+                    ... this.state,
+                    data,
+                    flujos: this.setFlujos(flujos)
                 })
             },
             (error) => {
@@ -122,14 +203,24 @@ class Flujos extends Component {
     }
 
     render() {
-        const { form, options } = this.state
+        const { form, options, data, flujos } = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
                 <Card className="m-2 p-2 m-md-4 p-md-4">
                     <Card.Body>
-                        <FlujosForm form = { form } options = { options } onChangeEmpresa = { this.onChangeEmpresa } 
-                            updateEmpresa = { this.updateEmpresa } onChange = { this.onChange } onSubmit = { this.onSubmit }
-                            onChangeAndAdd = { this.onChangeAndAdd } />
+                        <FlujosForm form = { form } options = { options } onChange = { this.onChange }
+                            onSubmit = { this.onSubmit } onChangeAndAdd = { this.onChangeAndAdd } 
+                            deleteOption = { this.deleteOption } clear = { this.clear } onSubmit = { this.onSubmit } />
+                        <NewTable 
+                            columns = { FLUJOS_COLUMNS } 
+                            data = { flujos }
+                            title = 'Flujos' 
+                            subtitle = 'Listado de flujos'
+                            mostrar_boton = { false }
+                            abrir_modal = { false }
+                            mostrar_acciones = { false }
+                            elements={data.flujos}
+                        />
                     </Card.Body>
                 </Card>
             </Layout>

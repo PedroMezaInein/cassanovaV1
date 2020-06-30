@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form'
 import Badge from 'react-bootstrap/Badge'
 import { Button, Select, Calendar, RadioGroup, OptionsCheckbox, SelectSearch } from '../../form-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 
 class FlujosForm extends Component{
 
@@ -15,19 +15,18 @@ class FlujosForm extends Component{
         const { onChange } = this.props
         onChange({ target: { value: date, name: 'fechaFin' } })
     }
-    updateEmpresa = value => {
+    updateCuenta = value => {
         const { onChange, onChangeAndAdd, options } = this.props
-        options.empresas.map((empresa)=> {
-            if(empresa.value === value)
-                onChangeAndAdd({ target: { value: empresa.value, name: 'empresa' } }, 'empresas')
+        options.cuentas.map((cuenta)=> {
+            if(cuenta.value === value)
+                onChangeAndAdd({ target: { value: cuenta.value, name: 'cuenta' } }, 'cuentas')
         })
-        onChange({ target: { value: value, name: 'empresa' } })
+        onChange({ target: { value: value, name: 'cuenta' } })
     }
-    
     
 
     render(){
-        const { form, onChange, options, onChangeEmpresa, updateEmpresa,  ...props } = this.props
+        const { form, onChange, options, deleteOption, onChangeAndAdd, clear, ...props } = this.props
         return(
             <Form { ... props}>
                 <div className="form-group row form-group-marginless">
@@ -63,67 +62,29 @@ class FlujosForm extends Component{
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <SelectSearch
-                            options = { options.empresas } 
-                            placeholder = "Selecciona la colonia" 
-                            name="empresa"  
-                            value = { form.empresa } 
-                            onChange = { this.updateEmpresa } 
-                            iconclass={"fas fa-building"} 
+                            options = { options.cuentas } 
+                            placeholder = "Selecciona la cuenta" 
+                            name="cuenta"  
+                            value = { form.cuenta } 
+                            onChange = { this.updateCuenta } 
+                            iconclass={"fas fa-credit-card"} 
                             />
-                        <span className="form-text text-muted">Por favor, seleccione la(s) empresa(s)</span>
+                        <span className="form-text text-muted">Por favor, seleccione la(s) cuenta(s)</span>
                     </div>
                     <div className="col-md-8">
                         {
-                            form.empresas.length > 0 ?
+                            form.cuentas.length > 0 ?
                                 <div className="col-md-12 d-flex align-items-center image-upload">
                                     {
-                                        form.empresas.map((empresa, key)=>{
+                                        form.cuentas.map((cuenta, key)=>{
                                             return(
                                                 <Badge variant = "light" key = { key } className="d-flex px-3 align-items-center" pill>
                                                     <FontAwesomeIcon
                                                         icon = { faTimes }
-                                                        onClick = { (e) => { e.preventDefault(); updateEmpresa(empresa) }}
+                                                        onClick = { (e) => { e.preventDefault(); deleteOption(cuenta, 'cuentas')  }}
                                                         className = "small-button mr-2" />
                                                         {
-                                                            empresa.name
-                                                        }
-                                                </Badge>
-                                            )
-                                        })
-                                    }
-                                </div>
-                            : ''
-                        }
-                    </div>
-                </div>
-                <div className="separator separator-dashed mt-1 mb-2"></div>
-                <div className="form-group row form-group-marginless">
-                    <div className="col-md-4">
-                        <Select 
-                            required 
-                            name = 'empresa' 
-                            options = { options.empresas } 
-                            placeholder = 'Selecciona la(s) empresa(s)' 
-                            value = { form.empresa }
-                            onChange = { onChangeEmpresa } 
-                            iconclass={"far fa-building"} 
-                        />
-                        <span className="form-text text-muted">Por favor, seleccione la(s) empresa(s)</span>
-                    </div>
-                    <div className="col-md-8">
-                        {
-                            form.empresas.length > 0 ?
-                                <div className="col-md-12 d-flex align-items-center image-upload">
-                                    {
-                                        form.empresas.map((empresa, key)=>{
-                                            return(
-                                                <Badge variant = "light" key = { key } className="d-flex px-3 align-items-center" pill>
-                                                    <FontAwesomeIcon
-                                                        icon = { faTimes }
-                                                        onClick = { (e) => { e.preventDefault(); updateEmpresa(empresa) }}
-                                                        className = "small-button mr-2" />
-                                                        {
-                                                            empresa.text
+                                                            cuenta.name
                                                         }
                                                 </Badge>
                                             )
@@ -135,7 +96,8 @@ class FlujosForm extends Component{
                     </div>
                 </div>
                 <div className="mt-3 text-center">
-                    <Button icon='' className="mx-auto" type="submit" text="Descargar" />
+                    <Button icon='' className="mx-3" type="submit" text="Mostrar" />
+                    <Button onClick = { clear } className="mx-3" text="Limpiar" />
                 </div>
             </Form>
         )
