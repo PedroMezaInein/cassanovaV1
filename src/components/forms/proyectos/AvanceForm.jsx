@@ -39,18 +39,31 @@ class AvanceForm extends Component {
     }
 
     render(){
-        const { form, onChangeAdjuntoAvance, onChangeAvance, clearFilesAvances, addRowAvance, onChange, proyecto, sendMail, ... props } = this.props    
+        const { form, onChangeAdjuntoAvance, onChangeAvance, clearFilesAvances, addRowAvance, onChange, proyecto, sendMail, formeditado, ... props } = this.props    
         const { activeKey } = this.state
         return(
             <>
-                <Form {...props}>
-                    <div className="row mx-0" >
+                <Form 
+
+                    {...props}
+                    >
+                    <div className="form-group row form-group-marginless pt-4">
                         <div className="col-md-4">
-                            <Input name="semana" value={form.semana} onChange={onChange} type="text" placeholder="Semana" iconclass={"far fa-folder-open"}/>
-                            <span className="form-text text-muted">Por favor, ingrese la semana. </span>
+                            <Input 
+                                requirevalidation={1}
+                                formeditado={formeditado}
+                                name="semana" 
+                                value={form.semana} 
+                                onChange={onChange} 
+                                type="text" 
+                                placeholder="Número de semana" 
+                                iconclass={"far fa-folder-open"}
+                                messageinc="Incorrecto. Ingresa el número de semana."
+                            />                            
                         </div>
-                        <div className = "col-md-4 px-2">
+                        <div className="col-md-4">
                             <Calendar 
+                                formeditado={formeditado}
                                 onChangeCalendar = { this.handleChangeDateInicio }
                                 placeholder = "Fecha de inicio"
                                 name = "fechaInicio"
@@ -61,8 +74,9 @@ class AvanceForm extends Component {
                                 iconclass={"far fa-calendar-alt"}                            
                             />
                         </div>
-                        <div className = "col-md-4 px-2">
+                        <div className="col-md-4">
                             <Calendar 
+                                formeditado={formeditado}
                                 onChangeCalendar = { this.handleChangeDateFin }
                                 placeholder = "Fecha final"
                                 name = "fechaFin"
@@ -72,48 +86,64 @@ class AvanceForm extends Component {
                                 endDate={ form.fechaFin }
                                 minDate={ form.fechaInicio }
                                 iconclass={"far fa-calendar-alt"}
-                                />
-                            <span className="form-text text-muted">Por favor, ingrese su fecha final. </span>
+                            />
                         </div>
                     </div>
-                    <hr />
-                    {
-                        form.avances.map( ( avance, key ) => {
-                            return(
-                                <>
-                                    <div className="row mx-0" key = { key }>
-                                        <div className = "col-md-4 px-2">
-                                            <FileInput
-                                                onChangeAdjunto={ e => onChangeAdjuntoAvance(e, key, 'adjuntos') }
-                                                placeholder={form['avances'][key]['adjuntos']['placeholder']}
-                                                value={form['avances'][key]['adjuntos']['value']}
-                                                name={`${key}-avance`} id={`${key}-avance`}
-                                                accept="image/*"
-                                                files={form['avances'][key]['adjuntos']['files']}
-                                                _key = { key }
-                                                deleteAdjuntoAvance = { clearFilesAvances } 
-                                                multiple />
+                    <div className="separator separator-dashed mt-1 mb-2"></div>
+
+                        {
+                            form.avances.map( ( avance, key ) => {
+                                return(
+                                    <>   
+                                        <div className="form-group row form-group-marginless" key = { key }>
+                                            <div className = "col-md-4">
+                                                <FileInput
+                                                    requirevalidation={0}
+                                                    formeditado={formeditado}
+                                                    onChangeAdjunto={ e => onChangeAdjuntoAvance(e, key, 'adjuntos') }
+                                                    placeholder={form['avances'][key]['adjuntos']['placeholder']}
+                                                    value={form['avances'][key]['adjuntos']['value']}
+                                                    name={`${key}-avance`} id={`${key}-avance`}
+                                                    accept="image/*"
+                                                    files={form['avances'][key]['adjuntos']['files']}
+                                                    _key = { key }
+                                                    deleteAdjuntoAvance = { clearFilesAvances } 
+                                                    multiple 
+                                                />
+                                            </div>
+                                            <div className = "col-md-6">
+                                                <Input
+                                                    requirevalidation={1}
+                                                    formeditado={formeditado}
+                                                    as = "textarea"
+                                                    rows = "1"
+                                                    placeholder = "Descripción" 
+                                                    name = "descripcion" 
+                                                    value = {form['avances'][key]['descripcion']} 
+                                                    onChange = { e => onChangeAvance(key, e, 'descripcion')}
+                                                    messageinc="Incorrecto. Ingresa la descripción."
+                                                    style={{paddingLeft: "10px"}} 
+                                                />
+                                            </div>
+                                            <div className = "col-md-2">
+                                                <InputMoney 
+                                                    requirevalidation={1}
+                                                    formeditado={formeditado}
+                                                    thousandSeparator={false}  
+                                                    prefix = { '%' } 
+                                                    name = "avance" 
+                                                    value = { form.avance } 
+                                                    onChange = { e => onChangeAvance(key, e, 'avance') } 
+                                                    placeholder="% de avance" 
+                                                    iconclass={"fas fa-percent"}/>
+                                            </div>
                                         </div>
-                                        <div className = "col-md-6 px-2">
-                                            <Input
-                                                as = "textarea"
-                                                rows = "1"
-                                                placeholder = "Descripción" 
-                                                name = "descripcion" 
-                                                value = {form['avances'][key]['descripcion']} 
-                                                onChange = { e => onChangeAvance(key, e, 'descripcion')} />
-                                        </div>
-                                        <div className = "col-md-2 px-2">
-                                            <InputMoney thousandSeparator={false}  prefix = { '%' } name = "avance" 
-                                                value = { form.avance } onChange = { e => onChangeAvance(key, e, 'avance') } 
-                                                placeholder="% de avance" iconclass={"fas fa-percent"}/>
-                                        </div>
-                                    </div>
-                                    <hr />
-                                </>
-                            )
-                        })
-                    }
+                                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                                    </>
+                                )
+                            })
+                        }
+
                     <div className="d-flex justify-content-end my-2">
                         <Button icon = { faPlus }  tooltip = {{ id: 'add-avance', text: 'Nuevo' }} onClick = { addRowAvance } color = 'transparent' />
                     </div>        
