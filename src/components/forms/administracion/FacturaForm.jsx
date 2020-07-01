@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { Subtitle, Small } from '../../texts'
 import { Input, Select, SelectSearch, Button, Calendar, InputMoney, RadioGroup } from '../../form-components'
+import { validateAlert } from '../../../functions/alert'
+import { RFC, TEL, EMAIL} from '../../../constants'
 
 export default class FacturaForm extends Component{
 
@@ -36,54 +38,136 @@ export default class FacturaForm extends Component{
     }
 
     render(){
-        const { options, form, onChange, ... props } = this.props
+        const { options, form, onChange,onSubmit, formeditado, ... props } = this.props
         return(
-            <Form { ... props}>
-                <Subtitle className="text-center" color="gold">
-                    Solicitar factura
-                </Subtitle>
-                <div className="row mx-0 my-3">
-                    <div className="col-md-6 px-2">
-                        <SelectSearch options={options.empresas} placeholder = "Empresa de emisión" 
-                            name = "empresa" value = { form.empresa } onChange = { this.updateEmpresa }/>
-                    </div>
-                    <div className="col-md-6 px-2">
-                        <Calendar onChangeCalendar = { this.changeDate } name = "fecha" 
-                            value = { form.fecha } placeholder="Fecha de emisión"/>
-                    </div>
-                    <div className="col-md-6 px-2">
-                        <SelectSearch options={options.clientes} placeholder = "Nombre del cliente" 
-                            name = "cliente" value = { form.cliente } onChange = { this.updateCliente }/>
-                    </div>
-                    <div className="col-md-6 px-2">
-                        <Input placeholder = "RFC del cliente" value = { form.rfc } name = "rfc" onChange = { onChange } />
-                    </div>
-                    <div className="col-md-6 px-2">
-                        <Input placeholder = "Concepto" value = { form.concepto } name = "concepto" onChange = { onChange } />
-                    </div>
-                    <div className="col-md-6 px-2">
-                        <InputMoney thousandSeparator={true}  placeholder = "Monto con IVA" value = { form.total } name = "total" onChange = { onChange }/>
-                    </div>
+            <Form id="form-solicitar-factura"
+                onSubmit = { 
+                    (e) => {
+                        e.preventDefault(); 
+                        validateAlert(onSubmit, e, 'form-solicitar-factura')
+                    }
+                }
+                { ... props}>
 
-                    <div className="col-md-6 px-2">
-                        <SelectSearch options={options.formasPago} placeholder = "Forma de pago" 
-                            name = "formaPago" value = { form.formaPago } onChange = { this.updateFormaPago }/>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-4">
+                        <SelectSearch 
+                            formeditado={formeditado}
+                            options={options.empresas} 
+                            placeholder = "Empresa de emisión" 
+                            name = "empresa" 
+                            value = { form.empresa } 
+                            onChange = { this.updateEmpresa }
+                        />
                     </div>
-
-                    <div className="col-md-6 px-2">
-                        <SelectSearch options={options.metodosPago} placeholder = "Método de pago" 
-                            name = "metodoPago" value = { form.metodoPago } onChange = { this.updateMetodoPago }/>
+                    <div className="col-md-4">
+                        <Input
+                            requirevalidation={1}
+                            formeditado={formeditado}
+                            formeditado={formeditado}
+                            placeholder = "RFC del cliente" 
+                            value = { form.rfc } 
+                            name = "rfc" 
+                            onChange = { onChange } 
+                            iconclass={"far fa-file-alt"}
+                            patterns={RFC}
+                            messageinc="Incorrecto. Ej. ABCD001122ABC"
+                            maxLength="13"
+                        />
                     </div>
-
-                    <div className="col-md-6 px-2">
-                        <SelectSearch options={options.estatusFacturas} placeholder = "Estatus" 
-                            name = "estatusFactura" value = { form.estatusFactura } onChange = { this.updateEstatusFactura }/>
+                    <div className="col-md-4">
+                        <SelectSearch 
+                            formeditado={formeditado}
+                            options={options.clientes} 
+                            placeholder = "Nombre del cliente" 
+                            name = "cliente" 
+                            value = { form.cliente } 
+                            onChange = { this.updateCliente }
+                        />
                     </div>
-
-                    <div className="col-md-6 px-2">
-                        <Input placeholder = "Correo" value = { form.email } name = "email" onChange = { onChange } />
+                </div>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-4">
+                        <Input 
+                            requirevalidation={1}
+                            formeditado={formeditado}
+                            placeholder = "Concepto" 
+                            value = { form.concepto } 
+                            name = "concepto" 
+                            onChange = { onChange } 
+                            iconclass={"far fa-window-maximize"}
+                            messageinc="Incorrecto. Ingresa el concepto."
+                        />
                     </div>
-
+                    <div className="col-md-4">
+                        <InputMoney 
+                            requirevalidation={1}
+                            formeditado={formeditado}
+                            thousandSeparator={true}  
+                            placeholder = "Monto con IVA" 
+                            value = { form.total } 
+                            name = "total" 
+                            onChange = { onChange }
+                            iconclass={" fas fa-money-check-alt"}
+                        />
+                    </div>
+                    <div className="col-md-4">
+                        <SelectSearch 
+                            formeditado={formeditado}
+                            options={options.formasPago} 
+                            placeholder = "Forma de pago" 
+                            name = "formaPago" 
+                            value = { form.formaPago } 
+                            onChange = { this.updateFormaPago }
+                        />
+                    </div>
+                </div>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-4">
+                        <Input 
+                            formeditado={formeditado}
+                            requirevalidation={1}
+                            formeditado={formeditado}
+                            placeholder = "Correo" 
+                            value = { form.email } 
+                            name = "email" 
+                            onChange = { onChange } 
+                            iconclass={"far fa-envelope"} 
+                            messageinc="Incorrecto. Ej. usuario@dominio.com"
+                            patterns={EMAIL}
+                        />
+                    </div>
+                    <div className="col-md-4">
+                        <SelectSearch 
+                            formeditado={formeditado}
+                            options={options.metodosPago} 
+                            placeholder = "Método de pago" 
+                            name = "metodoPago" 
+                            value = { form.metodoPago } 
+                            onChange = { this.updateMetodoPago }
+                        />
+                    </div>
+                    <div className="col-md-4">
+                        <SelectSearch 
+                            formeditado={formeditado}
+                            options={options.estatusFacturas} 
+                            placeholder = "Estatus" 
+                            name = "estatusFactura" 
+                            value = { form.estatusFactura } 
+                            onChange = { this.updateEstatusFactura }
+                        />
+                    </div>
+                </div>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-4">
+                        <Calendar 
+                            formeditado={formeditado}
+                            onChangeCalendar = { this.changeDate } 
+                            name = "fecha" 
+                            value = { form.fecha } 
+                            placeholder="Fecha de emisión"
+                        />
+                    </div>
                 </div>
                 
                 <div className="d-flex justify-content-center my-3">
