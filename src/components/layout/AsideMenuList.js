@@ -23,6 +23,18 @@ function openSubmenu(modulo){
     }
 }
 
+function closeAside(){  
+    if(document.body.classList.contains('aside-minimize-hover') )
+    {
+        document.body.classList.remove('aside-minimize-hover');       
+        document.body.classList.add('aside-minimize');
+    }
+    else
+    {            
+    } 
+}
+
+
 export function AsideMenuList({ props }) {
     /* const location = useLocation();
     const getMenuItemActive = (url) => {
@@ -77,7 +89,7 @@ export function AsideMenuList({ props }) {
                                                         return(
                                                             
                                                             <li  key={submodulo.url} className={`menu-item `} aria-haspopup="true">
-                                                                <NavLink className="menu-link" to={submodulo.url}>
+                                                                <NavLink className="menu-link" to={submodulo.url} onClick = { () => { closeAside() } }>
                                                                     <span className="svg-icon menu-icon">
                                                                         <SVG src={toAbsoluteUrl(submodulo.icon)} />
                                                                     </span>
