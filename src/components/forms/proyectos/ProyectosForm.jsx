@@ -353,39 +353,6 @@ class ProyectosForm extends Component{
                                         {/*<span className="form-text text-muted">Por favor, selecciona el cliente</span>*/}
                                     </div>
                                     <div className="col-md-4">
-                                        <InputMoney 
-                                            requirevalidation={1}
-                                            formeditado={formeditado}
-                                            prefix = { '%' }
-                                            thousandSeparator = {false}
-                                            name = "porcentaje"
-                                            value = { form.porcentaje }
-                                            onChange = { onChange }
-                                            placeholder="Porcentaje"
-                                            iconclass={"fas fa-percent"}
-                                        />
-                                        {/*<span className="form-text text-muted">Por favor, ingresa el porcentaje. </span>*/}
-                                    </div>
-                                    <div className="col-md-4">
-                                        <FileInput 
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChangeAdjunto = { onChangeAdjunto } 
-                                            placeholder = "Imagen"
-                                            value = {form.adjuntos.image.value}
-                                            name = "image"
-                                            id = "image"
-                                            accept = "image/*" 
-                                            files = { form.adjuntos.image.files }
-                                            deleteAdjunto = { clearFiles }
-                                            iconclass={"far fa-file-image"}
-                                            />
-                                        {/*<span className="form-text text-muted">Por favor, ingrese su imagen. </span>*/}
-                                    </div>                                    
-                                </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">  
-                                    <div className="col-md-4">
                                         <Calendar 
                                             formeditado={formeditado}
                                             onChangeCalendar = { this.handleChangeDateInicio }
@@ -414,7 +381,27 @@ class ProyectosForm extends Component{
                                             patterns={DATE}
                                         />
                                         {/*<span className="form-text text-muted">Por favor, ingrese su fecha de final. </span>*/}
+                                    </div>                              
+                                </div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="form-group row form-group-marginless">  
+                                    <div className="col-md-4">
+                                        <FileInput 
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
+                                            onChangeAdjunto = { onChangeAdjunto } 
+                                            placeholder = "Imagen"
+                                            value = {form.adjuntos.image.value}
+                                            name = "image"
+                                            id = "image"
+                                            accept = "image/*" 
+                                            files = { form.adjuntos.image.files }
+                                            deleteAdjunto = { clearFiles }
+                                            iconclass={"far fa-file-image"}
+                                            />
+                                        {/*<span className="form-text text-muted">Por favor, ingrese su imagen. </span>*/}
                                     </div>
+                                    
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">                                
