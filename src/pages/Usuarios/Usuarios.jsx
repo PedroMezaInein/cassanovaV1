@@ -8,16 +8,13 @@ import { Title, Subtitle, P, Small, B } from '../../components/texts'
 import { Button } from '../../components/form-components'
 import { faUserPlus, faUserEdit, faUserSlash, faKey } from '@fortawesome/free-solid-svg-icons'
 import { Card, Modal } from '../../components/singles'
-import { RegisterUserForm, EmpleadoForm, PermisosForm } from '../../components/forms'
+import { RegisterUserForm, EmpleadoForm, PermisosForm, ClienteUserForm } from '../../components/forms'
 import swal from 'sweetalert'
-
+import { setOptions } from '../../functions/setters'
+import { forbiddenAccessAlert, errorAlert } from '../../functions/alert'
 class Usuarios extends Component{
     constructor(props){
         super(props)
-        /* this.handleChangeInput = this.handleChangeInput.bind(this);
-        this.handleChangeEmpleado = this.handleChangeEmpleado.bind(this);
-        this.handleChangeDate = this.handleChangeDate.bind(this);
-        this.addUserAxios = this.addUserAxios.bind(this); */
     }
 
     state = {
@@ -32,7 +29,15 @@ class Usuarios extends Component{
             empleado:false
         },
         empleadoForm:EMPTY_EMPLEADO,
+        clienteForm:{
+            proyectos: [],
+            proyecto: ''
+        },
+        proyectos: [],
         options: [],
+        data:{
+            proyectos: []
+        },
         empresas_options: [],
         user_to_interact: '',
 
@@ -435,7 +440,9 @@ class Usuarios extends Component{
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'user/users', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { data: {users: users} } = response
+                const { users, proyectos } = response.data
+                const { data } = this.state
+                data.proyectos = proyectos
                 this.setUsers(users)
                 users.map((user, key) => {
                     const { id, tipo } = user
@@ -449,32 +456,23 @@ class Usuarios extends Component{
                         options
                     })
                 })
+                this.setState({
+                    ... this.state,
+                    proyectos: setOptions(proyectos, 'nombre', 'id'),
+                    data
+                })
             },
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    })
+                    forbiddenAccessAlert()
                 }else{
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
-                        icon: 'error',
-                        
-                    })
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            swal({
-                title: '¡Ups 😕!',
-                text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
-                icon: 'error',
-                
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
 
         await axios.get(URL_DEV + 'empresa', { headers: {Authorization:`Bearer ${access_token}`}}).then(
@@ -497,33 +495,19 @@ class Usuarios extends Component{
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    })
+                    forbiddenAccessAlert()
                 }else{
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
-                        icon: 'error',
-                        
-                    })
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            swal({
-                title: '¡Ups 😕!',
-                text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
-                icon: 'error',
-                
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
     render(){
-        const { users, modalActive, form, options, modalSafeDeleteActive, user_to_interact, modalUpdateUser, form: { tipo : tipo_form }, empleadoForm, empresas_options, modalPermisos } = this.state;
+        const { users, modalActive, form, options, modalSafeDeleteActive, user_to_interact, modalUpdateUser, form: { tipo : tipo_form }, empleadoForm, clienteForm, proyectos, empresas_options, modalPermisos } = this.state;
         return(
             <>
                 <Layout active={'usuarios'}  { ...this.props}>
@@ -588,6 +572,14 @@ class Usuarios extends Component{
                                     options={empresas_options}
                                     title="Datos del empleado" 
                                     onChangeCalendar={this.handleChangeDate}
+                                    />
+                            }
+                            {
+                                <ClienteUserForm
+                                    form = { clienteForm }
+                                    options = { proyectos }
+                                    title = 'Datos del cliente'
+                                    onChange = { this.onChange }
                                     />
                             }
                         </RegisterUserForm>

@@ -1966,108 +1966,120 @@ class Proyectos extends Component {
                                     </div>
                                     <Accordion.Collapse eventKey={0} className="px-md-5 px-2" >
                                         <div>
-                                            <Card className="mx-md-5 my-3">
-                                                <div className="row mx-0">
-                                                    <div className="col-md-12 mb-3">
-                                                        <P className="text-center" color="gold">
-                                                            Lead
-                                                    </P>
-                                                    </div>
-                                                    <div className="col-md-6 mb-3">
-                                                        <Small color="dark-blue">
-                                                            <B color="gold" className="pr-1">Nombre:</B><br />
-                                                            {
-                                                                prospecto.lead.nombre
-                                                            }
-                                                        </Small>
-                                                        <hr />
-                                                        <Small color="dark-blue">
-                                                            <B color="gold" className="pr-1">Teléfono:</B><br />
-                                                            <a target="_blank" href={`tel:+${prospecto.lead.telefono}`}>
-                                                                <FontAwesomeIcon icon={faPhone} className="mr-2" />
-                                                                {
-                                                                    prospecto.lead.telefono
-                                                                }
-                                                            </a>
-                                                        </Small>
-                                                        <hr />
-                                                        <Small color="dark-blue">
-                                                            <B color="gold" className="pr-1">Correo:</B><br />
-                                                            <a target="_blank" href={`mailto:+${prospecto.lead.email}`}>
-                                                                <FontAwesomeIcon icon={faEnvelope} className="mr-2" />
-                                                                {
-                                                                    prospecto.lead.email
-                                                                }
-                                                            </a>
-                                                        </Small>
-                                                        <hr />
-                                                    </div>
-                                                    <div className="col-md-6 mb-3">
-                                                        <Small color="dark-blue">
-                                                            <B color="gold" className="pr-1">Empresa:</B><br />
-                                                            {
-                                                                prospecto.lead.empresa.name
-                                                            }
-                                                        </Small>
-                                                        <hr />
-                                                        <Small color="dark-blue">
-                                                            <B color="gold" className="mr-1">Origen:</B><br />
-                                                            {
-                                                                prospecto.lead.origen.origen
-                                                            }
-                                                        </Small>
-                                                        <hr />
-                                                        <Small color="dark-blue">
-                                                            <Small>
-                                                                <B color="gold" className="mr-1">Fecha:</B><br />
-                                                            </Small>
-                                                            <Moment format="DD/MM/YYYY">
-                                                                {
-                                                                    prospecto.lead.created_at
-                                                                }
-                                                            </Moment>
-                                                        </Small>
-                                                        <hr />
-                                                    </div>
-                                                    <div className="col-md-6 mb-3">
-                                                        <Small color="dark-blue">
-                                                            <B className="mr-1" color="gold">Comentario:</B><br />
-                                                            {
-                                                                prospecto.lead.comentario
-                                                            }
-                                                        </Small>
-                                                        <hr />
-                                                    </div>
-                                                    <div className="col-md-6 mb-3">
-                                                        <div className="text-color__dark-blue">
-                                                            <Small>
-                                                                <B color="gold" className="mr-1">Servicios:</B><br />
-                                                            </Small>
-                                                            <div className="px-2">
-                                                                <ul>
+                                            {
+                                                prospecto.lead ?
+                                                    <Card className="mx-md-5 my-3">
+                                                        <div className="row mx-0">
+                                                            <div className="col-md-12 mb-3">
+                                                                <P className="text-center" color="gold">
+                                                                    Lead
+                                                            </P>
+                                                            </div>
+                                                            <div className="col-md-6 mb-3">
+                                                                <Small color="dark-blue">
+                                                                    <B color="gold" className="pr-1">Nombre:</B><br />
                                                                     {
-                                                                        prospecto.lead.servicios ? prospecto.lead.servicios.map((servicio, key) => {
-                                                                            return (
-                                                                                <li key={key}>
-                                                                                    <Small color="dark-blue">
-                                                                                        {servicio.servicio}
-                                                                                    </Small>
-                                                                                </li>
-                                                                            )
-                                                                        }) :
-                                                                            <li>
-                                                                                <Small color="dark-blue">
-                                                                                    No hay servicios registrados
-                                                                        </Small>
-                                                                            </li>
+                                                                        prospecto.lead.nombre
                                                                     }
-                                                                </ul>
+                                                                </Small>
+                                                                <hr />
+                                                                <Small color="dark-blue">
+                                                                    <B color="gold" className="pr-1">Teléfono:</B><br />
+                                                                    <a target="_blank" href={`tel:+${prospecto.lead.telefono}`}>
+                                                                        <FontAwesomeIcon icon={faPhone} className="mr-2" />
+                                                                        {
+                                                                            prospecto.lead.telefono
+                                                                        }
+                                                                    </a>
+                                                                </Small>
+                                                                <hr />
+                                                                <Small color="dark-blue">
+                                                                    <B color="gold" className="pr-1">Correo:</B><br />
+                                                                    <a target="_blank" href={`mailto:+${prospecto.lead.email}`}>
+                                                                        <FontAwesomeIcon icon={faEnvelope} className="mr-2" />
+                                                                        {
+                                                                            prospecto.lead.email
+                                                                        }
+                                                                    </a>
+                                                                </Small>
+                                                                <hr />
+                                                            </div>
+                                                            <div className="col-md-6 mb-3">
+                                                                <Small color="dark-blue">
+                                                                    <B color="gold" className="pr-1">Empresa:</B><br />
+                                                                    {
+                                                                        prospecto.lead.empresa.name
+                                                                    }
+                                                                </Small>
+                                                                <hr />
+                                                                {
+                                                                    prospecto.lead.origen ?
+                                                                        <>
+                                                                            <Small color="dark-blue">
+                                                                                <B color="gold" className="mr-1">Origen:</B><br />
+                                                                                {
+                                                                                    prospecto.lead.origen.origen
+                                                                                }
+                                                                            </Small>
+                                                                            <hr />
+                                                                        </>
+                                                                    : ''
+                                                                }
+                                                                
+                                                                <Small color="dark-blue">
+                                                                    <Small>
+                                                                        <B color="gold" className="mr-1">Fecha:</B><br />
+                                                                    </Small>
+                                                                    <Moment format="DD/MM/YYYY">
+                                                                        {
+                                                                            prospecto.lead.created_at
+                                                                        }
+                                                                    </Moment>
+                                                                </Small>
+                                                                <hr />
+                                                            </div>
+                                                            <div className="col-md-6 mb-3">
+                                                                <Small color="dark-blue">
+                                                                    <B className="mr-1" color="gold">Comentario:</B><br />
+                                                                    {
+                                                                        prospecto.lead.comentario
+                                                                    }
+                                                                </Small>
+                                                                <hr />
+                                                            </div>
+                                                            <div className="col-md-6 mb-3">
+                                                                <div className="text-color__dark-blue">
+                                                                    <Small>
+                                                                        <B color="gold" className="mr-1">Servicios:</B><br />
+                                                                    </Small>
+                                                                    <div className="px-2">
+                                                                        <ul>
+                                                                            {
+                                                                                prospecto.lead.servicios ? prospecto.lead.servicios.map((servicio, key) => {
+                                                                                    return (
+                                                                                        <li key={key}>
+                                                                                            <Small color="dark-blue">
+                                                                                                {servicio.servicio}
+                                                                                            </Small>
+                                                                                        </li>
+                                                                                    )
+                                                                                }) :
+                                                                                    <li>
+                                                                                        <Small color="dark-blue">
+                                                                                            No hay servicios registrados
+                                                                                </Small>
+                                                                                    </li>
+                                                                            }
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                                <hr />
                                                             </div>
                                                         </div>
-                                                        <hr />
-                                                    </div>
-                                                </div>
-                                            </Card>
+                                                    </Card>
+                                                : ''
+                                            }
+                                            
                                             <Card className="mx-md-5 my-3">
                                                 <div className="row mx-0">
                                                     <div className="col-md-12 mb-3">
