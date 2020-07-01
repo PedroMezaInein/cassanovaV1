@@ -34,7 +34,7 @@ class AreaForm extends Component{
                     </div>
                     <div className="col-md-5">
                         <Input 
-                            requirevalidation={1}
+                            requirevalidation={0}
                             formeditado={formeditado}
                             name="subarea" 
                             value={form.subarea} 
@@ -52,7 +52,7 @@ class AreaForm extends Component{
                         form.subareas.map((element, key) => {
                             return(
                                 <div className="tagify form-control p-1 col-md-3 px-2 d-flex justify-content-center align-items-center" tabIndex="-1" style={{borderWidth:"0px"}} key = { key }>
-                                    <div className=" image-upload d-flex px-3 align-items-center tagify__tag tagify__tag--primary tagify--noAnim" pill >
+                                    <div className=" image-upload d-flex px-3 align-items-center tagify__tag tagify__tag--primary tagify--noAnim"  >
                                         <div 
                                             title="Borrar archivo" 
                                             className="tagify__tag__removeBtn" 
