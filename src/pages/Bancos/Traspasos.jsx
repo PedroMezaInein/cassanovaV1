@@ -39,6 +39,7 @@ class Traspasos extends Component{
         data:{
             traspasos: []
         },
+        formeditado:0,
         traspasos: [],
         traspaso: ''
     }
@@ -178,12 +179,12 @@ class Traspasos extends Component{
     openModal = () => {
         this.setState({
             ... this.state,
-            modal: true
+            modal: true,
+            formeditado:0
         })
     }
 
     openEdit = traspaso => {
-       
         const { form } = this.state
         let aux = Object.keys(form)
         aux.map( (element) => {
@@ -214,20 +215,20 @@ class Traspasos extends Component{
             ... this.state,
             modal: true,
             traspaso: traspaso,
-            form
+            form,
+            formeditado:1
         })
     }
     adjuntoTranspaso = (traspaso) => {
-       /* const { history } = this.props
+        /* const { history } = this.props
         history.push({
             pathname: traspaso.adjunto.url
-         });*/
+        });*/
         var win = window.open( traspaso.adjunto.url, '_blank');
         win.focus();
     }
 
     openDelete =  (traspaso) => {
-       
         this.setState({
             ... this.state,
             modalDelete: true,
@@ -316,7 +317,7 @@ class Traspasos extends Component{
                 {
                     text: 'Transpasos',
                     btnclass: 'primary',
-                    iconclass: 'flaticon-refresh', 
+                    iconclass: 'flaticon-file-2', 
                     action: 'adjuntos',
                     tooltip: {id:'adjuntos', text:'Mostrar adjuntos'}
                 }
@@ -589,7 +590,7 @@ class Traspasos extends Component{
 
     render(){
 
-        const { modal, modalDelete, cuentas, form, traspasos, traspaso, data} = this.state
+        const { modal, modalDelete, cuentas, form, traspasos, traspaso, data, formeditado} = this.state
 
         return(
             <Layout active={'bancos'}  { ...this.props}>
@@ -616,15 +617,14 @@ class Traspasos extends Component{
                 <Modal title = { traspaso === '' ? "Nuevo traspaso" : 'Editar traspaso'}  show = { modal } handleClose={ this.handleClose } >
                     <TraspasoForm cuentas = { cuentas } form = { form } onChange = { this.onchange } onChangeAdjunto = { this.onChangeAdjunto } 
                         deleteAdjunto = { this.deleteAdjunto }
-                        onSubmit = { traspaso === '' ? this.onSubmit : this.onSubmitEdit } />
+                        onSubmit = { traspaso === '' ? this.onSubmit : this.onSubmitEdit } 
+                        formeditado={formeditado}/>
                 </Modal>
-                <Modal show = { modalDelete } handleClose={ this.handleCloseDelete } >
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas eliminar el traspaso?
-                    </Subtitle>
+                
+                <Modal title={"¿Estás seguro que deseas eliminar el traspaso?"} show = { modalDelete } handleClose={ this.handleCloseDelete } >
                     <div className="d-flex justify-content-center mt-3">
-                        <Button icon='' onClick = { this.handleCloseDelete } text="Cancelar" className="mr-3" color="green"/>
-                        <Button icon='' onClick = { (e) => { this.safeDelete(e)() }} text="Continuar" color="red"/>
+                        <Button icon='' onClick = { this.handleCloseDelete } text="Cancelar" className={"btn btn-light-primary font-weight-bolder mr-3"} />
+                        <Button icon='' onClick = { (e) => { this.safeDelete(e)() }} text="Continuar" className={"btn btn-danger font-weight-bold mr-2"} />
                     </div>
                 </Modal>
             </Layout>
