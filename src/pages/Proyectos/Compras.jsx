@@ -1037,8 +1037,7 @@ class Compras extends Component{
                     actions={{
                         'edit': { function: this.openModalEdit },
                         'delete': { function: this.openModalDelete },
-                        'facturas': { function: this.openModalFacturas },
-                        'askFacturas': { function: this.openModalAskFactura }
+                        'facturas': { function: this.openModalFacturas }
                     }}
                     elements={data.compras} />
 
