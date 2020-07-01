@@ -63,6 +63,7 @@ class Proyectos extends Component {
         data: {
             proyectos: []
         },
+        formeditado:0,
         form: {
             fechaInicio: new Date(),
             fechaFin: new Date(),
@@ -680,7 +681,8 @@ class Proyectos extends Component {
             ... this.state,
             modal: true,
             title: 'Nuevo proyecto',
-            prospecto: ''
+            prospecto: '',
+            formeditado:0,
         })
     }
 
@@ -731,7 +733,8 @@ class Proyectos extends Component {
             proyecto: proyecto,
             modal: true,
             title: 'Editar proyecto',
-            form
+            form,
+            formeditado:1
         })
     }
 
@@ -743,6 +746,7 @@ class Proyectos extends Component {
             title: 'Avances del proyecto',
             proyecto: proyecto,
             form: this.clearForm(),
+            formeditado:0,
         })
 
     }
@@ -790,7 +794,8 @@ class Proyectos extends Component {
             modalAdjuntos: true,
             adjuntos: this.setAdjuntosSlider(proyecto),
             proyecto: proyecto,
-            form: this.clearForm()
+            form: this.clearForm(),
+            formeditado:0,
         })
     }
 
@@ -838,7 +843,8 @@ class Proyectos extends Component {
             modal: !modal,
             title: 'Nuevo proyecto',
             proyecto: '',
-            form: this.clearForm()
+            form: this.clearForm(),
+            formeditado:0
         })
     }
 
@@ -1927,7 +1933,7 @@ class Proyectos extends Component {
     }
 
     render() {
-        const { modal, modalDelete, modalAdjuntos, modalAvances, title, adjuntos, prospecto, form, options, proyectos, proyecto, data } = this.state
+        const { modal, modalDelete, modalAdjuntos, modalAvances, title, adjuntos, prospecto, form, options, proyectos, proyecto, data, formeditado } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 
@@ -1950,7 +1956,8 @@ class Proyectos extends Component {
                     <ProyectosForm title={title} form={form} onChange={this.onChange} options={options}
                         onChangeAdjunto={this.onChangeAdjunto} clearFiles={this.clearFiles} onChangeCP={this.onChangeCP}
                         onSubmit={this.onSubmit} onChangeAdjuntoGrupo = { this.onChangeAdjuntoGrupo } 
-                        clearFilesGrupo = { this.clearFilesGrupo } removeCorreo = {this.removeCorreo} >
+                        clearFilesGrupo = { this.clearFilesGrupo } removeCorreo = {this.removeCorreo}
+                        formeditado={formeditado} >
                         {
                             prospecto !== '' ?
                                 <Accordion>
@@ -2147,13 +2154,10 @@ class Proyectos extends Component {
                         }
                     </ProyectosForm>
                 </Modal>
-                <Modal show={modalDelete} handleClose={this.handleCloseDelete} >
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas eliminar el proyecto?
-                    </Subtitle>
+                <Modal title={"¿Estás seguro que deseas eliminar el proyecto?"}show={modalDelete} handleClose={this.handleCloseDelete} >
                     <div className="d-flex justify-content-center mt-3">
-                        <Button icon='' onClick={this.handleCloseDelete} text="Cancelar" className="mr-3" color="green" />
-                        <Button icon='' onClick={(e) => { this.safeDelete(e)() }} text="Continuar" color="red" />
+                        <Button icon='' onClick={this.handleCloseDelete} text="Cancelar" className={"btn btn-light-primary font-weight-bolder mr-3"} />
+                        <Button icon='' onClick={(e) => { this.safeDelete(e)() }} text="Continuar" className={"btn btn-danger font-weight-bold mr-2"} />
                     </div>
                 </Modal>
                 <Modal title = "Adjuntos del proyecto" show={modalAdjuntos} handleClose={this.handleCloseAdjuntos} >
@@ -2242,7 +2246,7 @@ class Proyectos extends Component {
                 <Modal title = { title } show = { modalAvances } handleClose = { this.handleCloseAvances }>
                     <AvanceForm form = { form } onChangeAvance =  { this.onChangeAvance } onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance } 
                         clearFilesAvances = { this.clearFilesAvances } addRowAvance = { this.addRowAvance } onSubmit = { this.onSubmitAvance }
-                        onChange = { this.onChange } proyecto = { proyecto } sendMail = { this.sendMail } />
+                        onChange = { this.onChange } proyecto = { proyecto } sendMail = { this.sendMail }  formeditado={formeditado} />
                 </Modal>
             </Layout>
         )
