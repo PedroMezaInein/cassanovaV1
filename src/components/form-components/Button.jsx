@@ -14,7 +14,7 @@ export default class button extends Component{
             <Button data-tip data-for={tooltip ? tooltip.id : 'undefined'} type={type} onClick={onClick} className={`button__${color} ${className}` } { ... props }>
                 {
                     icon !== ''  && <FontAwesomeIcon icon={icon} />
-                }<span class={pulse}></span>
+                }<span className={pulse}></span>
                 {
                     tooltip ? 
                         <ReactTooltip id={tooltip.id} place="top" type={tooltip.type ? tooltip.type : 'dark'} effect="solid">
