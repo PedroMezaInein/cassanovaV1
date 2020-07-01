@@ -56,7 +56,8 @@ class RemisionForm extends Component{
             case 'add':
                 this.setState({
                     ... this.state,
-                    title: 'Nueva remisión'
+                    title: 'Nueva remisión',
+                    formeditado:0
                 })
                 break;
             case 'edit':
@@ -89,7 +90,8 @@ class RemisionForm extends Component{
                             form,
                             options,
                             remision: remision,
-                            title: 'Editar remisión'
+                            title: 'Editar remisión',
+                            formeditado:1
                         })
                     }
                     else
