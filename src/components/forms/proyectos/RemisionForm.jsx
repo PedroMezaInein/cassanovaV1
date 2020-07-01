@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { Subtitle, Small } from '../../texts'
 import { Input, FileInput, SelectSearch, Button, Calendar } from '../../form-components'
+import { validateAlert } from '../../../functions/alert'
 
 class ConceptoForm extends Component{
 
@@ -44,9 +45,17 @@ class ConceptoForm extends Component{
     }
     
     render(){
-        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, ... props } = this.props
+        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, requirevalidation, onSubmit, formeditado, ... props } = this.props
         return(
-            <Form { ... props}>
+            <Form id="form-remision"
+                onSubmit = { 
+                    (e) => {
+                        e.preventDefault(); 
+                        validateAlert(onSubmit, e, 'form-remision')
+                    }
+                }
+                
+                { ... props}>
                 <Subtitle className="text-center" color="gold">
                     {
                         title
@@ -55,6 +64,8 @@ class ConceptoForm extends Component{
                 <div className="form-group row form-group-marginless mt-5">
                     <div className="col-md-8">
                         <SelectSearch 
+                            requirevalidation={1}
+                            formeditado={formeditado}
                             options={options.proyectos}
                             placeholder = "Selecciona el proyecto" 
                             name = "proyecto"
@@ -80,6 +91,8 @@ class ConceptoForm extends Component{
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <FileInput 
+                            requirevalidation={0}
+                            formeditado={formeditado}
                             onChangeAdjunto = { onChangeAdjunto } 
                             placeholder = { form.adjuntos.adjunto.placeholder }
                             value = { form.adjuntos.adjunto.value }
@@ -91,6 +104,8 @@ class ConceptoForm extends Component{
                     </div> 
                     <div className="col-md-4">
                         <SelectSearch 
+                            requirevalidation={1}
+                            formeditado={formeditado}
                             options={options.areas}
                             placeholder = "Selecciona el área" 
                             name = "area"
@@ -105,6 +120,8 @@ class ConceptoForm extends Component{
                         form.area ?
                             
                             <SelectSearch
+                                requirevalidation={0}
+                                formeditado={formeditado}
                                 options={options.subareas}
                                 placeholder = "Selecciona el subárea" 
                                 name = "subarea"
@@ -123,6 +140,8 @@ class ConceptoForm extends Component{
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-12">
                         <Input 
+                            requirevalidation={0}
+                            formeditado={formeditado}
                             as = "textarea" 
                             placeholder = "Descripción" 
                             rows = "3" value = { form.descripcion }
