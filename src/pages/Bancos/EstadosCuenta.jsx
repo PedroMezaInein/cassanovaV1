@@ -459,7 +459,7 @@ class EstadosCuenta extends Component {
                     </div>
                     <div className="separator separator-dashed mt-1 mb-2 pt-2"></div>
                     <div className="form-group row form-group-marginless">
-                        <div className="col-md-6">
+                        <div className="col-md-4 mt-3">
                             <div className="px-2 d-flex align-items-center">
                                     <div className="image-upload d-flex align-items-center">
                                         <div className="no-label">
@@ -482,7 +482,7 @@ class EstadosCuenta extends Component {
                                             
                                             adjuntoName &&
                                             <div className="">
-                                                <div className="tagify form-control p-1" tabIndex="-1">
+                                                <div className="tagify form-control p-1" tabIndex="-1" style={{borderWidth:"0px"}}>
                                                         <div className="tagify__tag tagify__tag--primary tagify--noAnim">
                                                             <div 
                                                                 title="Borrar archivo" 
