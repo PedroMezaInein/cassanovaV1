@@ -190,6 +190,39 @@ class Usuarios extends Component{
         })
     }
 
+    onChangeCliente = (e) => {
+        const { name, value } = e.target
+        const { clienteForm, form }  = this.state
+        clienteForm[name] = value
+        this.setState({
+            ... this.state,
+            clienteForm,
+            form
+        })
+    }
+
+    onChangeOptions = (e, arreglo) => {
+        const { name, value } = e.target
+        const { clienteForm } = this.state
+        let { proyectos } = this.state
+        let auxArray = clienteForm[arreglo]
+        let aux = []
+        proyectos.find(function (_aux) {
+            if (_aux.value.toString() === value.toString()) {
+                auxArray.push(_aux)
+            } else {
+                aux.push(_aux)
+            }
+        })
+        proyectos = aux
+        clienteForm[arreglo] = auxArray
+        this.setState({
+            ... this.state,
+            clienteForm,
+            proyectos
+        })
+    }
+
     handleChangeDate = (date) =>{
         const { empleadoForm, form }  = this.state
         empleadoForm['fecha_inicio'] = date
@@ -575,12 +608,15 @@ class Usuarios extends Component{
                                     />
                             }
                             {
-                                <ClienteUserForm
-                                    form = { clienteForm }
-                                    options = { proyectos }
-                                    title = 'Datos del cliente'
-                                    onChange = { this.onChange }
-                                    />
+                                tipo_form === '3' ?
+                                    <ClienteUserForm
+                                        form = { clienteForm }
+                                        options = { {proyectos: proyectos} }
+                                        title = 'Datos del cliente'
+                                        onChange = { this.onChangeCliente }
+                                        onChangeOptions = { this.onChangeOptions }
+                                        />
+                                : ''
                             }
                         </RegisterUserForm>
                     </Modal>
@@ -596,6 +632,17 @@ class Usuarios extends Component{
                                         title="Datos del empleado" 
                                         onChangeCalendar={this.handleChangeDate}
                                         />
+                            }
+                            {
+                                tipo_form === '3' ?
+                                    <ClienteUserForm
+                                        form = { clienteForm }
+                                        options = { {proyectos: proyectos} }
+                                        title = 'Datos del cliente'
+                                        onChange = { this.onChangeCliente }
+                                        onChangeOptions = { this.onChangeOptions }
+                                        />
+                                : ''
                             }
                         </RegisterUserForm>
                     </Modal>
