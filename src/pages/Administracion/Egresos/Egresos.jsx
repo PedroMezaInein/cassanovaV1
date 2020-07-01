@@ -542,8 +542,7 @@ class egresos extends Component{
                     egreso: egreso,
                     facturas: egreso.facturas,
                     porcentaje,
-                    egresos: this.setEgresos(egresos),
-                    egresos: egresos
+                    egresos: this.setEgresos(egresos)
                 })
                 
                 swal({
@@ -639,6 +638,7 @@ class egresos extends Component{
                                 'facturas': {function: this.openModalFacturas}
                             }}
                             elements = { data.egresos }
+                            idTable = 'egresos'
                             />
                 <ModalDelete show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteEgresoAxios() }}>
                     <Subtitle className="my-3 text-center">
