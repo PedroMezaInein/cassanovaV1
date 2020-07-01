@@ -36,6 +36,7 @@ class SolicitudCompra extends Component{
         data: {
             solicitudes: []
         },
+        formeditado:0,
         form:{
             proveedor: '',
             proyecto: '',
@@ -97,7 +98,8 @@ class SolicitudCompra extends Component{
             modal: true,
             title: 'Nueva solicitud de compra',
             form: this.clearForm(),
-            remision: ''
+            remision: '',
+            formeditado:0
         })
     }
 
@@ -134,7 +136,8 @@ class SolicitudCompra extends Component{
             solicitud: solicitud,
             form,
             options,
-            remision: ''
+            remision: '',
+            formeditado:1
         })
     }
 
@@ -308,7 +311,8 @@ class SolicitudCompra extends Component{
         const { history } = this.props
         history.push({
             pathname: '/proyectos/compras',
-            state: { solicitud: solicitud}
+            state: { solicitud: solicitud},
+            formeditado:1
         });
     }
 
@@ -597,7 +601,7 @@ class SolicitudCompra extends Component{
 
     render(){
 
-        const { modal, modalDelete, modalSingle, title, form, options, solicitudes, solicitud, remision } = this.state
+        const { modal, modalDelete, modalSingle, title, form, options, solicitudes, solicitud, remision, formeditado } = this.state
 
         return(
             <Layout active={'proyectos'}  { ...this.props}>
@@ -624,7 +628,7 @@ class SolicitudCompra extends Component{
                 <Modal show = {modal} handleClose = { this.handleClose } >
                     <SolicitudCompraForm title = { title } form = { form } options = { options } 
                         setOptions = {this.setOptions}  onChange = { this.onChange }
-                        onSubmit = { this.onSubmit } >
+                        onSubmit = { this.onSubmit } formeditado={formeditado}>
                         {
                             remision !== '' ?
                             
@@ -642,10 +646,7 @@ class SolicitudCompra extends Component{
                         }
                     </SolicitudCompraForm>
                 </Modal>
-                <ModalDelete show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteSolicitudAxios() }}>
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas eliminar la solicitud de compra?
-                    </Subtitle>
+                <ModalDelete title={"¿Estás seguro que deseas eliminar la solicitud de compra?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteSolicitudAxios() }}>
                 </ModalDelete>
                 <Modal show = { modalSingle } handleClose = { this.handleCloseSingle } >
                     <SolicitudCompraCard data = { solicitud }>
