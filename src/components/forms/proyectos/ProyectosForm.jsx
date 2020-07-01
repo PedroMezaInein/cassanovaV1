@@ -401,15 +401,11 @@ class ProyectosForm extends Component{
                                             />
                                         {/*<span className="form-text text-muted">Por favor, ingrese su imagen. </span>*/}
                                     </div>
-                                    
-                                </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">                                
-                                    <div className="col-md-12">
+                                    <div className="col-md-8">
                                         <Input 
                                             requirevalidation={0}
                                             formeditado={formeditado}
-                                            rows="3"
+                                            rows="1"
                                             as="textarea"
                                             placeholder="Descripción"
                                             name="descripcion"
@@ -420,7 +416,9 @@ class ProyectosForm extends Component{
                                         />
                                         {/*<span className="form-text text-muted">Por favor, ingrese su descripción. </span>*/}
                                     </div>
+                                    
                                 </div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
                             {
                                 title !== 'Editar proyecto' ?
                                 <Accordion>
