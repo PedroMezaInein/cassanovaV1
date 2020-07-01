@@ -59,7 +59,7 @@ class ProveedorForm extends Component {
                                 requirevalidation={1}
                                 name="nombre" 
                                 value={form.nombre} 
-                                placeholder="Nombre" 
+                                placeholder="Nombre de contacto" 
                                 onChange={onChange} 
                                 iconclass={"far fa-user"}
                                 formeditado={formeditado}
@@ -69,10 +69,11 @@ class ProveedorForm extends Component {
                         </div>
 
                         <div className="col-md-4">
-                            <Input                             
+                            <Input            
+                                requirevalidation={1}                 
                                 name="razonSocial"
                                 value={form.razonSocial}
-                                placeholder="Razón social"
+                                placeholder="Razón social / Nombre de la empresa"
                                 onChange={onChange}
                                 iconclass={"far fa-building"}
                                 formeditado={formeditado}
@@ -137,7 +138,7 @@ class ProveedorForm extends Component {
 
                         <div className="col-md-4">
                             <InputNumber 
-                                requirevalidation={1}
+                                requirevalidation={0}
                                 name="numCuenta" 
                                 value={form.numCuenta}
                                 placeholder="Número de cuenta"
@@ -153,7 +154,7 @@ class ProveedorForm extends Component {
                     <div className="form-group row form-group-marginless">
                         <div className="col-md-4">
                             <Select 
-                                requirevalidation={1} 
+                                requirevalidation={0} 
                                 name='tipo' 
                                 options={options.tipos} 
                                 placeholder='Selecciona el tipo de cuenta' 
@@ -166,7 +167,7 @@ class ProveedorForm extends Component {
                         </div>
                         <div className="col-md-4">
                             <Select 
-                                requirevalidation={1} 
+                                requirevalidation={0} 
                                 name='banco' 
                                 options={options.bancos} 
                                 placeholder='Selecciona el banco' 
