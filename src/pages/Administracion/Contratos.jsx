@@ -524,7 +524,7 @@ class Contratos extends Component {
                     <ContratoForm tipo = { tipo } options = { options } form = { form } onChange = { this.onChange } 
                         onSubmit = { this.onSubmit } formeditado={formeditado}/>
                 </Modal>
-                <ModalDelete title={tipo === 'Cliente' ? '¿Quieres eliminar el contrato de cliente?' : '¿Quieres eliminar el contrato de proveedor?'} show = { modal.delete } handleClose = { this.handleCloseDelete } onClick=  { (e) => { e.preventDefault(); waitAlert(); this.deleteContratoAxios() }}>
+                <ModalDelete title={tipo === 'Cliente' ? '¿Quieres eliminar el contrato de cliente?' : '¿Quieres eliminar el contrato de proveedor?'} show = { modal.delete } handleClose = { this.handleCloseModalDelete } onClick=  { (e) => { e.preventDefault(); waitAlert(); this.deleteContratoAxios() }}>
                 </ModalDelete>
             </Layout>
         )
