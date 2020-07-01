@@ -301,26 +301,7 @@ updateArea = value => {
                                         }
                                         {/*<span className="form-text text-muted">Por favor, selecciona la empresa.</span>*/}
                                     </div>
-                                </div>                                
-                                <div className="form-group row form-group-marginless">
-                                    {
-                                        form.empresa ?                                            
-                                            <div className="col-md-4">
-                                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                                <SelectSearch 
-                                                    formeditado={formeditado}
-                                                    options={options.cuentas} 
-                                                    placeholder="Selecciona la cuenta"
-                                                    name="cuenta" 
-                                                    value={form.cuenta} 
-                                                    onChange={this.updateCuenta}
-                                                    iconclass={"far fa-credit-card"} 
-                                                />
-                                                {/*<span className="form-text text-muted">Por favor, selecciona la cuenta.</span>*/}
-                                            </div>
-                                        : ''
-                                    }
-                                </div>
+                                </div>  
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2"></div>
                                     <div>
@@ -401,23 +382,20 @@ updateArea = value => {
                                 <h5 className="mb-4 font-weight-bold text-dark">Selecciona el tipo de pago, impuesto y estatus</h5>
                                 <div className="form-group row form-group-marginless">
                                     {
-                                        options.tiposPagos.length > 0 ?
+                                        form.empresa ?                                            
                                             <div className="col-md-4">
-                                                <Select 
-                                                    requirevalidation={1}
+                                                <SelectSearch 
                                                     formeditado={formeditado}
-                                                    placeholder="Selecciona el tipo de pago" 
-                                                    options={options.tiposPagos}
-                                                    name="tipoPago" 
-                                                    value={form.tipoPago} 
-                                                    onChange={this.updateTipoPago} 
-                                                    messageinc="Incorrecto. Selecciona el tipo de pago."
-                                                    iconclass={"fas fa-coins"}
-                                                    required
+                                                    options={options.cuentas} 
+                                                    placeholder="Selecciona la cuenta"
+                                                    name="cuenta" 
+                                                    value={form.cuenta} 
+                                                    onChange={this.updateCuenta}
+                                                    iconclass={"far fa-credit-card"} 
                                                 />
-                                                {/*<span className="form-text text-muted">Por favor, selecciona el tipo de pago.</span>*/}
+                                                {/*<span className="form-text text-muted">Por favor, selecciona la cuenta.</span>*/}
                                             </div>
-                                            : ''
+                                        : ''
                                     }
                                     <div className="col-md-4">
                                         <Select 
@@ -452,7 +430,26 @@ updateArea = value => {
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
-                                    <div className="col-md-4">
+                                    {
+                                        options.tiposPagos.length > 0 ?
+                                            <div className="col-md-3">
+                                                <Select 
+                                                    requirevalidation={1}
+                                                    formeditado={formeditado}
+                                                    placeholder="Selecciona el pago" 
+                                                    options={options.tiposPagos}
+                                                    name="tipoPago" 
+                                                    value={form.tipoPago} 
+                                                    onChange={this.updateTipoPago} 
+                                                    messageinc="Incorrecto. Selecciona el tipo de pago."
+                                                    iconclass={"fas fa-coins"}
+                                                    required
+                                                />
+                                                {/*<span className="form-text text-muted">Por favor, selecciona el tipo de pago.</span>*/}
+                                            </div>
+                                            : ''
+                                    }
+                                    <div className="col-md-3">
                                         <InputMoney 
                                             requirevalidation={1}
                                             formeditado={formeditado}
@@ -465,7 +462,7 @@ updateArea = value => {
                                         />
                                         {/*<span className="form-text text-muted">Por favor, ingresa el monto.</span>*/}
                                     </div>
-                                    <div className="col-md-4">
+                                    <div className="col-md-3">
                                         <InputMoney 
                                             requirevalidation={1}
                                             formeditado={formeditado}
@@ -478,7 +475,7 @@ updateArea = value => {
                                         />
                                         {/*<span className="form-text text-muted">Por favor, ingresa la comisión.</span>*/}
                                     </div>
-                                    <div className="col-md-4">
+                                    <div className="col-md-3">
                                         <SelectSearch 
                                             formeditado={formeditado}
                                             options={options.contratos} 

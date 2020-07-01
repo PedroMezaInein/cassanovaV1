@@ -215,7 +215,7 @@ class IngresosForm extends Component {
                                     </div>
                                     <div className="separator separator-dashed mt-1 mb-2"></div>
                                     <div className="form-group row form-group-marginless">
-                                        <div className="col-md-4">
+                                        <div className="col-md-6">
                                             {
                                                 form.facturaObject ?
                                                     <Input 
@@ -238,7 +238,7 @@ class IngresosForm extends Component {
                                             }
                                             {/*<span className="form-text text-muted">Por favor, selecciona el cliente.</span>*/}
                                         </div>
-                                        <div className="col-md-4">
+                                        <div className="col-md-6">
                                             {
                                                 form.facturaObject ?
                                                     <Input 
@@ -258,22 +258,7 @@ class IngresosForm extends Component {
                                                         iconclass={"far fa-building"}/>
                                             }
                                         {/*<span className="form-text text-muted">Por favor, selecciona la empresa.</span>*/}
-                                        </div>                    
-                                            {
-                                                form.empresa ?
-                                                <div className="col-md-4">
-                                                        <SelectSearch 
-                                                            options={options.cuentas} 
-                                                            placeholder="Selecciona la cuenta"
-                                                            name="cuenta" 
-                                                            value={form.cuenta} 
-                                                            onChange={this.updateCuenta} 
-                                                            iconclass={"far fa-credit-card"} 
-                                                        />
-                                                    {/*<span className="form-text text-muted">Por favor, selecciona la cuenta. </span>*/}
-                                                    </div>
-                                                : ''
-                                            }
+                                        </div> 
                                     </div>
                                     <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                         <div className="mr-2"></div>
@@ -353,6 +338,21 @@ class IngresosForm extends Component {
                                 <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
                                     <h5 className="mb-4 font-weight-bold text-dark">Selecciona el tipo de pago, impuesto y estatus</h5>        
                                         <div className="form-group row form-group-marginless">
+                                            {
+                                                form.empresa ?
+                                                <div className="col-md-4">
+                                                        <SelectSearch 
+                                                            options={options.cuentas} 
+                                                            placeholder="Selecciona la cuenta"
+                                                            name="cuenta" 
+                                                            value={form.cuenta} 
+                                                            onChange={this.updateCuenta} 
+                                                            iconclass={"far fa-credit-card"} 
+                                                        />
+                                                    {/*<span className="form-text text-muted">Por favor, selecciona la cuenta. </span>*/}
+                                                    </div>
+                                                : ''
+                                            }
                                             <div className="col-md-4">
                                                 <Select 
                                                     requirevalidation={1}
@@ -372,21 +372,6 @@ class IngresosForm extends Component {
                                                 <Select 
                                                     requirevalidation={1}
                                                     formeditado={formeditado}
-                                                    placeholder="Selecciona el impuesto" 
-                                                    options={options.tiposImpuestos}
-                                                    name="tipoImpuesto" 
-                                                    value={form.tipoImpuesto} 
-                                                    onChange={onChange}
-                                                    messageinc="Incorrecto. Selecciona el impuesto."
-                                                    iconclass={"fas fa-file-invoice-dollar"}
-                                                    required
-                                                />
-                                                {/*<span className="form-text text-muted">Por favor, selecciona el impuesto.</span>*/}
-                                            </div>
-                                            <div className="col-md-4">
-                                                <Select 
-                                                    requirevalidation={1}
-                                                    formeditado={formeditado}
                                                     placeholder="Selecciona el estatus de compra" 
                                                     options={options.estatusCompras}
                                                     name="estatusCompra" 
@@ -397,11 +382,26 @@ class IngresosForm extends Component {
                                                     iconclass={"flaticon2-time"}                                                    
                                                 />
                                             {/*<span className="form-text text-muted">Por favor, selecciona el estatus de compra.</span>*/}
-                                            </div>                                            
+                                            </div>                            
                                         </div>
                                         <div className="separator separator-dashed mt-1 mb-2"></div>
                                         <div className="form-group row form-group-marginless">
-                                            <div className="col-md-4">
+                                            <div className="col-md-3">
+                                                <Select 
+                                                    requirevalidation={1}
+                                                    formeditado={formeditado}
+                                                    placeholder="Selecciona el impuesto" 
+                                                    options={options.tiposImpuestos}
+                                                    name="tipoImpuesto" 
+                                                    value={form.tipoImpuesto} 
+                                                    onChange={onChange}
+                                                    messageinc="Incorrecto. Selecciona el impuesto."
+                                                    iconclass={"fas fa-file-invoice-dollar"}
+                                                    required
+                                                />
+                                                {/*<span className="form-text text-muted">Por favor, selecciona el impuesto.</span>*/}
+                                            </div> 
+                                            <div className="col-md-3">
                                                 <InputMoney 
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
@@ -415,7 +415,7 @@ class IngresosForm extends Component {
                                                 />
                                             {/*<span className="form-text text-muted">Por favor, ingresa el monto.</span>*/}
                                             </div>
-                                            <div className="col-md-4">
+                                            <div className="col-md-3">
                                                 <FileInput
                                                     requirevalidation={0}
                                                     formeditado={formeditado}
@@ -428,7 +428,7 @@ class IngresosForm extends Component {
                                                     deleteAdjunto={clearFiles} />
                                                 {/*<span className="form-text text-muted">Por favor, adjunta el documento.</span>*/}
                                             </div>
-                                            <div className="col-md-4">
+                                            <div className="col-md-3">
                                                 <FileInput
                                                     requirevalidation={0}
                                                     formeditado={formeditado}

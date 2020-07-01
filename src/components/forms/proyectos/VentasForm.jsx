@@ -308,25 +308,6 @@ class VentasForm extends Component {
                                     {/*<span className="form-text text-muted">Por favor, selecciona la empresa.</span>*/}
                                     </div>
                                 </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">
-                                    {
-                                        form.empresa ?
-                                            <div className="col-md-4">
-                                                <SelectSearch 
-                                                    formeditado={formeditado}
-                                                    options={options.cuentas} 
-                                                    placeholder="Selecciona la cuenta"
-                                                    name="cuenta"
-                                                    value={form.cuenta}
-                                                    onChange={this.updateCuenta} 
-                                                    iconclass={"far fa-credit-card"}
-                                                />
-                                                {/*<span className="form-text text-muted">Por favor, selecciona la cuenta. </span>*/}
-                                            </div>
-                                        : ''
-                                    }  
-                                </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2"></div>
                                     <div>
@@ -406,6 +387,22 @@ class VentasForm extends Component {
                             <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
                                 <h5 className="mb-4 font-weight-bold text-dark">Selecciona el tipo de pago, impuesto y estatus</h5>        
                                 <div className="form-group row form-group-marginless">
+                                    {
+                                        form.empresa ?
+                                            <div className="col-md-4">
+                                                <SelectSearch 
+                                                    formeditado={formeditado}
+                                                    options={options.cuentas} 
+                                                    placeholder="Selecciona la cuenta"
+                                                    name="cuenta"
+                                                    value={form.cuenta}
+                                                    onChange={this.updateCuenta} 
+                                                    iconclass={"far fa-credit-card"}
+                                                />
+                                                {/*<span className="form-text text-muted">Por favor, selecciona la cuenta. </span>*/}
+                                            </div>
+                                        : ''
+                                    }
                                     <div className="col-md-4">
                                         <Select 
                                             requirevalidation={1}
@@ -436,6 +433,9 @@ class VentasForm extends Component {
                                         />
                                         {/*<span className="form-text text-muted">Por favor, selecciona el impuesto.</span>*/}
                                     </div>
+                                </div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <Select
                                             requirevalidation={1}
@@ -451,9 +451,6 @@ class VentasForm extends Component {
                                         />
                                         {/*<span className="form-text text-muted">Por favor, selecciona el estatus de compra.</span>*/}
                                     </div>
-                                </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <InputMoney 
                                             requirevalidation={1}
@@ -479,7 +476,10 @@ class VentasForm extends Component {
                                         />
                                         {/*<span className="form-text text-muted">Por favor, selecciona el contrato.</span>*/}
                                     </div>
-                                    <div className="col-md-4">
+                                </div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="form-group row form-group-marginless">
+                                <div className="col-md-4">
                                         <FileInput
                                             requirevalidation={0}
                                             formeditado={formeditado}
@@ -493,8 +493,6 @@ class VentasForm extends Component {
                                         />
                                         {/*<span className="form-text text-muted">Por favor, adjunta el documento.</span>*/}
                                     </div>
-                                </div>  
-                                <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <FileInput
                                             requirevalidation={0}
@@ -515,7 +513,7 @@ class VentasForm extends Component {
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase"  onClick = { () => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
                                     </div>
                                     <div>
-                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type="submit" text="Enviar" />
+                                    <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type="submit" text="Enviar" />
                                     </div>
                                 </div> 
                             </div>

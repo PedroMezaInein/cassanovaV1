@@ -221,7 +221,7 @@ class EgresosForm extends Component {
                                 </div>                                
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
-                                    <div className="col-md-4">
+                                    <div className="col-md-6">
                                         <SelectSearch 
                                             formeditado={formeditado}
                                             options={options.proveedores}
@@ -235,7 +235,7 @@ class EgresosForm extends Component {
                                         />
                                     {/*<span className="form-text text-muted">Por favor, selecciona el proveedor.</span>*/}
                                     </div>
-                                    <div className="col-md-4">
+                                    <div className="col-md-6">
                                         {
                                             form.facturaObject ?
                                                 <Input 
@@ -260,23 +260,6 @@ class EgresosForm extends Component {
                                         }
                                     {/*<span className="form-text text-muted">Por favor, selecciona la empresa.</span>*/}
                                     </div>
-                                    {
-                                        form.empresa ?
-                                            <div className="col-md-4">
-                                                <SelectSearch 
-                                                    formeditado={formeditado}
-                                                    options={options.cuentas} 
-                                                    placeholder="Selecciona la cuenta"
-                                                    name="cuenta" 
-                                                    value={form.cuenta} 
-                                                    onChange={this.updateCuenta}
-                                                    iconclass={"far fa-credit-card"} 
-                                                    messageinc="Incorrecto. Selecciona la cuenta."
-                                                />
-                                            {/*<span className="form-text text-muted">Por favor, selecciona la cuenta.</span>*/}
-                                            </div>
-                                        : ''
-                                    }
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2"></div>
@@ -360,6 +343,23 @@ class EgresosForm extends Component {
                             <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
                                 <h5 className="mb-4 font-weight-bold text-dark">Selecciona el tipo de pago, impuesto y estatus</h5>
                                 <div className="form-group row form-group-marginless">
+                                    {
+                                        form.empresa ?
+                                            <div className="col-md-4">
+                                                <SelectSearch 
+                                                    formeditado={formeditado}
+                                                    options={options.cuentas} 
+                                                    placeholder="Selecciona la cuenta"
+                                                    name="cuenta" 
+                                                    value={form.cuenta} 
+                                                    onChange={this.updateCuenta}
+                                                    iconclass={"far fa-credit-card"} 
+                                                    messageinc="Incorrecto. Selecciona la cuenta."
+                                                />
+                                            {/*<span className="form-text text-muted">Por favor, selecciona la cuenta.</span>*/}
+                                            </div>
+                                        : ''
+                                    }
                                     <div className="col-md-4">
                                         <Select 
                                             requirevalidation={1}
@@ -388,6 +388,9 @@ class EgresosForm extends Component {
                                         />
                                     {/*<span className="form-text text-muted">Por favor, selecciona el impuesto.</span>*/}
                                     </div>
+                                </div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <Select 
                                             requirevalidation={1}
@@ -402,10 +405,7 @@ class EgresosForm extends Component {
                                         />
                                     {/*<span className="form-text text-muted">Por favor, selecciona el estatus de compra.</span>*/}
                                     </div>
-                                </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-6">
+                                    <div className="col-md-4">
                                         <InputMoney 
                                             requirevalidation={1}
                                             formeditado={formeditado}
@@ -419,7 +419,7 @@ class EgresosForm extends Component {
                                         />
                                     {/*<span className="form-text text-muted">Por favor, ingresa el monto.</span>*/}
                                     </div>
-                                    <div className="col-md-6">
+                                    <div className="col-md-4">
                                         <InputMoney 
                                             requirevalidation={1}
                                             formeditado={formeditado}
