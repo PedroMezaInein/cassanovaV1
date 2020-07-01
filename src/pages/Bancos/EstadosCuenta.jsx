@@ -406,7 +406,7 @@ class EstadosCuenta extends Component {
 
     }
     render() {
-        const { modal, modalDelete, adjunto, adjuntoName, adjuntoFile, cuentas, cuenta, estados, fecha, data,title } = this.state
+        const { modal, modalDelete, adjunto, adjuntoName, adjuntoFile, cuentas, cuenta, estados, fecha, data, title} = this.state
         return (
             <Layout active={'bancos'}  {...this.props}>
                 {/* <div className="text-right">
@@ -426,10 +426,7 @@ class EstadosCuenta extends Component {
                     }}
                     elements={data.estados}
                 />
-                <ModalDelete show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteEstadoAxios() }}>
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas eliminar el egreso?
-                    </Subtitle>
+                <ModalDelete title={"¿Estás seguro que deseas eliminar el egreso?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteEstadoAxios() }}>
                 </ModalDelete>
                 <Modal title = {"Agregar estado de cuenta"} show={modal} handleClose={this.handleClose} >
                     
