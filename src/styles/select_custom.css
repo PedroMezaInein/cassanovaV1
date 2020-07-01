@@ -157,8 +157,8 @@
 
 .select-search:not(.is-loading):not(.select-search--multiple) .select-search__value::after {
     transform: rotate(45deg);
-    border-right: 1px solid #000;
-    border-bottom: 1px solid #000;
+    /*border-right: 1px solid #000;
+    border-bottom: 1px solid #000;*/
     pointer-events: none;
 }
 

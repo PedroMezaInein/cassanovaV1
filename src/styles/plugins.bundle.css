@@ -2396,7 +2396,8 @@ select.selectpicker {
   justify-content: space-between; }
 
 .bootstrap-select > .dropdown-toggle:after {
-  margin-top: -1px; }
+  margin-top: -1px;
+}
 
 .bootstrap-select > .dropdown-toggle.bs-placeholder,
 .bootstrap-select > .dropdown-toggle.bs-placeholder:hover,
