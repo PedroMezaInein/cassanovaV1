@@ -52,6 +52,7 @@ class Ventas extends Component{
             proyectos: [],
             ventas: []
         },
+        formeditado:0,
         form:{
             solicitud: '',
             factura: 'Sin factura',
@@ -121,7 +122,8 @@ class Ventas extends Component{
             ... this.state,
             modal: true,
             title: 'Nueva venta',
-            form: this.clearForm()
+            form: this.clearForm(),
+            formeditado:0
         })
     }
 
@@ -172,7 +174,8 @@ class Ventas extends Component{
             venta: venta,
             form,
             options,
-            title: 'Editar venta'
+            title: 'Editar venta',
+            formeditado:1
         })
     }
 
@@ -185,7 +188,8 @@ class Ventas extends Component{
             ... this.state,
             modalAskFactura: true,
             venta: venta,
-            form
+            form,
+            formeditado:1
         })
     }
 
@@ -203,7 +207,8 @@ class Ventas extends Component{
             venta: venta,
             facturas: venta.facturas,
             porcentaje,
-            form: this.clearForm()
+            form: this.clearForm(),
+            formeditado:0
         })
     }
 
@@ -1127,7 +1132,7 @@ class Ventas extends Component{
 
     render(){
 
-        const { modal, modalDelete, modalFacturas, modalAskFactura, title, options, form, ventas, venta, porcentaje, facturas,data } = this.state
+        const { modal, modalDelete, modalFacturas, modalAskFactura, title, options, form, ventas, venta, porcentaje, facturas,data, formeditado} = this.state
         return(
             <Layout active={'proyectos'}  { ...this.props}>
                 {/*<div className="text-right">
@@ -1155,27 +1160,26 @@ class Ventas extends Component{
                 <Modal show = {modal} handleClose = { this.handleClose } title = { title } >
                     <VentasForm options = {options} form = {form} setOptions = {this.setOptions} 
                         onChange = { this.onChange } onChangeAdjunto = { this.onChangeAdjunto } clearFiles = {this.clearFiles}
-                        onSubmit = { this.onSubmit } />
+                        onSubmit = { this.onSubmit } formeditado={formeditado} />
                 </Modal>
 
-                <ModalDelete show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteVentaAxios() }}>
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas eliminar la venta?
-                    </Subtitle>
+                <ModalDelete title={"¿Estás seguro que deseas eliminar la venta?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteVentaAxios() }}>
                 </ModalDelete>
 
-                <Modal show = { modalFacturas } handleClose = { this.handleCloseFacturas }>
-                    <Subtitle className="text-center" color = 'gold' >
-                        Facturas
-                    </Subtitle>
-                    <div className="px-3 my-2">
-                        <ProgressBar animated label={`${porcentaje}%`} 
-                            variant = { porcentaje > 100 ? 'danger' : porcentaje > 75 ? 'success' : 'warning'} 
-                            now = {porcentaje} />
+                <Modal title={"Facturas"} show = { modalFacturas } handleClose = { this.handleCloseFacturas }>
+                    
+                    <div className="form-group row form-group-marginless pt-4">
+                        <div className="col-md-12">
+                            <ProgressBar animated label={`${porcentaje}%`} 
+                                variant = { porcentaje > 100 ? 'danger' : porcentaje > 75 ? 'success' : 'warning'} 
+                                now = {porcentaje} />
+                        </div>
                     </div>
                     <Form onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios();}}>
-                        <div className="row mx-0">
-                            <div className="col-md-6 px-2">
+                        
+                        
+                        <div className="form-group row form-group-marginless">
+                            <div className="col-md-6">
                                 
                                 <FileInput 
                                     onChangeAdjunto = { this.onChangeAdjunto } 
@@ -1189,7 +1193,7 @@ class Ventas extends Component{
                             </div>
                             {
                                 form.adjuntos.factura.files.length ?
-                                    <div className="col-md-6 px-2 align-items-center d-flex">
+                                    <div className="col-md-6 align-items-center d-flex">
                                         <Button icon='' className="mx-auto" type="submit" text="Enviar" />
                                     </div>
                                 : ''
@@ -1198,9 +1202,9 @@ class Ventas extends Component{
                     </Form>
                     <FacturaTable deleteFactura = { this.deleteFactura } facturas = { facturas } />
                 </Modal>
-                <Modal show = { modalAskFactura } handleClose = { this.handleCloseAskFactura }>
+                <Modal title={"Solicitar factura"} show = { modalAskFactura } handleClose = { this.handleCloseAskFactura }>
                     <FacturaForm options = { options } onChange = { this.onChange } form = { form } 
-                        onSubmit = { this.onSubmitAskFactura } />
+                        onSubmit = { this.onSubmitAskFactura } formeditado={formeditado} />
                 </Modal>
 
             </Layout>
