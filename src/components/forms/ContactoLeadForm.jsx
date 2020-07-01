@@ -60,7 +60,7 @@ class ContactoLeadForm extends Component{
                 <div className="col-md-4">
                     <SelectSearch 
                         formeditado={formeditado}
-                        requirevalidation={1}
+                        requirevalidation={0}
                         options={tiposContactos} 
                         placeholder = "Selecciona el medio de contacto" 
                         name = "tipoContacto" 
@@ -74,7 +74,7 @@ class ContactoLeadForm extends Component{
                         <div className="col-md-4">
                             <Input 
                                 formeditado={formeditado}
-                                requirevalidation={1}
+                                requirevalidation={0}
                                 onChange={ onChangeContacto } 
                                 name="newTipoContacto" 
                                 type="text" 
@@ -98,7 +98,7 @@ class ContactoLeadForm extends Component{
                 <div className="col-md-12">
                     <Input
                         formeditado={formeditado}
-                        requirevalidation={1}
+                        requirevalidation={0}
                         as = 'textarea'
                         name = 'descripcion'
                         placeholder = 'Descripción del contacto'

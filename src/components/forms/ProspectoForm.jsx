@@ -10,8 +10,7 @@ import { openWizard1, openWizard2, openWizard3 } from '../../functions/wizard'
 import { validateAlert } from '../../functions/alert'
 
 class ProspectoForm extends Component{
-
- 
+    
     state = {
         newClient: false,
         newEstatusProspectos: false,
@@ -117,10 +116,10 @@ class ProspectoForm extends Component{
                 onChangeCliente({target:{name:'estado', value: estado}})
             },
             (error) => {
-               
+            
             }
         ).catch((error) => {
-           
+            
         })
     }
 
