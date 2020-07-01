@@ -33,7 +33,6 @@ class Leads extends Component {
         clientes: '',
         tiposContactos: '',
         vendedores: '',
-        estatusContratacion: '',
         estatusProspectos: '',
         tipoProyectos: '',
         form: EMPTY_PROSPECTO,
@@ -184,13 +183,10 @@ class Leads extends Component {
             form['estatusProspecto'] = prospecto.estatus_prospecto.estatus
         }
         if (prospecto.cliente) {
-            form['cliente'] = prospecto.cliente.empresa
+            form['cliente'] = prospecto.cliente.id.toString()
         }
         if (prospecto.tipo_proyecto) {
             form['tipoProyecto'] = prospecto.tipo_proyecto.tipo
-        }
-        if (prospecto.estatus_contratacion) {
-            form['estatusContratacion'] = prospecto.estatus_contratacion.estatus
         }
 
         this.setState({
@@ -290,7 +286,6 @@ class Leads extends Component {
                 preferencia:  renderToString(setTextTable(prospecto.preferencia)),
                 estatusProspecto: prospecto.estatus_prospecto ?  renderToString(setTextTable(prospecto.estatus_prospecto.estatus)) : '',
                 motivo:  renderToString(setTextTable(prospecto.motivo)),
-                estatusContratacion: prospecto.estatus_contratacion ?  renderToString(setTextTable(prospecto.estatus_contratacion.estatus)) : '',
                 fechaConversion:  renderToString(setDateTable(prospecto.created_at)),
                 id: prospecto.id
             })
@@ -512,11 +507,10 @@ class Leads extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'prospecto', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { prospectos, tipoProyectos, estatusContratacion, estatusProspectos, vendedores, tiposContactos, clientes } = response.data
+                const { prospectos, tipoProyectos, estatusProspectos, vendedores, tiposContactos, clientes } = response.data
                 const { data } = this.state
                 data.prospectos = prospectos
                 this.setTipos(tipoProyectos, 'tipoProyectos')
-                this.setEstatus(estatusContratacion, 'estatusContratacion')
                 this.setEstatus(estatusProspectos, 'estatusProspectos')
                 this.setVendedores(vendedores)
                 /* this.setClientes(clientes) */
@@ -562,9 +556,8 @@ class Leads extends Component {
         const { access_token } = this.props.authUser
         await axios.post(URL_DEV + 'prospecto', data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { prospectos, tipoProyectos, estatusContratacion, estatusProspectos, vendedores, tiposContactos, clientes } = response.data
+                const { prospectos, tipoProyectos, estatusProspectos, vendedores, tiposContactos, clientes } = response.data
                 this.setTipos(tipoProyectos, 'tipoProyectos')
-                this.setEstatus(estatusContratacion, 'estatusContratacion')
                 this.setEstatus(estatusProspectos, 'estatusProspectos')
                 this.setVendedores(vendedores)
                 /* this.setClientes(clientes) */
@@ -667,9 +660,8 @@ class Leads extends Component {
         const { access_token } = this.props.authUser
         await axios.put(URL_DEV + 'prospecto/' + id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { prospectos, tipoProyectos, estatusContratacion, estatusProspectos, vendedores, tiposContactos, clientes } = response.data
+                const { prospectos, tipoProyectos, estatusProspectos, vendedores, tiposContactos, clientes } = response.data
                 this.setTipos(tipoProyectos, 'tipoProyectos')
-                this.setEstatus(estatusContratacion, 'estatusContratacion')
                 this.setEstatus(estatusProspectos, 'estatusProspectos')
                 this.setVendedores(vendedores)
                 /* this.setClientes(clientes) */
@@ -810,7 +802,7 @@ class Leads extends Component {
 
 
     render() {
-        const { modal, modalConvert, title, lead, vendedores, estatusProspectos, clientes, tipoProyectos, estatusContratacion, tiposContactos, form, formCliente, formContacto,
+        const { modal, modalConvert, title, lead, vendedores, estatusProspectos, clientes, tipoProyectos, tiposContactos, form, formCliente, formContacto,
             prospectos, modalHistoryContact, contactHistory, modalContactForm, modalDelete, prospecto, data, formeditado} = this.state
 
         return (
@@ -843,7 +835,6 @@ class Leads extends Component {
                         estatusProspectos={estatusProspectos}
                         clientes={clientes}
                         tipoProyecto={tipoProyectos}
-                        estatusContratacion={estatusContratacion}
                         form={form}
                         formCliente={formCliente}
                         formContacto={formContacto}

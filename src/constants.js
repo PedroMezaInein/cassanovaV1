@@ -221,10 +221,6 @@ export const PROSPECTOS_COLUMNS = [
         accessor: 'motivo',
     },
     {
-        Header: 'Estatus contratación', //Estaba: Estatus contratación
-        accessor: 'estatusContratacion',
-    },
-    {
         Header: 'Fecha de conversión', //Estaba:Fecha de conversión
         accessor: 'fechaConversion',
     },
