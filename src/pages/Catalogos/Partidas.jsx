@@ -29,6 +29,7 @@ class Partidas extends Component {
         data: {
             partidas: []
         },
+        formeditado:0,
         partidas: [],
         modal:{
             form: false,
@@ -64,7 +65,8 @@ class Partidas extends Component {
                 form.subpartida = ''
                 this.setState({
                     ... this.state,
-                    form
+                    form,
+                    formeditado:0,
                 })
             }
         }
@@ -170,7 +172,8 @@ class Partidas extends Component {
         this.setState({
             modal,
             title: 'Nueva partida',
-            form: this.clearForm()
+            form: this.clearForm(),
+            formeditado:0
         })
     }
 
@@ -196,7 +199,8 @@ class Partidas extends Component {
             modal,
             title: 'Editar partida',
             partida: partida,
-            form
+            form,
+            formeditado:1
         })
     }
 
@@ -357,7 +361,7 @@ class Partidas extends Component {
     }
 
     render() {
-        const { form, partidas, modal, title, data } = this.state
+        const { form, partidas, modal, title, data, formeditado } = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
                 <NewTable 
@@ -379,12 +383,9 @@ class Partidas extends Component {
                 <Modal show={modal.form} title = {title} handleClose={this.handleClose}>
                     <PartidaForm form = { form } onChange = { this.onChange }
                         addSubpartida = { this.addSubpartida } deleteSubpartida = { this.deleteSubpartida }
-                        title = { title } onSubmit = { this.onSubmit } />
+                        title = { title } onSubmit = { this.onSubmit } formeditado={formeditado}/>
                 </Modal>
-                <ModalDelete show = { modal.delete } handleClose = { this.handleCloseDelete } onClick={(e) => { e.preventDefault(); waitAlert(); this.deletePartidaAxios() }}>
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas eliminar la partida?
-                    </Subtitle>
+                <ModalDelete title={"¿Estás seguro que deseas eliminar la partida?"} show = { modal.delete } handleClose = { this.handleCloseDelete } onClick={(e) => { e.preventDefault(); waitAlert(); this.deletePartidaAxios() }}>
                 </ModalDelete>
             </Layout>
         )
