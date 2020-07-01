@@ -184,7 +184,7 @@ class Leads extends Component {
             form['estatusProspecto'] = prospecto.estatus_prospecto.estatus
         }
         if (prospecto.cliente) {
-            form['cliente'] = prospecto.cliente.empresa
+            form['cliente'] = prospecto.cliente.id.toString()
         }
         if (prospecto.tipo_proyecto) {
             form['tipoProyecto'] = prospecto.tipo_proyecto.tipo
