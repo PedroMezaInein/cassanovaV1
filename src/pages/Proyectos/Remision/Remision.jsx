@@ -31,7 +31,8 @@ class Remisiones extends Component{
         remision: '',
         data:{
             remisiones: []
-        }
+        },
+        formeditado:0,
     }
 
     componentDidMount(){
@@ -137,7 +138,8 @@ class Remisiones extends Component{
         const { history } = this.props
         history.push({
             pathname: '/proyectos/solicitud-compra/convert',
-            state: { remision: remision}
+            state: { remision: remision},
+            formeditado:1
         });
     }
 
@@ -145,7 +147,8 @@ class Remisiones extends Component{
         const { history } = this.props
         history.push({
             pathname: '/proyectos/remision/edit',
-            state: { remision: remision}
+            state: { remision: remision},
+            formeditado:1
         });
     }
 
@@ -239,7 +242,7 @@ class Remisiones extends Component{
 
     render(){
 
-        const { data, modalDelete, modalSingle, remisiones, remision } = this.state
+        const { data, modalDelete, modalSingle, remisiones, remision, formeditado } = this.state
 
         return(
             <Layout active={'proyectos'}  { ...this.props}>
@@ -260,10 +263,7 @@ class Remisiones extends Component{
                     }}
                     elements = { data.remisiones } />
 
-                <ModalDelete show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteRemisionAxios() }}>
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas eliminar la remisión?
-                    </Subtitle>
+                <ModalDelete title={"¿Estás seguro que deseas eliminar la remisión?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteRemisionAxios() }}>
                 </ModalDelete>
 
                 <Modal show = { modalSingle } handleClose = { this.handleCloseSingle } >

@@ -38,6 +38,7 @@ class Remisiones extends Component{
             subarea: '',
             descripcion: ''
         },
+        formeditado:0,
         remisiones: [],
         remision: ''
     }
@@ -73,7 +74,8 @@ class Remisiones extends Component{
             ... this.state,
             modal: true,
             title: 'Nueva remisión',
-            form: this.clearForm()
+            form: this.clearForm(),
+            formeditado:0
         })
     }
 
@@ -102,7 +104,8 @@ class Remisiones extends Component{
             title: 'Editar remisión',
             form,
             options,
-            remision: remision
+            remision: remision,
+            formeditado:1,
         })
     }
 
@@ -230,7 +233,8 @@ class Remisiones extends Component{
         const { history } = this.props
         history.push({
             pathname: '/proyectos/solicitud-compra',
-            state: { remision: remision}
+            state: { remision: remision},
+            formeditado:1,
         });
     }
 
@@ -452,7 +456,7 @@ class Remisiones extends Component{
 
     render(){
 
-        const { modal, modalDelete, modalSingle, title, form, remisiones, remision, options } = this.state
+        const { modal, modalDelete, modalSingle, title, form, remisiones, remision, options, formeditado} = this.state
 
         return(
             <Layout active={'administracion'}  { ...this.props}>
@@ -463,15 +467,12 @@ class Remisiones extends Component{
 
                 <Modal show = {modal} handleClose = { this.handleClose } >
                     <RemisionForm form = { form } options = { options } onSubmit = { this.onSubmit }
-                        title = { title } setOptions = { this.setOptions } onChange = { this.onChange }/>
+                        title = { title } setOptions = { this.setOptions } onChange = { this.onChange } formeditado={formeditado}/>
                 </Modal>
 
                 <DataTable columns = { REMISION_COLUMNS } data = { remisiones } />
 
-                <ModalDelete show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteRemisionAxios() }}>
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas eliminar la remisión?
-                    </Subtitle>
+                <ModalDelete title={"¿Estás seguro que deseas eliminar la remisión?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteRemisionAxios() }}>
                 </ModalDelete>
 
                 <Modal show = { modalSingle } handleClose = { this.handleCloseSingle } >
