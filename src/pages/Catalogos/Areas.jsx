@@ -8,7 +8,7 @@ import { AreasForm } from '../../components/forms'
 import { URL_DEV, GOLD, AREAS_COLUMNS } from '../../constants'
 import { DataTable } from '../../components/tables'
 import { Small, Subtitle } from '../../components/texts'
-import { Modal } from '../../components/singles'
+import { Modal, ModalDelete } from '../../components/singles'
 import axios from 'axios'
 import swal from 'sweetalert'
 import NewTable from '../../components/tables/NewTable'
@@ -28,6 +28,7 @@ class Areas extends Component {
             areas: [],
             areasVentas: []
         },
+        formeditado:0,
         areas: [],
         areasVentas: [],
         modal: false,
@@ -207,7 +208,8 @@ class Areas extends Component {
             modal: true,
             title: 'Nueva área',
             form: this.clearForm(),
-            tipo
+            tipo,
+            formeditado:0
         })
     }
 
@@ -218,7 +220,8 @@ class Areas extends Component {
             modal: true,
             title: 'Nueva área',
             form: this.clearForm(),
-            tipo
+            tipo,
+            formeditado:0
         })
     }
 
@@ -244,7 +247,8 @@ class Areas extends Component {
             title: 'Editar área',
             area: area,
             form,
-            tipo
+            tipo,
+            formeditado:1
         })
     }
 
@@ -263,7 +267,8 @@ class Areas extends Component {
             title: 'Editar área',
             area: area,
             form,
-            tipo
+            tipo,
+            formeditado:1
         })
     }
 
@@ -437,7 +442,7 @@ class Areas extends Component {
     }
 
     render() {
-        const { form, areas, areasVentas, modal, modalDelete, title, data } = this.state
+        const { form, areas, areasVentas, modal, modalDelete, title, data, formeditado} = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
                 <Tabs defaultActiveKey="compras">
@@ -481,20 +486,14 @@ class Areas extends Component {
                 </Tabs>
                 
 
-                <Modal show={modal} handleClose={this.handleClose}>
+                <Modal title={"Nueva área"} show={modal} handleClose={this.handleClose}>
                     <AreasForm form={form} onChange={this.onChange}
                         addSubarea={this.addSubarea} deleteSubarea={this.deleteSubarea}
-                        title={title} onSubmit={this.onSubmit} />
+                        title={title} onSubmit={this.onSubmit} formeditado={formeditado} />
                 </Modal>
-                <Modal show={modalDelete} handleClose={this.handleCloseDelete} >
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas eliminar el área?
-                    </Subtitle>
-                    <div className="d-flex justify-content-center mt-3">
-                        <Button icon='' onClick={this.handleCloseDelete} text="Cancelar" className="mr-3" color="green" />
-                        <Button icon='' onClick={(e) => { this.safeDelete(e)() }} text="Continuar" color="red" />
-                    </div>
-                </Modal>
+                
+                <ModalDelete title={"¿Estás seguro que deseas eliminar el área?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.safeDelete(e)() }}>
+                </ModalDelete>
             </Layout>
         )
     }
