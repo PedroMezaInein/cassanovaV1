@@ -5,19 +5,27 @@ import { Subtitle } from '../texts'
 import { Input, InputMoney, Select, Button, InputNumber } from '../form-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { validateAlert } from '../../functions/alert'
 
 class CuentaForm extends Component{
     
     render(){
-        const { bancos, estatus, tipos, title, form, onChange, onChangeEmpresa, updateEmpresa, empresas, ...props } = this.props
+        const { bancos, estatus, tipos, title, form, onChange, onChangeEmpresa, updateEmpresa, empresas, onSubmit, formeditado, ...props } = this.props
         return(
-            <Form 
+            <Form id="form-cuenta"
+                onSubmit = { 
+                    (e) => {
+                        e.preventDefault(); 
+                        validateAlert(onSubmit, e, 'form-cuenta')
+                    }
+                }
                 { ... props}
             >
                 <div className="form-group row form-group-marginless pt-4">
                     <div className="col-md-8">
                         <Input 
                             requirevalidation={1}
+                            formeditado={formeditado}
                             placeholder = "Ingrese el nombre de la cuenta" 
                             type = "text"
                             name = "nombre" 
@@ -31,6 +39,7 @@ class CuentaForm extends Component{
                     <div className="col-md-4">
                         <Select 
                             requirevalidation={1} 
+                            formeditado={formeditado}
                             name = 'banco' 
                             options = { bancos } 
                             placeholder = 'Selecciona el banco' 
@@ -47,6 +56,7 @@ class CuentaForm extends Component{
                     <div className="col-md-4">
                         <InputNumber 
                             requirevalidation={1} 
+                            formeditado={formeditado}
                             placeholder = "Ingresa el número de cuenta" 
                             type = "text" 
                             name = "numero" 
@@ -60,6 +70,7 @@ class CuentaForm extends Component{
                     <div className="col-md-4">
                         <Select 
                             requirevalidation={1} 
+                            formeditado={formeditado}
                             name = 'tipo' 
                             options = { tipos } 
                             placeholder = 'Selecciona el tipo' 
@@ -73,6 +84,7 @@ class CuentaForm extends Component{
                     <div className="col-md-4">
                         <Select 
                             requirevalidation={1} 
+                            formeditado={formeditado}
                             name = 'estatus' 
                             options = { estatus } 
                             placeholder = 'Selecciona el estatus' 
@@ -88,7 +100,8 @@ class CuentaForm extends Component{
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Select 
-                            requirevalidation={1} 
+                            requirevalidation={0} 
+                            formeditado={formeditado}
                             name = 'empresa' 
                             options = { empresas } 
                             placeholder = 'Selecciona la(s) empresa(s)' 
@@ -99,35 +112,38 @@ class CuentaForm extends Component{
                         />
                         {/*<span className="form-text text-muted">Por favor, seleccione la(s) empresa(s)</span>*/}
                     </div>
-                    <div className="col-md-8">
-                        {
+                        {                                            
                             form.empresas.length > 0 ?
-                                <div className="col-md-12 d-flex align-items-center image-upload">
+                                <div className="col-md-8 align-items-center image-upload">
                                     {
                                         form.empresas.map((empresa, key)=>{
                                             return(
-                                                <Badge variant = "light" key = { key } className="d-flex px-3 align-items-center" pill>
-                                                    <FontAwesomeIcon
-                                                        icon = { faTimes }
-                                                        onClick = { (e) => { e.preventDefault(); updateEmpresa(empresa) }}
-                                                        className = "small-button mr-2" />
-                                                        {
-                                                            empresa.text
-                                                        }
-                                                </Badge>
+                                                <div className="tagify form-control p-1" tabIndex="-1" style={{borderWidth:"0px"}}>
+                                                    <div className="tagify__tag tagify__tag--primary tagify--noAnim" key = { key }>
+                                                        <div 
+                                                            title="Borrar archivo" 
+                                                            className="tagify__tag__removeBtn" 
+                                                            role="button" 
+                                                            aria-label="remove tag" 
+                                                            onClick = { (e) => { e.preventDefault(); updateEmpresa(empresa) }}
+                                                            >
+                                                        </div>                                                            
+                                                        <div><span className="tagify__tag-text p-1">{empresa.text}</span></div>
+                                                    </div>
+                                                </div>
                                             )
                                         })
                                     }
-                                </div>
+                                </div> 
                             : ''
                         }
-                    </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                     <div className="form-group row form-group-marginless">
                     <div className="col-md-12">
                         <Input 
-                            requirevalidation={1}
+                            requirevalidation={0}
+                            formeditado={formeditado}
                             rows = "3" 
                             as = "textarea" 
                             placeholder = "Descripción" 
