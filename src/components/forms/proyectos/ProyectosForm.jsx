@@ -7,6 +7,7 @@ import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { DATE, TEL, EMAIL} from '../../../constants'
 import {openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { validateAlert } from '../../../functions/alert'
 
 function CustomToggle({ children, eventKey }) {
 
@@ -82,7 +83,7 @@ class ProyectosForm extends Component{
     }
 
     render(){
-        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, removeCorreo, ... props } = this.props
+        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, removeCorreo, formeditado, ... props } = this.props
         return(
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -112,16 +113,11 @@ class ProyectosForm extends Component{
                 </div>
                 <div className="row justify-content-center py-10 px-8 py-lg-12 px-lg-10">
                     <div className="col-md-12">             
-                        <Form 
+                        <Form  
                             onSubmit = { 
                                 (e) => {
                                     e.preventDefault(); 
-                                    var elementsInvalid = document.getElementById("wizard-3-content").getElementsByClassName("is-invalid"); 
-                                    if(elementsInvalid.length===0){   
-                                        onSubmit(e)
-                                    }else{ 
-                                        alert("Rellena todos los campos")
-                                    } 
+                                    validateAlert(onSubmit, e, 'wizard-3-content')
                                 }
                             }
                             { ... props}
@@ -133,6 +129,7 @@ class ProyectosForm extends Component{
                                     <div className="col-md-6">
                                         <Input 
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             name="nombre"
                                             value={form.nombre}
                                             onChange={onChange}
@@ -145,6 +142,7 @@ class ProyectosForm extends Component{
                                     </div>
                                     <div className="col-md-6">
                                         <SelectSearch 
+                                            formeditado={formeditado}
                                             options={options.clientes} 
                                             placeholder = "Selecciona el cliente" 
                                             name = "cliente" 
@@ -160,6 +158,7 @@ class ProyectosForm extends Component{
                                     <div className="col-md-6">                                       
                                         <InputPhone 
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             thousandSeparator={false}
                                             prefix = { '' }
                                             name = "numeroContacto"
@@ -175,6 +174,7 @@ class ProyectosForm extends Component{
                                     <div className="col-md-6">
                                         <Input 
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             name="contacto"
                                             value={form.contacto}
                                             onChange={onChange}
@@ -191,6 +191,7 @@ class ProyectosForm extends Component{
                                     <div className="col-md-10">
                                         <Input 
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             thousandSeparator={false}
                                             prefix = { '' }
                                             name = "correo"
@@ -241,6 +242,7 @@ class ProyectosForm extends Component{
                                     <div className="col-md-4">
                                         <InputNumber 
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             name="cp"
                                             onChange={onChangeCP}
                                             value={form.cp}
@@ -255,6 +257,7 @@ class ProyectosForm extends Component{
                                     <div className="col-md-4" hidden={options.colonias.length <= 0 ? true : false}>
                                         <Input 
                                             requirevalidation={0}
+                                            formeditado={formeditado}
                                             readOnly={options.colonias.length <= 0 ? true : false}
                                             value={form.estado}
                                             name="estado"
@@ -268,6 +271,7 @@ class ProyectosForm extends Component{
                                     <div className="col-md-4" hidden={options.colonias.length <= 0 ? true : false}>
                                         <Input 
                                             requirevalidation={0}
+                                            formeditado={formeditado}
                                             readOnly={options.colonias.length <= 0 ? true : false}
                                             value={form.municipio}
                                             name="municipio"
@@ -285,6 +289,7 @@ class ProyectosForm extends Component{
                                         { 
                                             options.colonias.length > 0 && 
                                                 <SelectSearch 
+                                                    formeditado={formeditado}
                                                     options = { options.colonias } 
                                                     placeholder = "Selecciona la colonia" 
                                                     name="colonia" 
@@ -298,6 +303,7 @@ class ProyectosForm extends Component{
                                             options.colonias.length <= 0 && 
                                                 <Input 
                                                     requirevalidation={1}
+                                                    formeditado={formeditado}
                                                     readOnly
                                                     value={form.colonia}
                                                     name="colonia" type="text"
@@ -310,6 +316,7 @@ class ProyectosForm extends Component{
                                     <div className="col-md-7" hidden={options.colonias.length <= 0 ? true : false}>
                                         <Input 
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             name="calle"
                                             value={form.calle}
                                             onChange={onChange}
@@ -335,6 +342,7 @@ class ProyectosForm extends Component{
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <SelectSearch 
+                                            formeditado={formeditado}
                                             options={options.empresas} 
                                             placeholder = "Selecciona la empresa" 
                                             name = "empresa" 
@@ -347,6 +355,7 @@ class ProyectosForm extends Component{
                                     <div className="col-md-4">
                                         <InputMoney 
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             prefix = { '%' }
                                             thousandSeparator = {false}
                                             name = "porcentaje"
@@ -359,7 +368,8 @@ class ProyectosForm extends Component{
                                     </div>
                                     <div className="col-md-4">
                                         <FileInput 
-                                            requirevalidation={1}
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
                                             onChangeAdjunto = { onChangeAdjunto } 
                                             placeholder = "Imagen"
                                             value = {form.adjuntos.image.value}
@@ -377,6 +387,7 @@ class ProyectosForm extends Component{
                                 <div className="form-group row form-group-marginless">  
                                     <div className="col-md-4">
                                         <Calendar 
+                                            formeditado={formeditado}
                                             onChangeCalendar = { this.handleChangeDateInicio }
                                             placeholder = "Fecha de inicio"
                                             name = "fechaInicio"
@@ -390,6 +401,7 @@ class ProyectosForm extends Component{
                                     </div>
                                     <div className="col-md-4">
                                         <Calendar 
+                                            formeditado={formeditado}
                                             onChangeCalendar = { this.handleChangeDateFin }
                                             placeholder = "Fecha final"
                                             name = "fechaFin"
@@ -409,6 +421,7 @@ class ProyectosForm extends Component{
                                     <div className="col-md-12">
                                         <Input 
                                             requirevalidation={0}
+                                            formeditado={formeditado}
                                             rows="3"
                                             as="textarea"
                                             placeholder="Descripción"
