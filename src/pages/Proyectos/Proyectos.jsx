@@ -2129,21 +2129,7 @@ class Proyectos extends Component {
                                                         </Small>
                                                         <hr />
                                                     </div>
-                                                    <div className="col-md-6">
-                                                        <Small>
-                                                            <B color="gold">
-                                                                Estatus contratación:
-                                                        </B>
-                                                        </Small>
-                                                        <br />
-                                                        <Small color="dark-blue">
-                                                            {
-                                                                prospecto.estatus_contratacion.estatus
-                                                            }
-                                                        </Small>
-                                                        <hr />
-                                                    </div>
-                                                    <div className="col-md-12">
+                                                     <div className="col-md-12">
                                                         <Small>
                                                             <B color="gold">
                                                                 Descripción:
