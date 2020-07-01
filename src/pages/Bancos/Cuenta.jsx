@@ -13,7 +13,7 @@ import Moment from 'react-moment'
 import { Small, Subtitle, B } from '../../components/texts'
 import DataTable from '../../components/tables/Data'
 import NumberFormat from 'react-number-format';
-import { Form, Badge } from 'react-bootstrap'
+import { Form, Badge, Tabs, Tab } from 'react-bootstrap'
 import Calendar from '../../components/form-components/Calendar'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import NewTable from '../../components/tables/NewTable'
@@ -763,19 +763,48 @@ class Cuentas extends Component {
         const { modal, modalDelete, modalEstado, bancos, estatus, tipos, form, cuentas, cuenta, empresas, estados, adjunto, adjuntoName, fecha, data,title, formeditado } = this.state
         return (
             <Layout active={'bancos'}  {...this.props}>
-                <NewTable columns={CUENTAS_COLUMNS} data={cuentas}
-                    title='Cuentas' subtitle='Listado de cuentas'
-                    mostrar_boton={true}
-                    abrir_modal={true}
-                    onClick={this.openModal}
-                    mostrar_acciones={true}
-                    actions={{
-                        'edit': { function: this.openModalEdit },
-                        'delete': { function: this.openModalDelete },
-                        'estado': { function: this.openModalAddEstado }
-                    }}
-                    elements={data.cuentas}
-                />
+
+                <Tabs defaultActiveKey="bancos">
+                    <Tab eventKey="bancos" title="Banco">
+                        <NewTable 
+                            columns = {CUENTAS_COLUMNS} 
+                            data = {cuentas}
+                            title = 'Cuentas' 
+                            subtitle = 'Listado de cuentas'
+                            mostrar_boton = { true }
+                            abrir_modal = { true }
+                            onClick = { this.openModal }
+                            mostrar_acciones = { true }
+                            actions={{
+                                'edit': { function: this.openModalEdit },
+                                'delete': { function: this.openModalDelete },
+                                'estado': { function: this.openModalAddEstado }
+                            }}
+                            elements = {data.cuentas}
+                            idTable = 'cuentas_bancos'
+                        />
+                    </Tab>
+                    <Tab eventKey="cajas" title="Caja chica">
+                        <NewTable 
+                            columns = { CUENTAS_COLUMNS }
+                            data = { cuentas }
+                            title = 'Cajas chicas' 
+                            subtitle = 'Listado de cajas chicas'
+                            mostrar_boton = { true }
+                            abrir_modal = { true }
+                            onClick = { this.openModal }
+                            mostrar_acciones = { true }
+                            actions = {{
+                                'edit': { function: this.openModalEdit },
+                                'delete': { function: this.openModalDelete },
+                                'estado': { function: this.openModalAddEstado }
+                            }}
+                            elements = { data.cuentas }
+                            idTable = 'cuentas_cajas'
+                        />
+                    </Tab>
+                </Tabs>
+                
 
                 <Modal  title={cuenta === null ? "Nueva cuenta" : 'Editar cuenta'}  show={modal} handleClose={this.handleClose} >
                     <CuentaForm bancos={bancos} estatus={estatus} tipos={tipos}
