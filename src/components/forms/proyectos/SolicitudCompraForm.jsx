@@ -4,6 +4,7 @@ import { Subtitle, Small } from '../../texts'
 import { Input, Select, SelectSearch, Button, Calendar, InputMoney, RadioGroup, FileInput } from '../../form-components'
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
 import {openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
+import { validateAlert } from '../../../functions/alert'
 
 
 class SolicitudCompraForm extends Component {
@@ -81,7 +82,7 @@ class SolicitudCompraForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, children, onChangeAdjunto, clearFiles, onSubmit, ...props } = this.props
+        const { title, options, form, onChange, children, onChangeAdjunto, clearFiles, onSubmit, formeditado, ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -115,12 +116,7 @@ class SolicitudCompraForm extends Component {
                             onSubmit = { 
                                 (e) => {
                                     e.preventDefault(); 
-                                    var elementsInvalid = document.getElementById("wizard-3-content").getElementsByClassName("is-invalid"); 
-                                    if(elementsInvalid.length===0){   
-                                        onSubmit(e)
-                                    }else{ 
-                                        alert("Rellena todos los campos")
-                                    } 
+                                    validateAlert(onSubmit, e, 'wizard-3-content')
                                 }
                             }
                             {...props}
@@ -132,6 +128,8 @@ class SolicitudCompraForm extends Component {
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-6">
                                         <SelectSearch 
+                                            requirevalidation={1}
+                                            formeditado={formeditado}
                                             options={options.proyectos}
                                             placeholder="Selecciona el proyecto"
                                             name="proyecto"
@@ -141,6 +139,8 @@ class SolicitudCompraForm extends Component {
                                     </div>
                                     <div className="col-md-6">
                                         <SelectSearch
+                                            requirevalidation={1}
+                                            formeditado={formeditado}
                                             options={options.proveedores}
                                             placeholder="Selecciona el proveedor"
                                             name="proveedor"
@@ -153,6 +153,8 @@ class SolicitudCompraForm extends Component {
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <SelectSearch
+                                            requirevalidation={1}
+                                            formeditado={formeditado}
                                             options={options.empresas}
                                             placeholder="Selecciona la empresa"
                                             name="empresa"
@@ -163,6 +165,7 @@ class SolicitudCompraForm extends Component {
                                     <div className="col-md-4">
                                         <InputMoney 
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             thousandSeparator={true}
                                             placeholder="Monto"
                                             value={form.total}
@@ -173,6 +176,7 @@ class SolicitudCompraForm extends Component {
                                     <div className="col-md-4">
                                         <Select
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             placeholder="Selecciona el tipo de pago"
                                             options={options.tiposPagos}
                                             name="tipoPago"
@@ -196,6 +200,8 @@ class SolicitudCompraForm extends Component {
 								<div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <SelectSearch 
+                                            requirevalidation={1}
+                                            formeditado={formeditado}
                                             options={options.areas}
                                             placeholder="Selecciona el área"
                                             name="areas"
@@ -207,6 +213,8 @@ class SolicitudCompraForm extends Component {
                                         form.area ?
                                             <div className="col-md-4">
                                                 <SelectSearch 
+                                                    requirevalidation={1}
+                                                    formeditado={formeditado}
                                                     options={options.subareas}
                                                     placeholder="Selecciona el subárea"
                                                     name="subarea"
@@ -230,6 +238,7 @@ class SolicitudCompraForm extends Component {
                                     <div className="col-md-12">
                                         <Input 
                                             requirevalidation={0}
+                                            formeditado={formeditado}
                                             as="textarea"
                                             placeholder="Descripción"
                                             rows="3"
@@ -275,7 +284,8 @@ class SolicitudCompraForm extends Component {
                                     </div>
                                     <div className="col-md-4">
                                         <FileInput
-                                            requirevalidation={1}
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
                                             onChangeAdjunto={onChangeAdjunto}
                                             placeholder={form.adjuntos.adjunto.placeholder}
                                             value={form.adjuntos.adjunto.value}
