@@ -145,7 +145,8 @@ class SolicitudCompra extends Component{
         const { history } = this.props
         history.push({
             pathname: '/proyectos/compras',
-            state: { solicitud: solicitud}
+            state: { solicitud: solicitud},
+            formeditado:1
         });
     }
 
@@ -153,7 +154,8 @@ class SolicitudCompra extends Component{
         const { history } = this.props
         history.push({
             pathname: '/proyectos/solicitud-compra/edit',
-            state: { solicitud: solicitud}
+            state: { solicitud: solicitud},
+            formeditado:1
         });
     }
 
@@ -267,10 +269,7 @@ class SolicitudCompra extends Component{
                     }}
                     elements = { data.solicitudes } />
                 
-                <ModalDelete show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteSolicitudAxios() }}>
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas eliminar la solicitud de compra?
-                    </Subtitle>
+                <ModalDelete title={"¿Quieres eliminar la solicitud de compra?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteSolicitudAxios() }}>
                 </ModalDelete>
                 
                 <Modal show = { modalSingle } handleClose = { this.handleCloseSingle } >
