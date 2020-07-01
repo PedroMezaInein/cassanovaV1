@@ -14,32 +14,59 @@ class ItemSlider extends Component{
 
     sliderBack = () => {
         let { active } = this.state
-        const { items } = this.props
-        if( active === 0){
-            active = items.length 
-        }else
-        {
-            active = active - 1
+        const { items, handleChange } = this.props
+        if(handleChange){
+            if( active === 0){
+                active = items.length 
+            }else
+            {
+                active = active - 1
+            }
+            this.setState({
+                ... this.state,
+                active
+            })
+        }else{
+            if( active === 0){
+                active = items.length - 1
+            }else
+            {
+                active = active - 1
+            }
+            this.setState({
+                ... this.state,
+                active
+            })
         }
-        this.setState({
-            ... this.state,
-            active
-        })
     }
 
     sliderNext = () => {
         let { active } = this.state
-        const { items } = this.props
-        if( active === items.length){
-            active = 0
-        }else
-        {
-            active = active + 1
+        const { items, handleChange } = this.props
+        if(handleChange){
+            if( active === items.length){
+                active = 0
+            }else
+            {
+                active = active + 1
+            }
+            this.setState({
+                ... this.state,
+                active
+            })
+        }else{
+            if( active === items.length - 1){
+                active = 0
+            }else
+            {
+                active = active + 1
+            }
+            this.setState({
+                ... this.state,
+                active
+            })
         }
-        this.setState({
-            ... this.state,
-            active
-        })
+        
     }
 
     componentWillReceiveProps(nextProps){
@@ -52,7 +79,7 @@ class ItemSlider extends Component{
     }
 
     render(){
-        const { items, deleteFile } = this.props
+        const { items, deleteFile, handleChange } = this.props
         const { active } = this.state
         return(
             <>
@@ -68,7 +95,7 @@ class ItemSlider extends Component{
                     }
                     <div className="w-100 text-center p-2">
                         {
-                            items.length === active ?
+                            items.length === active && handleChange ?
                                 <div className="border rounded w-100 border__dashed">
                                     <DropZone accept = "application/pdf, image/*"  handleChange = { this.handleChange } >
                                         <Subtitle className="text-center p-5 " color="gold">
@@ -91,13 +118,18 @@ class ItemSlider extends Component{
                                             :
                                                 <img className="p-2 w-100" src={items[active].url} />}
                                         </div>
-                                        <div className="d-flex justify-content-center">
+                                        {
+                                            deleteFile ? 
+                                                <div className="d-flex justify-content-center">
 
-                                            <span className="btn btn-text-danger btn-hover-danger" onClick={(e) => { e.preventDefault(); deleteFile(items[active]) } } >
-                                                <i className='fas fa-trash pr-0'></i> 
-                                            </span>
+                                                    <span className="btn btn-text-danger btn-hover-danger" onClick={(e) => { e.preventDefault(); deleteFile(items[active]) } } >
+                                                        <i className='fas fa-trash pr-0'></i> 
+                                                    </span>
 
-                                        </div>
+                                                </div>
+                                            : ''
+                                        }
+                                        
                                     </>
                                 : ''
                         }
