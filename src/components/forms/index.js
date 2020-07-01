@@ -28,6 +28,7 @@ import rendimientoForm from './presupuesto/RendimientoForm'
 import remisionForm from './proyectos/RemisionForm'
 import contabilidadForm from './reportes/ContabilidadForm'
 import flujosForm from './administracion/FlujosForm'
+import clienteUserForm from './usuarios/ClienteUserForm'
 
 export const RegisterUserForm = registerUserForm
 export const EmpleadoForm = empleadoForm
@@ -59,3 +60,4 @@ export const RendimientoForm = rendimientoForm
 export const RemisionForm = remisionForm
 export const ContabilidadForm = contabilidadForm
 export const FlujosForm = flujosForm
+export const ClienteUserForm = clienteUserForm
