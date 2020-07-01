@@ -267,38 +267,6 @@ class ProspectoForm extends Component{
                                             </div>
                                     } 
                                 </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">
-                                
-                                    
-                                    <div className="col-md-4">
-                                        { 
-                                            estatusContratacion && 
-                                                <SelectSearch 
-                                                    formeditado={formeditado}
-                                                    options = { estatusContratacion } 
-                                                    placeholder = "Selecciona el estatus de contratación" 
-                                                    name='estatusContratacion'
-                                                    value={form.estatusContratacion}
-                                                    onChange={this.updateEstatusContratacion} 
-                                                />
-                                        }
-                                    </div>
-                                    {
-                                        newEstatusContratacion && 
-                                            <div className="col-md-4">
-                                                <Input 
-                                                    formeditado={formeditado}
-                                                    requirevalidation={1}
-                                                    name="newEstatusContratacion" 
-                                                    onChange={onChange} 
-                                                    value={form.newEstatusContratacion} 
-                                                    type="text" 
-                                                    placeholder="Nuevo estatus de contratacion"
-                                                />
-                                            </div>
-                                    }
-                                </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2"></div>
                                     <div>
