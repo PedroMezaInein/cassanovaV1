@@ -47,6 +47,7 @@ class Cuentas extends Component {
         data: {
             cuentas: []
         },
+        formeditado:0,
         cuentas: [],
         cuenta: null,
         adjunto: '',
@@ -240,7 +241,7 @@ class Cuentas extends Component {
         arreglo.map((element) => {
             aux.push({ text: element.name })
         })
-        console.log(arreglo, 'arreglo')
+        //console.log(arreglo, 'arreglo')
         setArrayTable(aux)
     }
 
@@ -472,7 +473,8 @@ class Cuentas extends Component {
             modal: true,
             cuenta: null,
             form: this.setEmptyForm(),
-            empresas: aux
+            empresas: aux,
+            formeditado:0
         })
     }
 
@@ -513,20 +515,22 @@ class Cuentas extends Component {
             modal: true,
             cuenta: cuenta,
             form: aux,
-            empresas: empresaOptionsAux
+            empresas: empresaOptionsAux,
+            formeditado:1
         })
     }
 
     openModalAddEstado = cuenta => {
         const { data } = this.state
-        console.log(cuenta, 'cuenta')
+        //console.log(cuenta, 'cuenta')
         data.estados = cuenta ? cuenta.estados : []
         
         this.setState({
             modalEstado: true,
             cuenta: cuenta,
             data,
-            estados: []
+            estados: [],
+            formeditado:0
         })
 
         this.setEstados(cuenta ? cuenta.estados : [])
@@ -829,8 +833,8 @@ class Cuentas extends Component {
     }
 
     render() {
-        const { modal, modalDelete, modalEstado, bancos, estatus, tipos, form, cuentas, cuenta, empresas, estados, adjunto, adjuntoName, fecha, data,title } = this.state
-        console.log(this.state) 
+        const { modal, modalDelete, modalEstado, bancos, estatus, tipos, form, cuentas, cuenta, empresas, estados, adjunto, adjuntoName, fecha, data,title, formeditado } = this.state
+        //console.log(this.state) 
         return (
             <Layout active={'bancos'}  {...this.props}>
                 {/*} <div className="text-right">
@@ -857,21 +861,19 @@ class Cuentas extends Component {
                 <Modal  title={cuenta === null ? "Nueva cuenta" : 'Editar cuenta'}  show={modal} handleClose={this.handleClose} >
                     <CuentaForm bancos={bancos} estatus={estatus} tipos={tipos}
                         empresas={empresas} form={form} onChange={this.onChange} onChangeEmpresa={this.onChangeEmpresa}
-                        updateEmpresa={this.updateEmpresa} onSubmit={cuenta === null ? this.onSubmit : this.onEditSubmit} />
+                        updateEmpresa={this.updateEmpresa} onSubmit={cuenta === null ? this.onSubmit : this.onEditSubmit} formeditado={formeditado} />
                 </Modal>
-                <Modal show={modalDelete} handleClose={this.handleDeleteModal} >
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas eliminar la cuenta <B color="red">{cuenta && cuenta.nombre}</B>?
-                    </Subtitle>
+                <Modal title= {cuenta === null ? "¿Estás seguro que deseas eliminar la cuenta ": "¿Estás seguro que deseas eliminar la cuenta "+ cuenta.nombre +" ?"} show={modalDelete} handleClose={this.handleDeleteModal} >
                     <div className="d-flex justify-content-center mt-3">
-                        <Button icon='' onClick={this.handleDeleteModal} text="Cancelar" className="mr-3" color="green" />
-                        <Button icon='' onClick={(e) => { this.safeDelete(e)() }} text="Continuar" color="red" />
+                        <Button icon='' onClick={this.handleDeleteModal} text="Cancelar" className={"btn btn-light-primary font-weight-bolder mr-3"} />
+                        <Button icon='' onClick={(e) => { this.safeDelete(e)() }} text="Continuar" className={"btn btn-danger font-weight-bold mr-2"}/>
                     </div>
                 </Modal> 
                 <Modal title= {cuenta === null ? "Estados de cuenta para": "Estados de cuenta para "+cuenta.nombre} show={modalEstado} handleClose={this.handleEstadoClose} >
+                    
                     <Form onSubmit={this.onSubmitEstado} >
-                        <div className="row mx-0">
-                            <div className="col-md-6 px-2">
+                        <div className="form-group row form-group-marginless pt-4">
+                            <div className="col-md-4">
                                 <Calendar
                                     onChangeCalendar={this.onChangeCalendar}
                                     placeholder="Fecha"
@@ -879,37 +881,47 @@ class Cuentas extends Component {
                                     value={fecha}
                                 />
                             </div>
-                            <div className="col-md-6 px-2">
-                                <div className="d-flex align-items-center">
-                                    <div className="image-upload d-flex align-items-center">
-                                        <div className="no-label">
-                                            <Input
-                                                onChange={this.onChangeAdjunto}
-                                                value={adjunto}
-                                                name="adjunto"
-                                                type="file"
-                                                id="adjunto"
-                                                accept="application/pdf" />
+
+                            <div className="col-md-4">
+                                <label className = "col-form-label ">Adjunto de estado de cuenta</label>
+                                <div className="col-md-6 px-2">
+                                    <div className="d-flex align-items-center">
+                                        <div className="image-upload d-flex align-items-center">
+                                            <div className="no-label">
+                                                <input
+                                                    onChange={this.onChangeAdjunto}
+                                                    value={adjunto}
+                                                    name="adjunto"
+                                                    type="file"
+                                                    id="adjunto"
+                                                    accept="application/pdf" />
+                                            </div>
+                                            {                                            
+                                                adjuntoName &&
+                                                <div className="">
+                                                    <div className="tagify form-control p-1" tabIndex="-1" style={{borderWidth:"0px"}}>
+                                                            <div className="tagify__tag tagify__tag--primary tagify--noAnim">
+                                                                <div 
+                                                                    title="Borrar archivo" 
+                                                                    className="tagify__tag__removeBtn" 
+                                                                    role="button" 
+                                                                    aria-label="remove tag" 
+                                                                    onClick={(e) => { e.preventDefault(); this.deleteAdjunto() }}
+                                                                    >
+                                                                </div>                                                            
+                                                                    <div><span className="tagify__tag-text p-1">{adjuntoName}</span></div>
+                                                            </div>
+                                                    </div>
+                                                </div> 
+                                            }
                                         </div>
-                                        <label htmlFor="adjunto">
-                                            <FontAwesomeIcon className="p-0 font-unset mr-2" icon={faPaperclip} color={DARK_BLUE} />
-                                        </label>
-                                        {
-                                            adjuntoName &&
-                                            <Badge variant="light" className="d-flex px-3 align-items-center" pill>
-                                                <FontAwesomeIcon icon={faTimes} onClick={(e) => { e.preventDefault(); this.deleteAdjunto() }} className=" small-button mr-2" />
-                                                {
-                                                    adjuntoName
-                                                }
-                                            </Badge>
-                                        }
                                     </div>
                                 </div>
-
                             </div>
+                                
                         </div>
-                        <div className="row mx-0">
-                            <div className="col-12 px-2 text-center">
+                        <div className="form-group row form-group-marginless">
+                            <div className="col-md-12 text-center">
                                 {
                                     adjuntoName &&
                                     <div className="d-flex align-items-center justify-content-center">
@@ -919,6 +931,7 @@ class Cuentas extends Component {
                             </div>
                         </div>
                     </Form>
+                    <div className="separator separator-dashed mt-1 mb-2"></div>
                     {/* estados.length > 0 &&  <NewTable columns={EDOS_CUENTAS_COLUMNS} data={estados} />*/}
                     {estados.length > 0 && 
                     <TableForModals 
@@ -929,7 +942,6 @@ class Cuentas extends Component {
                                 'deleteAction': { function: this.openModalDeleteEstado}
                             }}
                             elements={data.estados}
-
                             idTable = 'kt_datatable_estado'
                         />
                     }
