@@ -97,6 +97,7 @@ class Compras extends Component{
             proveedores: [],            
             compras: []
         },
+        formeditado:0,
         solicitud: '',
         compras: [],
         compra: '',
@@ -224,7 +225,8 @@ class Compras extends Component{
             ... this.state,
             modal: true,
             title: 'Nueva compra',
-            form: this.clearForm()
+            form: this.clearForm(),
+            formeditado:0
         })
     }
 
@@ -282,7 +284,8 @@ class Compras extends Component{
             compra: compra,
             form,
             options,
-            title: 'Editar compra'
+            title: 'Editar compra',
+            formeditado:1
         })
     }
 
@@ -328,7 +331,8 @@ class Compras extends Component{
             compra: compra,
             facturas: compra.facturas,
             porcentaje,
-            form: this.clearForm()
+            form: this.clearForm(),
+            formeditado:0
         })
     }
 
@@ -1017,12 +1021,12 @@ class Compras extends Component{
         const {
             modal, modalDelete, modalFacturas, modalAskFactura,
             title, form, options,
-            solicitud, compras, porcentaje, facturas, compra,data
+            solicitud, compras, porcentaje, facturas, compra,data, formeditado
         } = this.state
 
         return(
             <Layout active={'proyectos'}  { ...this.props}>
-               
+                
                 <NewTable columns={COMPRAS_COLUMNS} data={compras}
                     title='Compras' subtitle='Listado de compras'
                     mostrar_boton={true}
@@ -1042,7 +1046,7 @@ class Compras extends Component{
                 <Modal title = { title } show = {modal} handleClose = { this.handleClose } >
                         <ComprasForm  options = {options} form = {form} setOptions = {this.setOptions} data = { data }
                         onChange = { this.onChange } onChangeAdjunto = { this.onChangeAdjunto } clearFiles = {this.clearFiles}
-                        sendFactura = { () => { this.sendFactura() } } onSubmit = { this.onSubmit } >
+                        sendFactura = { () => { this.sendFactura() } } onSubmit = { this.onSubmit } formeditado={formeditado}>
                         {
                             solicitud ?
                                 <SolicitudCompraCard solicitud = {solicitud} />
@@ -1050,23 +1054,19 @@ class Compras extends Component{
                         }
                     </ComprasForm>
                 </Modal>
-                <ModalDelete show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteCompraAxios() }}>
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas eliminar la compra?
-                    </Subtitle>
+                <ModalDelete title={"¿Estás seguro que deseas eliminar la compra?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteCompraAxios() }}>
                 </ModalDelete>
-                <Modal show = { modalFacturas } handleClose = { this.handleCloseFacturas }>
-                    <Subtitle className="text-center" color = 'gold' >
-                        Facturas
-                    </Subtitle>
+                <Modal title={"Facturas"} show = { modalFacturas } handleClose = { this.handleCloseFacturas }>
                     {
                         compra.tipo_pago ?
                             compra.tipo_pago.tipo !== 'TOTAL' ?
                                 <>
-                                    <div className="px-3 my-2">
-                                        <ProgressBar animated label={`${porcentaje}%`} 
-                                            variant = { porcentaje > 100 ? 'danger' : porcentaje > 75 ? 'success' : 'warning'} 
-                                            now = {porcentaje} />
+                                    <div className="form-group row form-group-marginless pt-4">
+                                        <div className="col-md-12">
+                                            <ProgressBar animated label={`${porcentaje}%`} 
+                                                variant = { porcentaje > 100 ? 'danger' : porcentaje > 75 ? 'success' : 'warning'} 
+                                                now = {porcentaje} />
+                                        </div>
                                     </div>
                                     <Form onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios();}}>
                                         <div className="row mx-0">
