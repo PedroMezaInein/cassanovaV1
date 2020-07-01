@@ -26,11 +26,13 @@ class Areas extends Component {
         },
         data: {
             areas: [],
-            areasVentas: []
+            areasVentas: [],
+            areasEgresos: []
         },
         formeditado:0,
         areas: [],
         areasVentas: [],
+        areasEgresos: [],
         modal: false,
         modalDelete: false,
         title: 'Nueva área',
@@ -225,6 +227,18 @@ class Areas extends Component {
         })
     }
 
+    openModalEgresos = () => {
+        let { tipo } = this.state
+        tipo = 'egresos'
+        this.setState({
+            modal: true,
+            title: 'Nueva área',
+            form: this.clearForm(),
+            tipo,
+            formeditado:0
+        })
+    }
+
     openModalDelete = area => {
         this.setState({
             modalDelete: true,
@@ -272,6 +286,26 @@ class Areas extends Component {
         })
     }
 
+    openModalEditEgresos = area => {
+        const { form } = this.state
+        let { tipo } = this.state
+        tipo = 'egresos'
+        form.nombre = area.nombre
+        let aux = []
+        area.subareas.map((element) => {
+            aux.push(element.nombre)
+        })
+        form.subareas = aux
+        this.setState({
+            modal: true,
+            title: 'Editar área',
+            area: area,
+            form,
+            tipo,
+            formeditado:1
+        })
+    }
+
     onSubmit = e => {
         e.preventDefault()
         const { form, title } = this.state
@@ -290,13 +324,15 @@ class Areas extends Component {
         await axios.get(URL_DEV + 'areas', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { data } = this.state
-                const { areas, areasVentas } = response.data
+                const { areas, areasVentas, areasEgresos } = response.data
                 data.areas = areas
                 data.areasVentas = areasVentas
+                data.areasEgresos = areasEgresos
                 this.setState({
                     ... this.state,
                     areas: this.setAreas(areas),
                     areasVentas: this.setAreas(areasVentas),
+                    areasEgresos: this.setAreas(areasEgresos),
                     data
                 })
             },
@@ -324,10 +360,11 @@ class Areas extends Component {
         })
         await axios.post(URL_DEV + 'areas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { areas, areasVentas } = response.data
+                const { areas, areasVentas, areasEgresos } = response.data
                 const { data } = this.state
                 data.areas = areas
                 data.areasVentas = areasVentas
+                data.areasEgresos = areasEgresos
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'Creaste con éxito una nueva área.',
@@ -341,6 +378,7 @@ class Areas extends Component {
                     form: this.clearForm(),
                     areas: this.setAreas(areas),
                     areasVentas: this.setAreas(areasVentas),
+                    areasEgresos: this.setAreas(areasEgresos),
                     data
                 })
 
@@ -364,10 +402,11 @@ class Areas extends Component {
         const { form, area } = this.state
         await axios.put(URL_DEV + 'areas/' + area.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { areas, areasVentas } = response.data
+                const { areas, areasVentas, areasEgresos } = response.data
                 const { data } = this.state
                 data.areas = areas
                 data.areasVentas = areasVentas
+                data.areasEgresos = areasEgresos
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'Editaste con éxito el área.',
@@ -381,6 +420,7 @@ class Areas extends Component {
                     form: this.clearForm(),
                     areas: this.setAreas(areas),
                     areasVentas: this.setAreas(areasVentas),
+                    areasEgresos: this.setAreas(areasEgresos),
                     data,
                     area: ''
                 })
@@ -405,10 +445,11 @@ class Areas extends Component {
         const { area } = this.state
         await axios.delete(URL_DEV + 'areas/' + area.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { areas, areasVentas } = response.data
+                const { areas, areasVentas, areasEgresos } = response.data
                 const { data } = this.state
                 data.areas = areas
                 data.areasVentas = areasVentas
+                data.areasEgresos = areasEgresos
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito el área.',
@@ -422,6 +463,7 @@ class Areas extends Component {
                     form: this.clearForm(),
                     areas: this.setAreas(areas),
                     areasVentas: this.setAreas(areasVentas),
+                    areasEgresos: this.setAreas(areasEgresos),
                     area: '',
                     data
                 })
@@ -442,11 +484,11 @@ class Areas extends Component {
     }
 
     render() {
-        const { form, areas, areasVentas, modal, modalDelete, title, data, formeditado} = this.state
+        const { form, areas, areasVentas, modal, modalDelete, title, data, formeditado, areasEgresos} = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
                 <Tabs defaultActiveKey="compras">
-                    <Tab eventKey="compras" title="Compras y egresos">
+                    <Tab eventKey="compras" title="Compras">
                         <div className="py-2">
                             <NewTable columns={AREAS_COLUMNS} data={areas}
                                 title='Áreas' subtitle='Listado de áreas'
@@ -480,6 +522,26 @@ class Areas extends Component {
                                 }}
                                 elements={data.areasVentas}
                                 idTable = 'kt_datatable_ventas'
+                            />
+                        </div>
+                    </Tab>
+                    <Tab eventKey="egresos" title="Egresos">
+                        <div className="py-2">
+                            <NewTable 
+                                columns={AREAS_COLUMNS} 
+                                data={areasEgresos}
+                                title='Áreas' 
+                                subtitle='Listado de áreas'
+                                mostrar_boton={true}
+                                abrir_modal={true}
+                                mostrar_acciones={true}
+                                onClick={this.openModalEgresos}
+                                actions={{
+                                    'edit': { function: this.openModalEditEgresos },
+                                    'delete': { function: this.openModalDelete }
+                                }}
+                                elements={data.areasEgresos}
+                                idTable = 'kt_datatable_egresos'
                             />
                         </div>
                     </Tab>

@@ -20,6 +20,7 @@ import NewTable from '../../components/tables/NewTable'
 import TableForModals from '../../components/tables/TableForModals'
 
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
+import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
 import { data } from 'jquery'
 class Cuentas extends Component {
 
@@ -569,27 +570,15 @@ class Cuentas extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error',
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error'
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -615,27 +604,15 @@ class Cuentas extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error',
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error'
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -666,27 +643,15 @@ class Cuentas extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error',
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error'
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -714,27 +679,15 @@ class Cuentas extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error',
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error'
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -759,29 +712,16 @@ class Cuentas extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error',
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error'
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
-
     }
 
     async deleteEstadoAxios(id) {
@@ -807,43 +747,22 @@ class Cuentas extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error',
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error'
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
-
     }
 
     render() {
         const { modal, modalDelete, modalEstado, bancos, estatus, tipos, form, cuentas, cuenta, empresas, estados, adjunto, adjuntoName, fecha, data,title, formeditado } = this.state
-        //console.log(this.state) 
         return (
             <Layout active={'bancos'}  {...this.props}>
-                {/*} <div className="text-right">
-                    <Button className="small-button ml-auto mr-4" onClick={(e) => { this.openModal() }} text='' icon={faPlus} color="green"
-                        tooltip={{ id: 'add', text: 'Nuevo' }} />
-                </div>
-                */}
-                {/* <DataTable columns = { CUENTAS_COLUMNS } data = { cuentas } />*/}
-
                 <NewTable columns={CUENTAS_COLUMNS} data={cuentas}
                     title='Cuentas' subtitle='Listado de cuentas'
                     mostrar_boton={true}
