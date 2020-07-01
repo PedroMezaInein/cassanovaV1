@@ -63,6 +63,7 @@ class Ingresos extends Component {
                 }
             }
         },
+        formeditado:0,
         options: {
             formasPago: [],
             metodosPago: [],
@@ -268,7 +269,8 @@ class Ingresos extends Component {
         const { history } = this.props
         history.push({
             pathname: '/administracion/ingresos/edit',
-            state: { ingreso: ingreso }
+            state: { ingreso: ingreso },
+            formeditado:1
         });
     }
 
@@ -402,7 +404,8 @@ class Ingresos extends Component {
             ingreso: ingreso,
             facturas: ingreso.facturas,
             porcentaje,
-            form: this.clearForm()
+            form: this.clearForm(),
+            formeditado:0
         })
     }
 
@@ -426,7 +429,8 @@ class Ingresos extends Component {
             ... this.state,
             modalAskFactura: true,
             ingreso: ingreso,
-            form
+            form,
+            formeditado:1
         })
     }
 
@@ -714,7 +718,7 @@ class Ingresos extends Component {
     }
 
     render() {
-        const { ingresos, form, options, modalDelete, modalFacturas, porcentaje, facturas, ingreso, modalAskFactura, data } = this.state
+        const { ingresos, form, options, modalDelete, modalFacturas, porcentaje, facturas, ingreso, modalAskFactura, data, formeditado } = this.state
         return (
             <Layout active={'administracion'}  {...this.props}>
                 {/* <div className="text-right">
@@ -778,7 +782,7 @@ class Ingresos extends Component {
 
                 <Modal show={modalAskFactura} handleClose={this.handleCloseAskFactura}>
                     <FacturaForm options={options} onChange={this.onChange} form={form}
-                        onSubmit={this.onSubmitAskFactura} />
+                        onSubmit={this.onSubmitAskFactura} formeditado={formeditado} />
                 </Modal>
 
             </Layout>
