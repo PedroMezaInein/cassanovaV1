@@ -4,6 +4,7 @@ import { SelectSearch, Select, Calendar, RadioGroup, FileInput, Button, Input, I
 import { Form } from 'react-bootstrap'
 import { RFC, DATE } from '../../../constants'
 import {openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
+import { validateAlert } from '../../../functions/alert'
 
 class ComprasForm extends Component {
 
@@ -149,7 +150,7 @@ updateArea = value => {
     }
 
     render() {
-        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, ...props } = this.props
+        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, formeditado, ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -183,12 +184,7 @@ updateArea = value => {
                             onSubmit = { 
                                 (e) => {
                                     e.preventDefault(); 
-                                    var elementsInvalid = document.getElementById("wizard-3-content").getElementsByClassName("is-invalid"); 
-                                    if(elementsInvalid.length===0){   
-                                        onSubmit(e)
-                                    }else{ 
-                                        alert("Rellena todos los campos")
-                                    } 
+                                    validateAlert(onSubmit, e, 'wizard-3-content')
                                 }
                             }
                             {...props}
@@ -221,7 +217,8 @@ updateArea = value => {
                                         form.factura === 'Con factura' && title !== 'Editar compra' ?
                                             <div className="col-md-4">
                                                 <FileInput
-                                                    requirevalidation={1}
+                                                    requirevalidation={0}
+                                                    formeditado={formeditado}
                                                     onChangeAdjunto={onChangeAdjunto}
                                                     placeholder={form['adjuntos']['factura']['placeholder']}
                                                     value={form['adjuntos']['factura']['value']}
@@ -239,6 +236,7 @@ updateArea = value => {
                                             <div className="col-md-4">
                                                 <Input 
                                                     requirevalidation={1}
+                                                    formeditado={formeditado}
                                                     placeholder="RFC" 
                                                     name="rfc" 
                                                     value={form.rfc} 
@@ -257,6 +255,7 @@ updateArea = value => {
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <SelectSearch 
+                                            formeditado={formeditado}
                                             options={options.proveedores} 
                                             placeholder="Selecciona el proveedor"
                                             name="proveedores" 
@@ -268,6 +267,7 @@ updateArea = value => {
                                     </div>
                                     <div className="col-md-4">
                                         <SelectSearch 
+                                            formeditado={formeditado}
                                             options={options.proyectos} 
                                             placeholder="Selecciona el proyecto"
                                             name="proyecto" 
@@ -290,6 +290,7 @@ updateArea = value => {
                                                 />                                    
                                                 :
                                                 <SelectSearch 
+                                                    formeditado={formeditado}
                                                     options={options.empresas} 
                                                     placeholder="Selecciona la empresa"
                                                     name="empresas" 
@@ -307,6 +308,7 @@ updateArea = value => {
                                             <div className="col-md-4">
                                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                                 <SelectSearch 
+                                                    formeditado={formeditado}
                                                     options={options.cuentas} 
                                                     placeholder="Selecciona la cuenta"
                                                     name="cuenta" 
@@ -331,6 +333,7 @@ updateArea = value => {
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <Calendar 
+                                            formeditado={formeditado}
                                             onChangeCalendar={this.handleChangeDate}
                                             placeholder="Fecha" 
                                             name="fecha" 
@@ -341,6 +344,7 @@ updateArea = value => {
                                     </div>
                                     <div className="col-md-4">
                                         <SelectSearch 
+                                            formeditado={formeditado}
                                             options={options.areas} 
                                             placeholder="Selecciona el área"
                                             name="areas" 
@@ -354,6 +358,7 @@ updateArea = value => {
                                         form.area ?
                                             <div className="col-md-4">
                                                 <SelectSearch 
+                                                    formeditado={formeditado}
                                                     options={options.subareas} 
                                                     placeholder="Selecciona el subárea"
                                                     name="subarea" 
@@ -371,6 +376,7 @@ updateArea = value => {
                                     <div className="col-md-12">
                                         <Input 
                                             requirevalidation={0}
+                                            formeditado={formeditado}
                                             as="textarea" 
                                             placeholder="Descripción" 
                                             rows="3" value={form.descripcion}
@@ -399,6 +405,7 @@ updateArea = value => {
                                             <div className="col-md-4">
                                                 <Select 
                                                     requirevalidation={1}
+                                                    formeditado={formeditado}
                                                     placeholder="Selecciona el tipo de pago" 
                                                     options={options.tiposPagos}
                                                     name="tipoPago" 
@@ -415,6 +422,7 @@ updateArea = value => {
                                     <div className="col-md-4">
                                         <Select 
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             placeholder="Selecciona el impuesto" 
                                             options={options.tiposImpuestos}
                                             name="tipoImpuesto" 
@@ -429,6 +437,7 @@ updateArea = value => {
                                     <div className="col-md-4">
                                         <Select 
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             placeholder="Selecciona el estatus de compra" 
                                             options={options.estatusCompras}
                                             name="estatusCompra" 
@@ -446,6 +455,7 @@ updateArea = value => {
                                     <div className="col-md-4">
                                         <InputMoney 
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             thousandSeparator={true} 
                                             placeholder="Monto" 
                                             value={form.total} 
@@ -458,6 +468,7 @@ updateArea = value => {
                                     <div className="col-md-4">
                                         <InputMoney 
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             thousandSeparator={true} 
                                             placeholder="Comisión" 
                                             value={form.comision} 
@@ -469,6 +480,7 @@ updateArea = value => {
                                     </div>
                                     <div className="col-md-4">
                                         <SelectSearch 
+                                            formeditado={formeditado}
                                             options={options.contratos} 
                                             placeholder="Selecciona el contrato"
                                             name="contrato" 
@@ -483,7 +495,8 @@ updateArea = value => {
                                 <div className="form-group row form-group-marginless">                                
                                     <div className="col-md-6">
                                         <FileInput
-                                            requirevalidation={1}
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
                                             onChangeAdjunto={onChangeAdjunto}
                                             placeholder={form['adjuntos']['presupuesto']['placeholder']}
                                             value={form['adjuntos']['presupuesto']['value']}
@@ -496,7 +509,8 @@ updateArea = value => {
                                     </div>
                                     <div className="col-md-6">
                                         <FileInput
-                                            requirevalidation={1}
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
                                             onChangeAdjunto={onChangeAdjunto}
                                             placeholder={form['adjuntos']['pago']['placeholder']}
                                             value={form['adjuntos']['pago']['value']}
