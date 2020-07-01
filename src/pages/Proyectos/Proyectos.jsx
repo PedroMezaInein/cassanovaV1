@@ -1475,6 +1475,8 @@ class Proyectos extends Component {
         await axios.delete(URL_DEV + 'proyectos/' + proyecto.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { proyectos } = response.data
+                const { data } = this.state
+                data.proyectos = proyectos
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'El proyecto fue eliminado con éxito.',
@@ -1486,7 +1488,8 @@ class Proyectos extends Component {
                     ...this.state,
                     proyectos: this.setProyectos(proyectos),
                     modalDelete: false,
-                    proyecto: ''
+                    proyecto: '',
+                    data
                 })
             },
             (error) => {
@@ -1509,6 +1512,8 @@ class Proyectos extends Component {
         await axios.delete(URL_DEV + 'proyectos/' + proyecto.id + '/adjunto/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { proyecto, proyectos } = response.data
+                const { data } = this.state
+                data.proyectos = proyectos
 
                 swal({
                     title: '¡Felicidades 🥳!',
@@ -1522,7 +1527,8 @@ class Proyectos extends Component {
                     ... this.state,
                     proyecto: proyecto,
                     proyectos: this.setProyectos(proyectos),
-                    adjuntos: this.setAdjuntosSlider(proyecto)
+                    adjuntos: this.setAdjuntosSlider(proyecto),
+                    data
                 })
             },
             (error) => {
@@ -1588,7 +1594,8 @@ class Proyectos extends Component {
         await axios.post(URL_DEV + 'proyectos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { proyectos, proyecto } = response.data
-                const { options } = this.state
+                const { options, data } = this.state
+                data.proyectos = proyectos
                 options['clientes'] = []
                 swal({
                     title: '¡Felicidades 🥳!',
@@ -1603,7 +1610,8 @@ class Proyectos extends Component {
                     proyectos: this.setProyectos(proyectos),
                     options,
                     proyecto: '',
-                    modal: false
+                    modal: false,
+                    data
                 })
             },
             (error) => {
@@ -1660,7 +1668,8 @@ class Proyectos extends Component {
             (response) => {
 
                 const { proyecto, proyectos, avance } = response.data
-
+                const { data } = this.state
+                data.proyectos = proyectos
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.',
@@ -1676,7 +1685,8 @@ class Proyectos extends Component {
                     ... this.state,
                     proyecto: proyecto,
                     proyectos: this.setProyectos(proyectos),
-                    form: this.clearForm()
+                    form: this.clearForm(),
+                    data
                 })
             },
             (error) => {
@@ -1717,6 +1727,8 @@ class Proyectos extends Component {
             (response) => {
 
                 const { proyecto, proyectos } = response.data
+                const { data } = this.state
+                data.proyectos = proyectos
 
                 swal({
                     title: '¡Felicidades 🥳!',
@@ -1730,7 +1742,8 @@ class Proyectos extends Component {
                     ... this.state,
                     proyecto: proyecto,
                     proyectos: this.setProyectos(proyectos),
-                    adjuntos: this.setAdjuntosSlider(proyecto)
+                    adjuntos: this.setAdjuntosSlider(proyecto),
+                    data
                 })
             },
             (error) => {
@@ -1786,8 +1799,9 @@ class Proyectos extends Component {
         await axios.post(URL_DEV + 'proyectos/' + proyecto.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { proyectos, proyecto } = response.data
-                const { options } = this.state
+                const { options, data } = this.state
                 options['clientes'] = []
+                data.proyectos = proyectos
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'El proyecto fue editado con éxito.',
@@ -1801,7 +1815,8 @@ class Proyectos extends Component {
                     proyectos: this.setProyectos(proyectos),
                     options,
                     proyecto: '',
-                    modal: false
+                    modal: false,
+                    data
                 })
             },
             (error) => {
