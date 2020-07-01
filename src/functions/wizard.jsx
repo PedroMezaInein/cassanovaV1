@@ -1,3 +1,5 @@
+import swal from 'sweetalert'
+
 export function openWizard1(){  
     document.getElementById('wizardP').setAttribute("data-wizard-state","first");
     document.getElementById('wizard-1').setAttribute("data-wizard-state","current");
@@ -7,6 +9,7 @@ export function openWizard1(){
     document.getElementById("wizard-2-content").removeAttribute("data-wizard-state");
     document.getElementById("wizard-3-content").removeAttribute("data-wizard-state");
 }
+
 export function openWizard2(){  
     var elementsInvalid = document.getElementById("wizard-1-content").getElementsByClassName("is-invalid");
 
@@ -19,7 +22,13 @@ export function openWizard2(){
         document.getElementById("wizard-1-content").removeAttribute("data-wizard-state");
         document.getElementById("wizard-3-content").removeAttribute("data-wizard-state");
     }else{
-        alert("Rellena todos los campos")
+        swal({
+            title: '¡Lo sentimos!',
+            text: 'Llena todos los campos requeridos',
+            icon: 'warning',
+            timer: 1500,
+            buttons: false
+        })
     }    
 }
 
@@ -35,6 +44,12 @@ export function openWizard3(){
         document.getElementById("wizard-1-content").removeAttribute("data-wizard-state");
         document.getElementById("wizard-2-content").removeAttribute("data-wizard-state");       
     }else{
-        alert("Rellena todos los campos")
+        swal({
+            title: '¡Lo sentimos!',
+            text: 'Llena todos los campos requeridos',
+            icon: 'warning',
+            timer: 1500,
+            buttons: false
+        })
     }
 }
