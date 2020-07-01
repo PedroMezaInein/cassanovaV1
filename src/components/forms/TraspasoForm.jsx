@@ -6,6 +6,7 @@ import { faPaperclip, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { DARK_BLUE } from '../../constants'
 import { Badge, Form } from 'react-bootstrap'
 import { DATE } from '../../constants'
+import { validateAlert } from '../../functions/alert'
 
 class TareaForm extends Component{
 
@@ -26,12 +27,21 @@ class TareaForm extends Component{
 
     render(){
 
-        const { title, cuentas, form, onChange, onChangeAdjunto, deleteAdjunto, ... props } = this.props
+        const { title, cuentas, form, onChange, onChangeAdjunto, deleteAdjunto, requirevalidation, onSubmit, formeditado, ... props } = this.props
         return(
-            <Form { ... props}>
+            <Form id="form-transpasos"
+                onSubmit = { 
+                    (e) => {
+                        e.preventDefault(); 
+                        validateAlert(onSubmit, e, 'form-transpasos')
+                    }
+                }
+                {...props}
+                >                
                 <div className="form-group row form-group-marginless pt-4">
                     <div className="col-md-6">
                         <SelectSearch 
+                            formeditado={formeditado}
                             options = { cuentas } 
                             value = { form.origen } 
                             onChange = { this.updateOrigen } 
@@ -42,6 +52,7 @@ class TareaForm extends Component{
                     </div>
                     <div className="col-md-6">
                         <SelectSearch 
+                            formeditado={formeditado}
                             options = { cuentas }
                             value = { form.destino }
                             onChange = { this.updateDestino }
@@ -56,6 +67,8 @@ class TareaForm extends Component{
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <InputMoney 
+                            requirevalidation={1}
+                            formeditado={formeditado}
                             thousandSeparator={true}
                             prefix = { '$' }
                             name = "cantidad"
@@ -68,6 +81,7 @@ class TareaForm extends Component{
                     </div>
                     <div className="col-md-4">
                         <Calendar 
+                            formeditado={formeditado}
                             onChangeCalendar = { this.changeDate }
                             name = "fecha" value = { form.fecha }
                             placeholder="Fecha de traspaso"
@@ -79,6 +93,8 @@ class TareaForm extends Component{
                         <div className="image-upload d-flex align-items-center">
                             <div className="no-label pt-5">
                                 <input 
+                                    requirevalidation={0}
+                                    formeditado={formeditado}
                                     onChange = { onChangeAdjunto }
                                     value = { form.adjunto }
                                     name = "adjunto"
@@ -89,28 +105,34 @@ class TareaForm extends Component{
                                 />
                                 {/*<span className="form-text text-muted">Por favor, adjunte su documento. </span>*/}   
                             </div>
-                            {/*<label htmlFor="adjunto">
-                                <FontAwesomeIcon className = "p-0 font-unset mr-2" icon={ faPaperclip } color={ DARK_BLUE } />
-                            </label>*/}
+                        </div>
                             {
                                 form.adjuntoName &&
-                                    <Badge variant="light" className="d-flex px-3 align-items-center" pill>
-                                        <FontAwesomeIcon 
-                                            icon = { faTimes } 
-                                            onClick={ (e) => { e.preventDefault(); deleteAdjunto() } } 
-                                            className=" small-button mr-2" />
-                                        {
-                                            form.adjuntoName
-                                        }
-                                    </Badge>
+                                <div className="">
+                                    <div className="tagify form-control p-1 mt-1" tabIndex="-1" style={{borderWidth:"0px"}}>
+                                            <div className="tagify__tag tagify__tag--primary tagify--noAnim">
+                                                <div 
+                                                    title="Borrar archivo" 
+                                                    className="tagify__tag__removeBtn" 
+                                                    role="button" 
+                                                    aria-label="remove tag" 
+                                                    onClick={ (e) => { e.preventDefault(); deleteAdjunto() } }
+                                                    >
+                                                </div>                                                            
+                                                    <div><span className="tagify__tag-text p-1">{form.adjuntoName}</span></div>
+                                            </div>
+                                    </div>
+                                </div> 
                             }
-                        </div>
+                        
                     </div>                    
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-12">
                         <Input 
+                            requirevalidation={0}
+                            formeditado={formeditado}
                             placeholder = "Comentario"
                             as = "textarea"
                             rows = "3"
