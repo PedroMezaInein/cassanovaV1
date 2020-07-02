@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { Subtitle, Small } from '../../texts'
 import { Input, Select, SelectSearch, Button, Calendar, InputMoney, RadioGroup, FileInput } from '../../form-components'
+import { validateAlert } from '../../../functions/alert'
 
 class RendimientoForm extends Component{
 
@@ -16,12 +17,21 @@ class RendimientoForm extends Component{
     }
 
     render(){
-        const { title, options, form, onChange, clearFiles, onChangeAdjunto, ... props } = this.props
+        const { title, options, form, onChange, clearFiles, onChangeAdjunto, formeditado, onSubmit, ... props } = this.props
         return(
-            <Form { ... props}>
+            <Form id="form-rendimiento"
+                onSubmit = { 
+                    (e) => {
+                        e.preventDefault(); 
+                        validateAlert(onSubmit, e, 'form-rendimiento')
+                    }
+                }
+                { ... props}>
                 <div className="form-group row form-group-marginless pt-4">
                     <div className="col-md-4">
                         <Input 
+                            requirevalidation={1}
+                            formeditado={formeditado}
                             placeholder = "Materiales" 
                             value = { form.materiales }
                             name = "materiales"
@@ -33,6 +43,7 @@ class RendimientoForm extends Component{
                     </div>
                     <div className="col-md-4">
                         <SelectSearch 
+                            formeditado={formeditado}
                             options={options.unidades}
                             placeholder = "Selecciona la unidad" 
                             name = "unidad"
@@ -44,6 +55,8 @@ class RendimientoForm extends Component{
                     </div>
                     <div className="col-md-4">
                         <InputMoney 
+                            requirevalidation={1}
+                            formeditado={formeditado}
                             thousandSeparator={true}  
                             placeholder = "Costo"
                             value = { form.costo }
@@ -60,6 +73,8 @@ class RendimientoForm extends Component{
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Input 
+                            requirevalidation={1}
+                            formeditado={formeditado}
                             placeholder = "Rendimiento"
                             value = { form.rendimiento }
                             name = "rendimiento"
@@ -71,6 +86,8 @@ class RendimientoForm extends Component{
                     </div>
                     <div className="col-md-4">
                         <SelectSearch 
+                            requirevalidation={1}
+                            formeditado={formeditado}
                             options={options.proveedores}
                             placeholder = "Selecciona el proveedor" 
                             name = "proveedor"
@@ -82,6 +99,8 @@ class RendimientoForm extends Component{
                     </div>
                     <div className="col-md-4">
                         <FileInput 
+                            requirevalidation={0}
+                            formeditado={formeditado}
                             onChangeAdjunto = { onChangeAdjunto } 
                             placeholder = 'Adjunto'
                             value = { form['adjunto']['value'] }
@@ -98,6 +117,8 @@ class RendimientoForm extends Component{
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-12">
                         <Input 
+                            requirevalidation={0}
+                            formeditado={formeditado}
                             as = "textarea"
                             placeholder = "Descripción"
                             rows = "2"
