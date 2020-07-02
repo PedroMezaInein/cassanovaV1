@@ -192,7 +192,10 @@ class Ingresos extends Component {
                         });
                         let auxCliente = ''
                         data.clientes.find(function (element, index) {
-                            if (element.empresa === obj.nombre_receptor) {
+                            let cadena = obj.nombre_receptor.replace(/,/g, '')
+                            cadena = cadena.replace(/\./g, '')
+                            if (element.empresa === obj.nombre_receptor ||
+                                element.empresa === cadena){
                                 auxCliente = element
                             }
                         });
@@ -686,9 +689,9 @@ class Ingresos extends Component {
         const data = new FormData();
 
 
-        data.append('empresa', obj.nombre_emisor)
-        data.append('nombre', obj.nombre_emisor)
-        data.append('rfc', obj.rfc_emisor)
+        data.append('empresa', obj.nombre_receptor)
+        data.append('nombre', obj.nombre_receptor)
+        data.append('rfc', obj.rfc_receptor)
 
         await axios.post(URL_DEV + 'cliente', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
