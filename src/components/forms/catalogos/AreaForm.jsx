@@ -20,7 +20,7 @@ class AreaForm extends Component{
                     }
                 }
                 { ... props}>
-                <div className="form-group row form-group-marginless mt-4">
+                <div className="form-group row form-group-marginless pt-4">
                     <div className="col-md-5">
                         <Input 
                             requirevalidation={1} 
@@ -30,6 +30,7 @@ class AreaForm extends Component{
                             placeholder="Nombre del área" 
                             onChange={onChange} 
                             iconclass={"far fa-window-maximize"}
+                            messageinc="Incorrecto. Ingresa el nombre del área."
                         />
                     </div>
                     <div className="col-md-5">
