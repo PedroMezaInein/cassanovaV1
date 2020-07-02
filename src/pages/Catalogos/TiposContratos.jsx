@@ -27,6 +27,7 @@ class TiposContratos extends Component {
         data: {
             tipos: []
         },
+        formeditado:0,
         tipos: [],
         modal:{
             form: false,
@@ -131,7 +132,8 @@ class TiposContratos extends Component {
         this.setState({
             modal,
             title: 'Nuevo tipo',
-            form: this.clearForm()
+            form: this.clearForm(),
+            formeditado:0
         })
     }
 
@@ -152,7 +154,8 @@ class TiposContratos extends Component {
             modal,
             title: 'Editar tipo',
             tipo: tipo,
-            form
+            form,
+            formeditado:1
         })
     }
 
@@ -313,7 +316,7 @@ class TiposContratos extends Component {
     }
 
     render() {
-        const { form, tipos, modal, title, data } = this.state
+        const { form, tipos, modal, title, data, formeditado} = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
                 <NewTable 
@@ -334,12 +337,9 @@ class TiposContratos extends Component {
 
                 <Modal show={modal.form} title = {title} handleClose={this.handleClose}>
                     <TipoForm form = { form } onChange = { this.onChange }
-                        onSubmit = { this.onSubmit } />
+                        onSubmit = { this.onSubmit } formeditado={formeditado} />
                 </Modal>
-                <ModalDelete show = { modal.delete } handleClose = { this.handleCloseDelete } onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteTipoContratoAxios() }}>
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas eliminar la tipo?
-                    </Subtitle>
+                <ModalDelete title={"¿Estás seguro que deseas eliminar la tipo?"} show = { modal.delete } handleClose = { this.handleCloseDelete } onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteTipoContratoAxios() }}>
                 </ModalDelete>
             </Layout>
         )

@@ -27,6 +27,7 @@ class Unidades extends Component {
         data: {
             unidades: []
         },
+        formeditado:0,
         unidades: [],
         modal:{
             form: false,
@@ -131,7 +132,8 @@ class Unidades extends Component {
         this.setState({
             modal,
             title: 'Nueva unidad',
-            form: this.clearForm()
+            form: this.clearForm(),
+            formeditado:0,
         })
     }
 
@@ -152,7 +154,8 @@ class Unidades extends Component {
             modal,
             title: 'Editar unidad',
             unidad: unidad,
-            form
+            form,
+            formeditado:1
         })
     }
 
@@ -313,7 +316,7 @@ class Unidades extends Component {
     }
 
     render() {
-        const { form, unidades, modal, title, data } = this.state
+        const { form, unidades, modal, title, data, formeditado} = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
                 <NewTable 
@@ -334,12 +337,9 @@ class Unidades extends Component {
 
                 <Modal show={modal.form} title = {title} handleClose={this.handleClose}>
                     <UnidadForm form = { form } onChange = { this.onChange }
-                        onSubmit = { this.onSubmit } />
+                        onSubmit = { this.onSubmit } formeditado={formeditado} />
                 </Modal>
-                <ModalDelete show = { modal.delete } handleClose = { this.handleCloseDelete } onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteUnidadAxios() }}>
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas eliminar la unidad?
-                    </Subtitle>
+                <ModalDelete title={"¿Estás seguro que deseas eliminar la unidad?"} show = { modal.delete } handleClose = { this.handleCloseDelete } onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteUnidadAxios() }}>
                 </ModalDelete>
             </Layout>
         )
