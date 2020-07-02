@@ -537,7 +537,7 @@ class IngresosForm extends Component{
         
         data.append('empresa', obj.nombre_receptor)
         data.append('nombre', obj.nombre_receptor)
-        data.append('rfc', obj.nombre_receptor)
+        data.append('rfc', obj.rfc_receptor)
 
         await axios.post(URL_DEV + 'cliente', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
