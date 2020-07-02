@@ -450,7 +450,10 @@ class Ventas extends Component{
                         });
                         let auxCliente = ''
                         data.clientes.find(function(element, index) {
-                            if(element.empresa === obj.nombre_receptor){
+                            let cadena = obj.nombre_receptor.replace(/,/g, '')
+                            cadena = cadena.replace(/\./g, '')
+                            if (element.empresa === obj.nombre_receptor ||
+                                element.empresa === cadena){
                                 auxCliente = element
                             }
                         });
