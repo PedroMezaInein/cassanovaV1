@@ -33,6 +33,7 @@ class Rendimientos extends Component {
         data: {
             rendimientos: []
         },
+        formeditado:0,
         form: {
             unidad: '',
             proveedor: '',
@@ -67,7 +68,8 @@ class Rendimientos extends Component {
             ... this.state,
             modal: true,
             title: 'Nuevo rendimiento',
-            form: this.clearForm()
+            form: this.clearForm(),
+            formeditado:0
         })
     }
 
@@ -90,7 +92,8 @@ class Rendimientos extends Component {
             modal: true,
             title: 'Editar rendimiento',
             form,
-            rendimiento: rendimiento
+            rendimiento: rendimiento,
+            formeditado:1
         })
     }
 
@@ -455,21 +458,15 @@ class Rendimientos extends Component {
 
     render() {
 
-        const { modal, modalDelete, title, form, options, rendimientos, data } = this.state
+        const { modal, modalDelete, title, form, options, rendimientos, formeditado, data } = this.state
 
         return (
             <Layout active={'presupuesto'}  {...this.props}>
-                {/*
-                <div className="text-right">
-                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon = { faPlus } color="green" />
-                </div>
-                */}
                 <Modal title={title} show={modal} handleClose={this.handleClose} >
                     <RendimientoForm form={form} options={options}
                         onChange={this.onChange} onSubmit={this.onSubmit} onChangeAdjunto={this.onChangeAdjunto}
-                        clearFiles={this.clearFiles} />
+                        clearFiles={this.clearFiles} formeditado={formeditado} />
                 </Modal>
-
                 {/*<DataTable columns = { RENDIMIENTOS_COLUMNS } data = { rendimientos } />*/}
                 <NewTable columns={RENDIMIENTOS_COLUMNS} data={rendimientos}
                     title='Rendimientos' subtitle='Listado de rendimientos'
@@ -477,15 +474,13 @@ class Rendimientos extends Component {
                     abrir_modal={true}
                     onClick={this.openModal}
                     mostrar_acciones={true}
-
+                    actions={{
+                        'edit': { function: this.openModalEdit },
+                        'delete': { function: this.openModalDelete }
+                    }}
                     elements={data.rendimientos}
                 />
-
-
-                <ModalDelete show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); this.deleteRendimientoAxios() }}>
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas eliminar el rendimiento?
-                    </Subtitle>
+                <ModalDelete title={"¿Estás seguro que deseas eliminar el rendimiento?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); this.deleteRendimientoAxios() }}>
                 </ModalDelete>
             </Layout>
         )
