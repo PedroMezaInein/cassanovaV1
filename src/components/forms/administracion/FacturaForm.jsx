@@ -14,27 +14,27 @@ export default class FacturaForm extends Component{
 
     updateEmpresa = value => {
         const { onChange } = this.props
-        onChange( { target: { value: value.value, name:'empresa' } } )
+        onChange( { target: { value: value, name:'empresa' } } )
     }
 
     updateCliente = value => {
         const { onChange } = this.props
-        onChange( { target: { value: value.value, name:'cliente' } } )
+        onChange( { target: { value: value, name:'cliente' } } )
     }
 
     updateMetodoPago = value => {
         const { onChange } = this.props
-        onChange( { target: { value: value.value, name:'metodoPago' } } )
+        onChange( { target: { value: value, name:'metodoPago' } } )
     }
 
     updateFormaPago = value => {
         const { onChange } = this.props
-        onChange( { target: { value: value.value, name:'formaPago' } } )
+        onChange( { target: { value: value, name:'formaPago' } } )
     }
 
     updateEstatusFactura = value => {
         const { onChange } = this.props
-        onChange( { target: { value: value.value, name:'estatusFactura' } } )
+        onChange( { target: { value: value, name:'estatusFactura' } } )
     }
 
     render(){
