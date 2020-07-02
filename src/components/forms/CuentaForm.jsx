@@ -114,11 +114,11 @@ class CuentaForm extends Component{
                     </div>
                         {                                            
                             form.empresas.length > 0 ?
-                                <div className="col-md-8 align-items-center image-upload">
+                                <div className="col-md-8 row mx-0 align-items-center image-upload">
                                     {
                                         form.empresas.map((empresa, key)=>{
                                             return(
-                                                <div className="tagify form-control p-1" tabIndex="-1" style={{borderWidth:"0px"}}>
+                                                <div className="tagify form-control p-1 col-md-6 px-2 d-flex justify-content-center align-items-center" tabIndex="-1" style={{borderWidth:"0px"}}>
                                                     <div className="tagify__tag tagify__tag--primary tagify--noAnim" key = { key }>
                                                         <div 
                                                             title="Borrar archivo" 
