@@ -907,12 +907,16 @@ export const SOLICITUD_COMPRA_COLUMNS = [
         accessor: 'factura'
     },
     {
-        Header: 'Tipo de pago',
+        Header: 'Pago', //Cambié de Tipo de pago a Pago
         accessor: 'tipoPago'
     },
     {
         Header: 'Descripción',
         accessor: 'descripcion'
+    },    
+    {
+        Header: 'Fecha',
+        accessor: 'fecha',
     },
     {
         Header: 'Área',
@@ -921,10 +925,6 @@ export const SOLICITUD_COMPRA_COLUMNS = [
     {
         Header: 'Sub-Área',
         accessor: 'subarea'
-    },
-    {
-        Header: 'Fecha',
-        accessor: 'fecha',
     },
     {
         Header: 'Adjunto',
@@ -954,7 +954,7 @@ export const SOLICITUD_VENTA_COLUMNS = [
         accessor: 'factura'
     },
     {
-        Header: 'Tipo de pago',
+        Header: 'Pago', //Cambié de Tipo de pago a Pago
         accessor: 'tipoPago'
     },
     {
@@ -1133,7 +1133,7 @@ export const CONTRATOS_CLIENTES_COLUMNS = [
         accessor: 'contrato'
     },
     {
-        Header: 'Descripción', //Cambié de Tipo de pago a Pago
+        Header: 'Descripción',
         accessor: 'descripcion'
     }
 ]
@@ -1176,7 +1176,7 @@ export const CONTRATOS_PROVEEDORES_COLUMNS = [
         accessor: 'contrato'
     },
     {
-        Header: 'Descripción', //Cambié de Tipo de pago a Pago
+        Header: 'Descripción',
         accessor: 'descripcion'
     }
 ]
