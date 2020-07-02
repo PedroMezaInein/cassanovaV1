@@ -34,6 +34,7 @@ class Conceptos extends Component {
         data: {
             conceptos: []
         },
+        formeditado:0,
         form: {
             unidad: '',
             partida: '',
@@ -66,7 +67,8 @@ class Conceptos extends Component {
             options,
             modal: true,
             title: 'Nuevo concepto',
-            form: this.clearForm()
+            form: this.clearForm(),
+            formeditado:0
         })
     }
 
@@ -91,7 +93,8 @@ class Conceptos extends Component {
             title: 'Editar concepto',
             form,
             concepto: concepto,
-            options
+            options,
+            formeditado:1
         })
     }
 
@@ -390,13 +393,13 @@ class Conceptos extends Component {
 
     render() {
 
-        const { modal, modalDelete, title, form, options, conceptos, data } = this.state
+        const { modal, modalDelete, title, form, options, conceptos, data, formeditado} = this.state
 
         return (
             <Layout active={'presupuesto'}  {...this.props}>
                 <Modal title={title} show={modal} handleClose={this.handleClose} >
                     <ConceptoForm  form={form} options={options} setOptions = { this.setOptions }
-                        onChange={this.onChange} onSubmit = { this.onSubmit }/>
+                        onChange={this.onChange} onSubmit = { this.onSubmit } formeditado={formeditado}/>
                 </Modal>
 
                 <NewTable columns={CONCEPTOS_COLUMNS} data={conceptos}
@@ -411,11 +414,8 @@ class Conceptos extends Component {
                     }}
                     elements={data.conceptos}
                 />
-
-                <ModalDelete show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); this.deleteConceptoAxios() }}>
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas eliminar el concepto?
-                    </Subtitle>
+                
+                <ModalDelete title={"¿Estás seguro que deseas eliminar el concepto?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); this.deleteConceptoAxios() }}>
                 </ModalDelete>
             </Layout>
         )
