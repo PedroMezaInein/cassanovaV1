@@ -421,7 +421,7 @@ class EgresosForm extends Component {
                                     </div>
                                     <div className="col-md-4">
                                         <InputMoney 
-                                            requirevalidation={1}
+                                            requirevalidation={0}
                                             formeditado={formeditado}
                                             thousandSeparator={true}
                                             placeholder="Comisión"

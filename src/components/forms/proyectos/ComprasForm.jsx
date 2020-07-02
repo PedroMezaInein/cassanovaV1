@@ -464,7 +464,7 @@ updateArea = value => {
                                     </div>
                                     <div className="col-md-3">
                                         <InputMoney 
-                                            requirevalidation={1}
+                                            requirevalidation={0}
                                             formeditado={formeditado}
                                             thousandSeparator={true} 
                                             placeholder="Comisión" 
