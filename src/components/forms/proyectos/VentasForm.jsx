@@ -466,6 +466,7 @@ class VentasForm extends Component {
                                     </div>
                                     <div className="col-md-4">
                                         <SelectSearch 
+                                            requirevalidation={0}
                                             formeditado={formeditado}
                                             options={options.contratos} 
                                             placeholder="Selecciona el contrato"
