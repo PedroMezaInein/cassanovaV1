@@ -16,7 +16,7 @@ class RegisterUserForm extends Component{
             <Form 
                 { ... this.props}
                 >
-                <div className="form-group row form-group-marginless">
+                <div className="form-group row form-group-marginless pt-4">
                     <div className="col-md-4">
                         <Input 
                             onChange={ onChange } 
