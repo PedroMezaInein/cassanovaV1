@@ -1186,12 +1186,9 @@ class Ventas extends Component{
                                 now = {porcentaje} />
                         </div>
                     </div>
-                    <Form onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios();}}>
-                        
-                        
+                    <Form onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios();}}>    
                         <div className="form-group row form-group-marginless">
-                            <div className="col-md-6">
-                                
+                            <div className="col-md-6">                                
                                 <FileInput 
                                     onChangeAdjunto = { this.onChangeAdjunto } 
                                     placeholder = { form['adjuntos']['factura']['placeholder'] }

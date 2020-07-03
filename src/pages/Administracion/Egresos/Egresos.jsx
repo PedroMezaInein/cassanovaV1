@@ -661,45 +661,42 @@ class egresos extends Component{
                             elements = { data.egresos }
                             idTable = 'egresos'
                             />
-                <ModalDelete show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteEgresoAxios() }}>
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas eliminar el egreso?
-                    </Subtitle>
+                <ModalDelete tile={"¿Estás seguro que deseas eliminar el egreso?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteEgresoAxios() }}>
                 </ModalDelete>
 
-                <Modal show = { modalFacturas } handleClose = { this.handleCloseFacturas }>
-                    <Subtitle className="text-center" color = 'gold' >
-                        Facturas
-                    </Subtitle>
-                        <div className="px-3 my-2">
-                                        <ProgressBar animated label={`${porcentaje}%`} 
-                                            variant = { porcentaje > 100 ? 'danger' : porcentaje > 75 ? 'success' : 'warning'} 
-                                            now = {porcentaje} />
+                <Modal title={"Facturas"} show = { modalFacturas } handleClose = { this.handleCloseFacturas }>
+                    <div className="form-group row form-group-marginless pt-4">
+                        <div className="col-md-12">
+                            <ProgressBar 
+                                animated 
+                                label={`${porcentaje}%`} 
+                                variant = { porcentaje > 100 ? 'danger' : porcentaje > 75 ? 'success' : 'warning'} 
+                                now = {porcentaje} />
+                        </div>
+                    </div>
+                    <Form onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios();}}>
+                        <div className="row mx-0">
+                            <div className="col-md-6 px-2">
+                                <FileInput 
+                                    onChangeAdjunto = { this.onChangeAdjunto } 
+                                    placeholder = { form['adjuntos']['factura']['placeholder'] }
+                                    value = { form['adjuntos']['factura']['value'] }
+                                    name = { 'factura' } 
+                                    id = { 'factura' }
+                                    accept = "text/xml, application/pdf" 
+                                    files = { form['adjuntos']['factura']['files'] }
+                                    deleteAdjunto = { this.clearFiles } multiple
+                                />
+                            </div>
+                            {
+                                form.adjuntos.factura.files.length ?
+                                    <div className="col-md-6 px-2 align-items-center d-flex">
+                                        <Button icon='' className="mx-auto" type="submit" text="Enviar" />
                                     </div>
-                                    <Form onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios();}}>
-                                        <div className="row mx-0">
-                                            <div className="col-md-6 px-2">
-                                                
-                                                <FileInput 
-                                                    onChangeAdjunto = { this.onChangeAdjunto } 
-                                                    placeholder = { form['adjuntos']['factura']['placeholder'] }
-                                                    value = { form['adjuntos']['factura']['value'] }
-                                                    name = { 'factura' } 
-                                                    id = { 'factura' }
-                                                    accept = "text/xml, application/pdf" 
-                                                    files = { form['adjuntos']['factura']['files'] }
-                                                    deleteAdjunto = { this.clearFiles } multiple/>
-                                            </div>
-                                            {
-                                                form.adjuntos.factura.files.length ?
-                                                    <div className="col-md-6 px-2 align-items-center d-flex">
-                                                        <Button icon='' className="mx-auto" type="submit" text="Enviar" />
-                                                    </div>
-                                                : ''
-                                            }
-                                        </div>
-                                    </Form>
-                    
+                                : ''
+                            }
+                        </div>
+                    </Form>
                     <FacturaTable deleteFactura = { this.deleteFactura } facturas = { facturas } />
                 </Modal>
 
