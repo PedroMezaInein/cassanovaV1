@@ -1249,6 +1249,7 @@ class Proyectos extends Component {
                 empresa: renderToString(setTextTable(proyecto.empresa ? proyecto.empresa.name : '')),
                 porcentaje: renderToString(setTextTable(proyecto.porcentaje + '%')),
                 fechaInicio: renderToString(setDateTable(proyecto.fecha_inicio)),
+                descripcion: renderToString(setTextTable(proyecto.descripcion)),
                 fechaFin: renderToString(proyecto.fecha_fin !== null ? setDateTable(proyecto.fecha_fin) : setTextTable('Sin definir')),
                 adjuntos: renderToString(this.setAdjuntosTable(proyecto)),
                 id: proyecto.id
