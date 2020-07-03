@@ -50,6 +50,9 @@ class Leads extends Component {
         super(props);
         const { state } = props.location
         if (state) {
+            this.clearForm('form', EMPTY_PROSPECTO)
+            this.clearForm('formCliente', EMPTY_CLIENTE)
+            this.clearForm('formContacto', EMPTY_CONTACTO)
             this.state.modal = true
             this.state.title = 'Lead a convertir'
             this.getLeadAxios(state.lead)
@@ -200,6 +203,7 @@ class Leads extends Component {
     }
 
     openConvert = (prospecto) => {
+        this.clearForm('form', EMPTY_PROSPECTO)
         this.setState({
             modalConvert: true,
             prospecto: prospecto,
@@ -439,8 +443,11 @@ class Leads extends Component {
         let aux = Object.keys(empty)
         let _form = this.state[name]
         aux.map((element) => {
+            console.log(element, 'element clear form')
             if (element === 'Success')
                 _form[element] = 'Contactado'
+            if (element === 'fechaContacto')
+                _form[element] = new Date()
             else
                 _form[element] = ''
         })
