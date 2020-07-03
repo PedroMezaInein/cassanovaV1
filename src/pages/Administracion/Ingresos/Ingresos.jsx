@@ -194,8 +194,8 @@ class Ingresos extends Component {
                         data.clientes.find(function (element, index) {
                             let cadena = obj.nombre_receptor.replace(/,/g, '')
                             cadena = cadena.replace(/\./g, '')
-                            if (element.empresa === obj.nombre_receptor ||
-                                element.empresa === cadena){
+                            if (element.empresa.toUpperCase() === obj.nombre_receptor.toUpperCase() ||
+                                element.empresa.toUpperCase() === cadena.toUpperCase()){
                                 auxCliente = element
                             }
                         });
@@ -690,10 +690,12 @@ class Ingresos extends Component {
 
 
         let cadena = obj.nombre_receptor.replace(/,/g, '')
-        cadena = cadena.replace(/\./g, '')
+        cadena = cadena.replace(/\./g, '').toUpperCase()
         data.append('empresa', cadena)
         data.append('nombre', cadena)
-        data.append('rfc', obj.rfc_receptor)
+        data.append('rfc', obj.rfc_receptor.toUpperCase())
+
+        console.log(obj, 'obj')
 
         await axios.post(URL_DEV + 'cliente', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {

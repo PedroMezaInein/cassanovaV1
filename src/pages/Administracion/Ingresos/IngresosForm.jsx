@@ -123,8 +123,10 @@ class IngresosForm extends Component{
                         form.total = ingreso.monto
                         form.fecha = new Date(ingreso.created_at)
                         form.descripcion = ingreso.descripcion
-                        if(ingreso.cliente)
+                        if(ingreso.cliente){
                             form.cliente = ingreso.cliente.id.toString()
+                            form.rfc = ingreso.cliente.rfc
+                        }
                         if(ingreso.pago){
                             form.adjuntos.pago.files = [{
                                 name: ingreso.pago.name, url: ingreso.pago.url
@@ -235,9 +237,9 @@ class IngresosForm extends Component{
                         let auxCliente = ''
                         data.clientes.find(function(element, index) {
                             let cadena = obj.nombre_receptor.replace(/,/g, '')
-                            cadena = cadena.replace(/\./g, '')
-                            if(element.empresa === obj.nombre_receptor ||
-                                element.empresa === cadena){
+                            cadena = cadena.replace(/\./g, '').toUpperCase()
+                            if(element.empresa.toUpperCase() === obj.nombre_receptor.toUpperCase() ||
+                                element.empresa.toUpperCase() === cadena){
                                 auxCliente = element
                             }
                         });
@@ -536,10 +538,12 @@ class IngresosForm extends Component{
 
         
         let cadena = obj.nombre_receptor.replace(/,/g, '')
-        cadena = cadena.replace(/\./g, '')
+        cadena = cadena.replace(/\./g, '').toUpperCase()
         data.append('empresa', cadena)
         data.append('nombre', cadena)
-        data.append('rfc', obj.rfc_receptor)
+        data.append('rfc', obj.rfc_receptor.toUpperCase())
+
+        console.log(obj, 'obj')
 
         await axios.post(URL_DEV + 'cliente', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {

@@ -469,9 +469,9 @@ class Compras extends Component{
                         let auxProveedor = ''
                         data.proveedores.find(function(element, index) {
                             let cadena = obj.nombre_emisor.replace(/,/g, '')
-                            cadena = cadena.replace(/\./g, '')
-                            if (element.razon_social === obj.nombre_emisor ||
-                                element.razon_social === cadena){
+                            cadena = cadena.replace(/\./g, '').toUpperCase()
+                            if (element.razon_social.toUpperCase() === obj.nombre_emisor.toUpperCase() ||
+                                element.razon_social.toUpperCase() === cadena){
                                     auxProveedor = element
                             }
                         });
@@ -676,9 +676,9 @@ class Compras extends Component{
 
         let cadena = obj.nombre_emisor.replace(/,/g, '')
         cadena = cadena.replace(/\./g, '')
-        data.append('nombre', cadena)
+        data.append('nombre', cadena).toUpperCase()
         data.append('razonSocial', cadena)
-        data.append('rfc', obj.rfc_emisor)
+        data.append('rfc', obj.rfc_emisor.toUpperCase())
 
         await axios.post(URL_DEV + 'proveedores', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
