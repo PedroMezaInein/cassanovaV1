@@ -344,8 +344,8 @@ class Ingresos extends Component {
                 },
                 {
                     text: 'Pedir&nbsp;factura',
-                    btnclass: 'primary',
-                    iconclass: 'flaticon2-medical-records',
+                    btnclass: 'info',
+                    iconclass: 'flaticon-file-1',
                     action: 'askFacturas',
                     tooltip: { id: 'ask-taxes', text: 'Facturas' },
                 }

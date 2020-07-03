@@ -326,7 +326,7 @@ class Ventas extends Component{
             {
                 text: 'Pedir&nbsp;factura',
                 btnclass: 'info',
-                iconclass: 'flaticon-interface-4',
+                iconclass: 'flaticon-file-1',
                 action: 'bills',
                 tooltip: { id: 'bills', text: 'Pedir factura' }
             }
