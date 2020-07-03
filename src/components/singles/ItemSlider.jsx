@@ -116,7 +116,7 @@ class ItemSlider extends Component{
                                                     <iframe src={items[active].url} className="w-100" />
                                                 </div>
                                             :
-                                                <img className="p-2 w-100" src={items[active].url} />}
+                                                <img className="p-2 rounded w-50 h-50" src={items[active].url} style={{ width:"100", height:"100"}}/>}
                                         </div>
                                         {
                                             deleteFile ? 
