@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretSquareLeft, faCaretSquareRight } from '@fortawesome/free-regular-svg-icons'
 import {DropZone} from '../form-components'
 import { faImages, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { Subtitle, Small } from '../texts'
+import { Subtitle, Small, P } from '../texts'
 import { Button } from '../form-components'
 
 class ItemSlider extends Component{
@@ -78,6 +78,25 @@ class ItemSlider extends Component{
         handleChange(files, item)
     }
 
+    isImage = string => {
+        let aux = string.substring(string.length - 3);
+        if(aux.toUpperCase() === 'JPG' || aux.toUpperCase() === 'GIF' || aux.toUpperCase() === 'PNG')
+            return true
+        aux = string.substring(string.length - 4);
+        if(aux.toUpperCase() === 'JPEG')
+            return true
+        return false
+    }
+
+    downloadFile = item => {
+        const url = item.url;
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', item.name); //or any other extension
+        document.body.appendChild(link);
+        link.click();
+    }
+
     render(){
         const { items, deleteFile, handleChange } = this.props
         const { active } = this.state
@@ -97,7 +116,7 @@ class ItemSlider extends Component{
                         {
                             items.length === active && handleChange ?
                                 <div className="border rounded w-100 border__dashed">
-                                    <DropZone accept = "application/pdf, image/*"  handleChange = { this.handleChange } >
+                                    <DropZone accept = "*"  handleChange = { this.handleChange } >
                                         <Subtitle className="text-center p-5 " color="gold">
                                             <FontAwesomeIcon icon = { faImages } className="text-color__gold"/>
                                             <br />
@@ -111,12 +130,25 @@ class ItemSlider extends Component{
                                 items.length > 0 ?
                                     <>
                                         <div>
-                                            {items[active].name.substring(items[active].name.length - 3) === 'pdf' ?
-                                                <div className="pdf-viewer w-100 pb-2">
-                                                    <iframe src={items[active].url} className="w-100" />
-                                                </div>
-                                            :
-                                                <img className="p-2 rounded w-50 h-50" src={items[active].url} style={{ width:"100", height:"100"}}/>}
+                                            {
+                                                items[active].name.substring(items[active].name.length - 3) === 'pdf' ?
+                                                    <div className="pdf-viewer w-100 pb-2">
+                                                        <iframe src={items[active].url} className="w-100" />
+                                                    </div>
+                                                :
+                                                    this.isImage(items[active].name) ?
+                                                        <img className="p-2 rounded w-50 h-50" src={items[active].url} style={{ width:"100", height:"100"}}/>
+                                                    : 
+                                                        <div className="btn btn-hover p-2 rounded download-item d-flex align-items-center justify-content-center mx-auto"  onClick = {() => { this.downloadFile(items[active]) } }>
+                                                            <div>
+                                                                <i className={"fas fa-file m-0 kt-font-boldest text-primary"}></i>
+                                                                <br />
+                                                                <Small className="text-center" color="gold">
+                                                                    Descarga
+                                                                </Small>
+                                                            </div>
+                                                        </div>
+                                            }   
                                         </div>
                                         {
                                             deleteFile ? 

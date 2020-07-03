@@ -134,7 +134,8 @@ class Ventas extends Component{
             form.cliente = venta.cliente.id.toString()
             options['proyectos'] = setOptions(venta.cliente.proyectos, 'nombre', 'id')
             if(venta.proyecto)
-            form.proyecto = venta.proyecto.id.toString()
+                form.proyecto = venta.proyecto.id.toString()
+            form.rfc = venta.cliente.rfc
             options['contratos'] = setOptions(venta.cliente.contratos, 'nombre', 'id')
             if(venta.contrato){
                 form.contrato = venta.contrato.id.toString()
@@ -593,10 +594,12 @@ class Ventas extends Component{
 
 
         let cadena = obj.nombre_receptor.replace(/,/g, '')
-        cadena = cadena.replace(/\./g, '')
+        cadena = cadena.replace(/\./g, '').toUpperCase()
         data.append('empresa', cadena)
         data.append('nombre', cadena)
-        data.append('rfc', obj.rfc_receptor)
+        data.append('rfc', obj.rfc_receptor.toUpperCase())
+
+        console.log(obj, 'obj')
 
         await axios.post(URL_DEV + 'cliente', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {

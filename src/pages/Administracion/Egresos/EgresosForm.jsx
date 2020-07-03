@@ -155,9 +155,9 @@ class EgresosForm extends Component{
                         let auxProveedor = ''
                         data.proveedores.find(function(element, index) {
                             let cadena = obj.nombre_emisor.replace(/,/g, '')
-                            cadena = cadena.replace(/\./g, '')
-                            if (element.razon_social === obj.nombre_emisor ||
-                                element.razon_social === cadena){
+                            cadena = cadena.replace(/\./g, '').toUpperCase()
+                            if (element.razon_social.toUpperCase() === obj.nombre_emisor.toUpperCase() ||
+                                element.razon_social.toUpperCase() === cadena){
                                     auxProveedor = element
                             }
                         });
@@ -318,8 +318,10 @@ class EgresosForm extends Component{
                         form.fecha = new Date(egreso.created_at)
                         form.descripcion = egreso.descripcion
                         form.comision = egreso.comision
-                        if(egreso.proveedor)
+                        if(egreso.proveedor){
                             form.proveedor = egreso.proveedor.id.toString()
+                            form.rfc = egreso.proveedor.rfc
+                        }
                         if(egreso.pago){
                             form.adjuntos.pago.files = [{
                                 name: egreso.pago.name, url: egreso.pago.url
@@ -532,10 +534,10 @@ class EgresosForm extends Component{
         const data = new FormData();
 
         let cadena = obj.nombre_emisor.replace(/,/g, '')
-        cadena = cadena.replace(/\./g, '')
+        cadena = cadena.replace(/\./g, '').toUpperCase()
         data.append('nombre', cadena)
         data.append('razonSocial', cadena)
-        data.append('rfc', obj.rfc_emisor)
+        data.append('rfc', obj.rfc_emisor.toUpperCase())
 
         await axios.post(URL_DEV + 'proveedores', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
