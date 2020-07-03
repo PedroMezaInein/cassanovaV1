@@ -4,6 +4,7 @@ import { Subtitle, Small } from '../../texts'
 import { Input, Select, SelectSearch, Button, Calendar, InputMoney, RadioGroup, FileInput } from '../../form-components'
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
 import {openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
+import { validateAlert } from '../../../functions/alert'
 
 
 class SolicitudVentaForm extends Component {
@@ -54,7 +55,7 @@ class SolicitudVentaForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, children, onChangeAdjunto, clearFiles, onSubmit, ...props } = this.props
+        const { title, options, form, onChange, children, onChangeAdjunto, clearFiles, onSubmit, formeditado, ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -88,12 +89,7 @@ class SolicitudVentaForm extends Component {
                             onSubmit = { 
                                 (e) => {
                                     e.preventDefault(); 
-                                    var elementsInvalid = document.getElementById("wizard-3-content").getElementsByClassName("is-invalid"); 
-                                    if(elementsInvalid.length===0){   
-                                        onSubmit(e)
-                                    }else{ 
-                                        alert("Rellena todos los campos")
-                                    } 
+                                    validateAlert(onSubmit, e, 'wizard-3-content')
                                 }
                             }
                             {...props}
@@ -105,6 +101,7 @@ class SolicitudVentaForm extends Component {
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-6">
                                         <SelectSearch 
+                                            formeditado={formeditado}
                                             options={options.proyectos}
                                             placeholder="Selecciona el proyecto"
                                             name="proyecto"
@@ -114,6 +111,7 @@ class SolicitudVentaForm extends Component {
                                     </div>
                                     <div className="col-md-6">
                                         <SelectSearch
+                                            formeditado={formeditado}
                                             options={options.empresas}
                                             placeholder="Selecciona la empresa"
                                             name="empresa"
@@ -127,6 +125,7 @@ class SolicitudVentaForm extends Component {
                                     <div className="col-md-6">
                                         <InputMoney 
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             thousandSeparator={true}
                                             placeholder="Monto"
                                             value={form.total}
@@ -137,6 +136,7 @@ class SolicitudVentaForm extends Component {
                                     <div className="col-md-6">
                                         <Select
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             placeholder="Selecciona el tipo de pago"
                                             options={options.tiposPagos}
                                             name="tipoPago"
@@ -160,6 +160,7 @@ class SolicitudVentaForm extends Component {
 								<div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <SelectSearch 
+                                            formeditado={formeditado}
                                             options={options.areas}
                                             placeholder="Selecciona el área"
                                             name="areas"
@@ -171,6 +172,7 @@ class SolicitudVentaForm extends Component {
                                         form.area ?
                                             <div className="col-md-4">
                                                 <SelectSearch 
+                                                    formeditado={formeditado}
                                                     options={options.subareas}
                                                     placeholder="Selecciona el subárea"
                                                     name="subarea"
@@ -182,6 +184,7 @@ class SolicitudVentaForm extends Component {
                                     }
                                     <div className="col-md-4">
                                         <Calendar
+                                            formeditado={formeditado}
                                             onChangeCalendar={this.handleChangeDate}
                                             placeholder="Fecha"
                                             name="fecha"
@@ -194,6 +197,7 @@ class SolicitudVentaForm extends Component {
                                     <div className="col-md-12">
                                         <Input 
                                             requirevalidation={0}
+                                            formeditado={formeditado}
                                             as="textarea"
                                             placeholder="Descripción"
                                             rows="3"
@@ -219,7 +223,8 @@ class SolicitudVentaForm extends Component {
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-6">
                                         <FileInput
-                                            requirevalidation={1}
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
                                             onChangeAdjunto={onChangeAdjunto}
                                             placeholder={form.adjuntos.adjunto.placeholder}
                                             value={form.adjuntos.adjunto.value}

@@ -732,10 +732,10 @@ export const PROYECTOS_COLUMNS = [
         Header: 'Empresa',
         accessor: 'empresa'
     },
-    {
+    /*{
         Header: 'Porcentaje',
         accessor: 'porcentaje'
-    },
+    },*/
     {
         Header: 'Fecha inicio',
         accessor: 'fechaInicio'
@@ -743,6 +743,10 @@ export const PROYECTOS_COLUMNS = [
     {
         Header: 'Fecha fin',
         accessor: 'fechaFin'
+    },
+    {
+        Header: 'Descripción',
+        accessor: 'descripcion'
     },
     {
         Header: 'Adjuntos',

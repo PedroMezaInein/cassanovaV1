@@ -477,6 +477,7 @@ updateArea = value => {
                                     </div>
                                     <div className="col-md-3">
                                         <SelectSearch 
+                                            requirevalidation={0}
                                             formeditado={formeditado}
                                             options={options.contratos} 
                                             placeholder="Selecciona el contrato"

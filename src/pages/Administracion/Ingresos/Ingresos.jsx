@@ -344,8 +344,8 @@ class Ingresos extends Component {
                 },
                 {
                     text: 'Pedir&nbsp;factura',
-                    btnclass: 'primary',
-                    iconclass: 'flaticon2-medical-records',
+                    btnclass: 'info',
+                    iconclass: 'flaticon-file-1',
                     action: 'askFacturas',
                     tooltip: { id: 'ask-taxes', text: 'Facturas' },
                 }
@@ -770,19 +770,19 @@ class Ingresos extends Component {
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el ingreso?"}show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteIngresoAxios() }}>
                 </ModalDelete>
 
-                <Modal show={modalFacturas} handleClose={this.handleCloseFacturas}>
-                    <Subtitle className="text-center" color='gold' >
-                        Facturas
-                    </Subtitle>
-                    <div className="px-3 my-2">
-                        <ProgressBar animated label={`${porcentaje}%`}
+                <Modal title={"Facturas"} show={modalFacturas} handleClose={this.handleCloseFacturas}>
+                <div className="form-group row form-group-marginless pt-4">
+                    <div className="col-md-12">
+                        <ProgressBar 
+                            animated label={`${porcentaje}%`}
                             variant={porcentaje > 100 ? 'danger' : porcentaje > 75 ? 'success' : 'warning'}
-                            now={porcentaje} />
+                            now={porcentaje} 
+                        />
                     </div>
+                </div>
                     <Form onSubmit={(e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios(); }}>
                         <div className="row mx-0">
                             <div className="col-md-6 px-2">
-
                                 <FileInput
                                     onChangeAdjunto={this.onChangeAdjunto}
                                     placeholder={form['adjuntos']['factura']['placeholder']}
@@ -805,7 +805,7 @@ class Ingresos extends Component {
                     <FacturaTable deleteFactura={this.deleteFactura} facturas={facturas} />
                 </Modal>
 
-                <Modal show={modalAskFactura} handleClose={this.handleCloseAskFactura}>
+                <Modal title={"Solicitud de factura"} show={modalAskFactura} handleClose={this.handleCloseAskFactura}>
                     <FacturaForm options={options} onChange={this.onChange} form={form}
                         onSubmit={this.onSubmitAskFactura} formeditado={formeditado} />
                 </Modal>

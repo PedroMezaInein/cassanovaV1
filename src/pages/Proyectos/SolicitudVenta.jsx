@@ -36,6 +36,7 @@ class SolicitudVenta extends Component{
         data: {
             solicitudes: []
         },
+        formeditado:0,
         options:{
             proveedores: [],
             proyectos: [],
@@ -122,7 +123,8 @@ class SolicitudVenta extends Component{
             ... this.state,
             form: this.clearForm(),
             modal: true,
-            title: 'Nueva solicitud de venta'
+            title: 'Nueva solicitud de venta',
+            formeditado:0
         })
     }
 
@@ -162,7 +164,8 @@ class SolicitudVenta extends Component{
             title: 'Editar solicitud de venta',
             solicitud: solicitud,
             form,
-            options
+            options,
+            formeditado:1
         })
     }
 
@@ -217,7 +220,8 @@ class SolicitudVenta extends Component{
         const { history } = this.props
         history.push({
             pathname: '/proyectos/ventas',
-            state: { solicitud: solicitud}
+            state: { solicitud: solicitud},
+            formeditado:1
         });
     }
 
@@ -581,7 +585,7 @@ class SolicitudVenta extends Component{
 
     render(){
 
-        const { data, solicitudes, modal, modalDelete, title, form, options, solicitud, modalSingle } = this.state
+        const { data, solicitudes, modal, modalDelete, title, form, options, solicitud, modalSingle, formeditado} = this.state
         return(
             <Layout active={'proyectos'}  { ...this.props}>
                 <NewTable 
@@ -603,12 +607,9 @@ class SolicitudVenta extends Component{
                 <Modal show = { modal } handleClose = { this.handleClose } title = { title }>
                     <SolicitudVentaForm title = { title } form = { form } options = { options } 
                         setOptions = {this.setOptions}  onChange = { this.onChange } onChangeAdjunto = { this.onChangeAdjunto }
-                        clearFiles = { this.clearFiles } onSubmit = { this.onSubmit } />
+                        clearFiles = { this.clearFiles } onSubmit = { this.onSubmit } formeditado={formeditado}/>
                 </Modal>
-                <ModalDelete show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteSolicitudAxios() }}>
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas eliminar la solicitud de venta?
-                    </Subtitle>
+                <ModalDelete title={"¿Estás seguro que deseas eliminar la solicitud de venta?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteSolicitudAxios() }}>
                 </ModalDelete>
                 <Modal title = "Solicitud de venta" show = { modalSingle } handleClose = { this.handleCloseSingle } >
                     <SolicitudVentaCard data = { solicitud }>
