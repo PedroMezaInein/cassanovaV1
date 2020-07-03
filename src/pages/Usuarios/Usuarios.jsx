@@ -28,7 +28,21 @@ class Usuarios extends Component{
             tipo:0,
             empleado:false
         },
-        empleadoForm:EMPTY_EMPLEADO,
+        empleadoForm:{
+            tipo_empleado: 0,
+            empresa:0,
+            puesto:'',
+            fecha_inicio: new Date,
+            estatus: '',
+            rfc: '',
+            nss: '',
+            curp: '',
+            banco: '',
+            cuenta: '',
+            clabe: '',
+            nombre_emergencia: '',
+            telefono_emergencia: ''
+        },
         clienteForm:{
             proyectos: [],
             proyecto: ''
@@ -113,8 +127,28 @@ class Usuarios extends Component{
                 email: '',
                 tipo: 0
             },
-            empleadoForm: EMPTY_EMPLEADO
+            empleadoForm: this.clearEmpleadoForm()
         })
+    }
+
+    clearEmpleadoForm = () => {
+        const { empleadoForm } = this.state
+        let aux = Object.keys(empleadoForm)
+        aux.map( (element) => {
+            switch(element){
+                case 'fecha_inicio':
+                    empleadoForm[element] = new Date()
+                    break;
+                case 'tipo_empleado':
+                case 'empresa':
+                    empleadoForm[element] = 0
+                    break;
+                default:
+                    empleadoForm[element] = ''
+                    break;
+            }
+        })
+        return empleadoForm;
     }
 
     // Functions to update users
@@ -178,7 +212,7 @@ class Usuarios extends Component{
     }
 
     handleChangeEmpleado = (e) => {
-        e.preventDefault();
+        /* e.preventDefault(); */
         const { name, value } = e.target
         const { empleadoForm, form }  = this.state
         empleadoForm[name] = value

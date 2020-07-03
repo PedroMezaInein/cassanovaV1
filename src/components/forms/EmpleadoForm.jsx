@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
 import { Small } from '../texts'
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
-import { RFC, DATE, NSS, CURP} from '../../constants'
+import { RFC, DATE, NSS, CURP,TEL} from '../../constants'
 
 
 function CustomToggle({ children, eventKey }) {
@@ -243,7 +243,7 @@ class EmpleadoForm extends Component{
                                         />
                                     </div>
                                     <div className="col-md-4">
-                                        <Input 
+                                        {/* <Input 
                                             onChange={ onChange } 
                                             name="telefono_emergencia" 
                                             type="text" 
@@ -254,7 +254,20 @@ class EmpleadoForm extends Component{
                                             pattern="^(\d{10})$"
                                             messageinc="Incorrecto. Ingresa el número de contacto."
                                             maxLength="10"
-                                        />
+                                        /> */}
+                                        <InputPhone 
+                                                requirevalidation={1}
+                                                /* formeditado={formeditado} */
+                                                placeholder="Teléfono" 
+                                                name="telefono_emergencia"
+                                                value={form.telefono_emergencia} 
+                                                onChange={onChange} 
+                                                iconclass={"fas fa-mobile-alt"}
+                                                patterns={TEL}
+                                                messageinc="Incorrecto. Ingresa el número de teléfono."
+                                                thousandSeparator={false}
+                                                prefix = { '' }                                            
+                                            />
                                     </div>
                                 </div>
                                 </Accordion.Collapse>

@@ -427,7 +427,6 @@ class Leads extends Component{
     }
 
     handleChangeInput = (e) => {
-        e.preventDefault();
         const { name, value } = e.target
         const { form }  = this.state
         form[name] = value
@@ -731,7 +730,7 @@ class Leads extends Component{
                         empresas = { empresas }
                         servicios = { servicios }
                         onSubmit ={ tipoForm === 'Add' ? this.handleSubmitAddLead : this.handleSubmitEditLead }
-                        onChange = { (e) => { e.preventDefault(); this.handleChangeInput(e) } } 
+                        onChange = { this.handleChangeInput } 
                         onChangeCalendar = { this.handleChangeDate }
                         onChangeCheckboxes = { this.handleChangeCheckbox }
                         formeditado={formeditado}
