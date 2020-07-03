@@ -71,10 +71,11 @@ class Leads extends Component{
         let aux = []
 
         leads.map((lead) => {
+            console.log(lead, 'lead')
             aux.push({
                 Nombre: lead.nombre,
                 Teléfono: lead.telefono,
-                Correo: lead.correo,
+                Correo: lead.email,
                 Empresa: lead.empresa ? lead.empresa.name : '',
                 Origen: lead.origen ? lead.origen.origen : '',
                 Servicios: lead.servicios ? this.setServiciosCSV(lead.servicios) : '',
