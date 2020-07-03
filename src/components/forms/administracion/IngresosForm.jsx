@@ -90,7 +90,7 @@ class IngresosForm extends Component {
         if (form.facturaObject) {
             options.tiposPagos.map((option) => {
                 if (option.value.toString() === value.toString() && option.text.toString() === 'TOTAL')
-                    onChange({ target: { value: form.facturaObject.subtotal, name: 'total' } })
+                    onChange({ target: { value: form.facturaObject.total, name: 'total' } })
             })
         }
         onChange(e)
