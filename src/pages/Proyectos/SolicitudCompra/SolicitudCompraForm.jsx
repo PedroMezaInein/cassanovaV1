@@ -33,6 +33,7 @@ class SolicitudCompraForm extends Component{
             subareas: [],
             tiposPagos: []
         },
+        formeditado:0,
         form:{
             proveedor: '',
             proyecto: '',
@@ -68,7 +69,8 @@ class SolicitudCompraForm extends Component{
             case 'add':
                 this.setState({
                     ... this.state,
-                    title: 'Nueva solicitud de compra'
+                    title: 'Nueva solicitud de compra',
+                    formeditado:0
                 })
                 break;
             case 'edit':
@@ -85,7 +87,8 @@ class SolicitudCompraForm extends Component{
                             form: aux.form,
                             options: aux.options,
                             solicitud: solicitud,
-                            title: 'Editar solicitud de compra'
+                            title: 'Editar solicitud de compra',
+                            formeditado:1,
                         })
                     }
                     else
@@ -106,7 +109,8 @@ class SolicitudCompraForm extends Component{
                             form: aux.form,
                             options: aux.options,
                             remision: remision,
-                            title: 'Convertir remisión en solicitud de compra'
+                            title: 'Convertir remisión en solicitud de compra',
+                            formeditado:1,
                         })
                     }
                     else
@@ -408,7 +412,7 @@ class SolicitudCompraForm extends Component{
 
     render(){
         
-        const { form, title, options, remision } = this.state
+        const { form, title, options, remision, formeditado} = this.state
 
         return(
             <Layout active={'proyectos'}  { ...this.props}>
@@ -425,6 +429,7 @@ class SolicitudCompraForm extends Component{
                             onSubmit = {this.onSubmit}
                             onChangeAdjunto = { this.onChangeAdjunto }
                             clearFiles = { this.clearFiles }
+                            formeditado={formeditado}
                             >
                                 
                                 {

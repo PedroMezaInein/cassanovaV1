@@ -892,7 +892,8 @@ class Compras extends Component{
                     solicitud: solicitud,
                     modal: true,
                     form,
-                    options
+                    options,
+                    formeditado:1
                 })
             },
             (error) => {
@@ -1059,7 +1060,7 @@ class Compras extends Component{
                         sendFactura = { () => { this.sendFactura() } } onSubmit = { this.onSubmit } formeditado={formeditado}>
                         {
                             solicitud ?
-                                <SolicitudCompraCard solicitud = {solicitud} />
+                                <SolicitudCompraCard solicitud = {solicitud}  formeditado={formeditado}/>
                             : ''
                         }
                     </ComprasForm>
