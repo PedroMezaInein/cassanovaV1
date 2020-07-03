@@ -433,7 +433,7 @@ class MiProyecto extends Component{
 							</div>
 						</div>
                 </div>
-                <div className="col-md-12">
+                <div className="col-md-12 mb-4">
 							<div className="card">
 								<div className="card-body">
 									<div className="p-6">
@@ -540,7 +540,7 @@ class MiProyecto extends Component{
                         <Card>
                             <Card.Header>
                                 <Subtitle className="text-center">                                    
-                                    {console.log(this.props)}
+                                    {proyecto.nombre}
                                 </Subtitle>
                             </Card.Header>
                             <Card.Body>
