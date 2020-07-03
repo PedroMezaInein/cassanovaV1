@@ -1124,7 +1124,8 @@ class Ventas extends Component{
                     solicitud: solicitud,
                     modal: true,
                     form,
-                    options
+                    options, 
+                    formeditado:1
                 })
             },
             (error) => {
