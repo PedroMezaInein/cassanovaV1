@@ -318,8 +318,10 @@ class EgresosForm extends Component{
                         form.fecha = new Date(egreso.created_at)
                         form.descripcion = egreso.descripcion
                         form.comision = egreso.comision
-                        if(egreso.proveedor)
+                        if(egreso.proveedor){
                             form.proveedor = egreso.proveedor.id.toString()
+                            form.rfc = egreso.proveedor.rfc
+                        }
                         if(egreso.pago){
                             form.adjuntos.pago.files = [{
                                 name: egreso.pago.name, url: egreso.pago.url

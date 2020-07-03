@@ -116,7 +116,7 @@ class IngresosForm extends Component{
                             options['subareas'] = setOptions(ingreso.subarea.area.subareas, 'nombre', 'id')
                             form.subarea = ingreso.subarea.id.toString()
                         }
-                        
+                        form.factura = ingreso.factura ? 'Con factura' : 'Sin factura'
                         form.tipoPago = ingreso.tipo_pago ? ingreso.tipo_pago.id : 0
                         form.tipoImpuesto = ingreso.tipo_impuesto ? ingreso.tipo_impuesto.id : 0
                         form.estatusCompra = ingreso.estatus_compra ? ingreso.estatus_compra.id : 0

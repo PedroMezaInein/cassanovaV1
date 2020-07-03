@@ -264,6 +264,7 @@ class Compras extends Component{
         if(compra.proveedor){
             options['contratos'] = setOptions(compra.proveedor.contratos, 'nombre', 'id')
             form.proveedor = compra.proveedor.id.toString()
+            form.rfc = compra.proveedor.rfc
             if(compra.contrato){
                 form.contrato = compra.contrato.id.toString()
             }
