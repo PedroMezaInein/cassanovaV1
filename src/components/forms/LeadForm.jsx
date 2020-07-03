@@ -4,6 +4,7 @@ import { Button, Input, Calendar, Select, OptionsCheckbox } from '../form-compon
 import { Subtitle } from '../texts'
 import { DATE, TEL, EMAIL} from '../../constants'
 import { validateAlert } from '../../functions/alert'
+import InputPhone from '../form-components/InputPhone'
 
 class LeadForm extends Component{
 
@@ -65,7 +66,7 @@ class LeadForm extends Component{
                         {/*<span className="form-text text-muted">Por favor, ingresa el correo electrónico. </span>*/}
                     </div>
                     <div className="col-md-4">
-                            <Input 
+                            {/* <Input 
                                 requirevalidation={1} 
                                 formeditado={formeditado}
                                 type="text" 
@@ -77,6 +78,19 @@ class LeadForm extends Component{
                                 pattern="^(\d{10})$"
                                 messageinc="Incorrecto. Ej. 1234567890"
                                 maxLength="10"
+                            /> */}
+                        <InputPhone 
+                                requirevalidation={1}
+                                formeditado={formeditado}
+                                placeholder="Teléfono" 
+                                name="telefono"
+                                value={form.telefono} 
+                                onChange={onChange} 
+                                iconclass={"fas fa-mobile-alt"}
+                                patterns={TEL}
+                                messageinc="Incorrecto. Ingresa el número de teléfono."
+                                thousandSeparator={false}
+                                prefix = { '' }                                            
                             />
                             {/*<span className="form-text text-muted">Por favor, ingresa el teléfono. </span>*/}
                     </div>
