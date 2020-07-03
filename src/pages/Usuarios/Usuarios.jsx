@@ -212,7 +212,7 @@ class Usuarios extends Component{
     }
 
     handleChangeEmpleado = (e) => {
-        e.preventDefault();
+        /* e.preventDefault(); */
         const { name, value } = e.target
         const { empleadoForm, form }  = this.state
         empleadoForm[name] = value
