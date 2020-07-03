@@ -32,7 +32,6 @@ class ClienteUserForm extends Component{
                             onChange = { this.updateProyectos } 
                             iconclass={"far fa-folder-open"} 
                             />
-                        <span className="form-text text-muted">Por favor, seleccione el/los proyectos(s)</span>
                     </div>
                     <div className="col-md-8">
                         {
