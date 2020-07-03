@@ -252,7 +252,8 @@ class VentasForm extends Component {
                                                     readOnly
                                                     name="cliente"
                                                     value={form.cliente}
-                                                    onChange={onChange}                                                    
+                                                    onChange={onChange}
+                                                    iconclass={"far fa-user"}                                                
                                                 />
                                                 :
                                                 <SelectSearch 
@@ -293,6 +294,7 @@ class VentasForm extends Component {
                                                     readOnly
                                                     value={form.empresa}
                                                     onChange={onChange}
+                                                    iconclass={"far fa-building"}
                                                 />
                                                 :
                                                 <SelectSearch 
