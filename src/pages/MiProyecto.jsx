@@ -378,7 +378,7 @@ class MiProyecto extends Component{
 												</div>
 												<div className="d-flex flex-column">
 													<a className="text-dark text-hover-primary font-weight-bold font-size-h4 mb-3">PROYECTO</a>
-													<div className="text-dark-75">CENTAURO - SANTA FE - OBRA</div>
+													<div className="text-dark-75">{proyecto.nombre}</div>
 												</div>
 											</div>
 										</div>
@@ -540,9 +540,7 @@ class MiProyecto extends Component{
                         <Card>
                             <Card.Header>
                                 <Subtitle className="text-center">                                    
-                                    {
-                                        proyecto.nombre
-                                    }
+                                    {console.log(this.props)}
                                 </Subtitle>
                             </Card.Header>
                             <Card.Body>
