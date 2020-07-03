@@ -6,16 +6,18 @@ import swal from 'sweetalert'
 import { renderToString } from 'react-dom/server'
 
 // Funciones
-import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
+import { waitAlert, errorAlert, forbiddenAccessAlert, validateAlert } from '../../functions/alert'
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList, setContactoTable } from '../../functions/setters'
 // Components
 import Layout from '../../components/layout/layout'
-import { Tabs, Tab } from 'react-bootstrap'
+import { Tabs, Tab, Form } from 'react-bootstrap'
 import NewTable from '../../components/tables/NewTable'
 import { CONTRATOS_PROVEEDORES_COLUMNS, CONTRATOS_CLIENTES_COLUMNS, URL_DEV } from '../../constants'
 import { Modal, ModalDelete } from '../../components/singles'
 import { Subtitle } from '../../components/texts'
 import ContratoForm from '../../components/forms/administracion/ContratoForm'
+import { Button } from '../../components/form-components'
+import FileInput from '../../components/form-components/FileInput'
 
 
 class Contratos extends Component {
@@ -35,7 +37,8 @@ class Contratos extends Component {
         formeditado:0,
         modal:{
             form: false,
-            delete: false
+            delete: false,
+            adjuntos: false,
         },
         options:{
             empresas: [],
@@ -53,7 +56,14 @@ class Contratos extends Component {
             tipoContrato: '',
             descripcion: '',
             tipo: 'cliente',
-            nombre: ''
+            nombre: '',
+            adjuntos:{
+                adjunto:{
+                    value: '',
+                    placeholder: 'Ingresa los adjuntos',
+                    files: []
+                }
+            }
         },
         title:'Nuevo contrato de cliente',
         tipo: 'Cliente',
@@ -102,7 +112,18 @@ class Contratos extends Component {
             form.tipoContrato = contrato.tipo_contrato.id.toString()
         form.monto = contrato.monto
         form.nombre = contrato.nombre
+        let aux = []
+        if(contrato.adjuntos)
+            contrato.adjuntos.map( (adj) => {
+                aux.push(
+                    {
+                        name: adj.name, url: adj.url
+                    }
+                )
+            })
+        form.adjuntos.adjunto.files = aux
         modal.form = true
+    
         this.setState({
             ... this.state,
             modal,
@@ -199,10 +220,61 @@ class Contratos extends Component {
         })
     }
 
+    openModalAdjuntos = contrato => {
+        const { modal } = this.state
+        modal.adjuntos = true
+        this.setState({
+            ... this.state,
+            modal,
+            contrato: contrato
+        })
+    }
+
+
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
+    onChangeAdjunto = e => {
+        const { form } = this.state
+        const { files, value, name } = e.target
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form.adjuntos[name].value = value
+        form.adjuntos[name].files = aux
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
+    clearFiles = (name, key) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < form.adjuntos[name].files.length; counter++) {
+            if (counter !== key) {
+                aux.push(form.adjuntos[name].files[counter])
+            }
+        }
+        if (aux.length < 1) {
+            form.adjuntos[name].value = ''
+        }
+        form.adjuntos[name].files = aux
         this.setState({
             ... this.state,
             form
@@ -217,6 +289,18 @@ class Contratos extends Component {
                 case 'fechaInicio':
                 case 'fechaFin':
                     form[element] = new Date()
+                    break;
+                case 'adjuntosEliminados':
+                    form[element] = []
+                    break;
+                case 'adjuntos':
+                    form[element] = {
+                        adjunto:{
+                            value: '',
+                            placeholder: 'Adjunto(s)',
+                            files: []
+                        }
+                    }
                     break;
                 default:
                     form[element] = ''
@@ -265,6 +349,13 @@ class Contratos extends Component {
                 iconclass: 'flaticon2-rubbish-bin',
                 action: tipo === 'Cliente' ? 'deleteCliente' : 'deleteProveedor',
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
+            },
+            {
+                text: 'Adjuntos',
+                btnclass: 'success',
+                iconclass: 'flaticon2-rubbish-bin',
+                action: 'adjuntos',
+                tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
             }
         )
         return aux
@@ -340,7 +431,34 @@ class Contratos extends Component {
     async addContratoAxios(){
         const { access_token } = this.props.authUser
         const { form } = this.state
-        await axios.post(URL_DEV + 'contratos', form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        const data = new FormData();
+        
+        let aux = Object.keys(form)
+        aux.map( (element) => {
+            switch(element){
+                case 'fechaInicio':
+                case 'fechaFin':
+                    data.append(element, (new Date(form[element])).toDateString())
+                    break
+                    break
+                case 'adjuntos':
+                    break;
+                default:
+                    data.append(element, form[element])
+                    break
+            }
+        })
+        aux = Object.keys(form.adjuntos)
+        aux.map( (element) => {
+            if(form.adjuntos[element].value !== ''){
+                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                }
+                data.append('adjuntos[]', element)
+            }
+        })
+        await axios.post(URL_DEV + 'contratos', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { contratosClientes, contratosProveedores } = response.data
                 const { data, contratos, modal } = this.state
@@ -492,6 +610,7 @@ class Contratos extends Component {
                                     'deleteCliente': {function: this.openModalDeleteCliente},
                                     'editProveedor': {function: this.openModalEditProveedor},
                                     'deleteProveedor': {function: this.openModalDeleteProveedor},
+                                    'adjuntos': {function: this.openModalAdjuntos},
                                 }}
                                 elements = { data.contratos.clientes }
                                 idTable = 'kt_datatable_cliente'
@@ -514,6 +633,7 @@ class Contratos extends Component {
                                     'deleteCliente': {function: this.openModalDeleteCliente},
                                     'editProveedor': {function: this.openModalEditProveedor},
                                     'deleteProveedor': {function: this.openModalDeleteProveedor},
+                                    'adjuntos': {function: this.openModalAdjuntos},
                                 }}
                                 elements = { data.contratos.proveedores }
                                 idTable = 'kt_datatable_proveedor'
@@ -523,10 +643,42 @@ class Contratos extends Component {
                 </Tabs>
                 <Modal title = { title } show = { modal.form } handleClose = { this.handleCloseModal }>
                     <ContratoForm tipo = { tipo } options = { options } form = { form } onChange = { this.onChange } 
-                        onSubmit = { this.onSubmit } formeditado={formeditado}/>
+                        onSubmit = { this.onSubmit } formeditado={formeditado} onChangeAdjunto = { this.onChangeAdjunto } 
+                        clearFiles = { this.clearFiles } title = {title} />
                 </Modal>
                 <ModalDelete title={tipo === 'Cliente' ? '¿Quieres eliminar el contrato de cliente?' : '¿Quieres eliminar el contrato de proveedor?'} show = { modal.delete } handleClose = { this.handleCloseModalDelete } onClick=  { (e) => { e.preventDefault(); waitAlert(); this.deleteContratoAxios() }}>
                 </ModalDelete>
+                <Modal title = { 'Adjuntos del contrato' } show = { modal.adjuntos } handleClose = { this.handleCloseModal }>
+                    <Form id="form-adjuntos"
+                        onSubmit = { 
+                            (e) => {
+                                e.preventDefault(); 
+                                validateAlert(this.onSubmitAdjuntos, e, 'form-adjuntos')
+                            }
+                        }
+                        >
+                        <div className="form-group row form-group-marginless pt-4">
+
+                            <div className="col-md-6">
+                                <FileInput
+                                    requirevalidation={0}
+                                    onChangeAdjunto={this.onChangeAdjunto}
+                                    placeholder={form.adjuntos.adjunto.placeholder}
+                                    value={form.adjuntos.adjunto.value}
+                                    name='adjunto' 
+                                    id='adjunto'
+                                    accept="image/*, application/pdf"
+                                    files={form.adjuntos.adjunto.files}
+                                    deleteAdjunto={this.clearFiles} 
+                                    multiple 
+                                    />
+                            </div>
+                        </div>
+                        <div className="mt-3 text-center">
+                            <Button icon='' className="mx-auto" type="submit" text="Enviar" />
+                        </div>
+                    </Form>
+                </Modal>
             </Layout>
         )
     }

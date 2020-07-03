@@ -37,7 +37,7 @@ class ContratoForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, tipo, onSubmit, formeditado, ...props } = this.props
+        const { title, options, form, onChange, tipo, onSubmit, formeditado, clearFiles, onChangeAdjunto, ...props } = this.props
         return (
             <Form id="form-contrato"
                 onSubmit = { 
@@ -172,6 +172,27 @@ class ContratoForm extends Component {
                             />
                         {/*<span className="form-text text-muted">Por favor, seleccione el tipo de contrato. </span>*/}
                     </div>
+                    {
+                        title === 'Editar contrato de cliente' || title === 'Editar contrato de proveedor'
+                            ? ''
+                        : 
+                            <div className="col-md-8">
+                                <FileInput
+                                    requirevalidation={0}
+                                    formeditado={formeditado}
+                                    onChangeAdjunto={onChangeAdjunto}
+                                    placeholder={form.adjuntos.adjunto.placeholder}
+                                    value={form.adjuntos.adjunto.value}
+                                    name='adjunto' 
+                                    id='adjunto'
+                                    accept="image/*, application/pdf"
+                                    files={form.adjuntos.adjunto.files}
+                                    deleteAdjunto={clearFiles} 
+                                    multiple 
+                                    />
+                            </div>
+                    }
+                    
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
