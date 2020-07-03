@@ -450,7 +450,10 @@ class Ventas extends Component{
                         });
                         let auxCliente = ''
                         data.clientes.find(function(element, index) {
-                            if(element.empresa === obj.nombre_receptor){
+                            let cadena = obj.nombre_receptor.replace(/,/g, '')
+                            cadena = cadena.replace(/\./g, '')
+                            if (element.empresa === obj.nombre_receptor ||
+                                element.empresa === cadena){
                                 auxCliente = element
                             }
                         });
@@ -588,20 +591,28 @@ class Ventas extends Component{
 
         const data = new FormData();
 
-        
-        data.append('empresa', obj.nombre_receptor)
-        data.append('nombre', obj.nombre_receptor)
+
+        let cadena = obj.nombre_receptor.replace(/,/g, '')
+        cadena = cadena.replace(/\./g, '')
+        data.append('empresa', cadena)
+        data.append('nombre', cadena)
         data.append('rfc', obj.rfc_receptor)
 
         await axios.post(URL_DEV + 'cliente', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
 
-                const { clientes, cliente } = response.data
+                const { clientes } = response.data
 
                 const { options, data, form } = this.state
-                data.clientes = clientes
+
+                options.clientes = []
                 options['clientes'] = setOptions(clientes, 'empresa', 'id')
-                form.cliente = cliente.id.toString()
+                data.clientes = clientes
+                clientes.map( (cliente) => {
+                    if(cliente.empresa === cadena){
+                        form.cliente = cliente.empresa
+                    }
+                })
 
                 this.setState({
                     ... this.state,

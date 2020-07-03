@@ -535,14 +535,34 @@ class IngresosForm extends Component{
         const data = new FormData();
 
         
-        data.append('empresa', obj.nombre_receptor)
-        data.append('nombre', obj.nombre_receptor)
+        let cadena = obj.nombre_receptor.replace(/,/g, '')
+        cadena = cadena.replace(/\./g, '')
+        data.append('empresa', cadena)
+        data.append('nombre', cadena)
         data.append('rfc', obj.rfc_receptor)
 
         await axios.post(URL_DEV + 'cliente', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
 
-                this.getIngresosAxios()
+                const { clientes } = response.data
+
+                const { options, data, form } = this.state
+
+                options.clientes = []
+                options['clientes'] = setOptions(clientes, 'empresa', 'id')
+                data.clientes = clientes
+                clientes.map( (cliente) => {
+                    if(cliente.empresa === cadena){
+                        form.cliente = cliente.empresa
+                    }
+                })
+
+                this.setState({
+                    ... this.state,
+                    form,
+                    data,
+                    options
+                })
                 
                 swal({
                     title: '¡Felicidades 🥳!',

@@ -149,7 +149,7 @@ class Compras extends Component{
                         ]
                     )),
                     proyecto: renderToString(setTextTable(compra.proyecto ? compra.proyecto.nombre : '')),
-                    proveedor: renderToString(setTextTable(compra.proveedor ? compra.proveedor.nombre : '')),
+                    proveedor: renderToString(setTextTable(compra.proveedor ? compra.proveedor.razon_social : '')),
                     factura: renderToString(setTextTable(compra.facturas.length ? 'Con factura' : 'Sin factura')),
                     monto: renderToString(setMoneyTable(compra.monto)),
                     comision: renderToString(setMoneyTable(compra.comision)),
@@ -468,8 +468,11 @@ class Compras extends Component{
                         });
                         let auxProveedor = ''
                         data.proveedores.find(function(element, index) {
-                            if(element.razon_social === obj.nombre_emisor){
-                                auxProveedor = element
+                            let cadena = obj.nombre_emisor.replace(/,/g, '')
+                            cadena = cadena.replace(/\./g, '')
+                            if (element.razon_social === obj.nombre_emisor ||
+                                element.razon_social === cadena){
+                                    auxProveedor = element
                             }
                         });
                         if(auxEmpresa){
@@ -671,25 +674,32 @@ class Compras extends Component{
 
         const data = new FormData();
 
-        data.append('nombre', obj.nombre_emisor)
-        data.append('razonSocial', obj.nombre_emisor)
+        let cadena = obj.nombre_emisor.replace(/,/g, '')
+        cadena = cadena.replace(/\./g, '')
+        data.append('nombre', cadena)
+        data.append('razonSocial', cadena)
         data.append('rfc', obj.rfc_emisor)
 
         await axios.post(URL_DEV + 'proveedores', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
 
-                const { proveedores, proveedor } = response.data
+                const { proveedores } = response.data
 
                 const { options, data, form } = this.state
-                data.proveedores = proveedores
+
                 options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
-                form.proveedor = proveedor.id.toString()
+                data.proveedores = proveedores
+                proveedores.map( (proveedor) => {
+                    if(proveedor.razon_social === cadena){
+                        form.proveedor = proveedor.id.toString()
+                    }
+                })
 
                 this.setState({
                     ... this.state,
+                    form,
                     data,
-                    options,
-                    form
+                    options
                 })
                 
                 swal({

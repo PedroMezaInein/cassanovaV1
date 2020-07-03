@@ -1125,8 +1125,12 @@ export const CONTRATOS_CLIENTES_COLUMNS = [
         accessor: 'monto'
     },
     {
-        Header: 'Monto acumulado',
+        Header: 'Monto Pagado',
         accessor: 'acumulado'
+    },
+    {
+        Header: 'Pendiente por pagar',
+        accessor: 'pendiente'
     },
     {
         Header: 'Tipo de contrato',
@@ -1168,8 +1172,12 @@ export const CONTRATOS_PROVEEDORES_COLUMNS = [
         accessor: 'monto'
     },
     {
-        Header: 'Monto acumulado',
+        Header: 'Monto Pagado',
         accessor: 'acumulado'
+    },
+    {
+        Header: 'Pendiente por pagar',
+        accessor: 'pendiente'
     },
     {
         Header: 'Tipo de contrato',

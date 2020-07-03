@@ -239,6 +239,7 @@ class Contratos extends Component {
                 fechaFin: renderToString(setDateTable(contrato.fecha_fin)),
                 monto: renderToString(setMoneyTable(contrato.monto)),
                 acumulado: renderToString(setMoneyTable(contrato.acumulado)),
+                pendiente: renderToString(setMoneyTable(contrato.monto - contrato.acumulado)),
                 contrato: contrato.tipo_contrato ? renderToString((setTextTable(contrato.tipo_contrato.tipo))) : '',
                 descripcion: renderToString(setTextTable(contrato.descripcion)),
                 empresa: contrato.empresa ? renderToString(setTextTable(contrato.empresa.name)) : '',
