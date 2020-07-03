@@ -23,7 +23,7 @@ class SelectSearchForm extends Component{
                 </span>  
                 
                 <input   
-                    className={ validado ? " form-control is-valid " : " form-control is-invalid" }   
+                    className={ validado ? " form-control is-valid text-uppercase" : " form-control is-invalid text-uppercase" }   
                     {...valueProps}
                 />
             </div>

@@ -53,7 +53,7 @@ class Calendar extends Component{
                         customInput={
                         
                         <Form.Control    
-                            className = { calendarValido ? " form-control is-valid " : " form-control is-invalid" }
+                            className = { calendarValido ? " form-control is-valid text-uppercase " : " form-control is-invalid text-uppercase" }
                             {...props2} 
                         />  
                         }
