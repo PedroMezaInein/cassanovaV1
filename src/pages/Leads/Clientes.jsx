@@ -185,6 +185,7 @@ class Leads extends Component {
                     perfil: renderToString(setTextTable(cliente.perfil)),
                     nombre: renderToString(setTextTable(cliente.nombre)),
                     puesto: renderToString(setTextTable(cliente.puesto)),
+                    rfc: renderToString(setTextTable(cliente.rfc)),
                     fecha: renderToString(setDateTable(cliente.created_at)),
                     id: cliente.id
                 }

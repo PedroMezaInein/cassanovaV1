@@ -275,6 +275,10 @@ export const CLIENTES_COLUMNS = [
         accessor: 'puesto',
     },
     {
+        Header: 'RFC',
+        accessor: 'rfc'
+    },
+    {
         Header: 'Fecha',
         accessor: 'fecha',
     },
