@@ -82,7 +82,7 @@ export function setMoneyTable( value ){
 
 export function setPercentTable( value ){
     let cantidad = 0
-    cantidad = parseFloat(Math.round(value)).toFixed(2)
+    cantidad = parseFloat(value).toFixed(2)
     return (
         <NumberFormat value = { cantidad } displayType = { 'text' } thousandSeparator = { false } prefix = { '' }
                 renderText = { cantidad => <Small> { cantidad } %</Small> } />
