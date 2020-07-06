@@ -342,6 +342,17 @@ export const EDOS_CUENTAS_COLUMNS = [
     },
 ]
 
+export const ADJ_CONTRATOS_COLUMNS = [
+    {
+        Header: 'Opciones',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Contratos',
+        accessor: 'adjunto',
+    },
+]
+
 export const EDOS_CUENTAS_COLUMNS_2 = [
     {
         Header: 'OPCIONES',
