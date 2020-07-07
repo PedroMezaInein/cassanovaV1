@@ -567,6 +567,14 @@ export const FACTURAS_COLUMNS = [
         accessor: 'total'
     },
     {
+        Header: 'Monto acumulado',
+        accessor: 'acumulado'
+    },
+    {
+        Header: 'Monto restante',
+        accessor: 'restante'
+    },
+    {
         Header: 'Adjuntos',
         accessor: 'adjuntos',
     },

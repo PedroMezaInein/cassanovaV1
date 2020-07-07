@@ -18,6 +18,9 @@ import swal from 'sweetalert'
 import { Form } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
+import { waitAlert, errorAlert, forbiddenAccessAlert, validateAlert } from '../../functions/alert'
+import { setOptions, setSelectOptions, setTextTable, setDateTable, setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList, setContactoTable } from '../../functions/setters'
+
 class Facturacion extends Component {
 
     state = {
@@ -46,15 +49,17 @@ class Facturacion extends Component {
         facturas.map((factura) => {
             aux.push(
                 {
-                    folio: renderToString(this.setTextTable(factura.folio)),
-                    serie: renderToString(this.setTextTable(factura.serie)),
-                    noCertificado: renderToString(this.setTextTable(factura.numero_certificado)),
+                    folio: renderToString(setTextTable(factura.folio)),
+                    serie: renderToString(setTextTable(factura.serie)),
+                    noCertificado: renderToString(setTextTable(factura.numero_certificado)),
                     emisor: renderToString(this.setInfoTable(factura.rfc_emisor, factura.nombre_emisor)),
                     receptor: renderToString(this.setInfoTable(factura.rfc_receptor, factura.nombre_receptor)),
-                    usoCFDI: renderToString(this.setTextTable(factura.uso_cfdi)),
+                    usoCFDI: renderToString(setTextTable(factura.uso_cfdi)),
                     expedicion: renderToString(this.setExpedicionTable(factura)),
-                    subtotal: renderToString(this.setMoneyTable(factura.subtotal)),
-                    total: renderToString(this.setMoneyTable(factura.total)),
+                    subtotal: renderToString(setMoneyTable(factura.subtotal)),
+                    total: renderToString(setMoneyTable(factura.total)),
+                    acumulado: renderToString(setMoneyTable(factura.ventas_count)),
+                    restante: renderToString(setMoneyTable(factura.total - factura.ventas_count)),
                     adjuntos: renderToString(this.setAdjuntosTable(factura)),
                     fecha: renderToString(this.setDateTable(factura.created_at)),
                     id: factura.id
