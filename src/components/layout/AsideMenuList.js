@@ -63,9 +63,9 @@ export function AsideMenuList({ props }) {
                                     </span>
                                     {
                                         modulo.url ? 
-                                            <NavLink className="menu-text menu-link" to={modulo.url}>{modulo.name}</NavLink>
+                                            <NavLink className="menu-text menu-link text-uppercase" to={modulo.url}>{modulo.name}</NavLink>
                                         : 
-                                            <span className="menu-text menu-link" to={modulo.url}>{modulo.name}</span>
+                                            <span className="menu-text menu-link text-uppercase" to={modulo.url}>{modulo.name}</span>
                                     }
                                     {
                                         modulo.modulos.length > 1 || modulo.url === null  ? 
@@ -93,7 +93,7 @@ export function AsideMenuList({ props }) {
                                                                     <span className="svg-icon menu-icon">
                                                                         <SVG src={toAbsoluteUrl(submodulo.icon)} />
                                                                     </span>
-                                                                    <span className="menu-text">{submodulo.name}</span>
+                                                                    <span className="menu-text text-uppercase">{submodulo.name}</span>
                                                                 </NavLink>
                                                             </li>
                                                         )

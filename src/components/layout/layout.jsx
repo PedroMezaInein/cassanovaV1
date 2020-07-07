@@ -94,19 +94,19 @@ class Layout extends Component {
                                         <ul className="menu-nav">
                                             <li className="menu-item menu-item-submenu" data-menu-toggle="click" aria-haspopup="true">
                                                 <a href="/proyectos/proyectos" className="menu-link menu-toggle">
-                                                    <span className="menu-text">Proyectos</span>
+                                                    <span className="menu-text text-uppercase">Proyectos</span>
                                                     <i className="menu-arrow"></i>
                                                 </a>
                                             </li>
                                             <li className="menu-item menu-item-submenu" data-menu-toggle="click" aria-haspopup="true">
                                                 <a href="/administracion/proveedores" className="menu-link menu-toggle">
-                                                    <span className="menu-text">Proveedores</span>
+                                                    <span className="menu-text text-uppercase">Proveedores</span>
                                                     <i className="menu-arrow"></i>
                                                 </a>
                                             </li>
                                             <li className="menu-item menu-item-submenu menu-item-rel" data-menu-toggle="click" aria-haspopup="true">
                                                 <a href="/leads/leads" className="menu-link menu-toggle">
-                                                    <span className="menu-text">Leads</span>
+                                                    <span className="menu-text text-uppercase">Leads</span>
                                                     <i className="menu-arrow"></i>
                                                 </a>
                                             </li>
