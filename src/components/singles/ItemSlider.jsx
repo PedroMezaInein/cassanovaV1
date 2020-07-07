@@ -115,15 +115,19 @@ class ItemSlider extends Component{
                     <div className="w-100 text-center p-2">
                         {
                             items.length === active && handleChange ?
-                                <div className="border rounded w-100 border__dashed">
+                                <div className="rounded w-100 d-flex justify-content-center align-items-center">
                                     <DropZone handleChange = { this.handleChange } >
-                                        <Subtitle className="text-center p-5 " color="gold">
-                                            <FontAwesomeIcon icon = { faImages } className="text-color__gold"/>
-                                            <br />
-                                            <Small color="gold">
-                                                Adjunta archivos
-                                            </Small>
-                                        </Subtitle>
+                                        <div className="dropzone-msg dz-message needsclick">
+											<p className="font-size-h4 lead pb-2">Haga clic para cargar los archivos</p>
+                                            <div className="row d-flex justify-content-center align-items-center">
+                                                <img className="max-h-30px pr-1" src="/pdf.svg"/>
+                                                <img className="max-h-30px pr-1" src="/doc.svg"/>
+                                                <img className="max-h-30px pr-1" src="/xml.svg"/>
+                                                <img className="max-h-30px pr-1" src="/html.svg"/>
+                                                <img className="max-h-30px pr-1" src="/csv.svg"/>
+                                                <img className="max-h-30px pr-1" src="/jpg.svg"/>
+                                            </div>											
+										</div>
                                     </DropZone>
                                 </div>
                             :
