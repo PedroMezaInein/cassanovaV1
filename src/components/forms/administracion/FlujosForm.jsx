@@ -30,7 +30,18 @@ class FlujosForm extends Component{
         return(
             <Form { ... props}>
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-6">
+                    <div className="col-md-4">
+                        <SelectSearch
+                            options = { options.cuentas } 
+                            placeholder = "Selecciona la cuenta" 
+                            name="cuenta"  
+                            value = { form.cuenta } 
+                            onChange = { this.updateCuenta } 
+                            iconclass={"fas fa-credit-card"} 
+                            />
+                        {/* <span className="form-text text-muted">Por favor, seleccione la(s) cuenta(s)</span> */}
+                    </div>
+                    <div className="col-md-4">
                         <Calendar 
                             onChangeCalendar = { this.handleChangeDateInicio }
                             placeholder = "Fecha de inicio"
@@ -41,9 +52,9 @@ class FlujosForm extends Component{
                             endDate={ form.fechaFin }
                             iconclass={"far fa-calendar-alt"}                            
                         />
-                        <span className="form-text text-muted">Por favor, ingrese su fecha de inicio. </span>
+                        {/* <span className="form-text text-muted">Por favor, ingrese su fecha de inicio. </span> */}
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-4">
                         <Calendar 
                             onChangeCalendar = { this.handleChangeDateFin }
                             placeholder = "Fecha final"
@@ -55,23 +66,14 @@ class FlujosForm extends Component{
                             minDate={ form.fechaInicio }
                             iconclass={"far fa-calendar-alt"}                          
                         />
-                        <span className="form-text text-muted">Por favor, ingrese su fecha de fin. </span>
+                        {/* <span className="form-text text-muted">Por favor, ingrese su fecha de fin. </span> */}
                     </div>
+                    
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-4">
-                        <SelectSearch
-                            options = { options.cuentas } 
-                            placeholder = "Selecciona la cuenta" 
-                            name="cuenta"  
-                            value = { form.cuenta } 
-                            onChange = { this.updateCuenta } 
-                            iconclass={"fas fa-credit-card"} 
-                            />
-                        <span className="form-text text-muted">Por favor, seleccione la(s) cuenta(s)</span>
-                    </div>
-                    <div className="col-md-8">
+                    
+                    <div className="col-md-12">
                         {
                             form.cuentas.length > 0 ?
                                 <div className="col-md-12 d-flex align-items-center image-upload">
