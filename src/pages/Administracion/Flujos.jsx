@@ -205,7 +205,7 @@ class Flujos extends Component {
     render() {
         const { form, options, data, flujos } = this.state
         return (
-            <Layout active={'catalogos'}  {...this.props}>
+            <Layout active={'administracion'}  {...this.props}>
                 <Card className="m-2 p-2 m-md-4 p-md-4">
                     <Card.Body>
                         <FlujosForm form = { form } options = { options } onChange = { this.onChange }
