@@ -85,7 +85,7 @@ class ContabilidadForm extends Component{
                         {/* <span className="form-text text-muted">Por favor, ingrese su fecha de fin. </span> */}
                     </div>
                 </div> 
-                        {
+                        {/* {
                             form.empresas.length > 0 ?
                                 <div className="d-flex align-items-center image-upload">
                                     {
@@ -105,7 +105,32 @@ class ContabilidadForm extends Component{
                                     }
                                 </div>
                             : ''
-                        }  
+                        }   */}
+                        {                                            
+                            form.empresas.length > 0 ?
+                                <div className="col-md-12 row mx-0 align-items-center image-upload">
+                                    {
+                                        form.empresas.map((empresa, key)=>{
+                                            return(
+                                                <div className="tagify form-control p-1 col-md-3 px-2 d-flex justify-content-center align-items-center mb-3" tabIndex="-1" style={{borderWidth:"0px"}}>
+                                                    <div className="tagify__tag tagify__tag--primary tagify--noAnim" key = { key }>
+                                                        <div 
+                                                            title="Borrar archivo" 
+                                                            className="tagify__tag__removeBtn" 
+                                                            role="button" 
+                                                            aria-label="remove tag" 
+                                                            onClick = { (e) => { e.preventDefault(); updateEmpresa(empresa) }}
+                                                            >
+                                                        </div>                                                            
+                                                        <div><span className="tagify__tag-text p-1">{empresa.text}</span></div>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </div> 
+                            : ''
+                        }
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless pt-3">
                     <div className="col-md-4  d-flex justify-content-around align-items-top">
