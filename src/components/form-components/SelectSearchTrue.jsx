@@ -13,7 +13,7 @@ class SelectSearchTrue extends Component{
         }
         else
         {
-            validado=false;
+            validado=true;
         }  
         return (           
             <> 
@@ -41,7 +41,7 @@ class SelectSearchTrue extends Component{
                     options.length > 0 ?
                         <>  
                                 <label className="col-form-label">{placeholder}</label> 
-                                        <SelectSearch 
+                                        <SelectSearch
                                         renderValue={this.renderFontValue}   
                                         search 
                                         {...this.props}
