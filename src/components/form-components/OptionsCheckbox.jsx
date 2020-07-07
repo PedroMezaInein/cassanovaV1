@@ -13,14 +13,13 @@ class Input extends Component{
             <div>
                 <Form.Label className="font-weight-bolder">{placeholder}</Form.Label>
 
-                <Form.Group id="formGridCheckbox">
-                    <div class="col-12">
-                        <div class="checkbox-list">
+                <Form.Group id="formGridCheckbox"> 
+                        <div className="checkbox-list pt-2">
                         {
                             
                             options.map((option, key) => {
                                 return(  
-                                        <label className="checkbox checkbox-square checkbox-primary">
+                                        <label className="checkbox checkbox-outline checkbox-outline-2x checkbox-primary">
                                             <input
                                             key = {key}
                                             type="checkbox" 
@@ -34,8 +33,7 @@ class Input extends Component{
                                 )
                             })
                         }
-                        </div>
-                    </div>
+                        </div> 
                 </Form.Group>
             </div>
         )
