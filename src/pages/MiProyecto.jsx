@@ -608,14 +608,16 @@ class MiProyecto extends Component{
                                                                 if(proyecto[adjunto.value].length)
                                                                 {  
                                                                     return(
-                                                                    <Nav.Item className="navi-item">
-                                                                        <Nav.Link className="navi-link" eventKey={adjunto.value}>
-                                                                            <span className="navi-icon">
-                                                                                <i className="flaticon2-analytics"></i>
-                                                                            </span>
-                                                                            <span className="navi-text">{adjunto.name}</span>
-                                                                        </Nav.Link>
-                                                                    </Nav.Item> 
+                                                                    <div key = {key}>
+                                                                        <Nav.Item className="navi-item">
+                                                                            <Nav.Link className="navi-link" eventKey={adjunto.value}>
+                                                                                <span className="navi-icon">
+                                                                                    <i className="flaticon2-analytics"></i>
+                                                                                </span>
+                                                                                <span className="navi-text">{adjunto.name}</span>
+                                                                            </Nav.Link>
+                                                                        </Nav.Item> 
+                                                                    </div>
                                                                     )
                                                                 }
                                                             })
@@ -631,6 +633,7 @@ class MiProyecto extends Component{
                                                                     if(proyecto[adjunto.value].length)
                                                                     {  
                                                                         return(
+                                                                            <div key = {key}>
                                                                                 <Tab.Pane eventKey={adjunto.value}>
                                                                                     {
                                                                                         proyecto ? 
@@ -649,6 +652,7 @@ class MiProyecto extends Component{
                                                                                         : ''
                                                                                     }
                                                                                 </Tab.Pane> 
+                                                                            </div>
                                                                         )
                                                                     }
                                                                 }
