@@ -10,7 +10,7 @@ import { validateAlert } from '../../functions/alert'
 class CuentaForm extends Component{
     
     render(){
-        const { bancos, estatus, tipos, title, form, onChange, onChangeEmpresa, updateEmpresa, empresas, onSubmit, formeditado, ...props } = this.props
+        const { bancos, estatus, tipos, title, form, onChange, onChangeEmpresa, updateEmpresa, empresas, onSubmit, formeditado, tipo,  ...props } = this.props
         return(
             <Form id="form-cuenta"
                 onSubmit = { 
@@ -22,7 +22,7 @@ class CuentaForm extends Component{
                 { ... props}
             >
                 <div className="form-group row form-group-marginless pt-4">
-                    <div className="col-md-8">
+                    <div className={tipo === 'Caja chica' ? "col-md-4" : "col-md-8"}>
                         <Input 
                             requirevalidation={1}
                             formeditado={formeditado}
@@ -36,67 +36,110 @@ class CuentaForm extends Component{
                         />
                         {/*<span className="form-text text-muted">Por favor, ingrese el nombre de cuenta. </span>*/}
                     </div>
-                    <div className="col-md-4">
-                        <Select 
-                            requirevalidation={1} 
-                            formeditado={formeditado}
-                            name = 'banco' 
-                            options = { bancos } 
-                            placeholder = 'Selecciona el banco' 
-                            value = { form.banco }
-                            onChange = { onChange }
-                            iconclass={" fab fa-cc-discover"}
-                            messageinc="Incorrecto. Selecciona el banco."
-                        />
-                        {/*<span className="form-text text-muted">Por favor, seleccione el banco </span>*/}
-                    </div>
+                    {
+                        tipo === 'Caja chica' ?
+                            <>
+                                <div className="col-md-4">
+                                    <Select 
+                                        requirevalidation={1} 
+                                        formeditado={formeditado}
+                                        name = 'estatus' 
+                                        options = { estatus } 
+                                        placeholder = 'Selecciona el estatus' 
+                                        value = { form.estatus }
+                                        onChange = { onChange } 
+                                        iconclass={" far fa-check-square "}
+                                        messageinc="Incorrecto. Selecciona el estatus."
+                                    />
+                                    {/*<span className="form-text text-muted">Por favor, seleccione el estatus</span>*/}
+                                </div>
+                                <div className="col-md-4">
+                                    <Select 
+                                        requirevalidation={1} 
+                                        formeditado={formeditado}
+                                        name = 'tipo' 
+                                        options = { tipos } 
+                                        placeholder = 'Selecciona el tipo' 
+                                        value = { form.tipo }
+                                        onChange = { onChange } 
+                                        iconclass={" far fa-address-card"}
+                                        messageinc="Incorrecto. Selecciona el tipo de cuenta."
+                                    />
+                                    {/*<span className="form-text text-muted">Por favor, ingrese el tipo de cuenta</span>*/}
+                                </div>
+                            </>
+                        :
+                            <div className="col-md-4">
+                                <Select 
+                                    requirevalidation={1} 
+                                    formeditado={formeditado}
+                                    name = 'banco' 
+                                    options = { bancos } 
+                                    placeholder = 'Selecciona el banco' 
+                                    value = { form.banco }
+                                    onChange = { onChange }
+                                    iconclass={" fab fa-cc-discover"}
+                                    messageinc="Incorrecto. Selecciona el banco."
+                                />
+                                {/*<span className="form-text text-muted">Por favor, seleccione el banco </span>*/}
+                            </div>
+                    }
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
-                <div className="form-group row form-group-marginless">
-                    <div className="col-md-4">
-                        <InputNumber 
-                            requirevalidation={1} 
-                            formeditado={formeditado}
-                            placeholder = "Ingresa el número de cuenta" 
-                            type = "text" 
-                            name = "numero" 
-                            value = { form.numero }
-                            onChange = { onChange }
-                            iconclass={" fas fa-id-card "} 
-                            messageinc="Incorrecto. Ingresa el número de cuenta."
-                        />
-                        {/*<span className="form-text text-muted">Por favor, ingrese el número de cuenta </span>*/}
-                    </div>
-                    <div className="col-md-4">
-                        <Select 
-                            requirevalidation={1} 
-                            formeditado={formeditado}
-                            name = 'tipo' 
-                            options = { tipos } 
-                            placeholder = 'Selecciona el tipo' 
-                            value = { form.tipo }
-                            onChange = { onChange } 
-                            iconclass={" far fa-address-card"}
-                            messageinc="Incorrecto. Selecciona el tipo de cuenta."
-                        />
-                        {/*<span className="form-text text-muted">Por favor, ingrese el tipo de cuenta</span>*/}
-                    </div>
-                    <div className="col-md-4">
-                        <Select 
-                            requirevalidation={1} 
-                            formeditado={formeditado}
-                            name = 'estatus' 
-                            options = { estatus } 
-                            placeholder = 'Selecciona el estatus' 
-                            value = { form.estatus }
-                            onChange = { onChange } 
-                            iconclass={" far fa-check-square "}
-                            messageinc="Incorrecto. Selecciona el estatus."
-                        />
-                        {/*<span className="form-text text-muted">Por favor, seleccione el estatus</span>*/}
-                    </div>
-                </div>
-                <div className="separator separator-dashed mt-1 mb-2"></div>
+                {
+                    tipo !== 'Caja chica' ?
+                        <>
+                        <div className="form-group row form-group-marginless">
+                            <div className="col-md-4">
+                                <InputNumber 
+                                    requirevalidation={1} 
+                                    formeditado={formeditado}
+                                    placeholder = "Ingresa el número de cuenta" 
+                                    type = "text" 
+                                    name = "numero" 
+                                    value = { form.numero }
+                                    onChange = { onChange }
+                                    iconclass={" fas fa-id-card "} 
+                                    messageinc="Incorrecto. Ingresa el número de cuenta."
+                                />
+                                {/*<span className="form-text text-muted">Por favor, ingrese el número de cuenta </span>*/}
+                            </div>
+                            <div className="col-md-4">
+                                <Select 
+                                    requirevalidation={1} 
+                                    formeditado={formeditado}
+                                    name = 'tipo' 
+                                    options = { tipos } 
+                                    placeholder = 'Selecciona el tipo' 
+                                    value = { form.tipo }
+                                    onChange = { onChange } 
+                                    iconclass={" far fa-address-card"}
+                                    messageinc="Incorrecto. Selecciona el tipo de cuenta."
+                                />
+                                {/*<span className="form-text text-muted">Por favor, ingrese el tipo de cuenta</span>*/}
+                            </div>
+                            <div className="col-md-4">
+                                <Select 
+                                    requirevalidation={1} 
+                                    formeditado={formeditado}
+                                    name = 'estatus' 
+                                    options = { estatus } 
+                                    placeholder = 'Selecciona el estatus' 
+                                    value = { form.estatus }
+                                    onChange = { onChange } 
+                                    iconclass={" far fa-check-square "}
+                                    messageinc="Incorrecto. Selecciona el estatus."
+                                />
+                                {/*<span className="form-text text-muted">Por favor, seleccione el estatus</span>*/}
+                            </div>
+                        </div>
+                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                        </>
+                    :
+                        ''
+                }
+                
+                
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Select 
