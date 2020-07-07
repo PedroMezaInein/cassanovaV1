@@ -16,7 +16,7 @@ class DropZone extends Component{
                 onDrop={this.handleDrop}
                 >
                 {({ getRootProps, getInputProps }) => (
-                    <div {...getRootProps({ className: "dropzone" })}>
+                    <div {...getRootProps({ className: "dropzone dropzone-default dropzone-primary dz-clickable col-md-10" })}>
                         <input {...getInputProps()} />
                         {
                             children
