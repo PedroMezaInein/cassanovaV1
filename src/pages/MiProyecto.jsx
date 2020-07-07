@@ -441,10 +441,11 @@ class MiProyecto extends Component{
                                         <SelectSearch 
                                             formeditado = { 0 }
                                             options = { options.proyectos }
-                                            name = "Seleccione un proyecto"
+                                            placeholder = "Seleccione un proyecto"
                                             name = "proyecto"
                                             value = { form.proyecto }
                                             onChange = { this.updateProyecto }
+                                            requirevalidation = { 1 }
                                             /> 
                                     </div>
                                 </div>
