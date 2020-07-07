@@ -11,35 +11,36 @@ class Input extends Component{
         const { error, onChange, placeholder, options  } = this.props
         return(
             <div>
-                <Form.Label className="col-form-label">{placeholder}</Form.Label>
+                <Form.Label className="font-weight-bolder">{placeholder}</Form.Label>
 
                 <Form.Group id="formGridCheckbox">
-                    {
-                        
-                        options.map((option, key) => {
-                            return(
-                                <Form.Check 
-                                    key = {key}
-                                    type = "checkbox" 
-                                    label ={ option.text } 
-                                    onChange={ (e) => { onChange(e)} } 
-                                    name = { option.id }
-                                    checked = { option.checked }
-                                    value = { option.checked }
-                                    className={`${error}`}/>
-                            )
-                        })
-                    }
+                    <div class="col-12">
+                        <div class="checkbox-list">
+                        {
+                            
+                            options.map((option, key) => {
+                                return(  
+                                        <label className="checkbox checkbox-square checkbox-primary">
+                                            <input
+                                            key = {key}
+                                            type="checkbox" 
+                                            onChange={ (e) => { onChange(e)} } 
+                                            name = { option.id }
+                                            checked = { option.checked }
+                                            value = { option.checked } 
+                                            />{ option.text }
+                                            <span></span>
+                                        </label>
+                                )
+                            })
+                        }
+                        </div>
+                    </div>
                 </Form.Group>
-                {
-                    error && 
-                        <label className="error-label">
-                            {error}
-                        </label>
-                }
             </div>
         )
     }
 }
 
 export default Input
+
