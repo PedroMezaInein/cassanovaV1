@@ -42,6 +42,7 @@ class Calendar extends Component{
                 <label className="col-form-label">{placeholder}</label> 
                     <DatePicker
                         { ...props }
+                        dateFormat="dd/MM/yyyy"
                         placeholderText="Selecciona la fecha"
                         selected={value}
                         onChange={(date) => {this.validarFecha(date); onChangeCalendar(date);}}
