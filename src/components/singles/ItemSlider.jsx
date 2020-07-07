@@ -155,7 +155,7 @@ class ItemSlider extends Component{
                                                     this.isImage(items[active].name) ?
                                                         <img className="p-2 rounded pdfview" src={items[active].url} style={{ width:"100", height:"100"}}/>
                                                     : 
-                                                        <div className="btn btn-hover p-2 rounded pdfview d-flex align-items-center justify-content-center mx-auto"  onClick = {() => { this.downloadFile(items[active]) } }>
+                                                        <div id="descarga" className="btn btn-hover p-2 rounded pdfview d-flex align-items-center justify-content-center mx-auto"  onClick = {() => { this.downloadFile(items[active]) } }>
                                                             <div>
                                                                 <i className={"fas fa-file m-0 kt-font-boldest text-primary"}></i>
                                                                 <br />
