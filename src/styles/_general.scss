@@ -92,3 +92,11 @@ a.text-hover-danger2:hover, .text-hover-danger2:hover{
     width: 468px;
     height: 418.984px;
 }
+
+@media screen and (max-width: 992px) {
+    #descarga, img, iframe {
+        max-width:100px;
+        max-height:100px;
+    }
+
+}
