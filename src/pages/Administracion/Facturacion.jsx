@@ -58,8 +58,8 @@ class Facturacion extends Component {
                     expedicion: renderToString(this.setExpedicionTable(factura)),
                     subtotal: renderToString(setMoneyTable(factura.subtotal)),
                     total: renderToString(setMoneyTable(factura.total)),
-                    acumulado: renderToString(setMoneyTable(factura.ventas_count)),
-                    restante: renderToString(setMoneyTable(factura.total - factura.ventas_count)),
+                    acumulado: renderToString(setMoneyTable(factura.ventas_count + factura.ingresos_count)),
+                    restante: renderToString(setMoneyTable(factura.total - factura.ventas_count - factura.ingresos_count)),
                     adjuntos: renderToString(this.setAdjuntosTable(factura)),
                     fecha: renderToString(this.setDateTable(factura.created_at)),
                     id: factura.id
