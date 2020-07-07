@@ -12,7 +12,9 @@ class DropZone extends Component{
     render(){
         const { children, handleChange, ...props } = this.props
         return(
-            <Dropzone { ... props} onDrop={this.handleDrop}>
+            <Dropzone { ... props} 
+                onDrop={this.handleDrop}
+                >
                 {({ getRootProps, getInputProps }) => (
                     <div {...getRootProps({ className: "dropzone" })}>
                         <input {...getInputProps()} />

@@ -116,7 +116,7 @@ class ItemSlider extends Component{
                         {
                             items.length === active && handleChange ?
                                 <div className="border rounded w-100 border__dashed">
-                                    <DropZone accept = "*"  handleChange = { this.handleChange } >
+                                    <DropZone handleChange = { this.handleChange } >
                                         <Subtitle className="text-center p-5 " color="gold">
                                             <FontAwesomeIcon icon = { faImages } className="text-color__gold"/>
                                             <br />
