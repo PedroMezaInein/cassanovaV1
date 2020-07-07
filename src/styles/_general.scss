@@ -68,11 +68,27 @@ $l-black-gold: #423b28;
     /* font-family: 'Inter'; 
     //font-family: 'Inter','Oswald'; 
 }
- .nav-full-height{
+.nav-full-height{
 
     /* height: calc(100vh  ); 
- }*/
+}*/
 
- body{
-     text-transform: uppercase;
- }
+body{
+    text-transform: uppercase;
+}
+
+.border-nav{
+    border: 3px solid #F3F6F9;
+    padding: 1.75rem 1.5rem;
+    border-top-left-radius: 0.42rem;
+    border-top-right-radius: 0.42rem;
+}
+
+a.text-hover-danger2:hover, .text-hover-danger2:hover{
+    color: #cc4b4c !important;
+}
+
+.pdfview{
+    width: 468px;
+    height: 418.984px;
+}
