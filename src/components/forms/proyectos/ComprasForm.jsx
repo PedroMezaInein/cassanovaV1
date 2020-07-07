@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Subtitle } from '../../texts'
-import { SelectSearch, Select, Calendar, RadioGroup, FileInput, Button, Input, InputMoney } from '../../form-components'
+import { SelectSearch, Select, Calendar, RadioGroup, FileInput, Button, Input, InputMoney, SelectSearchTrue } from '../../form-components'
 import { Form } from 'react-bootstrap'
 import { RFC, DATE } from '../../../constants'
 import {openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
@@ -476,7 +476,7 @@ updateArea = value => {
                                         {/*<span className="form-text text-muted">Por favor, ingresa la comisión.</span>*/}
                                     </div>
                                     <div className="col-md-3">
-                                        <SelectSearch 
+                                        <SelectSearchTrue 
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             options={options.contratos} 
