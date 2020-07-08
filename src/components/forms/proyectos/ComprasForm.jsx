@@ -93,13 +93,16 @@ updateArea = value => {
     }
 
     updateProveedor = value => {
-        const { onChange, setOptions } = this.props
+        const { onChange, setOptions, form } = this.props
         onChange({ target: { value: value, name: 'proveedor' } })
         onChange({ target: { value: '', name: 'contrato' } })
         const { data: { proveedores: proveedores } } = this.props
         proveedores.find(function (element, index) {
             if (value.toString() === element.id.toString()) {
                 setOptions('contratos', element.contratos)
+                if(element.rfc !== ''){
+                    onChange({ target: { value: element.rfc, name: 'rfc' } })
+                }
             }
         })
     }

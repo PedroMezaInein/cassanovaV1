@@ -52,14 +52,14 @@ class VentasForm extends Component {
         })
 
         
-        if(form.rfc === ''){
-            data.clientes.find(function (element, index){
-                console.log(element, 'element cliente')
-                if (value.toString() === element.id.toString()) {
+        data.clientes.find(function (element, index){
+            console.log(element, 'element cliente')
+            if (value.toString() === element.id.toString()) {
+                if(element.rfc !== ''){
                     onChange({ target: { value: element.rfc, name: 'rfc' } })
                 }
-            })
-        }
+            }
+        })
     }
     updateProyecto = value => {
         const { onChange } = this.props
