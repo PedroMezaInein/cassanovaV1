@@ -10,8 +10,6 @@ class SelectSearchForm extends Component{
     }
 
     renderFontValue = (valueProps,onChange) => {  
-        console.log(valueProps, 'valueProps')
-        console.log(onChange, 'onChange')
         const { requirevalidation } = this.state
 
         let validado = false;
@@ -42,7 +40,7 @@ class SelectSearchForm extends Component{
     }
 
     componentDidMount(){
-        console.log()
+        
     }
 
     render(){
