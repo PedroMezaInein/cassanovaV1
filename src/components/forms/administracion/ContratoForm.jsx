@@ -198,7 +198,7 @@ class ContratoForm extends Component {
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-12">
                         <Input 
-                            requirevalidation={0}
+                            requirevalidation={ 0 }
                             formeditado={formeditado}
                             rows="3" 
                             as="textarea" 
