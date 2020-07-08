@@ -100,3 +100,26 @@ a.text-hover-danger2:hover, .text-hover-danger2:hover{
     }
 
 }
+
+// .tagify__tag > div > * {
+//     white-space: normal !important;
+// }
+
+.white-space{
+    white-space: normal !important;
+}
+
+@media screen and (max-width: 992px) {
+    .tagify__tag > div > * {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+        vertical-align: top;
+        min-width: var(--tag--min-width);
+        max-width: var(--tag--max-width);
+        -webkit-transition: .8s ease,.1s color;
+        transition: .8s ease,.1s color; 
+    }
+
+}
