@@ -351,40 +351,7 @@ class ProyectosForm extends Component{
                                         />
                                         {/*<span className="form-text text-muted">Por favor, selecciona el cliente</span>*/}
                                     </div>
-                                    <div className="col-md-4">
-                                        <Calendar 
-                                            formeditado={formeditado}
-                                            onChangeCalendar = { this.handleChangeDateInicio }
-                                            placeholder = "Fecha de inicio"
-                                            name = "fechaInicio"
-                                            value = { form.fechaInicio }
-                                            selectsStart
-                                            startDate={ form.fechaInicio }
-                                            endDate={ form.fechaFin }
-                                            patterns={DATE}                 
-                                        />
-                                        {/*<span className="form-text text-muted">Por favor, ingrese su fecha de inicio. </span>*/}
-                                    </div>
-                                    <div className="col-md-4">
-                                        <Calendar 
-                                            formeditado={formeditado}
-                                            onChangeCalendar = { this.handleChangeDateFin }
-                                            placeholder = "Fecha final"
-                                            name = "fechaFin"
-                                            value = { form.fechaFin }
-                                            selectsEnd
-                                            startDate={ form.fechaInicio }
-                                            endDate={ form.fechaFin }
-                                            minDate={ form.fechaInicio }
-                                            iconclass={"far fa-calendar-alt"}
-                                            patterns={DATE}
-                                        />
-                                        {/*<span className="form-text text-muted">Por favor, ingrese su fecha de final. </span>*/}
-                                    </div>                              
-                                </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">  
-                                    <div className="col-md-4">
+                                    <div className="col-md-5">
                                         <FileInput 
                                             requirevalidation={0}
                                             formeditado={formeditado}
@@ -400,7 +367,40 @@ class ProyectosForm extends Component{
                                             />
                                         {/*<span className="form-text text-muted">Por favor, ingrese su imagen. </span>*/}
                                     </div>
-                                    <div className="col-md-8">
+                                    <div className="col-md-3">
+                                        <Calendar 
+                                            formeditado={formeditado}
+                                            onChangeCalendar = { this.handleChangeDateInicio }
+                                            placeholder = "Fecha de inicio"
+                                            name = "fechaInicio"
+                                            value = { form.fechaInicio }
+                                            selectsStart
+                                            startDate={ form.fechaInicio }
+                                            endDate={ form.fechaFin }
+                                            patterns={DATE}                 
+                                        />
+                                        {/*<span className="form-text text-muted">Por favor, ingrese su fecha de inicio. </span>*/}
+                                    </div>                            
+                                </div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="form-group row form-group-marginless">                                      
+                                    <div className="col-md-3">
+                                        <Calendar 
+                                            formeditado={formeditado}
+                                            onChangeCalendar = { this.handleChangeDateFin }
+                                            placeholder = "Fecha final"
+                                            name = "fechaFin"
+                                            value = { form.fechaFin }
+                                            selectsEnd
+                                            startDate={ form.fechaInicio }
+                                            endDate={ form.fechaFin }
+                                            minDate={ form.fechaInicio }
+                                            iconclass={"far fa-calendar-alt"}
+                                            patterns={DATE}
+                                        />
+                                        {/*<span className="form-text text-muted">Por favor, ingrese su fecha de final. </span>*/}
+                                    </div>  
+                                    <div className="col-md-9">
                                         <Input 
                                             requirevalidation={0}
                                             formeditado={formeditado}

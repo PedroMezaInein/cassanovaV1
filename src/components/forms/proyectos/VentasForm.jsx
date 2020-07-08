@@ -334,17 +334,6 @@ class VentasForm extends Component {
                                 <h5 className="mb-4 font-weight-bold text-dark">Selecciona el área y fecha</h5>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
-                                        <Calendar 
-                                            formeditado={formeditado}
-                                            onChangeCalendar={this.handleChangeDate}
-                                            placeholder="Fecha"
-                                            name="fecha"
-                                            value={form.fecha}
-                                            patterns={DATE}
-                                        />  
-                                        {/*<span className="form-text text-muted">Por favor, selecciona la fecha. </span>*/}
-                                    </div>
-                                    <div className="col-md-4">
                                         <SelectSearch 
                                             formeditado={formeditado}
                                             options={options.areas}
@@ -372,6 +361,17 @@ class VentasForm extends Component {
                                             </div>
                                             : ''
                                     }
+                                    <div className="col-md-4">
+                                        <Calendar 
+                                            formeditado={formeditado}
+                                            onChangeCalendar={this.handleChangeDate}
+                                            placeholder="Fecha"
+                                            name="fecha"
+                                            value={form.fecha}
+                                            patterns={DATE}
+                                        />  
+                                        {/*<span className="form-text text-muted">Por favor, selecciona la fecha. </span>*/}
+                                    </div>
                                 </div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-12">
