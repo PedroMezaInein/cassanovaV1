@@ -207,7 +207,7 @@ class EgresosForm extends Component {
                                         : ''
                                     }
                                     {
-                                        form.factura === 'Con factura' && title !== 'Editar egreso' ?
+                                        form.factura === 'Con factura' ?
                                             <div className="col-md-4">
                                                 <Input 
                                                     requirevalidation={1}
