@@ -46,8 +46,14 @@ class IngresosForm extends Component {
     }
 
     updateCliente = value => {
-        const { onChange, setOptions } = this.props
+        const { onChange, data } = this.props
         onChange({ target: { value: value, name: 'cliente' } })
+        data.clientes.find( function(element){
+            if(value.toString() === element.id.toString()){
+                if(element.rfc !== '')
+                    onChange({ target: { value: element.rfc, name: 'rfc' } })
+            }
+        })
     }
     
     /*
@@ -194,7 +200,7 @@ class IngresosForm extends Component {
                                             : ''
                                         }
                                         {
-                                            form.factura === 'Con factura' && title !== 'Editar venta' ?
+                                            form.factura === 'Con factura' ?
                                                 <div className="col-md-4">
                                                     <Input 
                                                         requirevalidation={1}
