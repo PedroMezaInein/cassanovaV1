@@ -13,7 +13,7 @@ import { waitAlert, errorAlert, createAlert,forbiddenAccessAlert } from '../../f
 import Layout from '../../components/layout/layout'
 import { Card } from 'react-bootstrap'
 import { FlujosForm } from '../../components/forms'
-import NewTable from '../../components/tables/NewTable'
+import TableForModals from '../../components/tables/TableForModals'
 
 class Flujos extends Component {
 
@@ -211,7 +211,7 @@ class Flujos extends Component {
                         <FlujosForm form = { form } options = { options } onChange = { this.onChange }
                             onSubmit = { this.onSubmit } onChangeAndAdd = { this.onChangeAndAdd } 
                             deleteOption = { this.deleteOption } clear = { this.clear } onSubmit = { this.onSubmit } />
-                        <NewTable 
+                        <TableForModals 
                             columns = { FLUJOS_COLUMNS } 
                             data = { flujos }
                             title = 'Flujos' 
