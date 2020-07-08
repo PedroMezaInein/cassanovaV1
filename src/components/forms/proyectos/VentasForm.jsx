@@ -35,7 +35,7 @@ class VentasForm extends Component {
     }*/
 
     updateCliente = value => {
-        const { onChange, setOptions } = this.props
+        const { onChange, setOptions, form, data } = this.props
         onChange({ target: { value: value, name: 'cliente' } })
         onChange({ target: { value: '', name: 'proyecto' } })
         onChange({ target: { value: '', name: 'contrato' } })
@@ -45,8 +45,21 @@ class VentasForm extends Component {
             if (value.toString() === element.value.toString()) {
                 setOptions('proyectos', element.proyectos)
                 setOptions('contratos', element.contratos)
+                if(form.rfc !== ''){
+                    onChange({ target: { value: '', name: 'contrato' } })
+                }
             }
         })
+
+        
+        if(form.rfc === ''){
+            data.clientes.find(function (element, index){
+                console.log(element, 'element cliente')
+                if (value.toString() === element.id.toString()) {
+                    onChange({ target: { value: element.rfc, name: 'rfc' } })
+                }
+            })
+        }
     }
     updateProyecto = value => {
         const { onChange } = this.props
