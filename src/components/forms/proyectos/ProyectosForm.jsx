@@ -51,7 +51,6 @@ class ProyectosForm extends Component{
                 onChange( { target: { name: 'correo', value: '' } } )
             }
         }
-        console.log('CORREOS', form.correos)
     }
 
     handleChangeDateInicio = date => {

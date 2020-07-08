@@ -1092,8 +1092,12 @@ class Ventas extends Component{
                     if(solicitud.proyecto.cliente){
                         if(solicitud.proyecto.cliente.proyectos){
                             options['proyectos'] = setOptions(solicitud.proyecto.cliente.proyectos, 'nombre', 'id')
-                            /* form.cliente = solicitud.proyecto.cliente.id.toString() */
+                            form.cliente = solicitud.proyecto.cliente.id.toString()
+                            form.rfc = solicitud.proyecto.cliente.rfc
                             form.proyecto = solicitud.proyecto.id.toString()
+                        }
+                        if(solicitud.proyecto.cliente.contratos){
+                            options['contratos'] = setOptions(solicitud.proyecto.cliente.contratos, 'nombre', 'id')
                         }
                     }
                 }
@@ -1175,7 +1179,7 @@ class Ventas extends Component{
                 <Modal show = {modal} handleClose = { this.handleClose } title = { title } >
                     <VentasForm options = {options} form = {form} setOptions = {this.setOptions} 
                         onChange = { this.onChange } onChangeAdjunto = { this.onChangeAdjunto } clearFiles = {this.clearFiles}
-                        onSubmit = { this.onSubmit } formeditado={formeditado} />
+                        onSubmit = { this.onSubmit } formeditado={formeditado} data = {data} />
                 </Modal>
 
                 <ModalDelete title={"¿Estás seguro que deseas eliminar la venta?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteVentaAxios() }}>
