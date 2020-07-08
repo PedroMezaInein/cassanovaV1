@@ -475,10 +475,14 @@ class EstadosCuenta extends Component {
                                             <FontAwesomeIcon className="p-0 font-unset mr-2" icon={faPaperclip} color={DARK_BLUE} />
                                         </label>
                                         */}
+                                        
+                                    </div>
+                                </div>
+                        </div>
                                         {
                                             
                                             adjuntoName &&
-                                            <div className="">
+                                            <div className="col-md-8">
                                                 <div className="tagify form-control p-1" tabIndex="-1" style={{borderWidth:"0px"}}>
                                                         <div className="tagify__tag tagify__tag--primary tagify--noAnim">
                                                             <div 
@@ -489,14 +493,11 @@ class EstadosCuenta extends Component {
                                                                 onClick={(e) => { e.preventDefault(); this.deleteAdjunto() }}
                                                                 >
                                                             </div>                                                            
-                                                                <div><span className="tagify__tag-text p-1">{adjuntoName}</span></div>
+                                                                <div><span className="tagify__tag-text p-1 white-space">{adjuntoName}</span></div>
                                                         </div>
                                                 </div>
                                             </div> 
                                         }
-                                    </div>
-                                </div>
-                        </div>
                     </div>
 
 

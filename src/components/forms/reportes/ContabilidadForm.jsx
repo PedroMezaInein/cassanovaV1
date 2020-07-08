@@ -122,7 +122,7 @@ class ContabilidadForm extends Component{
                                                             onClick = { (e) => { e.preventDefault(); updateEmpresa(empresa) }}
                                                             >
                                                         </div>                                                            
-                                                        <div><span className="tagify__tag-text p-1">{empresa.text}</span></div>
+                                                        <div><span className="tagify__tag-text p-1 white-space">{empresa.text}</span></div>
                                                     </div>
                                                 </div>
                                             )
@@ -163,7 +163,7 @@ class ContabilidadForm extends Component{
                     </div> 
                 </div>
                 <div className="mt-3 text-center">
-                    <Button icon='' className="mx-auto" type="submit" text="Descargar" />
+                    <Button icon='' className="mx-auto" type="submit" text="DESCARGAR" />
                 </div>
             </Form>
         )

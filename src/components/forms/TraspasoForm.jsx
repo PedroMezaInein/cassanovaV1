@@ -119,7 +119,7 @@ class TareaForm extends Component{
                                                     onClick={ (e) => { e.preventDefault(); deleteAdjunto() } }
                                                     >
                                                 </div>                                                            
-                                                    <div><span className="tagify__tag-text p-1">{form.adjuntoName}</span></div>
+                                                    <div><span className="tagify__tag-text p-1 white-space">{form.adjuntoName}</span></div>
                                             </div>
                                     </div>
                                 </div> 

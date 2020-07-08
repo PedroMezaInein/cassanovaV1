@@ -948,7 +948,7 @@ class Cuentas extends Component {
                                                                     onClick={(e) => { e.preventDefault(); this.deleteAdjunto() }}
                                                                     >
                                                                 </div>                                                            
-                                                                    <div><span className="tagify__tag-text p-1">{adjuntoName}</span></div>
+                                                                    <div><span className="tagify__tag-text p-1 white-space">{adjuntoName}</span></div>
                                                             </div>
                                                     </div>
                                                 </div> 

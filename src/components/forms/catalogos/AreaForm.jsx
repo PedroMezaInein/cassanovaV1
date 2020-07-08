@@ -62,7 +62,7 @@ class AreaForm extends Component{
                                             onClick = { (e) => { e.preventDefault(); deleteSubarea(element) }}
                                         >
                                         </div>                                                            
-                                        <div><span className="tagify__tag-text p-1 ">{element}</span></div>
+                                        <div><span className="tagify__tag-text p-1 white-space">{element}</span></div>
                                         </div>
                                 </div>
                             )
