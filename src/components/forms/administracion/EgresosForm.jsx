@@ -52,8 +52,15 @@ class EgresosForm extends Component {
     */
 
     updateProveedor = value => {
-        const { onChange } = this.props
+        const { onChange, data, form } = this.props
         onChange({ target: { value: value, name: 'proveedor' } })
+        data.proveedores.find(function (element, index) {
+            if (value.toString() === element.id.toString()) {
+                if(element.rfc !== ''){
+                    onChange({ target: { value: element.rfc, name: 'rfc' } })
+                }
+            }
+        })
     }
     /*Código Omar
     updateArea = value => {
