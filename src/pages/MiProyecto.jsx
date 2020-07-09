@@ -596,71 +596,63 @@ class MiProyecto extends Component{
                                     
                                     <Card.Body>
                                         <>
-                                        {console.log("actualizando "+defaultactivekey)}            
+                                        {/* {console.log("actualizando "+defaultactivekey)}*/}
                                         <Tab.Container id="left-tabs-example" defaultActiveKey={defaultactivekey}>
                                             <Row>
                                                 <Col md={4} className="border-nav">
-												    <Nav variant="pills" className="flex-column navi navi-hover navi-active">
-                                                    
+												    <Nav variant="pills" className="flex-column navi navi-hover navi-active">                                                    
                                                         { 
                                                             showadjuntos.map((adjunto, key) => { 
                                                                 if(proyecto[adjunto.value].length)
                                                                 {  
-                                                                    return(
-                                                                    <div key = {key}>
-                                                                        <Nav.Item className="navi-item">
+                                                                    return( 
+                                                                        <Nav.Item className="navi-item" key = {key}>
                                                                             <Nav.Link className="navi-link" eventKey={adjunto.value}>
                                                                                 <span className="navi-icon">
                                                                                     <i className="flaticon2-analytics"></i>
                                                                                 </span>
                                                                                 <span className="navi-text">{adjunto.name}</span>
                                                                             </Nav.Link>
-                                                                        </Nav.Item> 
-                                                                    </div>
+                                                                        </Nav.Item>
                                                                     )
                                                                 }
                                                             })
                                                         }
-                                                        
-													
 													</Nav>
 												</Col>
                                                 <Col md={8}>
                                                     <Tab.Content>
-                                                        { 
-                                                                showadjuntos.map((adjunto, key) => {  
-                                                                    if(proyecto[adjunto.value].length)
-                                                                    {  
-                                                                        return(
-                                                                            <div key = {key}>
-                                                                                <Tab.Pane eventKey={adjunto.value}>
-                                                                                    {
-                                                                                        proyecto ? 
-                                                                                            proyecto[adjunto.value].length ?
-                                                                                                <div className="mt-2 d-flex justify-content-center">
-                                                                                                    <span className = 'btn btn-hover btn-text-success' onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.value]) }}>
-                                                                                                        <i className="fas fa-file-archive"></i> Descargar ZIP
-                                                                                                    </span>
-                                                                                                </div>
-                                                                                            : ''
-                                                                                        : ''
-                                                                                    }   
-                                                                                    {
-                                                                                        proyecto ? 
-                                                                                            <ItemSlider items = { proyecto[adjunto.value] } item = {adjunto.value} />
-                                                                                        : ''
-                                                                                    }
-                                                                                </Tab.Pane> 
-                                                                            </div>
-                                                                        )
-                                                                    }
-                                                                }
-                                                            )
-                                                        } 
+                                                    { 
+                                                        showadjuntos.map((adjunto, key) => {  
+                                                            if(proyecto[adjunto.value].length)
+                                                            {  
+                                                                return(
+                                                                    <Tab.Pane key = {key} eventKey={adjunto.value}>
+                                                                        {
+                                                                            proyecto ? 
+                                                                                proyecto[adjunto.value].length ?
+                                                                                    <div className="mt-2 d-flex justify-content-center">
+                                                                                        <span className = 'btn btn-hover btn-text-success' onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.value]) }}>
+                                                                                            <i className="fas fa-file-archive"></i> Descargar ZIP
+                                                                                        </span>
+                                                                                    </div>
+                                                                                : ''
+                                                                            : ''
+                                                                        }   
+                                                                        {
+                                                                            proyecto ? 
+                                                                                <ItemSlider items = { proyecto[adjunto.value] } item = {adjunto.value} />
+                                                                            : ''
+                                                                        }
+                                                                    </Tab.Pane>  
+                                                                )
+                                                            }
+                                                        })
+                                                    } 
                                                     </Tab.Content>
                                                 </Col>
                                             </Row>
-                                            </Tab.Container>                     
+                                        </Tab.Container>                     
                                         </>
                                     </Card.Body>
                                 </Card>
