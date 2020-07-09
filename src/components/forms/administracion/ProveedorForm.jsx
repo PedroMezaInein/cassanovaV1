@@ -97,7 +97,7 @@ class ProveedorForm extends Component {
                             {/*<span className="form-text text-muted">Por favor, ingrese su RFC. </span>*/}
                         </div>
                     </div>
-
+                    <div className="separator separator-dashed mt-1 mb-2"></div>
                     <div className="form-group row form-group-marginless">
                         <div className="col-md-4">
                             <Input 
@@ -150,7 +150,7 @@ class ProveedorForm extends Component {
                             {/*<span className="form-text text-muted">Por favor, ingrese el número de cuenta </span>*/}
                         </div>
                     </div>
-
+                    <div className="separator separator-dashed mt-1 mb-2"></div>
                     <div className="form-group row form-group-marginless">
                         <div className="col-md-4">
                             <Select 
