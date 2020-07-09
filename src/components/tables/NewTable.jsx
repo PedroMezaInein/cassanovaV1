@@ -18,7 +18,7 @@ const global_variable = {}
 class NewTable extends Component {
 
 
-    reloadTableData(props) {
+    reloadTableData(props){
         const { data, actions, elements } = props
         var table = $(this.refs.main)
             .DataTable();
@@ -30,14 +30,14 @@ class NewTable extends Component {
             e.preventDefault();
             var id = $(this).attr('id').toString()
             var name = $(this).attr('name').toString()
-            let aux = elements.find(function (element, index) {
+            let aux = ''
+            elements.find(function (element, index) {
                 if (element.id.toString() === id) {
-
-                    return element
-
+                    aux = element
                 }
             });
-            actions[name].function(aux)
+            if(aux !== '')
+                actions[name].function(aux)
         });
 
     }
@@ -149,7 +149,7 @@ class NewTable extends Component {
                         let aux = ''
                         {
                             data.map((element) => {
-                                aux = aux + /* `<input type="button" onClick = { console.log('hola')} value="Edit" class="btnEdit sfBtn sfPrimaryBtn sfLocale" />` */
+                                aux = aux + 
                                     `<button name=${element.action}  id = ${row.id} class="ml-2 btn btn-actions-table btn-xs btn-icon btn-text-${element.btnclass} btn-hover-${element.btnclass}" title=${element.text}><i class=${element.iconclass}></i></button>`
                             })
                         }
@@ -201,6 +201,7 @@ class NewTable extends Component {
         if (nextProps.data !== this.props.data) {
             this.reloadTableData(nextProps)
         }
+        
         return false;
 
     }
