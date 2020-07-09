@@ -315,6 +315,7 @@ class MiProyecto extends Component{
             ... this.state,
             primeravista:false,
             defaultactivekey:newdefaultactivekey,
+            subActiveKey:newdefaultactivekey,
             showadjuntos:adjuntos
         })
     }
@@ -328,6 +329,14 @@ class MiProyecto extends Component{
         if(!proyecto)
             history.push('/')
         this.getMiProyectoAxios()
+    }
+
+    updateActiveTabContainer = active => {
+        console.log(active, 'active')
+        this.setState({
+            ... this.state,
+            subActiveKey: active
+        })
     }
 
     updateProyecto = value => {
@@ -426,7 +435,7 @@ class MiProyecto extends Component{
     }
 
     render(){
-        const { options, proyecto, form, adjuntos, showadjuntos, primeravista, defaultactivekey} = this.state
+        const { options, proyecto, form, adjuntos, showadjuntos, primeravista, defaultactivekey, subActiveKey} = this.state
         return(
             <Layout { ...this.props}>
                 <div className="content pt-0 d-flex flex-column flex-column-fluid" id="kt_content" style ={ { paddingBottom:"11px" } }>
@@ -597,7 +606,8 @@ class MiProyecto extends Component{
                                     <Card.Body>
                                         <>
                                         {/* {console.log("actualizando "+defaultactivekey)}*/}
-                                        <Tab.Container id="left-tabs-example" defaultActiveKey={defaultactivekey}>
+                                        <Tab.Container id="left-tabs-example" activeKey = { subActiveKey ? subActiveKey : defaultactivekey } defaultActiveKey={defaultactivekey}
+                                            onSelect = { (select) => { this.updateActiveTabContainer(select) } }>
                                             <Row>
                                                 <Col md={4} className="border-nav">
 												    <Nav variant="pills" className="flex-column navi navi-hover navi-active">                                                    
