@@ -321,17 +321,20 @@ class SolicitudCompra extends Component{
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'solicitud-compra', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { empresas, areas, tiposPagos, proveedores, proyectos, solicitudes } = response.data
+                const { empresas, areas, tiposPagos, proveedores, proyectos, solicitudes, data } = response.data
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
                 options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
                 options['tiposPagos'] = setSelectOptions( tiposPagos, 'tipo' )
+                const { data } = this.state
+                data.solicitudes = solicitudes
                 this.setState({
                     ... this.state,
                     options,
-                    solicitudes: this.setSolicitudes(solicitudes)
+                    solicitudes: this.setSolicitudes(solicitudes),
+                    data
                 })
             },
             (error) => {
@@ -462,6 +465,8 @@ class SolicitudCompra extends Component{
         await axios.post(URL_DEV + 'solicitud-compra', form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { solicitudes } = response.data
+                const { data } = this.state
+                data.solicitudes = solicitudes
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'La solicitud fue registrado con éxito.',
@@ -474,7 +479,8 @@ class SolicitudCompra extends Component{
                     modal: false,
                     form: this.clearForm(),
                     title: 'Nueva solicitud de compra',
-                    solicitudes: this.setSolicitudes(solicitudes)
+                    solicitudes: this.setSolicitudes(solicitudes),
+                    data
                 })
             },
             (error) => {
@@ -509,6 +515,8 @@ class SolicitudCompra extends Component{
         await axios.put(URL_DEV + 'solicitud-compra/' + solicitud.id, form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { solicitudes } = response.data
+                const { data } = this.state
+                data.solicitudes = solicitudes
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'La solicitud fue registrado con éxito.',
@@ -522,7 +530,8 @@ class SolicitudCompra extends Component{
                     form: this.clearForm(),
                     title: 'Nueva solicitud de compra',
                     solicitud: '',
-                    solicitudes: this.setSolicitudes(solicitudes)
+                    solicitudes: this.setSolicitudes(solicitudes),
+                    data
                 })
             },
             (error) => {
@@ -557,6 +566,8 @@ class SolicitudCompra extends Component{
         await axios.delete(URL_DEV + 'solicitud-compra/' + solicitud.id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { solicitudes } = response.data
+                const { data } = this.state
+                data.solicitudes = solicitudes
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'La solicitud fue registrado con éxito.',
@@ -570,7 +581,8 @@ class SolicitudCompra extends Component{
                     form: this.clearForm(),
                     title: 'Nueva solicitud de compra',
                     solicitud: '',
-                    solicitudes: this.setSolicitudes(solicitudes)
+                    solicitudes: this.setSolicitudes(solicitudes),
+                    data
                 })
             },
             (error) => {
@@ -622,7 +634,7 @@ class SolicitudCompra extends Component{
                         'delete': { function: this.openModalDelete },
                         'convertir': { function: alert('coinvertir') }
                     }}
-                    elements={data.conceptos}
+                    elements={data.solicitudes}
                 />
 
                 <Modal show = {modal} handleClose = { this.handleClose } >

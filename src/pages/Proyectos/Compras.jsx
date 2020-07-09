@@ -495,6 +495,7 @@ class Compras extends Component{
                         }
                         form.facturaObject = obj
                         form.rfc = obj.rfc_emisor
+                        console.log(obj, 'obj')
                         this.setState({
                             ... this.state,
                             options,
@@ -639,11 +640,14 @@ class Compras extends Component{
             (response) => {
 
                 const { compras } = response.data
+                const { data } = this.state
+                data.compras = compras
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
                     modal: false,
-                    compras: this.setCompras(compras)
+                    compras: this.setCompras(compras),
+                    data
                 })
                 
                 swal({
@@ -801,13 +805,16 @@ class Compras extends Component{
             (response) => {
                 
                 const { compras } = response.data
+                const { data } = this.state
+                data.compras = compras
 
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
                     compras: this.setCompras(compras),
                     modalDelete: false,
-                    compra: ''
+                    compra: '',
+                    data
                 })
 
                 swal({

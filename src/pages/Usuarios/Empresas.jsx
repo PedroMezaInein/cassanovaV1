@@ -99,6 +99,8 @@ class Empresas extends Component{
 
     // Set empresas
     setEmpresas = (empresas_list) => {
+        const { data } = this.state
+        data.empresas = empresas_list
         let empresas = []
         empresas_list.map((empresa, key) => {
             empresas[key] = {
@@ -120,7 +122,8 @@ class Empresas extends Component{
                 razonSocial: '',
                 logo: '',
                 file: ''
-            }
+            },
+            data
         })
     }
 

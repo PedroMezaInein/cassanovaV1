@@ -268,6 +268,8 @@ class Leads extends Component {
         })
     }
     setProspectos = prospectos => {
+        const { data } = this.state
+        data.prospectos = prospectos
         let _prospectos = []
         prospectos.map((prospecto, key) => {
             _prospectos.push({
@@ -296,7 +298,8 @@ class Leads extends Component {
         })
         this.setState({
             ... this.state,
-            prospectos: _prospectos
+            prospectos: _prospectos,
+            data
         })
     }
 

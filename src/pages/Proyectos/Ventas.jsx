@@ -732,11 +732,14 @@ class Ventas extends Component{
             (response) => {
 
                 const { ventas } = response.data
+                const { data } = this.state
+                data.ventas = ventas
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
                     modal: false,
-                    ventas: this.setVentas(ventas)
+                    ventas: this.setVentas(ventas),
+                    data
                 })
                 
                 swal({

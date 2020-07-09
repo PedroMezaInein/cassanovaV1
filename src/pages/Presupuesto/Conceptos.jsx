@@ -212,9 +212,8 @@ class Conceptos extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'conceptos', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { data } = this.state
                 const { unidades, partidas, conceptos } = response.data
-                const { options } = this.state
+                const { options, data } = this.state
                 data.conceptos = conceptos
                 options['unidades'] = setOptions(unidades, 'nombre', 'id')
                 options['partidas'] = setOptions(partidas, 'nombre', 'id')
@@ -257,6 +256,8 @@ class Conceptos extends Component {
         await axios.post(URL_DEV + 'conceptos', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { conceptos } = response.data
+                const { data } = this.state
+                data.conceptos = conceptos
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'La concepto fue registrado con éxito.',
@@ -269,7 +270,8 @@ class Conceptos extends Component {
                     conceptos: this.setConceptos(conceptos),
                     modal: false,
                     title: 'Nuevo concepto',
-                    form: this.clearForm()
+                    form: this.clearForm(),
+                    data
                 })
             },
             (error) => {
@@ -304,6 +306,8 @@ class Conceptos extends Component {
         await axios.put(URL_DEV + 'conceptos/' + concepto.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { conceptos } = response.data
+                const { data } = this.state
+                data.conceptos = conceptos
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'La concepto fue registrado con éxito.',
@@ -316,7 +320,8 @@ class Conceptos extends Component {
                     conceptos: this.setConceptos(conceptos),
                     modal: false,
                     title: 'Nuevo concepto',
-                    form: this.clearForm()
+                    form: this.clearForm(),
+                    data
                 })
             },
             (error) => {
@@ -351,6 +356,8 @@ class Conceptos extends Component {
         await axios.delete(URL_DEV + 'conceptos/' + concepto.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { conceptos } = response.data
+                const { data } = this.state
+                data.conceptos = conceptos
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'La concepto fue registrado con éxito.',
@@ -362,7 +369,8 @@ class Conceptos extends Component {
                     ... this.state,
                     conceptos: this.setConceptos(conceptos),
                     modalDelete: false,
-                    concepto: ''
+                    concepto: '',
+                    data
                 })
             },
             (error) => {

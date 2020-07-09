@@ -48,8 +48,8 @@ class Utilidad extends Component {
             console.log(utilidad, 'UTILIDAD')
             aux.push({
                 proyecto: renderToString(setTextTable(utilidad.nombre)),
-                ventas: renderToString(setMoneyTable(utilidad.ventas_count)),
-                compras: renderToString(setMoneyTable(utilidad.compras_count)),
+                ventas: renderToString(setMoneyTable(utilidad.ventas_count ? utilidad.ventas_count : 0)),
+                compras: renderToString(setMoneyTable(utilidad.compras_count ? utilidad.compras_count : 0)),
                 utilidad: renderToString(setMoneyTable(utilidad.ventas_count-utilidad.compras_count)),
                 margen: utilidad.ventas_count > 0 ? 
                     renderToString(setPercentTable((utilidad.ventas_count-utilidad.compras_count)*100/utilidad.ventas_count))
