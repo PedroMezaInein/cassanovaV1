@@ -127,7 +127,13 @@ class ProveedorForm extends Component{
     onChange = e => {
         const {form} = this.state
         const {name, value} = e.target
-        form[name] = value
+        
+        if(name === 'razonSocial'){
+            let cadena = value.replace(/,/g, '')
+            cadena = cadena.replace(/\./g, '')
+            form[name] = cadena
+        }else
+            form[name] = value
         this.setState({
             ... this.state,
             form

@@ -81,7 +81,12 @@ class Leads extends Component {
     onChange = event => {
         const { form } = this.state
         const { name, value } = event.target
-        form[name] = value
+        if(name === 'empresa'){
+            let cadena = value.replace(/,/g, '')
+            cadena = cadena.replace(/\./g, '')
+            form[name] = cadena
+        }else
+            form[name] = value
         this.setState({
             ... this.state,
             form
