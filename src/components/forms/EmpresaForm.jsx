@@ -41,7 +41,6 @@ class EmpresaForm extends Component{
                                 iconclass={"far fa-user"}
                                 messageinc="Incorrecto. Ingresa el nombre de la empresa"
                                 />
-                            {/* <span className="form-text text-muted">Por favor, ingrese su nombre. </span> */}
                         </div>
                         <div className="col-md-4">
                             <Input 
@@ -55,7 +54,6 @@ class EmpresaForm extends Component{
                                 iconclass={"far fa-building"}
                                 messageinc="Incorrecto. Ingresa la razón social"
                             />
-                            {/* <span className="form-text text-muted">Por favor, ingrese su razón social. </span> */}
                         </div>
                         <div className="col-md-4">
                             <Input 
@@ -71,43 +69,44 @@ class EmpresaForm extends Component{
                                 messageinc="Incorrecto. Ej. ABCD001122ABC"
                                 maxLength="13"
                                 />
-                            {/* <span className="form-text text-muted">Por favor, ingrese su RFC. </span> */}
                         </div>
+                    </div>
                         <div className="separator separator-dashed mt-1 mb-2"></div>
-                        <div className="form-group row form-group-marginless mt-4 pl-3">
-                            <div className="col-md-4">
-                                <div className="image-upload">
-                                    <input
-                                        onChange={ onChange }
-                                        formeditado={formeditado}
-                                        name="logo" 
-                                        type="file" 
-                                        value={ form.logo }
-                                        id="logo"
-                                        placeholder="Logo de la empresa"
-                                    />
-                                        <span className="form-text text-muted">Por favor, adjunte su logo. </span>
-                                        <label htmlFor="logo">
-                                        <FontAwesomeIcon icon={faCamera} />
-                                        </label>
+                        <div className="form-group row form-group-marginless">
+                        <div className="col-md-4"> 
+                            <div className="uppy">
+                                <div className="uppy-wrapper">
+                                    <div className="uppy-Root uppy-FileInput-container mb-3">
+                                        <InputImage
+                                            onChange={ onChange }
+                                            name="logo" 
+                                            type="file" 
+                                            value={ form.logo }
+                                            id="logo"
+                                            placeholder="Logo de la empresa"
+                                        /> 
+                                    </div>
                                 </div>
+                                    <label htmlFor="logo">
+                                    <FontAwesomeIcon icon={faCamera} />
+                                    </label>
+                            </div> 
+                            </div>
                             {
                                 (img === '' ) && (form.file !== '' && form.file !== undefined && form.file !== null) &&
                                     <div className="p-3 position-relative">
-                                        <img className='max-h-70px' src={form.file } />
+                                        <img className='img-empresa' src={form.file } />
                                     </div>
                             }
                             {
                                 form.logo &&
-                                    <div className="p-3 position-relative">
-                                        <img value={img} className='max-h-70px' src={ img } />
-                                        <Button className="position-absolute delete-item " 
+                                    <div className="p-3 position-relative img-empresa">
+                                        <img value={img} className='img-empresa' src={ img }/>
+                                        <Button className="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow text-muted" 
                                             onClick={removeFile} text='' icon={faTimesCircle}/>
                                     </div>
                             }
-                            </div>
                         </div>
-                    </div>
                 
                 <div className="mt-3 text-center">
                     <Button icon='' className="mx-auto" type="submit" text="Enviar" />
