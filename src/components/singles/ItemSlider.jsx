@@ -120,7 +120,7 @@ class ItemSlider extends Component{
                             </div>
                         : ''
                     }
-                    <div className="w-50 h-50 text-center p-2">
+                    <div className="text-center p-2">
                         {
                             items.length === active && handleChange ?
                                 <div className="rounded w-100 d-flex justify-content-center align-items-center">
