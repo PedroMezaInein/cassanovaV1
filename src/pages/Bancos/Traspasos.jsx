@@ -248,7 +248,7 @@ class Traspasos extends Component{
                             {name: 'Nombre', text: traspaso.origen.nombre},
                             {name: '# cuenta', text: traspaso.origen.numero}
                         ]
-                    : ''
+                    : []
                 )),
                 destino: renderToString(setArrayTable(
                     traspaso.destino ?
@@ -256,7 +256,7 @@ class Traspasos extends Component{
                             {name: 'Nombre', text: traspaso.destino.nombre},
                             {name: '# cuenta', text: traspaso.destino.numero}
                         ]
-                    : ''
+                    : []
                 )),
                 monto: renderToString(setMoneyTable(traspaso.cantidad)),
                 comentario: renderToString(setTextTable(traspaso.comentario)),
@@ -315,7 +315,7 @@ class Traspasos extends Component{
             if (traspaso.adjunto) {
                 aux.push(                    
                 {
-                    text: 'Transpasos',
+                    text: 'Adjunto',
                     btnclass: 'primary',
                     iconclass: 'flaticon-file-2', 
                     action: 'adjuntos',
@@ -418,6 +418,8 @@ class Traspasos extends Component{
                 }
             }
         ).catch((error) => {
+            console.log(error, 'error catch')
+            console.log(error, 'error catch')
             swal({
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
@@ -441,6 +443,8 @@ class Traspasos extends Component{
         await axios.post(URL_DEV + 'traspasos', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
                 const { cuentas, traspasos } = response.data
+                const { data } = this.state
+                data.traspasos = traspasos
                 this.setTraspasos(traspasos)
                 let aux =  []
                 cuentas.map((cuenta) => {
@@ -451,7 +455,8 @@ class Traspasos extends Component{
                     modal: false,
                     cuentas: aux,
                     form: this.cleanForm,
-                    traspaso: ''
+                    traspaso: '',
+                    data
                 })
                 swal.close()
             },
@@ -473,6 +478,7 @@ class Traspasos extends Component{
                 }
             }
         ).catch((error) => {
+            console.log(error, 'error catch')
             swal({
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
@@ -487,6 +493,8 @@ class Traspasos extends Component{
         await axios.delete(URL_DEV + 'traspasos/' + traspaso.id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { cuentas, traspasos } = response.data
+                const { data } = this.state
+                data.traspasos = traspasos
                 this.setTraspasos(traspasos)
                 let aux =  []
                 cuentas.map((cuenta) => {
@@ -497,7 +505,8 @@ class Traspasos extends Component{
                     modalDelete: false,
                     cuentas: aux,
                     form: this.cleanForm,
-                    traspaso: ''
+                    traspaso: '',
+                    data
                 })
                 swal({
                     title: '¡Listo 👋!',
@@ -525,6 +534,7 @@ class Traspasos extends Component{
                 }
             }
         ).catch((error) => {
+            console.log(error, 'error catch')
             swal({
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
@@ -548,6 +558,8 @@ class Traspasos extends Component{
         await axios.post(URL_DEV + 'traspasos/' + traspaso.id, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
                 const { cuentas, traspasos } = response.data
+                const { data } = this.state
+                data.traspasos = traspasos
                 this.setTraspasos(traspasos)
                 let aux =  []
                 cuentas.map((cuenta) => {
@@ -558,7 +570,8 @@ class Traspasos extends Component{
                     modal: false,
                     cuentas: aux,
                     form: this.cleanForm,
-                    traspaso: ''
+                    traspaso: '',
+                    data
                 })
                 swal.close()
             },
@@ -580,6 +593,7 @@ class Traspasos extends Component{
                 }
             }
         ).catch((error) => {
+            console.log(error, 'error catch')
             swal({
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',

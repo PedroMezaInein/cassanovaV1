@@ -294,39 +294,7 @@ class egresos extends Component{
             })
         }
         return aux
-            
-        /* return(
-            <>
-                <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.changePageEdit(e)(egreso) } text='' icon={faEdit} color="transparent"
-                        tooltip={{id:'edit', text:'Editar'}} />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalDelete(e)(egreso) } text='' icon={faTrash} color="red"
-                        tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
-                </div>
-                {
-                    egreso.factura ?
-                        <div className="d-flex align-items-center flex-column flex-md-row my-1">
-                            <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalFacturas(egreso)} } text='' icon={faReceipt} color="transparent" 
-                                tooltip={{id:'taxes', text:'Facturas'}} />
-                        </div>
-                    : ''
-                }
-            </>
-        ) */
-        return(
-            [
-                {
-                    text: 'Editar',
-                    action: 'edit',
-                    tooltip: {id:'delete', text:'Eliminar', type:'error'}
-                },
-                {
-                    text: 'Eliminar',
-                    action: 'delete',
-                    tooltip: {id:'delete', text:'Eliminar', type:'error'}
-                }
-            ]
-        )
+
     }
 
     changePageAdd = () => {
@@ -661,7 +629,7 @@ class egresos extends Component{
                             elements = { data.egresos }
                             idTable = 'egresos'
                             />
-                <ModalDelete tile={"¿Estás seguro que deseas eliminar el egreso?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteEgresoAxios() }}>
+                <ModalDelete title={"¿Estás seguro que deseas eliminar el egreso?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteEgresoAxios() }}>
                 </ModalDelete>
 
                 <Modal title={"Facturas"} show = { modalFacturas } handleClose = { this.handleCloseFacturas }>

@@ -101,7 +101,6 @@ class Contratos extends Component {
 
     openModalEditCliente = contrato => {
         const { modal, form } = this.state
-        console.log(form)
         if(contrato.empresa){
             form.empresa = contrato.empresa.id.toString()
         }
@@ -212,7 +211,7 @@ class Contratos extends Component {
         })
     }
 
-    handleCloseModal = () => {
+    handleCloseModalAdjuntos = () => {
         const { modal } = this.state
         modal.adjuntos = false
         this.setState({
@@ -549,7 +548,7 @@ class Contratos extends Component {
         await axios.post(URL_DEV + 'contratos', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { contratosClientes, contratosProveedores } = response.data
-                const { data, contratos, modal } = this.state
+                let { data, contratos, modal } = this.state
 
                 swal({
                     title: '¡Felicidades 🥳!',
@@ -842,7 +841,7 @@ class Contratos extends Component {
                 </Modal>
                 <ModalDelete title={tipo === 'Cliente' ? '¿Quieres eliminar el contrato de cliente?' : '¿Quieres eliminar el contrato de proveedor?'} show = { modal.delete } handleClose = { this.handleCloseModalDelete } onClick=  { (e) => { e.preventDefault(); waitAlert(); this.deleteContratoAxios() }}>
                 </ModalDelete>
-                <Modal title = 'Adjuntos del contrato' show = { modal.adjuntos } handleClose = { this.handleCloseModal }>
+                <Modal title = 'Adjuntos del contrato' show = { modal.adjuntos } handleClose = { this.handleCloseModalAdjuntos }>
                     <Form id="form-adjuntos"
                         onSubmit = { 
                             (e) => {

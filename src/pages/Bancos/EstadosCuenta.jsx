@@ -311,6 +311,8 @@ class EstadosCuenta extends Component {
         await axios.post(URL_DEV + 'estados-cuentas', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { estados } = response.data
+                const { data } = this.state
+                data.estados = estados
                 this.setEstados(estados)
                 this.setState({
                     ... this.state,
@@ -318,7 +320,8 @@ class EstadosCuenta extends Component {
                     adjuntoFile: '',
                     adjuntoName: '',
                     cuenta: '',
-                    modal: false
+                    modal: false,
+                    data
                 })
                 swal({
                     title: '¡Felicidades 🥳!',
@@ -426,7 +429,7 @@ class EstadosCuenta extends Component {
                     }}
                     elements={data.estados}
                 />
-                <ModalDelete title={"¿Estás seguro que deseas eliminar el egreso?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteEstadoAxios() }}>
+                <ModalDelete title={"¿Estás seguro que deseas eliminar el estado de cuenta?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteEstadoAxios() }}>
                 </ModalDelete>
                 <Modal title = {"Agregar estado de cuenta"} show={modal} handleClose={this.handleClose} >
                     
