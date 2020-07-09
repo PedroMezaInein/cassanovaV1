@@ -31,6 +31,7 @@ class Empresas extends Component{
         data: {
             empresas: []
         },
+        formeditado:0,
         img: '',
         title: '',
         formAction: '',
@@ -62,7 +63,7 @@ class Empresas extends Component{
                 const { data } = this.state
                 const { data: {empresas: empresas} } = response                
                 data.empresas = empresas
-               /* YO lo agregué this.setState({
+                /* YO lo agregué this.setState({
                     ... this.state,
                     empresas: this.setEmpresas(empresas),
                     data
@@ -177,7 +178,8 @@ class Empresas extends Component{
                 rfc: emp.rfc
             },
             title: 'Editar la empresa',
-            formAction: 'Edit'
+            formAction: 'Edit',
+            formeditado:1
         })
     }
 
@@ -195,7 +197,8 @@ class Empresas extends Component{
             },
             img: '',
             title: 'Nueva empresa',
-            formAction: 'Add'
+            formAction: 'Add',
+            formeditado:0
         })
     }
 
@@ -437,7 +440,7 @@ class Empresas extends Component{
         })
     }
     render(){
-        const { empresas, modalDelete, modalEdit, empresa, form, img, title, formAction,data } = this.state
+        const { empresas, modalDelete, modalEdit, empresa, form, img, title, formAction,data, formeditado} = this.state
         return(
             <Layout active={'usuarios'} { ...this.props}>
                
@@ -469,7 +472,9 @@ class Empresas extends Component{
                         img={img} 
                         onSubmit={ formAction === 'Add' ? this.handleAddSubmit : this.handleSubmit }
                         onChange={(e) => this.handleChange(e)} 
-                        title={title} />
+                        title={title} 
+                        formeditado={formeditado}
+                        />
                 </Modal>
                 <Modal  show={modalDelete} handleClose={this.handleDeleteModal}>
                     <Subtitle className="my-3 text-center">
