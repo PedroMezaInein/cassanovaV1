@@ -1879,11 +1879,11 @@ class Proyectos extends Component {
                 const { form, options } = this.state
                 if (!error) {
                     const { municipio, estado, asentamiento } = response.data.response
-                    form['municipio'] = municipio
-                    form['estado'] = estado
+                    form['municipio'] = municipio.toUpperCase()
+                    form['estado'] = estado.toUpperCase()
                     let aux = []
                     asentamiento.map((element) => {
-                        aux.push({ name: element.toString(), value: element.toString() })
+                        aux.push({ name: element.toString().toUpperCase(), value: element.toString().toUpperCase() })
                     })
                     options['colonias'] = aux
                     this.setState({
