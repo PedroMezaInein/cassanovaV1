@@ -90,7 +90,18 @@ class ConceptoForm extends Component{
                     </div> 
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
-                <div className="form-group row form-group-marginless">                    
+                <div className="form-group row form-group-marginless">   
+                    <div className="col-md-4">
+                        <Calendar 
+                            onChangeCalendar = { this.handleChangeDate }
+                            placeholder = "Fecha"
+                            name = "fecha"
+                            value = { form.fecha }
+                            iconclass={"far fa-calendar-alt"}
+                        />
+                        {/*<span className="form-text text-muted">Por favor, seleccione su fecha. </span>*/}
+                        
+                    </div>                 
                     <div className="col-md-4">
                         <SelectSearch 
                             requirevalidation={1}
@@ -122,17 +133,6 @@ class ConceptoForm extends Component{
                             : ''                        
                     }
                     {/*<span className="form-text text-muted">Por favor, seleccione el sub-área </span>*/} 
-                    <div className="col-md-4">
-                        <Calendar 
-                            onChangeCalendar = { this.handleChangeDate }
-                            placeholder = "Fecha"
-                            name = "fecha"
-                            value = { form.fecha }
-                            iconclass={"far fa-calendar-alt"}
-                        />
-                        {/*<span className="form-text text-muted">Por favor, seleccione su fecha. </span>*/}
-                        
-                    </div> 
                 </div>
 
                 <div className="separator separator-dashed mt-1 mb-2"></div>

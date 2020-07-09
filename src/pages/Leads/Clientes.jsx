@@ -468,7 +468,7 @@ class Leads extends Component {
                 const { cliente } = this.state
                 let aux = [];
                 asentamiento.map((colonia, key) => {
-                    aux.push({ value: colonia, name: colonia })
+                    aux.push({ value: colonia, name: colonia.toUpperCase() })
                 })
                 this.setState({
                     ... this.state,
@@ -484,8 +484,8 @@ class Leads extends Component {
                     })
                 }
                 this.onChange({ target: { name: 'cp', value: value } })
-                this.onChange({ target: { name: 'municipio', value: municipio } })
-                this.onChange({ target: { name: 'estado', value: estado } })
+                this.onChange({ target: { name: 'municipio', value: municipio.toUpperCase() } })
+                this.onChange({ target: { name: 'estado', value: estado.toUpperCase() } })
             },
             (error) => {
 

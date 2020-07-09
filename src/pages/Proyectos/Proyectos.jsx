@@ -1841,7 +1841,7 @@ class Proyectos extends Component {
                                                         </Small>
                                                         <hr />
                                                     </div>
-                                                     <div className="col-md-12">
+                                                    <div className="col-md-12">
                                                         <Small>
                                                             <B color="gold">
                                                                 Descripción:
