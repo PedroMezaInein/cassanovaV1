@@ -598,7 +598,7 @@ export const FACTURAS_COLUMNS_2 = [
         accessor: 'serie'
     },
     {
-        Header: 'No. Certificado',
+        Header: 'Folio Fiscal',
         accessor: 'noCertificado'
     },
     {
