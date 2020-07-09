@@ -21,7 +21,7 @@ import RemisionCard from '../../components/cards/Proyectos/RemisionCard'
 import { Accordion } from 'react-bootstrap'
 import { faEye } from '@fortawesome/free-regular-svg-icons'
 import NewTable from '../../components/tables/NewTable'
-import {SolicitudVentaForm} from '../../components/forms'
+import {SolicitudVentaForm, FacturaForm} from '../../components/forms'
 import {SolicitudVentaCard} from '../../components/cards'
 
 class SolicitudVenta extends Component{
@@ -30,11 +30,13 @@ class SolicitudVenta extends Component{
         modal: false,
         modalDelete: false,
         modalSingle: false,
+        modalAskFactura: false,
         title: 'Nueva solicitud de compra',
         solicitud: '',
         solicitudes: [],
         data: {
-            solicitudes: []
+            solicitudes: [],
+            clientes: []
         },
         formeditado:0,
         options:{
@@ -43,9 +45,17 @@ class SolicitudVenta extends Component{
             empresas: [],
             areas: [],
             subareas: [],
-            tiposPagos: []
+            tiposPagos: [],
+            clientes: []
         },
         form:{
+            cliente: '',
+            rfc: '',
+            formaPago: '',
+            metodoPago: '',
+            estatusFactura: '',
+            concepto: '',
+            email: '',
             proyecto: '',
             area: '',
             subarea: '',
@@ -188,6 +198,27 @@ class SolicitudVenta extends Component{
         })
     }
 
+    openModalAskFactura = solicitud => {
+        const { form } = this.state
+        form.empresa = solicitud.empresa.id.toString()
+        this.setState({
+            ... this.state,
+            modalAskFactura: true,
+            solicitud: solicitud,
+            form,
+            formeditado:1
+        })
+    }
+
+    handleCloseAskFactura = () => {
+        this.setState({
+            ... this.state,
+            modalAskFactura: false,
+            solicitud: '',
+            form: this.clearForm()
+        })
+    }
+
     handleClose = () => {
         this.setState({
             ... this.state,
@@ -290,6 +321,12 @@ class SolicitudVenta extends Component{
             this.addSolicitudVentaAxios()
     }
 
+    onSubmitAskFactura = e => {
+        e.preventDefault()
+        waitAlert()
+        this.askFacturaAxios()
+    }
+
     //Setters
     setOptions = (name, array) => {
         const {options} = this.state
@@ -353,22 +390,78 @@ class SolicitudVenta extends Component{
                     iconclass: 'flaticon2-expand',                  
                     action: 'see',
                     tooltip: {id:'see', text:'Mostrar', type:'success'},
+                },
+                {
+                    text: 'Pedir&nbsp;factura',
+                    btnclass: 'info',
+                    iconclass: 'flaticon-file-1',
+                    action: 'bills',
+                    tooltip: { id: 'bills', text: 'Pedir factura' }
                 }
         )
         return aux
+    }
+
+    async askFacturaAxios(){
+
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        await axios.post(URL_DEV + 'facturas/ask', form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                
+                this.setState({
+                    ... this.state,
+                    form: this.clearForm(),
+                    modalAskFactura: false
+                })
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    errorAlert(
+                        error.response.data.message !== undefined ? 
+                            error.response.data.message 
+                        : 'Ocurrió un error desconocido, intenta de nuevo.'
+                    )
+                }
+            }
+        ).catch((error) => {
+            console.log(error, 'CATCH ERROR')
+            errorAlert('Ocurrió un error desconocido, intenta de nuevo')
+        })
     }
 
     async getSolicitudesVentaAxios(){
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'solicitud-venta', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { empresas, areas, tiposPagos, proyectos, solicitudes } = response.data
+                const { empresas, areas, tiposPagos, proyectos, solicitudes, clientes, metodosPago, formasPago, estatusFacturas } = response.data
                 const { options, data } = this.state
                 data.solicitudes = solicitudes
+                data.clientes = clientes
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
                 options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
                 options['tiposPagos'] = setSelectOptions( tiposPagos, 'tipo' )
+                options['clientes'] = setOptions(clientes, 'empresa', 'id')
+                options['metodosPago'] = setOptions(metodosPago, 'nombre', 'id')
+                options['formasPago'] = setOptions(formasPago, 'nombre', 'id')
+                options['estatusFacturas'] = setOptions(estatusFacturas, 'estatus', 'id')
                 this.setState({
                     ... this.state,
                     options,
@@ -586,7 +679,7 @@ class SolicitudVenta extends Component{
 
     render(){
 
-        const { data, solicitudes, modal, modalDelete, title, form, options, solicitud, modalSingle, formeditado} = this.state
+        const { data, solicitudes, modal, modalDelete, title, form, options, solicitud, modalSingle, formeditado, modalAskFactura} = this.state
         return(
             <Layout active={'proyectos'}  { ...this.props}>
                 <NewTable 
@@ -602,7 +695,8 @@ class SolicitudVenta extends Component{
                         'edit': {function: this.openModalEdit},
                         'delete': {function: this.openModalDelete},
                         'convert': {function: this.changePageConvert},
-                        'see': {function: this.openModalSingle}
+                        'see': {function: this.openModalSingle},
+                        'bills': { function: this.openModalAskFactura },
                     }}
                     elements = { data.solicitudes } />
                 <Modal show = { modal } handleClose = { this.handleClose } title = { title }>
@@ -623,6 +717,11 @@ class SolicitudVenta extends Component{
                         }
                         
                     </SolicitudVentaCard>
+                </Modal>
+                <Modal title={"Solicitud de factura"} show={modalAskFactura} handleClose={this.handleCloseAskFactura}>
+                    <FacturaForm options={options} onChange={this.onChange} form={form}
+                        onSubmit={this.onSubmitAskFactura} formeditado={formeditado} data ={data} />
+                    
                 </Modal>
             </Layout>
         )

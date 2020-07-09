@@ -18,8 +18,12 @@ export default class FacturaForm extends Component{
     }
 
     updateCliente = value => {
-        const { onChange } = this.props
+        const { onChange, data } = this.props
         onChange( { target: { value: value, name:'cliente' } } )
+        data.clientes.map((cliente)=>{
+            if(cliente.id.toString() === value)
+                onChange( { target: { value: cliente.rfc, name:'rfc' } } )
+        })
     }
 
     updateMetodoPago = value => {
@@ -61,6 +65,16 @@ export default class FacturaForm extends Component{
                         />
                     </div>
                     <div className="col-md-4">
+                        <SelectSearch 
+                            formeditado={formeditado}
+                            options={options.clientes} 
+                            placeholder = "Nombre del cliente" 
+                            name = "cliente" 
+                            value = { form.cliente } 
+                            onChange = { this.updateCliente }
+                        />
+                    </div>
+                    <div className="col-md-4">
                         <Input
                             requirevalidation={1}
                             formeditado={formeditado}
@@ -73,16 +87,6 @@ export default class FacturaForm extends Component{
                             patterns={RFC}
                             messageinc="Incorrecto. Ej. ABCD001122ABC"
                             maxLength="13"
-                        />
-                    </div>
-                    <div className="col-md-4">
-                        <SelectSearch 
-                            formeditado={formeditado}
-                            options={options.clientes} 
-                            placeholder = "Nombre del cliente" 
-                            name = "cliente" 
-                            value = { form.cliente } 
-                            onChange = { this.updateCliente }
                         />
                     </div>
                 </div>

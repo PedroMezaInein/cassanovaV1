@@ -1223,7 +1223,7 @@ class Ventas extends Component{
                 </Modal>
                 <Modal title={"Solicitar factura"} show = { modalAskFactura } handleClose = { this.handleCloseAskFactura }>
                     <FacturaForm options = { options } onChange = { this.onChange } form = { form } 
-                        onSubmit = { this.onSubmitAskFactura } formeditado={formeditado} />
+                        onSubmit = { this.onSubmitAskFactura } formeditado={formeditado} data ={data} />
                 </Modal>
 
             </Layout>
