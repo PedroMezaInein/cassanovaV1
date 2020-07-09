@@ -169,7 +169,8 @@ class SolicitudCompra extends Component{
                 data.solicitudes = solicitudes
                 this.setState({
                     ... this.state,
-                    solicitudes: this.setSolicitudes(solicitudes)
+                    solicitudes: this.setSolicitudes(solicitudes),
+                    data
                 })
             },
             (error) => {

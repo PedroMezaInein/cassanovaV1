@@ -1109,9 +1109,8 @@ class Proyectos extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'proyectos', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { data } = this.state
                 const { clientes, empresas, proyectos } = response.data
-                const { options, prospecto } = this.state
+                const { options, prospecto, data } = this.state
                 data.proyectos = proyectos
                 options['clientes'] = setOptions(clientes, 'empresa', 'id')
                 options['empresas'] = setOptions(empresas, 'name', 'id')

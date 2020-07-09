@@ -54,6 +54,8 @@ class Leads extends Component{
 
     // Setters
     setLeads = leads => {
+        const { data } = this.state
+        data.leads = leads
         let _leads = []
         leads.map((lead, key) => {
             _leads[key] = {
@@ -87,7 +89,8 @@ class Leads extends Component{
         this.setState({
             ... this.state,
             leads: _leads,
-            leadsData: aux
+            leadsData: aux,
+            data
         })
     }
 
@@ -470,7 +473,7 @@ class Leads extends Component{
                 this.setEmpresas(empresas)
                 this.setState({
                     ... this.state,
-                    //leads: this.setLeads(leads)
+                    data
                 })
             },
             (error) => {
@@ -706,23 +709,24 @@ class Leads extends Component{
                 
                 { 
                     <NewTable columns = { LEADS_COLUMNS } data = { leads } 
-                    title = 'Leads' subtitle = 'Listado de leads'
-                    mostrar_boton={true}
-                    abrir_modal={true} 
-                    onClick={this.openModal}
-                    mostrar_acciones={true} 
-                    
-                    exportar_boton={true} 
-                    onClickExport={this.exportToCSV}
-                    
-                    actions = {{
-                        'edit': {function: this.openModalEditLead},
-                        'delete': {function: this.openModalSafeDelete},
-                        'prospecto': {function: this.openModalSafeConvert},
-                        'proveedor': {function: this.openModalSafeConvertProveedor},
-                    }}
-                    elements = { data.leads }
-                />}
+                        title = 'Leads' subtitle = 'Listado de leads'
+                        mostrar_boton={true}
+                        abrir_modal={true} 
+                        onClick={this.openModal}
+                        mostrar_acciones={true} 
+                        
+                        exportar_boton={true} 
+                        onClickExport={this.exportToCSV}
+                        
+                        actions = {{
+                            'edit': {function: this.openModalEditLead},
+                            'delete': {function: this.openModalSafeDelete},
+                            'prospecto': {function: this.openModalSafeConvert},
+                            'proveedor': {function: this.openModalSafeConvertProveedor},
+                        }}
+                        elements = { data.leads }
+                    />
+                }
                 <Modal title = { title } show = { modalAdd } handleClose = { this.handleCloseModal } >
                     <LeadForm 
                         className = " px-3 "

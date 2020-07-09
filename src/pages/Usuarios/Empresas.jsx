@@ -100,6 +100,8 @@ class Empresas extends Component{
 
     // Set empresas
     setEmpresas = (empresas_list) => {
+        const { data } = this.state
+        data.empresas = empresas_list
         let empresas = []
         empresas_list.map((empresa, key) => {
             empresas[key] = {
@@ -121,7 +123,8 @@ class Empresas extends Component{
                 razonSocial: '',
                 logo: '',
                 file: ''
-            }
+            },
+            data
         })
     }
 
@@ -394,12 +397,23 @@ class Empresas extends Component{
                 img: img
             })
         }
+        
         else{
-            form[name] = value
-            this.setState({
-                ... this.state,
-                form
-            })
+            if(name === 'razonSocial'){
+                let cadena = value.replace(/,/g, '')
+                cadena = cadena.replace(/\./g, '')
+                form[name] = cadena
+                this.setState({
+                    ... this.state,
+                    form
+                })
+            }else{
+                form[name] = value
+                this.setState({
+                    ... this.state,
+                    form
+                })
+            }
         }
         
         

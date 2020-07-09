@@ -81,7 +81,12 @@ class Leads extends Component {
     onChange = event => {
         const { form } = this.state
         const { name, value } = event.target
-        form[name] = value
+        if(name === 'empresa'){
+            let cadena = value.replace(/,/g, '')
+            cadena = cadena.replace(/\./g, '')
+            form[name] = cadena
+        }else
+            form[name] = value
         this.setState({
             ... this.state,
             form
@@ -320,6 +325,8 @@ class Leads extends Component {
         await axios.post(URL_DEV + 'cliente', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { clientes } = response.data
+                const { data } = this.state
+                data.clientes = clientes
                 this.setClientes(clientes)
                 swal({
                     title: '¡Felicidades 🥳!',
@@ -331,7 +338,8 @@ class Leads extends Component {
                 this.setState({
                     ... this.state,
                     modal: false,
-                    typeForm: ''
+                    typeForm: '',
+                    data
                 })
                 this.clearForm('form', EMPTY_CLIENTE)
             },
@@ -369,6 +377,8 @@ class Leads extends Component {
         await axios.put(URL_DEV + 'cliente/' + cliente.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { clientes, message } = response.data
+                const { data } = this.state
+                data.clientes = clientes
                 this.setClientes(clientes)
                 swal({
                     title: '¡Felicidades 🥳!',
@@ -380,7 +390,8 @@ class Leads extends Component {
                 this.setState({
                     ... this.state,
                     modal: false,
-                    cliente: ''
+                    cliente: '',
+                    data
                 })
                 this.clearForm('form', EMPTY_CLIENTE)
             },
@@ -418,6 +429,8 @@ class Leads extends Component {
         await axios.delete(URL_DEV + 'cliente/' + cliente.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { clientes } = response.data
+                const { data } = this.state
+                data.clientes = clientes
                 this.setClientes(clientes)
                 swal({
                     title: '¡Listo 👋!',
@@ -429,7 +442,8 @@ class Leads extends Component {
                 this.setState({
                     ... this.state,
                     modalDelete: false,
-                    cliente: ''
+                    cliente: '',
+                    data
                 })
                 this.clearForm('form', EMPTY_CLIENTE)
             },
