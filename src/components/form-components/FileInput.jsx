@@ -124,7 +124,7 @@ class FileInput extends Component{
                         {
                             files.map((file, key) => {
                                 return(
-                                    <div className="tagify form-control p-1 col-md-6  d-flex justify-content-center align-items-center" tabIndex="-1" style={{borderWidth:"0px"}}  key = { key }>
+                                    <div className={this.props.multiple ? "tagify form-control p-1 col-md-6  d-flex justify-content-center align-items-center" : "tagify form-control p-1 col-md-12  d-flex justify-content-center align-items-center"} tabIndex="-1" style={{borderWidth:"0px"}}  key = { key }>
                                         <div className="tagify__tag tagify__tag--primary tagify--noAnim" >
                                             <div
                                                 title="Borrar archivo" 
