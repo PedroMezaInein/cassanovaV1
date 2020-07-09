@@ -36,9 +36,9 @@ export default function MobileHeader() {
 					<button id="openbuerger"className="btn p-0 burger-icon burger-icon-left" onClick = { () => { openMobileAside() } }>
 						<span></span>
 					</button>
-					<button className="btn p-0 burger-icon ml-4" onClick = { () => { openMobileHeader() } }>
+					{/* <button className="btn p-0 burger-icon ml-4" onClick = { () => { openMobileHeader() } }>
 						<span></span>
-					</button>
+					</button> */}
 					<button id="opentopbar"className="btn btn-hover-text-primary p-0 ml-2" onClick = { () => { openMobileTopbar() } }>
 						<span className="svg-icon svg-icon-xl">
 							<svg xmlns="http://www.w3.org/2000/svg"width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
