@@ -119,44 +119,86 @@ class FileInput extends Component{
                     </div>                    
                 </div>
                 <span className={ fileValido ? "form-text text-danger hidden" : "form-text text-danger"}> {messageinc} </span>
-                <div className="flex-wrap d-flex">
-                    {
-                        files.map((file, key) => {
-                            return(
-                                <Badge variant = "light" key = { key } className="d-flex px-3 align-items-center" pill>
-                                    <FontAwesomeIcon
-                                        icon = { faTimes }
-                                        onClick = 
-                                            { 
-                                                deleteAdjunto 
-                                                    ? (e) => { e.preventDefault(); deleteAdjunto(name, key); } 
-                                                    : deleteAdjuntoAvance 
-                                                        ? 
-                                                            (e) => { e.preventDefault(); deleteAdjuntoAvance(name, key, _key) } 
-                                                        : ''
-                                            }
-                                        className = "small-button mr-2" />
-                                        {
-                                            file.url ? 
-                                                <a href={file.url} target="_blank">
-                                                    <Small>
-                                                        {
-                                                            file.name
-                                                        }
-                                                    </Small>
-                                                </a>
-                                            :
-                                                <Small>
-                                                    {
-                                                        file.name
-                                                    }
-                                                </Small>
-                                        }
-                                </Badge>
-                            )
-                        })
-                    }</div>
 
+                    <div className="flex-wrap d-flex d-flex justify-content-center align-items-center">
+                        {
+                            files.map((file, key) => {
+                                return(
+                                    <div className="tagify form-control p-1 col-md-6  d-flex justify-content-center align-items-center" tabIndex="-1" style={{borderWidth:"0px"}}  key = { key }>
+                                        <div className="tagify__tag tagify__tag--primary tagify--noAnim" >
+                                            <div
+                                                title="Borrar archivo" 
+                                                className="tagify__tag__removeBtn" 
+                                                role="button" 
+                                                aria-label="remove tag" 
+                                                onClick = 
+                                                    { 
+                                                        deleteAdjunto 
+                                                            ? (e) => { e.preventDefault(); deleteAdjunto(name, key); } 
+                                                            : deleteAdjuntoAvance 
+                                                                ? 
+                                                                    (e) => { e.preventDefault(); deleteAdjuntoAvance(name, key, _key) } 
+                                                                : ''
+                                                    }
+                                                > 
+                                            </div>                                        
+                                            {
+                                                file.url ? 
+                                                    <a href={file.url} target="_blank" className="pt-2 pb-2">
+                                                        <div><span className="tagify__tag-text p-1 white-space">{file.name}</span></div>
+                                                    </a>
+                                                :
+                                                <div><span className="tagify__tag-text p-1 white-space pt-2 pb-2">{file.name}</span></div>
+                                            }
+                                        </div>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                    {/* {
+                        <div className="flex-wrap d-flex">
+                            {
+                                files.map((file, key) => {
+                                    return(
+                                        <div className="tagify form-control p-1 col-md-3 px-2 d-flex justify-content-center align-items-center mb-3" key = { key } tabIndex="-1" style={{borderWidth:"0px"}} >
+                                            <div className="tagify__tag tagify__tag--primary tagify--noAnim" >
+                                                <div
+                                                    title="Borrar archivo" 
+                                                    className="tagify__tag__removeBtn" 
+                                                    role="button" 
+                                                    aria-label="remove tag" 
+                                                    onClick = 
+                                                    { 
+                                                        deleteAdjunto 
+                                                            ? (e) => { e.preventDefault(); deleteAdjunto(name, key); } 
+                                                            : deleteAdjuntoAvance 
+                                                                ? 
+                                                                    (e) => { e.preventDefault(); deleteAdjuntoAvance(name, key, _key) } 
+                                                                : ''
+                                                    }
+                                                >
+                                                {
+                                                    file.url ? 
+                                                        <a href={file.url} target="_blank">
+                                                            <div>
+                                                                <span className="tagify__tag-text p-1 white-space">{file.name}</span>
+                                                            </div>
+                                                        </a>
+                                                    :
+                                                    <div>
+                                                        <span className="tagify__tag-text p-1 white-space">{file.name}</span>
+                                                    </div>
+                                                }
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+                    }  */}
             </>
         )
     }
