@@ -38,8 +38,7 @@ class ProyectosForm extends Component{
         const { onChange, form }  = this.props
         let aux = false
         let array = []
-        if (/^(?:[^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*|"[^\n"]+")@(?:[^<>()[\].,;:\s@"]+\.)+[^<>()[\]\.,;:\s@"]{2,63}$/i.test(form.correo)){
-            alert("La dirección de email " + form.correo + " es correcta.");
+        if (/^(?:[^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*|"[^\n"]+")@(?:[^<>()[\].,;:\s@"]+\.)+[^<>()[\]\.,;:\s@"]{2,63}$/i.test(form.correo)){ 
             if(form.correo){
                 form.correos.map( (correo) => {
                     if(correo === form.correo){
