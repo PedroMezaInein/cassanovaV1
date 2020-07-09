@@ -585,7 +585,7 @@ class EgresosForm extends Component{
     }
 
     render(){
-        const { form, title, options, formeditado } = this.state
+        const { form, title, options, formeditado, data } = this.state
         return(
             <Layout active={'administracion'}  { ...this.props}>
                 <Card className="pt-0">
@@ -599,7 +599,8 @@ class EgresosForm extends Component{
                             clearFiles = { this.clearFiles } 
                             options = { options } 
                             setOptions = { this.setOptions } 
-                            onSubmit = {this.onSubmit}/> 
+                            onSubmit = {this.onSubmit}
+                            data = {data}/> 
                     </Card.Body>
                 </Card>
                 

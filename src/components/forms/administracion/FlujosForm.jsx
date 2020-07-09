@@ -29,8 +29,20 @@ class FlujosForm extends Component{
         const { form, onChange, options, deleteOption, onChangeAndAdd, clear, ...props } = this.props
         return(
             <Form { ... props}>
+                <h1 className="text-center mb-3">Flujos</h1>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-6">
+                        <SelectSearch
+                            options = { options.cuentas } 
+                            placeholder = "Selecciona la cuenta" 
+                            name="cuenta"  
+                            value = { form.cuenta } 
+                            onChange = { this.updateCuenta } 
+                            iconclass={"fas fa-credit-card"} 
+                            />
+                        {/* <span className="form-text text-muted">Por favor, seleccione la(s) cuenta(s)</span> */}
+                    </div>
+                    <div className="col-md-3">
                         <Calendar 
                             onChangeCalendar = { this.handleChangeDateInicio }
                             placeholder = "Fecha de inicio"
@@ -41,9 +53,9 @@ class FlujosForm extends Component{
                             endDate={ form.fechaFin }
                             iconclass={"far fa-calendar-alt"}                            
                         />
-                        <span className="form-text text-muted">Por favor, ingrese su fecha de inicio. </span>
+                        {/* <span className="form-text text-muted">Por favor, ingrese su fecha de inicio. </span> */}
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-3">
                         <Calendar 
                             onChangeCalendar = { this.handleChangeDateFin }
                             placeholder = "Fecha final"
@@ -55,50 +67,43 @@ class FlujosForm extends Component{
                             minDate={ form.fechaInicio }
                             iconclass={"far fa-calendar-alt"}                          
                         />
-                        <span className="form-text text-muted">Por favor, ingrese su fecha de fin. </span>
+                        {/* <span className="form-text text-muted">Por favor, ingrese su fecha de fin. </span> */}
                     </div>
+                    
                 </div>
-                <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-4">
-                        <SelectSearch
-                            options = { options.cuentas } 
-                            placeholder = "Selecciona la cuenta" 
-                            name="cuenta"  
-                            value = { form.cuenta } 
-                            onChange = { this.updateCuenta } 
-                            iconclass={"fas fa-credit-card"} 
-                            />
-                        <span className="form-text text-muted">Por favor, seleccione la(s) cuenta(s)</span>
-                    </div>
-                    <div className="col-md-8">
-                        {
+                        {                                            
                             form.cuentas.length > 0 ?
-                                <div className="col-md-12 d-flex align-items-center image-upload">
+                                <div className="col-md-12 row mx-0 align-items-center image-upload">
                                     {
                                         form.cuentas.map((cuenta, key)=>{
                                             return(
-                                                <Badge variant = "light" key = { key } className="d-flex px-3 align-items-center" pill>
-                                                    <FontAwesomeIcon
-                                                        icon = { faTimes }
-                                                        onClick = { (e) => { e.preventDefault(); deleteOption(cuenta, 'cuentas')  }}
-                                                        className = "small-button mr-2" />
-                                                        {
-                                                            cuenta.name
-                                                        }
-                                                </Badge>
+                                                <div className="tagify form-control p-1 col-md-3 px-2 d-flex justify-content-center align-items-center mb-3" tabIndex="-1" style={{borderWidth:"0px"}}>
+                                                    <div className="tagify__tag tagify__tag--primary tagify--noAnim" key = { key }>
+                                                        <div 
+                                                            title="Borrar archivo" 
+                                                            className="tagify__tag__removeBtn" 
+                                                            role="button" 
+                                                            aria-label="remove tag" 
+                                                            onClick = { (e) => { e.preventDefault(); deleteOption(cuenta, 'cuentas')  }}
+                                                            >
+                                                        </div>                                                            
+                                                        <div><span className="tagify__tag-text p-1 white-space">{cuenta.name}</span></div>
+                                                    </div>
+                                                </div>
                                             )
                                         })
                                     }
-                                </div>
+                                </div> 
                             : ''
                         }
-                    </div>
                 </div>
-                <div className="mt-3 text-center">
-                    <Button icon='' className="mx-3" type="submit" text="Mostrar" />
-                    <Button onClick = { clear } className="mx-3" text="Limpiar" />
+                <div className="separator separator-dashed mt-1"></div>
+                <div className="mt-3 text-center mb-4">
+                    <Button icon='' className="btn btn-light-primary font-weight-bold mr-2" type="submit" text="MOSTRAR" />
+                    <Button onClick = { clear } className="btn btn-light-danger font-weight-bold mr-2" text="LIMPIAR" />
                 </div>
+                <div className="separator separator-dashed mt-1 mb-2 mt-2"></div>
             </Form>
         )
     }

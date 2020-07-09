@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Subtitle } from '../../texts'
-import { SelectSearch, Select, Calendar, RadioGroup, FileInput, Button, Input, InputMoney } from '../../form-components'
+import { SelectSearch, Select, Calendar, RadioGroup, FileInput, Button, Input, InputMoney, SelectSearchTrue } from '../../form-components'
 import { Form } from 'react-bootstrap'
 import { RFC, DATE } from '../../../constants'
 import {openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
@@ -93,13 +93,16 @@ updateArea = value => {
     }
 
     updateProveedor = value => {
-        const { onChange, setOptions } = this.props
+        const { onChange, setOptions, form } = this.props
         onChange({ target: { value: value, name: 'proveedor' } })
         onChange({ target: { value: '', name: 'contrato' } })
         const { data: { proveedores: proveedores } } = this.props
         proveedores.find(function (element, index) {
             if (value.toString() === element.id.toString()) {
                 setOptions('contratos', element.contratos)
+                if(element.rfc !== ''){
+                    onChange({ target: { value: element.rfc, name: 'rfc' } })
+                }
             }
         })
     }
@@ -313,17 +316,6 @@ updateArea = value => {
                                 <h5 className="mb-4 font-weight-bold text-dark">Selecciona el área y fecha</h5>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
-                                        <Calendar 
-                                            formeditado={formeditado}
-                                            onChangeCalendar={this.handleChangeDate}
-                                            placeholder="Fecha" 
-                                            name="fecha" 
-                                            value={form.fecha}
-                                            patterns={DATE}
-                                        />
-                                        {/*<span className="form-text text-muted">Por favor, selecciona la fecha.</span>*/}
-                                    </div>
-                                    <div className="col-md-4">
                                         <SelectSearch 
                                             formeditado={formeditado}
                                             options={options.areas} 
@@ -351,6 +343,17 @@ updateArea = value => {
                                             </div>
                                         : ''
                                     }
+                                    <div className="col-md-4">
+                                        <Calendar 
+                                            formeditado={formeditado}
+                                            onChangeCalendar={this.handleChangeDate}
+                                            placeholder="Fecha" 
+                                            name="fecha" 
+                                            value={form.fecha}
+                                            patterns={DATE}
+                                        />
+                                        {/*<span className="form-text text-muted">Por favor, selecciona la fecha.</span>*/}
+                                    </div>
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
@@ -476,7 +479,7 @@ updateArea = value => {
                                         {/*<span className="form-text text-muted">Por favor, ingresa la comisión.</span>*/}
                                     </div>
                                     <div className="col-md-3">
-                                        <SelectSearch 
+                                        <SelectSearchTrue 
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             options={options.contratos} 

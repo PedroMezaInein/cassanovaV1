@@ -852,6 +852,10 @@ class Compras extends Component{
                 }
                 if(solicitud.proveedor){
                     form.proveedor = solicitud.proveedor.id.toString()
+                    form.rfc = solicitud.proveedor.rfc
+                    if(solicitud.proveedor.contratos){
+                        options['contratos'] = setOptions(solicitud.proveedor.contratos, 'nombre', 'id')
+                    }
                 }
                 if(solicitud.proyecto){
                     if(solicitud.proyecto.cliente){

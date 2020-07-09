@@ -226,7 +226,7 @@ class Contabilidad extends Component {
     render() {
         const { form, options } = this.state
         return (
-            <Layout active={'catalogos'}  {...this.props}>
+            <Layout active={'reportes'}  {...this.props}>
                 <Card className="m-2 p-2 m-md-4 p-md-4">
                     <Card.Body>
                         <ContabilidadForm form = { form } options = { options } onChangeEmpresa = { this.onChangeEmpresa } 

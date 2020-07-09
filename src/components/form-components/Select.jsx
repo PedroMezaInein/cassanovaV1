@@ -106,7 +106,7 @@ class Select extends Component{
                             </span>
                         </span>  
                     <Form.Control 
-                        className={ selectValido ? " form-control is-valid " : " form-control is-invalid" }
+                        className={ selectValido ? " form-control is-valid text-uppercase " : " form-control is-invalid text-uppercase" }
                         onChange={ (e) => { e.preventDefault(); this.validarSelect(e); onChange(e) }} 
                         name={ name } 
                         value={ value } 

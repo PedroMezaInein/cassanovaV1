@@ -362,278 +362,6 @@ class Proyectos extends Component {
                     files: []
                 }
             },
-            adjuntos_grupos:[
-                {
-                    text: 'Inicio y planeación',
-                    value: 'inicio_y_planeacion',
-                    adjuntos:[
-                        {
-                            value: '',
-                            placeholder: 'Fotografías levantamiento',
-                            files: [],
-                            id: 'fotografias_levantamiento'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Manuales de adaptación',
-                            files: [],
-                            id: 'manuales_de_adaptacion'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Minutas',
-                            files: [],
-                            id: 'minutas'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Oficios',
-                            files: [],
-                            id: 'oficios'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Planos entregados por cliente',
-                            files: [],
-                            id: 'planos_entregados_por_cliente'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Propuestas arquitectónicas preliminares',
-                            files: [],
-                            id: 'propuestas_arquitectonicas_preliminares'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Referencias del diseño del proyecto',
-                            files: [],
-                            id: 'referencias_del_diseño_del_proyecto'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Renders',
-                            files: [],
-                            id: 'renders'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Sketch Up',
-                            files: [],
-                            id: 'sketch_up'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Presupuestos preliminares',
-                            files: [],
-                            id: 'presupuestos_preliminares'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Carta oferta',
-                            files: [],
-                            id: 'carta_oferta'
-                        },
-                    ]
-                },
-                {
-                    text: 'Ejecución de obra',
-                    value: 'ejecucion_de_obra',
-                    adjuntos:[
-                        {
-                            value: '',
-                            placeholder: 'Datos de cliente',
-                            files: [],
-                            id: 'datos_de_cliente'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Contrato cliente',
-                            files: [],
-                            id: 'contrato_cliente'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Contrato proveedores y contratistas',
-                            files: [],
-                            id: 'contrato_proveedores_y_contratistas'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Firmas de aprobación',
-                            files: [],
-                            id: 'firmas_de_aprobacion'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Reporte fotográfico de avance de obra',
-                            files: [],
-                            id: 'reporte_fotografico_de_avance_de_obra'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Reporte de materiales',
-                            files: [],
-                            id: 'reporte_de_materiales'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Reporte de proyecto VS ejecutado',
-                            files: [],
-                            id: 'reporte_de_proyecto_vs_ejecutado'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Minutas de obra',
-                            files: [],
-                            id: 'minutas_de_obra'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Presupuesto aprobado por cliente',
-                            files: [],
-                            id: 'presupuesto_aprobado_por_cliente'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Programa de obra',
-                            files: [],
-                            id: 'programa_de_obra'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Planos durante obra',
-                            files: [],
-                            id: 'planos_durante_obra'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Sketch Up Aprobados',
-                            files: [],
-                            id: 'sketch_up_aprobados'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Renders aprobados',
-                            files: [],
-                            id: 'renders_aprobados'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Estados de cuenta',
-                            files: [],
-                            id: 'estados_de_cuenta'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Fianzas y seguros',
-                            files: [],
-                            id: 'fianzas_y_seguros'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Permisos de obra ante dependencias',
-                            files: [],
-                            id: 'permisos_de_obra_ante_dependencias'
-                        },
-                    ]
-                },
-                {
-                    text: 'Entrega',
-                    value: 'entrega',
-                    adjuntos:[
-                        {
-                            value: '',
-                            placeholder: 'Catálogo de conceptos ASBUILT',
-                            files: [],
-                            id: 'catalogo_de_conceptos_asbuilt'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Consignas de mantenimiento',
-                            files: [],
-                            id: 'consignas_de_matenimiento'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Planos aprobados',
-                            files: [],
-                            id: 'planos_aprobados'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Garantía de los equipos',
-                            files: [],
-                            id: 'garantia_de_los_equipos'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Garantía de vicios ocultos',
-                            files: [],
-                            id: 'garantia_de_vicios_ocultos'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Memorías de cálculo',
-                            files: [],
-                            id: 'memorias_de_calculo'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Memorías descriptivas',
-                            files: [],
-                            id: 'memorias_descriptivas'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Fichas técnicas',
-                            files: [],
-                            id: 'fichas_tecnicas'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Pruebas de instalaciones',
-                            files: [],
-                            id: 'pruebas_de_instalaciones'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Fotografías fin de obra',
-                            files: [],
-                            id: 'fotografias_fin_de_obra'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Acta de entrega',
-                            files: [],
-                            id: 'acta_de_entrega'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Carpeta de entrega ZIP',
-                            files: [],
-                            id: 'carpeta_de_entrega_zip'
-                        },
-                    ]
-                },
-                {
-                    text: 'Mantenimiento',
-                    value: 'mantenimiento',
-                    adjuntos:[
-                        {
-                            value: '',
-                            placeholder: 'Mantenimiento preventivo',
-                            files: [],
-                            id: 'mantenimiento_preventivo'
-                        },
-                        {
-                            value: '',
-                            placeholder: 'Mantenimiento correctivo',
-                            files: [],
-                            id: 'mantenimiento_correctivo'
-                        }
-                    ]
-                }
-            ],
             avances:[
                 {
                     descripcion: '',
@@ -923,38 +651,6 @@ class Proyectos extends Component {
         })
     }
 
-    onChangeAdjuntoGrupo = e => {
-        const { form } = this.state
-        const { files, value, name } = e.target
-        let grupo = 0
-        let adjunto = 0
-        let aux = []
-        for (let counter = 0; counter < files.length; counter++) {
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
-                }
-            )
-        }
-        for(let i = 0; i < form.adjuntos_grupos.length; i++ ){
-            for(let j = 0; j < form.adjuntos_grupos[i].adjuntos.length; j++ ){
-                if(form.adjuntos_grupos[i].adjuntos[j].id.toString() === name.toString()){
-                    grupo = i;
-                    adjunto = j;
-                }
-            }
-        }
-        form['adjuntos_grupos'][grupo]['adjuntos'][adjunto].value = value
-        form['adjuntos_grupos'][grupo]['adjuntos'][adjunto].files = aux
-        this.setState({
-            ... this.state,
-            form
-        })
-    }
-
     onChangeAdjunto = e => {
         const { form } = this.state
         const { files, value, name } = e.target
@@ -1127,8 +823,6 @@ class Proyectos extends Component {
                 case 'correos':
                     form[element] = []
                     break;
-                case 'adjuntos_grupos':
-                    break;
                 default:
                     form[element] = ''
                     break;
@@ -1175,6 +869,7 @@ class Proyectos extends Component {
     }
 
     handleChange = (files, item) => {
+        
         this.onChangeAdjuntoGrupo({ target: { name: item, value: files, files: files } })
         swal({
             title: '¿Confirmas el envio de adjuntos?',
@@ -1196,6 +891,7 @@ class Proyectos extends Component {
             }
         }).then((result) => {
             if (result) {
+                waitAlert()
                 this.addProyectoAdjuntoAxios(item)
             }
         })

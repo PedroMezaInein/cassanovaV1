@@ -5,32 +5,43 @@ import Input from './Input'
 import '../../styles/select_custom.css';
 class SelectSearchForm extends Component{
 
-    renderFontValue(valueProps,onChange) {  
-        let validado=false;
-        if(onChange===null || onChange.value===null)
-        {
-            validado=false;
+    state = {
+        requirevalidation: true
+    }
+
+    renderFontValue = (valueProps,onChange) => {  
+        const { requirevalidation } = this.state
+
+        let validado = false;
+        if(requirevalidation){
+            if( onChange === null || onChange.value === null ){
+                validado=false;
+            }else{
+                validado=true;
+            }
+        }else{
+            validado = true
         }
-        else
-        {
-            validado=true;
-        }  
+
         return (           
             <> 
-            <div className="input-icon">       
-                <span className="input-icon input-icon-right">
-                    <i className={"flaticon2-search-1 m-0 kt-font-boldest text-primary"}></i> 
-                </span>  
-                
-                <input   
-                    className={ validado ? " form-control is-valid " : " form-control is-invalid" }   
-                    {...valueProps}
-                />
-            </div>
-            <span className={ validado ? "form-text text-danger hidden" : "form-text text-danger" }> Selecciona una opción </span>
+                <div className="input-icon">       
+                    <span className="input-icon input-icon-right">
+                        <i className={"flaticon2-search-1 m-0 kt-font-boldest text-primary"}></i> 
+                    </span>  
+                    <input   
+                        className={ validado ? " form-control is-valid text-uppercase" : " form-control is-invalid text-uppercase" }   
+                        {...valueProps}
+                        />
+                </div>
+                <span className={ validado ? "form-text text-danger hidden" : "form-text text-danger" }> Selecciona una opción </span>
             </>               
         );
-    } 
+    }
+
+    componentDidMount(){
+        
+    }
 
     render(){
         

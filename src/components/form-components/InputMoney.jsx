@@ -118,7 +118,7 @@ class InputMoney extends Component{
                         thousandSeparator = { thousandSeparator ? thousandSeparator : false } 
                         prefix = { prefix }
                         //prefix={'$'} 
-                        className={ inputMoneyValido ? " form-control is-valid " : " form-control is-invalid" }
+                        className={ inputMoneyValido ? " form-control is-valid text-uppercase" : " form-control is-invalid text-uppercase" }
                         renderText = { value => <div> { value } </div> } 
                         onValueChange = { (values) => this.onChange(values)}
                         placeholder = {placeholder} 

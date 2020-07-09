@@ -42,6 +42,7 @@ class Calendar extends Component{
                 <label className="col-form-label">{placeholder}</label> 
                     <DatePicker
                         { ...props }
+                        dateFormat="dd/MM/yyyy"
                         placeholderText="Selecciona la fecha"
                         selected={value}
                         onChange={(date) => {this.validarFecha(date); onChangeCalendar(date);}}
@@ -53,7 +54,7 @@ class Calendar extends Component{
                         customInput={
                         
                         <Form.Control    
-                            className = { calendarValido ? " form-control is-valid " : " form-control is-invalid" }
+                            className = { calendarValido ? " form-control is-valid text-uppercase " : " form-control is-invalid text-uppercase" }
                             {...props2} 
                         />  
                         }

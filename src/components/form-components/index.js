@@ -7,6 +7,7 @@ import calendar from './Calendar'
 import toggleButton from './ToggleButton'
 import optionsCheckbox from './OptionsCheckbox'
 import selectSearch from './SelectSearch'
+import selectSearchTrue from './SelectSearchTrue'
 import fileInput from './FileInput'
 import dropZone from './DropZone'
 import inputImage from './InputImage'
@@ -22,6 +23,7 @@ export const Calendar = calendar
 export const ToggleButton = toggleButton
 export const OptionsCheckbox = optionsCheckbox
 export const SelectSearch = selectSearch
+export const SelectSearchTrue = selectSearchTrue
 export const FileInput = fileInput
 export const DropZone = dropZone
 export const InputImage = inputImage

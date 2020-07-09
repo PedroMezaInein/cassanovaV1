@@ -548,7 +548,7 @@ class Areas extends Component {
                 </Tabs>
                 
 
-                <Modal title={"Nueva área"} show={modal} handleClose={this.handleClose}>
+                <Modal title={title} show={modal} handleClose={this.handleClose}>
                     <AreasForm form={form} onChange={this.onChange}
                         addSubarea={this.addSubarea} deleteSubarea={this.deleteSubarea}
                         title={title} onSubmit={this.onSubmit} formeditado={formeditado} />

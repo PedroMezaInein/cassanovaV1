@@ -34,6 +34,7 @@ class Cuentas extends Component {
         estados: [],
         empresas: [],
         empresasOptions: [],
+        tipo: 'Bancaria',
         form: {
             nombre: '',
             numero: '',
@@ -50,6 +51,7 @@ class Cuentas extends Component {
         },
         formeditado:0,
         cuentas: [],
+        cajas: [],
         cuenta: null,
         adjunto: '',
         adjuntoFile: '',
@@ -214,10 +216,7 @@ class Cuentas extends Component {
                 id: cuenta.id
             })
         })
-        this.setState({
-            ... this.state,
-            cuentas: aux
-        })
+        return aux
     }
 
     setEstados = estados => {
@@ -475,7 +474,24 @@ class Cuentas extends Component {
             cuenta: null,
             form: this.setEmptyForm(),
             empresas: aux,
-            formeditado:0
+            formeditado:0,
+            tipo: 'Bancaria'
+        })
+    }
+
+    openModalCajaChica = () => {
+        const { empresasOptions } = this.state
+        let aux = []
+        empresasOptions.map((option) => {
+            aux.push(option)
+        })
+        this.setState({
+            modal: true,
+            cuenta: null,
+            form: this.setEmptyForm(),
+            empresas: aux,
+            formeditado:0,
+            tipo: 'Caja chica'
         })
     }
 
@@ -517,7 +533,51 @@ class Cuentas extends Component {
             cuenta: cuenta,
             form: aux,
             empresas: empresaOptionsAux,
-            formeditado:1
+            formeditado:1,
+            tipo: 'Bancaria'
+        })
+    }
+
+    openModalEditCajaChica = cuenta => {
+        const { empresasOptions } = this.state
+
+        let empresaFormAux = []
+        cuenta.empresa.map((empresa, key) => {
+            empresaFormAux.push({ value: empresa.id, text: empresa.name })
+        })
+
+        let empresaOptionsAux = []
+
+        empresasOptions.map((option) => {
+            let aux = true
+            cuenta.empresa.map((empresa) => {
+                if (empresa.id.toString() === option.value.toString()) {
+                    aux = false
+                }
+            })
+            if (aux)
+                empresaOptionsAux.push(option)
+        })
+
+        let aux = {
+            nombre: cuenta.nombre,
+            numero: cuenta.numero,
+            descripcion: cuenta.descripcion,
+            balance: cuenta.balance,
+            banco: cuenta.banco ? cuenta.banco.id : 0,
+            tipo: cuenta.tipo ? cuenta.tipo.id : 0,
+            estatus: cuenta.estatus ? cuenta.estatus.id : 0,
+            empresa: 0,
+            empresas: empresaFormAux
+        }
+
+        this.setState({
+            modal: true,
+            cuenta: cuenta,
+            form: aux,
+            empresas: empresaOptionsAux,
+            formeditado:1,
+            tipo: 'Caja chica'
         })
     }
 
@@ -555,17 +615,25 @@ class Cuentas extends Component {
         await axios.get(URL_DEV + 'cuentas', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { data } = this.state
-                const { bancos, estatus, tipo, cuentas, empresas } = response.data
+                const { bancos, estatus, tipo, cuentas, empresas, cuentasCajaChica } = response.data
                 data.cuentas = cuentas
-                this.setCuentas(cuentas)
+                data.cajas = cuentasCajaChica
+                let aux = []
+                bancos.map( (banco) => {
+                    if(banco.nombre !== 'CAJA CHICA')
+                        aux.push(banco)
+                })
+                
                 this.setState({
                     ... this.state,
-                    bancos: this.setOptions(bancos, 'nombre'),
+                    bancos: this.setOptions(aux, 'nombre'),
                     estatus: this.setOptions(estatus, 'estatus'),
                     tipos: this.setOptions(tipo, 'tipo'),
                     empresas: this.setOptions(empresas, 'name'),
                     empresasOptions: this.setOptions(empresas, 'name'),
-                    data
+                    data,
+                    cuentas: this.setCuentas(cuentas),
+                    cajas: this.setCuentas(cuentasCajaChica)
                 })
             },
             (error) => {
@@ -586,14 +654,20 @@ class Cuentas extends Component {
 
     async addCuentaAxios() {
         const { access_token } = this.props.authUser
-        const { form } = this.state
+        let { form } = this.state
+        const { tipo } = this.state
+        form.tipoBanco = tipo
         await axios.post(URL_DEV + 'cuentas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { cuentas } = response.data
-                this.setCuentas(cuentas)
+                const { cuentas, cuentasCajaChica } = response.data
+                const { data } = this.state
+                data.cuentas = cuentas
+                data.cajas = cuentasCajaChica
                 this.setState({
                     modal: false,
-                    form: this.setEmptyForm()
+                    form: this.setEmptyForm(),
+                    cuentas: this.setCuentas(cuentas),
+                    cajas: this.setCuentas(cuentasCajaChica),
                 })
                 swal({
                     title: '¡Felicidades 🥳!',
@@ -626,17 +700,19 @@ class Cuentas extends Component {
         data.append('fecha', (new Date(fecha)).toDateString())
         await axios.post(URL_DEV + 'cuentas/estado', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { cuentas, cuenta } = response.data
+                const { cuentas, cuenta, cuentasCajaChica } = response.data
                 const { data } = this.state
                 data.estados = cuenta.estados
-        
-                this.setCuentas(cuentas)
+                data.cajas = cuentasCajaChica
+                data.cuentas = cuentas
                 this.setState({
                     adjunto: '',
                     adjuntoFile: '',
                     adjuntoName: '',
                     fecha: new Date(),
-                    data
+                    data,
+                    cuentas: this.setCuentas(cuentas),
+                    cajas: this.setCuentas(cuentasCajaChica)
                 })
                 this.setEstados(cuenta.estados)
                 swal.close()
@@ -662,12 +738,17 @@ class Cuentas extends Component {
         const { cuenta, form } = this.state
         await axios.put(URL_DEV + 'cuentas/' + cuenta.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { cuentas } = response.data
-                this.setCuentas(cuentas)
+                const { cuentas, cuentasCajaChica } = response.data
+                const { data } = this.state
+                data.cuentas = cuentas
+                data.cuentasCajaChica = cuentasCajaChica
                 this.setState({
                     modal: false,
                     form: this.setEmptyForm(),
-                    cuenta: null
+                    cuenta: null,
+                    data,
+                    cuentas: this.setCuentas(cuentas),
+                    cajas: this.setCuentas(cuentasCajaChica)
                 })
                 swal({
                     title: '¡Felicidades 🥳!',
@@ -697,11 +778,18 @@ class Cuentas extends Component {
         const { cuenta, form } = this.state
         await axios.delete(URL_DEV + 'cuentas/' + cuenta.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { cuentas } = response.data
-                this.setCuentas(cuentas)
+                const { cuentas, cuentasCajaChica } = response.data
+                const { data } = this.state
+                data.cuentas = cuentas
+                data.cajas = cuentasCajaChica
+
+                
                 this.setState({
                     modalDelete: false,
-                    cuenta: null
+                    cuenta: null,
+                    data,
+                    cuentas: this.setCuentas(cuentas),
+                    cajas: this.setCuentas(cuentasCajaChica)
                 })
                 swal({
                     title: '¡Listo 👋!',
@@ -729,13 +817,16 @@ class Cuentas extends Component {
         const { cuenta } = this.state
         await axios.delete(URL_DEV + 'cuentas/' + cuenta.id + '/estado/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { cuentas, cuenta } = response.data
-                this.setCuentas(cuentas)
+                const { cuentas, cuenta, cuentasCajaChica } = response.data
                 const { data } = this.state
+                data.cuentas = cuentas
+                data.cuentasCajaChica = cuentasCajaChica
                 data.estados = cuenta.estados
                 this.setState({
                     ... this.state,
-                    data
+                    data,
+                    cuentas: this.setCuentas(cuentas),
+                    cuentasCajaChica: this.setCuentas(cuentasCajaChica)
                 })
                 this.setEstados(cuenta.estados)
                 swal({
@@ -760,7 +851,7 @@ class Cuentas extends Component {
     }
 
     render() {
-        const { modal, modalDelete, modalEstado, bancos, estatus, tipos, form, cuentas, cuenta, empresas, estados, adjunto, adjuntoName, fecha, data,title, formeditado } = this.state
+        const { modal, modalDelete, modalEstado, bancos, estatus, tipos, form, cuentas, cuenta, empresas, estados, adjunto, adjuntoName, fecha, data,title, formeditado, tipo, cajas } = this.state
         return (
             <Layout active={'bancos'}  {...this.props}>
 
@@ -787,19 +878,19 @@ class Cuentas extends Component {
                     <Tab eventKey="cajas" title="Caja chica">
                         <NewTable 
                             columns = { CUENTAS_COLUMNS }
-                            data = { cuentas }
+                            data = { cajas }
                             title = 'Cajas chicas' 
                             subtitle = 'Listado de cajas chicas'
                             mostrar_boton = { true }
                             abrir_modal = { true }
-                            onClick = { this.openModal }
+                            onClick = { this.openModalCajaChica }
                             mostrar_acciones = { true }
                             actions = {{
-                                'edit': { function: this.openModalEdit },
+                                'edit': { function: this.openModalEditCajaChica },
                                 'delete': { function: this.openModalDelete },
                                 'estado': { function: this.openModalAddEstado }
                             }}
-                            elements = { data.cuentas }
+                            elements = { data.cajas }
                             idTable = 'cuentas_cajas'
                         />
                     </Tab>
@@ -807,7 +898,7 @@ class Cuentas extends Component {
                 
 
                 <Modal  title={cuenta === null ? "Nueva cuenta" : 'Editar cuenta'}  show={modal} handleClose={this.handleClose} >
-                    <CuentaForm bancos={bancos} estatus={estatus} tipos={tipos}
+                    <CuentaForm tipo = { tipo } bancos={bancos} estatus={estatus} tipos={tipos}
                         empresas={empresas} form={form} onChange={this.onChange} onChangeEmpresa={this.onChangeEmpresa}
                         updateEmpresa={this.updateEmpresa} onSubmit={cuenta === null ? this.onSubmit : this.onEditSubmit} formeditado={formeditado} />
                 </Modal>
@@ -857,7 +948,7 @@ class Cuentas extends Component {
                                                                     onClick={(e) => { e.preventDefault(); this.deleteAdjunto() }}
                                                                     >
                                                                 </div>                                                            
-                                                                    <div><span className="tagify__tag-text p-1">{adjuntoName}</span></div>
+                                                                    <div><span className="tagify__tag-text p-1 white-space">{adjuntoName}</span></div>
                                                             </div>
                                                     </div>
                                                 </div> 

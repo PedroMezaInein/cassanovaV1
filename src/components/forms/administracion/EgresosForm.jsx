@@ -52,8 +52,15 @@ class EgresosForm extends Component {
     */
 
     updateProveedor = value => {
-        const { onChange } = this.props
+        const { onChange, data, form } = this.props
         onChange({ target: { value: value, name: 'proveedor' } })
+        data.proveedores.find(function (element, index) {
+            if (value.toString() === element.id.toString()) {
+                if(element.rfc !== ''){
+                    onChange({ target: { value: element.rfc, name: 'rfc' } })
+                }
+            }
+        })
     }
     /*Código Omar
     updateArea = value => {
@@ -155,10 +162,6 @@ class EgresosForm extends Component {
                             >
                             <div id="wizard-1-content" className="pb-3" data-wizard-type="step-content" data-wizard-state="current">
                                 <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos de la factura</h5>
-                                    {/*<Subtitle className="text-center mb-4" color="gold">
-                                        {title}
-                                        </Subtitle>
-                                    */}
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <RadioGroup
@@ -200,7 +203,7 @@ class EgresosForm extends Component {
                                         : ''
                                     }
                                     {
-                                        form.factura === 'Con factura' && title !== 'Editar egreso' ?
+                                        form.factura === 'Con factura' ?
                                             <div className="col-md-4">
                                                 <Input 
                                                     requirevalidation={1}
@@ -272,17 +275,6 @@ class EgresosForm extends Component {
                                 <h5 className="mb-4 font-weight-bold text-dark">Selecciona el área y fecha</h5>
 								<div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
-                                        <Calendar
-                                            formeditado={formeditado}
-                                            onChangeCalendar={this.handleChangeDate}
-                                            placeholder="Fecha"
-                                            name="fecha"
-                                            value={form.fecha}
-                                            patterns={DATE}
-                                        />
-                                        {/*<span className="form-text text-muted">Por favor, selecciona la fecha.</span>*/}
-                                    </div>    
-                                    <div className="col-md-4">
                                         <SelectSearch
                                             formeditado={formeditado}
                                             options={options.areas}
@@ -311,7 +303,18 @@ class EgresosForm extends Component {
                                             {/*<span className="form-text text-muted">Por favor, selecciona la sub-área.</span>*/}
                                             </div>
                                         : ''
-                                    }    
+                                    }   
+                                    <div className="col-md-4">
+                                        <Calendar
+                                            formeditado={formeditado}
+                                            onChangeCalendar={this.handleChangeDate}
+                                            placeholder="Fecha"
+                                            name="fecha"
+                                            value={form.fecha}
+                                            patterns={DATE}
+                                        />
+                                        {/*<span className="form-text text-muted">Por favor, selecciona la fecha.</span>*/}
+                                    </div>  
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">

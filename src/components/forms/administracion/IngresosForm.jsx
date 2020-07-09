@@ -46,8 +46,14 @@ class IngresosForm extends Component {
     }
 
     updateCliente = value => {
-        const { onChange, setOptions } = this.props
+        const { onChange, data } = this.props
         onChange({ target: { value: value, name: 'cliente' } })
+        data.clientes.find( function(element){
+            if(value.toString() === element.id.toString()){
+                if(element.rfc !== '')
+                    onChange({ target: { value: element.rfc, name: 'rfc' } })
+            }
+        })
     }
     
     /*
@@ -194,7 +200,7 @@ class IngresosForm extends Component {
                                             : ''
                                         }
                                         {
-                                            form.factura === 'Con factura' && title !== 'Editar venta' ?
+                                            form.factura === 'Con factura' ?
                                                 <div className="col-md-4">
                                                     <Input 
                                                         requirevalidation={1}
@@ -270,17 +276,7 @@ class IngresosForm extends Component {
                                 </div>
                                 <div id="wizard-2-content" className="pb-3" data-wizard-type="step-content">
                                     <h5 className="mb-4 font-weight-bold text-dark">Selecciona el área y fecha</h5>
-									    <div className="form-group row form-group-marginless">
-                                        <div className="col-md-4">
-                                                <Calendar
-                                                    onChangeCalendar={this.handleChangeDate} 
-                                                    placeholder="Fecha"
-                                                    name="fecha" 
-                                                    patterns={DATE}
-                                                    value={form.fecha} 
-                                                />
-                                            {/*<span className="form-text text-muted">Por favor, selecciona la fecha. </span>*/}
-                                        </div>
+									    <div className="form-group row form-group-marginless">                                        
                                             <div className="col-md-4">
                                                 <SelectSearch 
                                                     options={options.areas} 
@@ -307,7 +303,17 @@ class IngresosForm extends Component {
                                                         {/*<span className="form-text text-muted">Por favor, selecciona la sub-área. </span>*/}
                                                     </div>
                                                 : ''
-                                            }                    
+                                            }        
+                                            <div className="col-md-4">
+                                                <Calendar
+                                                    onChangeCalendar={this.handleChangeDate} 
+                                                    placeholder="Fecha"
+                                                    name="fecha" 
+                                                    patterns={DATE}
+                                                    value={form.fecha} 
+                                                />
+                                                {/*<span className="form-text text-muted">Por favor, selecciona la fecha. </span>*/}
+                                            </div>            
                                             </div>						
                                         <div className="separator separator-dashed mt-1 mb-2"></div>
                                             <div className="form-group row form-group-marginless">

@@ -15,6 +15,12 @@ import { Button } from '../components/form-components'
 import { faList, faPlus, faFolderOpen, faFilePdf } from '@fortawesome/free-solid-svg-icons'
 import ItemSlider from '../components/singles/ItemSlider'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Nav from 'react-bootstrap/Nav'
+import Tab from 'react-bootstrap/Tab'
+import Col from 'react-bootstrap/Col'
+import Row from 'react-bootstrap/Row'
+import Moment from 'react-moment'
+import { Small } from '../components/texts'
 
 function CustomToggle({ children, eventKey, icon = faPlus, iconColor = 'transparent' }) {
 
@@ -44,6 +50,54 @@ class MiProyecto extends Component{
     
     state = {
         proyecto: '',
+        primeravista:true,
+        defaultactivekey:"",
+        showadjuntos:[
+            {
+                name: 'Fotografías levantamiento',
+                value: 'fotografias_levantamiento'
+            },
+            {
+                name: 'Manuales de adaptación',
+                value: 'manuales_de_adaptacion'
+            },
+            {
+                name: 'Minutas',
+                value: 'minutas'
+            },
+            {
+                name: 'Oficios',
+                value: 'oficios'
+            },
+            {
+                name: 'Planos entregados por cliente',
+                value: 'planos_entregados_por_cliente'
+            },
+            {
+                name: 'Propuestas arquitectónicas preliminares',
+                value: 'propuestas_arquitectonicas_preliminares'
+            },
+            {
+                name: 'Referencias del diseño del proyecto',
+                value: 'referencias_del_diseño_del_proyecto'
+            },
+            {
+                name: 'Renders',
+                value: 'renders'
+            },
+            {
+                name: 'Sketch Up',
+                value: 'sketch_up'
+            },
+            {
+                name: 'Presupuestos preliminares',
+                value: 'presupuestos_preliminares'
+            },
+            {
+                name: 'Carta oferta',
+                value: 'carta_oferta'
+            }
+        ],
         data:{
             proyectos: []
         },
@@ -245,6 +299,25 @@ class MiProyecto extends Component{
         ]
     }
 
+    seleccionaradj (adjuntos){  
+        const {proyecto} = this.state;  
+        let newdefaultactivekey = "";
+        for(var i=0;i<adjuntos.length;i++)
+        { 
+            var adjunto = adjuntos[i]; 
+            if(proyecto[adjunto.value].length)
+            {
+                newdefaultactivekey=adjunto.value   
+                break;
+            } 
+        } 
+        this.setState({
+            ... this.state,
+            primeravista:false,
+            defaultactivekey:newdefaultactivekey,
+            showadjuntos:adjuntos
+        })
+    }
     componentDidMount(){
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
@@ -258,18 +331,36 @@ class MiProyecto extends Component{
     }
 
     updateProyecto = value => {
-        const { data, form } = this.state
+        const { data, form,adjuntos } = this.state
+        let newdefaultactivekey="";
         form.proyecto = value
         data.proyectos.map( (proyecto) => {
-            if(proyecto.id.toString() === value.toString()){
+            
+            if(proyecto.id.toString() === value.toString()){ 
+                for (var i = 0; i < adjuntos.length; i++) {
+                    var grupo = adjuntos[i];
+                    let aux = false 
+                    grupo.adjuntos.forEach(element => {
+                        if(proyecto[element.value].length)
+                        aux = true
+                    });
+                    if(aux) 
+                    { 
+                        newdefaultactivekey=grupo.adjuntos[0].value;
+                        break;
+                    }
+                } 
                 this.setState({
                     ... this.state,
                     form,
+                    defaultactivekey:newdefaultactivekey,
                     proyecto: proyecto
                 })
             }
         } )
-        console.log(this.state.proyecto)
+        
+        
+        
     }
 
     async getMiProyectoAxios(){
@@ -335,7 +426,7 @@ class MiProyecto extends Component{
     }
 
     render(){
-        const { options, proyecto, form, adjuntos } = this.state
+        const { options, proyecto, form, adjuntos, showadjuntos, primeravista, defaultactivekey} = this.state
         return(
             <Layout { ...this.props}>
                 <div className="content pt-0 d-flex flex-column flex-column-fluid" id="kt_content" style ={ { paddingBottom:"11px" } }>
@@ -347,19 +438,19 @@ class MiProyecto extends Component{
                                 <div className="form-group row form-group-marginless d-flex justify-content-center align-items-center">
                                     <div className="col-md-5">
                                         <SelectSearch 
-                                            formeditado = { 0 }
                                             options = { options.proyectos }
-                                            name = "Seleccione un proyecto"
+                                            placeholder = "Seleccione un proyecto"
                                             name = "proyecto"
                                             value = { form.proyecto }
                                             onChange = { this.updateProyecto }
+                                            requirevalidation = { 1 }
                                             /> 
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div className="container py-8">
+                    <div className="col-md-12">
 							<div className="row">
 								<div className="col-lg-4 mb-3">
 									<div className="card card-custom wave wave-animate-slow wave-primary mb-8 mb-lg-0">
@@ -377,7 +468,7 @@ class MiProyecto extends Component{
 													</span>
 												</div>
 												<div className="d-flex flex-column">
-													<a className="text-dark text-hover-primary font-weight-bold font-size-h4 mb-3">PROYECTO</a>
+													<a className="text-dark text-hover-primary font-weight-bold font-size-h4 mb-3 pl-2">PROYECTO</a>
 													<div className="text-dark-75">{proyecto.nombre}</div>
 												</div>
 											</div>
@@ -400,19 +491,42 @@ class MiProyecto extends Component{
 													</span>
 												</div>
 												<div className="d-flex flex-column">
-													<a className="text-dark text-hover-primary font-weight-bold font-size-h4 mb-3">CONTACTO</a>
-													<div className="text-dark-75">PAULA GARAVITO</div>
+													<a className="text-dark text-hover-danger font-weight-bold font-size-h4 mb-3 pl-2">Dirección</a>
+													<div className="text-dark-75 text-justify">
+                                                        {
+                                                            proyecto ? 
+                                                                <div> 
+                                                                    {/* {proyecto.contacto} */}
+                                                                    <Small className="mr-1 mb-0" >
+                                                                        {proyecto.calle}, colonia
+                                                                    </Small>
+                                                                    <Small className="mr-1 mb-0">
+                                                                        {proyecto.colonia},
+                                                                    </Small>
+                                                                    <Small className="mr-1 mb-0">
+                                                                        {proyecto.municipio},
+                                                                    </Small>
+                                                                    <Small className="mr-1 mb-0">
+                                                                        {proyecto.estado}. CP:
+                                                                    </Small>
+                                                                    <Small className="mr-1 mb-0">
+                                                                        {proyecto.cp}
+                                                                    </Small>
+                                                                </div>
+                                                            :""
+                                                        }
+                                                    </div>
 												</div>
 											</div>
 										</div>
 									</div>
 								</div>
 								<div className="col-lg-4 mb-3">
-									<div className="card card-custom wave wave-animate-slow wave-success mb-8 mb-lg-0">
+									<div className="card card-custom wave wave-animate-slow wave-info mb-8 mb-lg-0">
 										<div className="card-body">
 											<div className="d-flex align-items-center">
 												<div className="mr-6">
-													<span className="svg-icon svg-icon-success svg-icon-4x">
+													<span className="svg-icon svg-icon-info svg-icon-4x">
 														<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 															<g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
 																<rect x="0" y="0" width="24" height="24" />
@@ -423,8 +537,22 @@ class MiProyecto extends Component{
 													</span>
 												</div>
 												<div className="d-flex flex-column">
-													<a className="text-dark text-hover-primary font-weight-bold font-size-h4 mb-3">PERIODO</a>
-													<div className="text-dark-75">11/04/2019 - 06/06/2019</div>
+													<a className="text-dark text-hover-info font-weight-bold font-size-h4 mb-3 pl-2">PERIODO</a>
+													<div className="text-dark-75">
+                                                    {
+                                                        proyecto ? 
+                                                            <div>
+                                                                <Moment format="DD/MM/YYYY">
+                                                                        {proyecto.fecha_inicio}
+                                                                </Moment>
+                                                                {" - "}
+                                                                <Moment format="DD/MM/YYYY">
+                                                                        {proyecto.fecha_fin}
+                                                                </Moment>
+                                                            </div>
+                                                        :""
+                                                    }
+                                                    </div>
 												</div>
 											</div>
 										</div>
@@ -433,213 +561,128 @@ class MiProyecto extends Component{
 							</div>
 						</div>
                 </div>
-                <div className="col-md-12 mb-4">
-							<div className="card">
-								<div className="card-body">
-									<div className="p-6">
-										<h2 className="text-dark mb-8 pb-4">Adjuntos del proyecto</h2>
-										<div className="row">
-											<div className="col-lg-3">
-												<ul className="navi navi-link-rounded navi-accent navi-hover flex-column mb-8 mb-lg-0" role="tablist">
-													<li className="navi-item mb-2">
-														<a className="navi-link" data-toggle="tab">
-															<span className="navi-text text-dark-50 font-size-h5 font-weight-bold">Inicio y planeación</span>
-														</a>
-													</li>
-													<li className="navi-item mb-2">
-														<a className="navi-link active" data-toggle="tab">
-															<span className="navi-text text-dark font-size-h5 font-weight-bold">Ejecución de obra</span>
-														</a>
-													</li>
-													<li className="navi-item mb-2">
-														<a className="navi-link" data-toggle="tab">
-															<span className="navi-text text-dark-50 font-size-h5 font-weight-bold">Entrega</span>
-														</a>
-													</li>
-													<li className="navi-item mb-2">
-														<a className="navi-link" data-toggle="tab">
-															<span className="navi-text text-dark-50 font-size-h5 font-weight-bold">Mantenimiento</span>
-														</a>
-													</li>
-												</ul>
-											</div>
-											<div className="col-lg-9">
-												<div className="accordion accordion-light accordion-light-borderless accordion-svg-toggle" id="accordionExample7">
-													<div className="card">
-														<div className="card-header" id="headingOne7">
-															<div className="card-title" data-toggle="collapse" data-target="#collapseOne7" aria-expanded="true" role="button">
-																<span className="svg-icon svg-icon-primary">
-																	<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-																		<g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-																			<polygon points="0 0 24 0 24 24 0 24"></polygon>
-																			<path d="M12.2928955,6.70710318 C11.9023712,6.31657888 11.9023712,5.68341391 12.2928955,5.29288961 C12.6834198,4.90236532 13.3165848,4.90236532 13.7071091,5.29288961 L19.7071091,11.2928896 C20.085688,11.6714686 20.0989336,12.281055 19.7371564,12.675721 L14.2371564,18.675721 C13.863964,19.08284 13.2313966,19.1103429 12.8242777,18.7371505 C12.4171587,18.3639581 12.3896557,17.7313908 12.7628481,17.3242718 L17.6158645,12.0300721 L12.2928955,6.70710318 Z" fill="#000000" fillRule="nonzero"></path>
-																			<path d="M3.70710678,15.7071068 C3.31658249,16.0976311 2.68341751,16.0976311 2.29289322,15.7071068 C1.90236893,15.3165825 1.90236893,14.6834175 2.29289322,14.2928932 L8.29289322,8.29289322 C8.67147216,7.91431428 9.28105859,7.90106866 9.67572463,8.26284586 L15.6757246,13.7628459 C16.0828436,14.1360383 16.1103465,14.7686056 15.7371541,15.1757246 C15.3639617,15.5828436 14.7313944,15.6103465 14.3242754,15.2371541 L9.03007575,10.3841378 L3.70710678,15.7071068 Z" fill="#000000" fillRule="nonzero" opacity="0.3" transform="translate(9.000003, 11.999999) rotate(-270.000000) translate(-9.000003, -11.999999)"></path>
-																		</g>
-																	</svg>
-																</span>
-																<div className="card-label text-dark pl-4">Product Inventory</div>
-															</div>
-														</div>
-														<div id="collapseOne7" className="collapse show" aria-labelledby="headingOne7" data-parent="#accordionExample7">
-															<div className="card-body text-dark-50 font-size-lg pl-12">Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo.</div>
-														</div>
-													</div>
-													<div className="card">
-														<div className="card-header" id="headingTwo7">
-															<div className="card-title collapsed" data-toggle="collapse" data-target="#collapseTwo7" aria-expanded="true" role="button">
-																<span className="svg-icon svg-icon-primary">
-																	<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-																		<g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-																			<polygon points="0 0 24 0 24 24 0 24"></polygon>
-																			<path d="M12.2928955,6.70710318 C11.9023712,6.31657888 11.9023712,5.68341391 12.2928955,5.29288961 C12.6834198,4.90236532 13.3165848,4.90236532 13.7071091,5.29288961 L19.7071091,11.2928896 C20.085688,11.6714686 20.0989336,12.281055 19.7371564,12.675721 L14.2371564,18.675721 C13.863964,19.08284 13.2313966,19.1103429 12.8242777,18.7371505 C12.4171587,18.3639581 12.3896557,17.7313908 12.7628481,17.3242718 L17.6158645,12.0300721 L12.2928955,6.70710318 Z" fill="#000000" fillRule="nonzero"></path>
-																			<path d="M3.70710678,15.7071068 C3.31658249,16.0976311 2.68341751,16.0976311 2.29289322,15.7071068 C1.90236893,15.3165825 1.90236893,14.6834175 2.29289322,14.2928932 L8.29289322,8.29289322 C8.67147216,7.91431428 9.28105859,7.90106866 9.67572463,8.26284586 L15.6757246,13.7628459 C16.0828436,14.1360383 16.1103465,14.7686056 15.7371541,15.1757246 C15.3639617,15.5828436 14.7313944,15.6103465 14.3242754,15.2371541 L9.03007575,10.3841378 L3.70710678,15.7071068 Z" fill="#000000" fillRule="nonzero" opacity="0.3" transform="translate(9.000003, 11.999999) rotate(-270.000000) translate(-9.000003, -11.999999)"></path>
-																		</g>
-																	</svg>
-																</span>
-																<div className="card-label text-dark pl-4">Order Statistics</div>
-															</div>
-														</div>
-														<div id="collapseTwo7" className="collapse" aria-labelledby="headingTwo7" data-parent="#accordionExample7">
-															<div className="card-body text-dark-50 font-size-lg pl-12">Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.</div>
-														</div>
-													</div>
-													<div className="card">
-														<div className="card-header" id="headingThree7">
-															<div className="card-title collapsed" data-toggle="collapse" data-target="#collapseThree7" aria-expanded="true" role="button">
-																<span className="svg-icon svg-icon-primary">
-																	<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-																		<g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-																			<polygon points="0 0 24 0 24 24 0 24"></polygon>
-																			<path d="M12.2928955,6.70710318 C11.9023712,6.31657888 11.9023712,5.68341391 12.2928955,5.29288961 C12.6834198,4.90236532 13.3165848,4.90236532 13.7071091,5.29288961 L19.7071091,11.2928896 C20.085688,11.6714686 20.0989336,12.281055 19.7371564,12.675721 L14.2371564,18.675721 C13.863964,19.08284 13.2313966,19.1103429 12.8242777,18.7371505 C12.4171587,18.3639581 12.3896557,17.7313908 12.7628481,17.3242718 L17.6158645,12.0300721 L12.2928955,6.70710318 Z" fill="#000000" fillRule="nonzero"></path>
-																			<path d="M3.70710678,15.7071068 C3.31658249,16.0976311 2.68341751,16.0976311 2.29289322,15.7071068 C1.90236893,15.3165825 1.90236893,14.6834175 2.29289322,14.2928932 L8.29289322,8.29289322 C8.67147216,7.91431428 9.28105859,7.90106866 9.67572463,8.26284586 L15.6757246,13.7628459 C16.0828436,14.1360383 16.1103465,14.7686056 15.7371541,15.1757246 C15.3639617,15.5828436 14.7313944,15.6103465 14.3242754,15.2371541 L9.03007575,10.3841378 L3.70710678,15.7071068 Z" fill="#000000" fillRule="nonzero" opacity="0.3" transform="translate(9.000003, 11.999999) rotate(-270.000000) translate(-9.000003, -11.999999)"></path>
-																		</g>
-																	</svg>
-																</span>
-																<div className="card-label text-dark pl-4">eCommerce Reports</div>
-															</div>
-														</div>
-														<div id="collapseThree7" className="collapse" aria-labelledby="headingThree7" data-parent="#accordionExample7">
-															<div className="card-body text-dark-50 font-size-lg pl-12">Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.</div>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-
-
-
-
-
-                
                 {
                     proyecto ? 
-                        <Card>
+                        <div className="col-md-12 mb-4">                                 
+                                <Card className="card-custom gutter-b">
+                                    <Card.Header>
+                                        <Card.Title> 
+                                            <h3 className="text-dark">Adjuntos del proyecto</h3>
+                                        </Card.Title>
+                                        <div className="card-toolbar">
+                                            <Nav as="ul" className="nav nav-bold nav-pills">
+                                                {
+                                                    adjuntos.map((grupo, key) => { 
+                                                        let aux = false 
+                                                        grupo.adjuntos.forEach(element => {
+                                                            if(proyecto[element.value].length)
+                                                            aux = true
+                                                        });
+                                                        if(aux) 
+                                                        {
+                                                            return(
+                                                                <div key = {key}>
+                                                                    <Nav.Item as="li">
+                                                                        <Nav.Link data-toggle="tab" className={primeravista&&key==0?"active":""} eventKey={grupo.value} onClick = { () => { this.seleccionaradj(grupo.adjuntos) } }>{grupo.name}</Nav.Link>
+                                                                    </Nav.Item>
+                                                                </div>
+                                                            )
+                                                        }
+                                                    })
+                                                }
+                                            </Nav>
+                                        </div>
+                                    </Card.Header>
+                                    
+                                    <Card.Body>
+                                        <>
+                                        {/* {console.log("actualizando "+defaultactivekey)}*/}
+                                        <Tab.Container id="left-tabs-example" defaultActiveKey={defaultactivekey}>
+                                            <Row>
+                                                <Col md={4} className="border-nav">
+												    <Nav variant="pills" className="flex-column navi navi-hover navi-active">                                                    
+                                                        { 
+                                                            showadjuntos.map((adjunto, key) => { 
+                                                                if(proyecto[adjunto.value].length)
+                                                                {  
+                                                                    return( 
+                                                                        <Nav.Item className="navi-item" key = {key}>
+                                                                            <Nav.Link className="navi-link" eventKey={adjunto.value}>
+                                                                                <span className="navi-icon">
+                                                                                    <i className="flaticon2-analytics"></i>
+                                                                                </span>
+                                                                                <span className="navi-text">{adjunto.name}</span>
+                                                                            </Nav.Link>
+                                                                        </Nav.Item>
+                                                                    )
+                                                                }
+                                                            })
+                                                        }
+													</Nav>
+												</Col>
+                                                <Col md={8}>
+                                                    <Tab.Content>
+                                                    { 
+                                                        showadjuntos.map((adjunto, key) => {  
+                                                            if(proyecto[adjunto.value].length)
+                                                            {  
+                                                                return(
+                                                                    <Tab.Pane key = {key} eventKey={adjunto.value}>
+                                                                        {
+                                                                            proyecto ? 
+                                                                                proyecto[adjunto.value].length ?
+                                                                                    <div className="mt-2 d-flex justify-content-center">
+                                                                                        <span className = 'btn btn-hover btn-text-success' onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.value]) }}>
+                                                                                            <i className="fas fa-file-archive"></i> Descargar ZIP
+                                                                                        </span>
+                                                                                    </div>
+                                                                                : ''
+                                                                            : ''
+                                                                        }   
+                                                                        {
+                                                                            proyecto ? 
+                                                                                <ItemSlider items = { proyecto[adjunto.value] } item = {adjunto.value} />
+                                                                            : ''
+                                                                        }
+                                                                    </Tab.Pane>  
+                                                                )
+                                                            }
+                                                        })
+                                                    } 
+                                                    </Tab.Content>
+                                                </Col>
+                                            </Row>
+                                        </Tab.Container>                     
+                                        </>
+                                    </Card.Body>
+                                </Card>
+                            
+                        </div>
+                    : ''
+                }
+                {
+                    proyecto ? 
+                        <div className="col-md-12 mb-4" >
+                        <Card className="card-custom gutter-b">
                             <Card.Header>
-                                <Subtitle className="text-center">                                    
-                                    {proyecto.nombre}
-                                </Subtitle>
+                                <Card.Title> 
+                                    <h3 className="text-dark">Avances por semana</h3>
+                                </Card.Title>
                             </Card.Header>
                             <Card.Body>
-                                <Accordion>
-                                    <div className="row mx-0">
-                                        {
-                                            adjuntos.map( (grupo, key) => {
-                                                let aux = false
-                                                grupo.adjuntos.forEach(element => {
-                                                    if(proyecto[element.value].length)
-                                                        aux = true
-                                                });
-                                                if(aux)
-                                                return(
-                                                    <div className="col-md-6" key = {key}>
-                                                        <div className="px-3 py-2">
-                                                            <CustomToggle icon = { faList } iconColor = 'gold' iconColor = 'transparent' eventKey={grupo.value} >
-                                                                <strong>
-                                                                    <p className="label-form mb-0">
-                                                                        {grupo.name}
-                                                                    </p>
-                                                                </strong>
-                                                            </CustomToggle>
-                                                            <Accordion.Collapse eventKey = { grupo.value }>
-                                                                <div>
-                                                                    <div className="row mx-0 pl-2 py-2">
-                                                                        <Accordion className="w-100">
-                                                                            {
-                                                                                grupo.adjuntos.map( (adjunto, key) => {
-                                                                                    if(proyecto[adjunto.value].length)
-                                                                                    return(
-                                                                                        <div key = {key}>
-                                                                                            <div className="px-3 pt-2">
-                                                                                                <CustomToggle icon = { faFolderOpen } eventKey = { adjunto.value } >
-                                                                                                    <strong>
-                                                                                                        <p className="label-form">
-                                                                                                            {adjunto.name}
-                                                                                                        </p>
-                                                                                                    </strong>
-                                                                                                </CustomToggle>
-                                                                                                
-                                                                                            </div>
-                                                                                            <Accordion.Collapse eventKey={adjunto.value}>
-                                                                                                <div>
-                                                                                                    {
-                                                                                                        proyecto ? 
-                                                                                                            proyecto[adjunto.value].length ?
-                                                                                                                <div className="mt-2 d-flex justify-content-center">
-                                                                                                                    <span className = 'btn btn-hover btn-text-success' onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.value]) }}>
-                                                                                                                        <i className="fas fa-file-archive"></i> Descargar ZIP
-                                                                                                                    </span>
-                                                                                                                </div>
-                                                                                                            : ''
-                                                                                                        : ''
-                                                                                                    }   
-                                                                                                    {
-                                                                                                        proyecto ? 
-                                                                                                            <ItemSlider items = { proyecto[adjunto.value] } item = {adjunto.value} />
-                                                                                                        : ''
-                                                                                                    }
-                                                                                                </div>
-                                                                                            </Accordion.Collapse>
-                                                                                        </div>
-                                                                                    )
-                                                                                } )
-                                                                            }
-                                                                        </Accordion>            
-                                                                    </div>
-                                                                </div>                                            
-                                                            </Accordion.Collapse>
-                                                        </div>
-                                                    </div>
-                                                )
-                                            } )
-                                        }
-                                    </div>
-                                </Accordion>
                                 {
                                     proyecto.avances.length ?
                                         <>
-                                            <div className="separator separator-dashed mt-1 mb-2"></div>
-                                            <div className="my-2">
-                                                <p>
-                                                    Avances por semana.
-                                                </p>
-                                            </div>
                                             <div className="row mx-0">
                                                 {
                                                     proyecto.avances.map( (avance, key) => {
                                                         return(
-                                                            <div className="col-md-2 text-center">
-                                                                <P>
-                                                                    {
-                                                                        avance.semana
-                                                                    }
-                                                                </P>
-                                                                <a href = { avance.pdf } target = '_blank'>
-                                                                    <FontAwesomeIcon icon = { faFilePdf } />
+                                                            <div key = {key} className="col-md-2 text-center">
+                                                                <div className="d-flex flex-column align-items-center">
+                                                                <a href = { avance.pdf } className="text-dark-75 font-weight-bold mt-15 font-size-lg text-hover-danger2 pb-3">
+                                                                    <img alt="" className="max-h-50px pb-2" src="/pdf.svg"/>{avance.semana}
                                                                 </a>
+                                                                </div>
                                                             </div>
                                                         )
                                                     })
@@ -649,10 +692,9 @@ class MiProyecto extends Component{
                                         </>
                                     : ''
                                 }
-                                
-
                             </Card.Body>
                         </Card>
+                        </div>
                     : ''
                 }
             </Layout>

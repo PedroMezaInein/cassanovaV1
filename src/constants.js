@@ -275,6 +275,10 @@ export const CLIENTES_COLUMNS = [
         accessor: 'puesto',
     },
     {
+        Header: 'RFC',
+        accessor: 'rfc'
+    },
+    {
         Header: 'Fecha',
         accessor: 'fecha',
     },
@@ -335,6 +339,17 @@ export const EDOS_CUENTAS_COLUMNS = [
     {
         Header: 'Fecha',
         accessor: 'fecha',
+    },
+]
+
+export const ADJ_CONTRATOS_COLUMNS = [
+    {
+        Header: 'Opciones',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Contratos',
+        accessor: 'adjunto',
     },
 ]
 
@@ -524,7 +539,7 @@ export const FACTURAS_COLUMNS = [
         accessor: 'serie'
     },
     {
-        Header: 'No.Certificado',
+        Header: 'Folio Fiscal',
         accessor: 'noCertificado'
     },
     {
@@ -550,6 +565,14 @@ export const FACTURAS_COLUMNS = [
     {
         Header: 'Total',
         accessor: 'total'
+    },
+    {
+        Header: 'Monto acumulado',
+        accessor: 'acumulado'
+    },
+    {
+        Header: 'Monto restante',
+        accessor: 'restante'
     },
     {
         Header: 'Adjuntos',

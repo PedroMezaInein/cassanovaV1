@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Subtitle } from '../../texts'
-import { SelectSearch, Select, Calendar, RadioGroup, FileInput, Button, Input, InputMoney } from '../../form-components'
+import { SelectSearch, Select, Calendar, RadioGroup, FileInput, Button, Input, InputMoney, SelectSearchTrue } from '../../form-components'
 import { Form } from 'react-bootstrap'
 import { RFC, DATE } from '../../../constants'
 import {openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
@@ -35,7 +35,7 @@ class VentasForm extends Component {
     }*/
 
     updateCliente = value => {
-        const { onChange, setOptions } = this.props
+        const { onChange, setOptions, form, data } = this.props
         onChange({ target: { value: value, name: 'cliente' } })
         onChange({ target: { value: '', name: 'proyecto' } })
         onChange({ target: { value: '', name: 'contrato' } })
@@ -45,6 +45,19 @@ class VentasForm extends Component {
             if (value.toString() === element.value.toString()) {
                 setOptions('proyectos', element.proyectos)
                 setOptions('contratos', element.contratos)
+                if(form.rfc !== ''){
+                    onChange({ target: { value: '', name: 'contrato' } })
+                }
+            }
+        })
+
+        
+        data.clientes.find(function (element, index){
+            console.log(element, 'element cliente')
+            if (value.toString() === element.id.toString()) {
+                if(element.rfc !== ''){
+                    onChange({ target: { value: element.rfc, name: 'rfc' } })
+                }
             }
         })
     }
@@ -321,17 +334,6 @@ class VentasForm extends Component {
                                 <h5 className="mb-4 font-weight-bold text-dark">Selecciona el área y fecha</h5>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
-                                        <Calendar 
-                                            formeditado={formeditado}
-                                            onChangeCalendar={this.handleChangeDate}
-                                            placeholder="Fecha"
-                                            name="fecha"
-                                            value={form.fecha}
-                                            patterns={DATE}
-                                        />  
-                                        {/*<span className="form-text text-muted">Por favor, selecciona la fecha. </span>*/}
-                                    </div>
-                                    <div className="col-md-4">
                                         <SelectSearch 
                                             formeditado={formeditado}
                                             options={options.areas}
@@ -359,6 +361,17 @@ class VentasForm extends Component {
                                             </div>
                                             : ''
                                     }
+                                    <div className="col-md-4">
+                                        <Calendar 
+                                            formeditado={formeditado}
+                                            onChangeCalendar={this.handleChangeDate}
+                                            placeholder="Fecha"
+                                            name="fecha"
+                                            value={form.fecha}
+                                            patterns={DATE}
+                                        />  
+                                        {/*<span className="form-text text-muted">Por favor, selecciona la fecha. </span>*/}
+                                    </div>
                                 </div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-12">
@@ -467,7 +480,7 @@ class VentasForm extends Component {
                                         {/*<span className="form-text text-muted">Por favor, ingresa el monto.</span>*/}
                                     </div>
                                     <div className="col-md-4">
-                                        <SelectSearch 
+                                        <SelectSearchTrue 
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             options={options.contratos} 
