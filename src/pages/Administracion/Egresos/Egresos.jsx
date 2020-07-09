@@ -109,6 +109,9 @@ class egresos extends Component{
                         var xml = new XMLParser().parseFromString(text);
                         const emisor = xml.getElementsByTagName('cfdi:Emisor')[0]
                         const receptor = xml.getElementsByTagName('cfdi:Receptor')[0]
+                        //Cmabiando el timbre fiscal
+                        const timbreFiscalDigital = xml.getElementsByTagName('tfd:TimbreFiscalDigital')[0]
+                        //
                         let obj = {
                             rfc_receptor: receptor.attributes.Rfc ? receptor.attributes.Rfc : '',
                             nombre_receptor: receptor.attributes.Nombre ? receptor.attributes.Nombre : '',
@@ -124,10 +127,13 @@ class egresos extends Component{
                             subtotal: xml.attributes.SubTotal ? xml.attributes.SubTotal : '',
                             tipo_cambio: xml.attributes.TipoCambio ? xml.attributes.TipoCambio : '',
                             moneda: xml.attributes.Moneda ? xml.attributes.Moneda : '',
-                            numero_certificado: xml.attributes.NoCertificado ? xml.attributes.NoCertificado : '',
+                            //Cmabiando el timbre fiscal
+                            numero_certificado: timbreFiscalDigital.attributes.UUID ? timbreFiscalDigital.attributes.UUID : '',
+                            //
                             folio: xml.attributes.Folio ? xml.attributes.Folio : '',
                             serie: xml.attributes.Serie ? xml.attributes.Serie : '',
                         }
+                        console.log(xml.attributes, 'attributes')
                         if(obj.numero_certificado === ''){
                             let NoCertificado = text.search('NoCertificado="')
                             if(NoCertificado)
