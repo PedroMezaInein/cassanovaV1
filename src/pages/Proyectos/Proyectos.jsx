@@ -244,6 +244,12 @@ class Proyectos extends Component {
                             files: []
                         },
                         {
+                            placeholder: 'Estimaciones y cierre',
+                            id: 'estimaciones_y_cierre',
+                            value: '',
+                            files: []
+                        },
+                        {
                             placeholder: 'Fianzas y seguros',
                             id: 'fianzas_y_seguros',
                             value: '',
@@ -252,6 +258,12 @@ class Proyectos extends Component {
                         {
                             placeholder: 'Permisos de obra ante dependencias',
                             id: 'permisos_de_obra_ante_dependencias',
+                            value: '',
+                            files: []
+                        },
+                        {
+                            placeholder: 'Presupuestos extras',
+                            id: 'presupuestos_extras',
                             value: '',
                             files: []
                         }
@@ -339,6 +351,12 @@ class Proyectos extends Component {
                     text: 'Mantenimiento',
                     id: 'mantenimiento',
                     adjuntos:[
+                        {
+                            placeholder: 'Fallas y reparaciones por vicios ocultos',
+                            id: 'fallas_y_reparaciones_por_vicios_ocultos',
+                            value: '',
+                            files: []
+                        },
                         {
                             placeholder: 'Mantenimiento preventivo',
                             id: 'mantenimiento_preventivo',
@@ -1918,19 +1936,23 @@ class Proyectos extends Component {
                                                                                 
                                                                                 {
                                                                                     proyecto ? 
-                                                                                        proyecto[adjunto.id].length ?
-                                                                                            <div className="mt-2 d-flex justify-content-center">
-                                                                                                <span className = 'btn btn-hover btn-text-success' onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.id]) }}>
-                                                                                                    <i className="fas fa-file-archive"></i> Descargar ZIP
-                                                                                                </span>
-                                                                                            </div>
+                                                                                        proyecto[adjunto.id] ?
+                                                                                            proyecto[adjunto.id].length ?
+                                                                                                <div className="mt-2 d-flex justify-content-center">
+                                                                                                    <span className = 'btn btn-hover btn-text-success' onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.id]) }}>
+                                                                                                        <i className="fas fa-file-archive"></i> Descargar ZIP
+                                                                                                    </span>
+                                                                                                </div>
+                                                                                            : ''
                                                                                         : ''
                                                                                     : ''
                                                                                 }
                                                                                 {
                                                                                     proyecto ? 
-                                                                                        <ItemSlider items = { proyecto[adjunto.id] }  handleChange = { this.handleChange }
-                                                                                        item = {adjunto.id} deleteFile = { this.deleteFile } />
+                                                                                        proyecto[adjunto.id] ?
+                                                                                            <ItemSlider items = { proyecto[adjunto.id] }  handleChange = { this.handleChange }
+                                                                                            item = {adjunto.id} deleteFile = { this.deleteFile } />
+                                                                                        : ''    
                                                                                     : ''
                                                                                 }
                                                                             </div>
