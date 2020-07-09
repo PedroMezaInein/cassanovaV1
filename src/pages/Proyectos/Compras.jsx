@@ -681,9 +681,9 @@ class Compras extends Component{
 
         const data = new FormData();
 
-        let cadena = obj.nombre_emisor.replace(/,/g, '')
+        let cadena = obj.nombre_emisor.toUpperCase().replace(/,/g, '')
         cadena = cadena.replace(/\./g, '')
-        data.append('nombre', cadena).toUpperCase()
+        data.append('nombre', cadena)
         data.append('razonSocial', cadena)
         data.append('rfc', obj.rfc_emisor.toUpperCase())
 
