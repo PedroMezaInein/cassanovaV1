@@ -402,6 +402,7 @@ class Ventas extends Component{
                         var xml = new XMLParser().parseFromString(text);
                         const emisor = xml.getElementsByTagName('cfdi:Emisor')[0]
                         const receptor = xml.getElementsByTagName('cfdi:Receptor')[0]
+                        const timbreFiscalDigital = xml.getElementsByTagName('tfd:TimbreFiscalDigital')[0]
                         let obj = {
                             rfc_receptor: receptor.attributes.Rfc ? receptor.attributes.Rfc : '',
                             nombre_receptor: receptor.attributes.Nombre ? receptor.attributes.Nombre : '',
@@ -417,7 +418,7 @@ class Ventas extends Component{
                             subtotal: xml.attributes.SubTotal ? xml.attributes.SubTotal : '',
                             tipo_cambio: xml.attributes.TipoCambio ? xml.attributes.TipoCambio : '',
                             moneda: xml.attributes.Moneda ? xml.attributes.Moneda : '',
-                            numero_certificado: xml.attributes.NoCertificado ? xml.attributes.NoCertificado : '',
+                            numero_certificado: timbreFiscalDigital.attributes.UUID ? timbreFiscalDigital.attributes.UUID : '',
                             folio: xml.attributes.Folio ? xml.attributes.Folio : '',
                             serie: xml.attributes.Serie ? xml.attributes.Serie : '',
                         }
