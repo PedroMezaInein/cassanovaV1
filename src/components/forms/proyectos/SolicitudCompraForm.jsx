@@ -199,6 +199,14 @@ class SolicitudCompraForm extends Component {
                                 <h5 className="mb-4 font-weight-bold text-dark">Selecciona el área y fecha</h5>
 								<div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
+                                        <Calendar
+                                            onChangeCalendar={this.handleChangeDate}
+                                            placeholder="Fecha"
+                                            name="fecha"
+                                            value={form.fecha}
+                                        />
+                                    </div>
+                                    <div className="col-md-4">
                                         <SelectSearch 
                                             requirevalidation={1}
                                             formeditado={formeditado}
@@ -224,14 +232,6 @@ class SolicitudCompraForm extends Component {
                                             </div>
                                         : ''
                                     }
-                                    <div className="col-md-4">
-                                        <Calendar
-                                            onChangeCalendar={this.handleChangeDate}
-                                            placeholder="Fecha"
-                                            name="fecha"
-                                            value={form.fecha}
-                                        />
-                                    </div>
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
