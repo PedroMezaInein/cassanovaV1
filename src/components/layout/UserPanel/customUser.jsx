@@ -28,7 +28,9 @@ class customUser extends Component{
 										</svg>
 									</span>
 								</span>
-								<span className="navi-text text-muted text-hover-primary">{this.props.authUser.user.email}</span>
+								<a href={"mailto:"+this.props.authUser.user.email} target="_blank">
+									<span className="navi-text text-muted text-hover-primary">{this.props.authUser.user.email}</span>
+								</a>
 							</span>
 						</a>
 						<a href="#" className="btn btn-sm btn-light-primary font-weight-bolder mt-2 " onClick={clickLogout}>Cerrar Sesión</a>
