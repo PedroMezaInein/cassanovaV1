@@ -76,6 +76,7 @@ class SolicitudVenta extends Component{
         });
         if(!solicitud)
             history.push('/')
+        this.getSolicitudesVentaAxios()
         let queryString = this.props.history.location.search
         if(queryString){
             let params = new URLSearchParams(queryString)
@@ -89,7 +90,7 @@ class SolicitudVenta extends Component{
                 this.getSolicitudVentaAxios(id)
             }
         }
-        this.getSolicitudesVentaAxios()
+        /* this.getSolicitudesVentaAxios() */
     }
 
     clearForm = () => {
