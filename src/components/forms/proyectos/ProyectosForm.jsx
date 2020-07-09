@@ -38,18 +38,23 @@ class ProyectosForm extends Component{
         const { onChange, form }  = this.props
         let aux = false
         let array = []
-        if(form.correo){
-            form.correos.map( (correo) => {
-                if(correo === form.correo){
-                    aux = true
+        if (/^(?:[^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*|"[^\n"]+")@(?:[^<>()[\].,;:\s@"]+\.)+[^<>()[\]\.,;:\s@"]{2,63}$/i.test(form.correo)){
+            alert("La dirección de email " + form.correo + " es correcta.");
+            if(form.correo){
+                form.correos.map( (correo) => {
+                    if(correo === form.correo){
+                        aux = true
+                    }
+                })
+                if(!aux){
+                    array = form.correos
+                    array.push(form.correo)
+                    onChange( { target: { name: 'correos', value: array } } )
+                    onChange( { target: { name: 'correo', value: '' } } )
                 }
-            })
-            if(!aux){
-                array = form.correos
-                array.push(form.correo)
-                onChange( { target: { name: 'correos', value: array } } )
-                onChange( { target: { name: 'correo', value: '' } } )
             }
+        } else {
+            alert("La dirección de email es incorrecta.");
         }
     }
 
