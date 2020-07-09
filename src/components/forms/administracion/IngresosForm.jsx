@@ -347,7 +347,7 @@ class IngresosForm extends Component {
                                         <div className="form-group row form-group-marginless">
                                             {
                                                 form.empresa ?
-                                                <div className="col-md-4">
+                                                <div className="col-md-6">
                                                         <SelectSearch 
                                                             options={options.cuentas} 
                                                             placeholder="Selecciona la cuenta"
@@ -360,6 +360,24 @@ class IngresosForm extends Component {
                                                     </div>
                                                 : ''
                                             }
+                                            <div className="col-md-6">
+                                                <Select 
+                                                    requirevalidation={1}
+                                                    formeditado={formeditado}
+                                                    placeholder="Selecciona el estatus de compra" 
+                                                    options={options.estatusCompras}
+                                                    name="estatusCompra" 
+                                                    value={form.estatusCompra} 
+                                                    onChange={onChange}
+                                                    messageinc="Incorrecto. Selecciona el estatus de compra."
+                                                    required
+                                                    iconclass={"flaticon2-time"}                                                    
+                                                />
+                                            {/*<span className="form-text text-muted">Por favor, selecciona el estatus de compra.</span>*/}
+                                            </div>                   
+                                        </div>
+                                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                                        <div className="form-group row form-group-marginless">
                                             <div className="col-md-4">
                                                 <Select 
                                                     requirevalidation={1}
@@ -379,24 +397,6 @@ class IngresosForm extends Component {
                                                 <Select 
                                                     requirevalidation={1}
                                                     formeditado={formeditado}
-                                                    placeholder="Selecciona el estatus de compra" 
-                                                    options={options.estatusCompras}
-                                                    name="estatusCompra" 
-                                                    value={form.estatusCompra} 
-                                                    onChange={onChange}
-                                                    messageinc="Incorrecto. Selecciona el estatus de compra."
-                                                    required
-                                                    iconclass={"flaticon2-time"}                                                    
-                                                />
-                                            {/*<span className="form-text text-muted">Por favor, selecciona el estatus de compra.</span>*/}
-                                            </div>                            
-                                        </div>
-                                        <div className="separator separator-dashed mt-1 mb-2"></div>
-                                        <div className="form-group row form-group-marginless">
-                                            <div className="col-md-3">
-                                                <Select 
-                                                    requirevalidation={1}
-                                                    formeditado={formeditado}
                                                     placeholder="Selecciona el impuesto" 
                                                     options={options.tiposImpuestos}
                                                     name="tipoImpuesto" 
@@ -407,8 +407,8 @@ class IngresosForm extends Component {
                                                     required
                                                 />
                                                 {/*<span className="form-text text-muted">Por favor, selecciona el impuesto.</span>*/}
-                                            </div> 
-                                            <div className="col-md-3">
+                                            </div>  
+                                            <div className="col-md-4">
                                                 <InputMoney 
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
@@ -422,7 +422,10 @@ class IngresosForm extends Component {
                                                 />
                                             {/*<span className="form-text text-muted">Por favor, ingresa el monto.</span>*/}
                                             </div>
-                                            <div className="col-md-3">
+                                        </div>
+                                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                                        <div className="form-group row form-group-marginless">
+                                            <div className="col-md-6">
                                                 <FileInput
                                                     requirevalidation={0}
                                                     formeditado={formeditado}
@@ -435,7 +438,7 @@ class IngresosForm extends Component {
                                                     deleteAdjunto={clearFiles} />
                                                 {/*<span className="form-text text-muted">Por favor, adjunta el documento.</span>*/}
                                             </div>
-                                            <div className="col-md-3">
+                                            <div className="col-md-6">
                                                 <FileInput
                                                     requirevalidation={0}
                                                     formeditado={formeditado}
