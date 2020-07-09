@@ -394,12 +394,23 @@ class Empresas extends Component{
                 img: img
             })
         }
+        
         else{
-            form[name] = value
-            this.setState({
-                ... this.state,
-                form
-            })
+            if(name === 'razonSocial'){
+                let cadena = value.replace(/,/g, '')
+                cadena = cadena.replace(/\./g, '')
+                form[name] = cadena
+                this.setState({
+                    ... this.state,
+                    form
+                })
+            }else{
+                form[name] = value
+                this.setState({
+                    ... this.state,
+                    form
+                })
+            }
         }
         
         
