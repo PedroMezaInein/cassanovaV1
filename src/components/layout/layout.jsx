@@ -126,7 +126,11 @@ class Layout extends Component {
                                                     }
                                                 </span>
                                                 <span className="symbol symbol-35 symbol-light-primary">
-                                                    <span className="symbol-label font-size-h5 font-weight-bold">O</span>
+                                                    <span className="symbol-label font-size-h5 font-weight-bold">
+                                                        {
+                                                            this.props.authUser.user.name.charAt(0)
+                                                        }
+                                                    </span>
                                                 </span>                                                
                                             </div>
                                     </div>
