@@ -427,11 +427,10 @@ class MiProyecto extends Component{
 
     render(){
         const { options, proyecto, form, adjuntos, showadjuntos, primeravista, defaultactivekey} = this.state
-      
         return(
             <Layout { ...this.props}>
                 <div className="content pt-0 d-flex flex-column flex-column-fluid" id="kt_content" style ={ { paddingBottom:"11px" } }>
-                    <div className="d-flex flex-row-fluid bgi-size-cover bgi-position-center min-h-400px mb-4 d-flex justify-content-center align-items-center" style ={ { backgroundImage: "url('/proyecto.jpg')", margin:"-25px" } }>
+                    <div className="d-flex flex-row-fluid bgi-size-cover bgi-position-center min-h-350px mb-4 d-flex justify-content-center align-items-center" style ={ { backgroundImage: "url('/proyecto.jpg')", margin:"-25px" } }>
                         <div className="container">
                             <div className="d-flex align-items-stretch text-center flex-column py-40">
                                 {/*<h2 className="text-dark font-weight-bolder mb-12"></h2>*/}
@@ -439,7 +438,6 @@ class MiProyecto extends Component{
                                 <div className="form-group row form-group-marginless d-flex justify-content-center align-items-center">
                                     <div className="col-md-5">
                                         <SelectSearch 
-                                            formeditado = { 0 }
                                             options = { options.proyectos }
                                             placeholder = "Seleccione un proyecto"
                                             name = "proyecto"
