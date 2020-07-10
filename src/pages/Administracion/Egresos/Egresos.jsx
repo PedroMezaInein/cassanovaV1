@@ -240,6 +240,7 @@ class egresos extends Component{
             aux.push(
                 {
                     actions: this.setActions(egreso),
+                    identificador: renderToString(setTextTable(egreso.id)),
                     cuenta: renderToString(setArrayTable(
                         [
                             {name:'Empresa', text: egreso.empresa ? egreso.empresa.name : ''},

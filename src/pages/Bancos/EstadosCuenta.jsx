@@ -58,7 +58,7 @@ class EstadosCuenta extends Component {
             aux.push({
 
                 actions: this.setActions(estado),
-
+                identificador: renderToString(setTextTable(estado.id)),
                 cuenta: estado.cuentas.length > 0 ?
                     renderToString(setArrayTable(
                         [

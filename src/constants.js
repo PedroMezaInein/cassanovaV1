@@ -360,6 +360,10 @@ export const EDOS_CUENTAS_COLUMNS_2 = [
         accessor: 'actions',
     },
     {
+        Header: 'ID',
+        accessor: 'identificador'
+    },
+    {
         Header: 'Cuenta',
         accessor: 'cuenta',
     },
@@ -377,6 +381,10 @@ export const TRASPASOS_COLUMNS = [
     {
         Header: 'OPCIONES',
         accessor: 'actions',
+    },
+    {
+        Header: 'ID',
+        accessor: 'identificador'
     },
     {
         Header: 'Origen',
@@ -409,6 +417,10 @@ export const INGRESOS_COLUMNS = [
     {
         Header: 'OPCIONES',
         accessor: 'actions',
+    },
+    {
+        Header: 'ID',
+        accessor: 'identificador'
     },
     {
         Header: 'Cuenta',
@@ -469,6 +481,10 @@ export const EGRESOS_COLUMNS = [
     {
         Header: 'Opciones',
         accessor: 'actions',
+    },
+    {
+        Header: 'ID',
+        accessor: 'identificador'
     },
     {
         Header: 'Cuenta',
@@ -785,6 +801,10 @@ export const VENTAS_COLUMNS = [
         accessor: 'actions',
     },
     {
+        Header: 'ID',
+        accessor: 'identificador'
+    },
+    {
         Header: 'Proyecto',
         accessor: 'proyecto'
     },
@@ -846,6 +866,10 @@ export const COMPRAS_COLUMNS = [
     {
         Header: 'Opciones',
         accessor: 'actions',
+    },
+    {
+        Header: 'ID',
+        accessor: 'identificador'
     },
     {
         Header: 'Proyecto',

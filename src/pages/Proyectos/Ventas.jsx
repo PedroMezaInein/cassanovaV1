@@ -267,6 +267,7 @@ class Ventas extends Component{
             aux.push(
                 {
                     actions: this.setActions(venta),
+                    identificador: renderToString(setTextTable( venta.id )),
                     cuenta: renderToString(setArrayTable(
                         [
                             {name:'Empresa', text: venta.empresa ? venta.empresa.name : '' },

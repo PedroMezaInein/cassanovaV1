@@ -285,6 +285,7 @@ class Ingresos extends Component {
             aux.push(
                 {
                     actions: this.setActions(ingreso),
+                    identificador: renderToString(setTextTable(ingreso.id)),
                     cuenta: renderToString(setArrayTable(
                         [
                             { name: 'Empresa', text: ingreso.empresa ? ingreso.empresa.name : '' },

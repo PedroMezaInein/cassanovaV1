@@ -242,6 +242,7 @@ class Traspasos extends Component{
         traspasos.map( (traspaso) => {
             _aux.push({
                 actions: this.setActions(traspaso),
+                identificador: renderToString(setTextTable(traspaso.id)),
                 origen: renderToString(setArrayTable(
                     traspaso.origen ?
                         [

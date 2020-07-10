@@ -141,6 +141,7 @@ class Compras extends Component{
             aux.push(
                 {
                     actions: this.setActions(compra),
+                    identificador: renderToString(setTextTable(compra.id)),
                     cuenta: renderToString(setArrayTable(
                         [
                             {name:'Empresa', text: compra.empresa ? compra.empresa.name : ''},
