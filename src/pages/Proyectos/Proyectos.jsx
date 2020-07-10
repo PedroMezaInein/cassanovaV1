@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
-import { Modal, Card, Slider } from '../../components/singles'
+import { Modal, Slider } from '../../components/singles'
 import { Button } from '../../components/form-components'
 import { faPlus, faTrash, faEdit, faMoneyBill, faFileAlt, faFileArchive, faEye, faPhone, faEnvelope, faLink, faList, faFolderOpen } from '@fortawesome/free-solid-svg-icons'
 import { ProyectosForm, AvanceForm } from '../../components/forms'
@@ -14,7 +14,7 @@ import { FileInput } from '../../components/form-components'
 import Moment from 'react-moment'
 import NumberFormat from 'react-number-format';
 import swal from 'sweetalert'
-import { Form, Accordion } from 'react-bootstrap'
+import { Form, Accordion , Card} from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList, setContactoTable } from '../../functions/setters'
 import NewTable from '../../components/tables/NewTable'
@@ -22,6 +22,10 @@ import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert } from '../../
 import { forIn } from 'lodash'
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import ItemSlider from '../../components/singles/ItemSlider'
+import Nav from 'react-bootstrap/Nav'
+import Tab from 'react-bootstrap/Tab'
+import Col from 'react-bootstrap/Col'
+import Row from 'react-bootstrap/Row'
 
 function CustomToggle({ children, eventKey, icon = faPlus, iconColor = 'transparent' }) {
 
@@ -60,6 +64,76 @@ class Proyectos extends Component {
         modalAdjuntos: false,
         modalAvances: false,
         adjuntos: [],
+        primeravista:true,
+        defaultactivekey:"",
+        showadjuntos:[
+            {
+                placeholder: 'Fotografías levantamiento',
+                id: 'fotografias_levantamiento',
+                value: '',
+                files: []
+            },
+            {
+                placeholder: 'Manuales de adaptación',
+                id: 'manuales_de_adaptacion',
+                value: '',
+                files: []
+            },
+            {
+                placeholder: 'Minutas',
+                id: 'minutas',
+                value: '',
+                files: []
+            },
+            {
+                placeholder: 'Oficios',
+                id: 'oficios',
+                value: '',
+                files: []
+            },
+            {
+                placeholder: 'Planos entregados por cliente',
+                id: 'planos_entregados_por_cliente',
+                value: '',
+                files: []
+            },
+            {
+                placeholder: 'Propuestas arquitectónicas preliminares',
+                id: 'propuestas_arquitectonicas_preliminares',
+                value: '',
+                files: []
+            },
+            {
+                placeholder: 'Referencias del diseño del proyecto',
+                id: 'referencias_del_diseño_del_proyecto',
+                value: '',
+                files: []
+            },
+            {
+                placeholder: 'Renders',
+                id: 'renders',
+                value: '',
+                files: []
+            },
+            {
+                placeholder: 'Sketch Up',
+                id: 'sketch_up',
+                value: '',
+                files: []
+            },
+            {
+                placeholder: 'Presupuestos preliminares',
+                id: 'presupuestos_preliminares',
+                value: '',
+                files: []
+            },
+            {
+                placeholder: 'Carta oferta',
+                id: 'carta_oferta',
+                value: '',
+                files: []
+            }
+        ],
         data: {
             proyectos: []
         },
@@ -408,6 +482,27 @@ class Proyectos extends Component {
             this.getProspectoAxios(state.prospectos.id)
         }
     }
+    
+    seleccionaradj (adjuntos){  
+        const {proyecto} = this.state;  
+        let newdefaultactivekey = "";
+        for(var i=0;i<adjuntos.length;i++)
+        { 
+            var adjunto = adjuntos[i]; 
+            if(proyecto[adjunto.id].length)
+            {
+                newdefaultactivekey=adjunto.id   
+                break;
+            } 
+        } 
+        this.setState({
+            ... this.state,
+            primeravista:false,
+            defaultactivekey:newdefaultactivekey,
+            subActiveKey:newdefaultactivekey,
+            showadjuntos:adjuntos
+        })
+    }
 
     componentDidMount() {
         const { authUser: { user: { permisos: permisos } } } = this.props
@@ -420,6 +515,14 @@ class Proyectos extends Component {
         if (!proyectos)
             history.push('/')
         this.getProyectosAxios()
+    }
+    
+    updateActiveTabContainer = active => {
+        console.log(active, 'active')
+        this.setState({
+            ... this.state,
+            subActiveKey: active
+        })
     }
 
     openModal = () => {
@@ -498,9 +601,7 @@ class Proyectos extends Component {
     }
 
     openModalAdjuntos = proyecto => {
-
         let { adjuntos } = this.state
-
         let auxheaders = [
             /* { name: 'cotizaciones', placeholder: 'Cotización', form: 'cotizacion' },
             { name: 'comprobante_pagos', placeholder: 'Comprobante de pagos', form: 'comprobantePagos' },
@@ -520,21 +621,18 @@ class Proyectos extends Component {
             { name: 'garantia', placeholder: 'Garantía de vicios ocultos', form: 'garantia' },
             { name: 'contratos', placeholder: 'Contratos', form: 'contratos' } */
         ]
-
         /* let aux = []
-
-        auxheaders.map((element) => {
-            aux.push({
-                id: element.name,
-                text: element.placeholder,
-                files: proyecto[element.name],
-                form: element.form,
-                url: ''
+            auxheaders.map((element) => {
+                aux.push({
+                    id: element.name,
+                    text: element.placeholder,
+                    files: proyecto[element.name],
+                    form: element.form,
+                    url: ''
+                })
             })
-        })
-
-        adjuntos = aux;
- */
+            adjuntos = aux;
+        */
         this.setState({
             ... this.state,
             modalAdjuntos: true,
@@ -639,7 +737,7 @@ class Proyectos extends Component {
         const { value } = e.target
         const { form } = this.state
         form['avances'][key][name]  = value
-        console.log(form.avances[key][name])
+        // console.log(form.avances[key][name])
         this.setState({
             ...this.state,
             form
@@ -1662,7 +1760,7 @@ class Proyectos extends Component {
     }
 
     render() {
-        const { modal, modalDelete, modalAdjuntos, modalAvances, title, adjuntos, prospecto, form, options, proyectos, proyecto, data, formeditado } = this.state
+        const { modal, modalDelete, modalAdjuntos, modalAvances, title, adjuntos, prospecto, form, options, proyectos, proyecto, data, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey} = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 
@@ -1891,7 +1989,88 @@ class Proyectos extends Component {
                     <div className="p-2">
                         {/* <Slider elements={adjuntos.length > 0 ? adjuntos : []}
                             deleteFile={this.deleteFile} handleChange={this.handleChange} /> */}
-                        <Accordion>
+                        <Card className="card-custom card-without-box-shadown"> 
+                            <Card.Header className="pl-0 pr-0">
+                                <Card.Title> 
+                                    <h3 className="text-dark"></h3>
+                                </Card.Title>
+                                    <div className="card-toolbar">
+                                        <Nav as="ul" className="nav nav-bold nav-pills">
+                                            {   
+                                                form.adjuntos_grupo.map( (grupo, key) => {
+                                                    return(
+                                                        <Nav.Item as="li" key = {key}>
+                                                            <Nav.Link data-toggle="tab" className={primeravista&&key==0?"active":""} eventKey={grupo.id} onClick = { () => {this.seleccionaradj(grupo.adjuntos) } }>{grupo.text}</Nav.Link>
+                                                        </Nav.Item>
+                                                    )
+                                                })
+                                            }                                            
+                                        </Nav>
+                                    </div>
+                            </Card.Header>
+                            <Card.Body>
+                                <Tab.Container id="left-tabs-example" activeKey = { subActiveKey ? subActiveKey : defaultactivekey } defaultActiveKey={defaultactivekey}
+                                            onSelect = { (select) => { this.updateActiveTabContainer(select) } }>
+                                    <Row>
+                                        <Col md={5} className="border-nav">
+											<Nav variant="pills" className="flex-column navi navi-hover navi-active">  
+                                                {   
+                                                    showadjuntos.map( (adjunto, key) => {
+                                                        return(
+                                                            <Nav.Item className="navi-item" key = {key}>
+                                                                <Nav.Link className="navi-link" eventKey = { adjunto.id }>
+                                                                    <span className="navi-icon">
+                                                                        <i className="flaticon2-analytics"></i>
+                                                                    </span>
+                                                                    <span className="navi-text">{adjunto.placeholder}</span>
+                                                                </Nav.Link>
+                                                            </Nav.Item>
+                                                        )
+                                                    })
+                                                }
+											</Nav>
+										</Col>
+                                        <Col md={7}>
+                                            <Tab.Content>
+                                                {   
+                                                    showadjuntos.map( (adjunto, key) => {
+                                                        return(
+                                                            <Tab.Pane key = {key} eventKey={adjunto.id}>
+                                                                <>
+                                                                    {
+                                                                        proyecto ? 
+                                                                            proyecto[adjunto.id] ?
+                                                                                proyecto[adjunto.id].length ?
+                                                                                    <div className="mt-2 d-flex justify-content-center">
+                                                                                        <span className = 'btn btn-hover btn-text-success' onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.id]) }}>
+                                                                                            <i className="fas fa-file-archive"></i> Descargar ZIP
+                                                                                        </span>
+                                                                                    </div>
+                                                                                : ''
+                                                                            : ''
+                                                                        : ''
+                                                                    }
+                                                                    {
+                                                                        proyecto ? 
+                                                                            proyecto[adjunto.id] ?
+                                                                                <ItemSlider items = { proyecto[adjunto.id] }  handleChange = { this.handleChange }
+                                                                                    item = {adjunto.id} deleteFile = { this.deleteFile } />
+                                                                            : ''    
+                                                                        : ''
+                                                                    }
+                                                                </>
+                                                            </Tab.Pane>
+                                                        )
+                                                    })
+                                                }
+                                            </Tab.Content>
+                                        </Col>
+                                    </Row>
+                                </Tab.Container>         
+                            </Card.Body>
+                        </Card>
+                    
+                    {/* <Accordion>
                         {
                             form.adjuntos_grupo.map( (grupo, key) => {
                                 return(
@@ -1971,7 +2150,7 @@ class Proyectos extends Component {
                                             
                             })
                         }
-                        </Accordion>
+                        </Accordion> */}
                     </div>
                 </Modal>
                 <Modal title = { title } show = { modalAvances } handleClose = { this.handleCloseAvances }>
