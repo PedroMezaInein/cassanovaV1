@@ -25,7 +25,7 @@ class Login extends Component{
             <div className="vh-100 d-flex flex-column flex-root">
                     <div className="login login-3 login-signin-on d-flex flex-row-fluid" id="kt_login" >
                         <div className="d-flex flex-center bgi-size-cover bgi-no-repeat flex-row-fluid" style ={ { backgroundImage: "url('/1.jpg')" } }>
-                            <div className="login-form text-center text-white p-7 position-relative overflow-hidden">
+                            <div className="login-form text-center text-white p-7 position-relative overflow-hidden pt-4">
                                 <div className="d-flex flex-center mb-3">
                                     <a href="#" >
                                         <img src="/inein.png" className="max-h-75px  mr-5" alt="" />
