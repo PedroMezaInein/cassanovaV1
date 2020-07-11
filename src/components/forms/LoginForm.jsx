@@ -142,7 +142,7 @@ class LoginForm extends React.Component {
             
             <form className="form pt-5" onSubmit={this.handleSubmit}>
                 <div className="form-group">
-                    <input className={"form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-3 pl-4"}
+                    <input className={"form-control h-auto text-white bg-white-o-9 rounded-pill border-0 py-3 pl-4"}
                         type="text" 
                         placeholder="Ingresa tu email"
                         required
@@ -153,14 +153,14 @@ class LoginForm extends React.Component {
                     />
                         {
                             this.state.error.email !== '' &&
-                                <label className="label-error">
+                                <label className="text-white">
                                     {this.state.error.email}
                                 </label>
                         }
 				</div>
                 
                 <div className="form-group">
-                    <input className={"form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-3  pl-4"}
+                    <input className={"form-control h-auto text-white bg-white-o-9 rounded-pill border-0 py-3  pl-4"}
                         type={this.state.showPassword ? 'text' : 'password'} 
                         placeholder="Ingresa tu constraseña" 
                         required
@@ -185,13 +185,13 @@ class LoginForm extends React.Component {
 				</div>
                 {
                     this.state.error.password !== '' &&
-                        <label className="label-error">
+                        <label className="text-white">
                             {this.state.error.password}
                         </label>
                 }
 
                 <div className="form-group text-center mt-10 pt-5">
-					<button className="btn btn-pill btn-primary opacity-90 pl-4 pr-4"
+					<button className="btn btn-transparent-white font-weight-bold font-weight-bold opacity-90 pl-4 pr-4"
                             type="submit"
                             disabled={
                                 this.state.form.email === '' ||
