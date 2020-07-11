@@ -124,15 +124,23 @@ a.text-hover-danger2:hover, .text-hover-danger2:hover{
 
 }
 
+//Todos los calendarios
 .react-datepicker-popper{
     z-index: 2;
 }
 
+//Usuarios/Empresa
 .img-empresa{
     height: 4rem;
     width: auto;
 }
 
+//Proyecto/Proyecto
 .card-without-box-shadown {
     box-shadow: 0px 0px 0px 0px rgba(82, 63, 105, 0.05) !important;
+}
+
+//login
+.bg-white-o-9 {
+    background-color: rgba(255, 255, 255, 0.09) !important; 
 }
