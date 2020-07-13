@@ -710,10 +710,8 @@ class SolicitudVenta extends Component{
                     <SolicitudVentaCard data = { solicitud }>
                         {
                             solicitud.convertido ? '' :
-                                <div className="col-md-12 mb-3 d-flex justify-content-end">
-                                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.changePageConvert(solicitud)} } text='' icon={faSync} color="transparent" 
-                                        tooltip={{id:'convertir', text:'Comprar', type:'success'}} />
-                                </div>
+                                <Button icon = {faSync} pulse={"pulse-ring"} className={"btn btn-icon btn-light-primary pulse pulse-primary"} onClick={(e) => {e.preventDefault(); this.changePageConvert(solicitud)} } 
+                                        tooltip={{id:'convertir', text:'Comprar', type:'info'}}/>
                         }
                         
                     </SolicitudVentaCard>
