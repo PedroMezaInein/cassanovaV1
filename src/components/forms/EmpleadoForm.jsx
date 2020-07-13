@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Input, Button, RadioGroup, Select, Calendar, InputNumber, InputPhone, SelectSearch} from '../form-components'
+import { Input, Button, RadioGroup, Select, Calendar, InputNumber, InputPhone, SelectSearchTrue} from '../form-components'
 import Accordion from 'react-bootstrap/Accordion'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons'
@@ -61,7 +61,7 @@ class EmpleadoForm extends Component{
             <>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
-                        <SelectSearch
+                        <SelectSearchTrue
                             options = { options.departamentos } 
                             placeholder = "Selecciona el(los) departamento(s)" 
                             name="departamento"  
