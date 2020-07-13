@@ -38,6 +38,9 @@ class TiposContratos extends Component {
     }
 
     componentDidMount() {
+        var element = document.getElementById("kt_datatable_contratos");
+        element.classList.remove("table-responsive"); 
+
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props
@@ -333,6 +336,7 @@ class TiposContratos extends Component {
                         'delete': { function: this.openModalDelete }
                     }}
                     elements={data.tipos}
+                    idTable = 'kt_datatable_contratos'
                 />
 
                 <Modal show={modal.form} title = {title} handleClose={this.handleClose}>

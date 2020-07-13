@@ -39,7 +39,10 @@ class Partidas extends Component {
         partida: ''
     }
 
-    componentDidMount() {
+    componentDidMount() {   
+        var element = document.getElementById("kt_datatable_partidas");
+        element.classList.remove("table-responsive");      
+
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props
@@ -378,6 +381,7 @@ class Partidas extends Component {
                         'delete': { function: this.openModalDelete }
                     }}
                     elements={data.partidas}
+                    idTable = 'kt_datatable_partidas'
                 />
 
                 <Modal show={modal.form} title = {title} handleClose={this.handleClose}>

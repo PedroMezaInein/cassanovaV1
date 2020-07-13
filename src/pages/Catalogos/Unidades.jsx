@@ -38,6 +38,9 @@ class Unidades extends Component {
     }
 
     componentDidMount() {
+        var element = document.getElementById("kt_datatable_catalogos");
+        element.classList.remove("table-responsive"); 
+
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props
@@ -333,6 +336,7 @@ class Unidades extends Component {
                         'delete': { function: this.openModalDelete }
                     }}
                     elements={data.unidades}
+                    idTable = 'kt_datatable_catalogos'
                 />
 
                 <Modal show={modal.form} title = {title} handleClose={this.handleClose}>
