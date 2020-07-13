@@ -24,6 +24,7 @@ class NewTable extends Component {
             .DataTable();
         table.clear();
         table.rows.add(data).draw();
+        
         table.draw();
 
         $(this.refs.main).on('click', '.btn-actions-table', function (e) {
@@ -43,7 +44,7 @@ class NewTable extends Component {
     }
 
     componentDidMount() {
-        const { actions, elements, data, mostrar_acciones } = this.props
+        const { actions, elements, data, mostrar_acciones, elementClass } = this.props
         global_variable["mostrar_acciones"] = mostrar_acciones;
         var header = this.props.columns;
         var columns = [];
@@ -89,6 +90,7 @@ class NewTable extends Component {
                 // Apply the search
                 this.api().columns().every(function () {
                     var that = this;
+                    console.log(that, 'that')
                     $('input', this.header()).on('keyup change clear', function () {
                         if (that.search() !== this.value) {
                             that
@@ -105,6 +107,18 @@ class NewTable extends Component {
             responsive: true,
             data: data,
             columns,
+            createdRow: function(row, data, dataIndex, cells) {
+                if(elementClass){
+                    let auxiliar =  data[elementClass].split('<!-- -->')
+                    if(auxiliar[1] === '$0.00')
+                        $(row).addClass('zero');
+                    else{
+                        let auxiliar2  = auxiliar[1].charAt(0)
+                        if(auxiliar2 === '-')
+                            $(row).addClass('negative');
+                    }
+                }
+            },
             // DOM Layout settings
             dom:
                 `<'row'

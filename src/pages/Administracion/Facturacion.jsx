@@ -218,6 +218,7 @@ class Facturacion extends Component {
                     abrir_modal={false}
                     mostrar_acciones={false}
                     elements={data.facturas}
+                    elementClass = 'restante'
                 />
 
             </Layout>
