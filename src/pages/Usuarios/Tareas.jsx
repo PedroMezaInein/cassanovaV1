@@ -32,6 +32,7 @@ class Tareas extends Component{
             grupo: '',
             participantes: []
         },
+        formeditado:0,
         participantes: [],
         participantesTask: [],
         tarea: '',
@@ -283,7 +284,8 @@ class Tareas extends Component{
         tarea[name] = value
         this.setState({
             ... this.state,
-            tarea: tarea
+            tarea: tarea,
+            formeditado:1
         })
     }
 
@@ -358,7 +360,8 @@ class Tareas extends Component{
                     ... this.state,
                     user: user,
                     form,
-                    activeKey: ''
+                    activeKey: '',
+                    formeditado:0
                 })
                 this.setTareas(columns)
             },
@@ -644,7 +647,8 @@ class Tareas extends Component{
                     tarea: '',
                     adjuntoName: '',
                     adjuntoFile: '',
-                    adjunto: ''
+                    adjunto: '',
+                    formeditado:1
                 })
             },
             (error) => {
@@ -715,7 +719,7 @@ class Tareas extends Component{
     }
 
     render(){
-        const { columns, user, form, activeKey, modal, tarea, comentario, adjunto,adjuntoName, users, participantesTask, participantes } = this.state
+        const { columns, user, form, activeKey, modal, tarea, comentario, adjunto,adjuntoName, users, participantesTask, participantes, formeditado} = this.state
         return(
             <Layout active={'usuarios'} { ...this.props}>
                 <DragDropContext onDragEnd={this.onDragEnd}>
@@ -733,11 +737,11 @@ class Tareas extends Component{
                         }
                     </div>
                 </DragDropContext>
-                <Modal show = { modal } handleClose = { this.handleCloseModal } >
+                <Modal title="Tareas" show = { modal } handleClose = { this.handleCloseModal } >
                     <TareaForm participantes = { participantes } user = { user } form = { tarea } update = { this.onChangeParticipantes } 
                         participantesTask = { participantesTask } deleteParticipante = { this.deleteParticipante } 
                         changeValue = { this.changeValue } changeValueSend = { this.changeValueSend  } 
-                        deleteTarea = { this.deleteTarea } endTarea = { (value) => this.endTareaAxios(value) }
+                        deleteTarea = { this.deleteTarea } endTarea = { (value) => this.endTareaAxios(value)} formeditado={formeditado}
                         />
                     <div className="d-flex align-items-center px-3 py-2 flex-column-reverse flex-md-row ">
                         <FontAwesomeIcon icon = { faComments } color = { GOLD } className = " mr-4 " />
