@@ -14,7 +14,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComments, faCheck, faPaperclip, faTimes, faFileAlt } from '@fortawesome/free-solid-svg-icons'
 import Input from '../../components/form-components/Input'
 import moment from 'moment'
-import { Badge } from 'react-bootstrap'
+import { Badge, Card } from 'react-bootstrap'
 import ReactTooltip from "react-tooltip";
 
 class Tareas extends Component{
@@ -722,21 +722,25 @@ class Tareas extends Component{
         const { columns, user, form, activeKey, modal, tarea, comentario, adjunto,adjuntoName, users, participantesTask, participantes, formeditado} = this.state
         return(
             <Layout active={'usuarios'} { ...this.props}>
-                <DragDropContext onDragEnd={this.onDragEnd}>
-                    <div className="row mx-0">
-                        {
-                            columns.map((column) => {
-                                return(
-                                    <div key={column.id} className="col-md-6 col-lg-3 px-3">
-                                        <Column form={ form } submit = { this.submitAdd } onChange = { this.onChange } column = { column } clickTask = { this.handleClickTask }
-                                            id = { user.id } tareas = { column.tareas } activeKey = {activeKey} handleAccordion = {this.handleAccordion}  />
-                                    </div>
-                                )
-                                
-                            })
-                        }
-                    </div>
-                </DragDropContext>
+                <Card className="pt-5">
+                    <Card.Body className="pt-0">
+                        <DragDropContext onDragEnd={this.onDragEnd}>
+                            <div className="row mx-0">
+                                {
+                                    columns.map((column) => {
+                                        return(
+                                            <div key={column.id} className="col-md-6 col-lg-3 px-3">
+                                                <Column form={ form } submit = { this.submitAdd } onChange = { this.onChange } column = { column } clickTask = { this.handleClickTask }
+                                                    id = { user.id } tareas = { column.tareas } activeKey = {activeKey} handleAccordion = {this.handleAccordion}  />
+                                            </div>
+                                        )
+                                        
+                                    })
+                                }
+                            </div>
+                        </DragDropContext>
+                    </Card.Body>
+                </Card>
                 <Modal title="Tareas" show = { modal } handleClose = { this.handleCloseModal } >
                     <TareaForm participantes = { participantes } user = { user } form = { tarea } update = { this.onChangeParticipantes } 
                         participantesTask = { participantesTask } deleteParticipante = { this.deleteParticipante } 
