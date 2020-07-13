@@ -41,13 +41,16 @@ class Usuarios extends Component{
             cuenta: '',
             clabe: '',
             nombre_emergencia: '',
-            telefono_emergencia: ''
+            telefono_emergencia: '',
+            departamentos: [],
+            departamento: ''
         },
         clienteForm:{
             proyectos: [],
             proyecto: ''
         },
         proyectos: [],
+        departamentos: [],
         options: [],
         data:{
             proyectos: []
@@ -139,6 +142,9 @@ class Usuarios extends Component{
                 case 'fecha_inicio':
                     empleadoForm[element] = new Date()
                     break;
+                case 'departamentos':
+                    empleadoForm[element] = []
+                    break;
                 case 'tipo_empleado':
                 case 'empresa':
                     empleadoForm[element] = 0
@@ -154,18 +160,30 @@ class Usuarios extends Component{
     // Functions to update users
 
     updateUser = (e) => (user) => {
-        const { name, email, tipo} = user
+        const { name, email, tipo, departamentos  } = user
         let form = {
             name: name,
             email: email,
             tipo: tipo
         }
-        this.setState({
-            ... this.state,
-            modalUpdateUser: true,
-            user_to_interact: user,
-            form
-        })
+        if(departamentos.length){
+            const { empleadoForm } = this.state
+            empleadoForm.departamentos = setOptions(departamentos, 'nombre', 'id')
+            this.setState({
+                ... this.state,
+                modalUpdateUser: true,
+                user_to_interact: user,
+                form,
+                empleadoForm
+            })
+        }else{
+            this.setState({
+                ... this.state,
+                modalUpdateUser: true,
+                user_to_interact: user,
+                form
+            })
+        }
         this.getOneUser(user.id)
     }
 
@@ -257,6 +275,55 @@ class Usuarios extends Component{
         })
     }
 
+    onChangeOptionsEmpleado = (e, arreglo) => {
+        const { name, value } = e.target
+        const { empleadoForm } = this.state
+        let { departamentos } = this.state
+        let auxArray = empleadoForm[arreglo]
+        let aux = []
+        departamentos.find(function (_aux) {
+            if (_aux.value.toString() === value.toString()) {
+                auxArray.push(_aux)
+            } else {
+                aux.push(_aux)
+            }
+        })
+        departamentos = aux
+        empleadoForm[arreglo] = auxArray
+        this.setState({
+            ... this.state,
+            empleadoForm,
+            departamentos
+        })
+    }
+
+    deleteOption = (element, array, tipo) => {
+        if(tipo === 'empleado'){
+            const { empleadoForm } = this.state
+            let _array = []
+            let auxiliar = ''
+            empleadoForm[array].find( function(aux, key){
+                if(aux.value === element.value){
+                    if(auxiliar === '')
+                    auxiliar = key
+                }
+            })
+            empleadoForm[array].map((elemento, key) => {
+                if(auxiliar !== key){
+                    _array.push(elemento)
+                }
+            })
+            empleadoForm[array] = _array
+            this.setState({
+                ... this.state,
+                empleadoForm
+            })
+        }
+        if(tipo === 'cliente'){
+
+        }
+    }
+
     handleChangeDate = (date) =>{
         const { empleadoForm, form }  = this.state
         empleadoForm['fecha_inicio'] = date
@@ -287,6 +354,7 @@ class Usuarios extends Component{
         this.setState({
             ... this.state,
             modalActive: !this.state.modalActive,
+            empleadoForm: this.clearEmpleadoForm()
         })
     }
 
@@ -303,6 +371,7 @@ class Usuarios extends Component{
         this.setState({
             ... this.state,
             modalUpdateUser: !this.state.modalUpdateUser,
+            empleadoForm: this.clearEmpleadoForm()
         })
     }
 
@@ -337,7 +406,8 @@ class Usuarios extends Component{
                     clienteForm:{
                         proyecto: '',
                         proyectos: []
-                    }
+                    },
+                    empleadoForm: this.clearEmpleadoForm()
                 })
                 swal({
                     title: '¡Felicidades 🥳!',
@@ -378,6 +448,7 @@ class Usuarios extends Component{
                         email: '',
                         tipo:0,
                     },
+                    empleadoForm: this.clearEmpleadoForm()
                 })
                 swal({
                     title: '¡Felicidades 🥳!',
@@ -415,6 +486,10 @@ class Usuarios extends Component{
                     icon: 'success',
                     buttons: false,
                     timer: 1500
+                })
+                this.setState({
+                    ... this.state,
+                    empleadoForm: this.clearEmpleadoForm()
                 })
             },
             (error) => {
@@ -456,7 +531,7 @@ class Usuarios extends Component{
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'user/users', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { users, proyectos } = response.data
+                const { users, proyectos, departamentos } = response.data
                 const { data } = this.state
                 data.proyectos = proyectos
                 this.setUsers(users)
@@ -475,6 +550,7 @@ class Usuarios extends Component{
                 this.setState({
                     ... this.state,
                     proyectos: setOptions(proyectos, 'nombre', 'id'),
+                    departamentos: setOptions(departamentos, 'nombre', 'id'),
                     data
                 })
             },
@@ -523,7 +599,7 @@ class Usuarios extends Component{
     }
 
     render(){
-        const { users, modalActive, form, options, modalSafeDeleteActive, user_to_interact, modalUpdateUser, form: { tipo : tipo_form }, empleadoForm, clienteForm, proyectos, empresas_options, modalPermisos } = this.state;
+        const { users, modalActive, form, options, modalSafeDeleteActive, user_to_interact, modalUpdateUser, form: { tipo : tipo_form }, empleadoForm, clienteForm, proyectos, empresas_options, modalPermisos, departamentos } = this.state;
         return(
             <>
                 <Layout active={'usuarios'}  { ...this.props}>
@@ -585,9 +661,11 @@ class Usuarios extends Component{
                                 <EmpleadoForm 
                                     form={empleadoForm} 
                                     onChange={this.handleChangeEmpleado}
-                                    options={empresas_options}
+                                    options = { {empresas: empresas_options, departamentos: departamentos} }
                                     title="Datos del empleado" 
                                     onChangeCalendar={this.handleChangeDate}
+                                    onChangeOptions = { this.onChangeOptionsEmpleado }
+                                    deleteOption = { this.deleteOption }
                                     />
                             }
                             {
@@ -608,13 +686,15 @@ class Usuarios extends Component{
                             onChange={(e) => {e.preventDefault(); this.handleChangeInput(e)}} title="Editar usuario">
                             {
                                 tipo_form < 3 && tipo_form > 0 &&
-                                    <EmpleadoForm 
-                                        form={empleadoForm} 
-                                        onChange={this.handleChangeEmpleado}
-                                        options={empresas_options}
-                                        title="Datos del empleado" 
-                                        onChangeCalendar={this.handleChangeDate}
-                                        />
+                                <EmpleadoForm 
+                                    form={empleadoForm} 
+                                    onChange={this.handleChangeEmpleado}
+                                    options = { {empresas: empresas_options, departamentos: departamentos} }
+                                    title="Datos del empleado" 
+                                    onChangeCalendar={this.handleChangeDate}
+                                    onChangeOptions = { this.onChangeOptionsEmpleado }
+                                    deleteOption = { this.deleteOption }
+                                    />
                             }
                             {
                                 tipo_form === '3' ?

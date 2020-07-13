@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import { Input, Button, RadioGroup, Select, Calendar, InputNumber, InputPhone} from '../form-components'
+import { Input, Button, RadioGroup, Select, Calendar, InputNumber, InputPhone, SelectSearch} from '../form-components'
 import Accordion from 'react-bootstrap/Accordion'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { Small } from '../texts'
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import { RFC, DATE, NSS, CURP,TEL} from '../../constants'
+import Badge from 'react-bootstrap/Badge'
 
 
 function CustomToggle({ children, eventKey }) {
@@ -36,11 +37,64 @@ class EmpleadoForm extends Component{
         super(props)
     }
 
+    updateDepartamento = value => {
+        const { onChange, onChangeOptions, options, form } = this.props
+        options.departamentos.map((departamento)=> {
+            if(departamento.value === value){
+                let aux = false;
+                form.departamentos.map((departamento) => {
+                    if(departamento.value === value)
+                        aux = true
+                }) 
+                if(!aux)
+                    onChangeOptions({ target: { value: departamento.value, name: 'departamento' } }, 'departamentos')
+            }
+                
+        })
+        onChange({ target: { value: value, name: 'departamento' } })
+    }
+
     render(){
-        const { children, options, form, onChange, title, onChangeCalendar } = this.props
+        const { children, options, form, onChange, title, onChangeCalendar, deleteOption, formEditado } = this.props
         
         return(
             <>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-4">
+                        <SelectSearch
+                            options = { options.departamentos } 
+                            placeholder = "Selecciona el(los) departamento(s)" 
+                            name="departamento"  
+                            value = { form.departamento } 
+                            onChange = { this.updateDepartamento } 
+                            iconclass={"fas fa-layer-group"}
+                            
+                            />
+                    </div>
+                    <div className="col-md-8">
+                        {
+                            form.departamentos.length > 0 ?
+                                <div className="col-md-12 d-flex align-items-center image-upload flex-wrap">
+                                    {
+                                        form.departamentos.map((departamento, key)=>{
+                                            return(
+                                                <Badge variant = "light" key = { key } className="d-flex px-4 align-items-center mb-3" pill>
+                                                    <FontAwesomeIcon
+                                                        icon = { faTimes }
+                                                        onClick = { (e) => { e.preventDefault(); deleteOption(departamento, 'departamentos', 'empleado')  }}
+                                                        className = "small-button mr-2" />
+                                                        {
+                                                            departamento.name
+                                                        }
+                                                </Badge>
+                                            )
+                                        })
+                                    }
+                                </div>
+                            : ''
+                        }
+                    </div>
+                </div>
                 <Accordion>
                     <div className="">
                         <CustomToggle eventKey="empleado" >
@@ -105,7 +159,7 @@ class EmpleadoForm extends Component{
                                         <div className="col-md-4">
                                             <Select
                                                 name={'empresa'}
-                                                options={options}
+                                                options={options.empresas}
                                                 onChange= { onChange }
                                                 placeholder={'Selecciona la empresa'}
                                                 value={form.empresa}
