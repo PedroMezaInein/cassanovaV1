@@ -90,7 +90,6 @@ class NewTable extends Component {
                 // Apply the search
                 this.api().columns().every(function () {
                     var that = this;
-                    console.log(that, 'that')
                     $('input', this.header()).on('keyup change clear', function () {
                         if (that.search() !== this.value) {
                             that

@@ -648,7 +648,6 @@ class Contratos extends Component {
     async updateContratoAxios(){
         const { access_token } = this.props.authUser
         const { form, contrato } = this.state
-        console.log(form)
         await axios.put(URL_DEV + 'contratos/' + contrato.id, form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { contratosClientes, contratosProveedores } = response.data

@@ -45,7 +45,6 @@ class Utilidad extends Component {
     setUtilidades = utilidades => {
         let aux = []
         utilidades.map((utilidad) => {
-            console.log(utilidad, 'UTILIDAD')
             aux.push({
                 proyecto: renderToString(setTextTable(utilidad.nombre)),
                 ventas: renderToString(setMoneyTable(utilidad.ventas_count ? utilidad.ventas_count : 0)),

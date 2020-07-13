@@ -544,8 +544,6 @@ class IngresosForm extends Component{
         data.append('nombre', cadena)
         data.append('rfc', obj.rfc_receptor.toUpperCase())
 
-        console.log(obj, 'obj')
-
         await axios.post(URL_DEV + 'cliente', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
 

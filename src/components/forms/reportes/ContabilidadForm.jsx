@@ -21,7 +21,6 @@ class ContabilidadForm extends Component{
         const { value, checked, name } = e.target
         const { options, form, onChange } = this.props
         let optionesChecked = form[aux]
-        console.log(optionesChecked, 'optionesChecked')
         optionesChecked.find(function(element, index){
             if(element.id.toString() === name.toString()){
                 element.checked = checked

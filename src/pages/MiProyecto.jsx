@@ -332,7 +332,6 @@ class MiProyecto extends Component{
     }
 
     updateActiveTabContainer = active => {
-        console.log(active, 'active')
         this.setState({
             ... this.state,
             subActiveKey: active

@@ -498,7 +498,6 @@ class Compras extends Component{
                         }
                         form.facturaObject = obj
                         form.rfc = obj.rfc_emisor
-                        console.log(obj, 'obj')
                         this.setState({
                             ... this.state,
                             options,

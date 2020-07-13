@@ -28,7 +28,6 @@ class TableForModals extends Component {
 
         $(this.refs.main).on('click', '.btn-actions-table', function (e) {
             e.preventDefault();
-            console.log("clic")
             var id = $(this).attr('id').toString()
             var name = $(this).attr('name').toString()
             let aux = elements.find(function (element, index) {
@@ -38,8 +37,6 @@ class TableForModals extends Component {
 
                 }
             });
-            console.log(actions)
-            console.log(aux)
             actions[name].function(aux)
         });
 
@@ -47,8 +44,6 @@ class TableForModals extends Component {
 
     componentDidMount() {
         const { actions, elements, data, mostrar_acciones } = this.props
-        console.log(data);
-        console.log(elements);
         global_variable["mostrar_acciones"] = mostrar_acciones;
         var header = this.props.columns;
         var columns = [];

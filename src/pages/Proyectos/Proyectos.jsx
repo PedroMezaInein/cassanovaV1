@@ -518,7 +518,6 @@ class Proyectos extends Component {
     }
     
     updateActiveTabContainer = active => {
-        console.log(active, 'active')
         this.setState({
             ... this.state,
             subActiveKey: active
@@ -737,7 +736,6 @@ class Proyectos extends Component {
         const { value } = e.target
         const { form } = this.state
         form['avances'][key][name]  = value
-        // console.log(form.avances[key][name])
         this.setState({
             ...this.state,
             form

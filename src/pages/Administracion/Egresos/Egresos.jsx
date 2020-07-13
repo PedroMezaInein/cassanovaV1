@@ -133,7 +133,6 @@ class egresos extends Component{
                             folio: xml.attributes.Folio ? xml.attributes.Folio : '',
                             serie: xml.attributes.Serie ? xml.attributes.Serie : '',
                         }
-                        console.log(xml.attributes, 'attributes')
                         if(obj.numero_certificado === ''){
                             let NoCertificado = text.search('NoCertificado="')
                             if(NoCertificado)

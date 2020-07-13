@@ -241,7 +241,6 @@ class Cuentas extends Component {
         arreglo.map((element) => {
             aux.push({ text: element.name })
         })
-        //console.log(arreglo, 'arreglo')
         setArrayTable(aux)
     }
 
@@ -583,7 +582,6 @@ class Cuentas extends Component {
 
     openModalAddEstado = cuenta => {
         const { data } = this.state
-        //console.log(cuenta, 'cuenta')
         data.estados = cuenta ? cuenta.estados : []
         
         this.setState({
