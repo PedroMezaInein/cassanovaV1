@@ -24,12 +24,15 @@ class Column extends Component{
         const { column, id, form, onChange, activeKey, handleAccordion, clickTask } = this.props
         const { mobileState } = this.state
         return(
-            <div className="column background__d-white-bone  my-3 px-4 py-3">
+            <div className="kanban-container">
+                <div className="kanban-board" data-id="_inprocess" style={{width: "250px", marginLeft: "0px", marginRight: "0px"}}>
                 
                 <div className="position-relative">
-                    <Subtitle color="dark-blue" className="mb-0 text-center">
+                <header class="kanban-board-header primary">
+                    <div class="kanban-title-board p-3">
                         {column.titulo}
-                    </Subtitle>
+                    </div>
+                </header>
                 </div>
                 <Droppable droppableId={column.id.toString()}>
                     {
@@ -100,7 +103,8 @@ class Column extends Component{
                     </Accordion.Collapse>
                 </Accordion>
             </div>
-        )
+            </div>
+       )
     }
 
 }
