@@ -446,7 +446,6 @@ class Leads extends Component {
         let aux = Object.keys(empty)
         let _form = this.state[name]
         aux.map((element) => {
-            console.log(element, 'element clear form')
             if (element === 'Success')
                 _form[element] = 'Contactado'
             if (element === 'fechaContacto')

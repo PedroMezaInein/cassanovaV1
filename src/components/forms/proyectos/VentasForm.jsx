@@ -53,7 +53,6 @@ class VentasForm extends Component {
 
         
         data.clientes.find(function (element, index){
-            console.log(element, 'element cliente')
             if (value.toString() === element.id.toString()) {
                 if(element.rfc !== ''){
                     onChange({ target: { value: element.rfc, name: 'rfc' } })

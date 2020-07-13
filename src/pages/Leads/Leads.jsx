@@ -73,7 +73,6 @@ class Leads extends Component{
         let aux = []
 
         leads.map((lead) => {
-            console.log(lead, 'lead')
             aux.push({
                 Nombre: lead.nombre,
                 Teléfono: lead.telefono,
