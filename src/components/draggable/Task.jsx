@@ -48,18 +48,10 @@ class Task extends Component{
                         { ...provided.draggableProps} 
                         { ...provided.dragHandleProps}
                         ref={provided.innerRef}
-                        className="background__white-bone tarea px-3 py-2 my-3"
+                        className="px-3 py-2 my-3"
                         >
                             <div>
-                                {
-                                    _fecha_limite && _fecha_limite < 1 ?
-                                        <div className="text-right">
-                                            <Badge pill variant="danger" >
-                                                Tarea caducada
-                                            </Badge>
-                                        </div>
-                                        : ''
-                                }
+                                
                                 {
                                     (_fecha_limite && _fecha_limite >= 0 && _fecha_limite < 7) ?
                                         <div className="text-right">
@@ -72,18 +64,25 @@ class Task extends Component{
                                 }
                             </div>
                             
-                            <div className="d-flex justify-content-around align-items-center">
-                                <P className="my-1 text-left w-100">
-                                    {tarea.titulo}
-                                </P>
-                                <FontAwesomeIcon icon={faEye} color={GOLD} onClick = { (e) => { e.preventDefault(); clickTask(tarea)} }/>
-                            </div>
+                            <div className="py-2 px-3 d-flex align-items-left kanban-item" data-class="white" onClick = { (e) => { e.preventDefault(); clickTask(tarea)} }>
+                                <div className="d-flex flex-column align-items-start">
+                                    <span className="text-dark-50 font-weight-bold mb-1">{tarea.titulo}</span>
+                                    {
+                                        _fecha_limite && _fecha_limite < 1 ?
+                                            <div className="text-right"> 
+                                                <span className="label label-inline label-light-danger font-weight-bold">Tarea caducada</span> 
+                                            </div>
+                                        : ''
+                                    }
+                                    
+                                </div> 
+                            </div> 
                         
                     </div>
                 )}
                 
             </Draggable>
-             :
+            :
             null
         )
     }
