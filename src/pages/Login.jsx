@@ -24,7 +24,7 @@ class Login extends Component{
             
             <div className="vh-100 d-flex flex-column flex-root">
                     <div className="login login-3 login-signin-on d-flex flex-row-fluid" id="kt_login" >
-                        <div className="d-flex flex-center bgi-size-cover bgi-no-repeat flex-row-fluid" style ={ { backgroundImage: "url('/1.jpg')" } }>
+                        <div className="d-flex flex-center bgi-size-cover bgi-no-repeat flex-row-fluid" style ={ { backgroundImage: "url('/6.jpg')" } }>
                             <div className="row d-flex flex-center ">
                                 <div className="d-flex flex-center mb-3">
                                     <a href="https://infraestructuramedica.mx/" target="_blank" >
