@@ -12,7 +12,7 @@ import { Subtitle, P, Small, B } from '../../components/texts'
 import { TareaForm } from '../../components/forms'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComments, faCheck, faPaperclip, faTimes, faFileAlt } from '@fortawesome/free-solid-svg-icons'
-import Input from '../../components/form-components/Input'
+import {Input, Button, FileInput}from '../../components/form-components'
 import moment from 'moment'
 import { Badge, Card } from 'react-bootstrap'
 import ReactTooltip from "react-tooltip";
@@ -722,8 +722,13 @@ class Tareas extends Component{
         const { columns, user, form, activeKey, modal, tarea, comentario, adjunto,adjuntoName, users, participantesTask, participantes, formeditado} = this.state
         return(
             <Layout active={'usuarios'} { ...this.props}>
-                <Card className="pt-5">
-                    <Card.Body className="pt-0">
+                <Card className="card-custom gutter-b">
+                    <Card.Header>
+                        <Card.Title>
+                            <h3 className="card-label">Tareas</h3>
+                        </Card.Title>
+                    </Card.Header>
+                    <Card.Body >
                         <DragDropContext onDragEnd={this.onDragEnd}>
                             <div className="row mx-0">
                                 {
@@ -747,7 +752,67 @@ class Tareas extends Component{
                         changeValue = { this.changeValue } changeValueSend = { this.changeValueSend  } 
                         deleteTarea = { this.deleteTarea } endTarea = { (value) => this.endTareaAxios(value)} formeditado={formeditado}
                         />
-                    <div className="d-flex align-items-center px-3 py-2 flex-column-reverse flex-md-row ">
+                    <div class="separator separator-dashed my-4"></div>
+                    <div className="form-group row form-group-marginless px-3">
+                        <div className="col-md-12">
+                            <Input 
+                                className="form-control form-control-lg form-control-solid"
+                                placeholder = 'Comentario' 
+                                value = { comentario } 
+                                onChange = {this.onChangeComentario} 
+                                name = 'comentario' 
+                                as="textarea" 
+                                rows="3" 
+                                style={{paddingLeft:"10px"}}
+                            />
+                        </div>
+                    </div>   
+                    <div className="form-group row form-group-marginless px-3">
+                        <div className="col-md-1">
+                            <Button text="Enviar" className={"btn btn-light-primary font-weight-bolder mr-3"} onClick = { this.addComentario }/> 
+                        </div>  
+                        <div className="col-md-10">  
+                            <div className="image-upload"> 
+                                <input
+                                    onChange = {this.onChangeComentario}
+                                    value = {adjunto}
+                                    name="adjunto" 
+                                    type="file" 
+                                    id="adjunto"
+                                /> 
+                                {
+                                    adjuntoName &&
+                                        <Badge variant="light" className="d-flex px-3 w-fit-content align-items-center" pill>
+                                            <FontAwesomeIcon icon={faTimes} onClick={ (e) => { e.preventDefault(); this.deleteAdjunto() } } className=" small-button mr-2" />
+                                            {
+                                                adjuntoName
+                                            }
+                                        </Badge>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="separator separator-dashed my-5"></div>
+                    
+                    {/* <div className="form-group row form-group-marginless px-3">
+                        <div className="col-md-12">
+                            <div class="timeline timeline-3">
+                                <div class="timeline-items">
+                                    <div class="timeline-item">
+                                        <div class="timeline-media">
+                                            <img alt="Pic" src="/logo-letter-13.png"/>
+                                        </div>
+                                        <div class="timeline-label">
+                                            <span class="text-primary font-weight-bold">11:35 AM</span>
+                                        </div>
+                                        <div class="timeline-content">Lorem ipsum dolor sit amit,consectetur eiusmdd tempors labore et dolore. Lorem ipsum dolor sit amit,consectetur eiusmdd</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> */}
+
+                    {/* <div className="d-flex align-items-center px-3 py-2 flex-column-reverse flex-md-row ">
                         <FontAwesomeIcon icon = { faComments } color = { GOLD } className = " mr-4 " />
                         <P className="w-100" color="dark-blue">
                             <hr />
@@ -759,78 +824,45 @@ class Tareas extends Component{
                                 { user.name }
                             </Small>
                         </div>
-                        <div className="mr-2 w-100 d-flex" >
-                            <div className="w-100">
-                                <div className="no-label">
-                                    <Input placeholder = 'Comentario' value = { comentario } onChange = {this.onChangeComentario} name = 'comentario' as="textarea" rows="3" />
-                                </div>
-                                <div className="image-upload d-flex align-items-center">
-                                    <div className="no-label">
-                                        <Input
-                                            onChange = {this.onChangeComentario}
-                                            value = {adjunto}
-                                            name="adjunto" 
-                                            type="file" 
-                                            id="adjunto"/>
-                                    </div>
-                                    <label htmlFor="adjunto">
-                                        <FontAwesomeIcon  className="p-0 font-unset mr-2" icon={faPaperclip} color={DARK_BLUE} />
-                                    </label>
-                                    {
-                                        adjuntoName &&
-                                            <Badge variant="light" className="d-flex px-3 w-fit-content align-items-center" pill>
-                                                <FontAwesomeIcon icon={faTimes} onClick={ (e) => { e.preventDefault(); this.deleteAdjunto() } } className=" small-button mr-2" />
-                                                {
-                                                    adjuntoName
-                                                }
-                                            </Badge>
-                                    }
-                                </div>
-                            </div>
-                            <FontAwesomeIcon data-tip data-for="send" color={GOLD} icon = {faCheck} onClick = { this.addComentario } className ='ml-2'/>
-                            <ReactTooltip id='send' place="top" type='dark' effect="solid">
-                                Enviar
-                            </ReactTooltip>
-                        </div>
-                    </div>
-                    <div className="d-flex px-3 py-2">
-                        
-                    </div>
+                    </div> */}
                     {   tarea && 
-                        <div className="px-md-5 my-2">
+                        <div className="">
                             {
                                 tarea.comentarios.length > 0 &&
                                     tarea.comentarios.map((comentario, key) => {
                                         return(
-                                            <div  key={key} className="px-3 py-2 mb-4 background__white-blue">
-                                                <B className="mr-2" color="gold">{ comentario.user.name }: </B>
-                                                {
-                                                    comentario.comentario
-                                                }
-                                                <br />
-                                                {
-                                                    comentario.adjunto &&
-                                                        <div className="text-left mb-0">
-                                                            <a href={comentario.adjunto.url} target="_blank">
-                                                                <Small className="ml-2" color="dark-blue">
-                                                                    <FontAwesomeIcon icon={faFileAlt} color={DARK_BLUE} className="mr-1"/>
-                                                                    {
-                                                                        comentario.adjunto.name
-                                                                    }
-                                                                </Small>
-                                                            </a>
+                                            <div key={key} className="form-group row form-group-marginless px-3">
+                                                <div className="col-md-12">
+                                                    <div class="timeline timeline-3">
+                                                        <div class="timeline-items">
+                                                            <div class="timeline-item">
+                                                                <div class="timeline-media bg-light-primary border-0">
+                                                                    <span class="symbol-label font-size-h6 text-primary font-weight-bolder">{comentario.user.name.charAt(0)}</span>
+                                                                </div>
+                                                                <div class="timeline-content">
+                                                                    <span class="text-primary font-weight-bold">{this.diffCommentDate(comentario)}</span>
+                                                                    <p class="p-0">{comentario.comentario}</p>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                }
-                                                
-                                                <div className="text-right">
-                                                    <Small className="ml-2" color="dark-blue">
-                                                        {
-                                                            this.diffCommentDate(comentario)
-                                                        }
-                                                    </Small>
+                                                    </div>
                                                 </div>
-                                                
-                                            </div>
+                                                </div> 
+
+                                                // {
+                                                //     comentario.adjunto &&
+                                                //         <div className="text-left mb-0">
+                                                //             <a href={comentario.adjunto.url} target="_blank">
+                                                //                 <Small className="ml-2" color="dark-blue">
+                                                //                     <FontAwesomeIcon icon={faFileAlt} color={DARK_BLUE} className="mr-1"/>
+                                                //                     {
+                                                //                         comentario.adjunto.name
+                                                //                     }
+                                                //                 </Small>
+                                                //             </a>
+                                                //         </div>
+                                                // }
+                                            
                                         )
                                     })
                             }
