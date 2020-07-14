@@ -742,6 +742,42 @@ class Ingresos extends Component {
         })
     }
 
+    async exportIngresosAxios(){
+
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'exportar/ingresos', { responseType:'blob', headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'ingresos.xlsx'); //or any other extension
+                document.body.appendChild(link);
+                link.click();
+
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render() {
         const { ingresos, form, options, modalDelete, modalFacturas, porcentaje, facturas, ingreso, modalAskFactura, data, formeditado } = this.state
         return (
@@ -765,7 +801,10 @@ class Ingresos extends Component {
                         'facturas': { function: this.openModalFacturas },
                         'askFacturas': { function: this.openModalAskFactura }
                     }}
-                    elements={data.ingresos} />
+                    elements={data.ingresos}
+                    exportar_boton={true} 
+                    onClickExport={() => this.exportIngresosAxios()}
+                    />
 
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el ingreso?"}show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteIngresoAxios() }}>
                 </ModalDelete>

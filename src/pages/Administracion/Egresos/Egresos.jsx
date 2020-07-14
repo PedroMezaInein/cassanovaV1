@@ -612,15 +612,46 @@ class egresos extends Component{
         })
     }
 
+    async exportEgresosAxios(){
+
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'exportar/egresos', { responseType:'blob', headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'egresos.xlsx'); //or any other extension
+                document.body.appendChild(link);
+                link.click();
+
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render(){
         const { egresos, modalDelete, modalFacturas, egreso, facturas, porcentaje, form, data } = this.state
         return(
             <Layout active={'administracion'}  { ...this.props}>
-                {/* <div className="text-right">
-                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.changePageAdd() } } text='' icon = { faPlus } color="green"
-                        tooltip={{id:'add', text:'Nuevo'}} />
-                </div> */}
-                {/* <DataTable columns = {EGRESOS_COLUMNS} data= {egresos}/> */}
                 <NewTable columns = { EGRESOS_COLUMNS } data = { egresos } 
                             title = 'Egresos' subtitle = 'Listado de egresos'
                             url = '/administracion/egresos/add'
@@ -634,6 +665,8 @@ class egresos extends Component{
                             }}
                             elements = { data.egresos }
                             idTable = 'egresos'
+                            exportar_boton={true} 
+                            onClickExport={() => this.exportEgresosAxios()}
                             />
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el egreso?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteEgresoAxios() }}>
                 </ModalDelete>
