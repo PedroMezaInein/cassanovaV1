@@ -1041,6 +1041,42 @@ class Compras extends Component{
         })
     }
 
+    async exportComprasAxios(){
+
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'exportar/compras', { responseType:'blob', headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'compras.xlsx'); //or any other extension
+                document.body.appendChild(link);
+                link.click();
+
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render(){
 
         const {
@@ -1064,7 +1100,9 @@ class Compras extends Component{
                         'delete': { function: this.openModalDelete },
                         'facturas': { function: this.openModalFacturas }
                     }}
-                    elements={data.compras} />
+                    elements={data.compras}
+                    exportar_boton={true} 
+                    onClickExport={() => this.exportComprasAxios()} />
 
 
                 <Modal title = { title } show = {modal} handleClose = { this.handleClose } >

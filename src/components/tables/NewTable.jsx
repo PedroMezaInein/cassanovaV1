@@ -224,7 +224,7 @@ class NewTable extends Component {
         }
     }
     clickHandlerExport = (e) => {
-        if (typeof this.props.onClick === 'function') {
+        if (typeof this.props.onClickExport === 'function') {
             this.props.onClickExport();
         }
     }
