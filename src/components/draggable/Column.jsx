@@ -7,6 +7,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { Input, Button } from '../form-components'
 import { isMobile } from "react-device-detect"
+
+function closeAcordion(){  
+    if(document.getElementsByClassName('collapse')[0].classList.contains("show") )
+    {      
+        document.getElementsByClassName("collapse")[0].classList.remove("show");
+    }
+    else
+    {         
+        document.getElementsByClassName("collapse")[0].classList.add("show");
+    } 
+}
+
 class Column extends Component{
 
     state = {
@@ -28,8 +40,8 @@ class Column extends Component{
                 <div className="kanban-board" data-id="_inprocess" style={{width: "250px", marginLeft: "0px", marginRight: "0px"}}>
                 
                 <div className="position-relative">
-                <header class="kanban-board-header primary">
-                    <div class="kanban-title-board p-3">
+                <header className="kanban-board-header light-primary">
+                    <div className="kanban-title-board p-3">
                         {column.titulo}
                     </div>
                 </header>
@@ -38,7 +50,7 @@ class Column extends Component{
                     {
                         provided => (
                             <div 
-                                className={ column.tareas.length > 0 ? 'py-1' : 'py-2'}
+                                className={ column.tareas.length > 0 ? 'py-1 kanban-drag ' : 'py-2 kanban-drag'}
                                 ref={provided.innerRef}
                                 { ...provided.droppableProps}>
                                 {
@@ -89,22 +101,29 @@ class Column extends Component{
                         </div>
                 }
                 <Accordion activeKey = {activeKey} >
-                    <div onClick = {(e) => {e.preventDefault(); handleAccordion(column.id)}} >
-                        <Small className="px-3" color="gold">
+                    <div onClick = {(e) => {e.preventDefault(); handleAccordion(column.id);}} id="acordion">
+                        <span className="btn btn-light btn-text-primary btn-hover-text-primary font-weight-bold btn-lg btn-block py-1" >
                             <FontAwesomeIcon className="mr-1" icon={faPlus} />
                             Añadir otra tarea
-                        </Small>
+                        </span>
                     </div>
-                    <Accordion.Collapse eventKey={column.id}>
+                    <Accordion.Collapse eventKey={column.id} >
                         <div className="background__white-bone tarea px-1 py-2 my-3 column__task d-flex justify-content-around align-items-center">
-                            <Input className="border-0 mb-0" placeholder="Tarea nueva" value = { form.titulo } name = 'titulo' onChange = { onChange } />
+                            <Input 
+                                className="border-0 mb-0 ml-1" 
+                                placeholder="Título de la tarea" 
+                                value = { form.titulo } 
+                                name = 'titulo' 
+                                onChange = { onChange } 
+                                style={{paddingLeft:"10px"}}
+                            />
                             <Button icon = { faCheck } text = '' onClick = { this.submit } color = "transparent" />
                         </div>
                     </Accordion.Collapse>
                 </Accordion>
             </div>
             </div>
-       )
+        )
     }
 
 }
