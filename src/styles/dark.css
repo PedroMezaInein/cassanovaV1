@@ -1,5 +1,5 @@
 .aside {
-    background-color: #1e1e2d; }
+    background-color: #252525; }
     .aside .aside-menu.ps > .ps__rail-x {
       background-color: transparent; }
       .aside .aside-menu.ps > .ps__rail-x:hover, .aside .aside-menu.ps > .ps__rail-x:focus {
@@ -28,7 +28,7 @@
           background: #637099; }
   
   .aside-menu {
-    background-color: #1e1e2d ; }
+    background-color: #252525 ; }
     .aside-menu .menu-nav > .menu-item > .menu-heading .menu-text,
     .aside-menu .menu-nav > .menu-item > .menu-link .menu-text {
       color: #a2a3b7 ; }
@@ -39,7 +39,7 @@
       .aside-menu .menu-nav > .menu-item > .menu-link .menu-icon.svg-icon svg g [fill] {
         -webkit-transition: fill 0.3s ease;
         transition: fill 0.3s ease;
-        fill: #494b74; }
+        fill: #80808F; }
       .aside-menu .menu-nav > .menu-item > .menu-heading .menu-icon.svg-icon svg:hover g [fill],
       .aside-menu .menu-nav > .menu-item > .menu-link .menu-icon.svg-icon svg:hover g [fill] {
         -webkit-transition: fill 0.3s ease;
@@ -58,7 +58,7 @@
       transition: background-color 0.3s; }
       .aside-menu .menu-nav > .menu-item.menu-item-open > .menu-heading,
       .aside-menu .menu-nav > .menu-item.menu-item-open > .menu-link {
-        background-color: #1b1b28 ; }
+        background-color: #212122 ; }
         .aside-menu .menu-nav > .menu-item.menu-item-open > .menu-heading .menu-text,
         .aside-menu .menu-nav > .menu-item.menu-item-open > .menu-link .menu-text {
           color: #ffffff ; }
@@ -88,7 +88,7 @@
       transition: background-color 0.3s; }
       .aside-menu .menu-nav > .menu-item.menu-item-here > .menu-heading,
       .aside-menu .menu-nav > .menu-item.menu-item-here > .menu-link {
-        background-color: #1b1b28 ; }
+        background-color: #212122 ; }
         .aside-menu .menu-nav > .menu-item.menu-item-here > .menu-heading .menu-text,
         .aside-menu .menu-nav > .menu-item.menu-item-here > .menu-link .menu-text {
           color: #ffffff ; }
@@ -118,7 +118,7 @@
       transition: background-color 0.3s; }
       .aside-menu .menu-nav > .menu-item.menu-item-active > .menu-heading,
       .aside-menu .menu-nav > .menu-item.menu-item-active > .menu-link {
-        background-color: #1b1b28 ; }
+        background-color: #212122 ; }
         .aside-menu .menu-nav > .menu-item.menu-item-active > .menu-heading .menu-text,
         .aside-menu .menu-nav > .menu-item.menu-item-active > .menu-link .menu-text {
           color: #ffffff ; }
@@ -148,7 +148,7 @@
       transition: background-color 0.3s; }
       .aside-menu .menu-nav > .menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover > .menu-heading,
       .aside-menu .menu-nav > .menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover > .menu-link {
-        background-color: #1b1b28 ; }
+        background-color: #212122 ; }
         .aside-menu .menu-nav > .menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover > .menu-heading .menu-text,
         .aside-menu .menu-nav > .menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover > .menu-link .menu-text {
           color: #ffffff ; }
@@ -174,7 +174,7 @@
         .aside-menu .menu-nav > .menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover > .menu-link .menu-arrow {
           color: #ffffff ; }
     .aside-menu .menu-nav > .menu-item > .menu-arrow {
-      color: #1e1e2d; }
+      color: #252525; }
     .aside-menu .menu-nav > .menu-section .menu-text {
       color: #4c4e6f ; }
     .aside-menu .menu-nav > .menu-section .menu-icon {
@@ -210,7 +210,7 @@
       transition: background-color 0.3s; }
       .aside-menu .menu-nav > .menu-item .menu-submenu .menu-item.menu-item-open > .menu-heading,
       .aside-menu .menu-nav > .menu-item .menu-submenu .menu-item.menu-item-open > .menu-link {
-        background-color: #1b1b28 ; }
+        background-color: #212122 ; }
         .aside-menu .menu-nav > .menu-item .menu-submenu .menu-item.menu-item-open > .menu-heading .menu-text,
         .aside-menu .menu-nav > .menu-item .menu-submenu .menu-item.menu-item-open > .menu-link .menu-text {
           color: #ffffff ; }
@@ -240,7 +240,7 @@
       transition: background-color 0.3s; }
       .aside-menu .menu-nav > .menu-item .menu-submenu .menu-item.menu-item-here > .menu-heading,
       .aside-menu .menu-nav > .menu-item .menu-submenu .menu-item.menu-item-here > .menu-link {
-        background-color: #1b1b28 ; }
+        background-color: #212122 ; }
         .aside-menu .menu-nav > .menu-item .menu-submenu .menu-item.menu-item-here > .menu-heading .menu-icon,
         .aside-menu .menu-nav > .menu-item .menu-submenu .menu-item.menu-item-here > .menu-link .menu-icon {
           color: #96daff; }
@@ -267,7 +267,7 @@
       transition: background-color 0.3s; }
       .aside-menu .menu-nav > .menu-item .menu-submenu .menu-item.menu-item-active > .menu-heading,
       .aside-menu .menu-nav > .menu-item .menu-submenu .menu-item.menu-item-active > .menu-link {
-        background-color: #1b1b28 ; }
+        background-color: #212122 ; }
         .aside-menu .menu-nav > .menu-item .menu-submenu .menu-item.menu-item-active > .menu-heading .menu-text,
         .aside-menu .menu-nav > .menu-item .menu-submenu .menu-item.menu-item-active > .menu-link .menu-text {
           color: #ffffff ; }
@@ -297,7 +297,7 @@
       transition: background-color 0.3s; }
       .aside-menu .menu-nav > .menu-item .menu-submenu .menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover > .menu-heading,
       .aside-menu .menu-nav > .menu-item .menu-submenu .menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover > .menu-link {
-        background-color: #1b1b28 ; }
+        background-color: #212122 ; }
         .aside-menu .menu-nav > .menu-item .menu-submenu .menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover > .menu-heading .menu-text,
         .aside-menu .menu-nav > .menu-item .menu-submenu .menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover > .menu-link .menu-text {
           color: #ffffff ; }
