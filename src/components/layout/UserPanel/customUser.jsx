@@ -12,10 +12,9 @@ class customUser extends Component{
         return(
         <>               
 			<div className="d-flex flex-column">
-				<a href="#" className="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><Navbar as={NameUser} userName={userName}> </Navbar></a>
+				<a className="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><Navbar as={NameUser} userName={userName}> </Navbar></a>
 				<div className="text-muted mt-1"></div>
-					<div className="navi mt-1">
-						<a href="#" className="navi-item">
+					<div className="navi mt-1"> 
 							<span className="navi-link p-0 pb-1">
 								<span className="navi-icon mr-1">
 									<span className="svg-icon svg-icon-lg svg-icon-primary">
@@ -31,8 +30,7 @@ class customUser extends Component{
 								<a href={"mailto:"+this.props.authUser.user.email} target="_blank">
 									<span className="navi-text text-muted text-hover-primary">{this.props.authUser.user.email}</span>
 								</a>
-							</span>
-						</a>
+							</span> 
 						<a href="#" className="btn btn-sm btn-light-primary font-weight-bolder mt-2 " onClick={clickLogout}>Cerrar Sesión</a>
 					</div>
             </div>        
