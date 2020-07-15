@@ -4,7 +4,7 @@ import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { faPlus, faTrash, faEdit, faPaperclip, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { Button, Select, SelectSearch } from '../../components/form-components'
-import { Modal } from '../../components/singles'
+import { Modal, ModalDelete } from '../../components/singles'
 import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV, CUENTAS_COLUMNS, EDOS_CUENTAS_COLUMNS_2, DARK_BLUE, TRASPASOS_COLUMNS } from '../../constants'
@@ -45,6 +45,9 @@ class Traspasos extends Component{
     }
 
     componentDidMount(){
+        var element = document.getElementById("kt_datatable_transpasos");
+        element.classList.remove("table-responsive");
+
         const { authUser: { user : { permisos : permisos } } } = this.props
         const { history : { location: { pathname: pathname } } } = this.props
         const { history } = this.props
@@ -626,7 +629,9 @@ class Traspasos extends Component{
                         'delete': { function: this.openDelete },
                         'adjuntos': { function: this.adjuntoTranspaso },
                     }}
-                    elements={data.traspasos} />
+                    elements={data.traspasos} 
+                    idTable = 'kt_datatable_transpasos'
+                />
 
 
                 <Modal title = { traspaso === '' ? "Nuevo traspaso" : 'Editar traspaso'}  show = { modal } handleClose={ this.handleClose } >
@@ -635,13 +640,9 @@ class Traspasos extends Component{
                         onSubmit = { traspaso === '' ? this.onSubmit : this.onSubmitEdit } 
                         formeditado={formeditado}/>
                 </Modal>
-                
-                <Modal title={"¿Estás seguro que deseas eliminar el traspaso?"} show = { modalDelete } handleClose={ this.handleCloseDelete } >
-                    <div className="d-flex justify-content-center mt-3">
-                        <Button icon='' onClick = { this.handleCloseDelete } text="Cancelar" className={"btn btn-light-primary font-weight-bolder mr-3"} />
-                        <Button icon='' onClick = { (e) => { this.safeDelete(e)() }} text="Continuar" className={"btn btn-danger font-weight-bold mr-2"} />
-                    </div>
-                </Modal>
+
+                <ModalDelete title={"¿Estás seguro que deseas eliminar el traspaso?"} show = { modalDelete } handleClose={ this.handleCloseDelete }  onClick = { (e) => { this.safeDelete(e)() }}>
+                </ModalDelete>
             </Layout>
         )
     }
