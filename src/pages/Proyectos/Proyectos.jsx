@@ -1988,7 +1988,7 @@ class Proyectos extends Component {
                         {/* <Slider elements={adjuntos.length > 0 ? adjuntos : []}
                             deleteFile={this.deleteFile} handleChange={this.handleChange} /> */}
                         <Card className="card-custom card-without-box-shadown"> 
-                            <Card.Header className="pl-0 pr-0">
+                            <Card.Header className="pl-0 pr-0 justify-content-start">
                                 <Card.Title> 
                                     <h3 className="text-dark"></h3>
                                 </Card.Title>
