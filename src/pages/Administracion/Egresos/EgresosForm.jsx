@@ -367,6 +367,7 @@ class EgresosForm extends Component{
 
     //ASYNC
     async getEgresosAxios(){
+        waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'egresos', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
@@ -385,6 +386,7 @@ class EgresosForm extends Component{
                     options,
                     data
                 })
+                swal.close()
             },
             (error) => {
                 console.log(error, 'error')
