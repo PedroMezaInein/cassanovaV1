@@ -26,6 +26,7 @@ class egresos extends Component{
 
     state = {
         egresos: [],
+        egresosAux: [],
         title: 'Nuevo egreso',
         egreso: '',
         modalDelete: false,
@@ -434,13 +435,69 @@ class egresos extends Component{
                 const { egresos, proveedores, empresas } = response.data
                 data.proveedores = proveedores
                 data.empresas = empresas
-                data.egresos = egresos
-                swal.close()
-                this.setState({
-                    ... this.state,
-                    egresos: this.setEgresos(egresos),
-                    data
+                data.egresos = egresos.data
+                console.log(egresos, 'egresos')
+                if(egresos.current_page === egresos.last_page){
+                    swal.close()
+                    this.setState({
+                        ... this.state,
+                        egresos: this.setEgresos(egresos.data),
+                        data
+                    })
+                }else{
+                    this.setState({
+                        ... this.state,
+                        data
+                    })
+                    let aux = egresos.next_page_url.split('=');
+                    aux = aux[aux.length - 1];
+                    this.getEgresosAxiosPerPage(aux)
+                }
+                
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async getEgresosAxiosPerPage(page){
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'egresos?page='+page, { responseType:'json', headers: {Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { data } = this.state
+                const { egresos } = response.data
+
+                egresos.data.map((egreso)=>{
+                    data.egresos.push(egreso)
                 })
+
+                if(egresos.current_page === egresos.last_page){
+                    swal.close()
+                
+                    this.setState({
+                        ... this.state,
+                        egresos: this.setEgresos(data.egresos),
+                        data
+                    })
+                }else{
+                    this.setState({
+                        ... this.state,
+                        data
+                    })
+                    let aux = egresos.next_page_url.split('=');
+                    aux = aux[aux.length - 1];
+                    this.getEgresosAxiosPerPage(aux)
+                }
+                
             },
             (error) => {
                 console.log(error, 'error')
