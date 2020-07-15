@@ -133,6 +133,9 @@ a.text-hover-danger2:hover, .text-hover-danger2:hover{
 .img-empresa{
     height: 4rem;
     width: auto;
+    @include down-screen($md){
+        height: 3rem;
+    }
 }
 
 //Proyecto/Proyecto

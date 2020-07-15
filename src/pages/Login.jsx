@@ -25,16 +25,16 @@ class Login extends Component{
             <div className="vh-100 d-flex flex-column flex-root">
                     <div className="login login-3 login-signin-on d-flex flex-row-fluid" id="kt_login" >
                         <div className="d-flex flex-center bgi-size-cover bgi-no-repeat flex-row-fluid" style ={ { backgroundImage: "url('/6.jpg')" } }>
-                            <div className="row d-flex flex-center ">
+                            <div className="row mx-0 d-flex flex-center ">
                                 <div className="d-flex flex-center mb-3">
                                     <a href="https://infraestructuramedica.mx/" target="_blank" >
-                                        <img src="/im.png" className="img-empresa  mr-5"/>
+                                        <img src="/im.png" className="img-empresa  mr-2 mr-md-5"/>
                                     </a>
                                     <a href="https://inein.mx/" target="_blank">
-                                        <img src="/inein.png" className="img-empresa ml-5 mr-5"/>
+                                        <img src="/inein.png" className="img-empresa mx-2 mx-md-5"/>
                                     </a>
                                     <a href="https://www.rocco.mx/" target="_blank">
-                                        <img src="/Rocco.png" className="img-empresa ml-5"/>
+                                        <img src="/Rocco.png" className="img-empresa ml-2 ml-md-5"/>
                                     </a>
                                 </div>
                                 <div className="login-form text-center text-white p-7 position-relative overflow-hidden pt-4">
