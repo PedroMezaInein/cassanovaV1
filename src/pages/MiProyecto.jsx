@@ -173,26 +173,10 @@ class MiProyecto extends Component{
                     {
                         name: 'Contrato proveedores y contratistas',
                         value: 'contrato_proveedores_y_contratistas'
-                    },
-                    {
-                        name: 'Firmas de aprobación',
-                        value: 'firmas_de_aprobacion'
-                    },
+                    }, 
                     {
                         name: 'Reporte fotográfico de avance de obra',
                         value: 'reporte_fotografico_de_avance_de_obra'
-                    },
-                    {
-                        name: 'Reporte de materiales',
-                        value: 'reporte_de_materiales'
-                    },
-                    {
-                        name: 'Reporte de proyecto vs ejecutado',
-                        value: 'reporte_de_proyecto_vs_ejecutado'
-                    },
-                    {
-                        name: 'Minutas de obra',
-                        value: 'minutas_de_obra'
                     },
                     {
                         name: 'Presupuesto aprobado por cliente',
@@ -201,11 +185,7 @@ class MiProyecto extends Component{
                     {
                         name: 'Programa de obra',
                         value: 'programa_de_obra'
-                    },
-                    {
-                        name: 'Planos durante obra',
-                        value: 'planos_durante_obra'
-                    },
+                    }, 
                     {
                         name: 'Sketch Up aprobados',
                         value: 'sketch_up_aprobados'
@@ -213,18 +193,18 @@ class MiProyecto extends Component{
                     {
                         name: 'Renders aprobados',
                         value: 'renders_aprobados'
-                    },
+                    }, 
                     {
-                        name: 'Estados de cuenta',
-                        value: 'estados_de_cuenta'
+                        name: 'Estimaciones y cierre',
+                        value:'estimaciones_y_cierre'
                     },
                     {
                         name: 'Fianzas y seguros',
                         value: 'fianzas_y_seguros'
                     },
                     {
-                        name: 'Permisos de obra ante dependencias',
-                        value: 'permisos_de_obra_ante_dependencias'
+                        name: 'Presupuestos extras',
+                        value: 'presupuestos_extras'
                     }
                 ]
             },
@@ -275,11 +255,7 @@ class MiProyecto extends Component{
                     {
                         name: 'Acta de entrega',
                         value: 'acta_de_entrega'
-                    },
-                    {
-                        name: 'Carpeta de entrega ZIP',
-                        value: 'carpeta_de_entrega_zip'
-                    },
+                    }
                 ]
             },
             {
@@ -287,13 +263,17 @@ class MiProyecto extends Component{
                 value: 'mantenimiento',
                 adjuntos:[
                     {
+                        name: 'Fallas y reparaciones por vicios ocultos',
+                        value: 'fallas_y_reparaciones_por_vicios_ocultos'
+                    },
+                    {
                         name: 'Mantenimiento preventivo',
                         value: 'mantenimiento_preventivo'
                     },
                     {
                         name: 'Mantenimiento correctivo',
                         value: 'mantenimiento_correctivo'
-                    },
+                    }
                 ]
             }
         ]
