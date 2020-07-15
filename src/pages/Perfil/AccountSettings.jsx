@@ -20,11 +20,11 @@ class AccountSettings extends Component {
 				</Card.Header> 
 
 				<Card.Body> 
-					<Form id="form-cuenta"
+					<Form id="form-perfil"
 						onSubmit = { 
 							(e) => {
 								e.preventDefault(); 
-								validateAlert(onSubmit, e, 'form-cuenta')
+								validateAlert(onSubmit, e, 'form-perfil')
 							}
 						} 
 						>
