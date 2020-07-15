@@ -427,7 +427,7 @@ class egresos extends Component{
     async getEgresosAxios(){
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'egresos', { responseType:'json', headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'egresos', { responseType:'json', headers: {Accept: '*/*', 'Content-Type': 'application/json;', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { data } = this.state
                 const { egresos, proveedores, empresas } = response.data
