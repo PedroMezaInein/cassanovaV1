@@ -367,8 +367,9 @@ class EgresosForm extends Component{
 
     //ASYNC
     async getEgresosAxios(){
+        waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'egresos', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'egresos', { responseType:'json', headers: {Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { proveedores, empresas, areas, tiposPagos, tiposImpuestos, estatusCompras } = response.data
                 const { options, data } = this.state
@@ -385,6 +386,7 @@ class EgresosForm extends Component{
                     options,
                     data
                 })
+                swal.close()
             },
             (error) => {
                 console.log(error, 'error')

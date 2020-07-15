@@ -235,38 +235,39 @@ class egresos extends Component{
     // TABLA
     setEgresos = egresos => {
         let aux = []
-        egresos.map( (egreso) => {
-            aux.push(
-                {
-                    actions: this.setActions(egreso),
-                    identificador: renderToString(setTextTable(egreso.id)),
-                    cuenta: renderToString(setArrayTable(
-                        [
-                            {name:'Empresa', text: egreso.empresa ? egreso.empresa.name : ''},
-                            {name:'Cuenta', text: egreso.cuenta ? egreso.cuenta.nombre : ''},
-                            {name:'No. de cuenta', text: egreso.cuenta ? egreso.cuenta.numero : ''}
-                        ]
-                    )),
-                    cliente: renderToString(setTextTable(egreso.proveedor ? egreso.proveedor.razon_social : '')),
-                    factura: renderToString(setTextTable(egreso.facturas.length ? 'Con factura' : 'Sin factura')),
-                    monto: renderToString(setMoneyTable(egreso.monto)),
-                    comision: renderToString(setMoneyTable(egreso.comision)),
-                    total: renderToString(setMoneyTable(egreso.comision)),
-                    impuesto: renderToString(setTextTable( egreso.tipo_impuesto ? egreso.tipo_impuesto.tipo : 'Sin definir')),
-                    tipoPago: renderToString(setTextTable( egreso.tipo_pago ? egreso.tipo_pago.tipo: '')),
-                    descripcion: renderToString(setTextTable( egreso.descripcion)),
-                    area: renderToString(setTextTable( egreso.subarea ? egreso.subarea.area.nombre : '' )),
-                    subarea: renderToString(setTextTable( egreso.subarea ? egreso.subarea.nombre : '' )),
-                    estatusCompra: renderToString(setTextTable( egreso.estatus_compra ? egreso.estatus_compra.estatus : '' )),
-                    adjuntos: renderToString(setAdjuntosList([
-                        egreso.pago ? {name: 'Pago', url: egreso.pago.url} : '',
-                        egreso.presupuesto ? {name: 'Presupuesto', url: egreso.presupuesto.url} : '',
-                    ])),
-                    fecha: renderToString(setDateTable(egreso.created_at)),
-                    id: egreso.id
-                }
-            )
-        })
+        if(egresos)
+            egresos.map( (egreso) => {
+                aux.push(
+                    {
+                        actions: this.setActions(egreso),
+                        identificador: renderToString(setTextTable(egreso.id)),
+                        cuenta: renderToString(setArrayTable(
+                            [
+                                {name:'Empresa', text: egreso.empresa ? egreso.empresa.name : ''},
+                                {name:'Cuenta', text: egreso.cuenta ? egreso.cuenta.nombre : ''},
+                                {name:'No. de cuenta', text: egreso.cuenta ? egreso.cuenta.numero : ''}
+                            ]
+                        )),
+                        cliente: renderToString(setTextTable(egreso.proveedor ? egreso.proveedor.razon_social : '')),
+                        factura: renderToString(setTextTable(egreso.facturas.length ? 'Con factura' : 'Sin factura')),
+                        monto: renderToString(setMoneyTable(egreso.monto)),
+                        comision: renderToString(setMoneyTable(egreso.comision)),
+                        total: renderToString(setMoneyTable(egreso.comision)),
+                        impuesto: renderToString(setTextTable( egreso.tipo_impuesto ? egreso.tipo_impuesto.tipo : 'Sin definir')),
+                        tipoPago: renderToString(setTextTable( egreso.tipo_pago ? egreso.tipo_pago.tipo: '')),
+                        descripcion: renderToString(setTextTable( egreso.descripcion)),
+                        area: renderToString(setTextTable( egreso.subarea ? egreso.subarea.area.nombre : '' )),
+                        subarea: renderToString(setTextTable( egreso.subarea ? egreso.subarea.nombre : '' )),
+                        estatusCompra: renderToString(setTextTable( egreso.estatus_compra ? egreso.estatus_compra.estatus : '' )),
+                        adjuntos: renderToString(setAdjuntosList([
+                            egreso.pago ? {name: 'Pago', url: egreso.pago.url} : '',
+                            egreso.presupuesto ? {name: 'Presupuesto', url: egreso.presupuesto.url} : '',
+                        ])),
+                        fecha: renderToString(setDateTable(egreso.created_at)),
+                        id: egreso.id
+                    }
+                )
+            })
         return aux
     }
 
@@ -427,7 +428,7 @@ class egresos extends Component{
     async getEgresosAxios(){
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'egresos', { responseType:'json', headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'egresos', { responseType:'json', headers: {Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { data } = this.state
                 const { egresos, proveedores, empresas } = response.data
