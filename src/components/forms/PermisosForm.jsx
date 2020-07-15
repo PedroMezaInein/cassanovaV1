@@ -4,7 +4,7 @@ import { URL_DEV, ICONS_MODULES, DARK_BLUE, L_BLUE, BONE } from '../../constants
 import { ToggleButton, Button } from '../form-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Subtitle, Small } from '../texts'
-import Accordion from 'react-bootstrap/Accordion'
+import {Accordion, Card} from 'react-bootstrap'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import Form from 'react-bootstrap/Form'
 import swal from 'sweetalert'
@@ -220,34 +220,40 @@ class PermisosForm extends Component{
         
         return(
             <form onSubmit={this.handleSubmit}>
+                {/* <Accordion defaultActiveKey="0">
+                <Card>
+                    <Accordion.Toggle as={Card.Header} eventKey="0">
+                    Click me!
+                    </Accordion.Toggle>
+                    <Accordion.Collapse eventKey="0">
+                    <Card.Body>Hello! I'm the body</Card.Body>
+                    </Accordion.Collapse>
+                </Card> 
+                </Accordion> */}
                 <Accordion activeKey={activeKey}>
                     {
                         grupos !== null && grupos.map((grupo, key) => {
                             const { ... modulos } = grupo
                             return(
-                                <div key={key}> 
-                                    <div className="d-flex justify-content-between">
-                                        <div>
-                                            <div className="d-flex align-items-center">
-                                                <ToggleButton  
-                                                    { ...grupo} 
-                                                    onToggle={(e) => this.handleGroupToggler(e)}
-                                                    leftBG={BONE}
-                                                    rightBG={L_BLUE}
-                                                    borderColor={DARK_BLUE}
-                                                    knobColor={DARK_BLUE}
-                                                    />
-                                                <FontAwesomeIcon className="mx-4 text-color__gold" icon={ICONS_MODULES[grupo.icon]} />
-                                                <Subtitle className="mb-0 mx-2 " > 
-                                                    { grupo.nombre }    
-                                                </Subtitle>
-                                            </div>
-                                        </div>
-                                        {
-                                            grupo.checked && <Accordion.Toggle as={Button} eventKey={grupo.name} className={"small-button "} color="transparent" icon={faPlus} text='' onClick={() => this.handleAccordion(grupo.name)} />
-                                        }
+                                <div key={key}>  
+                                    <Card>
+                                    <Accordion.Toggle as={Card.Header} eventKey={grupo.name} onClick={() => this.handleAccordion(grupo.name)}>
+                                        <div className="d-flex align-items-center">
+                                            <ToggleButton  
+                                                { ...grupo} 
+                                                        onToggle={(e) => this.handleGroupToggler(e)}
+                                                        leftBG={BONE}
+                                                        rightBG={L_BLUE}
+                                                        borderColor={DARK_BLUE}
+                                                        knobColor={DARK_BLUE}
+                                                        />
+                                                    <FontAwesomeIcon className="mx-4 text-color__gold" icon={ICONS_MODULES[grupo.icon]} />
+                                                    <Subtitle className="mb-0 mx-2 " > 
+                                                        { grupo.nombre }    
+                                                    </Subtitle>
                                         
-                                    </div>            
+                                        </div>
+                                    </Accordion.Toggle>          
                                     <Accordion.Collapse eventKey={grupo.name}>
                                         <div className="row mx-0 mt-2">
                                             {
@@ -269,7 +275,9 @@ class PermisosForm extends Component{
                                             }
                                         </div>
                                     </Accordion.Collapse>
+                                </Card>
                                     <hr className="divider" />
+                                
                                 </div>
                             )
                         })
