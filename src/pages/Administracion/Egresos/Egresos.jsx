@@ -425,6 +425,7 @@ class egresos extends Component{
     }
 
     async getEgresosAxios(){
+        waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'egresos', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
@@ -433,6 +434,7 @@ class egresos extends Component{
                 data.proveedores = proveedores
                 data.empresas = empresas
                 data.egresos = egresos
+                swal.close()
                 this.setState({
                     ... this.state,
                     egresos: this.setEgresos(egresos),
