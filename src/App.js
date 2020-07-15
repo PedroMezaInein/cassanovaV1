@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import { URL_DEV } from './constants';
 import { logout, login } from './redux/reducers/auth_user'
-import swal from 'sweetalert'
+import swal from 'sweetalert' 
 
 const Loader = x => Loadable({
     loading: Loading,
@@ -68,6 +68,8 @@ const Unidades = Loader( () => import('./pages/Catalogos/Unidades') )
 const TiposContratos = Loader( () => import('./pages/Catalogos/TiposContratos') )
 
 const Contabilidad = Loader( () => import('./pages/Reportes/Contabilidad') )
+const AccountSettings = Loader(() => import('./pages/Perfil/AccountSettings') )
+
 
 class App extends Component{
     async componentDidMount(){
@@ -190,6 +192,8 @@ class App extends Component{
                 <Route path = "/catalogos/tipos-contratos" exact component ={ TiposContratos } />
 
                 <Route path = "/reportes/contabilidad" exact component ={ Contabilidad } />
+                <Route path = "/mi-perfil" exact component ={ AccountSettings } />
+
             </>
         )
     }
