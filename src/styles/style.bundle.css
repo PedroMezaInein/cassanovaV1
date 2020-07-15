@@ -43998,7 +43998,7 @@ code {
     -ms-flex-pack: end;
     justify-content: flex-end; }
     .dataTables_wrapper .dataTables_pager .dataTables_info {
-      display: inline-block;
+     /*  display: inline-block; */
       margin: 0.5rem 0;
       margin-right: 0.5rem;
       color: #80808F; }

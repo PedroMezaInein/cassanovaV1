@@ -123,7 +123,7 @@ class NewTable extends Component {
                 `<'row'
                 <'col-sm-12'tr>>
                 <'row'<'col-sm-12 col-md-5'i>
-                <'col-sm-12 col-md-7 dataTables_pager'lp>
+                <'col-sm-12 col-md-7 flex-column-reverse flex-md-row dataTables_pager'lp>
             >`,
             language: {
                 "sProcessing": "Procesando...",

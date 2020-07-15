@@ -35681,10 +35681,12 @@ code {
     -ms-flex-pack: end;
     justify-content: flex-end; }
     .dataTables_wrapper .dataTables_pager .dataTables_info {
-      display: inline-block;
+      /* display: inline-block; */
       margin: 0.5rem 0;
       margin-right: 0.5rem;
-      color: #80808F; }
+      color: #80808F; 
+    
+    }
     .dataTables_wrapper .dataTables_pager .dataTables_length {
       margin: 0.5rem 0;
       margin-right: 1rem;
