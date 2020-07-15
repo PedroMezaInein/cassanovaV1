@@ -212,7 +212,7 @@ class Proveedor extends Component{
                             />
                 
 
-                <ModalDelete title={"¿Estás seguro que deseas eliminar el proveedor?"}show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteProveedor() }}>
+                <ModalDelete title={"¿Deseas eliminar el proveedor?"}show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteProveedor() }}>
                 </ModalDelete>
                 
             </Layout>

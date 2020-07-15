@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
-import { Modal, Slider } from '../../components/singles'
+import { Modal, Slider, ModalDelete} from '../../components/singles'
 import { Button } from '../../components/form-components'
 import { faPlus, faTrash, faEdit, faMoneyBill, faFileAlt, faFileArchive, faEye, faPhone, faEnvelope, faLink, faList, faFolderOpen } from '@fortawesome/free-solid-svg-icons'
 import { ProyectosForm, AvanceForm } from '../../components/forms'
@@ -22,10 +22,7 @@ import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert } from '../../
 import { forIn } from 'lodash'
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import ItemSlider from '../../components/singles/ItemSlider'
-import Nav from 'react-bootstrap/Nav'
-import Tab from 'react-bootstrap/Tab'
-import Col from 'react-bootstrap/Col'
-import Row from 'react-bootstrap/Row'
+import {Nav, Tab, Col, Row} from 'react-bootstrap'
 
 function CustomToggle({ children, eventKey, icon = faPlus, iconColor = 'transparent' }) {
 
@@ -1977,12 +1974,9 @@ class Proyectos extends Component {
                         }
                     </ProyectosForm>
                 </Modal>
-                <Modal title={"¿Estás seguro que deseas eliminar el proyecto?"}show={modalDelete} handleClose={this.handleCloseDelete} >
-                    <div className="d-flex justify-content-center mt-3">
-                        <Button icon='' onClick={this.handleCloseDelete} text="Cancelar" className={"btn btn-light-primary font-weight-bolder mr-3"} />
-                        <Button icon='' onClick={(e) => { this.safeDelete(e)() }} text="Continuar" className={"btn btn-danger font-weight-bold mr-2"} />
-                    </div>
-                </Modal>
+                <ModalDelete title={"¿Estás seguro que deseas eliminar el proyecto?"}  show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { this.safeDelete(e)() }}>
+                </ModalDelete>
+
                 <Modal title = "Adjuntos del proyecto" show={modalAdjuntos} handleClose={this.handleCloseAdjuntos} >
                     <div className="p-2">
                         {/* <Slider elements={adjuntos.length > 0 ? adjuntos : []}

@@ -30,6 +30,9 @@ class Utilidad extends Component {
     }
 
     componentDidMount() {
+        var element = document.getElementById("kt_datatable_utilidad");
+        element.classList.remove("table-responsive");
+
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props
@@ -98,6 +101,7 @@ class Utilidad extends Component {
                     abrir_modal = { false }
                     mostrar_acciones = { false }
                     elements = { data.utilidades }
+                    idTable = 'kt_datatable_utilidad'
                 />
             </Layout>
         )

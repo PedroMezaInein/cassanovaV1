@@ -8,7 +8,7 @@ import { Title, Subtitle, P, Small, B } from '../../components/texts'
 import { EmpresasTable } from '../../components/tables'
 import { faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { Button } from '../../components/form-components'
-import { Modal } from '../../components/singles'
+import { Modal, ModalDelete } from '../../components/singles'
 import { EmpresaForm } from '../../components/forms'
 import swal from 'sweetalert'
 import NewTable from '../../components/tables/NewTable'
@@ -494,15 +494,10 @@ class Empresas extends Component{
                         formeditado={formeditado}
                         />
                 </Modal>
-                <Modal  show={modalDelete} handleClose={this.handleDeleteModal}>
-                    <Subtitle className="my-3 text-center">
-                        ¿Estás seguro que deseas eliminar a <B color="red">{empresa.name}</B>?
-                    </Subtitle>
-                    <div className="d-flex justify-content-center mt-3">
-                        <Button icon='' onClick={this.handleDeleteModal} text="Cancelar" className="mr-3" color="green"/>
-                        <Button icon='' onClick={(e) => { this.safeDeleteEmpresa(e)(empresa.id) }} text="Continuar" color="red"/>
-                    </div>
-                </Modal>
+                
+                <ModalDelete title= {empresa === null ? "¿Estás seguro que deseas eliminar a ": "¿Estás seguro que deseas eliminar a "+empresa.name +" ?"} show={modalDelete} handleClose={this.handleDeleteModal} onClick={(e) => { this.safeDeleteEmpresa(e)(empresa.id) }}>
+                </ModalDelete>
+
             </Layout>
         )
     }

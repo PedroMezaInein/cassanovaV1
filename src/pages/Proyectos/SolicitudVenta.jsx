@@ -704,7 +704,7 @@ class SolicitudVenta extends Component{
                         setOptions = {this.setOptions}  onChange = { this.onChange } onChangeAdjunto = { this.onChangeAdjunto }
                         clearFiles = { this.clearFiles } onSubmit = { this.onSubmit } formeditado={formeditado}/>
                 </Modal>
-                <ModalDelete title={"¿Estás seguro que deseas eliminar la solicitud de venta?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteSolicitudAxios() }}>
+                <ModalDelete title={"¿Deseas eliminar la solicitud de venta?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteSolicitudAxios() }}>
                 </ModalDelete>
                 <Modal title = "Solicitud de venta" show = { modalSingle } handleClose = { this.handleCloseSingle } >
                     <SolicitudVentaCard data = { solicitud }>

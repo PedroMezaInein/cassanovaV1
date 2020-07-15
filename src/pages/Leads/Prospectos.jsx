@@ -4,7 +4,7 @@ import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { faPlus, faPhone, faEnvelope, faEye, faEdit, faTrash, faCalendarAlt, faPhoneVolume, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
 import { Button } from '../../components/form-components'
-import { Modal, Card } from '../../components/singles'
+import { Modal, Card, ModalDelete} from '../../components/singles'
 import { ProspectoForm, ContactoLeadForm } from '../../components/forms'
 import axios from 'axios'
 import { URL_DEV, PROSPECTOS_COLUMNS, CONTACTO_COLUMNS, EMPTY_PROSPECTO, EMPTY_CONTACTO, EMPTY_CLIENTE } from '../../constants'
@@ -974,13 +974,10 @@ class Leads extends Component {
                         </div>
                     </Form>
                 </Modal> 
-                
-                <Modal title={"¿Estás seguro que deseas eliminar el prospecto?"} show={modalDelete} handleClose={this.handleDeleteModal}>
-                    <div className="d-flex justify-content-center mt-3">
-                        <Button icon='' onClick={this.handleDeleteModal} text="Cancelar" className={"btn btn-light-primary font-weight-bolder mr-3"} />
-                        <Button icon='' onClick={(e) => { this.safeDelete(e)(prospecto.id) }} text="Continuar" className={"btn btn-danger font-weight-bold mr-2"} />
-                    </div>
-                </Modal> 
+
+                <ModalDelete title={"¿Deseas eliminar el prospecto?"} show = { modalDelete } handleClose={this.handleDeleteModal}  onClick={(e) => { this.safeDelete(e)(prospecto.id) }}>
+                </ModalDelete>
+
                 <Modal show={modalConvert} handleClose={this.handleCloseConvertModal} title={"¿Estás seguro que deseas convertir el prospecto en un proyecto?"}>
                     <div className="d-flex justify-content-center mt-3">
                         <Button icon='' onClick={this.handleCloseConvertModal} text="Cancelar" className="mr-3" className={"btn btn-light-primary font-weight-bolder mr-3"} />

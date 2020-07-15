@@ -38,6 +38,9 @@ class EstadosCuenta extends Component {
     }
 
     componentDidMount() {
+        var element = document.getElementById("kt_datatable_estados_cuenta");
+        element.classList.remove("table-responsive");
+
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props
@@ -427,6 +430,7 @@ class EstadosCuenta extends Component {
                         'delete': { function: this.openModalDelete },
                     }}
                     elements={data.estados}
+                    idTable = 'kt_datatable_estados_cuenta'
                 />
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el estado de cuenta?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteEstadoAxios() }}>
                 </ModalDelete>
