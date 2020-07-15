@@ -12,10 +12,10 @@ class AccountSettings extends Component {
 		<>   
 		<Layout { ...this.props}>
 			<Card className="card-custom"> 
-				<Card.Header class="card-header py-3">
-					<Card.Title class="align-items-start flex-column">
-						<h3 class="card-label font-weight-bolder text-dark">Cambio de contraseña</h3>
-						<span class="text-muted font-weight-bold font-size-sm mt-1">Cambia la contraseña de tu cuenta</span>
+				<Card.Header className="card-header py-3">
+					<Card.Title className="align-items-start flex-column">
+						<h3 className="card-label font-weight-bolder text-dark">Cambio de contraseña</h3>
+						<span className="text-muted font-weight-bold font-size-sm mt-1">Cambia la contraseña de tu cuenta</span>
 					</Card.Title> 
 				</Card.Header> 
 
