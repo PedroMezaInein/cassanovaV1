@@ -7,7 +7,7 @@ import { URL_DEV, EMPTY_EMPLEADO} from '../../constants'
 import { Title, Subtitle, P, Small, B } from '../../components/texts'
 import { Button } from '../../components/form-components'
 import { faUserPlus, faUserEdit, faUserSlash, faKey } from '@fortawesome/free-solid-svg-icons'
-import { Card, Modal } from '../../components/singles'
+import { Card, Modal, ModalDelete } from '../../components/singles'
 import { RegisterUserForm, EmpleadoForm, PermisosForm, ClienteUserForm } from '../../components/forms'
 import swal from 'sweetalert'
 import { setOptions } from '../../functions/setters'
@@ -709,15 +709,14 @@ class Usuarios extends Component{
                             }
                         </RegisterUserForm>
                     </Modal>
-                    <Modal show={modalSafeDeleteActive} handleClose={this.handleCloseSafeModal}>
-                        <Subtitle className="my-3 text-center">
-                            ¿Estás seguro que deseas eliminar a <B color="red">{user_to_interact.name}</B>
-                        </Subtitle>
+                    {/* <Modal title= {user_to_interact === null ? "¿Estás seguro que deseas eliminar a ": "¿Estás seguro que deseas eliminar a "+user_to_interact.name +" ?"} show={modalSafeDeleteActive} handleClose={this.handleCloseSafeModal}>
                         <div className="d-flex justify-content-center mt-3">
-                            <Button icon='' onClick={this.handleCloseSafeModal} text="Cancelar" className="mr-3" color="green"/>
-                            <Button icon='' onClick={(e) => { this.deleteSafeUser(e)(user_to_interact.id) }} text="Continuar" color="red"/>
+                            <Button icon='' onClick={this.handleCloseSafeModal} text="Cancelar" className={"btn btn-light-primary font-weight-bolder mr-3"}/>
+                            <Button icon='' onClick={(e) => { this.deleteSafeUser(e)(user_to_interact.id) }} text="Continuar" className={"btn btn-danger font-weight-bold mr-2"}/>
                         </div>
-                    </Modal>
+                    </Modal> */}
+                    <ModalDelete title= {user_to_interact === null ? "¿Estás seguro que deseas eliminar a ": "¿Estás seguro que deseas eliminar a "+user_to_interact.name +" ?"}  show={modalSafeDeleteActive} handleClose={this.handleCloseSafeModal} onClick={(e) => { this.deleteSafeUser(e)(user_to_interact.id) }}>
+                    </ModalDelete>
                     <Modal show={modalPermisos} handleClose={this.handleCloseModalPermisos}>
                         <PermisosForm {... this.props} handleClose={this.handleCloseModalPermisos} user={user_to_interact.id}/>
                     </Modal>
