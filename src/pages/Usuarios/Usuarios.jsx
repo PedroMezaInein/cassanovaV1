@@ -709,12 +709,6 @@ class Usuarios extends Component{
                             }
                         </RegisterUserForm>
                     </Modal>
-                    {/* <Modal title= {user_to_interact === null ? "¿Estás seguro que deseas eliminar a ": "¿Estás seguro que deseas eliminar a "+user_to_interact.name +" ?"} show={modalSafeDeleteActive} handleClose={this.handleCloseSafeModal}>
-                        <div className="d-flex justify-content-center mt-3">
-                            <Button icon='' onClick={this.handleCloseSafeModal} text="Cancelar" className={"btn btn-light-primary font-weight-bolder mr-3"}/>
-                            <Button icon='' onClick={(e) => { this.deleteSafeUser(e)(user_to_interact.id) }} text="Continuar" className={"btn btn-danger font-weight-bold mr-2"}/>
-                        </div>
-                    </Modal> */}
                     <ModalDelete title= {user_to_interact === null ? "¿Estás seguro que deseas eliminar a ": "¿Estás seguro que deseas eliminar a "+user_to_interact.name +" ?"}  show={modalSafeDeleteActive} handleClose={this.handleCloseSafeModal} onClick={(e) => { this.deleteSafeUser(e)(user_to_interact.id) }}>
                     </ModalDelete>
                     <Modal show={modalPermisos} handleClose={this.handleCloseModalPermisos}>
