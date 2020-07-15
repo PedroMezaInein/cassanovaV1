@@ -727,7 +727,7 @@ class Tareas extends Component{
         return(
             <Layout active={'usuarios'} { ...this.props}> 
             <Row>
-                <Col lg="2"> 
+                <Col lg="2" className="mb-3"> 
                     <Card className="card-custom card-stretch"> 
                         <Card.Body className="px-3">
                         <Nav className="navi navi-hover navi-active navi-link-rounded navi-bold navi-icon-center navi-light-icon">
@@ -744,7 +744,7 @@ class Tareas extends Component{
 											</svg>
 										</span>
 									</span>
-									<span className="navi-text font-weight-bolder font-size-lg">ADMINISTRACIÓN</span>
+									<span className="navi-text font-weight-bolder font-size-lg" id="tablero">ADMINISTRACIÓN</span>
 								</Nav.Link>
 							</Nav.Item>
 							<Nav.Item className="navi-item my-2">
@@ -760,7 +760,7 @@ class Tareas extends Component{
 											</svg>
 										</span>
 									</span>
-									<span className="navi-text font-weight-bolder font-size-lg">CALIDAD</span>
+									<span className="navi-text font-weight-bolder font-size-lg" id="tablero">CALIDAD</span>
 								</Nav.Link>
 							</Nav.Item>
 							<Nav.Item className="navi-item my-2">
@@ -776,7 +776,7 @@ class Tareas extends Component{
 											</svg>
 										</span>
 									</span>
-                                    <span className="navi-text font-weight-bolder font-size-lg">COMPRAS</span> 
+                                    <span className="navi-text font-weight-bolder font-size-lg" id="tablero">COMPRAS</span> 
 								</Nav.Link>
 							</Nav.Item>
 							<Nav.Item className="navi-item my-2">
@@ -792,7 +792,7 @@ class Tareas extends Component{
 											</svg>
 										</span>
 									</span>
-                                    <span className="navi-text font-weight-bolder font-size-lg">CONTABILIDAD</span>
+                                    <span className="navi-text font-weight-bolder font-size-lg" id="tablero">CONTABILIDAD</span>
 								</Nav.Link>
 							</Nav.Item>
 							<Nav.Item className="navi-item my-2">
@@ -808,7 +808,7 @@ class Tareas extends Component{
 											</svg>
 										</span>
 									</span>
-								<span className="navi-text font-weight-bolder font-size-lg">MERCADOTECNIA</span>
+								<span className="navi-text font-weight-bolder font-size-lg" id="tablero">MERCADOTECNIA</span>
 								</Nav.Link>
 							</Nav.Item>
 						</Nav>
@@ -824,7 +824,7 @@ class Tareas extends Component{
                         </Card.Header>
                         <Card.Body>
                             <DragDropContext onDragEnd={this.onDragEnd}>
-                                <div className="row mx-0">
+                                <div className="row mx-0 justify-content-center">
                                     {
                                         columns.map((column) => {
                                             return(
