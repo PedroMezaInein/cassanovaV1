@@ -5,7 +5,7 @@ export default function NavUser() {
     return (
         <>   
             <div className="navi navi-spacer-x-0 p-0">
-				<a href="#" className="navi-item">
+				<a href="/mi-perfil" className="navi-item">
 					<div className="navi-link">
 						<div className="symbol symbol-40 bg-light mr-3">
 							<div className="symbol-label">
@@ -21,12 +21,12 @@ export default function NavUser() {
 							</div>
 						</div>
 						<div className="navi-text">
-							<div className="font-weight-bold">Mi perfil</div>
+							<div className="font-weight-bold text-dark text-hover-success">Mi perfil</div>
 							<div className="text-muted">Configurar mi cuenta</div>
 						</div>
 					</div>
 				</a>
-				<a href="#" className="navi-item">
+				{/* <a href="#" className="navi-item">
 					<div className="navi-link">
 						<div className="symbol symbol-40 bg-light mr-3">
 							<div className="symbol-label">
@@ -90,7 +90,7 @@ export default function NavUser() {
 							<div className="text-muted">Proyectos pendientes</div>
 						</div>
 					</div>
-				</a>
+				</a> */}
 			</div>
         </>
     );

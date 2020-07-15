@@ -35,8 +35,8 @@ class UserPanel extends Component {
 						<CustomUser clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {... this.props}/>
 					</div>
 					<div className="separator separator-dashed mt-4 mb-3"></div>
-					{/*<NavUser/>
-					<div className="separator separator-dashed mt-4 mb-4"></div>
+					<NavUser/>
+					{/*<div className="separator separator-dashed mt-4 mb-4"></div>
 					<UserNotifications/>*/}	
 				</div>
 			</div>
