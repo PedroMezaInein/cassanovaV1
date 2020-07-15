@@ -47,6 +47,9 @@ class Conceptos extends Component {
     }
 
     componentDidMount() {
+        var element = document.getElementById("kt_datatable_conceptos");
+        element.classList.remove("table-responsive");
+
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props
@@ -421,6 +424,7 @@ class Conceptos extends Component {
                         'delete': { function: this.openModalDelete }
                     }}
                     elements={data.conceptos}
+                    idTable = 'kt_datatable_conceptos'
                 />
                 
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el concepto?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); this.deleteConceptoAxios() }}>

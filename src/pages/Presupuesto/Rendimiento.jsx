@@ -51,6 +51,9 @@ class Rendimientos extends Component {
     }
 
     componentDidMount() {
+        var element = document.getElementById("kt_datatable_rendimiento");
+        element.classList.remove("table-responsive");
+
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props
@@ -479,6 +482,8 @@ class Rendimientos extends Component {
                         'delete': { function: this.openModalDelete }
                     }}
                     elements={data.rendimientos}
+                    idTable = 'kt_datatable_rendimiento'
+                    
                 />
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el rendimiento?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); this.deleteRendimientoAxios() }}>
                 </ModalDelete>
