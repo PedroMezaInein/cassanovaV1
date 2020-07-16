@@ -42195,7 +42195,8 @@ code {
     .navi .navi-item:last-child {
       border-bottom: 0 !important; }
       .navi .navi-item:last-child .navi-link {
-        border-bottom: 0 !important; }
+        /* border-bottom: 0 !important;  */
+      }
   .navi .navi-separator {
     margin: 0;
     padding: 0;

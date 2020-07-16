@@ -45,7 +45,8 @@ class Tareas extends Component{
         comentario: '',
         adjunto: '',
         adjuntoFile: '',
-        adjuntoName: ''
+        adjuntoName: '',
+        defaultactivekey:"",
     }
 
     componentDidMount(){
@@ -308,15 +309,17 @@ class Tareas extends Component{
         })
     }
 
-    //Función de ejemplo de barrido de arreglo
-    click = (key) => {
+    updateActiveTabContainer = active => {
         const { tableros } = this.state
-        tableros.map( (tablero) => {
-            if(tablero.nombre === key)
+        tableros.map( (tablero) => { 
+            if(tablero.nombre === active){
                 this.setTareas(tablero.tareas)
+                this.setState({ 
+                    subActiveKey: active
+                })
+            }
         })
     }
-
     // Axios
     async getTareasAxios(){
         const { access_token } = this.props.authUser
@@ -331,7 +334,9 @@ class Tareas extends Component{
                     ... this.state,
                     user: user,
                     users: users,
-                    tableros: tableros
+                    tableros: tableros,
+                    defaultactivekey:tableros[0].nombre,
+                    subActiveKey:tableros[0].nombre
                 })
                 this.setTareas(tableros[0].tareas)
             },
@@ -365,22 +370,30 @@ class Tareas extends Component{
 
     async addTaskAxios(){
         const { access_token } = this.props.authUser
-        const { form } = this.state
+        const { form, subActiveKey} = this.state
+        form.departamento = subActiveKey
         await axios.post(URL_DEV + 'user/tareas', form, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
                 const { data : { tareas : columns } } = response
                 const { data : { user : user } } = response
                 const { form } = this.state
+                const { tableros } = response.data
+
+                tableros.map((tablero) => {
+                    if(tablero.nombre == subActiveKey){
+                        this.setTareas(tablero.tareas)
+                    }
+                })
+
                 form['titulo'] = ''
                 form['grupo'] = ''
                 this.setState({
-                    ... this.state,
                     user: user,
                     form,
                     activeKey: '',
                     formeditado:0
                 })
-                this.setTareas(columns)
+                
             },
             (error) => {
                 console.log(error, 'error')
@@ -733,15 +746,18 @@ class Tareas extends Component{
                 
             })
         })
-    }
-
+    } 
     render(){
-        const { columns, user, form, activeKey, modal, tarea, comentario, adjunto,adjuntoName, users, participantesTask, participantes, formeditado} = this.state
+        
+        const { columns, user, form, activeKey, modal, tarea, comentario, adjunto,adjuntoName, users, participantesTask, participantes, formeditado, tableros, defaultactivekey, subActiveKey} = this.state
         return(
             <Layout active={'usuarios'} { ...this.props}> 
                 <div className="d-flex flex-row">
 					<div className="flex-row-fluid">
 						<div className="d-flex flex-column flex-grow-1">
+                        <Tab.Container id="left-tabs-example" activeKey = { subActiveKey ? subActiveKey : defaultactivekey } defaultActiveKey={defaultactivekey}
+                                            onSelect = { (select) => { this.updateActiveTabContainer(select) } }
+                                            >
 							<Card className="card-custom gutter-b">
 								<Card.Body className="d-flex align-items-center justify-content-between flex-wrap py-3">
 									<div className="d-flex align-items-center mr-2 py-2">
@@ -750,15 +766,13 @@ class Tareas extends Component{
                                     <div className="d-flex">
 										<Nav className="navi navi-hover navi-active navi-link-rounded navi-bold d-flex flex-row">
                                             {	
-                                                this.state.tableros.map( (tablero, key) => {
-                                                    return(
-                                                        <div key={key}>
-                                                            <Nav.Item className="navi-item mr-2">
-                                                                <Nav.Link className="navi-link">
-                                                                    <span className="navi-text">{tablero.nombre}</span>
-                                                                </Nav.Link>
-                                                            </Nav.Item>
-                                                        </div>
+                                                tableros.map( (tablero, key) => {
+                                                    return( 
+                                                        <Nav.Item className="navi-item mr-2 " key={key}>
+                                                            <Nav.Link className="navi-link border border-light border-2" eventKey = {tablero.nombre }>
+                                                                <span className="navi-text">{tablero.nombre}</span>
+                                                            </Nav.Link>
+                                                        </Nav.Item>
                                                     )
                                                 })
                                             }
@@ -767,9 +781,9 @@ class Tareas extends Component{
 								</Card.Body>
 							</Card> 
                             <Card className="card-custom card-stretch">
-								<Card.Body className="p-0"> 
-									<div className="card-spacer-x pt-5 pb-4 toggle-off-item">
-										<div className="mb-1">
+                                <Card.Body className="p-0"> 
+                                    <div className="card-spacer-x pt-5 pb-4 toggle-off-item">
+                                        <div className="mb-1">
                                             <DragDropContext onDragEnd={this.onDragEnd}>
                                                 <div className="row mx-0 justify-content-center">
                                                     {
@@ -793,10 +807,11 @@ class Tareas extends Component{
                                                     }
                                                 </div>
                                             </DragDropContext>
-										</div>
-									</div>
-								</Card.Body>
+                                        </div>
+                                    </div>  
+                                </Card.Body>
 							</Card>
+                        </Tab.Container>
 						</div>
 					</div>
 				</div>  
