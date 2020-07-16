@@ -1,10 +1,14 @@
 import React, { Component } from 'react'; 
 import Layout from '../../components/layout/layout'
 import {Card, Form, Col, Tab, Nav } from 'react-bootstrap'
-import { validateAlert } from '../../functions/alert'
+import { connect } from 'react-redux'
+import axios from 'axios'
+import { URL_DEV } from '../../constants'
+import { validateAlert, waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
 import { Input, Button } from '../../components/form-components'
 
 import { ChangePasswordForm } from '../../components/forms'
+import swal from 'sweetalert';
 
 class AccountSettings extends Component {
 
@@ -25,28 +29,72 @@ class AccountSettings extends Component {
             form
         })
 	}
-	
+
+	async changePasswordAxios() {
+		const { access_token, user } = this.props.authUser
+		const { form } = this.state
+        await axios.post(URL_DEV + 'user/users/change-password', form,  { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+				const { history } = this.props
+				swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'La contraseña fue actualizada con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+				setTimeout(() => {
+					swal.close()
+					history.push({
+						pathname: '/login'
+					});
+				}, 1500);
+				
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+	}
+
 	render(){		
 		const {onSubmit} = this.props
 		const { form } = this.state
 		return (
-		<>   
-		<Layout { ...this.props}>
-			<Card className="card-custom"> 
-				<Card.Header className="card-header py-3">
-					<Card.Title className="align-items-start flex-column">
-						<h3 className="card-label font-weight-bolder text-dark">Cambio de contraseña</h3>
-						<span className="text-muted font-weight-bold font-size-sm mt-1">Cambia la contraseña de tu cuenta</span>
-					</Card.Title> 
-				</Card.Header> 
+			<>   
+				<Layout { ...this.props}>
+					<Card className="card-custom"> 
+						<Card.Header className="card-header py-3">
+							<Card.Title className="align-items-start flex-column">
+								<h3 className="card-label font-weight-bolder text-dark">Cambio de contraseña</h3>
+								<span className="text-muted font-weight-bold font-size-sm mt-1">Cambia la contraseña de tu cuenta</span>
+							</Card.Title> 
+						</Card.Header> 
+						<Card.Body> 
+							<ChangePasswordForm form = { form } onChange = { this.onChange } onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.changePasswordAxios()} } />
+						</Card.Body>
+					</Card>
+				</Layout>
+			</>
+		)
+	}
+}
 
-				<Card.Body> 
-					<ChangePasswordForm form = { form } onChange = { this.onChange } />
-				</Card.Body>
-			</Card>
-		</Layout>
-		</>
-	)
+const mapStateToProps = state => {
+    return{
+        authUser: state.authUser
+    }
 }
-}
-export default AccountSettings
+
+const mapDispatchToProps = dispatch => ({
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(AccountSettings);

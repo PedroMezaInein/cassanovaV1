@@ -68,12 +68,31 @@ class Input extends Component {
         }
     }
 
-    render() {
-        const { error, onChange, placeholder, iconclass, messageinc, ...props } = this.props 
-        const { inputValido } =  this.state  
-
-        const toInputUppercase = e => {
+    letterCase = (e) => {
+        const { letterCase } = this.state
+        if(letterCase === undefined)
             e.target.value = ("" + e.target.value).toUpperCase();
+        else{
+            if(letterCase === 'Upper')
+                e.target.value = ("" + e.target.value).toUpperCase();
+            else{ 
+                console.log('lower case')
+                e.target.value = e.target.value
+            }
+        }
+    }
+
+    render() {
+        const { error, onChange, placeholder, iconclass, messageinc, letterCase, ...props } = this.props 
+        const { inputValido } =  this.state  
+        
+        const toInputUppercase = e => {
+            if(letterCase === undefined)
+                e.target.value = ("" + e.target.value).toUpperCase();
+            else{
+                if(letterCase === true)
+                    e.target.value = ("" + e.target.value).toUpperCase();
+            }
         };
         
       //  let  inputValido   = this.props.value!==""? true : this.state.inputValido 
@@ -86,9 +105,10 @@ class Input extends Component {
                         </span>                 
                         <Form.Control 
                             placeholder={placeholder} 
-                            className={ inputValido ? " form-control is-valid text-uppercase " : " form-control is-invalid text-uppercase " }
+                            className={ inputValido ? " form-control is-valid " : " form-control is-invalid " }
                             onChange={(e) => { e.preventDefault(); this.validarInput(e); onChange(e) }}  
                             onInput={toInputUppercase}
+                            /* onInput = { (e) => { this.letterCase(e) }  } */
                             {...props} 
                         /> 
                     </div>
