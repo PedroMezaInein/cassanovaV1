@@ -377,16 +377,22 @@ class Tareas extends Component{
                 const { data : { tareas : columns } } = response
                 const { data : { user : user } } = response
                 const { form } = this.state
+                const { tableros } = response.data
+
+                tableros.map((tablero) => {
+                    if(tablero.nombre == subActiveKey){
+                        this.setTareas(tablero.tareas)
+                    }
+                })
+
                 form['titulo'] = ''
                 form['grupo'] = ''
                 this.setState({
-                    ... this.state,
                     user: user,
                     form,
                     activeKey: '',
                     formeditado:0
                 })
-                this.setTareas(columns)
                 
             },
             (error) => {
