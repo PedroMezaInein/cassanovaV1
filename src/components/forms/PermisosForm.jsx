@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import { URL_DEV, ICONS_MODULES, DARK_BLUE, L_BLUE, BONE } from '../../constants'
 import { ToggleButton, Button } from '../form-components'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Subtitle, Small } from '../texts'
 import {Accordion, Card} from 'react-bootstrap'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
@@ -230,15 +230,17 @@ class PermisosForm extends Component{
                     </Accordion.Collapse>
                 </Card> 
                 </Accordion> */}
-                <Accordion activeKey={activeKey}>
+                <Accordion activeKey={activeKey} className="accordion accordion-light ">
                     {
                         grupos !== null && grupos.map((grupo, key) => {
                             const { ... modulos } = grupo
                             return(
                                 <div key={key}>  
                                     <Card>
-                                    <Accordion.Toggle as={Card.Header} eventKey={grupo.name} onClick={() => this.handleAccordion(grupo.name)}>
+                                    <Accordion.Toggle as={Card.Header} eventKey={grupo.name} onClick={() => this.handleAccordion(grupo.name)}> 
                                         <div className="d-flex align-items-center">
+                                            
+                                            <div className="card-title collapsed">{grupo.nombre}</div>
                                             <ToggleButton  
                                                 { ...grupo} 
                                                         onToggle={(e) => this.handleGroupToggler(e)}
@@ -247,33 +249,31 @@ class PermisosForm extends Component{
                                                         borderColor={DARK_BLUE}
                                                         knobColor={DARK_BLUE}
                                                         />
-                                                    <FontAwesomeIcon className="mx-4 text-color__gold" icon={ICONS_MODULES[grupo.icon]} />
-                                                    <Subtitle className="mb-0 mx-2 " > 
-                                                        { grupo.nombre }    
-                                                    </Subtitle>
-                                        
+                                            
                                         </div>
                                     </Accordion.Toggle>          
                                     <Accordion.Collapse eventKey={grupo.name}>
-                                        <div className="row mx-0 mt-2">
-                                            {
-                                                grupo.modulos.map((modulo, key) => {
-                                                    return(
-                                                        <div key={key} className="col-md-2 pt-4 px-3">
-                                                            <div className="text-center">
-                                                                <FontAwesomeIcon className="mx-3 text-color__gold-80" icon={ICONS_MODULES[modulo.icon]} />
+                                        <Card.Body>
+                                            <div className="row mx-0 mt-2">
+                                                {
+                                                    grupo.modulos.map((modulo, key) => {
+                                                        return(
+                                                            <div key={key} className="col-md-2 pt-4 px-3">
+                                                                <div className="text-center">
+                                                                    {/* <FontAwesomeIcon className="mx-3 text-color__gold-80" icon={ICONS_MODULES[modulo.icon]} /> */}
+                                                                </div>
+                                                                <div className="text-center">
+                                                                    <Small color="dark-blue-80">{modulo.nombre}</Small>    
+                                                                </div>
+                                                                <div className="d-flex justify-content-center">
+                                                                    <Form.Check name={modulo.name} type="checkbox" checked={modulo.checked} onChange={ this.handleCheckbox(modulo) }/>
+                                                                </div>                                                
                                                             </div>
-                                                            <div className="text-center">
-                                                                <Small color="dark-blue-80">{modulo.nombre}</Small>    
-                                                            </div>
-                                                            <div className="d-flex justify-content-center">
-                                                                <Form.Check name={modulo.name} type="checkbox" checked={modulo.checked} onChange={ this.handleCheckbox(modulo) }/>
-                                                            </div>                                                
-                                                        </div>
-                                                    )
-                                                })
-                                            }
-                                        </div>
+                                                        )
+                                                    })
+                                                }
+                                            </div>
+                                        </Card.Body>
                                     </Accordion.Collapse>
                                 </Card>
                                     <hr className="divider" />
