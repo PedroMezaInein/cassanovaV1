@@ -518,12 +518,17 @@ class egresos extends Component{
         const { egreso } = this.state
         await axios.delete(URL_DEV + 'egresos/' + egreso.id, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { egresos } = response.data
+                const { egreso } = response.data
                 const { data } = this.state
-                data.egresos = egresos
+                let aux = []
+                data.egresos.map((element)=>{
+                    if(egreso.id !== element.id)
+                        aux.push(element)
+                })
+                data.egresos = aux
                 this.setState({
                     ... this.state,
-                    egresos: this.setEgresos(egresos),
+                    egresos: this.setEgresos(data.egresos),
                     modalDelete: false,
                     egreso: '',
                     data
@@ -583,7 +588,7 @@ class egresos extends Component{
         await axios.post(URL_DEV + 'egresos/factura', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
 
-                const { egreso, egresos } = response.data
+                const { egreso } = response.data
                 let { porcentaje, data } = this.state
                 porcentaje = 0
                 egreso.facturas.map((factura)=>{
@@ -591,13 +596,22 @@ class egresos extends Component{
                 })
                 porcentaje = porcentaje * 100 / (egreso.total - egreso.comision)
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
+                let aux = []
+                data.egresos.map((element)=>{
+                    if(egreso.id !== element.id)
+                        aux.push(element)
+                    else
+                        aux.push(egreso)
+                })
+                data.egresos = aux
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
                     egreso: egreso,
                     facturas: egreso.facturas,
                     porcentaje,
-                    egresos: this.setEgresos(egresos)
+                    egresos: this.setEgresos(data.egresos),
+                    data
                 })
                 
                 swal({
@@ -630,7 +644,7 @@ class egresos extends Component{
         await axios.delete(URL_DEV + 'egresos/' + egreso.id + '/facturas/' + id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 
-                const { egreso, egresos } = response.data
+                const { egreso } = response.data
                 let { porcentaje, data } = this.state
                 porcentaje = 0
                 egreso.facturas.map((factura)=>{
@@ -638,12 +652,19 @@ class egresos extends Component{
                 })
                 porcentaje = porcentaje * 100 / (egreso.total - egreso.comision)
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
-                data.egresos = egresos
+                let aux = []
+                data.egresos.map((element)=>{
+                    if(egreso.id !== element.id)
+                        aux.push(element)
+                    else
+                        aux.push(egreso)
+                })
+                data.egresos = aux
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
                     egreso: egreso,
-                    egresos: this.setEgresos(egresos),
+                    egresos: this.setEgresos(data.egresos),
                     facturas: egreso.facturas,
                     data,
                     porcentaje
