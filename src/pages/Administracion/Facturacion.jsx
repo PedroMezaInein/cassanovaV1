@@ -61,7 +61,7 @@ class Facturacion extends Component {
                     acumulado: renderToString(setMoneyTable(factura.ventas_count + factura.ingresos_count)),
                     restante: renderToString(setMoneyTable(factura.total - factura.ventas_count - factura.ingresos_count)),
                     adjuntos: renderToString(this.setAdjuntosTable(factura)),
-                    fecha: renderToString(this.setDateTable(factura.created_at)),
+                    fecha: renderToString(this.setDateTable(factura.fecha)),
                     id: factura.id
                 }
             )
@@ -90,15 +90,6 @@ class Facturacion extends Component {
                 <Small>
                     {factura.lugar_expedicion}
                 </Small>
-                <br />
-                <Small className="mr-1" >
-                    <B color="gold">
-                        Fecha:
-                    </B>
-                </Small>
-                {
-                    this.setDateTable(factura.fecha)
-                }
             </div>
         )
     }

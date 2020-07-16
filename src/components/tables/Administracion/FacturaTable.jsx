@@ -52,8 +52,7 @@ export default class FacturaTable extends Component{
                     usoCFDI: renderToString(setTextTable(factura.uso_cfdi)),
                     expedicion: renderToString(setArrayTable(
                         [
-                            {name:'Lugar', text:factura.lugar_expedicion},
-                            {name:'Fecha', text:factura.fecha}
+                            {name:'Lugar', text:factura.lugar_expedicion}
                         ])),
                     subtotal: renderToString(setMoneyTable(factura.subtotal)),
                     total: renderToString(setMoneyTable(factura.total)),
@@ -61,7 +60,7 @@ export default class FacturaTable extends Component{
                         factura.pdf ? {name: 'factura.pdf', url: factura.pdf.url} : '',
                         factura.xml ? {name: 'factura.xml', url: factura.xml.url} : '',
                     ])),
-                    fecha: renderToString(setDateTable(factura.created_at)),
+                    fecha: renderToString(setDateTable(factura.fecha)),
                     id: factura.id
                 }
             )
