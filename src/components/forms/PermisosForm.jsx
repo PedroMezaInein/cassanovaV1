@@ -238,17 +238,16 @@ class PermisosForm extends Component{
                                 <div key={key}>  
                                     <Card>
                                     <Accordion.Toggle as={Card.Header} eventKey={grupo.name} onClick={() => this.handleAccordion(grupo.name)}> 
-                                        <div className="d-flex align-items-center">
-                                            
-                                            <div className="card-title collapsed">{grupo.nombre}</div>
+                                        <div className="d-flex align-items-center">                                            
                                             <ToggleButton  
                                                 { ...grupo} 
-                                                        onToggle={(e) => this.handleGroupToggler(e)}
-                                                        leftBG={BONE}
-                                                        rightBG={L_BLUE}
-                                                        borderColor={DARK_BLUE}
-                                                        knobColor={DARK_BLUE}
-                                                        />
+                                                onToggle={(e) => this.handleGroupToggler(e)}
+                                                leftBG={BONE}
+                                                rightBG={L_BLUE}
+                                                borderColor={DARK_BLUE}
+                                                knobColor={DARK_BLUE}
+                                            />
+                                            <div className="card-title collapsed">{grupo.nombre}</div>
                                             
                                         </div>
                                     </Accordion.Toggle>          
