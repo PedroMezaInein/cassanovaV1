@@ -126,7 +126,7 @@ class TareaForm extends Component{
                                 id='end' 
                                 place="top" 
                                 type='success' 
-                                effect="solid"
+                                effect="solid"  
                                 >
                                 Terminar
                             </ReactTooltip>
@@ -139,6 +139,13 @@ class TareaForm extends Component{
                             
                         </div>
                     </div>
+                    {/* <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Tooltip!</Tooltip>}>
+                    <span className="d-inline-block">
+                        <Button disabled style={{ pointerEvents: 'none' }}>
+                        Disabled button
+                        </Button>
+                    </span>
+                    </OverlayTrigger> */}
 
                     {
                         /* <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Terminar</Tooltip>}>
