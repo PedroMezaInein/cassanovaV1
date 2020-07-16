@@ -64,6 +64,12 @@ export function setTextTable( text ){
 export function setDateTable( date ){
     return (
         <Small>
+            <span className="d-none">
+                <Moment format="YYYY/MM/DD">
+                    {date}
+                </Moment>
+            </span>
+            
             <Moment format="DD/MM/YYYY">
                 {date}
             </Moment>
