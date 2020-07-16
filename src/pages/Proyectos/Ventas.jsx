@@ -646,6 +646,7 @@ class Ventas extends Component{
     }
     
     async getVentasAxios(){
+        waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'ventas', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
@@ -664,6 +665,7 @@ class Ventas extends Component{
                 data.clientes = clientes
                 data.empresas = empresas
                 data.ventas = ventas
+                swal.close()
                 this.setState({
                     ... this.state,
                     options,
