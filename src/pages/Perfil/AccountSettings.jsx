@@ -4,10 +4,31 @@ import {Card, Form, Col, Tab, Nav } from 'react-bootstrap'
 import { validateAlert } from '../../functions/alert'
 import { Input, Button } from '../../components/form-components'
 
+import { ChangePasswordForm } from '../../components/forms'
+
 class AccountSettings extends Component {
+
+	state = {
+		form:{
+			oldPassword: '',
+			newPassword: '',
+			newPassword2: '',
+		}
+	}
+	
+	onChange = e => {
+        const { form } = this.state
+        const { name, value } = e.target
+        form[name] = value
+        this.setState({
+            ... this.state,
+            form
+        })
+	}
 	
 	render(){		
 		const {onSubmit} = this.props
+		const { form } = this.state
 		return (
 		<>   
 		<Layout { ...this.props}>
@@ -20,56 +41,7 @@ class AccountSettings extends Component {
 				</Card.Header> 
 
 				<Card.Body> 
-					<Form id="form-perfil"
-						onSubmit = { 
-							(e) => {
-								e.preventDefault(); 
-								validateAlert(onSubmit, e, 'form-perfil')
-							}
-						} 
-						>
-						<div className="form-group row form-group-marginless">
-							<div className="col-md-4">
-								<Input 
-									requirevalidation={1} 
-									placeholder = "Contraseña actual" 
-									type = "text"
-									name = "" 
-									value = { "" } 
-									onChange = { "" }
-									iconclass={"fab fa-diaspora"}
-									messageinc="Incorrecto. Ingresa la contraseña actual."
-								/>
-							</div>
-							<div className="col-md-4">
-								<Input 
-									requirevalidation={1} 
-									placeholder = "Nueva contraseña" 
-									type = "text"
-									name = "" 
-									value = { "" } 
-									onChange = { "" }
-									iconclass={"fas fa-check"}
-									messageinc="Incorrecto. Ingresa la nueva contraseña."
-								/>
-							</div>
-							<div className="col-md-4">
-								<Input 
-									requirevalidation={1} 
-									placeholder = "Verifica contraseña" 
-									type = "text"
-									name = "" 
-									value = { "" } 
-									onChange = { "" }
-									iconclass={"fas fa-user-check"}
-									messageinc="Incorrecto. Vuelve a introducir la nueva contraseña."
-								/>
-							</div>
-						</div> 
-						<div className="mt-3 text-center">
-							<Button icon='' className="mx-auto" type="submit" text="Enviar" />
-						</div>
-					</Form>
+					<ChangePasswordForm form = { form } onChange = { this.onChange } />
 				</Card.Body>
 			</Card>
 		</Layout>

@@ -29,6 +29,7 @@ import remisionForm from './proyectos/RemisionForm'
 import contabilidadForm from './reportes/ContabilidadForm'
 import flujosForm from './administracion/FlujosForm'
 import clienteUserForm from './usuarios/ClienteUserForm'
+import changePasswordForm from './perfil/ChangePasswordForm'
 
 export const RegisterUserForm = registerUserForm
 export const EmpleadoForm = empleadoForm
@@ -61,3 +62,4 @@ export const RemisionForm = remisionForm
 export const ContabilidadForm = contabilidadForm
 export const FlujosForm = flujosForm
 export const ClienteUserForm = clienteUserForm
+export const ChangePasswordForm = changePasswordForm
