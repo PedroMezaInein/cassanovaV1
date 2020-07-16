@@ -308,6 +308,15 @@ class Tareas extends Component{
         })
     }
 
+    //Función de ejemplo de barrido de arreglo
+    click = (key) => {
+        const { tableros } = this.state
+        tableros.map( (tablero) => {
+            if(tablero.nombre === key)
+                this.setTareas(tablero.tareas)
+        })
+    }
+
     // Axios
     async getTareasAxios(){
         const { access_token } = this.props.authUser
