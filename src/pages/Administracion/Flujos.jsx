@@ -31,7 +31,8 @@ class Flujos extends Component {
             cuentas: [],
             flujos: []
         },
-        flujos: []
+        flujos: [],
+        total: []
     }
 
     componentDidMount() {
@@ -97,8 +98,44 @@ class Flujos extends Component {
         })
     }
 
+    arraySuma = (array, name) => {
+        let aux = 0
+        array.map( (element) => {
+            aux = aux + element[name];
+        })
+        return aux
+    }
+
+    traspasosSuma = (array) => {
+        let aux = 0
+        array.map( (element) => {
+            aux = aux + (element.traspasos_destino_count - element.traspasos_origen_count);
+        })
+        return aux
+    }
+
     setFlujos = flujos => {
         let aux = []
+        if(flujos){
+            aux.push({
+                ingresos: renderToString(setMoneyTable(this.arraySuma(flujos, 'ingresos_count'))),
+                egresos: renderToString(setMoneyTable(this.arraySuma(flujos, 'egresos_count'))),
+                ventas: renderToString(setMoneyTable(this.arraySuma(flujos, 'ventas_count'))),
+                compras: renderToString(setMoneyTable(this.arraySuma(flujos, 'compras_count'))),
+                traspasos: renderToString(setMoneyTable(this.traspasosSuma(flujos))),
+                total: renderToString(
+                    setMoneyTable(
+                        this.arraySuma(flujos, 'ingresos_count') +
+                        this.arraySuma(flujos, 'ventas_count') -
+                        this.arraySuma(flujos, 'egresos_count') -
+                        this.arraySuma(flujos, 'compras_count') +
+                        this.traspasosSuma(flujos)
+                    )
+                ),
+                cuenta: renderToString(setTextTable('Total')),
+                id: 0
+            })   
+        }
         flujos.map((flujo) => {
             aux.push({
                 ingresos: renderToString(setMoneyTable(flujo.ingresos_count)),
@@ -203,7 +240,7 @@ class Flujos extends Component {
     }
 
     render() {
-        const { form, options, data, flujos } = this.state
+        const { form, options, data, flujos, total } = this.state
         return (
             <Layout active={'administracion'}  {...this.props}>
                 <Card className="m-2 p-2 m-md-4 p-md-4">

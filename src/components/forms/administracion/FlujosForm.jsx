@@ -24,6 +24,13 @@ class FlujosForm extends Component{
         onChange({ target: { value: value, name: 'cuenta' } })
     }
     
+    mostrarTodasCuentas = () => {
+        const { options, onChange } = this.props
+        options.cuentas.map( (cuenta)=> {
+            this.updateCuenta(cuenta.value)
+        })
+        onChange({ target: { value: '', name: 'cuenta' } })
+    }
 
     render(){
         const { form, onChange, options, deleteOption, onChangeAndAdd, clear, ...props } = this.props
@@ -40,6 +47,10 @@ class FlujosForm extends Component{
                             onChange = { this.updateCuenta } 
                             iconclass={"fas fa-credit-card"} 
                             />
+                        <div className="btn btn-hover btn-primary my-2" onClick = { this.mostrarTodasCuentas }>
+                            <i className={"fas fa-list-ol"}><span className="pl-2">Mostrar todas las cuentas</span></i> 
+                        </div>
+                        
                         {/* <span className="form-text text-muted">Por favor, seleccione la(s) cuenta(s)</span> */}
                     </div>
                     <div className="col-md-3">
