@@ -155,7 +155,7 @@ class NewTable extends Component {
             {
                 'targets': [0],
                 'data': null,
-                'searchable': false,
+                'searchable': mostrar_acciones? false : true,
                 'orderable': false,
                 render: function (data, type, row, meta) {
                     if (global_variable.mostrar_acciones == true) {
