@@ -74,7 +74,7 @@ class Proveedor extends Component{
                         )),
                     area: renderToString(setTextTable(proveedor.subarea ? proveedor.subarea.area.nombre: 'Sin definir')),
                     subarea: renderToString(setTextTable(proveedor.subarea ? proveedor.subarea.nombre : 'Sin definir')),
-                    total: renderToString(setMoneyTable(proveedor.total)),
+                    total: renderToString(setMoneyTable(proveedor.sumatoria_compras + proveedor.sumatoria_egresos)),
                     fecha: renderToString(setDateTable(proveedor.created_at)),
                     id: proveedor.id
                 }

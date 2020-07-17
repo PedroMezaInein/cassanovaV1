@@ -18,6 +18,8 @@ import Input from '../../components/form-components/Input'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import NewTable from '../../components/tables/NewTable'
 
+import { forbiddenAccessAlert, errorAlert } from '../../functions/alert'
+
 import { setOptions, setSelectOptions, setTextTable, setDateTable,setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
 
 class Traspasos extends Component{
@@ -606,6 +608,42 @@ class Traspasos extends Component{
         })
     }
 
+    async exportTraspasosAxios(){
+
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'exportar/traspasos', { responseType:'blob', headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'traspasos.xlsx'); //or any other extension
+                document.body.appendChild(link);
+                link.click();
+
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render(){
 
         const { modal, modalDelete, cuentas, form, traspasos, traspaso, data, formeditado} = this.state
@@ -631,6 +669,8 @@ class Traspasos extends Component{
                     }}
                     elements={data.traspasos} 
                     idTable = 'kt_datatable_transpasos'
+                    exportar_boton={true} 
+                    onClickExport={() => this.exportTraspasosAxios()}
                 />
 
 
