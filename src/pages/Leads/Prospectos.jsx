@@ -816,7 +816,7 @@ class Leads extends Component {
 
         return (
             <Layout active={'leads'}  {...this.props}>
-               {/* {
+                {/* {
                     prospectos &&
                     <DataTable columns={PROSPECTOS_COLUMNS} data={prospectos} />
                 }
@@ -836,7 +836,7 @@ class Leads extends Component {
                             elements = { data.prospectos }
                             />
 
-                <Modal title={title} show={modal} handleClose={this.handleCloseModal} >
+                <Modal size="xl" title={title} show={modal} handleClose={this.handleCloseModal} >
                     <ProspectoForm
                         formeditado={formeditado}
                         className=" px-3 "                        
@@ -952,7 +952,7 @@ class Leads extends Component {
                         }
                     </ProspectoForm>
                 </Modal>
-                <Modal show={modalHistoryContact} handleClose={this.handleCloseHistoryModal} title={"Historial de contacto"}>
+                <Modal size="xl" show={modalHistoryContact} handleClose={this.handleCloseHistoryModal} title={"Historial de contacto"}>
                     {
                         contactHistory &&
                         <TableForModals
@@ -966,7 +966,7 @@ class Leads extends Component {
                     }
 
                 </Modal>
-                <Modal title={"Agregar un nuevo contacto"} show={modalContactForm} handleClose={this.handleCloseFormContact}>
+                <Modal size="xl" title={"Agregar un nuevo contacto"} show={modalContactForm} handleClose={this.handleCloseFormContact}>
                     <Form className="mx-3" onSubmit={this.submitContactForm}>
                         <ContactoLeadForm tiposContactos={tiposContactos} formContacto={formContacto} onChangeContacto={this.onChangeContacto} />
                         <div className="mt-3 text-center">
@@ -978,7 +978,7 @@ class Leads extends Component {
                 <ModalDelete title={"¿Deseas eliminar el prospecto?"} show = { modalDelete } handleClose={this.handleDeleteModal}  onClick={(e) => { this.safeDelete(e)(prospecto.id) }}>
                 </ModalDelete>
 
-                <Modal show={modalConvert} handleClose={this.handleCloseConvertModal} title={"¿Estás seguro que deseas convertir el prospecto en un proyecto?"}>
+                <Modal size="xl" show={modalConvert} handleClose={this.handleCloseConvertModal} title={"¿Estás seguro que deseas convertir el prospecto en un proyecto?"}>
                     <div className="d-flex justify-content-center mt-3">
                         <Button icon='' onClick={this.handleCloseConvertModal} text="Cancelar" className="mr-3" className={"btn btn-light-primary font-weight-bolder mr-3"} />
                         <Button icon='' onClick={(e) => { this.safeConvert(e)(prospecto) }} text="Continuar" className={"btn btn-success font-weight-bold mr-2"}/>

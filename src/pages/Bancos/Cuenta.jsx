@@ -895,18 +895,18 @@ class Cuentas extends Component {
                 </Tabs>
                 
 
-                <Modal  title={cuenta === null ? "Nueva cuenta" : 'Editar cuenta'}  show={modal} handleClose={this.handleClose} >
+                <Modal size="xl" title={cuenta === null ? "Nueva cuenta" : 'Editar cuenta'}  show={modal} handleClose={this.handleClose} >
                     <CuentaForm tipo = { tipo } bancos={bancos} estatus={estatus} tipos={tipos}
                         empresas={empresas} form={form} onChange={this.onChange} onChangeEmpresa={this.onChangeEmpresa}
                         updateEmpresa={this.updateEmpresa} onSubmit={cuenta === null ? this.onSubmit : this.onEditSubmit} formeditado={formeditado} />
                 </Modal>
-                <Modal title= {cuenta === null ? "¿Estás seguro que deseas eliminar la cuenta ": "¿Estás seguro que deseas eliminar la cuenta "+ cuenta.nombre +" ?"} show={modalDelete} handleClose={this.handleDeleteModal} >
+                <Modal size="xl" title= {cuenta === null ? "¿Estás seguro que deseas eliminar la cuenta ": "¿Estás seguro que deseas eliminar la cuenta "+ cuenta.nombre +" ?"} show={modalDelete} handleClose={this.handleDeleteModal} >
                     <div className="d-flex justify-content-center mt-3">
                         <Button icon='' onClick={this.handleDeleteModal} text="Cancelar" className={"btn btn-light-primary font-weight-bolder mr-3"} />
                         <Button icon='' onClick={(e) => { this.safeDelete(e)() }} text="Continuar" className={"btn btn-danger font-weight-bold mr-2"}/>
                     </div>
                 </Modal> 
-                <Modal title= {cuenta === null ? "Estados de cuenta para": "Estados de cuenta para "+cuenta.nombre} show={modalEstado} handleClose={this.handleEstadoClose} >
+                <Modal size="xl" title= {cuenta === null ? "Estados de cuenta para": "Estados de cuenta para "+cuenta.nombre} show={modalEstado} handleClose={this.handleEstadoClose} >
                     
                     <Form onSubmit={this.onSubmitEstado} >
                         <div className="form-group row form-group-marginless pt-4">

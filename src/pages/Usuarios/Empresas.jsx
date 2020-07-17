@@ -142,7 +142,7 @@ class Empresas extends Component{
         )
     }
     */
-   setActions = proveedor => {
+    setActions = proveedor => {
     let aux = []
         aux.push(
             {
@@ -483,7 +483,7 @@ class Empresas extends Component{
                             idTable = 'kt_datatable_empresas'
                             />
 
-                <Modal title = { title } show={modalEdit} handleClose={this.handleEditModal}>
+                <Modal size="xl" title = { title } show={modalEdit} handleClose={this.handleEditModal}>
                     <EmpresaForm 
                         removeFile={this.removeFile} 
                         form={ form } 

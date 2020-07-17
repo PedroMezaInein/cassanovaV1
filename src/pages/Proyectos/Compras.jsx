@@ -1105,7 +1105,7 @@ class Compras extends Component{
                     onClickExport={() => this.exportComprasAxios()} />
 
 
-                <Modal title = { title } show = {modal} handleClose = { this.handleClose } >
+                <Modal size="xl" title = { title } show = {modal} handleClose = { this.handleClose } >
                         <ComprasForm  options = {options} form = {form} setOptions = {this.setOptions} data = { data }
                         onChange = { this.onChange } onChangeAdjunto = { this.onChangeAdjunto } clearFiles = {this.clearFiles}
                         sendFactura = { () => { this.sendFactura() } } onSubmit = { this.onSubmit } formeditado={formeditado}>
@@ -1118,7 +1118,7 @@ class Compras extends Component{
                 </Modal>
                 <ModalDelete title={"¿Estás seguro que deseas eliminar la compra?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteCompraAxios() }}>
                 </ModalDelete>
-                <Modal title={"Facturas"} show = { modalFacturas } handleClose = { this.handleCloseFacturas }>
+                <Modal size="xl" title={"Facturas"} show = { modalFacturas } handleClose = { this.handleCloseFacturas }>
                     {
                         compra.tipo_pago ?
                             compra.tipo_pago.tipo !== 'TOTAL' ?

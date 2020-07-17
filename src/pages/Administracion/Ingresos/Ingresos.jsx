@@ -811,7 +811,7 @@ class Ingresos extends Component {
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el ingreso?"}show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteIngresoAxios() }}>
                 </ModalDelete>
 
-                <Modal title={"Facturas"} show={modalFacturas} handleClose={this.handleCloseFacturas}>
+                <Modal size="xl" title={"Facturas"} show={modalFacturas} handleClose={this.handleCloseFacturas}>
                 <div className="form-group row form-group-marginless pt-4">
                     <div className="col-md-12">
                         <ProgressBar 
@@ -846,7 +846,7 @@ class Ingresos extends Component {
                     <FacturaTable deleteFactura={this.deleteFactura} facturas={facturas} />
                 </Modal>
 
-                <Modal title={"Solicitud de factura"} show={modalAskFactura} handleClose={this.handleCloseAskFactura}>
+                <Modal size="xl" title={"Solicitud de factura"} show={modalAskFactura} handleClose={this.handleCloseAskFactura}>
                     <FacturaForm options={options} onChange={this.onChange} form={form}
                         onSubmit={this.onSubmitAskFactura} formeditado={formeditado} data ={data} />
                 </Modal>

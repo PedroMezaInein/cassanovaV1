@@ -339,7 +339,7 @@ class TiposContratos extends Component {
                     idTable = 'kt_datatable_contratos'
                 />
 
-                <Modal show={modal.form} title = {title} handleClose={this.handleClose}>
+                <Modal size="xl" show={modal.form} title = {title} handleClose={this.handleClose}>
                     <TipoForm form = { form } onChange = { this.onChange }
                         onSubmit = { this.onSubmit } formeditado={formeditado} />
                 </Modal>

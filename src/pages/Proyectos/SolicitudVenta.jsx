@@ -699,14 +699,14 @@ class SolicitudVenta extends Component{
                         'bills': { function: this.openModalAskFactura },
                     }}
                     elements = { data.solicitudes } />
-                <Modal show = { modal } handleClose = { this.handleClose } title = { title }>
+                <Modal size="xl" show = { modal } handleClose = { this.handleClose } title = { title }>
                     <SolicitudVentaForm title = { title } form = { form } options = { options } 
                         setOptions = {this.setOptions}  onChange = { this.onChange } onChangeAdjunto = { this.onChangeAdjunto }
                         clearFiles = { this.clearFiles } onSubmit = { this.onSubmit } formeditado={formeditado}/>
                 </Modal>
                 <ModalDelete title={"¿Deseas eliminar la solicitud de venta?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteSolicitudAxios() }}>
                 </ModalDelete>
-                <Modal title = "Solicitud de venta" show = { modalSingle } handleClose = { this.handleCloseSingle } >
+                <Modal size="xl" title = "Solicitud de venta" show = { modalSingle } handleClose = { this.handleCloseSingle } >
                     <SolicitudVentaCard data = { solicitud }>
                         {
                             solicitud.convertido ? '' :
@@ -716,7 +716,7 @@ class SolicitudVenta extends Component{
                         
                     </SolicitudVentaCard>
                 </Modal>
-                <Modal title={"Solicitud de factura"} show={modalAskFactura} handleClose={this.handleCloseAskFactura}>
+                <Modal size="xl" title={"Solicitud de factura"} show={modalAskFactura} handleClose={this.handleCloseAskFactura}>
                     <FacturaForm options={options} onChange={this.onChange} form={form}
                         onSubmit={this.onSubmitAskFactura} formeditado={formeditado} data ={data} />
                     

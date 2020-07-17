@@ -465,7 +465,7 @@ class Remisiones extends Component{
                     <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon = { faPlus } color="green" />
                 </div>
 
-                <Modal show = {modal} handleClose = { this.handleClose } >
+                <Modal size="xl" show = {modal} handleClose = { this.handleClose } >
                     <RemisionForm form = { form } options = { options } onSubmit = { this.onSubmit }
                         title = { title } setOptions = { this.setOptions } onChange = { this.onChange } formeditado={formeditado}/>
                 </Modal>
@@ -475,7 +475,7 @@ class Remisiones extends Component{
                 <ModalDelete title={"¿Estás seguro que deseas eliminar la remisión?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteRemisionAxios() }}>
                 </ModalDelete>
 
-                <Modal show = { modalSingle } handleClose = { this.handleCloseSingle } >
+                <Modal size="xl" show = { modalSingle } handleClose = { this.handleCloseSingle } >
 
                     <RemisionCard data = { remision }>
                         {

@@ -266,7 +266,7 @@ class Remisiones extends Component{
                 <ModalDelete title={"¿Estás seguro que deseas eliminar la remisión?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteRemisionAxios() }}>
                 </ModalDelete>
 
-                <Modal show = { modalSingle } handleClose = { this.handleCloseSingle } >
+                <Modal size="xl" show = { modalSingle } handleClose = { this.handleCloseSingle } >
 
                     <RemisionCard data = { remision }>
                         {

@@ -653,7 +653,7 @@ class Usuarios extends Component{
                             )
                         })
                     }
-                    <Modal title="Registrar usuario" show={modalActive} handleClose={this.handleCloseModal}>
+                    <Modal size="xl" title="Registrar usuario" show={modalActive} handleClose={this.handleCloseModal}>
                         <RegisterUserForm className="px-3" form={ form } options={options} onSubmit={ this.handleSubmitAddUser} 
                             onChange={(e) => {e.preventDefault(); this.handleChangeInput(e)}}>
                             {
@@ -681,7 +681,7 @@ class Usuarios extends Component{
                             }
                         </RegisterUserForm>
                     </Modal>
-                    <Modal show={modalUpdateUser} handleClose={this.handleCloseModalUpdateUser}>
+                    <Modal size="xl" show={modalUpdateUser} handleClose={this.handleCloseModalUpdateUser}>
                         <RegisterUserForm form={ form } options={options} className="px-3" onSubmit={ this.handleSubmitEditUser } 
                             onChange={(e) => {e.preventDefault(); this.handleChangeInput(e)}} title="Editar usuario">
                             {
@@ -711,7 +711,7 @@ class Usuarios extends Component{
                     </Modal>
                     <ModalDelete title= {user_to_interact === null ? "¿Estás seguro que deseas eliminar a ": "¿Estás seguro que deseas eliminar a "+user_to_interact.name +" ?"}  show={modalSafeDeleteActive} handleClose={this.handleCloseSafeModal} onClick={(e) => { this.deleteSafeUser(e)(user_to_interact.id) }}>
                     </ModalDelete>
-                    <Modal show={modalPermisos} handleClose={this.handleCloseModalPermisos}>
+                    <Modal size="lg" title="Permisos de usuario"  show={modalPermisos} handleClose={this.handleCloseModalPermisos}>
                         <PermisosForm {... this.props} handleClose={this.handleCloseModalPermisos} user={user_to_interact.id}/>
                     </Modal>
                 </Layout>

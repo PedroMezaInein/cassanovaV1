@@ -434,7 +434,7 @@ class EstadosCuenta extends Component {
                 />
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el estado de cuenta?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteEstadoAxios() }}>
                 </ModalDelete>
-                <Modal title = {"Agregar estado de cuenta"} show={modal} handleClose={this.handleClose} >
+                <Modal size="xl" title = {"Agregar estado de cuenta"} show={modal} handleClose={this.handleClose} >
                     
                     <Form onSubmit={this.submitForm}>
                     <div className="form-group row form-group-marginless pt-4">

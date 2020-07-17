@@ -339,7 +339,7 @@ class Unidades extends Component {
                     idTable = 'kt_datatable_catalogos'
                 />
 
-                <Modal show={modal.form} title = {title} handleClose={this.handleClose}>
+                <Modal size="xl" show={modal.form} title = {title} handleClose={this.handleClose}>
                     <UnidadForm form = { form } onChange = { this.onChange }
                         onSubmit = { this.onSubmit } formeditado={formeditado} />
                 </Modal>
