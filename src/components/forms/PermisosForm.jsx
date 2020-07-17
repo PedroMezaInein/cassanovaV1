@@ -213,14 +213,12 @@ class PermisosForm extends Component{
             })
         })
     }
-    
-
     render(){
         const { grupos, activeKey } = this.state
         
         return(
             <form onSubmit={this.handleSubmit}> 
-                <Accordion activeKey={activeKey} className="accordion accordion-light ">
+                <Accordion activeKey={activeKey} className="accordion accordion-light">
                     {
                         grupos !== null && grupos.map((grupo, key) => {
                             const { ... modulos } = grupo
@@ -243,7 +241,7 @@ class PermisosForm extends Component{
                                             </div>
                                         </Accordion.Toggle>          
                                         <Accordion.Collapse eventKey={grupo.name}>
-                                            <Card.Body>
+                                            <Card.Body  className="bg-light">
                                                 <div className="row mx-0 mt-2 d-flex justify-content-center">
                                                     {
                                                         grupo.modulos.map((modulo, key) => {
