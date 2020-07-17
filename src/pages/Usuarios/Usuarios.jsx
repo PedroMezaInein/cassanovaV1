@@ -603,6 +603,21 @@ class Usuarios extends Component{
         return(
             <>
                 <Layout active={'usuarios'}  { ...this.props}>
+                    {/* <NewTable  columns={EMPRESA_COLUMNS} data = { empresas } 
+                        title = 'LISTADO DE USUARIOS REGISTRADOS' subtitle = 'Listado de administradores, empleados y clientes'
+                        mostrar_boton={true}
+                        abrir_modal={true}
+                        onClick={this.addUser()}
+                        mostrar_acciones={true} 
+                            actions = {{
+                                'edit': {},
+                                'delete': {},
+                                'permisos':{}
+                            }}
+                        elements = { data.empresas }
+                        idTable = 'kt_datatable_usuarios'
+                    /> */}
+
                     <div className="d-flex align-items-center mb-2 flex-column flex-md-row justify-content-md-between">
                         <Title className="text-center">
                             Listado de usuarios registrados
@@ -681,9 +696,9 @@ class Usuarios extends Component{
                             }
                         </RegisterUserForm>
                     </Modal>
-                    <Modal size="xl" show={modalUpdateUser} handleClose={this.handleCloseModalUpdateUser}>
+                    <Modal title="Editar usuario" size="xl" show={modalUpdateUser} handleClose={this.handleCloseModalUpdateUser}>
                         <RegisterUserForm form={ form } options={options} className="px-3" onSubmit={ this.handleSubmitEditUser } 
-                            onChange={(e) => {e.preventDefault(); this.handleChangeInput(e)}} title="Editar usuario">
+                            onChange={(e) => {e.preventDefault(); this.handleChangeInput(e)}}>
                             {
                                 tipo_form < 3 && tipo_form > 0 &&
                                 <EmpleadoForm 
