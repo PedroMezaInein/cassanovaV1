@@ -50,18 +50,7 @@ class Task extends Component{
                         ref={provided.innerRef}
                         className="px-3 py-2 my-3"
                         >
-                            <div>
-                                
-                                {
-                                    (_fecha_limite && _fecha_limite >= 0 && _fecha_limite < 7) ?
-                                        <div className="text-right">
-                                            <Badge pill variant="warning" className="text-white">
-                                                <FontAwesomeIcon icon={faCalendarCheck} color="white" className="mr-2" />
-                                                Restan { _fecha_limite } días
-                                            </Badge>
-                                        </div>
-                                    : ''
-                                }
+                            <div> 
                             </div>
                             
                             <div className="py-2 px-3 d-flex align-items-left kanban-item" data-class="white" onClick = { (e) => { e.preventDefault(); clickTask(tarea)} }>
@@ -71,6 +60,17 @@ class Task extends Component{
                                         _fecha_limite && _fecha_limite < 1 ?
                                             <div className="text-right"> 
                                                 <span className="label label-inline label-light-danger font-weight-bold">Tarea caducada</span> 
+                                            </div>
+                                        : ''
+                                    }
+                                    {
+                                        (_fecha_limite && _fecha_limite >= 0 && _fecha_limite < 7) ?
+                                            <div className="text-right">
+                                                <span className="label label-inline label-light-danger font-weight-bold">{ _fecha_limite }</span> 
+                                                {/* <Badge pill variant="warning" className="text-white">
+                                                    <FontAwesomeIcon icon={faCalendarCheck} color="white" className="mr-2" />
+                                                    Restan { _fecha_limite } días
+                                                </Badge> */}
                                             </div>
                                         : ''
                                     }
