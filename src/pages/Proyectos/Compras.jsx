@@ -564,6 +564,7 @@ class Compras extends Component{
     // Compras
     async getComprasAxios(){
         const { access_token } = this.props.authUser
+        waitAlert()
         await axios.get(URL_DEV + 'compras', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos,
@@ -582,14 +583,73 @@ class Compras extends Component{
                 options['metodosPago'] = setOptions(metodosPago, 'nombre', 'id')
                 data.proveedores = proveedores
                 data.empresas = empresas
-                data.compras = compras
-                this.setState({
+                data.compras = compras.data
+                /* this.setState({
                     ... this.state,
                     options,
-                    /* form: this.clearForm(), */
                     compras: this.setCompras(compras),
                     data
+                }) */
+                if(compras.current_page === compras.last_page){
+                    swal.close()
+                    this.setState({
+                        ... this.state,
+                        compras: this.serCompras(compras.data),
+                        data
+                    })
+                }else{
+                    this.setState({
+                        ... this.state,
+                        data
+                    })
+                    let aux = compras.next_page_url.split('=');
+                    aux = aux[aux.length - 1];
+                    this.getComprasAxiosPerPage(aux)
+                }
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async getComprasAxiosPerPage(page){
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'compras?page='+page, { responseType:'json', headers: {Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { data } = this.state
+                const { compras } = response.data
+
+                compras.data.map((compra)=>{
+                    data.compras.push(compra)
                 })
+
+                if(compras.current_page === compras.last_page){
+                    swal.close()
+                
+                    this.setState({
+                        ... this.state,
+                        compras: this.setCompras(data.compras),
+                        data
+                    })
+                }else{
+                    this.setState({
+                        ... this.state,
+                        data
+                    })
+                    let aux = compras.next_page_url.split('=');
+                    aux = aux[aux.length - 1];
+                    this.getComprasAxiosPerPage(aux)
+                }
+                
             },
             (error) => {
                 console.log(error, 'error')
