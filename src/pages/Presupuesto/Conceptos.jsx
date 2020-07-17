@@ -408,7 +408,7 @@ class Conceptos extends Component {
 
         return (
             <Layout active={'presupuesto'}  {...this.props}>
-                <Modal title={title} show={modal} handleClose={this.handleClose} >
+                <Modal size="xl" title={title} show={modal} handleClose={this.handleClose} >
                     <ConceptoForm  form={form} options={options} setOptions = { this.setOptions }
                         onChange={this.onChange} onSubmit = { this.onSubmit } formeditado={formeditado}/>
                 </Modal>

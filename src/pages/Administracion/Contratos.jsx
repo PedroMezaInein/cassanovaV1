@@ -833,14 +833,14 @@ class Contratos extends Component {
                         </div>
                     </Tab>
                 </Tabs>
-                <Modal title = { title } show = { modal.form } handleClose = { this.handleCloseModal }>
+                <Modal size="xl" title = { title } show = { modal.form } handleClose = { this.handleCloseModal }>
                     <ContratoForm tipo = { tipo } options = { options } form = { form } onChange = { this.onChange } 
                         onSubmit = { this.onSubmit } formeditado={formeditado} onChangeAdjunto = { this.onChangeAdjunto } 
                         clearFiles = { this.clearFiles } title = {title} />
                 </Modal>
                 <ModalDelete title={tipo === 'Cliente' ? '¿Quieres eliminar el contrato de cliente?' : '¿Quieres eliminar el contrato de proveedor?'} show = { modal.delete } handleClose = { this.handleCloseModalDelete } onClick=  { (e) => { e.preventDefault(); waitAlert(); this.deleteContratoAxios() }}>
                 </ModalDelete>
-                <Modal title = 'Adjuntos del contrato' show = { modal.adjuntos } handleClose = { this.handleCloseModalAdjuntos }>
+                <Modal size="xl" title = 'Adjuntos del contrato' show = { modal.adjuntos } handleClose = { this.handleCloseModalAdjuntos }>
                     <Form id="form-adjuntos"
                         onSubmit = { 
                             (e) => {

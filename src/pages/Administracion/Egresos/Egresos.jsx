@@ -752,7 +752,7 @@ class egresos extends Component{
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el egreso?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteEgresoAxios() }}>
                 </ModalDelete>
 
-                <Modal title={"Facturas"} show = { modalFacturas } handleClose = { this.handleCloseFacturas }>
+                <Modal size="xl" title={"Facturas"} show = { modalFacturas } handleClose = { this.handleCloseFacturas }>
                     <div className="form-group row form-group-marginless pt-4">
                         <div className="col-md-12">
                             <ProgressBar 

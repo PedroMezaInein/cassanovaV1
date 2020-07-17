@@ -147,3 +147,34 @@ a.text-hover-danger2:hover, .text-hover-danger2:hover{
 .bg-white-o-9 {
     background-color: rgba(255, 255, 255, 0.09) !important; 
 }
+
+//Estilo para ToggleButton usuarios/usuarios -> Permisos
+.cczuaK input[type="checkbox"]:checked + label:after { 
+    font-family: Ki;
+    content: "";
+    color: #ffffff;
+    font-size: 0.65em;
+    -webkit-box-align: center;
+    -webkit-box-pack: center;
+    position: absolute;
+    display: -webkit-box;
+}
+.cczuaK {
+    color: #ffffff;
+    width: 39px !important;
+}
+
+.cczuaK input[type="checkbox"] + label {
+    border-radius: 5px !important;
+    width: 0px !important;
+}
+
+.cczuaK input[type="checkbox"] + label:after{
+    border-radius: inherit !important;
+} 
+
+.cczuaK input[type="checkbox"] + label:before {
+    left: 0px !important;
+    border-radius: 5px !important;
+    width: 39px !important;
+}

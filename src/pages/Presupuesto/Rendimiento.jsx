@@ -465,7 +465,7 @@ class Rendimientos extends Component {
 
         return (
             <Layout active={'presupuesto'}  {...this.props}>
-                <Modal title={title} show={modal} handleClose={this.handleClose} >
+                <Modal size="xl" title={title} show={modal} handleClose={this.handleClose} >
                     <RendimientoForm form={form} options={options}
                         onChange={this.onChange} onSubmit={this.onSubmit} onChangeAdjunto={this.onChangeAdjunto}
                         clearFiles={this.clearFiles} formeditado={formeditado} />

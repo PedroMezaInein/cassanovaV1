@@ -10,13 +10,13 @@ class modal extends Component{
     }
 
     render(){
-        const { show, handleClose, children, title, setShow} = this.props
+        const { show, handleClose, children, title, setShow, size} = this.props
 
         return(
             <>
             <Modal
                 show={show}
-                size="xl"
+                size={size}
                 onHide={handleClose}                
                 //backdrop="static"
                 keyboard={true}

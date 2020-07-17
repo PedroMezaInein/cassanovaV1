@@ -384,7 +384,7 @@ class Partidas extends Component {
                     idTable = 'kt_datatable_partidas'
                 />
 
-                <Modal show={modal.form} title = {title} handleClose={this.handleClose}>
+                <Modal size="xl" show={modal.form} title = {title} handleClose={this.handleClose}>
                     <PartidaForm form = { form } onChange = { this.onChange }
                         addSubpartida = { this.addSubpartida } deleteSubpartida = { this.deleteSubpartida }
                         title = { title } onSubmit = { this.onSubmit } formeditado={formeditado}/>

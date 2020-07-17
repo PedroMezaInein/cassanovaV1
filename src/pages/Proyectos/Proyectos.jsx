@@ -1774,7 +1774,7 @@ class Proyectos extends Component {
                     elements={data.proyectos}
                 />
 
-                <Modal title = { title } show={modal} handleClose={this.handleClose}>
+                <Modal size="xl" title = { title } show={modal} handleClose={this.handleClose}>
                     <ProyectosForm title={title} form={form} onChange={this.onChange} options={options}
                         onChangeAdjunto={this.onChangeAdjunto} clearFiles={this.clearFiles} onChangeCP={this.onChangeCP}
                         onSubmit={this.onSubmit} onChangeAdjuntoGrupo = { this.onChangeAdjuntoGrupo } 
@@ -1977,7 +1977,7 @@ class Proyectos extends Component {
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el proyecto?"}  show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { this.safeDelete(e)() }}>
                 </ModalDelete>
 
-                <Modal title = "Adjuntos del proyecto" show={modalAdjuntos} handleClose={this.handleCloseAdjuntos} >
+                <Modal size="xl" title = "Adjuntos del proyecto" show={modalAdjuntos} handleClose={this.handleCloseAdjuntos} >
                     <div className="p-2">
                         {/* <Slider elements={adjuntos.length > 0 ? adjuntos : []}
                             deleteFile={this.deleteFile} handleChange={this.handleChange} /> */}
@@ -2145,7 +2145,7 @@ class Proyectos extends Component {
                         </Accordion> */}
                     </div>
                 </Modal>
-                <Modal title = { title } show = { modalAvances } handleClose = { this.handleCloseAvances }>
+                <Modal size="xl" title = { title } show = { modalAvances } handleClose = { this.handleCloseAvances }>
                     <AvanceForm form = { form } onChangeAvance =  { this.onChangeAvance } onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance } 
                         clearFilesAvances = { this.clearFilesAvances } addRowAvance = { this.addRowAvance } onSubmit = { this.onSubmitAvance }
                         onChange = { this.onChange } proyecto = { proyecto } sendMail = { this.sendMail }  formeditado={formeditado} />

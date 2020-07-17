@@ -543,7 +543,7 @@ class Leads extends Component {
                     elements={data.clientes}
                 />
 
-                <Modal  title={typeForm === 'Add' ? 'Registrar nuevo cliente' : 'Editar cliente'} show={modal} handleClose={this.handleCloseModal}>
+                <Modal size="xl" title={typeForm === 'Add' ? 'Registrar nuevo cliente' : 'Editar cliente'} show={modal} handleClose={this.handleCloseModal}>
                     <Form id="form-cliente"
                         onSubmit = { 
                                     (e) => {
@@ -568,7 +568,7 @@ class Leads extends Component {
                         </div>
                     </Form>
                 </Modal>
-                <Modal title= {cliente === null ? "¿Estás seguro que deseas eliminar a ": "¿Estás seguro que deseas eliminar a "+cliente.empresa +" ?"} show={modalDelete} handleClose={this.handleDeleteModal} >
+                <Modal size="xl" title= {cliente === null ? "¿Estás seguro que deseas eliminar a ": "¿Estás seguro que deseas eliminar a "+cliente.empresa +" ?"} show={modalDelete} handleClose={this.handleDeleteModal} >
                     <div className="d-flex justify-content-center mt-3">
                         <Button icon='' onClick={this.handleDeleteModal} text="Cancelar" className={"btn btn-light-primary font-weight-bolder mr-3"}/>
                         <Button icon='' onClick={(e) => { this.safeDelete(e)(cliente.id) }} text="Continuar" className={"btn btn-danger font-weight-bold mr-2"} />

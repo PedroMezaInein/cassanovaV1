@@ -1218,7 +1218,7 @@ class Ventas extends Component{
                     onClickExport={() => this.exportVentasAxios()}
                 />
 
-                <Modal show = {modal} handleClose = { this.handleClose } title = { title } >
+                <Modal size="xl" show = {modal} handleClose = { this.handleClose } title = { title } >
                     <VentasForm options = {options} form = {form} setOptions = {this.setOptions} 
                         onChange = { this.onChange } onChangeAdjunto = { this.onChangeAdjunto } clearFiles = {this.clearFiles}
                         onSubmit = { this.onSubmit } formeditado={formeditado} data = {data} />
@@ -1227,7 +1227,7 @@ class Ventas extends Component{
                 <ModalDelete title={"¿Estás seguro que deseas eliminar la venta?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteVentaAxios() }}>
                 </ModalDelete>
 
-                <Modal title={"Facturas"} show = { modalFacturas } handleClose = { this.handleCloseFacturas }>
+                <Modal size="xl" title={"Facturas"} show = { modalFacturas } handleClose = { this.handleCloseFacturas }>
                     
                     <div className="form-group row form-group-marginless pt-4">
                         <div className="col-md-12">
@@ -1260,7 +1260,7 @@ class Ventas extends Component{
                     </Form>
                     <FacturaTable deleteFactura = { this.deleteFactura } facturas = { facturas } />
                 </Modal>
-                <Modal title={"Solicitar factura"} show = { modalAskFactura } handleClose = { this.handleCloseAskFactura }>
+                <Modal size="xl" title={"Solicitar factura"} show = { modalAskFactura } handleClose = { this.handleCloseAskFactura }>
                     <FacturaForm options = { options } onChange = { this.onChange } form = { form } 
                         onSubmit = { this.onSubmitAskFactura } formeditado={formeditado} data ={data} />
                 </Modal>

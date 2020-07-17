@@ -391,7 +391,8 @@ class Tareas extends Component{
                     user: user,
                     form,
                     activeKey: '',
-                    formeditado:0
+                    formeditado:0,
+                    tableros:tableros
                 })
                 
             },
@@ -436,7 +437,7 @@ class Tareas extends Component{
 
     async addComentarioAxios(){
         const { access_token } = this.props.authUser
-        const { comentario, tarea, adjuntoFile, adjuntoName } = this.state
+        const { comentario, tarea, adjuntoFile, adjuntoName, subActiveKey } = this.state 
         const data = new FormData();
         data.append('comentario', comentario)
         data.append('adjunto', adjuntoFile)
@@ -447,6 +448,12 @@ class Tareas extends Component{
                 const { data : { tareas : columns } } = response
                 const { data : { user : user } } = response
                 const { data : { tarea : tarea } } = response
+                const { tableros } = response.data
+                tableros.map((tablero) => {
+                    if(tablero.nombre == subActiveKey){
+                        this.setTareas(tablero.tareas)
+                    }
+                })
                 this.setState({
                     ... this.state,
                     user: user,
@@ -454,9 +461,9 @@ class Tareas extends Component{
                     tarea: tarea,
                     adjunto: '',
                     adjuntoFile: '',
-                    adjuntoName: ''
+                    adjuntoName: '',
+                    tableros:tableros
                 })
-                this.setTareas(columns)
                 swal.close()
             },
             (error) => {
@@ -755,9 +762,12 @@ class Tareas extends Component{
                 <div className="d-flex flex-row">
 					<div className="flex-row-fluid">
 						<div className="d-flex flex-column flex-grow-1">
-                        <Tab.Container id="left-tabs-example" activeKey = { subActiveKey ? subActiveKey : defaultactivekey } defaultActiveKey={defaultactivekey}
-                                            onSelect = { (select) => { this.updateActiveTabContainer(select) } }
-                                            >
+                        <Tab.Container 
+                            id="left-tabs-example" 
+                            activeKey = { subActiveKey ? subActiveKey : defaultactivekey }
+                            defaultActiveKey={defaultactivekey}
+                            onSelect = { (select) => { this.updateActiveTabContainer(select) } }
+                            >
 							<Card className="card-custom gutter-b">
 								<Card.Body className="d-flex align-items-center justify-content-between flex-wrap py-3">
 									<div className="d-flex align-items-center mr-2 py-2">
@@ -815,7 +825,7 @@ class Tareas extends Component{
 						</div>
 					</div>
 				</div>  
-                <Modal title="Tareas" show = { modal } handleClose = { this.handleCloseModal } >
+                <Modal size="xl" title="Tareas" show = { modal } handleClose = { this.handleCloseModal } >
                     <TareaForm participantes = { participantes } user = { user } form = { tarea } update = { this.onChangeParticipantes } 
                         participantesTask = { participantesTask } deleteParticipante = { this.deleteParticipante } 
                         changeValue = { this.changeValue } changeValueSend = { this.changeValueSend  } 
@@ -878,6 +888,7 @@ class Tareas extends Component{
                                                                 </div>
                                                                 <div className="timeline-content">
                                                                     <span className="text-primary font-weight-bold">{this.diffCommentDate(comentario)}</span>
+                                                                    <span class="text-muted ml-2">{comentario.user.name}</span>
                                                                     <p className="p-0">{comentario.comentario}</p>
                                                                 </div>
                                                             </div>

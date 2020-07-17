@@ -726,7 +726,7 @@ class Leads extends Component{
                         elements = { data.leads }
                     />
                 }
-                <Modal title = { title } show = { modalAdd } handleClose = { this.handleCloseModal } >
+                <Modal size="xl" title = { title } show = { modalAdd } handleClose = { this.handleCloseModal } >
                     <LeadForm 
                         className = " px-3 "
                         form = { form } 
@@ -741,13 +741,13 @@ class Leads extends Component{
                         >
                     </LeadForm>
                 </Modal>
-                <Modal title= {leadId === null ? "¿Estás seguro que deseas eliminar el lead": "¿Estás seguro que deseas eliminar el lead "+leadId.nombre +"?"} show={modalDelete} handleClose={this.handleCloseDeleteModal}>
+                <Modal size="xl" title= {leadId === null ? "¿Estás seguro que deseas eliminar el lead": "¿Estás seguro que deseas eliminar el lead "+leadId.nombre +"?"} show={modalDelete} handleClose={this.handleCloseDeleteModal}>
                     <div className="d-flex justify-content-center mt-3">
                         <Button icon='' onClick={this.handleCloseDeleteModal} text="Cancelar" className={"btn btn-light-primary font-weight-bolder mr-3"}/>
                         <Button icon='' onClick={(e) => { this.safeDeleteLead(e)(leadId.id) }} text="Continuar" className={"btn btn-danger font-weight-bold mr-2"}/>
                     </div>
                 </Modal>
-                <Modal title= {leadId === null ? "¿Estás seguro que deseas convertir el lead": "¿Estás seguro que deseas convertir el lead "+leadId.nombre +" en un "+convertir+"?"} show={modalConvert} handleClose={this.handleCloseConvertModal}>
+                <Modal size="xl" title= {leadId === null ? "¿Estás seguro que deseas convertir el lead": "¿Estás seguro que deseas convertir el lead "+leadId.nombre +" en un "+convertir+"?"} show={modalConvert} handleClose={this.handleCloseConvertModal}>
                     <div className="d-flex justify-content-center mt-3">
                         <Button icon='' onClick={this.handleCloseConvertModal} text="Cancelar" className={"btn btn-light-primary font-weight-bolder mr-3"}/>
                         <Button icon='' onClick={(e) => { this.safeConvertLead(e)(leadId) }} text="Continuar" className={"btn btn-success font-weight-bold mr-2"}/>
