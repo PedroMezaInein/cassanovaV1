@@ -161,4 +161,20 @@ a.text-hover-danger2:hover, .text-hover-danger2:hover{
 }
 .cczuaK {
     color: #ffffff;
+    width: 39px !important;
+}
+
+.cczuaK input[type="checkbox"] + label {
+    border-radius: 5px !important;
+    width: 0px !important;
+}
+
+.cczuaK input[type="checkbox"] + label:after{
+    border-radius: inherit !important;
+} 
+
+.cczuaK input[type="checkbox"] + label:before {
+    left: 0px !important;
+    border-radius: 5px !important;
+    width: 39px !important;
 }
