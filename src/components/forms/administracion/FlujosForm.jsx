@@ -47,9 +47,13 @@ class FlujosForm extends Component{
                             onChange = { this.updateCuenta } 
                             iconclass={"fas fa-credit-card"} 
                             />
-                        <div className="btn btn-hover btn-primary my-2" onClick = { this.mostrarTodasCuentas }>
-                            <i className={"fas fa-list-ol"}><span className="pl-2">Mostrar todas las cuentas</span></i> 
-                        </div>
+                        {/* <div className="btn btn-outline-primary mt-3 p-2" onClick = { this.mostrarTodasCuentas }>
+                            <i className={"fas fa-list-ol icon-nm"}><span className="pl-2 font-size-sm">Muestra todas las cuentas</span></i> 
+                        </div> */}
+
+                        <a className="btn btn-outline-primary mt-3"  onClick = { this.mostrarTodasCuentas }>
+                            <i className="fas fa-list-ol icon-md"></i> Seleccionar todas las cuentas
+                        </a>
                         
                         {/* <span className="form-text text-muted">Por favor, seleccione la(s) cuenta(s)</span> */}
                     </div>
@@ -89,8 +93,8 @@ class FlujosForm extends Component{
                                     {
                                         form.cuentas.map((cuenta, key)=>{
                                             return(
-                                                <div className="tagify form-control p-1 col-md-3 px-2 d-flex justify-content-center align-items-center mb-3" tabIndex="-1" style={{borderWidth:"0px"}}>
-                                                    <div className="tagify__tag tagify__tag--primary tagify--noAnim" key = { key }>
+                                                <div key = { key } className="tagify form-control p-1 col-md-3 px-2 d-flex justify-content-center align-items-center mb-3" tabIndex="-1" style={{borderWidth:"0px"}}>
+                                                    <div className="tagify__tag tagify__tag--primary tagify--noAnim">
                                                         <div 
                                                             title="Borrar archivo" 
                                                             className="tagify__tag__removeBtn" 
