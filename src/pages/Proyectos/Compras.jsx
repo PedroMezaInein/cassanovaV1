@@ -594,12 +594,14 @@ class Compras extends Component{
                     swal.close()
                     this.setState({
                         ... this.state,
-                        compras: this.serCompras(compras.data),
+                        compras: this.setCompras(compras.data),
                         data
                     })
                 }else{
+                    swal.close()
                     this.setState({
                         ... this.state,
+                        compras: this.setCompras(data.compras),
                         data
                     })
                     let aux = compras.next_page_url.split('=');
@@ -641,8 +643,10 @@ class Compras extends Component{
                         data
                     })
                 }else{
+                    swal.close()
                     this.setState({
                         ... this.state,
+                        compras: this.setCompras(data.compras),
                         data
                     })
                     let aux = compras.next_page_url.split('=');
