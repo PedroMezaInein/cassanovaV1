@@ -219,17 +219,7 @@ class PermisosForm extends Component{
         const { grupos, activeKey } = this.state
         
         return(
-            <form onSubmit={this.handleSubmit}>
-                {/* <Accordion defaultActiveKey="0">
-                <Card>
-                    <Accordion.Toggle as={Card.Header} eventKey="0">
-                    Click me!
-                    </Accordion.Toggle>
-                    <Accordion.Collapse eventKey="0">
-                    <Card.Body>Hello! I'm the body</Card.Body>
-                    </Accordion.Collapse>
-                </Card> 
-                </Accordion> */}
+            <form onSubmit={this.handleSubmit}> 
                 <Accordion activeKey={activeKey} className="accordion accordion-light ">
                     {
                         grupos !== null && grupos.map((grupo, key) => {
@@ -237,53 +227,62 @@ class PermisosForm extends Component{
                             return(
                                 <div key={key}>  
                                     <Card>
-                                    <Accordion.Toggle as={Card.Header} eventKey={grupo.name} onClick={() => this.handleAccordion(grupo.name)}> 
-                                        <div className="d-flex align-items-center">                                            
-                                            <ToggleButton  
-                                                { ...grupo} 
-                                                onToggle={(e) => this.handleGroupToggler(e)}
-                                                leftBG={BONE}
-                                                rightBG={L_BLUE}
-                                                borderColor={DARK_BLUE}
-                                                knobColor={DARK_BLUE}
-                                            />
-                                            <div className="card-title collapsed">{grupo.nombre}</div>
-                                            
-                                        </div>
-                                    </Accordion.Toggle>          
-                                    <Accordion.Collapse eventKey={grupo.name}>
-                                        <Card.Body>
-                                            <div className="row mx-0 mt-2">
-                                                {
-                                                    grupo.modulos.map((modulo, key) => {
-                                                        return(
-                                                            <div key={key} className="col-md-2 pt-4 px-3">
-                                                                <div className="text-center">
-                                                                    {/* <FontAwesomeIcon className="mx-3 text-color__gold-80" icon={ICONS_MODULES[modulo.icon]} /> */}
-                                                                </div>
-                                                                <div className="text-center">
-                                                                    <Small color="dark-blue-80">{modulo.nombre}</Small>    
-                                                                </div>
-                                                                <div className="d-flex justify-content-center">
-                                                                    <Form.Check name={modulo.name} type="checkbox" checked={modulo.checked} onChange={ this.handleCheckbox(modulo) }/>
-                                                                </div>                                                
-                                                            </div>
-                                                        )
-                                                    })
-                                                }
+                                        <Accordion.Toggle as={Card.Header} eventKey={grupo.name} onClick={() => this.handleAccordion(grupo.name)}> 
+                                            <div className="d-flex align-items-center">                                            
+                                                <ToggleButton  
+                                                    { ...grupo} 
+                                                    onToggle={(e) => this.handleGroupToggler(e)}
+                                                    leftBG={"#ECF0F3"}
+                                                    rightBG={"#ECF0F3"}
+                                                    borderColor={"#ECF0F3"} 
+                                                    leftKnobColor={"#FFF"}
+                                                    rightKnobColor={"#2171c1"}
+                                                />
+                                                <div className="card-title collapsed pl-2">{grupo.nombre}</div>
+                                                
                                             </div>
-                                        </Card.Body>
-                                    </Accordion.Collapse>
-                                </Card>
-                                    <hr className="divider" />
-                                
+                                        </Accordion.Toggle>          
+                                        <Accordion.Collapse eventKey={grupo.name}>
+                                            <Card.Body>
+                                                <div className="row mx-0 mt-2 d-flex justify-content-center">
+                                                    {
+                                                        grupo.modulos.map((modulo, key) => {
+                                                            return(
+                                                                <div key={key} className="col-md-2 pt-4 px-3"> 
+                                                                    <div className="text-center">
+                                                                        <p className="font-size-sm font-weight-bold">{modulo.nombre}</p>    
+                                                                    </div>
+                                                                    <div className="d-flex justify-content-center"> 
+                                                                        <Form.Group> 
+                                                                            <div className="checkbox-list pt-2">
+                                                                                <label className="checkbox checkbox-outline checkbox-outline-2x checkbox-primary">
+                                                                                    <input 
+                                                                                        name={modulo.name}
+                                                                                        type="checkbox" 
+                                                                                        checked={modulo.checked}
+                                                                                        onChange={ this.handleCheckbox(modulo) }
+                                                                                    /> 
+                                                                                    <span></span>
+                                                                                </label>
+                                                                            </div> 
+                                                                        </Form.Group>
+                                                                    </div>                                                
+                                                                </div>
+                                                            )
+                                                        })
+                                                    }
+                                                </div>
+                                            </Card.Body>
+                                        </Accordion.Collapse>
+                                    </Card>
+                                    <div className="separator separator-solid"></div>
                                 </div>
                             )
                         })
                     }
                 </Accordion>
                 <div className="d-flex justify-content-center my-3">
-                    <Button  icon='' type="submit" className="text-center mx-auto" text='Confirmar' />
+                    <Button  icon='' type="submit" text='Confirmar' className={"btn btn-light-primary font-weight-bolder mr-3"}/>
                 </div>
             </form>
         )
