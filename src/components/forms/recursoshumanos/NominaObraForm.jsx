@@ -106,7 +106,7 @@ class NominaObraForm extends Component{
                 </div> 
                 table table-separate table-head-custom table-checkable display w-100 table-hover text-justify responsive
                 */} 
-                    <table className="table" id="tabla_obra">
+                    <table className="table table-separate" id="tabla_obra">
                         <thead>
                             <tr>
                                 <th style={{fontSize:"12px"}}>Empleado</th>
