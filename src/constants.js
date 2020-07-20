@@ -1294,3 +1294,69 @@ export const FLUJOS_COLUMNS = [
         accessor: 'total'
     }
 ]
+
+export const NOMINA_OBRA_COLUMNS = [
+    {
+        Header: 'Opciones',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Periodo de Nómina de Obra',
+        accessor: 'periodo',
+    },
+    {
+        Header: 'Fecha inicio',
+        accessor: 'fechaInicio'
+    },
+    {
+        Header: 'Fecha fin',
+        accessor: 'fechaFin'
+    },
+    {
+        Header: 'Total Pago de Nómina',
+        accessor: 'totalPagoNomina'
+    },
+    {
+        Header: 'Restante Nómina',
+        accessor: 'restanteNomina'
+    },
+    {
+        Header: 'Extras',
+        accessor: 'extras'
+    },
+    {
+        Header: 'Gran Total',
+        accessor: 'granTotal'
+    }
+]
+
+export const NOMINA_OBRA_INGRESAR_COLUMNS = [
+    {
+        Header: 'Periodo de Nómina de Obra',
+        accessor: 'periodo',
+    },
+    {
+        Header: 'Fecha inicio',
+        accessor: 'fechaInicio'
+    },
+    {
+        Header: 'Fecha fin',
+        accessor: 'fechaFin'
+    },
+    {
+        Header: 'Total Pago de Nómina',
+        accessor: 'totalPagoNomina'
+    },
+    {
+        Header: 'Restante Nómina',
+        accessor: 'restanteNomina'
+    },
+    {
+        Header: 'Extras',
+        accessor: 'extras'
+    },
+    {
+        Header: 'Gran Total',
+        accessor: 'granTotal'
+    }
+]
