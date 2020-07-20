@@ -20,7 +20,7 @@ import { EgresosForm, FacturaForm } from '../../../components/forms'
 import { DataTable, FacturaTable } from '../../../components/tables'
 import { Subtitle } from '../../../components/texts'
 import { Form, ProgressBar } from 'react-bootstrap'
-import NewTable from '../../../components/tables/NewTable'
+import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 
 class egresos extends Component{
 
@@ -68,7 +68,7 @@ class egresos extends Component{
         });
         if(!egresos)
             history.push('/')
-        this.getEgresosAxios()
+        this.getOptionsAxios()
     }
 
     clearForm = () => {
@@ -426,78 +426,20 @@ class egresos extends Component{
         })
     }
 
-    async getEgresosAxios(){
+    async getOptionsAxios(){
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'egresos', { responseType:'json', headers: {Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'egresos/options', { responseType:'json', headers: {Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { data } = this.state
-                const { egresos, proveedores, empresas } = response.data
+                const { proveedores, empresas } = response.data
                 data.proveedores = proveedores
                 data.empresas = empresas
-                data.egresos = egresos.data
-                console.log(egresos, 'egresos')
-                if(egresos.current_page === egresos.last_page){
-                    swal.close()
-                    this.setState({
-                        ... this.state,
-                        egresos: this.setEgresos(egresos.data),
-                        data
-                    })
-                }else{
-                    this.setState({
-                        ... this.state,
-                        data
-                    })
-                    let aux = egresos.next_page_url.split('=');
-                    aux = aux[aux.length - 1];
-                    this.getEgresosAxiosPerPage(aux)
-                }
-                
-            },
-            (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-    async getEgresosAxiosPerPage(page){
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'egresos?page='+page, { responseType:'json', headers: {Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization:`Bearer ${access_token}`}}).then(
-            (response) => {
-                const { data } = this.state
-                const { egresos } = response.data
-
-                egresos.data.map((egreso)=>{
-                    data.egresos.push(egreso)
+                swal.close()
+                this.setState({
+                    ... this.state,
+                    data
                 })
-
-                if(egresos.current_page === egresos.last_page){
-                    swal.close()
-                
-                    this.setState({
-                        ... this.state,
-                        egresos: this.setEgresos(data.egresos),
-                        data
-                    })
-                }else{
-                    this.setState({
-                        ... this.state,
-                        data
-                    })
-                    let aux = egresos.next_page_url.split('=');
-                    aux = aux[aux.length - 1];
-                    this.getEgresosAxiosPerPage(aux)
-                }
-                
             },
             (error) => {
                 console.log(error, 'error')
@@ -733,7 +675,7 @@ class egresos extends Component{
         const { egresos, modalDelete, modalFacturas, egreso, facturas, porcentaje, form, data } = this.state
         return(
             <Layout active={'administracion'}  { ...this.props}>
-                <NewTable columns = { EGRESOS_COLUMNS } data = { egresos } 
+                <NewTableServerRender columns = { EGRESOS_COLUMNS } data = { egresos } 
                             title = 'Egresos' subtitle = 'Listado de egresos'
                             url = '/administracion/egresos/add'
                             mostrar_boton={true}
@@ -748,6 +690,9 @@ class egresos extends Component{
                             idTable = 'egresos'
                             exportar_boton={true} 
                             onClickExport={() => this.exportEgresosAxios()}
+                            accessToken = { this.props.authUser.access_token }
+                            setter = { this.setEgresos }
+                            url = {URL_DEV + 'egresos'}
                             />
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el egreso?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteEgresoAxios() }}>
                 </ModalDelete>
