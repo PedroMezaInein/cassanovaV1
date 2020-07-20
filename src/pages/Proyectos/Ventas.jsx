@@ -1291,7 +1291,7 @@ class Ventas extends Component{
                     onClickExport={() => this.exportVentasAxios()}
                     accessToken = { this.props.authUser.access_token }
                     setter = { this.setVentas }
-                    url = {URL_DEV + 'ventas'}
+                    urlRender = {URL_DEV + 'ventas'}
                 /> 
 
                 <Modal size="xl" show = {modal} handleClose = { this.handleClose } title = { title } >

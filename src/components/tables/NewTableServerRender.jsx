@@ -46,7 +46,7 @@ class NewTable extends Component {
     }
 
     componentDidMount() {
-        const { actions, elements, data, mostrar_acciones, elementClass, accessToken, setter, url } = this.props
+        const { actions, elements, data, mostrar_acciones, elementClass, accessToken, setter, urlRender } = this.props
         global_variable["mostrar_acciones"] = mostrar_acciones;
         var header = this.props.columns;
         var columns = [];
@@ -98,7 +98,7 @@ class NewTable extends Component {
             processing: true,
             serverSide: true,
             ajax: function (request, drawCallback, settings) {
-                runAjax(settings, accessToken, request, setter, url).done(function (response) { 
+                runAjax(settings, accessToken, request, setter, urlRender).done(function (response) { 
                     _that.setState({
                         ... _that.state,
                         newElements: response.elements
