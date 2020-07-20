@@ -18,7 +18,9 @@ import { VentasForm, FacturaForm } from '../../components/forms'
 import { DataTable, FacturaTable } from '../../components/tables'
 import Subtitle from '../../components/texts/Subtitle'
 import { Form, ProgressBar } from 'react-bootstrap'
-import NewTable from '../../components/tables/NewTable'
+import NewTableServerRender from '../../components/tables/NewTableServerRender'
+
+const $ = require('jquery');
 
 class Ventas extends Component{
 
@@ -107,7 +109,8 @@ class Ventas extends Component{
         });
         if(!egresos)
             history.push('/')
-        this.getVentasAxios()
+        this.getOptionsAxios()
+        /* this.getVentasAxios() */
         const { state } = this.props.location
         if(state){
             if(state.solicitud){
@@ -262,6 +265,11 @@ class Ventas extends Component{
 
     //Setter
     setVentas = ventas => {
+        const { data } = this.state
+        data.ventas = ventas
+        this.setState({
+            data
+        })
         let aux = []
         ventas.map( (venta) => {
             aux.push(
@@ -645,13 +653,13 @@ class Ventas extends Component{
         })
     }
     
-    async getVentasAxios(){
+    async getOptionsAxios(){
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'ventas', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'ventas/options', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, 
-                    clientes, ventas, metodosPago, formasPago, estatusFacturas } = response.data
+                    clientes, metodosPago, formasPago, estatusFacturas } = response.data
                 const { options, data } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
@@ -664,12 +672,10 @@ class Ventas extends Component{
                 options['estatusCompras'] = setSelectOptions( estatusCompras, 'estatus' )
                 data.clientes = clientes
                 data.empresas = empresas
-                data.ventas = ventas
                 swal.close()
                 this.setState({
                     ... this.state,
                     options,
-                    ventas: this.setVentas(ventas),
                     data
                 })
             },
@@ -695,6 +701,50 @@ class Ventas extends Component{
             errorAlert('Ocurrió un error desconocido, intenta de nuevo')
         })
     }
+
+    async getVentasAxios(){
+        var table = $('#kt_datatable2')
+                    .DataTable();
+
+                table.ajax.reload();
+    }
+    /* async getVentasAxios(){
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'ventas', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { ventas } = response.data
+                const { data } = this.state
+                data.ventas = ventas
+                swal.close()
+                this.setState({
+                    ... this.state,
+                    ventas: this.setVentas(ventas),
+                    data
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                }else{
+                    errorAlert(
+                        error.response.data.message !== undefined ? 
+                            error.response.data.message 
+                        : 'Ocurrió un error desconocido, intenta de nuevo.'
+                    )
+                }
+            }
+        ).catch((error) => {
+            console.log(error, 'CATCH ERROR')
+            errorAlert('Ocurrió un error desconocido, intenta de nuevo')
+        })
+    } */
 
     async addVentaAxios(){
 
@@ -732,15 +782,12 @@ class Ventas extends Component{
         await axios.post(URL_DEV + 'ventas', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
 
-                const { ventas } = response.data
-                const { data } = this.state
-                data.ventas = ventas
+                this.getVentasAxios()
+
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
                     modal: false,
-                    ventas: this.setVentas(ventas),
-                    data
                 })
                 
                 swal({
@@ -887,15 +934,16 @@ class Ventas extends Component{
         await axios.post(URL_DEV + 'ventas/update/' + venta.id, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
 
-                const { ventas } = response.data
+                this.getVentasAxios();
+                /* const { ventas } = response.data
                 const { data } = this.state
-                data.ventas = ventas
+                data.ventas = ventas */
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
                     modal: false,
-                    ventas: this.setVentas(ventas),
-                    data
+                    
+                    /* data */
                 })
                 
                 swal({
@@ -937,13 +985,14 @@ class Ventas extends Component{
         await axios.delete(URL_DEV + 'ventas/' + venta.id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 
-                const { ventas } = response.data
+/*                 const { ventas } = response.data */
+                this.getVentasAxios()
 
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
                     modalDelete: false,
-                    ventas: this.setVentas(ventas),
+                    /* ventas: this.setVentas(ventas), */
                     venta: ''
                 })
 
@@ -1200,7 +1249,7 @@ class Ventas extends Component{
                 */}
                 {/*<DataTable columns = { VENTAS_COLUMNS } data= { ventas }/>*/}
 
-                <NewTable columns={VENTAS_COLUMNS} data={ventas}
+                {/* <NewTable columns={VENTAS_COLUMNS} data={ventas}
                     title='Ventas' subtitle='Listado de ventas'
                     mostrar_boton={true}
                     abrir_modal={true}
@@ -1216,7 +1265,27 @@ class Ventas extends Component{
                     elements={data.ventas}
                     exportar_boton={true} 
                     onClickExport={() => this.exportVentasAxios()}
-                />
+                /> */}
+                <NewTableServerRender columns={VENTAS_COLUMNS} data={ventas}
+                    title='Ventas' subtitle='Listado de ventas'
+                    mostrar_boton={true}
+                    abrir_modal={true}
+                    mostrar_acciones={true}
+                    onClick={ this.openModal }
+                    actions={{
+                        'edit': { function: this.openModalEdit },
+                        'delete': { function: this.openModalDelete },                        
+                        'taxes': { function: this.openModalFacturas },                   
+                        'bills': { function: this.openModalAskFactura },
+
+                    }}
+                    elements={data.ventas}
+                    exportar_boton={true} 
+                    onClickExport={() => this.exportVentasAxios()}
+                    accessToken = { this.props.authUser.access_token }
+                    setter = { this.setVentas }
+                    url = {URL_DEV + 'ventas'}
+                /> 
 
                 <Modal size="xl" show = {modal} handleClose = { this.handleClose } title = { title } >
                     <VentasForm options = {options} form = {form} setOptions = {this.setOptions} 

@@ -15,36 +15,33 @@ require("datatables.net-buttons");
 require("datatables.net-select");
 require("datatables.net-fixedheader");
 const global_variable = {}
+
+function runAjax(settings, accessToken, request, setter, url) {
+    var deferred = new $.Deferred();
+    $.ajax({
+        data: request,
+        url: url,
+        dataType: "json",
+        type: "GET",
+        headers: {'Content-Type': 'application/json', Authorization:`Bearer ${accessToken}`},
+        success: function (response) {
+            deferred.resolve({ data: setter(response.data), draw: response.draw, recordsTotal: response.recordsTotal, recordsFiltered: response.recordsFiltered, elements: response.data });
+        },
+        error: function (error) {
+
+            deferred.fail(error);
+        }
+    });
+    return deferred.promise();
+}
 class NewTable extends Component {
 
-
-    reloadTableData(props){
-        const { data, actions, elements } = props
-        var table = $(this.refs.main)
-            .DataTable();
-        table.clear();
-        table.rows.add(data).draw();
-        
-        table.draw();
-
-        $(this.refs.main).on('click', '.btn-actions-table', function (e) {
-            e.preventDefault();
-            var id = $(this).attr('id').toString()
-            var name = $(this).attr('name').toString()
-            let aux = ''
-            elements.find(function (element, index) {
-                if (element.id.toString() === id) {
-                    aux = element
-                }
-            });
-            if(aux !== '')
-                actions[name].function(aux)
-        });
-
+    state = {
+        newElements: []
     }
 
     componentDidMount() {
-        const { actions, elements, data, mostrar_acciones, elementClass } = this.props
+        const { actions, elements, data, mostrar_acciones, elementClass, accessToken, setter, url } = this.props
         global_variable["mostrar_acciones"] = mostrar_acciones;
         var header = this.props.columns;
         var columns = [];
@@ -52,6 +49,7 @@ class NewTable extends Component {
 
         let aux = [];
 
+        let _that = this
         for (i = 0; i < header.length; i++) {
             var titulo = new Object();
             titulo["title"] = header[i].Header;
@@ -71,25 +69,13 @@ class NewTable extends Component {
                     var title = $(this).text();
                     let cellIndex = $(this)[0].cellIndex
                     cellIndex = header[cellIndex].accessor
-                    /* console.log(cellIndex, 'cellindex') */
                     if (global_variable.mostrar_acciones == false || global_variable.mostrar_acciones && contador != 0) {
-                        //No muestro 
-                        /*Opcioón 1*/
-                        //$(this).append('<br/><input class="form-control form-control-sm form-filter datatable-input" type="text"/>');
-                        /*Opción 2 */
-                        //$(this).append('<div class="mt-2 separator separator-dashed separator-border-2"></div><div class="mt-2 input-icon"><input type="text" class="form-control form-control-sm"/><span><i class="flaticon2-search-1 icon-sm"></i></span></div>');
-                        /*Opción 3 */
                         $(this).append('<div class="mt-2 separator separator-dashed separator-border-2"></div><div class="mt-2"><input type="text" id='+cellIndex+' class="form-control form-control-sm"/></div>');
 
                     }
                     contador++;
-
-
-                    //  html+='<th style="'+$(this).attr("style").toString()+'"><input class="form-control form-control-sm form-filter datatable-input" type="text"/></th>';
                 });
 
-                //table.find("thead").append('<tr class="filter">'+html+'</tr>');
-                // Apply the search
                 this.api().columns().every(function () {
                     var that = this;
                     $('input', this.header()).on('keyup change clear', function () {
@@ -100,13 +86,21 @@ class NewTable extends Component {
                         }
                     });
                 });
-
-
             },
 
             colReorder: true,
             responsive: true,
-            data: data,
+            processing: true,
+            serverSide: true,
+            ajax: function (request, drawCallback, settings) {
+                runAjax(settings, accessToken, request, setter, url).done(function (response) { 
+                    _that.setState({
+                        ... _that.state,
+                        newElements: response.elements
+                    })
+                    drawCallback(response);
+                });
+            },
             columns,
             createdRow: function(row, data, dataIndex, cells) {
                 if(elementClass){
@@ -176,11 +170,8 @@ class NewTable extends Component {
                         return (`<div>${data}</div>`)
                     }
                 }
-                /* 'defaultContent': '<button type="button" class="btn btn-primary btn-edit">Edit</button>' */
             }
             ],
-
-
             lengthMenu: [[20, 30, 40, 50, -1], [20, 30, 40, 50, "Todos"]],
             pageLength: 20,
 
@@ -194,14 +185,14 @@ class NewTable extends Component {
 
         $(this.refs.main).on('click', '.btn-actions-table', function (e) {
             e.preventDefault();
-            /* var id = $(this).attr('id').toString()
+            var id = $(this).attr('id').toString()
             var name =$(this).attr('name').toString() 
-            let aux = elements.find(function(element, index) { 
+            let aux = _that.state.newElements.find(function(element, index) { 
                 if(element.id.toString() === id){
                     return element    
                 }
-            }); 
-            actions[name].function(aux) */
+            });
+            actions[name].function(aux)
         });
     
     }
@@ -212,14 +203,7 @@ class NewTable extends Component {
             .DataTable()
             .destroy(true);
     }
-    shouldComponentUpdate(nextProps) {
-        if (nextProps.data !== this.props.data) {
-            this.reloadTableData(nextProps)
-        }
-        
-        return false;
 
-    }
     clickHandler = (e) => {
         if (typeof this.props.onClick === 'function') {
             this.props.onClick();
