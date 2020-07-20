@@ -2,10 +2,22 @@ import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 import { Input, Calendar, Select} from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
-import { DATE} from '../../../constants'
-import TableForModalsInputs from '../../../components/tables/TableForModalsInputs' 
+import { DATE} from '../../../constants' 
 import { NOMINA_OBRA_INGRESAR_COLUMNS } from '../../../constants'
+function agregarFila(){
+    document.getElementById("tablaprueba").insertRow(-1).innerHTML = '<td><Select/></td><td><Select/></td><td><Input className="width: 100px"/></td><td><Input/></td><td><Input/></td><td><Input/></td><td><Input/></td><td><Input/></td><td></td>';
+}
 
+function eliminarFila(){
+    var table = document.getElementById("tablaprueba");
+    var rowCount = table.rows.length;
+    //console.log(rowCount);
+    
+    if(rowCount <= 1)
+        alert('No se puede eliminar el encabezado');
+    else
+        table.deleteRow(rowCount -1);
+}
 
 class NominaObraForm extends Component{
 
@@ -92,15 +104,31 @@ class NominaObraForm extends Component{
                             patterns={DATE}                        
                         />
                     </div>
-                </div> */}
-                <TableForModalsInputs   
-                    columns = { NOMINA_OBRA_INGRESAR_COLUMNS } data = { "" } 
-                    title = 'Nómina de obra' subtitle = 'Listado de nómina de obra'
-                    mostrar_boton={false}
-                    abrir_modal={false} 
-                    mostrar_acciones={false}  
-                    elements = { "" }
-                />
+                </div> 
+                table table-separate table-head-custom table-checkable display w-100 table-hover text-justify responsive
+                */}
+                
+                    <table className="table table-responsive table-separate" id="tablaprueba">
+                        <thead className="datatable-head">
+                            <tr className="datatable-row">
+                                <th className="datatable-cell datatable-cell-sort" >Empleado</th>
+                                <th className="datatable-cell datatable-cell-sort">ID del Proyecto</th>
+                                <th className="datatable-cell datatable-cell-sort">Suledo por Hora</th>
+                                <th className="datatable-cell datatable-cell-sort">Hours 2T</th>
+                                <th className="datatable-cell datatable-cell-sort">Hours 3T</th>
+                                <th className="datatable-cell datatable-cell-sort">Nómina IMSS</th>
+                                <th className="datatable-cell datatable-cell-sort">Restante Nómina</th>
+                                <th className="datatable-cell datatable-cell-sort">Extras</th>
+                                <th className="datatable-cell datatable-cell-sort">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody className="datatable-body">
+                        </tbody>
+                    </table>
+                    <div className="form-group">
+                        <button type="button" className="btn btn-primary mr-2" onClick = { () => { agregarFila() } }>Agregar Fila</button>
+                        <button type="button" className="btn btn-danger" onClick = { () => { eliminarFila() } }>Eliminar Fila</button>
+                    </div> 
             </Form>
             )
     }
