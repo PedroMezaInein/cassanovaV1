@@ -4,6 +4,8 @@ import { renderToString } from 'react-dom/server'
 import { PlusCircle } from '../../assets/svg'
 import '../../styles/custom_datatable.css'
 import '../../styles/metronic/_datables.scss';
+import { waitAlert, errorAlert } from '../../functions/alert'
+import swal from 'sweetalert'
 
 const $ = require('jquery');
 $.DataTable = require('datatables.net');
@@ -18,6 +20,7 @@ const global_variable = {}
 
 function runAjax(settings, accessToken, request, setter, url) {
     var deferred = new $.Deferred();
+    waitAlert()
     $.ajax({
         data: request,
         url: url,
@@ -25,10 +28,11 @@ function runAjax(settings, accessToken, request, setter, url) {
         type: "GET",
         headers: {'Content-Type': 'application/json', Authorization:`Bearer ${accessToken}`},
         success: function (response) {
+            swal.close()
             deferred.resolve({ data: setter(response.data), draw: response.draw, recordsTotal: response.recordsTotal, recordsFiltered: response.recordsFiltered, elements: response.data });
         },
         error: function (error) {
-
+            errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
             deferred.fail(error);
         }
     });
