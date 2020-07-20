@@ -5,13 +5,12 @@ import { validateAlert } from '../../../functions/alert'
 import { DATE} from '../../../constants' 
 // import { NOMINA_OBRA_INGRESAR_COLUMNS } from '../../../constants'
 function agregarFila(){
-    document.getElementById("tablaprueba").insertRow(-1).innerHTML = '<td><Select/></td><td><Select/></td><td><Input className="width: 100px"/></td><td><Input/></td><td><Input/></td><td><Input/></td><td><Input/></td><td><Input/></td><td></td>';
+    document.getElementById("tabla_obra").insertRow(-1).innerHTML = '<td><Select class="w-100"/></td><td><Select class="w-100"/></td><td><Input class="w-75"/></td><td><Input class="w-75"/></td><td><Input class="w-75"/></td><td><Input class="w-75"/></td><td><Input class="w-75"/></td><td><Input class="w-75"/></td><td></td>';
 }
 
 function eliminarFila(){
-    var table = document.getElementById("tablaprueba");
+    var table = document.getElementById("tabla_obra");
     var rowCount = table.rows.length;
-    //console.log(rowCount);
     
     if(rowCount <= 1)
         alert('No se puede eliminar el encabezado');
@@ -106,28 +105,27 @@ class NominaObraForm extends Component{
                     </div>
                 </div> 
                 table table-separate table-head-custom table-checkable display w-100 table-hover text-justify responsive
-                */}
-                
-                    <table className="table table-responsive table-separate" id="tablaprueba">
-                        <thead className="datatable-head">
-                            <tr className="datatable-row">
-                                <th className="datatable-cell datatable-cell-sort" >Empleado</th>
-                                <th className="datatable-cell datatable-cell-sort">ID del Proyecto</th>
-                                <th className="datatable-cell datatable-cell-sort">Suledo por Hora</th>
-                                <th className="datatable-cell datatable-cell-sort">Hours 2T</th>
-                                <th className="datatable-cell datatable-cell-sort">Hours 3T</th>
-                                <th className="datatable-cell datatable-cell-sort">Nómina IMSS</th>
-                                <th className="datatable-cell datatable-cell-sort">Restante Nómina</th>
-                                <th className="datatable-cell datatable-cell-sort">Extras</th>
-                                <th className="datatable-cell datatable-cell-sort">Total</th>
+                */} 
+                    <table className="table" id="tabla_obra">
+                        <thead>
+                            <tr>
+                                <th style={{fontSize:"12px"}}>Empleado</th>
+                                <th style={{fontSize:"12px"}}>Proyecto</th>
+                                <th style={{fontSize:"12px"}}>Suledo por Hora</th>
+                                <th style={{fontSize:"12px"}}>Hours 2T</th>
+                                <th style={{fontSize:"12px"}}>Hours 3T</th>
+                                <th style={{fontSize:"12px"}}>Nómina IMSS</th>
+                                <th style={{fontSize:"12px"}}>Restante Nómina</th>
+                                <th style={{fontSize:"12px"}}>Extras</th>
+                                <th style={{fontSize:"12px"}}>Total</th>
                             </tr>
                         </thead>
-                        <tbody className="datatable-body">
+                        <tbody>
                         </tbody>
                     </table>
-                    <div className="form-group">
-                        <button type="button" className="btn btn-primary mr-2" onClick = { () => { agregarFila() } }>Agregar Fila</button>
-                        <button type="button" className="btn btn-danger" onClick = { () => { eliminarFila() } }>Eliminar Fila</button>
+                    <div className="form-group d-flex justify-content-center">
+                        <button type="button" className="btn btn-light-primary font-weight-bold mr-2" onClick = { () => { agregarFila() } }>Agregar Fila</button>
+                        <button type="button" className="btn btn-light-danger font-weight-bold mr-2" onClick = { () => { eliminarFila() } }>Eliminar Fila</button>
                     </div> 
             </Form>
             )
