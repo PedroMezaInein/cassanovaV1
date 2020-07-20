@@ -854,6 +854,8 @@ class Ventas extends Component{
         await axios.post(URL_DEV + 'ventas/factura', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
 
+                this.getVentasAxios()
+
                 const { venta } = response.data
                 let { porcentaje } = this.state
                 porcentaje = 0
@@ -1048,6 +1050,8 @@ class Ventas extends Component{
                 })
                 porcentaje = porcentaje * 100 / venta.total
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
+
+                this.getVentasAxios()
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
@@ -1094,6 +1098,9 @@ class Ventas extends Component{
         const { form } = this.state
         await axios.post(URL_DEV + 'facturas/ask', form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
+
+
+                this.getVentasAxios()
                 
                 this.setState({
                     ... this.state,
