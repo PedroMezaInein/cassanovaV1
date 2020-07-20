@@ -3,7 +3,6 @@ import Form from 'react-bootstrap/Form'
 import { Input, Calendar, Select} from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { DATE} from '../../../constants' 
-import { NOMINA_OBRA_INGRESAR_COLUMNS } from '../../../constants'
 function agregarFila(){
     document.getElementById("tablaprueba").insertRow(-1).innerHTML = '<td><Select/></td><td><Select/></td><td><Input className="width: 100px"/></td><td><Input/></td><td><Input/></td><td><Input/></td><td><Input/></td><td><Input/></td><td></td>';
 }
