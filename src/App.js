@@ -70,6 +70,9 @@ const TiposContratos = Loader( () => import('./pages/Catalogos/TiposContratos') 
 const Contabilidad = Loader( () => import('./pages/Reportes/Contabilidad') )
 const AccountSettings = Loader(() => import('./pages/Perfil/AccountSettings') )
 
+const NominaObra = Loader(() => import('./pages/RecursosHumanos/NominaObra') )
+
+
 
 class App extends Component{
     async componentDidMount(){
@@ -193,6 +196,7 @@ class App extends Component{
 
                 <Route path = "/reportes/contabilidad" exact component ={ Contabilidad } />
                 <Route path = "/mi-perfil" exact component ={ AccountSettings } />
+                <Route path = "/rh/nomina-obras" exact component ={ NominaObra } />
 
             </>
         )
