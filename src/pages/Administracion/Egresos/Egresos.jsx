@@ -22,6 +22,7 @@ import { Subtitle } from '../../../components/texts'
 import { Form, ProgressBar } from 'react-bootstrap'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 
+const $ = require('jquery');
 class egresos extends Component{
 
     state = {
@@ -426,6 +427,13 @@ class egresos extends Component{
         })
     }
 
+    async getEgresosAxios(){
+        var table = $('#egresos')
+                    .DataTable();
+
+                table.ajax.reload();
+    }
+
     async getOptionsAxios(){
         waitAlert()
         const { access_token } = this.props.authUser
@@ -460,20 +468,13 @@ class egresos extends Component{
         const { egreso } = this.state
         await axios.delete(URL_DEV + 'egresos/' + egreso.id, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { egreso } = response.data
-                const { data } = this.state
-                let aux = []
-                data.egresos.map((element)=>{
-                    if(egreso.id !== element.id)
-                        aux.push(element)
-                })
-                data.egresos = aux
+                this.getEgresosAxios()
                 this.setState({
                     ... this.state,
-                    egresos: this.setEgresos(data.egresos),
+                    
                     modalDelete: false,
                     egreso: '',
-                    data
+                    
                 })
                 swal({
                     title: '¡Listo 👋!',
@@ -539,20 +540,13 @@ class egresos extends Component{
                 porcentaje = porcentaje * 100 / (egreso.total - egreso.comision)
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
                 let aux = []
-                data.egresos.map((element)=>{
-                    if(egreso.id !== element.id)
-                        aux.push(element)
-                    else
-                        aux.push(egreso)
-                })
-                data.egresos = aux
+                this.getEgresosAxios()
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
                     egreso: egreso,
                     facturas: egreso.facturas,
                     porcentaje,
-                    egresos: this.setEgresos(data.egresos),
                     data
                 })
                 
@@ -594,19 +588,11 @@ class egresos extends Component{
                 })
                 porcentaje = porcentaje * 100 / (egreso.total - egreso.comision)
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
-                let aux = []
-                data.egresos.map((element)=>{
-                    if(egreso.id !== element.id)
-                        aux.push(element)
-                    else
-                        aux.push(egreso)
-                })
-                data.egresos = aux
+                this.getEgresosAxios()
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
                     egreso: egreso,
-                    egresos: this.setEgresos(data.egresos),
                     facturas: egreso.facturas,
                     data,
                     porcentaje
@@ -692,7 +678,7 @@ class egresos extends Component{
                             onClickExport={() => this.exportEgresosAxios()}
                             accessToken = { this.props.authUser.access_token }
                             setter = { this.setEgresos }
-                            url = {URL_DEV + 'egresos'}
+                            urlRender = {URL_DEV + 'egresos'}
                             />
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el egreso?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteEgresoAxios() }}>
                 </ModalDelete>
