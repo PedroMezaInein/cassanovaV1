@@ -8,7 +8,8 @@ import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import { RFC, DATE, NSS, CURP,TEL} from '../../constants'
 import Badge from 'react-bootstrap/Badge'
 import {Nav, Tab, Row, Col}from 'react-bootstrap'
-
+import { openWizard1, openWizard2, openWizard3 } from '../../functions/wizard'
+import { validateAlert } from '../../functions/alert'
 
 function CustomToggle({ children, eventKey }) {
 
@@ -100,41 +101,41 @@ class EmpleadoForm extends Component{
                         }
                     </div>
                 </div>
-                
-                    
-                    <Tab.Container id="left-tabs-example" defaultActiveKey="empleadoGeneral" eventKey="empleado">
-                                    <Nav variant="pills" className="nav nav-tabs justify-content-end">
-                                        <Nav.Item >
-                                            <Nav.Link eventKey="empleadoGeneral">
-                                                <span className="nav-icon">
-                                                    <i className="far fa-user"></i>
-												</span>
-                                                <span className="nav-text">INFORMACIÓN GENERAL DEL EMPLEADO</span>
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                        <Nav.Item >
-                                            <Nav.Link eventKey="cuentaBancaria">
-                                                <span className="nav-icon">
-                                                    <i className="fas fa-money-check"></i>
-												</span>
-                                                <span className="nav-text">INFORMACIÓN BANCARIA</span>
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                        <Nav.Item >
-                                            <Nav.Link eventKey="contactoEmergencia">
-                                                <span className="nav-icon">
-                                                    <i className="fas fa-mobile-alt"></i>
-												</span>
-                                                <span className="nav-text">CONTACTO EMERGENCIA</span>
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                    </Nav> 
-                                    <Tab.Content>
-                                        <Tab.Pane eventKey="empleadoGeneral" className="pt-5"> 
-                                        <div>
-                                            <div className="form-group row form-group-marginless">
-                                                <div className="col-md-4">
-                                                    <RadioGroup
+
+                <div className="separator separator-solid mt-5 mb-2"></div>
+                    <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
+                        <div className="wizard-nav">
+                            <div className="wizard-steps px-8 py-0 px-lg-15 py-lg-0"> 
+                                <div id="wizard-1" className="wizard-step" data-wizard-state="current" data-wizard-type="step" style={{paddingTop:"0px"}} onClick = { () => { openWizard1() } }>
+                                    <div className="wizard-label">
+                                        <h3 className="wizard-title">
+                                        <span>1.</span> INFORMACIÓN GENERAL DEL EMPLEADO</h3>
+                                        <div className="wizard-bar"></div>
+                                    </div>
+                                </div> 
+                                <div id="wizard-2" className="wizard-step" data-wizard-type="step" style={{paddingTop:"0px"}} onClick = { () => { openWizard2() } }>
+                                    <div className="wizard-label">
+                                        <h3 className="wizard-title">
+                                        <span>2.</span> INFORMACIÓN BANCARIA</h3>
+                                        <div className="wizard-bar"></div>
+                                    </div>
+                                </div> 
+                                <div id="wizard-3" className="wizard-step" data-wizard-type="step" style={{paddingTop:"0px"}} onClick = { () => { openWizard3() } }>
+                                    <div className="wizard-label">
+                                        <h3 className="wizard-title">
+                                        <span>3.</span>CONTACTO DE EMERGENCIA</h3>
+                                        <div className="wizard-bar"></div>
+                                    </div>
+                                </div>   
+                            </div>
+                        </div>
+                        <div className="row justify-content-center py-10 px-8 py-lg-12 px-lg-10">
+                            <div className="col-md-12">
+                                <div id="wizard-1-content" className="pb-3" data-wizard-type="step-content" data-wizard-state="current">
+                                    {/* <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos de generales</h5>  */}
+                                    <div className="form-group row form-group-marginless">
+                                        <div className="col-md-4">
+                                            <RadioGroup
                                                         name={'tipo_empleado'}
                                                         onChange={onChange}
                                                         options={
@@ -151,10 +152,10 @@ class EmpleadoForm extends Component{
                                                         }
                                                         placeholder={'Selecciona el tipo de empleado'}
                                                         value={form.tipo_empleado}
-                                                    />
-                                                </div>
-                                                <div className="col-md-4">
-                                                    <RadioGroup
+                                            />
+                                        </div>
+                                        <div className="col-md-4">
+                                            <RadioGroup
                                                         name={'estatus'}
                                                         onChange={onChange}
                                                         options={
@@ -171,23 +172,23 @@ class EmpleadoForm extends Component{
                                                         }
                                                         value={form.estatus}
                                                         placeholder={'Selecciona el estatus de empleado'}
-                                                    />
-                                                </div>
-                                                <div className="col-md-4">
-                                                    <Select
+                                            />
+                                        </div>
+                                        <div className="col-md-4">
+                                            <Select
                                                         name={'empresa'}
                                                         options={options.empresas}
                                                         onChange= { onChange }
                                                         placeholder={'Selecciona la empresa'}
                                                         value={form.empresa}
                                                         iconclass={"far fa-building"}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="separator separator-dashed mt-1 mb-2"></div>
-                                            <div className="form-group row form-group-marginless">
-                                                <div className="col-md-4">
-                                                    <Input 
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="separator separator-dashed mt-1 mb-2"></div>
+                                    <div className="form-group row form-group-marginless">
+                                        <div className="col-md-4">
+                                            <Input 
                                                         onChange={ onChange }         
                                                         name="rfc" 
                                                         type="text" 
@@ -197,10 +198,10 @@ class EmpleadoForm extends Component{
                                                         patterns={RFC}
                                                         messageinc="Incorrecto. Ej. ABCD001122ABC"
                                                         maxLength="13"
-                                                    />
-                                                </div>
-                                                <div className="col-md-4">
-                                                    <InputNumber 
+                                            />
+                                        </div>
+                                        <div className="col-md-4">
+                                            <InputNumber 
                                                         onChange={ onChange }         
                                                         name="nss" 
                                                         type="text" 
@@ -210,10 +211,10 @@ class EmpleadoForm extends Component{
                                                         patterns={NSS}
                                                         messageinc="Incorrecto. Ej. 01234567891"
                                                         //maxLength="11"
-                                                    />
-                                                </div>
-                                                <div className="col-md-4">
-                                                    <Input 
+                                            />
+                                        </div>
+                                        <div className="col-md-4">
+                                            <Input 
                                                         onChange={ onChange }         
                                                         name="curp" 
                                                         type="text" 
@@ -223,14 +224,14 @@ class EmpleadoForm extends Component{
                                                         patterns={CURP}
                                                         messageinc="Incorrecto. Ej. ABCD123456EFGHIJ78"
                                                         maxLength="18"
-                                                    />
-                                                    <pre id="resultado"></pre>
-                                                </div>
-                                            </div>
-                                            <div className="separator separator-dashed mt-1 mb-2"></div>
-                                            <div className="form-group row form-group-marginless">
-                                                <div className="col-md-4">
-                                                    <Input 
+                                            />
+                                            <pre id="resultado"></pre>
+                                        </div>
+                                    </div>
+                                    <div className="separator separator-dashed mt-1 mb-2"></div>
+                                    <div className="form-group row form-group-marginless">
+                                        <div className="col-md-4">
+                                            <Input 
                                                         onChange={ onChange } 
                                                         name="puesto" 
                                                         type="text" 
@@ -238,92 +239,114 @@ class EmpleadoForm extends Component{
                                                         placeholder="Puesto"
                                                         iconclass={"fas fa-user-tie"}
                                                         messageinc="Incorrecto. Ingresa el puesto."
-                                                    />
-                                                </div>
-                                                <div className="col-md-4">
-                                                    <Calendar 
+                                            />
+                                        </div>
+                                        <div className="col-md-4">
+                                            <Calendar 
                                                         onChangeCalendar={ onChangeCalendar }
                                                         placeholder="Fecha de inicio"
                                                         name="fecha_inicio"
                                                         value={form.fecha_inicio}
                                                         patterns={DATE}
-                                                    />
-                                                </div>
-                                            </div>
+                                            />
                                         </div>
-                                        </Tab.Pane>
-                                        
-                                        <Tab.Pane eventKey="cuentaBancaria" className="pt-5"> 
-                                        <div className="form-group row form-group-marginless">
-                                            <div className="col-md-4">
-                                                <Input 
-                                                    onChange={ onChange } 
-                                                    name="banco" 
-                                                    type="text" 
-                                                    value={ form.banco } 
-                                                    placeholder="Banco"
-                                                    iconclass={" fab fa-cc-discover "}
-                                                    messageinc="Incorrecto. Ingresa el banco."
-                                                />
-                                            </div>
-                                            <div className="col-md-4">
-                                                <InputNumber 
-                                                    onChange={ onChange } 
-                                                    name="cuenta" 
-                                                    type="text" 
-                                                    value={ form.cuenta } 
-                                                    placeholder="Cuenta"
-                                                    iconclass={" fas fa-id-card "} 
-                                                    messageinc="Incorrecto. Ingresa el número de cuenta."
-                                                />
-                                            </div>
-                                            <div className="col-md-4">
-                                                <InputNumber 
-                                                    onChange={ onChange } 
-                                                    name="clabe" 
-                                                    type="text" 
-                                                    value={ form.clabe } 
-                                                    placeholder="Clabe"
-                                                    iconclass={"fas fa-money-check-alt"}
-                                                    messageinc="Incorrecto. Ingresa la clabe."
-                                                    maxLength="18"
-                                                />
-                                            </div>
+                                    </div>
+                                    <div className="d-flex justify-content-between border-top mt-3 pt-3">
+                                        <div className="mr-2"></div>
+                                        <div>
+                                        <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick = { () => { openWizard2() }} data-wizard-type="action-next">Siguiente</button>
+                                    </div>
+                                </div>
+                                </div>
+                                <div id="wizard-2-content" className="pb-3" data-wizard-type="step-content">
+                                    {/* <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos bancarios</h5> */}
+                                    <div className="form-group row form-group-marginless">
+                                        <div className="col-md-4">
+                                            <Input 
+                                                        onChange={ onChange } 
+                                                        name="banco" 
+                                                        type="text" 
+                                                        value={ form.banco } 
+                                                        placeholder="Banco"
+                                                        iconclass={" fab fa-cc-discover "}
+                                                        messageinc="Incorrecto. Ingresa el banco."
+                                            />
                                         </div>
-                                        </Tab.Pane>
-                                        
-                                        <Tab.Pane eventKey="contactoEmergencia" className="pt-5"> 
-                                        <div className="form-group row form-group-marginless">
-                                            <div className="col-md-4">
-                                                <Input 
-                                                    onChange={ onChange } 
-                                                    name="nombre_emergencia" 
-                                                    type="text" 
-                                                    value={ form.nombre_emergencia } 
-                                                    placeholder="Nombre del contacto de emergencia"
-                                                    iconclass={"fas fa-user-circle"}
-                                                    messageinc="Incorrecto. Ingresa el nombre del contacto de emergencia."
-                                                />
-                                            </div>
-                                            <div className="col-md-4">
-                                                <InputPhone 
-                                                        requirevalidation={1}
-                                                        /* formeditado={formeditado} */
-                                                        placeholder="Teléfono" 
-                                                        name="telefono_emergencia"
-                                                        value={form.telefono_emergencia} 
-                                                        onChange={onChange} 
-                                                        iconclass={"fas fa-mobile-alt"}
-                                                        patterns={TEL}
-                                                        messageinc="Incorrecto. Ingresa el número de teléfono."
-                                                        thousandSeparator={false}
-                                                        prefix = { '' }                                            
-                                                    />
-                                            </div>
+                                        <div className="col-md-4">
+                                            <InputNumber 
+                                                        onChange={ onChange } 
+                                                        name="cuenta" 
+                                                        type="text" 
+                                                        value={ form.cuenta } 
+                                                        placeholder="Cuenta"
+                                                        iconclass={" fas fa-id-card "} 
+                                                        messageinc="Incorrecto. Ingresa el número de cuenta."
+                                            />
                                         </div>
-                                        </Tab.Pane>
-                                    </Tab.Content> 
-                                </Tab.Container>
+                                        <div className="col-md-4">
+                                            <InputNumber 
+                                                        onChange={ onChange } 
+                                                        name="clabe" 
+                                                        type="text" 
+                                                        value={ form.clabe } 
+                                                        placeholder="Clabe"
+                                                        iconclass={"fas fa-money-check-alt"}
+                                                        messageinc="Incorrecto. Ingresa la clabe."
+                                                        maxLength="18"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="d-flex justify-content-between border-top mt-3 pt-3">
+                                        <div className="mr-2">
+                                            <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick = { () => { openWizard1() }} data-wizard-type="action-prev">Anterior</button>
+                                        </div>
+                                        <div>
+                                            <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick = { () => { openWizard3() }} data-wizard-type="action-next">Siguiente</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
+                                    {/* <h5 className="mb-4 font-weight-bold text-dark">Información del contacto</h5> */}
+                                    <div className="form-group row form-group-marginless">
+                                        <div className="col-md-4">
+                                            <Input 
+                                                        onChange={ onChange } 
+                                                        name="nombre_emergencia" 
+                                                        type="text" 
+                                                        value={ form.nombre_emergencia } 
+                                                        placeholder="Nombre del contacto de emergencia"
+                                                        iconclass={"fas fa-user-circle"}
+                                                        messageinc="Incorrecto. Ingresa el nombre del contacto de emergencia."
+                                            />
+                                        </div>
+                                        <div className="col-md-4">
+                                            <InputPhone 
+                                                            requirevalidation={1}
+                                                            /* formeditado={formeditado} */
+                                                            placeholder="Teléfono" 
+                                                            name="telefono_emergencia"
+                                                            value={form.telefono_emergencia} 
+                                                            onChange={onChange} 
+                                                            iconclass={"fas fa-mobile-alt"}
+                                                            patterns={TEL}
+                                                            messageinc="Incorrecto. Ingresa el número de teléfono."
+                                                            thousandSeparator={false}
+                                                            prefix = { '' }                                            
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="d-flex justify-content-between border-top mt-3 pt-3">
+                                        <div className="mr-2">
+                                            <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase"  onClick = { () => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
+                                        </div>
+                                        <div>
+                                            <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type="submit" text="Enviar" />
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
             </>
         )
     }
