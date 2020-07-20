@@ -21,7 +21,9 @@ import { DataTable, FacturaTable } from '../../components/tables'
 import Subtitle from '../../components/texts/Subtitle'
 import {SolicitudCompraCard} from '../../components/cards'
 import { Form, ProgressBar } from 'react-bootstrap'
-import NewTable from '../../components/tables/NewTable'
+import NewTableServerRender from '../../components/tables/NewTableServerRender'
+
+const $ = require('jquery');
 
 class Compras extends Component{
 
@@ -115,7 +117,7 @@ class Compras extends Component{
         });
         if(!compras)
             history.push('/')
-        this.getComprasAxios()
+        this.getOptionsAxios()
         const { state } = this.props.location
         if(state){
             if(state.solicitud){
@@ -562,13 +564,14 @@ class Compras extends Component{
 
     // Async
     // Compras
-    async getComprasAxios(){
+    async getOptionsAxios(){
         const { access_token } = this.props.authUser
         waitAlert()
-        await axios.get(URL_DEV + 'compras', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'compras/options', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
+                swal.close()
                 const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos,
-                    clientes, compras, proveedores, formasPago, metodosPago, estatusFacturas, contratos } = response.data
+                    clientes, proveedores, formasPago, metodosPago, estatusFacturas, contratos } = response.data
                 const { options, data } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
@@ -583,77 +586,11 @@ class Compras extends Component{
                 options['metodosPago'] = setOptions(metodosPago, 'nombre', 'id')
                 data.proveedores = proveedores
                 data.empresas = empresas
-                data.compras = compras.data
-                /* this.setState({
+                this.setState({
                     ... this.state,
                     options,
-                    compras: this.setCompras(compras),
                     data
-                }) */
-                if(compras.current_page === compras.last_page){
-                    swal.close()
-                    this.setState({
-                        ... this.state,
-                        compras: this.setCompras(compras.data),
-                        data
-                    })
-                }else{
-                    swal.close()
-                    this.setState({
-                        ... this.state,
-                        compras: this.setCompras(data.compras),
-                        data
-                    })
-                    let aux = compras.next_page_url.split('=');
-                    aux = aux[aux.length - 1];
-                    this.getComprasAxiosPerPage(aux)
-                }
-            },
-            (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-    async getComprasAxiosPerPage(page){
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'compras?page='+page, { responseType:'json', headers: {Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization:`Bearer ${access_token}`}}).then(
-            (response) => {
-                const { data } = this.state
-                const { compras } = response.data
-
-                compras.data.map((compra)=>{
-                    data.compras.push(compra)
                 })
-
-                if(compras.current_page === compras.last_page){
-                    swal.close()
-                
-                    this.setState({
-                        ... this.state,
-                        compras: this.setCompras(data.compras),
-                        data
-                    })
-                }else{
-                    swal.close()
-                    this.setState({
-                        ... this.state,
-                        compras: this.setCompras(data.compras),
-                        data
-                    })
-                    let aux = compras.next_page_url.split('=');
-                    aux = aux[aux.length - 1];
-                    this.getComprasAxiosPerPage(aux)
-                }
-                
             },
             (error) => {
                 console.log(error, 'error')
@@ -668,6 +605,14 @@ class Compras extends Component{
             console.log(error, 'error')
         })
     }
+
+    async getComprasAxios(){
+        var table = $('#kt_datatable2')
+                    .DataTable();
+
+                table.ajax.reload();
+    }
+
 
     async addCompraAxios(){
 
@@ -705,15 +650,12 @@ class Compras extends Component{
         await axios.post(URL_DEV + 'compras', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
 
-                const { compras } = response.data
-                const { data } = this.state
-                data.compras = compras
+                this.getComprasAxios()
+
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
-                    modal: false,
-                    compras: this.setCompras(compras),
-                    data
+                    modal: false
                 })
                 
                 swal({
@@ -827,17 +769,12 @@ class Compras extends Component{
         await axios.post(URL_DEV + 'compras/update/' + compra.id, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
 
-                const { compras } = response.data
-                const { data } = this.state
-
-                data.compras = compras
+                this.getComprasAxios()
 
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
-                    modal: false,
-                    compras: this.setCompras(compras),
-                    data
+                    modal: false
                 })
                 
                 swal({
@@ -870,17 +807,12 @@ class Compras extends Component{
         await axios.delete(URL_DEV + 'compras/' + compra.id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 
-                const { compras } = response.data
-                const { data } = this.state
-                data.compras = compras
+                this.getComprasAxios()
 
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
-                    compras: this.setCompras(compras),
-                    modalDelete: false,
-                    compra: '',
-                    data
+                    modalDelete: false,    
                 })
 
                 swal({
@@ -1020,6 +952,7 @@ class Compras extends Component{
         await axios.post(URL_DEV + 'compras/factura', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
 
+                this.getComprasAxios()
                 const { compra } = response.data
                 let { porcentaje } = this.state
                 porcentaje = 0
@@ -1065,7 +998,7 @@ class Compras extends Component{
         const { compra } = this.state
         await axios.delete(URL_DEV + 'compras/' + compra.id + '/facturas/' + id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                
+                this.getComprasAxios()
                 const { compra } = response.data
                 let { porcentaje } = this.state
                 porcentaje = 0
@@ -1152,7 +1085,7 @@ class Compras extends Component{
         return(
             <Layout active={'proyectos'}  { ...this.props}>
                 
-                <NewTable columns={COMPRAS_COLUMNS} data={compras}
+                <NewTableServerRender columns={COMPRAS_COLUMNS} data={compras}
                     title='Compras' subtitle='Listado de compras'
                     mostrar_boton={true}
                     abrir_modal={true}                    
@@ -1166,7 +1099,11 @@ class Compras extends Component{
                     }}
                     elements={data.compras}
                     exportar_boton={true} 
-                    onClickExport={() => this.exportComprasAxios()} />
+                    onClickExport={() => this.exportComprasAxios()}
+                    accessToken = { this.props.authUser.access_token }
+                    setter = { this.setCompras }
+                    url = {URL_DEV + 'compras'}
+                    />
 
 
                 <Modal size="xl" title = { title } show = {modal} handleClose = { this.handleClose } >

@@ -32,7 +32,8 @@ function runAjax(settings, accessToken, request, setter, url) {
             deferred.resolve({ data: setter(response.data), draw: response.draw, recordsTotal: response.recordsTotal, recordsFiltered: response.recordsFiltered, elements: response.data });
         },
         error: function (error) {
-            errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            console.log(error, 'error')
+            errorAlert(error.responseJSON.message !== undefined ? error.responseJSON.message : 'Ocurrió un error desconocido, intenta de nuevo.')
             deferred.fail(error);
         }
     });
