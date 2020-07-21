@@ -39,7 +39,7 @@ function runAjax(settings, accessToken, request, setter, url) {
     });
     return deferred.promise();
 }
-class NewTable extends Component {
+class NewTableServerRender extends Component {
 
     state = {
         newElements: []
@@ -276,4 +276,4 @@ class NewTable extends Component {
         )
     }
 }
-export default NewTable
+export default NewTableServerRender

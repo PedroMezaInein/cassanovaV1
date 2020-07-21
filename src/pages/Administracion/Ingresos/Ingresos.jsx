@@ -23,7 +23,7 @@ import Moment from 'react-moment'
 import NumberFormat from 'react-number-format';
 import { Form, ProgressBar } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import NewTable from '../../../components/tables/NewTable'
+import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 
 
 class Ingresos extends Component {
@@ -83,7 +83,7 @@ class Ingresos extends Component {
         });
         if (!ingresos)
             history.push('/')
-        this.getIngresosAxios()
+        this.getOptionsAxios()
     }
     // Submit 
     onSubmitAskFactura = e => {
@@ -294,7 +294,7 @@ class Ingresos extends Component {
                         ]
                     )),
                     cliente: renderToString(setTextTable(ingreso.cliente ? ingreso.cliente.empresa : '')),
-                    factura: renderToString(setTextTable(ingreso.facturas.length ? 'Con factura' : 'Sin factura')),
+                    factura: renderToString(setTextTable(ingreso.factura ? 'Con factura' : 'Sin factura')),
                     monto: renderToString(setMoneyTable(ingreso.monto)),
                     impuesto: renderToString(setTextTable(ingreso.tipo_impuesto ? ingreso.tipo_impuesto.tipo : 'Sin definir')),
                     tipoPago: renderToString(setTextTable(ingreso.tipo_pago ? ingreso.tipo_pago.tipo : '')),
@@ -453,13 +453,13 @@ class Ingresos extends Component {
         this.deleteFacturaAxios(id)
     }
 
-    async getIngresosAxios() {
+    async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'ingresos', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'ingresos/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { data, options } = this.state
-                const { ingresos, clientes, empresas, formasPago, metodosPago, estatusFacturas } = response.data
+                const { clientes, empresas, formasPago, metodosPago, estatusFacturas } = response.data
                 options['metodosPago'] = setOptions(metodosPago, 'nombre', 'id')
                 options['formasPago'] = setOptions(formasPago, 'nombre', 'id')
                 options['estatusFacturas'] = setOptions(estatusFacturas, 'estatus', 'id')
@@ -467,11 +467,9 @@ class Ingresos extends Component {
                 options['clientes'] = setOptions(clientes, 'empresa', 'id')
                 data.clientes = clientes
                 data.empresas = empresas
-                data.ingresos = ingresos
                 swal.close()
                 this.setState({
                     ... this.state,
-                    ingresos: this.setIngresos(ingresos),
                     data,
                     options
                 })
@@ -790,7 +788,7 @@ class Ingresos extends Component {
                 </div> */}
 
                 {/* <DataTable columns = {INGRESOS_COLUMNS} data= {ingresos}/> */}
-                <NewTable columns={INGRESOS_COLUMNS} data={ingresos}
+                <NewTableServerRender columns={INGRESOS_COLUMNS} data={ingresos}
                     title='Ingresos' subtitle='Listado de ingresos'
                     mostrar_boton={true}
                     abrir_modal={false}
@@ -806,6 +804,9 @@ class Ingresos extends Component {
                     elements={data.ingresos}
                     exportar_boton={true} 
                     onClickExport={() => this.exportIngresosAxios()}
+                    accessToken = { this.props.authUser.access_token }
+                    setter = { this.setIngresos }
+                    urlRender = {URL_DEV + 'ingresos'}
                     />
 
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el ingreso?"}show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteIngresoAxios() }}>
