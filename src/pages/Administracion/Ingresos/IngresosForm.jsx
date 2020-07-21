@@ -156,7 +156,7 @@ class IngresosForm extends Component{
         }
         if(!ingresos)
             history.push('/')
-        this.getIngresosAxios()
+        this.getOptionsAxios()
     }
 
     // On change
@@ -371,9 +371,9 @@ class IngresosForm extends Component{
     }
 
     //ASYNC
-    async getIngresosAxios(){
+    async getOptionsAxios(){
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'ingresos', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'ingresos/options', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { clientes, empresas, areas, tiposPagos, tiposImpuestos, estatusCompras } = response.data
                 const { options, data } = this.state
