@@ -9,8 +9,8 @@ import { ContactoLeadForm, ClienteForm } from '../forms'
 import { openWizard1, openWizard2, openWizard3 } from '../../functions/wizard'
 import { validateAlert } from '../../functions/alert'
 
-class ProspectoForm extends Component{
-    
+class ProspectoForm extends Component {
+
     state = {
         newClient: false,
         newEstatusProspectos: false,
@@ -23,12 +23,12 @@ class ProspectoForm extends Component{
 
     updateEstatusContratacion = value => {
         const { onChange } = this.props
-        onChange({target:{name:'estatusContratacion', value: value}})
-        if( value === 'New' ){
+        onChange({ target: { name: 'estatusContratacion', value: value } })
+        if (value === 'New') {
             this.setState({
                 newEstatusContratacion: true
             })
-        }else{
+        } else {
             this.setState({
                 newEstatusContratacion: false
             })
@@ -37,13 +37,13 @@ class ProspectoForm extends Component{
 
     updateEstatusProspectos = value => {
         const { onChange } = this.props
-        onChange({target:{name:'estatusProspecto', value: value}})
-        if( value === 'New' ){
+        onChange({ target: { name: 'estatusProspecto', value: value } })
+        if (value === 'New') {
             this.setState({
                 newEstatusProspectos: true
             })
 
-        }else{
+        } else {
             this.setState({
                 newEstatusProspectos: false
             })
@@ -52,12 +52,12 @@ class ProspectoForm extends Component{
 
     updateTipoProyecto = value => {
         const { onChange } = this.props
-        onChange( { target: { name:'tipoProyecto', value: value } } )
-        if( value === 'New' ){
+        onChange({ target: { name: 'tipoProyecto', value: value } })
+        if (value === 'New') {
             this.setState({
                 newTipoProyecto: true
             })
-        }else{
+        } else {
             this.setState({
                 newTipoProyecto: false
             })
@@ -66,12 +66,12 @@ class ProspectoForm extends Component{
 
     updateCliente = value => {
         const { onChange } = this.props
-        onChange({target:{name:'cliente', value: value}})
-        if( value === 'New' ){
+        onChange({ target: { name: 'cliente', value: value } })
+        if (value === 'New') {
             this.setState({
                 newClient: true
             })
-        }else{
+        } else {
             this.setState({
                 newClient: false
             })
@@ -80,30 +80,30 @@ class ProspectoForm extends Component{
 
     updateVendedor = value => {
         const { onChange } = this.props
-        onChange({target:{name:'vendedor', value: value}})
+        onChange({ target: { name: 'vendedor', value: value } })
     }
 
     updateColonia = value => {
         const { onChangeCliente } = this.props
-        onChangeCliente({target:{name:'colonia', value: value}})
+        onChangeCliente({ target: { name: 'colonia', value: value } })
     }
 
     changeCP = event => {
         const { value, name } = event.target
         const { onChangeCliente } = this.props
-        onChangeCliente( { target: { name: name, value: value } } )
-        if(value.length === 5)
+        onChangeCliente({ target: { name: name, value: value } })
+        if (value.length === 5)
             this.cpAxios(value)
     }
 
-    async cpAxios(value){
+    async cpAxios(value) {
         await axios.get(CP_URL + value + '?type=simplified').then(
             (response) => {
                 const { municipio, estado, asentamiento } = response.data.response
                 const { onChangeCliente } = this.props
                 let aux = [];
                 asentamiento.map((colonia, key) => {
-                    aux.push({value: colonia, name: colonia})
+                    aux.push({ value: colonia, name: colonia })
                 })
                 this.setState({
                     ... this.state,
@@ -111,165 +111,165 @@ class ProspectoForm extends Component{
                     estado,
                     colonias: aux
                 })
-                onChangeCliente({target:{name:'cp', value: value}})
-                onChangeCliente({target:{name:'municipio', value: municipio}})
-                onChangeCliente({target:{name:'estado', value: estado}})
+                onChangeCliente({ target: { name: 'cp', value: value } })
+                onChangeCliente({ target: { name: 'municipio', value: municipio } })
+                onChangeCliente({ target: { name: 'estado', value: estado } })
             },
             (error) => {
-            
+
             }
         ).catch((error) => {
-            
+
         })
     }
 
-    render(){
+    render() {
         const { title, form, formCliente, children, vendedores, estatusProspectos, clientes, tipoProyecto, estatusContratacion, tiposContactos, onChange, onChangeCliente, onChangeContacto, formContacto, onSubmit, formeditado, ...props } = this.props
         const { newClient, newEstatusProspectos, newTipoProyecto, newEstatusContratacion, municipio, estado, colonias } = this.state
-        return(
+        return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
-                    <div className="wizard-steps px-8 py-0 px-lg-15 py-lg-0"> 
-                        <div id="wizard-1" className="wizard-step" data-wizard-state="current" data-wizard-type="step" style={{paddingTop:"0px"}} onClick = { () => { openWizard1() } }>
+                    <div className="wizard-steps px-8 py-0 px-lg-15 py-lg-0">
+                        <div id="wizard-1" className="wizard-step" data-wizard-state="current" data-wizard-type="step" style={{ paddingTop: "0px" }} onClick={() => { openWizard1() }}>
                             <div className="wizard-label">
                                 <h3 className="wizard-title">
-                                <span>1.</span> Datos generales</h3>
+                                    <span>1.</span> Datos generales</h3>
                                 <div className="wizard-bar"></div>
                             </div>
-                        </div> 
-                        <div id="wizard-2" className="wizard-step" data-wizard-type="step" style={{paddingTop:"0px"}} onClick = { () => { openWizard2() } }>
+                        </div>
+                        <div id="wizard-2" className="wizard-step" data-wizard-type="step" style={{ paddingTop: "0px" }} onClick={() => { openWizard2() }}>
                             <div className="wizard-label">
                                 <h3 className="wizard-title">
-                                <span>2.</span> Descripción y motivo</h3>
+                                    <span>2.</span> Descripción y motivo</h3>
                                 <div className="wizard-bar"></div>
                             </div>
-                        </div> 
-                        <div id="wizard-3" className="wizard-step" data-wizard-type="step" style={{paddingTop:"0px"}} onClick = { () => { openWizard3() } }>
+                        </div>
+                        <div id="wizard-3" className="wizard-step" data-wizard-type="step" style={{ paddingTop: "0px" }} onClick={() => { openWizard3() }}>
                             <div className="wizard-label">
                                 <h3 className="wizard-title">
-                                <span>3.</span>Información del contacto</h3>
+                                    <span>3.</span>Información del contacto</h3>
                                 <div className="wizard-bar"></div>
                             </div>
-                        </div>   
+                        </div>
                     </div>
                 </div>
                 <div className="row justify-content-center py-10 px-8 py-lg-12 px-lg-10">
                     <div className="col-md-12">
-                        <Form 
-                            onSubmit = { 
+                        <Form
+                            onSubmit={
                                 (e) => {
-                                    e.preventDefault(); 
+                                    e.preventDefault();
                                     validateAlert(onSubmit, e, 'wizard-3-content')
                                 }
                             }
-                            { ... props}
-                            >
-                            { children }
+                            {...props}
+                        >
+                            {children}
                             <div id="wizard-1-content" className="pb-3" data-wizard-type="step-content" data-wizard-state="current">
                                 <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos de generales</h5>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
-                                        { 
-                                            clientes && 
-                                                <SelectSearch
-                                                    formeditado={formeditado}
-                                                    options = { clientes }
-                                                    placeholder = "Selecciona el cliente"
-                                                    onChange={this.updateCliente}
-                                                    name="cliente"
-                                                    value={form.cliente}
-                                                /> 
+                                        {
+                                            clientes &&
+                                            <SelectSearch
+                                                formeditado={formeditado}
+                                                options={clientes}
+                                                placeholder="SELECCIONA EL CLIENTE"
+                                                onChange={this.updateCliente}
+                                                name="cliente"
+                                                value={form.cliente}
+                                            />
                                         }
-                                    </div> 
+                                    </div>
                                     <div className="col-md-4">
-                                        { 
-                                            vendedores && 
-                                                <SelectSearch 
-                                                    formeditado={formeditado}
-                                                    options = { vendedores } 
-                                                    placeholder = "Selecciona al vendedor"
-                                                    name="vendedor" 
-                                                    value={form.vendedor} 
-                                                    onChange={this.updateVendedor}
-                                                /> 
+                                        {
+                                            vendedores &&
+                                            <SelectSearch
+                                                formeditado={formeditado}
+                                                options={vendedores}
+                                                placeholder="SELECCIONA AL VENDEDOR"
+                                                name="vendedor"
+                                                value={form.vendedor}
+                                                onChange={this.updateVendedor}
+                                            />
                                         }
                                     </div>
 
                                     <div className="col-md-4">
-                                        <Input 
+                                        <Input
                                             formeditado={formeditado}
                                             requirevalidation={1}
                                             name="preferencia"
                                             type="text"
-                                            placeholder="Perefencia de contacto"
+                                            placeholder="PEREFENCIA DE CONTACTO"
                                             onChange={onChange}
                                             value={form.preferencia}
                                             iconclass={"fas fa-mail-bulk"}
                                             messageinc="Incorrecto. Ingresa la preferencia de contacto."
                                         />
                                     </div>
-                                </div>  
+                                </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
-                                        { 
-                                            estatusProspectos && 
-                                                <SelectSearch 
-                                                    formeditado={formeditado}
-                                                    options = { estatusProspectos } 
-                                                    placeholder = "Selecciona el estatus del prospecto" 
-                                                    onChange={this.updateEstatusProspectos}
-                                                    name="estatusProspecto" 
-                                                    value={form.estatusProspecto}
-                                                /> 
+                                        {
+                                            estatusProspectos &&
+                                            <SelectSearch
+                                                formeditado={formeditado}
+                                                options={estatusProspectos}
+                                                placeholder="SELECCIONA EL ESTATUS DEL PROSPECTO"
+                                                onChange={this.updateEstatusProspectos}
+                                                name="estatusProspecto"
+                                                value={form.estatusProspecto}
+                                            />
                                         }
                                     </div>
                                     {
-                                        newEstatusProspectos && 
-                                            <div className="col-md-4">
-                                                <Input 
-                                                    formeditado={formeditado}
-                                                    requirevalidation={1}
-                                                    name="newEstatusProspecto"
-                                                    type="text" 
-                                                    placeholder="Nuevo estatus prospecto"
-                                                    onChange={onChange}
-                                                    value={form.newEstatusProspectos}
-                                                />
-                                            </div>
+                                        newEstatusProspectos &&
+                                        <div className="col-md-4">
+                                            <Input
+                                                formeditado={formeditado}
+                                                requirevalidation={1}
+                                                name="newEstatusProspecto"
+                                                type="text"
+                                                placeholder="NUEVO ESTATUS PROSPECTO"
+                                                onChange={onChange}
+                                                value={form.newEstatusProspectos}
+                                            />
+                                        </div>
                                     }
                                     <div className="col-md-4">
-                                        { 
-                                                tipoProyecto && 
-                                                    <SelectSearch 
-                                                        formeditado={formeditado}
-                                                        options = { tipoProyecto } 
-                                                        placeholder = "Selecciona el tipo de proyecto" 
-                                                        onChange={this.updateTipoProyecto} 
-                                                        name="tipoProyecto" 
-                                                        value={form.tipoProyecto} 
-                                                    /> 
+                                        {
+                                            tipoProyecto &&
+                                            <SelectSearch
+                                                formeditado={formeditado}
+                                                options={tipoProyecto}
+                                                placeholder="SELECCIONA EL TIPO DE PROYECTO"
+                                                onChange={this.updateTipoProyecto}
+                                                name="tipoProyecto"
+                                                value={form.tipoProyecto}
+                                            />
                                         }
-                                    </div> 
-                                    { 
-                                        newTipoProyecto && 
-                                            <div className="col-md-4">
-                                                <Input 
-                                                    formeditado={formeditado}
-                                                    requirevalidation={1}
-                                                    name="newTipoProyecto"
-                                                    onChange={onChange}
-                                                    value={form.newTipoProyecto}
-                                                    type="text"
-                                                    placeholder="Nuevo tipo de proyecto"
-                                                /> 
-                                            </div>
-                                    } 
+                                    </div>
+                                    {
+                                        newTipoProyecto &&
+                                        <div className="col-md-4">
+                                            <Input
+                                                formeditado={formeditado}
+                                                requirevalidation={1}
+                                                name="newTipoProyecto"
+                                                onChange={onChange}
+                                                value={form.newTipoProyecto}
+                                                type="text"
+                                                placeholder="NUEVO TIPO DE PROYECTO"
+                                            />
+                                        </div>
+                                    }
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2"></div>
                                     <div>
-                                        <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick = { () => { openWizard2() }} data-wizard-type="action-next">Siguiente</button>
+                                        <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-next">Siguiente</button>
                                     </div>
                                 </div>
                             </div>
@@ -277,16 +277,16 @@ class ProspectoForm extends Component{
                                 <h5 className="mb-4 font-weight-bold text-dark">Ingresa la descripción y motivo</h5>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-12">
-                                        <Input 
+                                        <Input
                                             formeditado={formeditado}
                                             requirevalidation={0}
-                                            rows="3" 
-                                            as="textarea" 
-                                            placeholder="Descripción del prospecto" 
+                                            rows="3"
+                                            as="textarea"
+                                            placeholder="DESCRIPCIÓN DEL PROSPECTO"
                                             name="descripcion"
-                                            onChange={onChange} 
+                                            onChange={onChange}
                                             value={form.descripcion}
-                                            style={{paddingLeft:"10px"}}
+                                            style={{ paddingLeft: "10px" }}
                                             messageinc="Incorrecto. Ingresa una descripción."
                                         />
                                     </div>
@@ -294,67 +294,67 @@ class ProspectoForm extends Component{
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-12">
-                                        <Input 
+                                        <Input
                                             formeditado={formeditado}
                                             requirevalidation={0}
-                                            rows="3" 
-                                            as="textarea" 
-                                            placeholder="Motivo de contratación o rechazo" 
-                                            name="motivo" 
-                                            onChange={onChange} 
+                                            rows="3"
+                                            as="textarea"
+                                            placeholder="MOTIVO DE CONTRATACIÓN O RECHAZO"
+                                            name="motivo"
+                                            onChange={onChange}
                                             value={form.motivo}
-                                            style={{paddingLeft:"10px"}}
+                                            style={{ paddingLeft: "10px" }}
                                             messageinc="Incorrecto. Ingresa el motivo."
                                         />
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
-                                        <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick = { () => { openWizard1() }} data-wizard-type="action-prev">Anterior</button>
+                                        <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard1() }} data-wizard-type="action-prev">Anterior</button>
                                     </div>
                                     <div>
-                                        <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick = { () => { openWizard3() }} data-wizard-type="action-next">Siguiente</button>
+                                        <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick={() => { openWizard3() }} data-wizard-type="action-next">Siguiente</button>
                                     </div>
                                 </div>
-                            </div>  
+                            </div>
                             <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
                                 <h5 className="mb-4 font-weight-bold text-dark">Información del contacto</h5>
-                                    {
-                                        newClient &&
-                                            <ClienteForm 
-                                                    onChange = { onChangeCliente } 
-                                                    title = 'Información del cliente'
-                                                    form = { formCliente }
-                                                    changeCP = { this.changeCP }
-                                                    estado = { estado }
-                                                    municipio = { municipio }
-                                                    colonias = { colonias }
-                                                    updateColonia = { this.updateColonia }
-                                                />
-                                    }
-                                    {
-                                        title !== 'Editar prospecto' &&
-                                        <>
-                                            <div className="">
-                                                <ContactoLeadForm 
-                                                    tiposContactos = { tiposContactos } 
-                                                    formContacto = { formContacto } 
-                                                    onChangeContacto = { onChangeContacto } 
-                                                />
-                                            </div>
-                                        </>
-                                    }
-                                    <div className="col-md-4">
-                                    </div>  
+                                {
+                                    newClient &&
+                                    <ClienteForm
+                                        onChange={onChangeCliente}
+                                        title='Información del cliente'
+                                        form={formCliente}
+                                        changeCP={this.changeCP}
+                                        estado={estado}
+                                        municipio={municipio}
+                                        colonias={colonias}
+                                        updateColonia={this.updateColonia}
+                                    />
+                                }
+                                {
+                                    title !== 'Editar prospecto' &&
+                                    <>
+                                        <div className="">
+                                            <ContactoLeadForm
+                                                tiposContactos={tiposContactos}
+                                                formContacto={formContacto}
+                                                onChangeContacto={onChangeContacto}
+                                            />
+                                        </div>
+                                    </>
+                                }
+                                <div className="col-md-4">
+                                </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
-                                        <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase"  onClick = { () => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
+                                        <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
                                     </div>
                                     <div>
                                         <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type="submit" text="Enviar" />
                                     </div>
-                                </div> 
-                            </div>  
+                                </div>
+                            </div>
                         </Form>
                     </div>
                 </div>

@@ -20,7 +20,7 @@ class ContratoForm extends Component {
         const { onChange, setOptions } = this.props
         onChange({ target: { value: value, name: 'empresa' } })
     }
-    
+
     updateCliente = value => {
         const { onChange, setOptions } = this.props
         onChange({ target: { value: value, name: 'cliente' } })
@@ -40,51 +40,50 @@ class ContratoForm extends Component {
         const { title, options, form, onChange, tipo, onSubmit, formeditado, clearFiles, onChangeAdjunto, ...props } = this.props
         return (
             <Form id="form-contrato"
-                onSubmit = { 
+                onSubmit={
                     (e) => {
-                        e.preventDefault(); 
+                        e.preventDefault();
                         validateAlert(onSubmit, e, 'form-contrato')
                     }
                 }
                 {...props}>
                 <div className="form-group row form-group-marginless pt-4">
-                
+
                     <div className="col-md-4">
-                        <Input 
+                        <Input
                             requirevalidation={1}
                             formeditado={formeditado}
-                            placeholder="Nombre" 
-                            name="nombre" 
-                            onChange={onChange} 
-                            value={form.nombre} 
+                            placeholder="NOMBRE"
+                            name="nombre"
+                            onChange={onChange}
+                            value={form.nombre}
                             iconclass={"far fa-user"}
                             messageinc="Incorrecto. Ingresa el nombre."
                         />
-                        {/*<span className="form-text text-muted">Por favor, ingrese un nombre. </span>*/}
                     </div>
 
                     <div className="col-md-4">
                         {
                             tipo === 'Cliente' ?
-                                <SelectSearch 
+                                <SelectSearch
                                     formeditado={formeditado}
-                                    options={options.clientes} 
-                                    placeholder = "Selecciona la el cliente" 
-                                    name = "cliente" 
-                                    value = { form.cliente } 
-                                    onChange = { this.updateCliente }
+                                    options={options.clientes}
+                                    placeholder="SELECCIONA EL CLIENTE"
+                                    name="cliente"
+                                    value={form.cliente}
+                                    onChange={this.updateCliente}
                                     iconclass={"far fa-user"}
-                                    />
-                            : 
-                                <SelectSearch 
+                                />
+                                :
+                                <SelectSearch
                                     formeditado={formeditado}
-                                    options={options.proveedores} 
-                                    placeholder = "Selecciona el proveedor" 
-                                    name = "proveedor" 
-                                    value = { form.proveedor } 
-                                    onChange = { this.updateProveedor }
+                                    options={options.proveedores}
+                                    placeholder="SELECCIONA EL PROVEEDOR"
+                                    name="proveedor"
+                                    value={form.proveedor}
+                                    onChange={this.updateProveedor}
                                     iconclass={"far fa-user"}
-                                    />
+                                />
                         }
                         {/*<span className="form-text text-muted">Por favor, selecciona el 
                             {
@@ -96,86 +95,81 @@ class ContratoForm extends Component {
                         </span>*/}
                     </div>
                     <div className="col-md-4">
-                        <SelectSearch 
+                        <SelectSearch
                             formeditado={formeditado}
-                            options={options.empresas} 
-                            placeholder = "Selecciona la empresa" 
-                            name = "empresa" 
-                            value = { form.empresa } 
-                            onChange = { this.updateEmpresa }
+                            options={options.empresas}
+                            placeholder="SELECCIONA LA EMPRESA"
+                            name="empresa"
+                            value={form.empresa}
+                            onChange={this.updateEmpresa}
                             iconclass={"far fa-building"}
-                            />
-                        {/*<span className="form-text text-muted">Por favor, selecciona la empresa.</span>*/}
+                        />
                     </div>
-                    
+
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
-                        <InputMoney 
-                                requirevalidation={1}
-                                formeditado={formeditado}
-                                thousandSeparator={true}  
-                                prefix = { '$' } 
-                                name = "monto" 
-                                value = { form.monto } 
-                                onChange = { onChange } 
-                                placeholder="Monto con IVA" 
-                                iconclass={"fas fa-money-bill-wave-alt"}
+                        <InputMoney
+                            requirevalidation={1}
+                            formeditado={formeditado}
+                            thousandSeparator={true}
+                            prefix={'$'}
+                            name="monto"
+                            value={form.monto}
+                            onChange={onChange}
+                            placeholder="MONTO CON IVA"
+                            iconclass={"fas fa-money-bill-wave-alt"}
                         />
-                        {/*<span className="form-text text-muted">Por favor, ingrese el monto con IVA. </span>*/}
                     </div>
                     <div className="col-md-4">
-                        <Calendar 
+                        <Calendar
                             formeditado={formeditado}
-                            onChangeCalendar = { this.handleChangeDateInicio }
-                            placeholder = "Fecha de inicio"
-                            name = "fechaInicio"
-                            value = { form.fechaInicio }
+                            onChangeCalendar={this.handleChangeDateInicio}
+                            placeholder="FECHA DE INICIO"
+                            name="fechaInicio"
+                            value={form.fechaInicio}
                             selectsStart
-                            startDate={ form.fechaInicio }
-                            endDate={ form.fechaFin }
-                            iconclass={"far fa-calendar-alt"}      
-                            patterns={DATE}                      
+                            startDate={form.fechaInicio}
+                            endDate={form.fechaFin}
+                            iconclass={"far fa-calendar-alt"}
+                            patterns={DATE}
                         />
-                        {/*<span className="form-text text-muted">Por favor, ingrese su fecha de inicio. </span>*/}
                     </div>
                     <div className="col-md-4">
-                        <Calendar 
+                        <Calendar
                             formeditado={formeditado}
-                            onChangeCalendar = { this.handleChangeDateFin }
-                            placeholder = "Fecha final"
-                            name = "fechaFin"
-                            value = { form.fechaFin }
+                            onChangeCalendar={this.handleChangeDateFin}
+                            placeholder="FECHA FINAL"
+                            name="fechaFin"
+                            value={form.fechaFin}
                             selectsEnd
-                            startDate={ form.fechaInicio }
-                            endDate={ form.fechaFin }
-                            minDate={ form.fechaInicio }
-                            iconclass={"far fa-calendar-alt"} 
-                            patterns={DATE}                        
+                            startDate={form.fechaInicio}
+                            endDate={form.fechaFin}
+                            minDate={form.fechaInicio}
+                            iconclass={"far fa-calendar-alt"}
+                            patterns={DATE}
                         />
-                        {/*<span className="form-text text-muted">Por favor, ingrese su fecha de fin. </span>*/}
                     </div>
-                    
+
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
-                        <SelectSearch 
+                        <SelectSearch
                             formeditado={formeditado}
-                            options={options.tiposContratos} 
-                            placeholder = "Selecciona el tipo de contrato" 
-                            name = "tipoContrato" 
-                            value = { form.tipoContrato } 
-                            onChange = { this.updateTipoContrato }
+                            options={options.tiposContratos}
+                            placeholder="SELECCIONA EL TIPO DE CONTRATO"
+                            name="tipoContrato"
+                            value={form.tipoContrato}
+                            onChange={this.updateTipoContrato}
                             iconclass={"fas fa-pen-fancy"}
-                            />
-                        {/*<span className="form-text text-muted">Por favor, seleccione el tipo de contrato. </span>*/}
+                        />
                     </div>
                     {
                         title === 'Editar contrato de cliente' || title === 'Editar contrato de proveedor'
                             ? ''
-                        : 
+                            :
                             <div className="col-md-8">
                                 <FileInput
                                     requirevalidation={0}
@@ -183,33 +177,32 @@ class ContratoForm extends Component {
                                     onChangeAdjunto={onChangeAdjunto}
                                     placeholder={form.adjuntos.adjunto.placeholder}
                                     value={form.adjuntos.adjunto.value}
-                                    name='adjunto' 
+                                    name='adjunto'
                                     id='adjunto'
                                     accept="image/*, application/pdf"
                                     files={form.adjuntos.adjunto.files}
-                                    deleteAdjunto={clearFiles} 
-                                    multiple 
-                                    />
+                                    deleteAdjunto={clearFiles}
+                                    multiple
+                                />
                             </div>
                     }
-                    
+
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-12">
-                        <Input 
-                            requirevalidation={ 0 }
+                        <Input
+                            requirevalidation={0}
                             formeditado={formeditado}
-                            rows="3" 
-                            as="textarea" 
-                            placeholder="Descripción" 
-                            name="descripcion" 
-                            onChange={onChange} 
-                            value={form.descripcion} 
+                            rows="3"
+                            as="textarea"
+                            placeholder="DESCRIPCIÓN"
+                            name="descripcion"
+                            onChange={onChange}
+                            value={form.descripcion}
                             messageinc="Incorrecto. Ingresa la descripción."
-                            style={{paddingLeft: "10px"}}   
+                            style={{ paddingLeft: "10px" }}
                         />
-                        {/*<span className="form-text text-muted">Por favor, ingrese su descripción. </span>*/}
                     </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>

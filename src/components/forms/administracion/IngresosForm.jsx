@@ -15,18 +15,6 @@ class IngresosForm extends Component {
         onChange({ target: { value: date, name: 'fecha' } })
     }
 
-    /*updateEmpresa = value => {
-        const { onChange, setOptions } = this.props
-        onChange({ target: { value: value.value, name: 'empresa' } })
-        onChange({ target: { value: '', name: 'cuenta' } })
-        setOptions('cuentas', value.cuentas)
-    }
-
-    updateCuenta = value => {
-        const { onChange } = this.props
-        onChange({ target: { value: value.value, name: 'cuenta' } })
-    }*/
-
     updateEmpresa = value => {
         const { onChange, setOptions } = this.props
         onChange({ target: { value: value, name: 'empresa' } })
@@ -55,20 +43,6 @@ class IngresosForm extends Component {
             }
         })
     }
-    
-    /*
-    updateArea = value => {
-        const { onChange, setOptions } = this.props
-        onChange({target:{value: value.value, name:'area'}})
-        onChange({target:{value: '', name:'subarea'}})
-        setOptions('subareas',value.subareas)
-    }
-
-    updateSubarea = value => {
-        const { onChange } = this.props
-        onChange({target:{value: value.value, name:'subarea'}})
-    }
-    */
 
     updateArea = value => {
         const { onChange, setOptions } = this.props
@@ -82,7 +56,6 @@ class IngresosForm extends Component {
                 setOptions('subareas', element.subareas)
             }
         })
-
     }
 
     updateSubarea = value => {
@@ -225,7 +198,7 @@ class IngresosForm extends Component {
                                             {
                                                 form.facturaObject ?
                                                     <Input 
-                                                        placeholder="Cliente" 
+                                                        placeholder="CLIENTE" 
                                                         readOnly 
                                                         name="cliente" 
                                                         value={form.cliente} 
@@ -235,7 +208,7 @@ class IngresosForm extends Component {
                                                     :
                                                     <SelectSearch 
                                                         options={options.clientes} 
-                                                        placeholder="Selecciona el cliente"
+                                                        placeholder="SELECCIONA EL CLIENTE"
                                                         name="cliente" 
                                                         value={form.cliente} 
                                                         onChange={this.updateCliente} 
@@ -248,7 +221,7 @@ class IngresosForm extends Component {
                                             {
                                                 form.facturaObject ?
                                                     <Input 
-                                                        placeholder="Empresa" 
+                                                        placeholder="EMPRESA" 
                                                         name="empresa" 
                                                         readOnly 
                                                         value={form.empresa} 
@@ -258,7 +231,7 @@ class IngresosForm extends Component {
                                                     :
                                                     <SelectSearch 
                                                         options={options.empresas} 
-                                                        placeholder="Selecciona la empresa"
+                                                        placeholder="SELECCIONA LA EMPRESA"
                                                         name="empresa" 
                                                         value={form.empresa} 
                                                         onChange={this.updateEmpresa} 
@@ -280,7 +253,7 @@ class IngresosForm extends Component {
                                             <div className="col-md-4">
                                                 <Calendar
                                                     onChangeCalendar={this.handleChangeDate} 
-                                                    placeholder="Fecha"
+                                                    placeholder="FECHA"
                                                     name="fecha" 
                                                     patterns={DATE}
                                                     value={form.fecha} 
@@ -290,7 +263,7 @@ class IngresosForm extends Component {
                                             <div className="col-md-4">
                                                 <SelectSearch 
                                                     options={options.areas} 
-                                                    placeholder="Selecciona el área"
+                                                    placeholder="SELECCIONA EL ÁREA"
                                                     name="area" 
                                                     value={form.area} 
                                                     onChange={this.updateArea} 
@@ -304,7 +277,7 @@ class IngresosForm extends Component {
                                                     <div className="col-md-4">
                                                         <SelectSearch 
                                                             options={options.subareas} 
-                                                            placeholder="Selecciona el subárea"
+                                                            placeholder="SELECCIONA EL SUBÁREA"
                                                             name="subarea" 
                                                             value={form.subarea} 
                                                             onChange={this.updateSubarea} 
@@ -322,7 +295,7 @@ class IngresosForm extends Component {
                                                     requirevalidation={0}
                                                     formeditado={formeditado}
                                                     as="textarea" 
-                                                    placeholder="Descripción" 
+                                                    placeholder="DESCRIPCIÓN" 
                                                     rows="3" value={form.descripcion}
                                                     name="descripcion" 
                                                     onChange={onChange}
@@ -350,7 +323,7 @@ class IngresosForm extends Component {
                                                 <div className="col-md-6">
                                                         <SelectSearch 
                                                             options={options.cuentas} 
-                                                            placeholder="Selecciona la cuenta"
+                                                            placeholder="SELECCIONA LA CUENTA"
                                                             name="cuenta" 
                                                             value={form.cuenta} 
                                                             onChange={this.updateCuenta} 
@@ -364,7 +337,7 @@ class IngresosForm extends Component {
                                                 <Select 
                                                     requirevalidation={1}
                                                     formeditado={formeditado}
-                                                    placeholder="Selecciona el estatus de compra" 
+                                                    placeholder="SELECCIONA EL ESTATUS DE COMPRA" 
                                                     options={options.estatusCompras}
                                                     name="estatusCompra" 
                                                     value={form.estatusCompra} 
@@ -382,7 +355,7 @@ class IngresosForm extends Component {
                                                 <Select 
                                                     requirevalidation={1}
                                                     formeditado={formeditado}
-                                                    placeholder="Selecciona el tipo de pago" 
+                                                    placeholder="SELECCIONA EL TIPO DE PAGO" 
                                                     options={options.tiposPagos}
                                                     name="tipoPago" 
                                                     value={form.tipoPago} 
@@ -397,7 +370,7 @@ class IngresosForm extends Component {
                                                 <Select 
                                                     requirevalidation={1}
                                                     formeditado={formeditado}
-                                                    placeholder="Selecciona el impuesto" 
+                                                    placeholder="SELECCIONA EL IMPUESTO" 
                                                     options={options.tiposImpuestos}
                                                     name="tipoImpuesto" 
                                                     value={form.tipoImpuesto} 
@@ -413,7 +386,7 @@ class IngresosForm extends Component {
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
                                                 thousandSeparator={true} 
-                                                placeholder="Monto" 
+                                                placeholder="MONTO" 
                                                 value={form.total} 
                                                 name="total"
                                                 validado={false}

@@ -4,111 +4,106 @@ import { Subtitle, Small } from '../../texts'
 import { Input, Select, SelectSearch, Button, Calendar, InputMoney, RadioGroup, FileInput } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 
-class RendimientoForm extends Component{
+class RendimientoForm extends Component {
 
     updateUnidades = value => {
         const { onChange } = this.props
-        onChange({target:{value: value.value, name:'unidad'}})
+        onChange({ target: { value: value.value, name: 'unidad' } })
     }
 
     updateProveedor = value => {
         const { onChange } = this.props
-        onChange({target:{value: value.value, name:'proveedor'}})
+        onChange({ target: { value: value.value, name: 'proveedor' } })
     }
 
-    render(){
-        const { title, options, form, onChange, clearFiles, onChangeAdjunto, formeditado, onSubmit, ... props } = this.props
-        return(
+    render() {
+        const { title, options, form, onChange, clearFiles, onChangeAdjunto, formeditado, onSubmit, ...props } = this.props
+        return (
             <Form id="form-rendimiento"
-                onSubmit = { 
+                onSubmit={
                     (e) => {
-                        e.preventDefault(); 
+                        e.preventDefault();
                         validateAlert(onSubmit, e, 'form-rendimiento')
                     }
                 }
-                { ... props}>
+                {...props}>
                 <div className="form-group row form-group-marginless pt-4">
                     <div className="col-md-4">
-                        <Input 
+                        <Input
                             requirevalidation={1}
                             formeditado={formeditado}
-                            placeholder = "Materiales" 
-                            value = { form.materiales }
-                            name = "materiales"
-                            onChange = { onChange }
+                            placeholder="MATERIALES"
+                            value={form.materiales}
+                            name="materiales"
+                            onChange={onChange}
                             iconclass={"fas fa-tools"}
                             messageinc="Incorrecto. Ingresa el material."
                         />
-                        {/*<span className="form-text text-muted">Por favor, ingrese su material. </span>*/}
                     </div>
                     <div className="col-md-4">
-                        <SelectSearch 
+                        <SelectSearch
                             formeditado={formeditado}
                             options={options.unidades}
-                            placeholder = "Selecciona la unidad" 
-                            name = "unidad"
-                            value = { form.unidad }
-                            onChange = { this.updateUnidades }
+                            placeholder="SELECCIONA LA UNIDAD"
+                            name="unidad"
+                            value={form.unidad}
+                            onChange={this.updateUnidades}
                             iconclass={"fas fa-weight-hanging"}
                         />
-                        {/*<span className="form-text text-muted">Por favor, selecciona la unidad</span>*/}                        
                     </div>
                     <div className="col-md-4">
-                        <InputMoney 
+                        <InputMoney
                             requirevalidation={1}
                             formeditado={formeditado}
-                            thousandSeparator={true}  
-                            placeholder = "Costo"
-                            value = { form.costo }
-                            name = "costo"
-                            onChange = { onChange }
+                            thousandSeparator={true}
+                            placeholder="COSTO"
+                            value={form.costo}
+                            name="costo"
+                            onChange={onChange}
                             iconclass={"fas fa-dollar-sign"}
                         />
-                        {/*<span className="form-text text-muted">Por favor, ingrese su costo. </span>*/}
                     </div>
                 </div>
-                
+
                 <div className="separator separator-dashed mt-1 mb-2"></div>
-                
+
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
-                        <Input 
+                        <Input
                             requirevalidation={1}
                             formeditado={formeditado}
-                            placeholder = "Rendimiento"
-                            value = { form.rendimiento }
-                            name = "rendimiento"
-                            onChange = { onChange }
+                            placeholder="RENDIMIENTO"
+                            value={form.rendimiento}
+                            name="rendimiento"
+                            onChange={onChange}
                             iconclass={" fas fa-chart-line "}
                             messageinc="Incorrecto. Ingresa el rendimieno."
                         />
-                        {/*<span className="form-text text-muted">Por favor, ingrese su rendimiento</span>*/}
                     </div>
                     <div className="col-md-4">
-                        <SelectSearch 
+                        <SelectSearch
                             requirevalidation={1}
                             formeditado={formeditado}
                             options={options.proveedores}
-                            placeholder = "Selecciona el proveedor" 
-                            name = "proveedor"
-                            value = { form.proveedor }
-                            onChange = { this.updateProveedor }
+                            placeholder="SELECCIONA EL PROVEEDOR"
+                            name="proveedor"
+                            value={form.proveedor}
+                            onChange={this.updateProveedor}
                             iconclass={"far fa-user"}
                         />
-                        {/*<span className="form-text text-muted">Por favor, selecciona el proveedor </span>*/}
                     </div>
                     <div className="col-md-4">
-                        <FileInput 
+                        <FileInput
                             requirevalidation={0}
                             formeditado={formeditado}
-                            onChangeAdjunto = { onChangeAdjunto } 
-                            placeholder = 'Adjunto'
-                            value = { form['adjunto']['value'] }
-                            name = { 'adjunto' } id = { 'adjunto' }
-                            accept = "image/*, application/pdf" 
-                            files = { form['adjunto']['files'] }
-                            deleteAdjunto = { clearFiles } />
-                        {/*<span className="form-text text-muted">Por favor, adjunte su documento. </span>*/}
+                            onChangeAdjunto={onChangeAdjunto}
+                            placeholder='Adjunto'
+                            value={form['adjunto']['value']}
+                            name={'adjunto'} id={'adjunto'}
+                            accept="image/*, application/pdf"
+                            files={form['adjunto']['files']}
+                            deleteAdjunto={clearFiles}
+                        />
                     </div>
                 </div>
 
@@ -116,26 +111,25 @@ class RendimientoForm extends Component{
 
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-12">
-                        <Input 
+                        <Input
                             requirevalidation={0}
                             formeditado={formeditado}
-                            as = "textarea"
-                            placeholder = "Descripción"
-                            rows = "2"
-                            value = { form.descripcion }
-                            name = "descripcion"
-                            onChange = { onChange } 
+                            as="textarea"
+                            placeholder="DESCRIPCIÓN"
+                            rows="2"
+                            value={form.descripcion}
+                            name="descripcion"
+                            onChange={onChange}
                             messageinc="Incorrecto. Ingresa una descripción."
-                            style={{paddingLeft:"10px"}}
+                            style={{ paddingLeft: "10px" }}
                         />
-                        {/*<span className="form-text text-muted">Por favor, ingrese su descripción. </span>*/}
                     </div>
                 </div>
 
                 <div className="d-flex justify-materialescontent-center my-3">
-                    <Button  icon='' type="submit" className="text-center mx-auto" text='Enviar' />
+                    <Button icon='' type="submit" className="text-center mx-auto" text='Enviar' />
                 </div>
-                
+
             </Form>
         )
     }

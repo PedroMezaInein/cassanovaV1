@@ -4,11 +4,11 @@ import { URL_DEV, ICONS_MODULES, DARK_BLUE, L_BLUE, BONE } from '../../constants
 import { ToggleButton, Button } from '../form-components'
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Subtitle, Small } from '../texts'
-import {Accordion, Card} from 'react-bootstrap'
+import { Accordion, Card } from 'react-bootstrap'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import Form from 'react-bootstrap/Form'
 import swal from 'sweetalert'
-class PermisosForm extends Component{
+class PermisosForm extends Component {
 
     state = {
         toggle: false,
@@ -16,7 +16,7 @@ class PermisosForm extends Component{
         activeKey: ''
     }
 
-    constructor(props){
+    constructor(props) {
         super(props)
         this.handleCheckbox = this.handleCheckbox.bind(this);
     }
@@ -25,9 +25,9 @@ class PermisosForm extends Component{
         const { grupos } = this.state;
         const { activeKey } = this.state
         let aux = activeKey
-        grupos.find(function(element, index) {
-            if(element.name === eventKey && element.checked){
-                aux = eventKey      
+        grupos.find(function (element, index) {
+            if (element.name === eventKey && element.checked) {
+                aux = eventKey
             }
         });
         this.setState({
@@ -38,9 +38,9 @@ class PermisosForm extends Component{
     handleGroupToggler = e => {
         const { name, checked } = e.target
         let { grupos, activeKey } = this.state
-        if(!checked){
-            grupos.find(function(element, index) {
-                if(element.name === name){
+        if (!checked) {
+            grupos.find(function (element, index) {
+                if (element.name === name) {
                     grupos[index].checked = false
                     grupos[index].modulos.map((modulo) => {
                         modulo.checked = false;
@@ -51,9 +51,9 @@ class PermisosForm extends Component{
                 activeKey: activeKey === name ? '' : activeKey,
                 grupos
             })
-        }else{
-            grupos.find(function(element, index) {
-                if(element.name === name){
+        } else {
+            grupos.find(function (element, index) {
+                if (element.name === name) {
                     grupos[index].checked = true
                 }
             });
@@ -66,14 +66,14 @@ class PermisosForm extends Component{
 
     handleCheckbox = (module) => (e) => {
         const { padre, name, checked } = module
-        
+
         let { grupos } = this.state
-        
-        grupos.find(function(element, index) {
-            if(element.name === padre){
+
+        grupos.find(function (element, index) {
+            if (element.name === padre) {
                 let aux = false;
-                element.modulos.find(function(element, index){
-                    if(element.name === name){
+                element.modulos.find(function (element, index) {
+                    if (element.name === name) {
                         element.checked = !checked
                     }
                     aux = element.checked || aux
@@ -93,27 +93,27 @@ class PermisosForm extends Component{
         activeKey = grupos[0].slug
         let auxActive = null
         let gruposObject = Array()
-        grupos.map((grupo, key) => {            
+        grupos.map((grupo, key) => {
             let aux = true
-            
+
             const { slug: slugGrupo, name: nombre, icon } = grupo
             let modulosObject = Array()
             grupo.modulos.map((modulo, key) => {
                 const { slug, name: nombre, icon } = modulo
-                if(modulo.permisos.length){
-                    modulosObject.push( { checked: true, padre: slugGrupo, name: slug, nombre: nombre, icon: icon} )
+                if (modulo.permisos.length) {
+                    modulosObject.push({ checked: true, padre: slugGrupo, name: slug, nombre: nombre, icon: icon })
                     aux = aux && true
-                }else{
-                    modulosObject.push(  { checked: false, padre: slugGrupo, name: slug, nombre: nombre, icon: icon} )
+                } else {
+                    modulosObject.push({ checked: false, padre: slugGrupo, name: slug, nombre: nombre, icon: icon })
                     aux = aux && false
                 }
-            }) 
-            if((auxActive === null && aux)){
-                if(auxActive === null){
+            })
+            if ((auxActive === null && aux)) {
+                if (auxActive === null) {
                     auxActive = key
                 }
             }
-            gruposObject.push({checked: aux, modulos: modulosObject, name: slugGrupo, nombre: nombre, icon: icon})
+            gruposObject.push({ checked: aux, modulos: modulosObject, name: slugGrupo, nombre: nombre, icon: icon })
         })
 
         this.setState({
@@ -123,42 +123,42 @@ class PermisosForm extends Component{
         })
     }
 
-    async componentDidMount(){
-        const { authUser: {access_token: access_token}, history, user } = this.props
-        if(!access_token)
+    async componentDidMount() {
+        const { authUser: { access_token: access_token }, history, user } = this.props
+        if (!access_token)
             history.push('/login')
-        await axios.get(URL_DEV + 'modulos/user/'+user, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
+        await axios.get(URL_DEV + 'modulos/user/' + user, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
-                const { data: {modulos:  grupos} } = response
+                const { data: { modulos: grupos } } = response
                 this.setGrupos(grupos);
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     }).then((result) => {
-                        if(result.value)
+                        if (result.value)
                             history.push('/login')
                     })
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        
+
                     })
                 }
             }
         ).catch((error) => {
             swal({
                 title: '¡Ups 😕!',
-                text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                 icon: 'error',
-                
+
             })
         })
     }
@@ -169,13 +169,13 @@ class PermisosForm extends Component{
         this.setPermisosAxios(user, grupos);
     }
 
-    async setPermisosAxios(user, data){
-        const { authUser: {access_token: access_token}, history, handleClose } = this.props
-        if(!access_token)
+    async setPermisosAxios(user, data) {
+        const { authUser: { access_token: access_token }, history, handleClose } = this.props
+        if (!access_token)
             history.push('/login')
-        await axios.put(URL_DEV + 'modulos/user/'+user, {grupos: data}, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
+        await axios.put(URL_DEV + 'modulos/user/' + user, { grupos: data }, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
-                const { data: {modulos:  grupos} } = response
+                const { data: { modulos: grupos } } = response
                 this.setGrupos(grupos);
                 handleClose();
                 swal({
@@ -188,83 +188,83 @@ class PermisosForm extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     swal({
                         title: '¡Ups 😕!',
                         text: 'Parece que no has iniciado sesión',
                         icon: 'warning',
                         confirmButtonText: 'Inicia sesión'
                     })
-                }else{
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        
+
                     })
                 }
             }
         ).catch((error) => {
             swal({
                 title: '¡Ups 😕!',
-                text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                 icon: 'error',
-                
+
             })
         })
     }
-    render(){
+    render() {
         const { grupos, activeKey } = this.state
-        
-        return(
-            <form onSubmit={this.handleSubmit}> 
+
+        return (
+            <form onSubmit={this.handleSubmit}>
                 <Accordion activeKey={activeKey} className="accordion accordion-light">
                     {
                         grupos !== null && grupos.map((grupo, key) => {
-                            const { ... modulos } = grupo
-                            return(
-                                <div key={key}>  
+                            const { ...modulos } = grupo
+                            return (
+                                <div key={key}>
                                     <Card>
-                                        <Accordion.Toggle as={Card.Header} eventKey={grupo.name} onClick={() => this.handleAccordion(grupo.name)}> 
-                                            <div className="d-flex align-items-center">                                            
-                                                <ToggleButton  
-                                                    { ...grupo} 
+                                        <Accordion.Toggle as={Card.Header} eventKey={grupo.name} onClick={() => this.handleAccordion(grupo.name)}>
+                                            <div className="d-flex align-items-center">
+                                                <ToggleButton
+                                                    {...grupo}
                                                     onToggle={(e) => this.handleGroupToggler(e)}
                                                     leftBG={"#ECF0F3"}
                                                     rightBG={"#ECF0F3"}
-                                                    borderColor={"#ECF0F3"} 
+                                                    borderColor={"#ECF0F3"}
                                                     leftKnobColor={"#FFF"}
                                                     rightKnobColor={"#2171c1"}
                                                 />
                                                 <div className="card-title collapsed pl-2">{grupo.nombre}</div>
-                                                
+
                                             </div>
-                                        </Accordion.Toggle>          
+                                        </Accordion.Toggle>
                                         <Accordion.Collapse eventKey={grupo.name}>
-                                            <Card.Body  className="bg-light">
+                                            <Card.Body className="bg-light">
                                                 <div className="row mx-0 mt-2 d-flex justify-content-center">
                                                     {
                                                         grupo.modulos.map((modulo, key) => {
-                                                            return(
-                                                                <div key={key} className="col-md-2 pt-4 px-3"> 
+                                                            return (
+                                                                <div key={key} className="col-md-2 pt-4 px-3">
                                                                     <div className="text-center">
-                                                                        <p className="font-size-sm font-weight-bold">{modulo.nombre}</p>    
+                                                                        <p className="font-size-sm font-weight-bold">{modulo.nombre}</p>
                                                                     </div>
-                                                                    <div className="d-flex justify-content-center"> 
-                                                                        <Form.Group> 
+                                                                    <div className="d-flex justify-content-center">
+                                                                        <Form.Group>
                                                                             <div className="checkbox-list pt-2">
                                                                                 <label className="checkbox checkbox-outline checkbox-outline-2x checkbox-primary">
-                                                                                    <input 
+                                                                                    <input
                                                                                         name={modulo.name}
-                                                                                        type="checkbox" 
+                                                                                        type="checkbox"
                                                                                         checked={modulo.checked}
-                                                                                        onChange={ this.handleCheckbox(modulo) }
-                                                                                    /> 
+                                                                                        onChange={this.handleCheckbox(modulo)}
+                                                                                    />
                                                                                     <span></span>
                                                                                 </label>
-                                                                            </div> 
+                                                                            </div>
                                                                         </Form.Group>
-                                                                    </div>                                                
+                                                                    </div>
                                                                 </div>
                                                             )
                                                         })
@@ -280,7 +280,7 @@ class PermisosForm extends Component{
                     }
                 </Accordion>
                 <div className="d-flex justify-content-center my-3">
-                    <Button  icon='' type="submit" text='Confirmar' className={"btn btn-light-primary font-weight-bolder mr-3"}/>
+                    <Button icon='' type="submit" text='Confirmar' className={"btn btn-light-primary font-weight-bolder mr-3"} />
                 </div>
             </form>
         )

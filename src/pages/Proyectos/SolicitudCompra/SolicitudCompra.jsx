@@ -131,7 +131,7 @@ class SolicitudCompra extends Component{
                     tooltip: {id:'delete', text:'Eliminar', type:'error'},
                 },
                 {
-                    text: 'Convertir',
+                    text: 'Convertir&nbsp;a&nbsp;compra',
                     btnclass: 'primary',
                     iconclass: 'flaticon2-refresh',                  
                     action: 'convert',

@@ -11,6 +11,7 @@ class SelectSearchForm extends Component{
 
     renderFontValue = (valueProps,onChange) => {  
         const { requirevalidation } = this.state
+        const {customstyle} = this.props
 
         let validado = false;
         if(requirevalidation){
@@ -32,6 +33,7 @@ class SelectSearchForm extends Component{
                     <input   
                         className={ validado ? " form-control is-valid text-uppercase" : " form-control is-invalid text-uppercase" }   
                         {...valueProps}
+                        style={customstyle}
                         />
                 </div>
                 <span className={ validado ? "form-text text-danger hidden" : "form-text text-danger" }> Selecciona una opción </span>
