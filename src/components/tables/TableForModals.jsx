@@ -19,7 +19,7 @@ class TableForModals extends Component {
 
 
     reloadTableData(props) {
-        const { data, actions, elements } = props
+        const { data, actions, elements, dataID } = props
         var table = $(this.refs.main)
             .DataTable();
         table.clear();
@@ -28,22 +28,27 @@ class TableForModals extends Component {
 
         $(this.refs.main).on('click', '.btn-actions-table', function (e) {
             e.preventDefault();
+            let dataIdAux = ''
             var id = $(this).attr('id').toString()
-            var name = $(this).attr('name').toString()
-            let aux = elements.find(function (element, index) {
-                if (element.id.toString() === id) {
-
-                    return element
-
-                }
+            var name = $(this).attr('name').toString() 
+            let aux = elements.find(function(element, index) { 
+                if(dataID){
+                    dataIdAux = dataID.toString()+'-'+element.id.toString()
+                    if(dataIdAux.toString() === id.toString()){
+                        return element
+                    }
+                }else
+                    if(element.id.toString() === id) {
+                        return element
+                    }
             });
-            actions[name].function(aux)
+            actions[name].function(aux) 
         });
 
     }
 
     componentDidMount() {
-        const { actions, elements, data, mostrar_acciones } = this.props
+        const { actions, elements, data, mostrar_acciones, dataID } = this.props
         global_variable["mostrar_acciones"] = mostrar_acciones;
         var header = this.props.columns;
         var columns = [];
@@ -149,6 +154,7 @@ class TableForModals extends Component {
                         let aux = ''
                         {
                             data.map((element) => {
+                                console.log(element.action, 'element')
                                 aux = aux + /* `<input type="button" onClick = { console.log('hola')} value="Edit" class="btnEdit sfBtn sfPrimaryBtn sfLocale" />` */
                                     `<button name=${element.action}  id = ${row.id} class="ml-2 btn btn-actions-table btn-xs btn-icon btn-text-${element.btnclass} btn-hover-${element.btnclass}" title=${element.text}><i class=${element.iconclass}></i></button>`
                             })
@@ -179,13 +185,20 @@ class TableForModals extends Component {
         
         $(this.refs.main).on('click', '.btn-actions-table', function (e) {
             e.preventDefault();                 
+            let dataIdAux = ''
             var id = $(this).attr('id').toString()
-            var name =$(this).attr('name').toString() 
+            var name = $(this).attr('name').toString() 
             let aux = elements.find(function(element, index) { 
-                if(element.id.toString() === id){
-                    return element    
-                }
-            }); 
+                if(dataID){
+                    dataIdAux = dataID.toString()+'-'+element.id.toString()
+                    if(dataIdAux.toString() === id.toString()){
+                        return element
+                    }
+                }else
+                    if(element.id.toString() === id) {
+                        return element
+                    }
+            });
             actions[name].function(aux) 
         });
     

@@ -114,7 +114,8 @@ export default class FacturaTable extends Component{
     }
     openModalDeleteFactura = (factura) => {
         const { deleteFactura } = this.props
-        swal({
+        deleteAlert('¿Seguro deseas borrar la factura?', () => deleteFactura(factura.id)  )
+        /* swal({
             title: '¿Seguro deseas borrar la factura?',
             icon: 'warning',
             buttons: {
@@ -137,7 +138,7 @@ export default class FacturaTable extends Component{
             if (result) {
                 deleteFactura(factura.id)             
             }            
-        })
+        }) */
     } 
 
     render(){
