@@ -15,18 +15,6 @@ class IngresosForm extends Component {
         onChange({ target: { value: date, name: 'fecha' } })
     }
 
-    /*updateEmpresa = value => {
-        const { onChange, setOptions } = this.props
-        onChange({ target: { value: value.value, name: 'empresa' } })
-        onChange({ target: { value: '', name: 'cuenta' } })
-        setOptions('cuentas', value.cuentas)
-    }
-
-    updateCuenta = value => {
-        const { onChange } = this.props
-        onChange({ target: { value: value.value, name: 'cuenta' } })
-    }*/
-
     updateEmpresa = value => {
         const { onChange, setOptions } = this.props
         onChange({ target: { value: value, name: 'empresa' } })
@@ -55,20 +43,6 @@ class IngresosForm extends Component {
             }
         })
     }
-    
-    /*
-    updateArea = value => {
-        const { onChange, setOptions } = this.props
-        onChange({target:{value: value.value, name:'area'}})
-        onChange({target:{value: '', name:'subarea'}})
-        setOptions('subareas',value.subareas)
-    }
-
-    updateSubarea = value => {
-        const { onChange } = this.props
-        onChange({target:{value: value.value, name:'subarea'}})
-    }
-    */
 
     updateArea = value => {
         const { onChange, setOptions } = this.props
@@ -82,7 +56,6 @@ class IngresosForm extends Component {
                 setOptions('subareas', element.subareas)
             }
         })
-
     }
 
     updateSubarea = value => {

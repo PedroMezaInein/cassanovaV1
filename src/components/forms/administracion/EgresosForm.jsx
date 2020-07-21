@@ -3,7 +3,7 @@ import { Form } from 'react-bootstrap'
 import { Subtitle } from '../../texts'
 import { RFC, DATE } from '../../../constants'
 import { SelectSearch, Select, Button, RadioGroup, Input, Calendar, InputMoney, FileInput } from '../../form-components'
-import {openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
+import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
 
 class EgresosForm extends Component {
@@ -12,15 +12,6 @@ class EgresosForm extends Component {
         const { onChange } = this.props
         onChange({ target: { value: date, name: 'fecha' } })
     }
-
-    /*Código Omar
-    updateEmpresa = value => {
-        const { onChange, setOptions } = this.props
-        onChange({ target: { value: value.value, name: 'empresa' } })
-        onChange({ target: { value: '', name: 'cuenta' } })
-        setOptions('cuentas', value.cuentas)
-    }
-    */
 
     updateEmpresa = value => {
         const { onChange, setOptions } = this.props
@@ -44,37 +35,18 @@ class EgresosForm extends Component {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'cuenta' } })
     }
-    /*
-    updateCuenta = value => {
-        const { onChange } = this.props
-        onChange({ target: { value: value.value, name: 'cuenta' } })
-    }
-    */
 
     updateProveedor = value => {
         const { onChange, data, form } = this.props
         onChange({ target: { value: value, name: 'proveedor' } })
         data.proveedores.find(function (element, index) {
             if (value.toString() === element.id.toString()) {
-                if(element.rfc !== ''){
+                if (element.rfc !== '') {
                     onChange({ target: { value: element.rfc, name: 'rfc' } })
                 }
             }
         })
     }
-    /*Código Omar
-    updateArea = value => {
-        const { onChange, setOptions } = this.props
-        onChange({target:{value: value.value, name:'area'}})
-        onChange({target:{value: '', name:'subarea'}})
-        setOptions('subareas',value.subareas)
-    }
-
-    updateSubarea = value => {
-        const { onChange } = this.props
-        onChange({target:{value: value.value, name:'subarea'}})
-    }
-    */
 
     updateArea = value => {
         const { onChange, setOptions } = this.props
@@ -125,41 +97,41 @@ class EgresosForm extends Component {
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
-                        <div className="wizard-steps px-8 py-8 px-lg-15 py-lg-3"> 
-                            <div id="wizard-1" className="wizard-step" data-wizard-state="current" data-wizard-type="step" onClick = { () => { openWizard1() } }>
-                                <div className="wizard-label">
-                                    <h3 className="wizard-title">
+                    <div className="wizard-steps px-8 py-8 px-lg-15 py-lg-3">
+                        <div id="wizard-1" className="wizard-step" data-wizard-state="current" data-wizard-type="step" onClick={() => { openWizard1() }}>
+                            <div className="wizard-label">
+                                <h3 className="wizard-title">
                                     <span>1.</span> Datos de la factura</h3>
-                                    <div className="wizard-bar"></div>
-                                </div>
-                            </div> 
-                            <div id="wizard-2" className="wizard-step" data-wizard-type="step" onClick = { () => { openWizard2() } }>
-                                <div className="wizard-label">
-                                    <h3 className="wizard-title">
+                                <div className="wizard-bar"></div>
+                            </div>
+                        </div>
+                        <div id="wizard-2" className="wizard-step" data-wizard-type="step" onClick={() => { openWizard2() }}>
+                            <div className="wizard-label">
+                                <h3 className="wizard-title">
                                     <span>2.</span> Área y fecha</h3>
-                                    <div className="wizard-bar"></div>
-                                </div>
-                            </div> 
-                            <div id="wizard-3" className="wizard-step" data-wizard-type="step" onClick = { () => { openWizard3() } }>
-                                <div className="wizard-label">
-                                    <h3 className="wizard-title">
+                                <div className="wizard-bar"></div>
+                            </div>
+                        </div>
+                        <div id="wizard-3" className="wizard-step" data-wizard-type="step" onClick={() => { openWizard3() }}>
+                            <div className="wizard-label">
+                                <h3 className="wizard-title">
                                     <span>3.</span> Pago</h3>
-                                    <div className="wizard-bar"></div>
-                                </div>
-                            </div>   
+                                <div className="wizard-bar"></div>
+                            </div>
                         </div>
                     </div>
+                </div>
                 <div className="row justify-content-center py-10 px-8 py-lg-12 px-lg-10">
                     <div className="col-md-12">
                         <Form
-                            onSubmit = { 
+                            onSubmit={
                                 (e) => {
-                                    e.preventDefault(); 
+                                    e.preventDefault();
                                     validateAlert(onSubmit, e, 'wizard-3-content')
                                 }
                             }
                             {...props}
-                            >
+                        >
                             <div id="wizard-1-content" className="pb-3" data-wizard-type="step-content" data-wizard-state="current">
                                 <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos de la factura</h5>
                                 <div className="form-group row form-group-marginless">
@@ -198,14 +170,13 @@ class EgresosForm extends Component {
                                                     deleteAdjunto={clearFiles} multiple
                                                     messageinc="Incorrecto. Adjunta el documento."
                                                 />
-                                            {/*<span className="form-text text-muted">Por favor, adjunta el documento. </span>*/}
                                             </div>
-                                        : ''
+                                            : ''
                                     }
                                     {
                                         form.factura === 'Con factura' ?
                                             <div className="col-md-4">
-                                                <Input 
+                                                <Input
                                                     requirevalidation={1}
                                                     formeditado={formeditado}
                                                     placeholder="RFC"
@@ -217,15 +188,14 @@ class EgresosForm extends Component {
                                                     messageinc="Incorrecto. Ej. ABCD001122ABC"
                                                     maxLength="13"
                                                 />
-                                            {/*<span className="form-text text-muted">Por favor, ingresa el RFC. </span>*/}
                                             </div>
-                                        : ''
+                                            : ''
                                     }
-                                </div>                                
+                                </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-6">
-                                        <SelectSearch 
+                                        <SelectSearch
                                             formeditado={formeditado}
                                             options={options.proveedores}
                                             placeholder="Selecciona el proveedor"
@@ -234,14 +204,13 @@ class EgresosForm extends Component {
                                             onChange={this.updateProveedor}
                                             iconclass={"far fa-user"}
                                             messageinc="Incorrecto. Selecciona el proveedor."
-                                            
+
                                         />
-                                    {/*<span className="form-text text-muted">Por favor, selecciona el proveedor.</span>*/}
                                     </div>
                                     <div className="col-md-6">
                                         {
                                             form.facturaObject ?
-                                                <Input 
+                                                <Input
                                                     placeholder="Empresa"
                                                     name="empresa"
                                                     readOnly
@@ -250,7 +219,7 @@ class EgresosForm extends Component {
                                                     iconclass={"far fa-building"}
                                                 />
                                                 :
-                                                <SelectSearch 
+                                                <SelectSearch
                                                     formeditado={formeditado}
                                                     options={options.empresas}
                                                     placeholder="Selecciona la empresa"
@@ -261,19 +230,18 @@ class EgresosForm extends Component {
                                                     messageinc="Incorrecto. Selecciona la empresa."
                                                 />
                                         }
-                                    {/*<span className="form-text text-muted">Por favor, selecciona la empresa.</span>*/}
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2"></div>
                                     <div>
-                                        <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick = { () => { openWizard2() }} data-wizard-type="action-next">Siguiente</button>
+                                        <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-next">Siguiente</button>
                                     </div>
                                 </div>
                             </div>
                             <div id="wizard-2-content" className="pb-3" data-wizard-type="step-content">
                                 <h5 className="mb-4 font-weight-bold text-dark">Selecciona el área y fecha</h5>
-								<div className="form-group row form-group-marginless">
+                                <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <Calendar
                                             formeditado={formeditado}
@@ -283,7 +251,6 @@ class EgresosForm extends Component {
                                             value={form.fecha}
                                             patterns={DATE}
                                         />
-                                        {/*<span className="form-text text-muted">Por favor, selecciona la fecha.</span>*/}
                                     </div>
                                     <div className="col-md-4">
                                         <SelectSearch
@@ -296,8 +263,7 @@ class EgresosForm extends Component {
                                             iconclass={"far fa-window-maximize"}
                                             messageinc="Incorrecto. Selecciona el área."
                                         />
-                                    {/*<span className="form-text text-muted">Por favor, selecciona el área.</span>*/}
-                                    </div>    
+                                    </div>
                                     {
                                         form.area ?
                                             <div className="col-md-4">
@@ -311,15 +277,14 @@ class EgresosForm extends Component {
                                                     iconclass={"far fa-window-restore"}
                                                     messageinc="Incorrecto. Selecciona el subárea."
                                                 />
-                                            {/*<span className="form-text text-muted">Por favor, selecciona la sub-área.</span>*/}
                                             </div>
-                                        : ''
-                                    }   
+                                            : ''
+                                    }
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-12">
-                                        <Input 
+                                        <Input
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             as="textarea"
@@ -329,19 +294,18 @@ class EgresosForm extends Component {
                                             name="descripcion"
                                             onChange={onChange}
                                             messageinc="Incorrecto. Ingresa la descripción."
-                                            style={{paddingLeft: "10px"}}                                           
+                                            style={{ paddingLeft: "10px" }}
                                         />
-                                    {/*<span className="form-text text-muted">Por favor, ingresa la descripción.</span>*/}
                                     </div>
-                                </div> 
+                                </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
-                                        <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick = { () => { openWizard1() }} data-wizard-type="action-prev">Anterior</button>
+                                        <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard1() }} data-wizard-type="action-prev">Anterior</button>
                                     </div>
                                     <div>
-                                        <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick = { () => { openWizard3() }} data-wizard-type="action-next">Siguiente</button>
+                                        <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick={() => { openWizard3() }} data-wizard-type="action-next">Siguiente</button>
                                     </div>
-                                </div>    
+                                </div>
                             </div>
                             <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
                                 <h5 className="mb-4 font-weight-bold text-dark">Selecciona el tipo de pago, impuesto y estatus</h5>
@@ -349,22 +313,21 @@ class EgresosForm extends Component {
                                     {
                                         form.empresa ?
                                             <div className="col-md-4">
-                                                <SelectSearch 
+                                                <SelectSearch
                                                     formeditado={formeditado}
-                                                    options={options.cuentas} 
+                                                    options={options.cuentas}
                                                     placeholder="Selecciona la cuenta"
-                                                    name="cuenta" 
-                                                    value={form.cuenta} 
+                                                    name="cuenta"
+                                                    value={form.cuenta}
                                                     onChange={this.updateCuenta}
-                                                    iconclass={"far fa-credit-card"} 
+                                                    iconclass={"far fa-credit-card"}
                                                     messageinc="Incorrecto. Selecciona la cuenta."
                                                 />
-                                            {/*<span className="form-text text-muted">Por favor, selecciona la cuenta.</span>*/}
                                             </div>
-                                        : ''
+                                            : ''
                                     }
                                     <div className="col-md-4">
-                                        <Select 
+                                        <Select
                                             requirevalidation={1}
                                             formeditado={formeditado}
                                             placeholder="Selecciona el tipo de pago"
@@ -375,7 +338,6 @@ class EgresosForm extends Component {
                                             iconclass={"fas fa-coins"}
                                             messageinc="Incorrecto. Selecciona el tipo de pago."
                                         />
-                                    {/*<span className="form-text text-muted">Por favor, selecciona el tipo de pago.</span>*/}
                                     </div>
                                     <div className="col-md-4">
                                         <Select
@@ -385,17 +347,16 @@ class EgresosForm extends Component {
                                             options={options.tiposImpuestos}
                                             name="tipoImpuesto"
                                             value={form.tipoImpuesto}
-                                            onChange={onChange} 
+                                            onChange={onChange}
                                             iconclass={"fas fa-file-invoice-dollar"}
                                             messageinc="Incorrecto. Selecciona el impuesto."
                                         />
-                                    {/*<span className="form-text text-muted">Por favor, selecciona el impuesto.</span>*/}
                                     </div>
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
-                                        <Select 
+                                        <Select
                                             requirevalidation={1}
                                             formeditado={formeditado}
                                             placeholder="Selecciona el estatus de compra"
@@ -403,13 +364,12 @@ class EgresosForm extends Component {
                                             name="estatusCompra"
                                             value={form.estatusCompra}
                                             onChange={onChange}
-                                            iconclass={"flaticon2-time"}  
+                                            iconclass={"flaticon2-time"}
                                             messageinc="Incorrecto. Selecciona el estatus de compra."
                                         />
-                                    {/*<span className="form-text text-muted">Por favor, selecciona el estatus de compra.</span>*/}
                                     </div>
                                     <div className="col-md-4">
-                                        <InputMoney 
+                                        <InputMoney
                                             requirevalidation={1}
                                             formeditado={formeditado}
                                             thousandSeparator={true}
@@ -420,22 +380,20 @@ class EgresosForm extends Component {
                                             iconclass={" fas fa-money-check-alt"}
                                             messageinc="Incorrecto. Ingresa el monto."
                                         />
-                                    {/*<span className="form-text text-muted">Por favor, ingresa el monto.</span>*/}
                                     </div>
                                     <div className="col-md-4">
-                                        <InputMoney 
+                                        <InputMoney
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             thousandSeparator={true}
                                             placeholder="Comisión"
                                             value={form.comision}
                                             name="comision"
-                                            onChange={onChange}                                            
+                                            onChange={onChange}
                                             iconclass={"flaticon-coins"}
                                             messageinc="Incorrecto. Ingresa la comisión."
                                         />
-                                    {/*<span className="form-text text-muted">Por favor, ingresa la comisión.</span>*/}
-                                    </div>                                            
+                                    </div>
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
@@ -452,7 +410,6 @@ class EgresosForm extends Component {
                                             deleteAdjunto={clearFiles}
                                             messageinc="Incorrecto. Adjunta el documento."
                                         />
-                                    {/*<span className="form-text text-muted">Por favor, adjunta el documento.</span>*/}
                                     </div>
                                     <div className="col-md-6">
                                         <FileInput
@@ -464,20 +421,19 @@ class EgresosForm extends Component {
                                             name={'pago'} id={'pago'}
                                             accept="text/xml, application/pdf"
                                             files={form['adjuntos']['pago']['files']}
-                                            deleteAdjunto={clearFiles} 
+                                            deleteAdjunto={clearFiles}
                                             messageinc="Incorrecto. Adjunta el documento."
                                         />
-                                    {/*<span className="form-text text-muted">Por favor, adjunta el documento.</span>*/}
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
-                                        <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase"  onClick = { () => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
+                                        <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
                                     </div>
                                     <div>
-                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type="submit"  text="Enviar" />
+                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type="submit" text="Enviar" />
                                     </div>
-                                </div> 
+                                </div>
                             </div>
                         </Form>
                     </div>

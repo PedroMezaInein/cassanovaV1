@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons'
 import axios from 'axios';
-import {URL_DEV} from '../../constants'
+import { URL_DEV } from '../../constants'
 import { connect } from 'react-redux'
 import { login } from '../../redux/reducers/auth_user'
 import swal from 'sweetalert'
@@ -28,14 +28,14 @@ class LoginForm extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
-    
+
     changeInputType = () => {
         this.setState({
             showPassword: !this.state.showPassword
         })
     }
 
-    async handleSubmit (event){
+    async handleSubmit(event) {
         event.preventDefault();
         const data = this.state.form;
         let error = this.state.error;;
@@ -54,14 +54,14 @@ class LoginForm extends React.Component {
                 this.setState({
                     error: error
                 });
-                if(error.response.status === 401){
-                    
-                }else{
+                if (error.response.status === 401) {
+
+                } else {
                     swal({
                         title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-                        
+
                     })
                 }
             }
@@ -72,9 +72,9 @@ class LoginForm extends React.Component {
             });
             swal({
                 title: '¡Ups 😕!',
-                text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
+                text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                 icon: 'error',
-                
+
             })
         })
     }
@@ -89,21 +89,21 @@ class LoginForm extends React.Component {
             form: form
         })
         var re = /[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}/igm;
-        switch(name){
+        switch (name) {
             case 'email':
-                if(value.length < 1){
+                if (value.length < 1) {
                     error['email'] = 'No dejes este campo vacío.'
                     this.setState({
                         error: error
                     });
-                }else{
-                    if(!re.test(value)){
+                } else {
+                    if (!re.test(value)) {
                         error['email'] = 'Ingresa un correo electrónico válido.'
                         this.setState({
                             error: error
                         });
                     }
-                    else{
+                    else {
                         error['email'] = ''
                         this.setState({
                             error: error
@@ -112,19 +112,19 @@ class LoginForm extends React.Component {
                 }
                 break;
             case 'password':
-                if(value.length < 1){
+                if (value.length < 1) {
                     error['password'] = 'No dejes este campo vacío.'
                     this.setState({
                         error: error
                     });
-                }else{
-                    if(value.length < 5){
+                } else {
+                    if (value.length < 5) {
                         error['password'] = 'La contraseña es muy corta.'
                         this.setState({
                             error: error
                         });
                     }
-                    else{
+                    else {
                         error['password'] = ''
                         this.setState({
                             error: error
@@ -139,11 +139,11 @@ class LoginForm extends React.Component {
 
     render() {
         return (
-            
+
             <form className="form pt-5" onSubmit={this.handleSubmit}>
                 <div className="form-group">
                     <input className={"form-control h-auto text-white bg-white-o-9 rounded-pill border-0 py-3 pl-4"}
-                        type="text" 
+                        type="text"
                         placeholder="Ingresa tu email"
                         required
                         //className={this.state.error.email !== '' ? 'error ' : ''}
@@ -151,18 +151,18 @@ class LoginForm extends React.Component {
                         onChange={this.handleChange}
                         name="email"
                     />
-                        {
-                            this.state.error.email !== '' &&
-                                <label className="text-white">
-                                    {this.state.error.email}
-                                </label>
-                        }
-				</div>
-                
+                    {
+                        this.state.error.email !== '' &&
+                        <label className="text-white">
+                            {this.state.error.email}
+                        </label>
+                    }
+                </div>
+
                 <div className="form-group">
                     <input className={"form-control h-auto text-white bg-white-o-9 rounded-pill border-0 py-3  pl-4"}
-                        type={this.state.showPassword ? 'text' : 'password'} 
-                        placeholder="Ingresa tu constraseña" 
+                        type={this.state.showPassword ? 'text' : 'password'}
+                        placeholder="Ingresa tu constraseña"
                         required
                         value={this.state.form.password}
                         onChange={this.handleChange}
@@ -182,32 +182,32 @@ class LoginForm extends React.Component {
                         </InputGroup.Text>
                     </InputGroup.Prepend>
                     */}
-				</div>
+                </div>
                 {
                     this.state.error.password !== '' &&
-                        <label className="text-white">
-                            {this.state.error.password}
-                        </label>
+                    <label className="text-white">
+                        {this.state.error.password}
+                    </label>
                 }
 
                 <div className="form-group text-center mt-10 pt-5">
-					<button className="btn btn-transparent-white font-weight-bold font-weight-bold opacity-90 pl-4 pr-4"
-                            type="submit"
-                            disabled={
-                                this.state.form.email === '' ||
-                                this.state.form.password === '' ||
-                                this.state.error.email !== '' ||
-                                this.state.error.password !== ''
-                            }>
-                    Iniciar sesión
+                    <button className="btn btn-transparent-white font-weight-bold font-weight-bold opacity-90 pl-4 pr-4"
+                        type="submit"
+                        disabled={
+                            this.state.form.email === '' ||
+                            this.state.form.password === '' ||
+                            this.state.error.email !== '' ||
+                            this.state.error.password !== ''
+                        }>
+                        Iniciar sesión
                     </button>
-				</div>
+                </div>
             </form>
         )
     }
 }
 const mapStateToProps = state => {
-    return{
+    return {
         authUser: state.authUser
     }
 }

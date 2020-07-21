@@ -3,36 +3,10 @@ import { Subtitle } from '../../texts'
 import { SelectSearch, Select, Calendar, RadioGroup, FileInput, Button, Input, InputMoney, SelectSearchTrue } from '../../form-components'
 import { Form } from 'react-bootstrap'
 import { RFC, DATE } from '../../../constants'
-import {openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
+import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
 
 class VentasForm extends Component {
-
-    
-
-    /*updateCliente = value => {
-        const { onChange, setOptions } = this.props
-        onChange({ target: { value: value.value, name: 'cliente' } })
-        onChange({ target: { value: '', name: 'proyecto' } })
-        setOptions('proyectos', value.proyectos)
-    }
-
-    updateProyecto = value => {
-        const { onChange } = this.props
-        onChange({ target: { value: value.value, name: 'proyecto' } })
-    }
-
-    updateEmpresa = value => {
-        const { onChange, setOptions } = this.props
-        onChange({ target: { value: value.value, name: 'empresa' } })
-        onChange({ target: { value: '', name: 'cuenta' } })
-        setOptions('cuentas', value.cuentas)
-    }
-
-    updateCuenta = value => {
-        const { onChange } = this.props
-        onChange({ target: { value: value.value, name: 'cuenta' } })
-    }*/
 
     updateCliente = value => {
         const { onChange, setOptions, form, data } = this.props
@@ -45,16 +19,16 @@ class VentasForm extends Component {
             if (value.toString() === element.value.toString()) {
                 setOptions('proyectos', element.proyectos)
                 setOptions('contratos', element.contratos)
-                if(form.rfc !== ''){
+                if (form.rfc !== '') {
                     onChange({ target: { value: '', name: 'contrato' } })
                 }
             }
         })
 
-        
-        data.clientes.find(function (element, index){
+
+        data.clientes.find(function (element, index) {
             if (value.toString() === element.id.toString()) {
-                if(element.rfc !== ''){
+                if (element.rfc !== '') {
                     onChange({ target: { value: element.rfc, name: 'rfc' } })
                 }
             }
@@ -83,19 +57,6 @@ class VentasForm extends Component {
         onChange({ target: { value: value, name: 'cuenta' } })
     }
 
-    /* Código Omar
-    updateArea = value => {
-        const { onChange, setOptions } = this.props
-        onChange({target:{value: value.value, name:'area'}})
-        onChange({target:{value: '', name:'subarea'}})
-        setOptions('subareas',value.subareas)
-    }
-
-    updateSubarea = value => {
-        const { onChange } = this.props
-        onChange({target:{value: value.value, name:'subarea'}})
-    }
-    */
     updateArea = value => {
         const { onChange, setOptions } = this.props
 
@@ -148,7 +109,7 @@ class VentasForm extends Component {
     updateContrato = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'contrato' } })
-        
+
     }
 
     render() {
@@ -156,42 +117,41 @@ class VentasForm extends Component {
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
-                    <div className="wizard-steps px-8 py-0 px-lg-15 py-lg-0"> 
-                        <div id="wizard-1" className="wizard-step" data-wizard-state="current" data-wizard-type="step" style={{paddingTop:"0px"}} onClick = { () => { openWizard1() } }>
+                    <div className="wizard-steps px-8 py-0 px-lg-15 py-lg-0">
+                        <div id="wizard-1" className="wizard-step" data-wizard-state="current" data-wizard-type="step" style={{ paddingTop: "0px" }} onClick={() => { openWizard1() }}>
                             <div className="wizard-label">
                                 <h3 className="wizard-title">
-                                <span>1.</span> Datos de la factura</h3>
+                                    <span>1.</span> Datos de la factura</h3>
                                 <div className="wizard-bar"></div>
                             </div>
-                        </div> 
-                        <div id="wizard-2" className="wizard-step" data-wizard-type="step" style={{paddingTop:"0px"}} onClick = { () => { openWizard2() } }>
+                        </div>
+                        <div id="wizard-2" className="wizard-step" data-wizard-type="step" style={{ paddingTop: "0px" }} onClick={() => { openWizard2() }}>
                             <div className="wizard-label">
                                 <h3 className="wizard-title">
-                                <span>2.</span> Área y fecha</h3>
+                                    <span>2.</span> Área y fecha</h3>
                                 <div className="wizard-bar"></div>
                             </div>
-                        </div> 
-                        <div id="wizard-3" className="wizard-step" data-wizard-type="step" style={{paddingTop:"0px"}} onClick = { () => { openWizard3() } }>
+                        </div>
+                        <div id="wizard-3" className="wizard-step" data-wizard-type="step" style={{ paddingTop: "0px" }} onClick={() => { openWizard3() }}>
                             <div className="wizard-label">
                                 <h3 className="wizard-title">
-                                <span>3.</span> Pago</h3>
+                                    <span>3.</span> Pago</h3>
                                 <div className="wizard-bar"></div>
                             </div>
-                        </div>   
+                        </div>
                     </div>
                 </div>
                 <div className="row justify-content-center py-10 px-8 py-lg-12 px-lg-10">
                     <div className="col-md-12">
-                        <Form 
-                            onSubmit = { 
+                        <Form
+                            onSubmit={
                                 (e) => {
-                                    e.preventDefault(); 
+                                    e.preventDefault();
                                     validateAlert(onSubmit, e, 'wizard-3-content')
                                 }
                             }
                             {...props}
-                            >
-                            {/*<Subtitle className="text-center" color="gold"> {title}</Subtitle>*/}
+                        >
                             <div id="wizard-1-content" className="pb-3" data-wizard-type="step-content" data-wizard-state="current">
                                 <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos de la factura</h5>
                                 <div className="form-group row form-group-marginless">
@@ -228,16 +188,15 @@ class VentasForm extends Component {
                                                     id={'factura'}
                                                     accept="text/xml, application/pdf"
                                                     files={form['adjuntos']['factura']['files']}
-                                                    deleteAdjunto={clearFiles} multiple 
+                                                    deleteAdjunto={clearFiles} multiple
                                                 />
-                                            {/*<span className="form-text text-muted">Por favor, adjunta el documento. </span>*/}
                                             </div>
-                                        : ''
+                                            : ''
                                     }
                                     {
                                         form.factura === 'Con factura' && title !== 'Editar venta' ?
                                             <div className="col-md-4">
-                                                <Input 
+                                                <Input
                                                     requirevalidation={1}
                                                     formeditado={formeditado}
                                                     placeholder="RFC"
@@ -249,9 +208,8 @@ class VentasForm extends Component {
                                                     messageinc="Incorrecto. Ej. ABCD001122ABC"
                                                     maxLength="13"
                                                 />
-                                                {/*<span className="form-text text-muted">Por favor, ingresa el RFC. </span>*/}
                                             </div>
-                                        : ''
+                                            : ''
                                     }
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
@@ -259,16 +217,16 @@ class VentasForm extends Component {
                                     <div className="col-md-4">
                                         {
                                             form.facturaObject ?
-                                                <Input 
+                                                <Input
                                                     placeholder="Cliente"
                                                     readOnly
                                                     name="cliente"
                                                     value={form.cliente}
                                                     onChange={onChange}
-                                                    iconclass={"far fa-user"}                                                
+                                                    iconclass={"far fa-user"}
                                                 />
                                                 :
-                                                <SelectSearch 
+                                                <SelectSearch
                                                     formeditado={formeditado}
                                                     options={options.clientes}
                                                     placeholder="Selecciona el cliente"
@@ -278,29 +236,27 @@ class VentasForm extends Component {
                                                     iconclass={"far fa-user"}
                                                 />
                                         }
-                                        {/*<span className="form-text text-muted">Por favor, selecciona el cliente.</span>*/}                                       
                                     </div>
                                     {
                                         form.cliente ?
                                             <div className="col-md-4">
-                                                <SelectSearch 
+                                                <SelectSearch
                                                     formeditado={formeditado}
                                                     options={options.proyectos}
                                                     placeholder="Selecciona el proyecto"
                                                     name="proyecto"
                                                     value={form.proyecto}
                                                     onChange={this.updateProyecto}
-                                                    iconclass={"far fa-folder-open"} 
-                                                />    
-                                                {/*<span className="form-text text-muted">Por favor, selecciona el proyecto.</span>*/}                                            
+                                                    iconclass={"far fa-folder-open"}
+                                                />
                                             </div>
                                             : ''
-                                        
-                                    }                                    
+
+                                    }
                                     <div className="col-md-4">
                                         {
                                             form.facturaObject ?
-                                                <Input 
+                                                <Input
                                                     placeholder="Empresa"
                                                     name="empresa"
                                                     readOnly
@@ -309,7 +265,7 @@ class VentasForm extends Component {
                                                     iconclass={"far fa-building"}
                                                 />
                                                 :
-                                                <SelectSearch 
+                                                <SelectSearch
                                                     formeditado={formeditado}
                                                     options={options.empresas}
                                                     placeholder="Selecciona la empresa"
@@ -319,13 +275,12 @@ class VentasForm extends Component {
                                                     iconclass={"far fa-building"}
                                                 />
                                         }
-                                    {/*<span className="form-text text-muted">Por favor, selecciona la empresa.</span>*/}
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2"></div>
                                     <div>
-                                        <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick = { () => { openWizard2() }} data-wizard-type="action-next">Siguiente</button>
+                                        <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-next">Siguiente</button>
                                     </div>
                                 </div>
                             </div>
@@ -333,18 +288,17 @@ class VentasForm extends Component {
                                 <h5 className="mb-4 font-weight-bold text-dark">Selecciona el área y fecha</h5>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
-                                        <Calendar 
+                                        <Calendar
                                             formeditado={formeditado}
                                             onChangeCalendar={this.handleChangeDate}
                                             placeholder="Fecha"
                                             name="fecha"
                                             value={form.fecha}
                                             patterns={DATE}
-                                        />  
-                                        {/*<span className="form-text text-muted">Por favor, selecciona la fecha. </span>*/}
+                                        />
                                     </div>
                                     <div className="col-md-4">
-                                        <SelectSearch 
+                                        <SelectSearch
                                             formeditado={formeditado}
                                             options={options.areas}
                                             placeholder="Selecciona el área"
@@ -352,13 +306,12 @@ class VentasForm extends Component {
                                             value={form.area}
                                             onChange={this.updateArea}
                                             iconclass={"far fa-window-maximize"}
-                                        /> 
-                                        {/*<span className="form-text text-muted">Por favor, selecciona el área. </span>*/}
+                                        />
                                     </div>
                                     {
                                         form.area ?
                                             <div className="col-md-4">
-                                                <SelectSearch 
+                                                <SelectSearch
                                                     formeditado={formeditado}
                                                     options={options.subareas}
                                                     placeholder="Selecciona el subárea"
@@ -367,14 +320,13 @@ class VentasForm extends Component {
                                                     onChange={this.updateSubarea}
                                                     iconclass={"far fa-window-restore"}
                                                 />
-                                                {/*<span className="form-text text-muted">Por favor, selecciona la sub-área. </span>*/}
                                             </div>
                                             : ''
                                     }
                                 </div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-12">
-                                        <Input 
+                                        <Input
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             as="textarea"
@@ -383,42 +335,40 @@ class VentasForm extends Component {
                                             value={form.descripcion}
                                             name="descripcion"
                                             onChange={onChange}
-                                            style={{paddingLeft: "10px"}} 
+                                            style={{ paddingLeft: "10px" }}
                                             messageinc="Incorrecto. Ingresa la descripción."
                                         />
-                                        {/*<span className="form-text text-muted">Por favor, ingresa la descripción. </span>*/}
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
-                                        <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick = { () => { openWizard1() }} data-wizard-type="action-prev">Anterior</button>
+                                        <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard1() }} data-wizard-type="action-prev">Anterior</button>
                                     </div>
                                     <div>
-                                        <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick = { () => { openWizard3() }} data-wizard-type="action-next">Siguiente</button>
+                                        <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick={() => { openWizard3() }} data-wizard-type="action-next">Siguiente</button>
                                     </div>
                                 </div>
                             </div>
                             <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
-                                <h5 className="mb-4 font-weight-bold text-dark">Selecciona el tipo de pago, impuesto y estatus</h5>        
+                                <h5 className="mb-4 font-weight-bold text-dark">Selecciona el tipo de pago, impuesto y estatus</h5>
                                 <div className="form-group row form-group-marginless">
                                     {
                                         form.empresa ?
                                             <div className="col-md-4">
-                                                <SelectSearch 
+                                                <SelectSearch
                                                     formeditado={formeditado}
-                                                    options={options.cuentas} 
+                                                    options={options.cuentas}
                                                     placeholder="Selecciona la cuenta"
                                                     name="cuenta"
                                                     value={form.cuenta}
-                                                    onChange={this.updateCuenta} 
+                                                    onChange={this.updateCuenta}
                                                     iconclass={"far fa-credit-card"}
                                                 />
-                                                {/*<span className="form-text text-muted">Por favor, selecciona la cuenta. </span>*/}
                                             </div>
-                                        : ''
+                                            : ''
                                     }
                                     <div className="col-md-4">
-                                        <Select 
+                                        <Select
                                             requirevalidation={1}
                                             formeditado={formeditado}
                                             placeholder="Selecciona el tipo de pago"
@@ -430,7 +380,6 @@ class VentasForm extends Component {
                                             iconclass={"fas fa-coins"}
                                             required
                                         />
-                                        {/*<span className="form-text text-muted">Por favor, selecciona el tipo de pago.</span>*/}
                                     </div>
                                     <div className="col-md-4">
                                         <Select
@@ -445,7 +394,6 @@ class VentasForm extends Component {
                                             iconclass={"fas fa-file-invoice-dollar"}
                                             required
                                         />
-                                        {/*<span className="form-text text-muted">Por favor, selecciona el impuesto.</span>*/}
                                     </div>
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
@@ -463,10 +411,9 @@ class VentasForm extends Component {
                                             required
                                             iconclass={"flaticon2-time"}
                                         />
-                                        {/*<span className="form-text text-muted">Por favor, selecciona el estatus de compra.</span>*/}
                                     </div>
                                     <div className="col-md-4">
-                                        <InputMoney 
+                                        <InputMoney
                                             requirevalidation={1}
                                             formeditado={formeditado}
                                             thousandSeparator={true}
@@ -476,25 +423,23 @@ class VentasForm extends Component {
                                             onChange={onChange}
                                             iconclass={" fas fa-money-check-alt"}
                                         />
-                                        {/*<span className="form-text text-muted">Por favor, ingresa el monto.</span>*/}
                                     </div>
                                     <div className="col-md-4">
-                                        <SelectSearchTrue 
+                                        <SelectSearchTrue
                                             requirevalidation={0}
                                             formeditado={formeditado}
-                                            options={options.contratos} 
+                                            options={options.contratos}
                                             placeholder="Selecciona el contrato"
-                                            name="contrato" 
-                                            value={form.contrato} 
-                                            onChange={this.updateContrato} 
+                                            name="contrato"
+                                            value={form.contrato}
+                                            onChange={this.updateContrato}
                                             iconclass={"far fa-file-alt"}
                                         />
-                                        {/*<span className="form-text text-muted">Por favor, selecciona el contrato.</span>*/}
                                     </div>
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
-                                <div className="col-md-4">
+                                    <div className="col-md-4">
                                         <FileInput
                                             requirevalidation={0}
                                             formeditado={formeditado}
@@ -504,9 +449,8 @@ class VentasForm extends Component {
                                             name={'presupuesto'} id={'presupuesto'}
                                             accept="text/xml, application/pdf"
                                             files={form['adjuntos']['presupuesto']['files']}
-                                            deleteAdjunto={clearFiles} 
+                                            deleteAdjunto={clearFiles}
                                         />
-                                        {/*<span className="form-text text-muted">Por favor, adjunta el documento.</span>*/}
                                     </div>
                                     <div className="col-md-4">
                                         <FileInput
@@ -520,17 +464,16 @@ class VentasForm extends Component {
                                             files={form['adjuntos']['pago']['files']}
                                             deleteAdjunto={clearFiles}
                                         />
-                                        {/*<span className="form-text text-muted">Por favor, adjunta el documento. </span>*/}
                                     </div>
-                                </div> 
+                                </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
-                                        <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase"  onClick = { () => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
+                                        <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
                                     </div>
                                     <div>
-                                    <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type="submit" text="Enviar" />
+                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type="submit" text="Enviar" />
                                     </div>
-                                </div> 
+                                </div>
                             </div>
                         </Form>
                     </div>

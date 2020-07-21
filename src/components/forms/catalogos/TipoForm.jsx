@@ -1,34 +1,34 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import {Subtitle} from '../../texts'
-import {Input, Select, SelectSearch, Button} from '../../form-components'
+import { Subtitle } from '../../texts'
+import { Input, Select, SelectSearch, Button } from '../../form-components'
 import { faAngleRight, faTimes, faCaretRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Badge } from 'react-bootstrap'
 import { validateAlert } from '../../../functions/alert'
 
-class UnidadForm extends Component{
+class UnidadForm extends Component {
 
-    render(){
-        const { title, form, onChange, onSubmit, formeditado, ... props } = this.props
-        return(
+    render() {
+        const { title, form, onChange, onSubmit, formeditado, ...props } = this.props
+        return (
             <Form id="form-tipo"
-                onSubmit = { 
+                onSubmit={
                     (e) => {
-                        e.preventDefault(); 
+                        e.preventDefault();
                         validateAlert(onSubmit, e, 'form-tipo')
                     }
                 }
-                { ... props}>
+                {...props}>
                 <div className="form-group row form-group-marginless pt-4">
                     <div className="col-md-12">
-                        <Input                             
+                        <Input
                             requirevalidation={1}
-                            formeditado={formeditado} 
-                            name="tipo" 
-                            value={form.tipo} 
-                            placeholder="Tipo" 
-                            onChange={onChange} 
+                            formeditado={formeditado}
+                            name="tipo"
+                            value={form.tipo}
+                            placeholder="Tipo"
+                            onChange={onChange}
                             iconclass={"far fa-window-maximize"}
                             messageinc="Incorrecto. Ingresa el tipo de contrato."
                         />
