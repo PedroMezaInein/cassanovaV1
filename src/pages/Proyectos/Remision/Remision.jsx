@@ -124,7 +124,7 @@ class Remisiones extends Component{
                     tooltip: {id:'delete', text:'Eliminar', type:'error'},
                 },
                 {
-                    text: 'Convertir',
+                    text: 'Convertir&nbsp;a&nbsp;solicitud&nbsp;de&nbsp;compra',
                     btnclass: 'primary',
                     iconclass: 'flaticon2-refresh',                  
                     action: 'convert',
