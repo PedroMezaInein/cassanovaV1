@@ -1,20 +1,15 @@
-// React
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import { renderToString } from 'react-dom/server'
-
-// Funciones
 import { waitAlert, errorAlert, forbiddenAccessAlert, validateAlert } from '../../functions/alert'
-import { setOptions, setSelectOptions, setTextTable, setDateTable, setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList, setContactoTable } from '../../functions/setters'
-// Components
+import { setOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable} from '../../functions/setters'
 import Layout from '../../components/layout/layout'
 import { Tabs, Tab, Form } from 'react-bootstrap'
 import NewTable from '../../components/tables/NewTable'
 import { CONTRATOS_PROVEEDORES_COLUMNS, CONTRATOS_CLIENTES_COLUMNS, URL_DEV, ADJ_CONTRATOS_COLUMNS } from '../../constants'
 import { Modal, ModalDelete } from '../../components/singles'
-import { Subtitle } from '../../components/texts'
 import ContratoForm from '../../components/forms/administracion/ContratoForm'
 import { Button } from '../../components/form-components'
 import FileInput from '../../components/form-components/FileInput'

@@ -1,28 +1,17 @@
 import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
-
-//
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
-import { URL_DEV, GOLD, INGRESOS_COLUMNS } from '../../../constants'
-
-// Functions
-import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../../functions/setters'
+import { URL_DEV, INGRESOS_COLUMNS } from '../../../constants'
+import { setOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList } from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert } from '../../../functions/alert'
-
-//
 import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { Button, FileInput } from '../../../components/form-components'
-import { faPlus, faTrash, faEdit, faMoneyBill, faFileAlt, faFileArchive, faMoneyBillWave, faReceipt, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons'
-import { IngresosForm, FacturaForm } from '../../../components/forms'
-import { DataTable, FacturaTable } from '../../../components/tables'
-import { Small, B, Subtitle } from '../../../components/texts'
-import Moment from 'react-moment'
-import NumberFormat from 'react-number-format';
+import { FacturaForm } from '../../../components/forms'
+import { FacturaTable } from '../../../components/tables'
 import { Form, ProgressBar } from 'react-bootstrap'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 
 const $ = require('jquery');

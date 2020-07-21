@@ -1,29 +1,14 @@
 import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
-
-//
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
-import { URL_DEV, GOLD, PROVEEDORES_COLUMNS } from '../../../constants'
-
-// Functions
-import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../../functions/setters'
+import { URL_DEV, PROVEEDORES_COLUMNS } from '../../../constants'
+import { setTextTable, setDateTable, setMoneyTable, setArrayTable} from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert } from '../../../functions/alert'
-
-//
 import Layout from '../../../components/layout/layout'
-import { Modal, ModalDelete } from '../../../components/singles'
-import { Button , FileInput } from '../../../components/form-components'
-import { faPlus, faTrash, faEdit, faMoneyBill, faFileAlt, faFileArchive, faMoneyBillWave, faReceipt, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons'
-import { ProveedorForm, FacturaForm } from '../../../components/forms'
-import { DataTable } from '../../../components/tables'
+import { ModalDelete } from '../../../components/singles'
 import NewTable from '../../../components/tables/NewTable'
-import { Small, B, Subtitle } from '../../../components/texts'
-import Moment from 'react-moment'
-import NumberFormat from 'react-number-format';
-import { Form, ProgressBar } from 'react-bootstrap'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 class Proveedor extends Component{
 

@@ -1,15 +1,11 @@
 import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
-//
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
-import { URL_DEV, URL_ASSETS, FLUJOS_COLUMNS } from '../../constants'
-
-// Functions
-import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setPercentTable, setArrayTable, setFacturaTable, setAdjuntosList, setListTable } from '../../functions/setters'
-import { waitAlert, errorAlert, createAlert,forbiddenAccessAlert } from '../../functions/alert'
-//
+import { URL_DEV, FLUJOS_COLUMNS } from '../../constants'
+import { setOptions, setTextTable, setMoneyTable} from '../../functions/setters'
+import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Card } from 'react-bootstrap'
 import { FlujosForm } from '../../components/forms'

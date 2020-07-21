@@ -1,17 +1,11 @@
 /* eslint-disable no-unused-vars */  
 import React, { Component } from 'react'
-
-//
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV } from '../../../constants'
-
-// Functions
-import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../../functions/setters'
+import { setOptions, setSelectOptions} from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert } from '../../../functions/alert'
-
-//
 import Layout from '../../../components/layout/layout'
 import { IngresosForm as IngresosFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'

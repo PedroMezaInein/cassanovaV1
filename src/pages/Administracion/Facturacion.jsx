@@ -2,24 +2,14 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
-import { Modal } from '../../components/singles'
-import { Button } from '../../components/form-components'
-import { faPlus, faTrash, faEdit, faMoneyBill, faFileAlt } from '@fortawesome/free-solid-svg-icons'
-import { IngresosForm } from '../../components/forms'
 import axios from 'axios'
 import { URL_DEV, FACTURAS_COLUMNS, GOLD } from '../../constants'
-import { DataTable } from '../../components/tables'
 import NewTable from '../../components/tables/NewTable'
-import { Small, B, Subtitle } from '../../components/texts'
-import { FileInput } from '../../components/form-components'
+import { Small, B } from '../../components/texts'
 import Moment from 'react-moment'
 import NumberFormat from 'react-number-format';
 import swal from 'sweetalert'
-import { Form } from 'react-bootstrap'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
-import { waitAlert, errorAlert, forbiddenAccessAlert, validateAlert } from '../../functions/alert'
-import { setOptions, setSelectOptions, setTextTable, setDateTable, setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList, setContactoTable } from '../../functions/setters'
+import { setTextTable, setMoneyTable} from '../../functions/setters'
 
 class Facturacion extends Component {
 
@@ -201,8 +191,6 @@ class Facturacion extends Component {
         const { facturas, data } = this.state
         return (
             <Layout active={'administracion'}  {...this.props}>
-
-
                 <NewTable columns={FACTURAS_COLUMNS} data={facturas}
                     title='Facturas' subtitle='Listado de facturas'
                     mostrar_boton={false}
