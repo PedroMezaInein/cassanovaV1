@@ -3,12 +3,12 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import Layout from '../../components/layout/layout' 
-import { Modal, Card, ModalDelete} from '../../components/singles' 
+import { Modal} from '../../components/singles' 
 import { NOMINA_OBRA_COLUMNS, URL_DEV} from '../../constants'
 import NewTable from '../../components/tables/NewTable' 
 import { NominaObraForm } from '../../components/forms'
-import { setOptions, setSelectOptions } from '../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert } from '../../functions/alert'
+import { setOptions} from '../../functions/setters'
+import { errorAlert, waitAlert, forbiddenAccessAlert} from '../../functions/alert'
 
 class NominaObra extends Component {
     state = {  
@@ -21,22 +21,25 @@ class NominaObra extends Component {
         title: 'Nueva nómina de obra',
         form:{
             periodo : '',
-            empresa: 0,
+            empresas: '',
             fechaInicio: new Date(),
             fechaFin: new Date(),
-            usuario: '',
-            proyecto: '',
-            sueldoh: '',
-            hora1T: '',
-            hora2T: '',
-            hora3T: '',
-            nominImss: '',
-            restanteNomina: '',
-            extras: ''
+            nominas:[{
+                usuario: '',
+                proyecto: '',
+                sueldoh: '',
+                hora1T: '',
+                hora2T: '',
+                hora3T: '',
+                nominImss: '',
+                restanteNomina: '',
+                extras: ''
+            }]
         },
         options: { 
             proyectos: [],
-            usuarios: []
+            usuarios: [],
+            empresas:[]
         },
         nominaObra:""
     }
@@ -70,10 +73,11 @@ class NominaObra extends Component {
         await axios.get(URL_DEV + 'rh/nomina-obra/options', { responseType:'json', headers: {Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 swal.close()
-                const { proyectos, usuarios} = response.data
+                const { proyectos, usuarios, empresas} = response.data
                 const { options, data } = this.state
-                options['proyectos'] = setSelectOptions(proyectos, 'nombre', 'id')
-                options['usuarios'] = setSelectOptions( usuarios, 'usuarios', 'id')
+                options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
+                options['usuarios'] = setOptions( usuarios, 'name', 'id')
+                options['empresas'] = setOptions(empresas, 'name', 'id')
                 this.setState({
                     ... this.state,
                     options
@@ -122,13 +126,13 @@ class NominaObra extends Component {
                 case 'fechaInicio':
                 case 'fechaFin':
                     form[element] = new Date()
-                    break;
-                case 'proyectos':
-                case 'usuarios':
-                    form[element] = {
-                        proyectos: '',
-                        usuarios: ''
-                    }
+                    break; 
+                case 'nominas':
+                    form[element] = [{
+                        usuarios: '',
+                        proyecto: '',
+                        empresa:''
+                    }]
                     break;
                 default:
                     form[element] = ''
@@ -137,9 +141,73 @@ class NominaObra extends Component {
         })
         return form;
     }
+    onChangeNominas = (key, e, name) => {
+        const { value } = e.target
+        const { form } = this.state
+        form['nominas'][key][name]  = value
+        this.setState({
+            ...this.state,
+            form
+        })
+    
+    }
+    onChange = e => {
+        const { name, value } = e.target
+        const { form } = this.state
+        form[name] = value
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
+    addRowNomina = () => {
+        const { form } = this.state
+        form.nominas.push(
+            {
+                nominas:[{
+                    usuario: '',
+                    proyecto: '',
+                    sueldoh: '',
+                    hora1T: '',
+                    hora2T: '',
+                    hora3T: '',
+                    nominImss: '',
+                    restanteNomina: '',
+                    extras: ''
+                }]
+            }
+        )
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
+    deleteRowNomina = () => {
+        const { form } = this.state
+        form.nominas.pop(
+            {
+                nominas:[{
+                    usuario: '',
+                    proyecto: '',
+                    sueldoh: '',
+                    hora1T: '',
+                    hora2T: '',
+                    hora3T: '',
+                    nominImss: '',
+                    restanteNomina: '',
+                    extras: ''
+                }]
+            }
+        )
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
     
     render() {
-        const { modal, title, data, formeditado} = this.state
+        const { modal, options, title, data, form, formeditado} = this.state
 
         return (
             <Layout active={'rh'} {...this.props}>
@@ -158,7 +226,13 @@ class NominaObra extends Component {
                 <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseModal}>
                     <NominaObraForm
                         formeditado={formeditado}
-                        className=" px-3 "     
+                        className=" px-3 "   
+                        options = { options }
+                        form ={form}
+                        addRowNomina = { this.addRowNomina }
+                        deleteRowNomina = { this.deleteRowNomina }
+                        onChangeNominas =  { this.onChangeNominas }
+                        onChange = { this.onChange } 
                     >
                     </NominaObraForm>
                 </Modal>  

@@ -1,22 +1,8 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { Input, Calendar, Select} from '../../form-components'
+import { Input, Calendar, Select, SelectSearch, Button} from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { DATE} from '../../../constants' 
-// import { NOMINA_OBRA_INGRESAR_COLUMNS } from '../../../constants'
-function agregarFila(){
-    document.getElementById("tabla_obra").insertRow(-1).innerHTML = '<td><Select class="w-100"/></td><td><Select class="w-100"/></td><td><Input class="w-75"/></td><td><Input class="w-75"/></td><td><Input class="w-75"/></td><td><Input class="w-75"/></td><td><Input class="w-75"/></td><td><Input class="w-75"/></td><td></td>';
-}
-
-function eliminarFila(){
-    var table = document.getElementById("tabla_obra");
-    var rowCount = table.rows.length;
-    
-    if(rowCount <= 1)
-        alert('No se puede eliminar el encabezado');
-    else
-        table.deleteRow(rowCount -1);
-}
 
 class NominaObraForm extends Component{
 
@@ -35,7 +21,7 @@ class NominaObraForm extends Component{
     }
     
     render(){
-        const { empresas, onChange, form, onSubmit, formeditado} = this.props
+        const { options, addRowNomina, deleteRowNomina, onChangeNominas, onChange, form, onSubmit, formeditado} = this.props
         return(
             <Form id="form-nominaobra"
                 onSubmit = { 
@@ -45,31 +31,31 @@ class NominaObraForm extends Component{
                     }
                 } 
             >
-                {/* <div className="form-group row form-group-marginless pt-4">
+                <div className="form-group row form-group-marginless pt-4">
                     <div className="col-md-6">
                         <Input 
                             requirevalidation={1} 
                             formeditado={formeditado}
-                            name="" 
-                            value={""} 
-                            placeholder="Periodo de Nómina de Obra" 
-                            onChange={""} 
+                            name="periodo" 
+                            value={form.periodo}
+                            placeholder="PERIODO DE NÓMINA DE OBRA" 
+                            onChange={onChange}
                             iconclass={"far fa-window-maximize"}
                             messageinc="Incorrecto. Ingresa el periodo de nómina de obra."
                         />
                     </div>  
+                    
                     <div className="col-md-6">
-                        <Select 
-                            requirevalidation={1}
+                        <SelectSearch 
                             formeditado={formeditado}
-                            placeholder="Selecciona la empresa" 
-                            options = { empresas } 
-                            name="empresa" 
+                            options={options.empresas} 
+                            placeholder = "Selecciona la empresa" 
+                            name = "empresa" 
                             value = { form.empresa } 
-                            onChange = { onChange } 
-                            iconclass={"far fa-building"} 
-                            messageinc="Incorrecto. Selecciona la empresa."
-                        /> 
+                            onChange = { this.updateEmpresa }
+                            iconclass={"far fa-building"}
+                            />
+                        {/*<span className="form-text text-muted">Por favor, selecciona la empresa.</span>*/}
                     </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
@@ -88,7 +74,7 @@ class NominaObraForm extends Component{
                             patterns={DATE}                      
                         /> 
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-6">
                         <Calendar 
                             formeditado={formeditado}
                             onChangeCalendar = { this.handleChangeDateFin }
@@ -104,29 +90,147 @@ class NominaObraForm extends Component{
                         />
                     </div>
                 </div> 
-                table table-separate table-head-custom table-checkable display w-100 table-hover text-justify responsive
-                */} 
+                
                     <table className="table table-separate table-responsive" id="tabla_obra">
                         <thead>
                             <tr>
-                                <th style={{fontSize:"12px"}}>Empleado</th>
-                                <th style={{fontSize:"12px"}}>Proyecto</th>
-                                <th style={{fontSize:"12px"}}>Suledo por Hora</th>
-                                <th style={{fontSize:"12px"}}>Hours 2T</th>
-                                <th style={{fontSize:"12px"}}>Hours 3T</th>
-                                <th style={{fontSize:"12px"}}>Nómina IMSS</th>
-                                <th style={{fontSize:"12px"}}>Restante Nómina</th>
-                                <th style={{fontSize:"12px"}}>Extras</th>
-                                <th style={{fontSize:"12px"}}>Total</th>
+                                <th>Empleado</th>
+                                <th>Proyecto</th>
+                                <th>Suledo por Hora</th>
+                                <th>1 Hora T</th>
+                                <th>2 Horas T</th>
+                                <th>3 Horas T</th>
+                                <th>Nómina IMSS</th>
+                                <th>Restante Nómina</th>
+                                <th>Extras</th>
+                                <th>Total</th>
                             </tr>
                         </thead>
                         <tbody>
+                            
+                                {
+                                    form.nominas.map( ( nominas, key ) => {
+                                        return(
+                                            <tr key={key}>
+                                                <td>
+                                                    <SelectSearch
+                                                        formeditado={formeditado}
+                                                        options = { options.usuarios} 
+                                                        placeholder={null}  
+                                                        name="usuario"  
+                                                        value = {form['nominas'][key]['usuario']}
+                                                        onChange={ e => onChangeNominas(e, key, 'usuarios') }
+                                                        iconclass={"fas fa-building"} 
+                                                        customstyle={{width: "auto"}}
+                                                    />
+                                                </td>
+                                                <td> 
+                                                    <SelectSearch 
+                                                        formeditado={formeditado}
+                                                        options={options.proyectos} 
+                                                        // placeholder="Selecciona el proyecto"
+                                                        placeholder={null}
+                                                        name="proyecto"
+                                                        value = {form['nominas'][key]['proyecto']} 
+                                                        onChange={e => onChangeNominas(e, key, 'proyectos') }
+                                                        iconclass={"far fa-folder-open"} 
+                                                        customstyle={{width: "300px"}}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <Input
+                                                        requirevalidation={1}
+                                                        formeditado={formeditado}  
+                                                        name = "sueldoh" 
+                                                        value = { form.sueldoh } 
+                                                        onChange = { e => onChangeNominas(key, e, 'sueldoh') } 
+                                                        placeholder={null}  
+                                                        style={{paddingLeft: "10px", width: "131px"}}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <Input
+                                                        requirevalidation={1}
+                                                        formeditado={formeditado}  
+                                                        name = "hora1T" 
+                                                        value = { form.hora1T } 
+                                                        onChange = { e => onChangeNominas(key, e, 'hora1T') } 
+                                                        placeholder={null}  
+                                                        style={{paddingLeft: "10px", width: "131px"}}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <Input
+                                                        requirevalidation={1}
+                                                        formeditado={formeditado}  
+                                                        name = "hora2T" 
+                                                        value = { form.hora2T } 
+                                                        onChange = { e => onChangeNominas(key, e, 'hora2T') } 
+                                                        placeholder={null}  
+                                                        style={{paddingLeft: "10px", width: "131px"}}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <Input
+                                                        requirevalidation={1}
+                                                        formeditado={formeditado}  
+                                                        name = "hora3T" 
+                                                        value = { form.hora3T } 
+                                                        onChange = { e => onChangeNominas(key, e, 'hora3T') } 
+                                                        placeholder={null}  
+                                                        style={{paddingLeft: "10px", width: "131px"}}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <Input
+                                                        requirevalidation={1}
+                                                        formeditado={formeditado}  
+                                                        name = "nominImss" 
+                                                        value = { form.hora3T } 
+                                                        onChange = { e => onChangeNominas(key, e, 'nominImss') } 
+                                                        placeholder={null} 
+                                                        style={{paddingLeft: "10px", width: "131px"}}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <Input
+                                                        requirevalidation={1}
+                                                        formeditado={formeditado}  
+                                                        name = "restanteNomina" 
+                                                        value = { form.restanteNomina } 
+                                                        onChange = { e => onChangeNominas(key, e, 'restanteNomina') } 
+                                                        placeholder={null}  
+                                                        style={{paddingLeft: "10px", width: "131px"}}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <Input
+                                                        requirevalidation={1}
+                                                        formeditado={formeditado}  
+                                                        name = "extras" 
+                                                        value = { form.extras } 
+                                                        onChange = { e => onChangeNominas(key, e, 'extras') } 
+                                                        placeholder={null}  
+                                                        style={{paddingLeft: "10px", width: "131px"}}
+                                                    />
+                                                </td>
+                                                <td>
+
+                                                </td> 
+                                            </tr>
+                                        )
+                                    })
+                                } 
                         </tbody>
                     </table>
                     <div className="form-group d-flex justify-content-center">
-                        <button type="button" className="btn btn-light-primary font-weight-bold mr-2" onClick = { () => { agregarFila() } }>Agregar Fila</button>
-                        <button type="button" className="btn btn-light-danger font-weight-bold mr-2" onClick = { () => { eliminarFila() } }>Eliminar Fila</button>
+                        <button type="button" className="btn btn-light-primary font-weight-bold mr-2" onClick = { addRowNomina } >Agregar Fila</button>
+                        <button type="button" className="btn btn-light-danger font-weight-bold mr-2" onClick = { deleteRowNomina } >Eliminar Fila</button>
                     </div> 
+                    <div className="separator separator-dashed mt-1 mb-2"></div>
+                    <div className="d-flex justify-content-center mt-2 mb-4">
+                        <Button text = 'Enviar' type = 'submit' />
+                    </div>
             </Form>
             )
     }
