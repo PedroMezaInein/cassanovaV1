@@ -48,7 +48,6 @@ class LeadForm extends Component {
                             messageinc="Incorrecto. Introduce el nombre del lead."
                             completeelement={1}
                         />
-                        {/*<span className="form-text text-muted">Por favor, ingresa el nombre del lead. </span>*/}
                     </div>
                     <div className="col-md-4">
                         <Input
@@ -63,22 +62,8 @@ class LeadForm extends Component {
                             messageinc="Incorrecto. Ej. usuario@dominio.com"
                             patterns={EMAIL}
                         />
-                        {/*<span className="form-text text-muted">Por favor, ingresa el correo electrónico. </span>*/}
                     </div>
                     <div className="col-md-4">
-                        {/* <Input 
-                                requirevalidation={1} 
-                                formeditado={formeditado}
-                                type="text" 
-                                placeholder="Teléfono"
-                                name="telefono" 
-                                value={ form.telefono } 
-                                onChange = { onChange } 
-                                iconclass={"fas fa-mobile-alt"}
-                                pattern="^(\d{10})$"
-                                messageinc="Incorrecto. Ej. 1234567890"
-                                maxLength="10"
-                            /> */}
                         <InputPhone
                             requirevalidation={1}
                             formeditado={formeditado}
@@ -92,7 +77,6 @@ class LeadForm extends Component {
                             thousandSeparator={false}
                             prefix={''}
                         />
-                        {/*<span className="form-text text-muted">Por favor, ingresa el teléfono. </span>*/}
                     </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
@@ -109,7 +93,6 @@ class LeadForm extends Component {
                             iconclass={"far fa-building"}
                             messageinc="Incorrecto. Selecciona la empresa para el lead."
                         />
-                        {/*<span className="form-text text-muted">Por favor, selecciona la empresa para el lead. </span>*/}
                     </div>
                     <div className="col-md-4">
                         <Select
@@ -123,7 +106,6 @@ class LeadForm extends Component {
                             iconclass={" fas fa-mail-bulk"}
                             messageinc="Incorrecto. Selecciona el origen para el lead."
                         />
-                        {/*<span className="form-text text-muted">Por favor, selecciona el origen para el lead. </span>*/}
                     </div>
                     <div className="col-md-4">
                         <Calendar
@@ -135,7 +117,6 @@ class LeadForm extends Component {
                             value={form.fecha}
                             patterns={DATE}
                         />
-                        {/*<span className="form-text text-muted">Por favor, ingresa la fecha de ingreso. </span>*/}
                     </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
@@ -153,7 +134,6 @@ class LeadForm extends Component {
                             messageinc="Incorrecto. Ingresa el comentario."
                             style={{ paddingLeft: "10px" }}
                         />
-                        {/*<span className="form-text text-muted">Por favor, ingresa un comentario</span>*/}
                     </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
