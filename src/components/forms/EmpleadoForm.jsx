@@ -65,7 +65,7 @@ class EmpleadoForm extends Component {
                     <div className="col-md-4">
                         <SelectSearchTrue
                             options={options.departamentos}
-                            placeholder="Selecciona el(los) departamento(s)"
+                            placeholder="SELECCIONA EL(LOS) DEPARTAMENTO(S)"
                             name="departamento"
                             value={form.departamento}
                             onChange={this.updateDepartamento}
@@ -150,7 +150,7 @@ class EmpleadoForm extends Component {
                                                     }
                                                 ]
                                             }
-                                            placeholder={'Selecciona el tipo de empleado'}
+                                            placeholder={'SELECCIONA EL TIPO DE EMPLEADO'}
                                             value={form.tipo_empleado}
                                         />
                                     </div>
@@ -171,7 +171,7 @@ class EmpleadoForm extends Component {
                                                 ]
                                             }
                                             value={form.estatus}
-                                            placeholder={'Selecciona el estatus de empleado'}
+                                            placeholder={'SELECCIONA EL ESTATUS DE EMPLEADO'}
                                         />
                                     </div>
                                     <div className="col-md-4">
@@ -179,7 +179,7 @@ class EmpleadoForm extends Component {
                                             name={'empresa'}
                                             options={options.empresas}
                                             onChange={onChange}
-                                            placeholder={'Selecciona la empresa'}
+                                            placeholder={'SELECCIONA LA EMPRESA'}
                                             value={form.empresa}
                                             iconclass={"far fa-building"}
                                         />
@@ -236,7 +236,7 @@ class EmpleadoForm extends Component {
                                             name="puesto"
                                             type="text"
                                             value={form.puesto}
-                                            placeholder="Puesto"
+                                            placeholder="PUESTO"
                                             iconclass={"fas fa-user-tie"}
                                             messageinc="Incorrecto. Ingresa el puesto."
                                         />
@@ -244,7 +244,7 @@ class EmpleadoForm extends Component {
                                     <div className="col-md-4">
                                         <Calendar
                                             onChangeCalendar={onChangeCalendar}
-                                            placeholder="Fecha de inicio"
+                                            placeholder="FECHA DE INICIO"
                                             name="fecha_inicio"
                                             value={form.fecha_inicio}
                                             patterns={DATE}
@@ -267,7 +267,7 @@ class EmpleadoForm extends Component {
                                             name="banco"
                                             type="text"
                                             value={form.banco}
-                                            placeholder="Banco"
+                                            placeholder="BANCO"
                                             iconclass={" fab fa-cc-discover "}
                                             messageinc="Incorrecto. Ingresa el banco."
                                         />
@@ -278,7 +278,7 @@ class EmpleadoForm extends Component {
                                             name="cuenta"
                                             type="text"
                                             value={form.cuenta}
-                                            placeholder="Cuenta"
+                                            placeholder="CUENTA"
                                             iconclass={" fas fa-id-card "}
                                             messageinc="Incorrecto. Ingresa el número de cuenta."
                                         />
@@ -289,7 +289,7 @@ class EmpleadoForm extends Component {
                                             name="clabe"
                                             type="text"
                                             value={form.clabe}
-                                            placeholder="Clabe"
+                                            placeholder="CLABE"
                                             iconclass={"fas fa-money-check-alt"}
                                             messageinc="Incorrecto. Ingresa la clabe."
                                             maxLength="18"
@@ -314,7 +314,7 @@ class EmpleadoForm extends Component {
                                             name="nombre_emergencia"
                                             type="text"
                                             value={form.nombre_emergencia}
-                                            placeholder="Nombre del contacto de emergencia"
+                                            placeholder="NOMBRE DEL CONTACTO DE EMERGENCIA"
                                             iconclass={"fas fa-user-circle"}
                                             messageinc="Incorrecto. Ingresa el nombre del contacto de emergencia."
                                         />
@@ -323,7 +323,7 @@ class EmpleadoForm extends Component {
                                         <InputPhone
                                             requirevalidation={1}
                                             /* formeditado={formeditado} */
-                                            placeholder="Teléfono"
+                                            placeholder="TELÉFONO"
                                             name="telefono_emergencia"
                                             value={form.telefono_emergencia}
                                             onChange={onChange}

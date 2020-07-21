@@ -218,7 +218,7 @@ class VentasForm extends Component {
                                         {
                                             form.facturaObject ?
                                                 <Input
-                                                    placeholder="Cliente"
+                                                    placeholder="CLIENTE"
                                                     readOnly
                                                     name="cliente"
                                                     value={form.cliente}
@@ -229,7 +229,7 @@ class VentasForm extends Component {
                                                 <SelectSearch
                                                     formeditado={formeditado}
                                                     options={options.clientes}
-                                                    placeholder="Selecciona el cliente"
+                                                    placeholder="SELECCIONA EL CLIENTE"
                                                     name="clientes"
                                                     value={form.cliente}
                                                     onChange={this.updateCliente}
@@ -243,7 +243,7 @@ class VentasForm extends Component {
                                                 <SelectSearch
                                                     formeditado={formeditado}
                                                     options={options.proyectos}
-                                                    placeholder="Selecciona el proyecto"
+                                                    placeholder="SELECCIONA EL PROYECTO"
                                                     name="proyecto"
                                                     value={form.proyecto}
                                                     onChange={this.updateProyecto}
@@ -257,7 +257,7 @@ class VentasForm extends Component {
                                         {
                                             form.facturaObject ?
                                                 <Input
-                                                    placeholder="Empresa"
+                                                    placeholder="EMPRESA"
                                                     name="empresa"
                                                     readOnly
                                                     value={form.empresa}
@@ -268,7 +268,7 @@ class VentasForm extends Component {
                                                 <SelectSearch
                                                     formeditado={formeditado}
                                                     options={options.empresas}
-                                                    placeholder="Selecciona la empresa"
+                                                    placeholder="SELECCIONA LA EMPRESA"
                                                     name="empresas"
                                                     value={form.empresa}
                                                     onChange={this.updateEmpresa}
@@ -291,7 +291,7 @@ class VentasForm extends Component {
                                         <Calendar
                                             formeditado={formeditado}
                                             onChangeCalendar={this.handleChangeDate}
-                                            placeholder="Fecha"
+                                            placeholder="FECHA"
                                             name="fecha"
                                             value={form.fecha}
                                             patterns={DATE}
@@ -301,7 +301,7 @@ class VentasForm extends Component {
                                         <SelectSearch
                                             formeditado={formeditado}
                                             options={options.areas}
-                                            placeholder="Selecciona el área"
+                                            placeholder="SELECCIONA EL ÁREA"
                                             name="areas"
                                             value={form.area}
                                             onChange={this.updateArea}
@@ -314,7 +314,7 @@ class VentasForm extends Component {
                                                 <SelectSearch
                                                     formeditado={formeditado}
                                                     options={options.subareas}
-                                                    placeholder="Selecciona el subárea"
+                                                    placeholder="SELECCIONA EL SUBÁREA"
                                                     name="subarea"
                                                     value={form.subarea}
                                                     onChange={this.updateSubarea}
@@ -330,7 +330,7 @@ class VentasForm extends Component {
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             as="textarea"
-                                            placeholder="Descripción"
+                                            placeholder="DESCRIPCIÓN"
                                             rows="3"
                                             value={form.descripcion}
                                             name="descripcion"
@@ -358,7 +358,7 @@ class VentasForm extends Component {
                                                 <SelectSearch
                                                     formeditado={formeditado}
                                                     options={options.cuentas}
-                                                    placeholder="Selecciona la cuenta"
+                                                    placeholder="SELECCIONA LA CUENTA"
                                                     name="cuenta"
                                                     value={form.cuenta}
                                                     onChange={this.updateCuenta}
@@ -371,7 +371,7 @@ class VentasForm extends Component {
                                         <Select
                                             requirevalidation={1}
                                             formeditado={formeditado}
-                                            placeholder="Selecciona el tipo de pago"
+                                            placeholder="SELECCIONA EL TIPO DE PAGO"
                                             options={options.tiposPagos}
                                             name="tipoPago"
                                             value={form.tipoPago}
@@ -385,7 +385,7 @@ class VentasForm extends Component {
                                         <Select
                                             requirevalidation={1}
                                             formeditado={formeditado}
-                                            placeholder="Selecciona el impuesto"
+                                            placeholder="SELECCIONA EL IMPUESTO"
                                             options={options.tiposImpuestos}
                                             name="tipoImpuesto"
                                             value={form.tipoImpuesto}
@@ -402,7 +402,7 @@ class VentasForm extends Component {
                                         <Select
                                             requirevalidation={1}
                                             formeditado={formeditado}
-                                            placeholder="Selecciona el estatus de compra"
+                                            placeholder="SELECCIONA EL ESTATUS DE COMPRA"
                                             options={options.estatusCompras}
                                             name="estatusCompra"
                                             value={form.estatusCompra}
@@ -417,7 +417,7 @@ class VentasForm extends Component {
                                             requirevalidation={1}
                                             formeditado={formeditado}
                                             thousandSeparator={true}
-                                            placeholder="Monto"
+                                            placeholder="MONTO"
                                             value={form.total}
                                             name="total"
                                             onChange={onChange}
@@ -429,7 +429,7 @@ class VentasForm extends Component {
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             options={options.contratos}
-                                            placeholder="Selecciona el contrato"
+                                            placeholder="SELECCIONA EL CONTRATO"
                                             name="contrato"
                                             value={form.contrato}
                                             onChange={this.updateContrato}

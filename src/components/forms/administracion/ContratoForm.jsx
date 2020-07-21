@@ -53,7 +53,7 @@ class ContratoForm extends Component {
                         <Input
                             requirevalidation={1}
                             formeditado={formeditado}
-                            placeholder="Nombre"
+                            placeholder="NOMBRE"
                             name="nombre"
                             onChange={onChange}
                             value={form.nombre}
@@ -68,7 +68,7 @@ class ContratoForm extends Component {
                                 <SelectSearch
                                     formeditado={formeditado}
                                     options={options.clientes}
-                                    placeholder="Selecciona la el cliente"
+                                    placeholder="SELECCIONA EL CLIENTE"
                                     name="cliente"
                                     value={form.cliente}
                                     onChange={this.updateCliente}
@@ -78,7 +78,7 @@ class ContratoForm extends Component {
                                 <SelectSearch
                                     formeditado={formeditado}
                                     options={options.proveedores}
-                                    placeholder="Selecciona el proveedor"
+                                    placeholder="SELECCIONA EL PROVEEDOR"
                                     name="proveedor"
                                     value={form.proveedor}
                                     onChange={this.updateProveedor}
@@ -98,7 +98,7 @@ class ContratoForm extends Component {
                         <SelectSearch
                             formeditado={formeditado}
                             options={options.empresas}
-                            placeholder="Selecciona la empresa"
+                            placeholder="SELECCIONA LA EMPRESA"
                             name="empresa"
                             value={form.empresa}
                             onChange={this.updateEmpresa}
@@ -118,7 +118,7 @@ class ContratoForm extends Component {
                             name="monto"
                             value={form.monto}
                             onChange={onChange}
-                            placeholder="Monto con IVA"
+                            placeholder="MONTO CON IVA"
                             iconclass={"fas fa-money-bill-wave-alt"}
                         />
                     </div>
@@ -126,7 +126,7 @@ class ContratoForm extends Component {
                         <Calendar
                             formeditado={formeditado}
                             onChangeCalendar={this.handleChangeDateInicio}
-                            placeholder="Fecha de inicio"
+                            placeholder="FECHA DE INICIO"
                             name="fechaInicio"
                             value={form.fechaInicio}
                             selectsStart
@@ -140,7 +140,7 @@ class ContratoForm extends Component {
                         <Calendar
                             formeditado={formeditado}
                             onChangeCalendar={this.handleChangeDateFin}
-                            placeholder="Fecha final"
+                            placeholder="FECHA FINAL"
                             name="fechaFin"
                             value={form.fechaFin}
                             selectsEnd
@@ -159,7 +159,7 @@ class ContratoForm extends Component {
                         <SelectSearch
                             formeditado={formeditado}
                             options={options.tiposContratos}
-                            placeholder="Selecciona el tipo de contrato"
+                            placeholder="SELECCIONA EL TIPO DE CONTRATO"
                             name="tipoContrato"
                             value={form.tipoContrato}
                             onChange={this.updateTipoContrato}
@@ -196,7 +196,7 @@ class ContratoForm extends Component {
                             formeditado={formeditado}
                             rows="3"
                             as="textarea"
-                            placeholder="Descripción"
+                            placeholder="DESCRIPCIÓN"
                             name="descripcion"
                             onChange={onChange}
                             value={form.descripcion}

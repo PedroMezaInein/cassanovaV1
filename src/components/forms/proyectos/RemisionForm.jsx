@@ -58,7 +58,7 @@ class ConceptoForm extends Component {
                             requirevalidation={1}
                             formeditado={formeditado}
                             options={options.proyectos}
-                            placeholder="Selecciona el proyecto"
+                            placeholder="SELECCIONA EL PROYECTO"
                             name="proyecto"
                             value={form.proyecto}
                             onChange={this.updateProyecto}
@@ -84,7 +84,7 @@ class ConceptoForm extends Component {
                     <div className="col-md-4">
                         <Calendar
                             onChangeCalendar={this.handleChangeDate}
-                            placeholder="Fecha"
+                            placeholder="FECHA"
                             name="fecha"
                             value={form.fecha}
                             iconclass={"far fa-calendar-alt"}
@@ -95,7 +95,7 @@ class ConceptoForm extends Component {
                             requirevalidation={1}
                             formeditado={formeditado}
                             options={options.areas}
-                            placeholder="Selecciona el área"
+                            placeholder="SELECCIONA EL ÁREA"
                             name="area"
                             value={form.area}
                             onChange={this.updateArea}
@@ -110,7 +110,7 @@ class ConceptoForm extends Component {
                                     requirevalidation={0}
                                     formeditado={formeditado}
                                     options={options.subareas}
-                                    placeholder="Selecciona el subárea"
+                                    placeholder="SELECCIONA EL SUBÁREA"
                                     name="subarea"
                                     value={form.subarea}
                                     onChange={this.updateSubarea}
@@ -128,7 +128,7 @@ class ConceptoForm extends Component {
                             requirevalidation={0}
                             formeditado={formeditado}
                             as="textarea"
-                            placeholder="Descripción"
+                            placeholder="DESCRIPCIÓN"
                             rows="3" value={form.descripcion}
                             name="descripcion"
                             onChange={onChange}

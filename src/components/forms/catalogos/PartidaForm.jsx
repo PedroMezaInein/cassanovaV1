@@ -28,7 +28,7 @@ class PartidaForm extends Component {
                             formeditado={formeditado}
                             name="partida"
                             value={form.partida}
-                            placeholder="Nombre de la partida"
+                            placeholder="NOMBRE DE LA PARTIDA"
                             onChange={onChange}
                             iconclass={"far fa-window-maximize"}
                             messageinc="Incorrecto. Ingresa el nombre de la partida."
@@ -40,7 +40,7 @@ class PartidaForm extends Component {
                             formeditado={formeditado}
                             name="subpartida"
                             value={form.subpartida}
-                            placeholder="Subpartida "
+                            placeholder="SUBPARTIDA "
                             onChange={onChange}
                             iconclass={"far fa-window-restore"}
                         />

@@ -20,7 +20,7 @@ class ChangePasswordFrom extends Component {
 					<div className="col-md-4">
 						<Input
 							requirevalidation={1}
-							placeholder="Contraseña actual"
+							placeholder="CONTRASEÑA ACTUAL"
 							type="password"
 							name="oldPassword"
 							value={form.oldPassword}
@@ -33,7 +33,7 @@ class ChangePasswordFrom extends Component {
 					<div className="col-md-4">
 						<Input
 							requirevalidation={1}
-							placeholder="Nueva contraseña"
+							placeholder="NUEVA CONTRASEÑA"
 							type="password"
 							name="newPassword"
 							value={form.newPassword}
@@ -46,7 +46,7 @@ class ChangePasswordFrom extends Component {
 					<div className="col-md-4">
 						<Input
 							requirevalidation={1}
-							placeholder="Verifica contraseña"
+							placeholder="VERIFICA CONTRASEÑA"
 							type="password"
 							name="newPassword2"
 							value={form.newPassword2}

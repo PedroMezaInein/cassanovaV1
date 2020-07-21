@@ -198,7 +198,7 @@ class EgresosForm extends Component {
                                         <SelectSearch
                                             formeditado={formeditado}
                                             options={options.proveedores}
-                                            placeholder="Selecciona el proveedor"
+                                            placeholder="SELECCIONA EL PROVEEDOR"
                                             name="proveedores"
                                             value={form.proveedor}
                                             onChange={this.updateProveedor}
@@ -211,7 +211,7 @@ class EgresosForm extends Component {
                                         {
                                             form.facturaObject ?
                                                 <Input
-                                                    placeholder="Empresa"
+                                                    placeholder="EMPRESA"
                                                     name="empresa"
                                                     readOnly
                                                     value={form.empresa}
@@ -222,7 +222,7 @@ class EgresosForm extends Component {
                                                 <SelectSearch
                                                     formeditado={formeditado}
                                                     options={options.empresas}
-                                                    placeholder="Selecciona la empresa"
+                                                    placeholder="SELECCIONA LA EMPRESA"
                                                     name="empresa"
                                                     value={form.empresa}
                                                     onChange={this.updateEmpresa}
@@ -246,7 +246,7 @@ class EgresosForm extends Component {
                                         <Calendar
                                             formeditado={formeditado}
                                             onChangeCalendar={this.handleChangeDate}
-                                            placeholder="Fecha"
+                                            placeholder="FECHA"
                                             name="fecha"
                                             value={form.fecha}
                                             patterns={DATE}
@@ -256,7 +256,7 @@ class EgresosForm extends Component {
                                         <SelectSearch
                                             formeditado={formeditado}
                                             options={options.areas}
-                                            placeholder="Selecciona el área"
+                                            placeholder="SELECCIONA EL ÁREA"
                                             name="area"
                                             value={form.area}
                                             onChange={this.updateArea}
@@ -270,7 +270,7 @@ class EgresosForm extends Component {
                                                 <SelectSearch
                                                     formeditado={formeditado}
                                                     options={options.subareas}
-                                                    placeholder="Selecciona el subárea"
+                                                    placeholder="SELECCIONA EL SUBÁREA"
                                                     name="subarea"
                                                     value={form.subarea}
                                                     onChange={this.updateSubarea}
@@ -288,7 +288,7 @@ class EgresosForm extends Component {
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             as="textarea"
-                                            placeholder="Descripción"
+                                            placeholder="DESCRIPCIÓN"
                                             rows="3"
                                             value={form.descripcion}
                                             name="descripcion"
@@ -316,7 +316,7 @@ class EgresosForm extends Component {
                                                 <SelectSearch
                                                     formeditado={formeditado}
                                                     options={options.cuentas}
-                                                    placeholder="Selecciona la cuenta"
+                                                    placeholder="SELECCIONA LA CUENTA"
                                                     name="cuenta"
                                                     value={form.cuenta}
                                                     onChange={this.updateCuenta}
@@ -330,7 +330,7 @@ class EgresosForm extends Component {
                                         <Select
                                             requirevalidation={1}
                                             formeditado={formeditado}
-                                            placeholder="Selecciona el tipo de pago"
+                                            placeholder="SELECCIONA EL TIPO DE PAGO"
                                             options={options.tiposPagos}
                                             name="tipoPago"
                                             value={form.tipoPago}
@@ -343,7 +343,7 @@ class EgresosForm extends Component {
                                         <Select
                                             requirevalidation={1}
                                             formeditado={formeditado}
-                                            placeholder="Selecciona el impuesto"
+                                            placeholder="SELECCIONA EL IMPUESTO"
                                             options={options.tiposImpuestos}
                                             name="tipoImpuesto"
                                             value={form.tipoImpuesto}
@@ -359,7 +359,7 @@ class EgresosForm extends Component {
                                         <Select
                                             requirevalidation={1}
                                             formeditado={formeditado}
-                                            placeholder="Selecciona el estatus de compra"
+                                            placeholder="SELECCIONA EL ESTATUS DE COMPRA"
                                             options={options.estatusCompras}
                                             name="estatusCompra"
                                             value={form.estatusCompra}
@@ -373,7 +373,7 @@ class EgresosForm extends Component {
                                             requirevalidation={1}
                                             formeditado={formeditado}
                                             thousandSeparator={true}
-                                            placeholder="Monto"
+                                            placeholder="MONTO"
                                             value={form.total}
                                             name="total"
                                             onChange={onChange}
@@ -386,7 +386,7 @@ class EgresosForm extends Component {
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             thousandSeparator={true}
-                                            placeholder="Comisión"
+                                            placeholder="COMISIÓN"
                                             value={form.comision}
                                             name="comision"
                                             onChange={onChange}

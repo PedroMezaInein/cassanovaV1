@@ -108,7 +108,7 @@ class SolicitudCompraForm extends Component {
                                             requirevalidation={1}
                                             formeditado={formeditado}
                                             options={options.proyectos}
-                                            placeholder="Selecciona el proyecto"
+                                            placeholder="SELECCIONA EL PROYECTO"
                                             name="proyecto"
                                             value={form.proyecto}
                                             onChange={this.updateProyecto}
@@ -119,7 +119,7 @@ class SolicitudCompraForm extends Component {
                                             requirevalidation={1}
                                             formeditado={formeditado}
                                             options={options.proveedores}
-                                            placeholder="Selecciona el proveedor"
+                                            placeholder="SELECCIONA EL PROVEEDOR"
                                             name="proveedor"
                                             value={form.proveedor}
                                             onChange={this.updateProveedor}
@@ -133,7 +133,7 @@ class SolicitudCompraForm extends Component {
                                             requirevalidation={1}
                                             formeditado={formeditado}
                                             options={options.empresas}
-                                            placeholder="Selecciona la empresa"
+                                            placeholder="SELECCIONA LA EMPRESA"
                                             name="empresa"
                                             value={form.empresa}
                                             onChange={this.updateEmpresa}
@@ -144,7 +144,7 @@ class SolicitudCompraForm extends Component {
                                             requirevalidation={1}
                                             formeditado={formeditado}
                                             thousandSeparator={true}
-                                            placeholder="Monto"
+                                            placeholder="MONTO"
                                             value={form.total}
                                             name="total" onChange={onChange}
                                             iconclass={" fas fa-money-check-alt"}
@@ -154,7 +154,7 @@ class SolicitudCompraForm extends Component {
                                         <Select
                                             requirevalidation={1}
                                             formeditado={formeditado}
-                                            placeholder="Selecciona el tipo de pago"
+                                            placeholder="SELECCIONA EL TIPO DE PAGO"
                                             options={options.tiposPagos}
                                             name="tipoPago"
                                             value={form.tipoPago}
@@ -178,7 +178,7 @@ class SolicitudCompraForm extends Component {
                                     <div className="col-md-4">
                                         <Calendar
                                             onChangeCalendar={this.handleChangeDate}
-                                            placeholder="Fecha"
+                                            placeholder="FECHA"
                                             name="fecha"
                                             value={form.fecha}
                                         />
@@ -188,7 +188,7 @@ class SolicitudCompraForm extends Component {
                                             requirevalidation={1}
                                             formeditado={formeditado}
                                             options={options.areas}
-                                            placeholder="Selecciona el área"
+                                            placeholder="SELECCIONA EL ÁREA"
                                             name="areas"
                                             value={form.area}
                                             onChange={this.updateArea}
@@ -201,7 +201,7 @@ class SolicitudCompraForm extends Component {
                                                     requirevalidation={1}
                                                     formeditado={formeditado}
                                                     options={options.subareas}
-                                                    placeholder="Selecciona el subárea"
+                                                    placeholder="SELECCIONA EL SUBÁREA"
                                                     name="subarea"
                                                     value={form.subarea}
                                                     onChange={this.updateSubarea}
@@ -217,7 +217,7 @@ class SolicitudCompraForm extends Component {
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             as="textarea"
-                                            placeholder="Descripción"
+                                            placeholder="DESCRIPCIÓN"
                                             rows="3"
                                             value={form.descripcion}
                                             name="descripcion"

@@ -45,7 +45,7 @@ class TareaForm extends Component {
                             options={cuentas}
                             value={form.origen}
                             onChange={this.updateOrigen}
-                            placeholder="Cuenta origen"
+                            placeholder="CUENTA ORIGEN"
                             iconclass={"far fa-credit-card"}
                         />
                     </div>
@@ -55,7 +55,7 @@ class TareaForm extends Component {
                             options={cuentas}
                             value={form.destino}
                             onChange={this.updateDestino}
-                            placeholder="Cuenta destino"
+                            placeholder="CUENTA DESTINO"
                             iconclass={"far fa-credit-card"}
                         />
                     </div>
@@ -72,7 +72,7 @@ class TareaForm extends Component {
                             name="cantidad"
                             value={form.cantidad}
                             onChange={onChange}
-                            placeholder="Ingrese el monto de traspaso"
+                            placeholder="INGRESE EL MONTO DE TRASPASO"
                             iconclass={" fas fa-money-check-alt"}
                         />
                     </div>
@@ -81,7 +81,7 @@ class TareaForm extends Component {
                             formeditado={formeditado}
                             onChangeCalendar={this.changeDate}
                             name="fecha" value={form.fecha}
-                            placeholder="Fecha de traspaso"
+                            placeholder="FECHA DE TRASPASO"
                             patterns={DATE}
                         />
                     </div>
@@ -128,7 +128,7 @@ class TareaForm extends Component {
                         <Input
                             requirevalidation={0}
                             formeditado={formeditado}
-                            placeholder="Comentario"
+                            placeholder="COMENTARIO"
                             as="textarea"
                             rows="3"
                             name="comentario"

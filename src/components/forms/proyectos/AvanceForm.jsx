@@ -56,7 +56,7 @@ class AvanceForm extends Component {
                                 value={form.semana}
                                 onChange={onChange}
                                 type="text"
-                                placeholder="Número de semana"
+                                placeholder="NÚMERO DE SEMANA"
                                 iconclass={"far fa-folder-open"}
                                 messageinc="Incorrecto. Ingresa el número de semana."
                             />
@@ -65,7 +65,7 @@ class AvanceForm extends Component {
                             <Calendar
                                 formeditado={formeditado}
                                 onChangeCalendar={this.handleChangeDateInicio}
-                                placeholder="Fecha de inicio"
+                                placeholder="FECHA DE INICIO"
                                 name="fechaInicio"
                                 value={form.fechaInicio}
                                 selectsStart
@@ -78,7 +78,7 @@ class AvanceForm extends Component {
                             <Calendar
                                 formeditado={formeditado}
                                 onChangeCalendar={this.handleChangeDateFin}
-                                placeholder="Fecha final"
+                                placeholder="FECHA FINAL"
                                 name="fechaFin"
                                 value={form.fechaFin}
                                 selectsEnd
@@ -117,7 +117,7 @@ class AvanceForm extends Component {
                                                 formeditado={formeditado}
                                                 as="textarea"
                                                 rows="1"
-                                                placeholder="Descripción"
+                                                placeholder="DESCRIPCIÓN"
                                                 name="descripcion"
                                                 value={form['avances'][key]['descripcion']}
                                                 onChange={e => onChangeAvance(key, e, 'descripcion')}
@@ -134,7 +134,7 @@ class AvanceForm extends Component {
                                                 name="avance"
                                                 value={form.avance}
                                                 onChange={e => onChangeAvance(key, e, 'avance')}
-                                                placeholder="% de avance"
+                                                placeholder="% DE AVANCE"
                                                 iconclass={"fas fa-percent"} />
                                         </div>
                                     </div>

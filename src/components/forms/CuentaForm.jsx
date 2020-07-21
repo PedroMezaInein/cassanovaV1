@@ -26,7 +26,7 @@ class CuentaForm extends Component {
                         <Input
                             requirevalidation={1}
                             formeditado={formeditado}
-                            placeholder="Ingrese el nombre de la cuenta"
+                            placeholder="INGRESE EL NOMBRE DE LA CUENTA"
                             type="text"
                             name="nombre"
                             value={form.nombre}
@@ -44,7 +44,7 @@ class CuentaForm extends Component {
                                         formeditado={formeditado}
                                         name='estatus'
                                         options={estatus}
-                                        placeholder='Selecciona el estatus'
+                                        placeholder='SELECCIONA EL ESTATUS'
                                         value={form.estatus}
                                         onChange={onChange}
                                         iconclass={" far fa-check-square "}
@@ -57,11 +57,11 @@ class CuentaForm extends Component {
                                         formeditado={formeditado}
                                         name='tipo'
                                         options={tipos}
-                                        placeholder='Selecciona el tipo'
+                                        placeholder='SELECCIONA EL TIPO'
                                         value={form.tipo}
                                         onChange={onChange}
                                         iconclass={" far fa-address-card"}
-                                        messageinc="Incorrecto. Selecciona el tipo de cuenta."
+                                        messageinc="Incorrecto. Selecciona el tipo."
                                     />
                                 </div>
                             </>
@@ -72,7 +72,7 @@ class CuentaForm extends Component {
                                     formeditado={formeditado}
                                     name='banco'
                                     options={bancos}
-                                    placeholder='Selecciona el banco'
+                                    placeholder='SELECCIONA EL BANCO'
                                     value={form.banco}
                                     onChange={onChange}
                                     iconclass={" fab fa-cc-discover"}
@@ -90,7 +90,7 @@ class CuentaForm extends Component {
                                     <InputNumber
                                         requirevalidation={1}
                                         formeditado={formeditado}
-                                        placeholder="Ingresa el número de cuenta"
+                                        placeholder="INGRESA EL NÚMERO DE CUENTA"
                                         type="text"
                                         name="numero"
                                         value={form.numero}
@@ -105,11 +105,11 @@ class CuentaForm extends Component {
                                         formeditado={formeditado}
                                         name='tipo'
                                         options={tipos}
-                                        placeholder='Selecciona el tipo'
+                                        placeholder='SELECCIONA EL TIPO'
                                         value={form.tipo}
                                         onChange={onChange}
                                         iconclass={" far fa-address-card"}
-                                        messageinc="Incorrecto. Selecciona el tipo de cuenta."
+                                        messageinc="Incorrecto. Selecciona el tipo."
                                     />
                                 </div>
                                 <div className="col-md-4">
@@ -118,7 +118,7 @@ class CuentaForm extends Component {
                                         formeditado={formeditado}
                                         name='estatus'
                                         options={estatus}
-                                        placeholder='Selecciona el estatus'
+                                        placeholder='SELECCIONA EL ESTATUS'
                                         value={form.estatus}
                                         onChange={onChange}
                                         iconclass={" far fa-check-square "}
@@ -140,7 +140,7 @@ class CuentaForm extends Component {
                             formeditado={formeditado}
                             name='empresa'
                             options={empresas}
-                            placeholder='Selecciona la(s) empresa(s)'
+                            placeholder='SELECCIONA LA(S) EMPRESA(S)'
                             value={form.empresa}
                             onChange={onChangeEmpresa}
                             iconclass={"far fa-building"}
@@ -181,7 +181,7 @@ class CuentaForm extends Component {
                             formeditado={formeditado}
                             rows="3"
                             as="textarea"
-                            placeholder="Descripción"
+                            placeholder="DESCRIPCIÓN"
                             name="descripcion"
                             value={form.descripcion}
                             onChange={onChange}

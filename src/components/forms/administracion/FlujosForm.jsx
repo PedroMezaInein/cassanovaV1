@@ -41,7 +41,7 @@ class FlujosForm extends Component {
                     <div className="col-md-6">
                         <SelectSearch
                             options={options.cuentas}
-                            placeholder="Selecciona la cuenta"
+                            placeholder="SELECCIONA LA CUENTA"
                             name="cuenta"
                             value={form.cuenta}
                             onChange={this.updateCuenta}
@@ -58,7 +58,7 @@ class FlujosForm extends Component {
                     <div className="col-md-3">
                         <Calendar
                             onChangeCalendar={this.handleChangeDateInicio}
-                            placeholder="Fecha de inicio"
+                            placeholder="FECHA DE INICIO"
                             name="fechaInicio"
                             value={form.fechaInicio}
                             selectsStart
@@ -70,7 +70,7 @@ class FlujosForm extends Component {
                     <div className="col-md-3">
                         <Calendar
                             onChangeCalendar={this.handleChangeDateFin}
-                            placeholder="Fecha final"
+                            placeholder="FECHA FINAL"
                             name="fechaFin"
                             value={form.fechaFin}
                             selectsEnd

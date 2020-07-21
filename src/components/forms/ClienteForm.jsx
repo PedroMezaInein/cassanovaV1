@@ -24,7 +24,7 @@ class ClienteForm extends Component {
                             value={form.empresa}
                             onChange={onChange}
                             type="text"
-                            placeholder="Nombre empresa"
+                            placeholder="NOMBRE EMPRESA"
                             iconclass={"far fa-building"}
                             messageinc="Incorrecto. Ingresa el nombre de la empresa."
                         />
@@ -37,7 +37,7 @@ class ClienteForm extends Component {
                             value={form.rfc}
                             onChange={onChange}
                             type="text"
-                            placeholder="RFC empresa"
+                            placeholder="RFC EMPRESA"
                             iconclass={"far fa-file-alt"}
                             patterns={RFC}
                             messageinc="Incorrecto. Ej. ABCD001122ABC"
@@ -52,7 +52,7 @@ class ClienteForm extends Component {
                             value={form.nombre}
                             onChange={onChange}
                             type="text"
-                            placeholder="Nombre del empleado"
+                            placeholder="NOMBRE DEL EMPLEADO"
                             iconclass={"far fa-user"}
                             messageinc="Incorrecto. Ingresa el nombre del empleado."
                         />
@@ -68,7 +68,7 @@ class ClienteForm extends Component {
                             value={form.puesto}
                             onChange={onChange}
                             type="text"
-                            placeholder="Puesto del empleado"
+                            placeholder="PUESTO DEL EMPLEADO"
                             iconclass={" fas fa-user-tie"}
                             messageinc="Incorrecto. Ingresa el puesto del empleado."
                         />
@@ -79,7 +79,7 @@ class ClienteForm extends Component {
                             formeditado={formeditado}
                             rows="1"
                             as="textarea"
-                            placeholder="Perfil"
+                            placeholder="PERFIL"
                             name="perfil"
                             value={form.perfil}
                             onChange={onChange}
@@ -98,7 +98,7 @@ class ClienteForm extends Component {
                             onChange={changeCP}
                             value={form.cp}
                             type="text"
-                            placeholder="Código postal"
+                            placeholder="CÓDIGO POSTAL"
                             iconclass={"far fa-envelope"}
                             maxLength="5"
                             messageinc="Incorrecto. Ingresa el código postal."
@@ -112,7 +112,7 @@ class ClienteForm extends Component {
                             value={estado}
                             name="estado"
                             type="text"
-                            placeholder="Estado"
+                            placeholder="ESTADO"
                             iconclass={"fas fa-map-marked-alt"}
                             disabled
                         />
@@ -125,7 +125,7 @@ class ClienteForm extends Component {
                             value={municipio}
                             name="municipio"
                             type="text"
-                            placeholder="Municipio/Delegación"
+                            placeholder="MUNICIPIO/DELEGACIÓN"
                             iconclass={"fas fa-map-marker-alt"}
                             disabled
                         />
@@ -139,7 +139,7 @@ class ClienteForm extends Component {
                             <SelectSearch
                                 formeditado={formeditado}
                                 options={colonias}
-                                placeholder="Selecciona la colonia"
+                                placeholder="SELECCIONA LA COLONIA"
                                 name="colonia"
                                 value={form.colonia}
                                 defaultValue={form.colonia}
@@ -156,7 +156,7 @@ class ClienteForm extends Component {
                                 value={form.colonia}
                                 name="colonia"
                                 type="text"
-                                placeholder="Selecciona la colonia"
+                                placeholder="SELECCIONA LA COLONIA"
                                 iconclass={"fas fa-map-pin"}
                             />
                         }
@@ -169,7 +169,7 @@ class ClienteForm extends Component {
                             value={form.calle}
                             onChange={onChange}
                             type="text"
-                            placeholder="Calle y número"
+                            placeholder="CALLE Y NÚMERO"
                             iconclass={"fas fa-map-signs"}
                             messageinc="Incorrecto. Ingresa la calle y número."
                         />

@@ -24,7 +24,7 @@ class RegisterUserForm extends Component {
                             name="name"
                             type="text"
                             value={form.name}
-                            placeholder="Nombre"
+                            placeholder="NOMBRE"
                             iconclass={"fas fa-user"}
                             messageinc="Incorrecto. Ingresa el nombre."
                         />
@@ -36,7 +36,7 @@ class RegisterUserForm extends Component {
                             name="email"
                             type="email"
                             value={form.email}
-                            placeholder="Email"
+                            placeholder="CORREO ELECTRÓNICO"
                             iconclass={"fas fa-envelope"}
                             messageinc="Incorrecto. Ej. usuario@dominio.com"
                             patterns={EMAIL}
@@ -47,7 +47,7 @@ class RegisterUserForm extends Component {
                             onChange={onChange}
                             name="tipo"
                             value={form.tipo}
-                            placeholder="Selecciona el tipo de usuario"
+                            placeholder="SELECCIONA EL TIPO DE USUARIO"
                             options={options}
                             iconclass={"fas fa-user-cog"}
                             messageinc="Incorrecto. Selecciona el tipo de usuario."

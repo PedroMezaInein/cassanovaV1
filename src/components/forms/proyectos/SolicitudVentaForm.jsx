@@ -102,7 +102,7 @@ class SolicitudVentaForm extends Component {
                                         <SelectSearch
                                             formeditado={formeditado}
                                             options={options.proyectos}
-                                            placeholder="Selecciona el proyecto"
+                                            placeholder="SELECCIONA EL PROYECTO"
                                             name="proyecto"
                                             value={form.proyecto}
                                             onChange={this.updateProyecto}
@@ -112,7 +112,7 @@ class SolicitudVentaForm extends Component {
                                         <SelectSearch
                                             formeditado={formeditado}
                                             options={options.empresas}
-                                            placeholder="Selecciona la empresa"
+                                            placeholder="SELECCIONA LA EMPRESA"
                                             name="empresa"
                                             value={form.empresa}
                                             onChange={this.updateEmpresa}
@@ -126,7 +126,7 @@ class SolicitudVentaForm extends Component {
                                             requirevalidation={1}
                                             formeditado={formeditado}
                                             thousandSeparator={true}
-                                            placeholder="Monto"
+                                            placeholder="MONTO"
                                             value={form.total}
                                             name="total" onChange={onChange}
                                             iconclass={" fas fa-money-check-alt"}
@@ -136,7 +136,7 @@ class SolicitudVentaForm extends Component {
                                         <Select
                                             requirevalidation={1}
                                             formeditado={formeditado}
-                                            placeholder="Selecciona el tipo de pago"
+                                            placeholder="SELECCIONA EL TIPO DE PAGO"
                                             options={options.tiposPagos}
                                             name="tipoPago"
                                             value={form.tipoPago}
@@ -161,7 +161,7 @@ class SolicitudVentaForm extends Component {
                                         <Calendar
                                             formeditado={formeditado}
                                             onChangeCalendar={this.handleChangeDate}
-                                            placeholder="Fecha"
+                                            placeholder="FECHA"
                                             name="fecha"
                                             value={form.fecha}
                                         />
@@ -170,7 +170,7 @@ class SolicitudVentaForm extends Component {
                                         <SelectSearch
                                             formeditado={formeditado}
                                             options={options.areas}
-                                            placeholder="Selecciona el área"
+                                            placeholder="SELECCIONA EL ÁREA"
                                             name="areas"
                                             value={form.area}
                                             onChange={this.updateArea}
@@ -182,7 +182,7 @@ class SolicitudVentaForm extends Component {
                                                 <SelectSearch
                                                     formeditado={formeditado}
                                                     options={options.subareas}
-                                                    placeholder="Selecciona el subárea"
+                                                    placeholder="SELECCIONA EL SUBÁREA"
                                                     name="subarea"
                                                     value={form.subarea}
                                                     onChange={this.updateSubarea}
@@ -198,7 +198,7 @@ class SolicitudVentaForm extends Component {
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             as="textarea"
-                                            placeholder="Descripción"
+                                            placeholder="DESCRIPCIÓN"
                                             rows="3"
                                             value={form.descripcion}
                                             name="descripcion"

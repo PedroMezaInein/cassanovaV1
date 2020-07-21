@@ -32,7 +32,7 @@ class RendimientoForm extends Component {
                         <Input
                             requirevalidation={1}
                             formeditado={formeditado}
-                            placeholder="Materiales"
+                            placeholder="MATERIALES"
                             value={form.materiales}
                             name="materiales"
                             onChange={onChange}
@@ -44,7 +44,7 @@ class RendimientoForm extends Component {
                         <SelectSearch
                             formeditado={formeditado}
                             options={options.unidades}
-                            placeholder="Selecciona la unidad"
+                            placeholder="SELECCIONA LA UNIDAD"
                             name="unidad"
                             value={form.unidad}
                             onChange={this.updateUnidades}
@@ -56,7 +56,7 @@ class RendimientoForm extends Component {
                             requirevalidation={1}
                             formeditado={formeditado}
                             thousandSeparator={true}
-                            placeholder="Costo"
+                            placeholder="COSTO"
                             value={form.costo}
                             name="costo"
                             onChange={onChange}
@@ -72,7 +72,7 @@ class RendimientoForm extends Component {
                         <Input
                             requirevalidation={1}
                             formeditado={formeditado}
-                            placeholder="Rendimiento"
+                            placeholder="RENDIMIENTO"
                             value={form.rendimiento}
                             name="rendimiento"
                             onChange={onChange}
@@ -85,7 +85,7 @@ class RendimientoForm extends Component {
                             requirevalidation={1}
                             formeditado={formeditado}
                             options={options.proveedores}
-                            placeholder="Selecciona el proveedor"
+                            placeholder="SELECCIONA EL PROVEEDOR"
                             name="proveedor"
                             value={form.proveedor}
                             onChange={this.updateProveedor}
@@ -115,7 +115,7 @@ class RendimientoForm extends Component {
                             requirevalidation={0}
                             formeditado={formeditado}
                             as="textarea"
-                            placeholder="Descripción"
+                            placeholder="DESCRIPCIÓN"
                             rows="2"
                             value={form.descripcion}
                             name="descripcion"

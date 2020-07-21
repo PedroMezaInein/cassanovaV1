@@ -48,7 +48,7 @@ class ContabilidadForm extends Component {
                             formeditado={formeditado}
                             name='empresa'
                             options={options.empresas}
-                            placeholder='Selecciona la(s) empresa(s)'
+                            placeholder='SELECCIONA LA(S) EMPRESA(S)'
                             value={form.empresa}
                             onChange={onChangeEmpresa}
                             iconclass={"far fa-building"}
@@ -58,7 +58,7 @@ class ContabilidadForm extends Component {
                     <div className="col-md-4">
                         <Calendar
                             onChangeCalendar={this.handleChangeDateInicio}
-                            placeholder="Fecha de inicio"
+                            placeholder="FECHA DE INICIO"
                             name="fechaInicio"
                             value={form.fechaInicio}
                             selectsStart
@@ -70,7 +70,7 @@ class ContabilidadForm extends Component {
                     <div className="col-md-4">
                         <Calendar
                             onChangeCalendar={this.handleChangeDateFin}
-                            placeholder="Fecha final"
+                            placeholder="FECHA FINAL"
                             name="fechaFin"
                             value={form.fechaFin}
                             selectsEnd
@@ -120,7 +120,7 @@ class ContabilidadForm extends Component {
 
                     <div className="col-md-4  d-flex justify-content-around align-items-top">
                         <OptionsCheckbox
-                            placeholder="Selecciona los archivos a incluir"
+                            placeholder="SELECCIONA LOS ARCHIVOS A INCLUIR"
                             options={form.archivos}
                             name="archivos"
                             value={form.archivos}
@@ -129,7 +129,7 @@ class ContabilidadForm extends Component {
                     </div>
                     <div className="col-md-4  d-flex justify-content-around align-items-top">
                         <OptionsCheckbox
-                            placeholder="¿Lleva factura?"
+                            placeholder="¿LLEVA FACTURA?"
                             options={form.facturas}
                             name="facturas"
                             value={form.facturas}

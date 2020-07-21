@@ -58,7 +58,7 @@ export default class FacturaForm extends Component {
                         <SelectSearch
                             formeditado={formeditado}
                             options={options.empresas}
-                            placeholder="Empresa de emisión"
+                            placeholder="EMPRESA DE EMISIÓN"
                             name="empresa"
                             value={form.empresa}
                             onChange={this.updateEmpresa}
@@ -68,7 +68,7 @@ export default class FacturaForm extends Component {
                         <SelectSearch
                             formeditado={formeditado}
                             options={options.clientes}
-                            placeholder="Nombre del cliente"
+                            placeholder="NOMBRE DEL CLIENTE"
                             name="cliente"
                             value={form.cliente}
                             onChange={this.updateCliente}
@@ -79,7 +79,7 @@ export default class FacturaForm extends Component {
                             requirevalidation={1}
                             formeditado={formeditado}
                             formeditado={formeditado}
-                            placeholder="RFC del cliente"
+                            placeholder="RFC DEL CLIENTE"
                             value={form.rfc}
                             name="rfc"
                             onChange={onChange}
@@ -95,7 +95,7 @@ export default class FacturaForm extends Component {
                         <Input
                             requirevalidation={1}
                             formeditado={formeditado}
-                            placeholder="Concepto"
+                            placeholder="CONCEPTO"
                             value={form.concepto}
                             name="concepto"
                             onChange={onChange}
@@ -108,7 +108,7 @@ export default class FacturaForm extends Component {
                             requirevalidation={1}
                             formeditado={formeditado}
                             thousandSeparator={true}
-                            placeholder="Monto con IVA"
+                            placeholder="MONTO CON IVA"
                             value={form.total}
                             name="total"
                             onChange={onChange}
@@ -119,7 +119,7 @@ export default class FacturaForm extends Component {
                         <SelectSearch
                             formeditado={formeditado}
                             options={options.formasPago}
-                            placeholder="Forma de pago"
+                            placeholder="FORMA DE PAGO"
                             name="formaPago"
                             value={form.formaPago}
                             onChange={this.updateFormaPago}
@@ -132,7 +132,7 @@ export default class FacturaForm extends Component {
                             formeditado={formeditado}
                             requirevalidation={1}
                             formeditado={formeditado}
-                            placeholder="Correo"
+                            placeholder="CORREO ELECTRÓNICO"
                             value={form.email}
                             name="email"
                             onChange={onChange}
@@ -145,7 +145,7 @@ export default class FacturaForm extends Component {
                         <SelectSearch
                             formeditado={formeditado}
                             options={options.metodosPago}
-                            placeholder="Método de pago"
+                            placeholder="MÉTODO DE PAGO"
                             name="metodoPago"
                             value={form.metodoPago}
                             onChange={this.updateMetodoPago}
@@ -155,7 +155,7 @@ export default class FacturaForm extends Component {
                         <SelectSearch
                             formeditado={formeditado}
                             options={options.estatusFacturas}
-                            placeholder="Estatus"
+                            placeholder="ESTATUS"
                             name="estatusFactura"
                             value={form.estatusFactura}
                             onChange={this.updateEstatusFactura}
@@ -169,7 +169,7 @@ export default class FacturaForm extends Component {
                             onChangeCalendar={this.changeDate}
                             name="fecha"
                             value={form.fecha}
-                            placeholder="Fecha de emisión"
+                            placeholder="FECHA DE EMISIÓN"
                         />
                     </div>
                 </div>

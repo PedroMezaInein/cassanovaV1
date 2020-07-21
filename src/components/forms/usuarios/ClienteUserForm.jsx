@@ -26,7 +26,7 @@ class ClienteUserForm extends Component {
                     <div className="col-md-4">
                         <SelectSearch
                             options={options.proyectos}
-                            placeholder="Selecciona el proyecto"
+                            placeholder="SELECCIONA EL PROYECTO"
                             name="proyecto"
                             value={form.proyecto}
                             onChange={this.updateProyectos}

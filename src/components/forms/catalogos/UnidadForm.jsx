@@ -28,7 +28,7 @@ class UnidadForm extends Component {
                             formeditado={formeditado}
                             name="unidad"
                             value={form.unidad}
-                            placeholder="Nombre de la unidad"
+                            placeholder="NOMBRE DE LA UNIDAD"
                             onChange={onChange}
                             iconclass={"far fa-window-maximize"}
                             messageinc="Incorrecto. Ingresa el nombre de la unidad."

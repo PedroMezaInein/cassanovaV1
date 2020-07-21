@@ -78,7 +78,7 @@ class TareaForm extends Component {
                             <Input
                                 requirevalidation={0}
                                 formeditado={formeditado}
-                                placeholder='Título'
+                                placeholder='TÍTULO'
                                 value={form.titulo}
                                 name='titulo'
                                 onBlur={(e) => { e.preventDefault(); changeValueSend(e) }}
@@ -90,7 +90,7 @@ class TareaForm extends Component {
                         <div className="col-md-3">
                             <Calendar
                                 onChangeCalendar={this.onChangeCalendar}
-                                placeholder="Fecha límite"
+                                placeholder="FECHA LÍMITE"
                                 name="fecha_limite"
                                 value={(form.fecha_limite === null || form.fecha_limite === undefined) ? '' : new Date(form.fecha_limite)}
                             />
@@ -160,7 +160,7 @@ class TareaForm extends Component {
                         <Input
                             requirevalidation={0}
                             formeditado={formeditado}
-                            placeholder='Descripción'
+                            placeholder='DESCRIPCIÓN'
                             value={form.descripcion}
                             name='descripcion'
                             as="textarea"

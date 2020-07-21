@@ -27,7 +27,7 @@ class UnidadForm extends Component {
                             formeditado={formeditado}
                             name="tipo"
                             value={form.tipo}
-                            placeholder="Tipo"
+                            placeholder="TIPO"
                             onChange={onChange}
                             iconclass={"far fa-window-maximize"}
                             messageinc="Incorrecto. Ingresa el tipo de contrato."

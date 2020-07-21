@@ -59,7 +59,7 @@ class ProveedorForm extends Component {
                                 requirevalidation={1}
                                 name="nombre"
                                 value={form.nombre}
-                                placeholder="Nombre de contacto"
+                                placeholder="NOMBRE DE CONTACTO"
                                 onChange={onChange}
                                 iconclass={"far fa-user"}
                                 formeditado={formeditado}
@@ -72,7 +72,7 @@ class ProveedorForm extends Component {
                                 requirevalidation={1}
                                 name="razonSocial"
                                 value={form.razonSocial}
-                                placeholder="Razón social / Nombre de la empresa"
+                                placeholder="RAZÓN SOCIAL / NOMBRE DE LA EMPRESA"
                                 onChange={onChange}
                                 iconclass={"far fa-building"}
                                 formeditado={formeditado}
@@ -101,7 +101,7 @@ class ProveedorForm extends Component {
                                 requirevalidation={1}
                                 name="correo"
                                 value={form.correo}
-                                placeholder="Correo electrónico"
+                                placeholder="CORREO ELECTRÓNICO"
                                 type="email"
                                 onChange={onChange}
                                 iconclass={"fas fa-envelope"}
@@ -118,7 +118,7 @@ class ProveedorForm extends Component {
                                 prefix={''}
                                 name="telefono"
                                 value={form.telefono}
-                                placeholder="Teléfono"
+                                placeholder="TELÉFONO"
                                 onChange={onChange}
                                 iconclass={"fas fa-mobile-alt"}
                                 messageinc="Incorrecto. Ingresa el número de teléfono."
@@ -136,7 +136,7 @@ class ProveedorForm extends Component {
                                 requirevalidation={0}
                                 name="numCuenta"
                                 value={form.numCuenta}
-                                placeholder="Número de cuenta"
+                                placeholder="NÚMERO DE CUENTA"
                                 onChange={onChange}
                                 iconclass={" fas fa-id-card "}
                                 formeditado={formeditado}
@@ -151,7 +151,7 @@ class ProveedorForm extends Component {
                                 requirevalidation={0}
                                 name='tipo'
                                 options={options.tipos}
-                                placeholder='Selecciona el tipo de cuenta'
+                                placeholder='SELECCIONA EL TIPO DE CUENTA'
                                 value={form.tipo}
                                 onChange={onChange}
                                 formeditado={formeditado}
@@ -163,7 +163,7 @@ class ProveedorForm extends Component {
                                 requirevalidation={0}
                                 name='banco'
                                 options={options.bancos}
-                                placeholder='Selecciona el banco'
+                                placeholder='SELECCIONA EL BANCO'
                                 value={form.banco}
                                 onChange={onChange}
                                 formeditado={formeditado}
@@ -184,7 +184,7 @@ class ProveedorForm extends Component {
                             <SelectSearch
                                 required
                                 options={options.areas}
-                                placeholder="Selecciona el área"
+                                placeholder="SELECCIONA EL ÁREA"
                                 name="area"
                                 value={form.area}
                                 onChange={this.updateArea}
@@ -200,7 +200,7 @@ class ProveedorForm extends Component {
                                     <SelectSearch
                                         required
                                         options={options.subareas}
-                                        placeholder="Selecciona el subárea"
+                                        placeholder="SELECCIONA EL SUBÁREA"
                                         name="subarea"
                                         value={form.subarea}
                                         onChange={this.updateSubarea}

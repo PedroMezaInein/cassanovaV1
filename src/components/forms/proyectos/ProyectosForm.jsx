@@ -137,7 +137,7 @@ class ProyectosForm extends Component {
                                             value={form.nombre}
                                             onChange={onChange}
                                             type="text"
-                                            placeholder="Nombre del proyecto"
+                                            placeholder="NOMBRE DEL PROYECTO"
                                             iconclass={"far fa-folder-open"}
                                             messageinc="Incorrecto. Ingresa el nombre del proyecto."
                                         />
@@ -146,7 +146,7 @@ class ProyectosForm extends Component {
                                         <SelectSearch
                                             formeditado={formeditado}
                                             options={options.clientes}
-                                            placeholder="Selecciona el cliente"
+                                            placeholder="SELECCIONA EL CLIENTE"
                                             name="cliente"
                                             value={form.cliente}
                                             onChange={this.updateCliente}
@@ -165,7 +165,7 @@ class ProyectosForm extends Component {
                                             name="numeroContacto"
                                             value={form.numeroContacto}
                                             onChange={onChange}
-                                            placeholder="Número de contacto"
+                                            placeholder="NÚMERO DE CONTACTO"
                                             iconclass={"fas fa-mobile-alt"}
                                             messageinc="Incorrecto. Ingresa el número de contacto."
                                             patterns={TEL}
@@ -179,7 +179,7 @@ class ProyectosForm extends Component {
                                             value={form.contacto}
                                             onChange={onChange}
                                             type="text"
-                                            placeholder="Nombre del contacto"
+                                            placeholder="NOMBRE DEL CONTACTO"
                                             iconclass={"far fa-user-circle"}
                                             messageinc="Incorrecto. Ingresa el nombre de contacto."
                                         />
@@ -196,7 +196,7 @@ class ProyectosForm extends Component {
                                             name="correo"
                                             value={form.correo}
                                             onChange={onChange}
-                                            placeholder="Correo de contacto"
+                                            placeholder="CORREO DE CONTACTO"
                                             iconclass={"fas fa-envelope"}
                                             messageinc="Incorrecto. Ej. usuario@dominio.com"
                                             patterns={EMAIL}
@@ -248,7 +248,7 @@ class ProyectosForm extends Component {
                                             onChange={onChangeCP}
                                             value={form.cp}
                                             type="text"
-                                            placeholder="Código postal"
+                                            placeholder="CÓDIGO POSTAL"
                                             iconclass={"far fa-envelope"}
                                             maxLength="5"
                                             messageinc="Incorrecto. Ingresa el código postal."
@@ -262,7 +262,7 @@ class ProyectosForm extends Component {
                                             value={form.estado}
                                             name="estado"
                                             type="text"
-                                            placeholder="Estado"
+                                            placeholder="ESTADO"
                                             iconclass={"fas fa-map-marked-alt"}
                                             disabled
                                         />
@@ -275,7 +275,7 @@ class ProyectosForm extends Component {
                                             value={form.municipio}
                                             name="municipio"
                                             type="text"
-                                            placeholder="Municipio/Delegación"
+                                            placeholder="MUNICIPIO/DELEGACIÓN"
                                             iconclass={"fas fa-map-marker-alt"}
                                             disabled
                                         />
@@ -289,7 +289,7 @@ class ProyectosForm extends Component {
                                             <SelectSearch
                                                 formeditado={formeditado}
                                                 options={options.colonias}
-                                                placeholder="Selecciona la colonia"
+                                                placeholder="SELECCIONA LA COLONIA"
                                                 name="colonia"
                                                 iconclass={"fas fa-map-pin"}
                                                 value={form.colonia}
@@ -305,7 +305,7 @@ class ProyectosForm extends Component {
                                                 readOnly
                                                 value={form.colonia}
                                                 name="colonia" type="text"
-                                                placeholder="Selecciona la colonia"
+                                                placeholder="SELECCIONA LA COLONIA"
                                                 iconclass={"fas fa-map-pin"}
                                             />
                                         }
@@ -318,7 +318,7 @@ class ProyectosForm extends Component {
                                             value={form.calle}
                                             onChange={onChange}
                                             type="text"
-                                            placeholder="Calle y número"
+                                            placeholder="CALLE Y NÚMERO"
                                             iconclass={"fas fa-map-signs"}
                                             messageinc="Incorrecto. Ingresa la calle y número."
                                         />
@@ -340,7 +340,7 @@ class ProyectosForm extends Component {
                                         <SelectSearch
                                             formeditado={formeditado}
                                             options={options.empresas}
-                                            placeholder="Selecciona la empresa"
+                                            placeholder="SELECCIONA LA EMPRESA"
                                             name="empresa"
                                             value={form.empresa}
                                             onChange={this.updateEmpresa}
@@ -352,7 +352,7 @@ class ProyectosForm extends Component {
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             onChangeAdjunto={onChangeAdjunto}
-                                            placeholder="Imagen"
+                                            placeholder="IMAGEN"
                                             value={form.adjuntos.image.value}
                                             name="image"
                                             id="image"
@@ -369,7 +369,7 @@ class ProyectosForm extends Component {
                                         <Calendar
                                             formeditado={formeditado}
                                             onChangeCalendar={this.handleChangeDateInicio}
-                                            placeholder="Fecha de inicio"
+                                            placeholder="FECHA DE INICIO"
                                             name="fechaInicio"
                                             value={form.fechaInicio}
                                             selectsStart
@@ -382,7 +382,7 @@ class ProyectosForm extends Component {
                                         <Calendar
                                             formeditado={formeditado}
                                             onChangeCalendar={this.handleChangeDateFin}
-                                            placeholder="Fecha final"
+                                            placeholder="FECHA FINAL"
                                             name="fechaFin"
                                             value={form.fechaFin}
                                             selectsEnd
@@ -402,7 +402,7 @@ class ProyectosForm extends Component {
                                             formeditado={formeditado}
                                             rows="3"
                                             as="textarea"
-                                            placeholder="Descripción"
+                                            placeholder="DESCRIPCIÓN"
                                             name="descripcion"
                                             onChange={onChange}
                                             value={form.descripcion}

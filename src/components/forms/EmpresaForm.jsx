@@ -37,7 +37,7 @@ class EmpresaForm extends Component {
                             name="name"
                             type="text"
                             value={form.name}
-                            placeholder="Nombre"
+                            placeholder="NOMBRE"
                             iconclass={"far fa-user"}
                             messageinc="Incorrecto. Ingresa el nombre de la empresa"
                         />
@@ -50,7 +50,7 @@ class EmpresaForm extends Component {
                             name="razonSocial"
                             type="text"
                             value={form.razonSocial}
-                            placeholder="Razón social"
+                            placeholder="RAZÓN SOCIAL"
                             iconclass={"far fa-building"}
                             messageinc="Incorrecto. Ingresa la razón social"
                         />
@@ -83,7 +83,7 @@ class EmpresaForm extends Component {
                                         type="file"
                                         value={form.logo}
                                         id="logo"
-                                        placeholder="Logo de la empresa"
+                                        placeholder="LOGO DE LA EMPRESA"
                                     />
                                 </div>
                             </div>

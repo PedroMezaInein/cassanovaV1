@@ -62,7 +62,7 @@ class ContactoLeadForm extends Component {
                             formeditado={formeditado}
                             requirevalidation={0}
                             options={tiposContactos}
-                            placeholder="Selecciona el medio de contacto"
+                            placeholder="SELECCIONA EL MEDIO DE CONTACTO"
                             name="tipoContacto"
                             value={formContacto.tipoContacto}
                             /* defaultValue = { formContacto.tipoContacto }  */
@@ -79,14 +79,14 @@ class ContactoLeadForm extends Component {
                                 name="newTipoContacto"
                                 type="text"
                                 value={formContacto.newTipoContacto}
-                                placeholder="Nuevo tipo de contacto" />
+                                placeholder="NUEVO TIPO DE CONTACTO" />
                         </div>
                     }
                     <div className="col-md-4">
                         <Calendar
                             formeditado={formeditado}
                             onChangeCalendar={this.handleChangeDate}
-                            placeholder="Fecha de contacto"
+                            placeholder="FECHA DE CONTACTO"
                             name="fechaContacto"
                             value={formContacto.fechaContacto}
                             patterns={DATE}
@@ -101,7 +101,7 @@ class ContactoLeadForm extends Component {
                             requirevalidation={0}
                             as='textarea'
                             name='descripcion'
-                            placeholder='Descripción del contacto'
+                            placeholder='DESCRIPCIÓN DEL CONTRATO'
                             onChange={onChangeContacto}
                             value={formContacto.descripcion}
                             rows='3'

@@ -27,7 +27,7 @@ class AreaForm extends Component {
                             formeditado={formeditado}
                             name="nombre"
                             value={form.nombre}
-                            placeholder="Nombre del área"
+                            placeholder="NOMBRE DEL ÁREA"
                             onChange={onChange}
                             iconclass={"far fa-window-maximize"}
                             messageinc="Incorrecto. Ingresa el nombre del área."
@@ -39,7 +39,7 @@ class AreaForm extends Component {
                             formeditado={formeditado}
                             name="subarea"
                             value={form.subarea}
-                            placeholder="Subárea "
+                            placeholder="SUBÁREA "
                             onChange={onChange}
                             iconclass={"far fa-window-restore"}
                         />

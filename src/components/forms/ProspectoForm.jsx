@@ -174,7 +174,7 @@ class ProspectoForm extends Component {
                                             <SelectSearch
                                                 formeditado={formeditado}
                                                 options={clientes}
-                                                placeholder="Selecciona el cliente"
+                                                placeholder="SELECCIONA EL CLIENTE"
                                                 onChange={this.updateCliente}
                                                 name="cliente"
                                                 value={form.cliente}
@@ -187,7 +187,7 @@ class ProspectoForm extends Component {
                                             <SelectSearch
                                                 formeditado={formeditado}
                                                 options={vendedores}
-                                                placeholder="Selecciona al vendedor"
+                                                placeholder="SELECCIONA AL VENDEDOR"
                                                 name="vendedor"
                                                 value={form.vendedor}
                                                 onChange={this.updateVendedor}
@@ -201,7 +201,7 @@ class ProspectoForm extends Component {
                                             requirevalidation={1}
                                             name="preferencia"
                                             type="text"
-                                            placeholder="Perefencia de contacto"
+                                            placeholder="PEREFENCIA DE CONTACTO"
                                             onChange={onChange}
                                             value={form.preferencia}
                                             iconclass={"fas fa-mail-bulk"}
@@ -217,7 +217,7 @@ class ProspectoForm extends Component {
                                             <SelectSearch
                                                 formeditado={formeditado}
                                                 options={estatusProspectos}
-                                                placeholder="Selecciona el estatus del prospecto"
+                                                placeholder="SELECCIONA EL ESTATUS DEL PROSPECTO"
                                                 onChange={this.updateEstatusProspectos}
                                                 name="estatusProspecto"
                                                 value={form.estatusProspecto}
@@ -232,7 +232,7 @@ class ProspectoForm extends Component {
                                                 requirevalidation={1}
                                                 name="newEstatusProspecto"
                                                 type="text"
-                                                placeholder="Nuevo estatus prospecto"
+                                                placeholder="NUEVO ESTATUS PROSPECTO"
                                                 onChange={onChange}
                                                 value={form.newEstatusProspectos}
                                             />
@@ -244,7 +244,7 @@ class ProspectoForm extends Component {
                                             <SelectSearch
                                                 formeditado={formeditado}
                                                 options={tipoProyecto}
-                                                placeholder="Selecciona el tipo de proyecto"
+                                                placeholder="SELECCIONA EL TIPO DE PROYECTO"
                                                 onChange={this.updateTipoProyecto}
                                                 name="tipoProyecto"
                                                 value={form.tipoProyecto}
@@ -261,7 +261,7 @@ class ProspectoForm extends Component {
                                                 onChange={onChange}
                                                 value={form.newTipoProyecto}
                                                 type="text"
-                                                placeholder="Nuevo tipo de proyecto"
+                                                placeholder="NUEVO TIPO DE PROYECTO"
                                             />
                                         </div>
                                     }
@@ -282,7 +282,7 @@ class ProspectoForm extends Component {
                                             requirevalidation={0}
                                             rows="3"
                                             as="textarea"
-                                            placeholder="Descripción del prospecto"
+                                            placeholder="DESCRIPCIÓN DEL PROSPECTO"
                                             name="descripcion"
                                             onChange={onChange}
                                             value={form.descripcion}
@@ -299,7 +299,7 @@ class ProspectoForm extends Component {
                                             requirevalidation={0}
                                             rows="3"
                                             as="textarea"
-                                            placeholder="Motivo de contratación o rechazo"
+                                            placeholder="MOTIVO DE CONTRATACIÓN O RECHAZO"
                                             name="motivo"
                                             onChange={onChange}
                                             value={form.motivo}

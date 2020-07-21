@@ -144,7 +144,7 @@ class LoginForm extends React.Component {
                 <div className="form-group">
                     <input className={"form-control h-auto text-white bg-white-o-9 rounded-pill border-0 py-3 pl-4"}
                         type="text"
-                        placeholder="Ingresa tu email"
+                        placeholder="INGRESA TU CORREO ELECRÓNICO"
                         required
                         //className={this.state.error.email !== '' ? 'error ' : ''}
                         value={this.state.form.email}
@@ -162,7 +162,7 @@ class LoginForm extends React.Component {
                 <div className="form-group">
                     <input className={"form-control h-auto text-white bg-white-o-9 rounded-pill border-0 py-3  pl-4"}
                         type={this.state.showPassword ? 'text' : 'password'}
-                        placeholder="Ingresa tu constraseña"
+                        placeholder="INGRESA TU CONTRASEÑA"
                         required
                         value={this.state.form.password}
                         onChange={this.handleChange}

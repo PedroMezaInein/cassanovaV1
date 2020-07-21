@@ -40,7 +40,7 @@ class LeadForm extends Component {
                             requirevalidation={1}
                             formeditado={formeditado}
                             type="text"
-                            placeholder="Nombre del lead"
+                            placeholder="NOMBRE DEL LEAD"
                             name="nombre"
                             value={form.nombre}
                             onChange={onChange}
@@ -54,7 +54,7 @@ class LeadForm extends Component {
                             requirevalidation={0}
                             formeditado={formeditado}
                             type="email"
-                            placeholder="Correo electrónico"
+                            placeholder="CORREO ELECTRÓNICO"
                             name="email"
                             value={form.email}
                             onChange={onChange}
@@ -67,7 +67,7 @@ class LeadForm extends Component {
                         <InputPhone
                             requirevalidation={1}
                             formeditado={formeditado}
-                            placeholder="Teléfono"
+                            placeholder="TELÉFONO"
                             name="telefono"
                             value={form.telefono}
                             onChange={onChange}
@@ -85,7 +85,7 @@ class LeadForm extends Component {
                         <Select
                             requirevalidation={1}
                             formeditado={formeditado}
-                            placeholder="Selecciona la empresa para el lead"
+                            placeholder="SELECCIONA LA EMPRESA PARA EL LEAD"
                             options={empresas}
                             name="empresa"
                             value={form.empresa}
@@ -98,7 +98,7 @@ class LeadForm extends Component {
                         <Select
                             requirevalidation={1}
                             formeditado={formeditado}
-                            placeholder="Selecciona el origen para el lead"
+                            placeholder="SELECCIONA EL ORIGEN PARA EL LEAD"
                             options={origenes}
                             name="origen"
                             value={form.origen}
@@ -112,7 +112,7 @@ class LeadForm extends Component {
                             required
                             formeditado={formeditado}
                             onChangeCalendar={onChangeCalendar}
-                            placeholder="Fecha de ingreso"
+                            placeholder="FECHA DE INGRESO"
                             name="fecha"
                             value={form.fecha}
                             patterns={DATE}
@@ -127,7 +127,7 @@ class LeadForm extends Component {
                             formeditado={formeditado}
                             rows="3"
                             as="textarea"
-                            placeholder="Comentario"
+                            placeholder="COMENTARIO"
                             name="comentario"
                             value={form.comentario}
                             onChange={onChange}
@@ -142,7 +142,7 @@ class LeadForm extends Component {
                         <OptionsCheckbox
                             requirevalidation={0}
                             formeditado={formeditado}
-                            placeholder="Selecciona los serivicios de interés"
+                            placeholder="SELECCIONA LOS SERIVICIOS DE INTERÉS"
                             options={form.servicios}
                             name="servicios"
                             value={form.servicios}

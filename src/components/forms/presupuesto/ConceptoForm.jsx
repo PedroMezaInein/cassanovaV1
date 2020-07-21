@@ -48,7 +48,7 @@ class ConceptoForm extends Component {
                         <SelectSearch
                             formeditado={formeditado}
                             options={options.unidades}
-                            placeholder="Selecciona la unidad"
+                            placeholder="SELECCIONA LA UNIDAD"
                             name="unidad"
                             value={form.unidad}
                             onChange={this.updateUnidades}
@@ -60,7 +60,7 @@ class ConceptoForm extends Component {
                             requirevalidation={1}
                             formeditado={formeditado}
                             thousandSeparator={true}
-                            placeholder="Costo"
+                            placeholder="COSTO"
                             value={form.costo}
                             name="costo"
                             onChange={onChange}
@@ -71,7 +71,7 @@ class ConceptoForm extends Component {
                         <SelectSearch
                             formeditado={formeditado}
                             options={options.partidas}
-                            placeholder="Selecciona la partida"
+                            placeholder="SELECCIONA LA PARTIDA"
                             name="partida"
                             value={form.partida}
                             onChange={this.updatePartida}
@@ -85,7 +85,7 @@ class ConceptoForm extends Component {
                         <SelectSearch
                             formeditado={formeditado}
                             options={options.subpartidas}
-                            placeholder="Selecciona la subpartida"
+                            placeholder="SELECCIONA LA SUBPARTIDA"
                             name="subpartida"
                             value={form.subpartida}
                             onChange={this.updateSubpartida}
@@ -97,7 +97,7 @@ class ConceptoForm extends Component {
                             requirevalidation={1}
                             formeditado={formeditado}
                             as="textarea"
-                            placeholder="Descripción"
+                            placeholder="DESCRIPCIÓN"
                             rows="1"
                             value={form.descripcion}
                             name="descripcion"

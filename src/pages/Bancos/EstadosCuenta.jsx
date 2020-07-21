@@ -411,7 +411,7 @@ class EstadosCuenta extends Component {
 
     }
     render() {
-        const { modal, modalDelete, adjunto, adjuntoName, adjuntoFile, cuentas, cuenta, estados, fecha, data, title} = this.state
+        const { modal, modalDelete, adjunto, adjuntoName, adjuntoFile, cuentas, cuenta, estados, fecha, data, title } = this.state
         return (
             <Layout active={'bancos'}  {...this.props}>
                 {/* <div className="text-right">
@@ -430,40 +430,38 @@ class EstadosCuenta extends Component {
                         'delete': { function: this.openModalDelete },
                     }}
                     elements={data.estados}
-                    idTable = 'kt_datatable_estados_cuenta'
+                    idTable='kt_datatable_estados_cuenta'
                 />
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el estado de cuenta?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteEstadoAxios() }}>
                 </ModalDelete>
-                <Modal size="xl" title = {"Agregar estado de cuenta"} show={modal} handleClose={this.handleClose} >
-                    
+                <Modal size="xl" title={"Agregar estado de cuenta"} show={modal} handleClose={this.handleClose} >
+
                     <Form onSubmit={this.submitForm}>
-                    <div className="form-group row form-group-marginless pt-4">
-                        <div className="col-md-8">
-                            <SelectSearch
-                                options={cuentas}
-                                placeholder="Selecciona la cuenta"
-                                name="cuenta"
-                                value={cuenta}
-                                onChange={this.updateCuenta}
-                                iconclass={"far fa-credit-card"} 
+                        <div className="form-group row form-group-marginless pt-4">
+                            <div className="col-md-8">
+                                <SelectSearch
+                                    options={cuentas}
+                                    placeholder="SELECCIONA LA CUENTA"
+                                    name="cuenta"
+                                    value={cuenta}
+                                    onChange={this.updateCuenta}
+                                    iconclass={"far fa-credit-card"}
                                 />
-                            {/*<span className="form-text text-muted">Por favor, seleccione la cuenta. </span>*/}
+                            </div>
+                            <div className="col-md-4">
+                                <Calendar
+                                    onChangeCalendar={this.handleChangeDate}
+                                    placeholder="FECHA"
+                                    name="fecha"
+                                    value={fecha}
+                                    iconclass={"far fa-calendar-alt"}
+                                />
+                            </div>
                         </div>
-                        <div className="col-md-4">
-                            <Calendar
-                                onChangeCalendar={this.handleChangeDate}
-                                placeholder="Fecha"
-                                name="fecha"
-                                value={fecha}
-                                iconclass={"far fa-calendar-alt"} 
-                            />
-                            {/*<span className="form-text text-muted">Por favor, seleccione la fecha. </span>*/}
-                        </div>
-                    </div>
-                    <div className="separator separator-dashed mt-1 mb-2 pt-2"></div>
-                    <div className="form-group row form-group-marginless">
-                        <div className="col-md-4 mt-3">
-                            <div className="px-2 d-flex align-items-center">
+                        <div className="separator separator-dashed mt-1 mb-2 pt-2"></div>
+                        <div className="form-group row form-group-marginless">
+                            <div className="col-md-4 mt-3">
+                                <div className="px-2 d-flex align-items-center">
                                     <div className="image-upload d-flex align-items-center">
                                         <div className="no-label">
                                             <input
@@ -472,44 +470,35 @@ class EstadosCuenta extends Component {
                                                 name="adjunto"
                                                 type="file"
                                                 id="adjunto"
-                                                accept="application/pdf" 
+                                                accept="application/pdf"
                                                 className={"mr-3"}
-                                                />
-                                            {/*<span className="form-text text-muted">Por favor, adjunte su documento. </span>*/}
+                                            />
                                         </div>
-                                        {/*<label htmlFor="adjunto">
-                                            <FontAwesomeIcon className="p-0 font-unset mr-2" icon={faPaperclip} color={DARK_BLUE} />
-                                        </label>
-                                        */}
-                                        
                                     </div>
                                 </div>
+                            </div>
+                            {
+
+                                adjuntoName &&
+                                <div className="col-md-8">
+                                    <div className="tagify form-control p-1" tabIndex="-1" style={{ borderWidth: "0px" }}>
+                                        <div className="tagify__tag tagify__tag--primary tagify--noAnim">
+                                            <div
+                                                title="Borrar archivo"
+                                                className="tagify__tag__removeBtn"
+                                                role="button"
+                                                aria-label="remove tag"
+                                                onClick={(e) => { e.preventDefault(); this.deleteAdjunto() }}
+                                            >
+                                            </div>
+                                            <div><span className="tagify__tag-text p-1 white-space">{adjuntoName}</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                         </div>
-                                        {
-                                            
-                                            adjuntoName &&
-                                            <div className="col-md-8">
-                                                <div className="tagify form-control p-1" tabIndex="-1" style={{borderWidth:"0px"}}>
-                                                        <div className="tagify__tag tagify__tag--primary tagify--noAnim">
-                                                            <div 
-                                                                title="Borrar archivo" 
-                                                                className="tagify__tag__removeBtn" 
-                                                                role="button" 
-                                                                aria-label="remove tag" 
-                                                                onClick={(e) => { e.preventDefault(); this.deleteAdjunto() }}
-                                                                >
-                                                            </div>                                                            
-                                                                <div><span className="tagify__tag-text p-1 white-space">{adjuntoName}</span></div>
-                                                        </div>
-                                                </div>
-                                            </div> 
-                                        }
-                    </div>
-
-
 
                         <div className="row mx-0">
-                            
                             <div className="col-md-12 text-center mt-3">
                                 <Button icon='' className="mx-auto" type="submit" text="Enviar" />
                             </div>
