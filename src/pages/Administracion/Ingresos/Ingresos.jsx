@@ -25,7 +25,7 @@ import { Form, ProgressBar } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 
-
+const $ = require('jquery');
 class Ingresos extends Component {
 
     state = {
@@ -453,6 +453,13 @@ class Ingresos extends Component {
         this.deleteFacturaAxios(id)
     }
 
+    async getIngresosAxios(){
+        var table = $('#kt_datatable2')
+                    .DataTable();
+
+                table.ajax.reload();
+    }
+
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -493,13 +500,9 @@ class Ingresos extends Component {
         const { ingreso } = this.state
         await axios.delete(URL_DEV + 'ingresos/' + ingreso.id, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { ingresos } = response.data
-                const { data } = this.state
-                data.ingresos = ingresos
+                this.getIngresosAxios()
                 this.setState({
                     ... this.state,
-                    ingresos: this.setIngresos(ingresos),
-                    data,
                     modalDelete: false,
                     ingreso: ''
                 })
@@ -566,15 +569,13 @@ class Ingresos extends Component {
                 })
                 porcentaje = porcentaje * 100 / (ingreso.total)
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
-                data.ingresos = ingresos
+                this.getIngresosAxios()
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
                     ingreso: ingreso,
                     facturas: ingreso.facturas,
-                    porcentaje,
-                    data,
-                    ingresos: this.setIngresos(ingresos)
+                    porcentaje
                 })
 
                 swal({
@@ -615,13 +616,11 @@ class Ingresos extends Component {
                 })
                 porcentaje = porcentaje * 100 / (ingreso.total)
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
-                data.ingresos = ingresos
+                this.getIngresosAxios()
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
                     ingreso: ingreso,
-                    data,
-                    ingresos: this.setIngresos(ingresos),
                     facturas: ingreso.facturas,
                     porcentaje
                 })
