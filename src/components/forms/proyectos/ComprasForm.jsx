@@ -492,37 +492,44 @@ updateArea = value => {
                                         {/*<span className="form-text text-muted">Por favor, selecciona el contrato.</span>*/}
                                     </div>
                                 </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">                                
-                                    <div className="col-md-6">
-                                        <FileInput
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChangeAdjunto={onChangeAdjunto}
-                                            placeholder={form['adjuntos']['presupuesto']['placeholder']}
-                                            value={form['adjuntos']['presupuesto']['value']}
-                                            name={'presupuesto'} id={'presupuesto'}
-                                            accept="text/xml, application/pdf"
-                                            files={form['adjuntos']['presupuesto']['files']}
-                                            deleteAdjunto={clearFiles} 
-                                        />
-                                        {/*<span className="form-text text-muted">Por favor, adjunta el documento.</span>*/}
-                                    </div>
-                                    <div className="col-md-6">
-                                        <FileInput
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChangeAdjunto={onChangeAdjunto}
-                                            placeholder={form['adjuntos']['pago']['placeholder']}
-                                            value={form['adjuntos']['pago']['value']}
-                                            name={'pago'} id={'pago'}
-                                            accept="text/xml, application/pdf"
-                                            files={form['adjuntos']['pago']['files']}
-                                            deleteAdjunto={clearFiles} 
-                                        />
-                                        {/*<span className="form-text text-muted">Por favor, adjunta el documento.</span>*/}
-                                    </div>
-                                </div>
+                                {
+                                    title !== 'Editar compra' ?
+                                        <>
+                                            <div className="separator separator-dashed mt-1 mb-2"></div>
+                                            <div className="form-group row form-group-marginless">                                
+                                                <div className="col-md-6">
+                                                    <FileInput
+                                                        requirevalidation={0}
+                                                        formeditado={formeditado}
+                                                        onChangeAdjunto={onChangeAdjunto}
+                                                        placeholder={form['adjuntos']['presupuesto']['placeholder']}
+                                                        value={form['adjuntos']['presupuesto']['value']}
+                                                        name={'presupuesto'} id={'presupuesto'}
+                                                        accept="text/xml, application/pdf, image/*"
+                                                        files={form['adjuntos']['presupuesto']['files']}
+                                                        deleteAdjunto={clearFiles} 
+                                                        multiple
+                                                    />
+                                                </div>
+                                                <div className="col-md-6">
+                                                    <FileInput
+                                                        requirevalidation={0}
+                                                        formeditado={formeditado}
+                                                        onChangeAdjunto={onChangeAdjunto}
+                                                        placeholder={form['adjuntos']['pago']['placeholder']}
+                                                        value={form['adjuntos']['pago']['value']}
+                                                        name={'pago'} id={'pago'}
+                                                        accept="text/xml, application/pdf, image/*"
+                                                        files={form['adjuntos']['pago']['files']}
+                                                        deleteAdjunto={clearFiles}
+                                                        multiple
+                                                    />
+                                                </div>
+                                            </div>
+                                        </>
+                                    : ''
+                                }
+                                
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase"  onClick = { () => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>

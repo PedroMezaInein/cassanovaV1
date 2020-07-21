@@ -1329,3 +1329,18 @@ export const NOMINA_OBRA_COLUMNS = [
         accessor: 'granTotal'
     }
 ]
+
+export const ADJUNTOS_COLUMNS = [
+    {
+        Header: 'Opciones',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Adjunto',
+        accessor: 'url'
+    },
+    {
+        Header: 'Tipo',
+        accessor: 'tipo'
+    }
+]
