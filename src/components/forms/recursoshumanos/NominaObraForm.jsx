@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { Input, Calendar, Select, SelectSearch, Button} from '../../form-components'
+import { Input, Calendar, SelectSearch, Button} from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { DATE} from '../../../constants' 
 
@@ -18,6 +18,16 @@ class NominaObraForm extends Component{
     updateEmpresa = value => {
         const { onChange, setOptions } = this.props
         onChange({ target: { value: value, name: 'empresa' } })
+    }
+
+    updateProyecto = (value, key) => {
+        const { onChangeNominas } = this.props
+        onChangeNominas(key, { target: { value: value, name: 'proyecto' }}, 'proyecto')
+    }
+
+    updateUsuario = (value, key) => {
+        const { onChangeNominas } = this.props
+        onChangeNominas(key, { target: { value: value, name: 'usuario' }}, 'usuario')
     }
     
     render(){
@@ -55,7 +65,6 @@ class NominaObraForm extends Component{
                             onChange = { this.updateEmpresa }
                             iconclass={"far fa-building"}
                             />
-                        {/*<span className="form-text text-muted">Por favor, selecciona la empresa.</span>*/}
                     </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
@@ -116,10 +125,11 @@ class NominaObraForm extends Component{
                                                     <SelectSearch
                                                         formeditado={formeditado}
                                                         options = { options.usuarios} 
-                                                        placeholder={null}  
+                                                        placeholder="Selecciona el empleado"
+                                                        // placeholder={null}
                                                         name="usuario"  
-                                                        value = {form['nominas'][key]['usuario']}
-                                                        onChange={ e => onChangeNominas(e, key, 'usuarios') }
+                                                        value = {form['nominas'][key]['usuario']} 
+                                                        onChange={(value) => this.updateUsuario(value, key)}
                                                         iconclass={"fas fa-building"} 
                                                         customstyle={{width: "auto"}}
                                                     />
@@ -128,11 +138,11 @@ class NominaObraForm extends Component{
                                                     <SelectSearch 
                                                         formeditado={formeditado}
                                                         options={options.proyectos} 
-                                                        // placeholder="Selecciona el proyecto"
-                                                        placeholder={null}
+                                                        placeholder="Selecciona el proyecto"
+                                                        // placeholder={null}
                                                         name="proyecto"
-                                                        value = {form['nominas'][key]['proyecto']} 
-                                                        onChange={e => onChangeNominas(e, key, 'proyectos') }
+                                                        value = {form['nominas'][key]['proyecto']}  
+                                                        onChange={(value) => this.updateProyecto(value, key)}
                                                         iconclass={"far fa-folder-open"} 
                                                         customstyle={{width: "300px"}}
                                                     />
@@ -145,7 +155,7 @@ class NominaObraForm extends Component{
                                                         value = { form.sueldoh } 
                                                         onChange = { e => onChangeNominas(key, e, 'sueldoh') } 
                                                         placeholder={null}  
-                                                        style={{paddingLeft: "10px", width: "131px"}}
+                                                        style={{paddingLeft: "10px", width: "131px", marginTop: "10px"}}
                                                     />
                                                 </td>
                                                 <td>
@@ -156,7 +166,7 @@ class NominaObraForm extends Component{
                                                         value = { form.hora1T } 
                                                         onChange = { e => onChangeNominas(key, e, 'hora1T') } 
                                                         placeholder={null}  
-                                                        style={{paddingLeft: "10px", width: "131px"}}
+                                                        style={{paddingLeft: "10px", width: "131px", marginTop: "10px"}}
                                                     />
                                                 </td>
                                                 <td>
@@ -167,7 +177,7 @@ class NominaObraForm extends Component{
                                                         value = { form.hora2T } 
                                                         onChange = { e => onChangeNominas(key, e, 'hora2T') } 
                                                         placeholder={null}  
-                                                        style={{paddingLeft: "10px", width: "131px"}}
+                                                        style={{paddingLeft: "10px", width: "131px", marginTop: "10px"}}
                                                     />
                                                 </td>
                                                 <td>
@@ -178,7 +188,7 @@ class NominaObraForm extends Component{
                                                         value = { form.hora3T } 
                                                         onChange = { e => onChangeNominas(key, e, 'hora3T') } 
                                                         placeholder={null}  
-                                                        style={{paddingLeft: "10px", width: "131px"}}
+                                                        style={{paddingLeft: "10px", width: "131px", marginTop: "10px"}}
                                                     />
                                                 </td>
                                                 <td>
@@ -189,7 +199,7 @@ class NominaObraForm extends Component{
                                                         value = { form.hora3T } 
                                                         onChange = { e => onChangeNominas(key, e, 'nominImss') } 
                                                         placeholder={null} 
-                                                        style={{paddingLeft: "10px", width: "131px"}}
+                                                        style={{paddingLeft: "10px", width: "131px", marginTop: "10px"}}
                                                     />
                                                 </td>
                                                 <td>
@@ -200,7 +210,7 @@ class NominaObraForm extends Component{
                                                         value = { form.restanteNomina } 
                                                         onChange = { e => onChangeNominas(key, e, 'restanteNomina') } 
                                                         placeholder={null}  
-                                                        style={{paddingLeft: "10px", width: "131px"}}
+                                                        style={{paddingLeft: "10px", width: "131px", marginTop: "10px"}}
                                                     />
                                                 </td>
                                                 <td>
@@ -211,7 +221,7 @@ class NominaObraForm extends Component{
                                                         value = { form.extras } 
                                                         onChange = { e => onChangeNominas(key, e, 'extras') } 
                                                         placeholder={null}  
-                                                        style={{paddingLeft: "10px", width: "131px"}}
+                                                        style={{paddingLeft: "10px", width: "131px", marginTop: "10px"}}
                                                     />
                                                 </td>
                                                 <td>

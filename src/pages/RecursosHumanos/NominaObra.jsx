@@ -96,7 +96,17 @@ class NominaObra extends Component {
             console.log(error, 'error')
         })
     }
-
+    //Submits
+    // onSubmit = e => {
+    //     e.preventDefault()
+    //     const { title } = this.state
+    //     waitAlert()
+    //     if(title === 'Editar nómina de obra')
+    //         this.editCompraAxios()
+    //     else
+    //         this.addCompraAxios()
+    // }
+    
     openModal = () => {
         const { modal } = this.state
         modal.form = true
@@ -141,6 +151,7 @@ class NominaObra extends Component {
         })
         return form;
     }
+
     onChangeNominas = (key, e, name) => {
         const { value } = e.target
         const { form } = this.state
@@ -151,6 +162,7 @@ class NominaObra extends Component {
         })
     
     }
+
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -160,6 +172,7 @@ class NominaObra extends Component {
             form
         })
     }
+
     addRowNomina = () => {
         const { form } = this.state
         form.nominas.push(
@@ -233,6 +246,7 @@ class NominaObra extends Component {
                         deleteRowNomina = { this.deleteRowNomina }
                         onChangeNominas =  { this.onChangeNominas }
                         onChange = { this.onChange } 
+                        onSubmit = { this.onSubmit }
                     >
                     </NominaObraForm>
                 </Modal>  
