@@ -1,26 +1,18 @@
 import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import Layout from '../../components/layout/layout'
-import { connect } from 'react-redux'
-import { faPlus, faTrash, faEdit, faPaperclip, faTimes } from '@fortawesome/free-solid-svg-icons'
-import { Button, Select, SelectSearch } from '../../components/form-components'
+import { connect } from 'react-redux' 
 import { Modal, ModalDelete } from '../../components/singles'
 import axios from 'axios'
 import swal from 'sweetalert'
-import { URL_DEV, CUENTAS_COLUMNS, EDOS_CUENTAS_COLUMNS_2, DARK_BLUE, TRASPASOS_COLUMNS } from '../../constants'
-import { CuentaForm, TraspasoForm } from '../../components/forms'
+import { URL_DEV, TRASPASOS_COLUMNS } from '../../constants'
+import { TraspasoForm } from '../../components/forms'
 import Moment from 'react-moment'
-import { Small, Subtitle, B } from '../../components/texts'
-import DataTable from '../../components/tables/Data'
-import NumberFormat from 'react-number-format';
-import { Form, Badge } from 'react-bootstrap'
-import Input from '../../components/form-components/Input'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Small, B } from '../../components/texts' 
+import NumberFormat from 'react-number-format'; 
 import NewTable from '../../components/tables/NewTable'
-
 import { forbiddenAccessAlert, errorAlert } from '../../functions/alert'
-
-import { setOptions, setSelectOptions, setTextTable, setDateTable,setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
+import { setTextTable, setDateTable, setMoneyTable, setArrayTable} from '../../functions/setters'
 
 class Traspasos extends Component{
 
