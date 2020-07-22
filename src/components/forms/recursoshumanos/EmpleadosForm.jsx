@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { SelectSearch, Select, Button, RadioGroup, Input, Calendar, InputNumber,InputPhone} from '../../form-components'
+import { SelectSearch, Button, RadioGroup, Input, Calendar, InputNumber,InputPhone, FileInput} from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { RFC, DATE, NSS, CURP, TEL } from '../../../constants'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard' 
@@ -28,7 +28,7 @@ class EmpleadosForm extends Component {
 
 
     render() {
-        const { options, onChange, form, onSubmit, formeditado } = this.props
+        const { options, onChange, form, onSubmit, formeditado, onChangeAdjunto, clearFiles} = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -196,6 +196,22 @@ class EmpleadosForm extends Component {
                                         />
                                     </div>
                                 </div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="form-group row form-group-marginless">
+                                    <FileInput
+                                        requirevalidation={0}
+                                        formeditado={formeditado}
+                                        onChangeAdjunto={"onChangeAdjunto"}
+                                        placeholder={"form['adjuntos']['factura']['placeholder']"}
+                                        value={"form['adjuntos']['factura']['value']"}
+                                        name={'factura'} 
+                                        id={'factura'}
+                                        accept="text/xml, application/pdf"
+                                        files={"form['adjuntos']['factura']['files']"}
+                                        deleteAdjunto={"clearFiles"} multiple
+                                        messageinc="Incorrecto. Adjunta el documento."
+                                    />
+                                </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2"></div>
                                     <div>
@@ -302,6 +318,10 @@ class EmpleadosForm extends Component {
                                             messageinc="Incorrecto. Ingresa el puesto."
                                         />
                                     </div>
+                                </div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="form-group row form-group-marginless">
+
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
