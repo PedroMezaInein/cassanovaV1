@@ -311,6 +311,7 @@ class EgresosForm extends Component{
                         form.fecha = new Date(egreso.created_at)
                         form.descripcion = egreso.descripcion
                         form.comision = egreso.comision
+                        form.factura = egreso.factura ? 'Con factura' : 'Sin factura'
                         if(egreso.proveedor){
                             form.proveedor = egreso.proveedor.id.toString()
                             form.rfc = egreso.proveedor.rfc
