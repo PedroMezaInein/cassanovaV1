@@ -27,7 +27,7 @@ class RegisterUserForm extends Component {
     }
 
     render() {
-        const { children, options, options2, form, onChange, title, deleteOption } = this.props
+        const { children, options, options2, form, onChange, title, deleteOption, tipo} = this.props
         return (
             <Form
                 {... this.props}
@@ -72,7 +72,7 @@ class RegisterUserForm extends Component {
                 </div>
                 {children}
                 {
-                    form.tipo_form > 0 && form.tipo_form < 3 ?
+                    tipo > 0 && tipo < 3 ?
                         <div className="form-group row form-group-marginless">
                             <div className="col-md-4">
                                 <SelectSearchTrue
