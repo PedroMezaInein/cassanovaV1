@@ -38,7 +38,24 @@ class Empleados extends Component {
             puesto:'',
             vacaciones_tomadas:0, 
             fecha_alta_imss: new Date(),
-            numero_alta_imss: ''
+            numero_alta_imss: '',
+            adjuntos:{
+                datosGenerales:{
+                    value: '',
+                    placeholder: 'Datos generales',
+                    files: []
+                },
+                recibosNomina:{
+                    value: '',
+                    placeholder: 'Recibos de Nómina',
+                    files: []
+                },
+                altasBajas:{
+                    value: '',
+                    placeholder: 'Altas y bajas',
+                    files: []
+                }
+            }
         },
         options: { 
             empresas:[]
@@ -138,6 +155,25 @@ class Empleados extends Component {
                 case 'fecha_alta_imss':
                     form[element] = new Date()
                     break; 
+                case 'adjuntos':
+                    form[element] = {
+                        datosGenerales:{
+                            value: '',
+                            placeholder: 'Datos generales',
+                            files: []
+                        },
+                        recibosNomina:{
+                            value: '',
+                            placeholder: 'Recibos de Nómina',
+                            files: []
+                        },
+                        altasBajas:{
+                            value: '',
+                            placeholder: 'Altas y bajas',
+                            files: []
+                        }
+                    }
+                    break;
                 default:
                     form[element] = ''
                     break;

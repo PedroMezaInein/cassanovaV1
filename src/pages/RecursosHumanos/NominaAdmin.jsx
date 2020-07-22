@@ -32,7 +32,14 @@ class NominaAdmin extends Component {
                 nominImss: '',
                 restanteNomina: '',
                 extras: ''
-            }]
+            }],
+            adjuntos:{
+                Adjuntos:{
+                    value: '',
+                    placeholder: 'Adjuntos',
+                    files: []
+                }
+            }
         },
         options: {
             usuarios: [],
@@ -138,6 +145,15 @@ class NominaAdmin extends Component {
                         usuarios: '',
                         empresa:''
                     }]
+                    break;
+                case 'adjuntos':
+                    form[element] = {
+                        Adjuntos: {
+                            value: '',
+                            placeholder: 'Adjuntos',
+                            files: []
+                        }
+                    }
                     break;
                 default:
                     form[element] = ''

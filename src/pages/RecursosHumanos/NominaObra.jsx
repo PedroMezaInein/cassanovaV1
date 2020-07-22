@@ -34,7 +34,14 @@ class NominaObra extends Component {
                 nominImss: '',
                 restanteNomina: '',
                 extras: ''
-            }]
+            }],
+            adjuntos:{
+                Adjuntos:{
+                    value: '',
+                    placeholder: 'Adjuntos',
+                    files: []
+                }
+            }
         },
         options: { 
             proyectos: [],
@@ -143,6 +150,15 @@ class NominaObra extends Component {
                         proyecto: '',
                         empresa:''
                     }]
+                    break;
+                case 'adjuntos':
+                    form[element] = {
+                        Adjuntos: {
+                            value: '',
+                            placeholder: 'Adjuntos',
+                            files: []
+                        }
+                    }
                     break;
                 default:
                     form[element] = ''
