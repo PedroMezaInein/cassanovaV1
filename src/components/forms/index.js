@@ -1,5 +1,4 @@
-import registerUserForm from './RegisterUserForm'
-import empleadoForm from './EmpleadoForm'
+import registerUserForm from './RegisterUserForm' 
 import empresaForm from './EmpresaForm'
 import permisosForm from './PermisosForm'
 import tareaForm from './TareaForm'
@@ -36,7 +35,6 @@ import nominaAdminForm from './recursoshumanos/NominaAdminForm'
 import empleadosForm from './recursoshumanos/EmpleadosForm'
 
 export const RegisterUserForm = registerUserForm
-export const EmpleadoForm = empleadoForm
 export const EmpresaForm = empresaForm
 export const PermisosForm = permisosForm
 export const TareaForm = tareaForm
