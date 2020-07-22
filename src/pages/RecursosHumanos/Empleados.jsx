@@ -33,10 +33,10 @@ class Empleados extends Component {
             estatus_empleado: 0,
             empresa:0,
             fechaInicio: new Date,
-            fechaFin: new Date(),
+            fechaFin: '',
             estatus_imss: 0,
             puesto:'',
-            vacaciones_tomadas:'', 
+            vacaciones_tomadas:0, 
             fecha_alta_imss: new Date(),
             numero_alta_imss: ''
         },
