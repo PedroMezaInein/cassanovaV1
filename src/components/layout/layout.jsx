@@ -1,15 +1,11 @@
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import Sidebar from './sidebar'
-import Navbar from './navbar'
-import MenuResponsive from './menuResponsive'
 import NewAsideMenu from './newAsideMenu'
 import { logout, login } from '../../redux/reducers/auth_user'
 import axios from 'axios'
 import { URL_DEV } from '../../constants'
 import UrlLocation from './urlLocation'
-import ScrollBar from "react-perfect-scrollbar";
 import MobileHeader from './mobileHeader'
 import UserPanel from '../../../src/components/layout/UserPanel/userPanel'
 

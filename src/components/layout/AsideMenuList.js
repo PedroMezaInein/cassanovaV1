@@ -1,9 +1,8 @@
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid */
 import React from "react";
-import {useLocation} from "react-router";
 import {NavLink}  from "react-router-dom";
 import SVG from "react-inlinesvg";
-import { checkIsActive, toAbsoluteUrl} from "../../functions/routers"
+import { toAbsoluteUrl} from "../../functions/routers"
 
 
 function openSubmenu(modulo){

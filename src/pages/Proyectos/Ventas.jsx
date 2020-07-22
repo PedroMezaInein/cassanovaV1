@@ -1,22 +1,16 @@
 import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
-//
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
-import { URL_DEV, VENTAS_COLUMNS, GOLD, ADJUNTOS_COLUMNS } from '../../constants'
-
-// Functions
-import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
+import { URL_DEV, VENTAS_COLUMNS, ADJUNTOS_COLUMNS} from '../../constants'
+import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList } from '../../functions/setters'
 import { waitAlert, errorAlert, createAlert,forbiddenAccessAlert, deleteAlert } from '../../functions/alert'
-//
 import Layout from '../../components/layout/layout'
 import { Button, FileInput } from '../../components/form-components'
 import { Modal, ModalDelete } from '../../components/singles'
-import { faPlus, faLink, faEdit, faTrash, faReceipt, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons'
 import { VentasForm, FacturaForm, AdjuntosForm } from '../../components/forms'
-import { DataTable, FacturaTable } from '../../components/tables'
-import Subtitle from '../../components/texts/Subtitle'
+import { FacturaTable } from '../../components/tables'
 import { Form, ProgressBar } from 'react-bootstrap'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import TableForModals from '../../components/tables/TableForModals'

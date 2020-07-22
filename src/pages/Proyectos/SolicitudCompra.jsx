@@ -1,24 +1,16 @@
 import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
-//
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV, SOLICITUD_COMPRA_COLUMNS } from '../../constants'
-
-// Functions
-import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
-
-//
+import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable} from '../../functions/setters'
 import Layout from '../../components/layout/layout'
 import { Button } from '../../components/form-components'
 import { Modal, ModalDelete } from '../../components/singles'
-import { faPlus, faLink, faEdit, faTrash, faSync } from '@fortawesome/free-solid-svg-icons'
-import { DataTable } from '../../components/tables'
-import Subtitle from '../../components/texts/Subtitle'
+import { faPlus, faSync } from '@fortawesome/free-solid-svg-icons'
 import { SolicitudCompraForm } from '../../components/forms'
 import { SolicitudCompraCard } from '../../components/cards'
-import { Small } from '../../components/texts'
 import RemisionCard from '../../components/cards/Proyectos/RemisionCard'
 import { Accordion } from 'react-bootstrap'
 import { faEye } from '@fortawesome/free-regular-svg-icons'

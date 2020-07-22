@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 import { Input, Button, Select } from '../form-components'
-import { Subtitle, P } from '../texts'
 import { EMAIL } from '../../constants'
 
 class RegisterUserForm extends Component {

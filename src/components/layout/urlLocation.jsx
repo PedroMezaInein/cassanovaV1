@@ -1,29 +1,27 @@
 import React, { Component } from 'react'
-import {useLocation} from "react-router";
-import {NavLink}  from "react-router-dom";
 import SVG from "react-inlinesvg";
-import { checkIsActive, toAbsoluteUrl} from "../../functions/routers"
+import { toAbsoluteUrl } from "../../functions/routers"
 
-class UrlLocation extends Component{
-    state={
-        paths:[] 
+class UrlLocation extends Component {
+    state = {
+        paths: []
     }
 
-    componentDidMount() {       
+    componentDidMount() {
         const { history: { location: { pathname: pathname } } } = this.props
-        let aux = pathname.substr(1, pathname.length-1)
+        let aux = pathname.substr(1, pathname.length - 1)
         aux = aux.split('/')
-        if(!Array.isArray(aux)){
+        if (!Array.isArray(aux)) {
             aux = [aux]
         }
         this.setState({
-            paths:aux
+            paths: aux
         })
-        
-    }
-    
 
-    render(){   
+    }
+
+
+    render() {
         const { paths } = this.state
         const modulos = this.props.authUser.modulos
         const active = this.props.active;
@@ -49,39 +47,39 @@ class UrlLocation extends Component{
             }            
         } */
 
-        if(modulos){
-            if(paths.length === 1){
-                for(let i = 0; i < modulos.length; i++){
-                    if(modulos[i].slug === paths[0]){
+        if (modulos) {
+            if (paths.length === 1) {
+                for (let i = 0; i < modulos.length; i++) {
+                    if (modulos[i].slug === paths[0]) {
                         modulo_name = modulos[i].name
                         submodulo_name = modulos[i].name
                         icon = modulos[i].icon
                     }
                 }
-            }else{
-                for (let i = 0; i < modulos.length; i ++) {
+            } else {
+                for (let i = 0; i < modulos.length; i++) {
                     if (modulos[i].slug == active) {
-                        
-                        icon = modulos[i].icon               
+
+                        icon = modulos[i].icon
                         modulo_name = modulos[i].name
-                        submodulo = modulos[i].modulos 
-                        for (let j = 0; j < submodulo.length; j ++) {
+                        submodulo = modulos[i].modulos
+                        for (let j = 0; j < submodulo.length; j++) {
                             if (submodulo[j].slug == paths[1]) {
                                 submodulo_name = submodulo[j].name
                                 break;
-                            }else{
+                            } else {
                             }
                         }
                         break;
-                    }else{
-                    } 
+                    } else {
+                    }
                 }
             }
         }
 
-        
+
         return (
-            <>  
+            <>
                 {
                     paths.length > 0 ?
                         <div className="subheader py-2 py-lg-4 subheader-solid" id="kt_subheader">
@@ -90,13 +88,13 @@ class UrlLocation extends Component{
                                     <div className="d-flex align-items-baseline mr-5">
 
                                         <h5 className="text-dark font-weight-bold my-2 mr-3">
-                                            {                                                
+                                            {
                                                 modulo_name
                                             }
                                         </h5>
-                                        <div>                                            
+                                        <div>
                                             <span className="svg-icon menu-icon svg-icon-primary">
-                                                <SVG src={toAbsoluteUrl(icon)}/>
+                                                <SVG src={toAbsoluteUrl(icon)} />
                                             </span>
                                         </div>
                                         {
@@ -104,22 +102,22 @@ class UrlLocation extends Component{
                                                 <ul className="breadcrumb breadcrumb-transparent breadcrumb-dot font-weight-bold p-0 my-2 font-size-sm">
                                                     <li className="breadcrumb-item">
                                                         <div href="" className="text-muted ml-3">
-                                                        {
-                                                            submodulo_name
-                                                        }
+                                                            {
+                                                                submodulo_name
+                                                            }
                                                         </div>
                                                     </li>
                                                 </ul>
-                                            :  ""
+                                                : ""
                                         }
-                                            
+
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    :  ""
+                        : ""
                 }
-                
+
             </>
         );
     }

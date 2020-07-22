@@ -5,11 +5,11 @@ export function getCurrentUrl(location) {
 export function checkIsActive(location, url) {
     const current = getCurrentUrl(location);
     if (!current || !url) {
-        return  false;
+        return false;
     }
 
     if (current === url) {
-        return  true;
+        return true;
     }
 
     if (current.indexOf(url) > -1) {

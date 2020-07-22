@@ -1,17 +1,10 @@
-import React, { Component } from 'react'
-import { renderToString } from 'react-dom/server'
-
-//
+import React, { Component } from 'react' 
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
-import { URL_DEV, GOLD, REMISION_COLUMNS } from '../../../constants'
-
-// Functions
-import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../../functions/setters'
+import { URL_DEV} from '../../../constants'
+import { setOptions} from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert } from '../../../functions/alert'
-
-//
 import Layout from '../../../components/layout/layout'
 import { RemisionForm as RemisionFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'

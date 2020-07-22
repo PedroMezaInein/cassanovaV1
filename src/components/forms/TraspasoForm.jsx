@@ -1,10 +1,6 @@
 import React, { Component } from 'react'
-import { Subtitle } from '../texts'
 import { InputMoney, SelectSearch, Input, Button, Calendar } from '../form-components'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPaperclip, faTimes } from '@fortawesome/free-solid-svg-icons'
-import { DARK_BLUE } from '../../constants'
-import { Badge, Form } from 'react-bootstrap'
+import { Form } from 'react-bootstrap'
 import { DATE } from '../../constants'
 import { validateAlert } from '../../functions/alert'
 

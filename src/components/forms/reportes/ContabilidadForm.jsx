@@ -1,9 +1,6 @@
 import React, { Component } from 'react'
-import Form from 'react-bootstrap/Form'
-import Badge from 'react-bootstrap/Badge'
-import { Button, Select, Calendar, RadioGroup, OptionsCheckbox } from '../../form-components'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import Form from 'react-bootstrap/Form' 
+import { Button, Select, Calendar, RadioGroup, OptionsCheckbox } from '../../form-components' 
 import { validateAlert } from '../../../functions/alert'
 
 class ContabilidadForm extends Component {

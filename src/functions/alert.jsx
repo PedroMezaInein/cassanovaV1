@@ -1,6 +1,6 @@
 import swal from 'sweetalert'
 
-export function waitAlert(){
+export function waitAlert() {
     swal({
         title: '¡Un momento!',
         text: 'La información está siendo procesada.',
@@ -8,7 +8,7 @@ export function waitAlert(){
     })
 }
 
-export function errorAlert(text){
+export function errorAlert(text) {
     swal({
         title: '¡Ups 😕!',
         text: text,
@@ -16,7 +16,7 @@ export function errorAlert(text){
     })
 }
 
-export function deleteAlert(text, action){
+export function deleteAlert(text, action) {
     swal({
         title: text,
         buttons: {
@@ -36,14 +36,14 @@ export function deleteAlert(text, action){
             }
         }
     }).then((result) => {
-        if(result){
+        if (result) {
             action()
         }
     })
 }
 
 
-export function createAlert(title, text, action){
+export function createAlert(title, text, action) {
     swal({
         title: title,
         text: text,
@@ -64,13 +64,13 @@ export function createAlert(title, text, action){
             }
         }
     }).then((result) => {
-        if(result){
+        if (result) {
             action()
         }
     })
 }
 
-export function forbiddenAccessAlert(){
+export function forbiddenAccessAlert() {
     swal({
         title: '¡Ups 😕!',
         text: 'Parece que no has iniciado sesión',
@@ -79,11 +79,11 @@ export function forbiddenAccessAlert(){
     });
 }
 
-export function validateAlert(success, e, name){
-    var elementsInvalid = document.getElementById(name).getElementsByClassName("is-invalid"); 
-    if(elementsInvalid.length===0){   
+export function validateAlert(success, e, name) {
+    var elementsInvalid = document.getElementById(name).getElementsByClassName("is-invalid");
+    if (elementsInvalid.length === 0) {
         success(e)
-    }else{ 
+    } else {
         alert("Rellena todos los campos")
-    } 
+    }
 }

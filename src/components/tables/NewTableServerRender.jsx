@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom'
-import { renderToString } from 'react-dom/server'
-import { PlusCircle } from '../../assets/svg'
 import '../../styles/custom_datatable.css'
 import '../../styles/metronic/_datables.scss';
 import { waitAlert, errorAlert } from '../../functions/alert'
@@ -46,7 +43,7 @@ class NewTableServerRender extends Component {
     }
 
     componentDidMount() {
-        const { actions, elements, data, mostrar_acciones, elementClass, accessToken, setter, urlRender } = this.props
+        const { actions, mostrar_acciones, elementClass, accessToken, setter, urlRender } = this.props
         global_variable["mostrar_acciones"] = mostrar_acciones;
         var header = this.props.columns;
         var columns = [];

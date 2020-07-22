@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { Subtitle } from '../../texts'
 import { SelectSearch, Select, Calendar, RadioGroup, FileInput, Button, Input, InputMoney, SelectSearchTrue } from '../../form-components'
 import { Form } from 'react-bootstrap'
 import { RFC, DATE } from '../../../constants'
@@ -7,40 +6,6 @@ import {openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
 
 class ComprasForm extends Component {
-
-
-    /* Código Omar
-    updateCliente = value => {
-    const { onChange, setOptions } = this.props
-    onChange({ target: { value: value.value, name: 'cliente' } })
-    onChange({ target: { value: '', name: 'proyecto' } })
-    setOptions('proyectos', value.proyectos)
-}
-
-updateProyecto = value => {
-    const { onChange } = this.props
-    onChange({ target: { value: value.value, name: 'proyecto' } })
-}
-
-updateEmpresa = value => {
-    const { onChange, setOptions } = this.props
-    onChange({ target: { value: value.value, name: 'empresa' } })
-    onChange({ target: { value: '', name: 'cuenta' } })
-    setOptions('cuentas', value.cuentas)
-}
-
-updateCuenta = value => {
-    const { onChange } = this.props
-    onChange({ target: { value: value.value, name: 'cuenta' } })
-}
-
-
-updateArea = value => {
-    const { onChange, setOptions } = this.props
-    onChange({target:{value: value.value, name:'area'}})
-    onChange({target:{value: '', name:'subarea'}})
-    setOptions('subareas',value.subareas)
-}*/
 
     updateCliente = value => {
         const { onChange, setOptions } = this.props
@@ -112,11 +77,6 @@ updateArea = value => {
         onChange({ target: { value: value, name: 'contrato' } })
         
     }
-    /*Código Omar
-    updateSubarea = value => {
-        const { onChange } = this.props
-        onChange({target:{value: value.value, name:'subarea'}})
-    }*/
 
     updateSubarea = value => {
         const { onChange } = this.props

@@ -1,23 +1,16 @@
 import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
-
-//
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
-import { URL_DEV, GOLD, REMISION_COLUMNS } from '../../../constants'
-
-// Functions
-import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert } from '../../../functions/alert'
-
-//
+import { URL_DEV, REMISION_COLUMNS } from '../../../constants'
+import { setTextTable, setDateTable, setArrayTable} from '../../../functions/setters'
+import { errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete } from '../../../components/singles'
-import { Button , FileInput } from '../../../components/form-components'
-import { faPlus, faTrash, faEdit, faSync, faMoneyBill, faFileAlt, faFileArchive, faMoneyBillWave, faReceipt, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons'
+import { Button } from '../../../components/form-components'
+import { faSync} from '@fortawesome/free-solid-svg-icons'
 import { RemisionCard } from '../../../components/cards'
-import { Small, B, Subtitle } from '../../../components/texts'
 import NewTable from '../../../components/tables/NewTable'
 
 

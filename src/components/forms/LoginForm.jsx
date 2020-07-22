@@ -1,9 +1,4 @@
-import React from 'react'
-//import Form from 'react-bootstrap/Form';
-//import InputGroup from 'react-bootstrap/InputGroup';
-import Button from 'react-bootstrap/Button';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons'
+import React from 'react' 
 import axios from 'axios';
 import { URL_DEV } from '../../constants'
 import { connect } from 'react-redux'

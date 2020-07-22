@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 import { Button, Input, Calendar, Select, OptionsCheckbox } from '../form-components'
-import { Subtitle } from '../texts'
 import { DATE, TEL, EMAIL } from '../../constants'
 import { validateAlert } from '../../functions/alert'
 import InputPhone from '../form-components/InputPhone'

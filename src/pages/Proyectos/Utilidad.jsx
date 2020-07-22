@@ -1,23 +1,11 @@
 import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
-//
 import { connect } from 'react-redux'
-import axios from 'axios'
-import swal from 'sweetalert'
-import { URL_DEV, UTILIDADES_COLUMNS, GOLD } from '../../constants'
-
-// Functions
-import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setPercentTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
-import { waitAlert, errorAlert, createAlert,forbiddenAccessAlert } from '../../functions/alert'
-//
+import axios from 'axios' 
+import { URL_DEV, UTILIDADES_COLUMNS} from '../../constants'
+import { setTextTable, setMoneyTable, setPercentTable} from '../../functions/setters'
+import { errorAlert, forbiddenAccessAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
-import { Button, FileInput } from '../../components/form-components'
-import { Modal, ModalDelete } from '../../components/singles'
-import { faPlus, faLink, faEdit, faTrash, faReceipt, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons'
-import { VentasForm, FacturaForm } from '../../components/forms'
-import { DataTable, FacturaTable } from '../../components/tables'
-import Subtitle from '../../components/texts/Subtitle'
-import { Form, ProgressBar } from 'react-bootstrap'
 import NewTable from '../../components/tables/NewTable'
 
 class Utilidad extends Component {

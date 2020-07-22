@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import LoginForm from '../components/forms/LoginForm'
-//import Card from 'react-bootstrap/Card'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Title } from '../components/texts'

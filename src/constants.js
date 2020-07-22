@@ -53,7 +53,7 @@ export const ICONS_MODULES = {
     export const EMAIL = '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$'
     // export const EMAIL='/^(?:[^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*|"[^\n"]+")@(?:[^<>()[\].,;:\s@"]+\.)+[^<>()[\]\.,;:\s@"]{2,63}$/i'
     export const NSS = '^(\d{2})(\d{2})(\d{2})\d{5}$'
-    export const CURP = ''
+    export const CURP = '^[A-Z]{1}[AEIOU]{1}[A-Z]{2}[0-9]{2}(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])[HM]{1}(AS|BC|BS|CC|CS|CH|CL|CM|DF|DG|GT|GR|HG|JC|MC|MN|MS|NT|NL|OC|PL|QT|QR|SP|SL|SR|TC|TS|TL|VZ|YN|ZS|NE)[B-DF-HJ-NP-TV-Z]{3}[0-9A-Z]{1}[0-9]{1}$'
 
 //Form
 
@@ -1342,5 +1342,95 @@ export const ADJUNTOS_COLUMNS = [
     {
         Header: 'Tipo',
         accessor: 'tipo'
+    }
+]
+
+export const NOMINA_ADMIN_COLUMNS = [
+    {
+        Header: 'Opciones',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Periodo de Nómina Adminsitrativa',
+        accessor: 'periodo',
+    },
+    {
+        Header: 'Fecha inicio',
+        accessor: 'fechaInicio'
+    },
+    {
+        Header: 'Fecha fin',
+        accessor: 'fechaFin'
+    },
+    {
+        Header: 'Total Nómina IMSS',
+        accessor: 'totalNominaIMSS'
+    },
+    {
+        Header: 'Restante Nómina',
+        accessor: 'restanteNomina'
+    },
+    {
+        Header: 'Extras',
+        accessor: 'extras'
+    },
+    {
+        Header: 'Gran Total',
+        accessor: 'granTotal'
+    }
+]
+
+export const EMPLEADOS_COLUMNS = [
+    {
+        Header: 'Opciones',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Nombre',
+        accessor: 'nombre',
+    },
+    {
+        Header: 'Empresa',
+        accessor: 'empresa'
+    },
+    {
+        Header: 'Puesto',
+        accessor: 'puesto'
+    },
+    {
+        Header: 'RFC',
+        accessor: 'rfc'
+    },
+    {
+        Header: 'NSS',
+        accessor: 'nss'
+    },
+    {
+        Header: 'CURP',
+        accessor: 'curp'
+    },
+    {
+        Header: 'Estatus',
+        accessor: 'estatus'
+    },
+    {
+        Header: 'Fecha de Inicio',
+        accessor: 'fecha_inicio'
+    },
+    {
+        Header: 'Tipo de Empleado',
+        accessor: 'tipo_empleado'
+    },
+    {
+        Header: 'Cuenta de Depósito',
+        accessor: 'cuenta'
+    },
+    {
+        Header: 'Contacto de Emergencia',
+        accessor: 'nombre_emergencia'
+    },
+    {
+        Header: 'Días de Vacaciones Tomadas',
+        accessor: 'vacaciones_tomadas'
     }
 ]

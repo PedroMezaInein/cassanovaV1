@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom'
-import { renderToString } from 'react-dom/server'
-import { PlusCircle } from '../../assets/svg'
 import '../../styles/custom_datatable.css'
 import '../../styles/metronic/_datables.scss';
 
@@ -18,13 +15,13 @@ const global_variable = {}
 class NewTable extends Component {
 
 
-    reloadTableData(props){
+    reloadTableData(props) {
         const { data, actions, elements } = props
         var table = $(this.refs.main)
             .DataTable();
         table.clear();
         table.rows.add(data).draw();
-        
+
         table.draw();
 
         $(this.refs.main).on('click', '.btn-actions-table', function (e) {
@@ -37,10 +34,9 @@ class NewTable extends Component {
                     aux = element
                 }
             });
-            if(aux !== '')
+            if (aux !== '')
                 actions[name].function(aux)
         });
-
     }
 
     componentDidMount() {
@@ -71,15 +67,8 @@ class NewTable extends Component {
                     var title = $(this).text();
                     let cellIndex = $(this)[0].cellIndex
                     cellIndex = header[cellIndex].accessor
-                    /* console.log(cellIndex, 'cellindex') */
                     if (global_variable.mostrar_acciones == false || global_variable.mostrar_acciones && contador != 0) {
-                        //No muestro 
-                        /*Opcioón 1*/
-                        //$(this).append('<br/><input class="form-control form-control-sm form-filter datatable-input" type="text"/>');
-                        /*Opción 2 */
-                        //$(this).append('<div class="mt-2 separator separator-dashed separator-border-2"></div><div class="mt-2 input-icon"><input type="text" class="form-control form-control-sm"/><span><i class="flaticon2-search-1 icon-sm"></i></span></div>');
-                        /*Opción 3 */
-                        $(this).append('<div class="mt-2 separator separator-dashed separator-border-2"></div><div class="mt-2"><input type="text" id='+cellIndex+' class="form-control form-control-sm"/></div>');
+                        $(this).append('<div class="mt-2 separator separator-dashed separator-border-2"></div><div class="mt-2"><input type="text" id=' + cellIndex + ' class="form-control form-control-sm"/></div>');
 
                     }
                     contador++;
@@ -108,14 +97,14 @@ class NewTable extends Component {
             responsive: true,
             data: data,
             columns,
-            createdRow: function(row, data, dataIndex, cells) {
-                if(elementClass){
-                    let auxiliar =  data[elementClass].split('<!-- -->')
-                    if(auxiliar[1] === '$0.00')
+            createdRow: function (row, data, dataIndex, cells) {
+                if (elementClass) {
+                    let auxiliar = data[elementClass].split('<!-- -->')
+                    if (auxiliar[1] === '$0.00')
                         $(row).addClass('zero');
-                    else{
-                        let auxiliar2  = auxiliar[1].charAt(0)
-                        if(auxiliar2 === '-')
+                    else {
+                        let auxiliar2 = auxiliar[1].charAt(0)
+                        if (auxiliar2 === '-')
                             $(row).addClass('negative');
                     }
                 }
@@ -157,14 +146,14 @@ class NewTable extends Component {
             {
                 'targets': [0],
                 'data': null,
-                'searchable': mostrar_acciones? false : true,
+                'searchable': mostrar_acciones ? false : true,
                 'orderable': false,
                 render: function (data, type, row, meta) {
                     if (global_variable.mostrar_acciones == true) {
                         let aux = ''
                         {
                             data.map((element) => {
-                                aux = aux + 
+                                aux = aux +
                                     `<button name=${element.action}  id = ${row.id} class="ml-2 btn btn-actions-table btn-xs btn-icon btn-text-${element.btnclass} btn-hover-${element.btnclass}" title=${element.text}><i class=${element.iconclass}></i></button>`
                             })
                         }
@@ -179,11 +168,8 @@ class NewTable extends Component {
                 /* 'defaultContent': '<button type="button" class="btn btn-primary btn-edit">Edit</button>' */
             }
             ],
-
-
             lengthMenu: [[20, 30, 40, 50, -1], [20, 30, 40, 50, "Todos"]],
-            pageLength: 20,
-
+            pageLength: 20
         });
         table.on('responsive-resize.dt', function (e, datatable, columns) {
             for (var i in columns) {
@@ -203,7 +189,7 @@ class NewTable extends Component {
             }); 
             actions[name].function(aux) */
         });
-    
+
     }
 
     componentWillUnmount() {
@@ -216,7 +202,7 @@ class NewTable extends Component {
         if (nextProps.data !== this.props.data) {
             this.reloadTableData(nextProps)
         }
-        
+
         return false;
 
     }
@@ -236,7 +222,6 @@ class NewTable extends Component {
 
         return (
             <>
-
                 <div className="card card-custom">
                     <div className="card-header flex-wrap border-0 pt-6 pb-0">
                         <div className="card-title">
@@ -260,7 +245,7 @@ class NewTable extends Component {
                                 ""
                             }
                             {
-                                    (mostrar_boton == true) ?
+                                (mostrar_boton == true) ?
                                     (abrir_modal == true) ?
                                         <button onClick={() => this.clickHandler()} className="btn btn-success font-weight-bold mr-2">
                                             <i className="flaticon-add"></i> Agregar
@@ -272,15 +257,11 @@ class NewTable extends Component {
                                     :
                                     ""
                             }
-
-
                         </div>
                     </div>
                     <div className="separator separator-solid mt-3"></div>
                     <div className="card-body">
-                        
                         <table ref="main" className="table table-responsive table-separate table-head-custom table-checkable display table-hover text-justify" id={this.props.idTable ? this.props.idTable : "kt_datatable2"} />
-
                     </div>
                 </div>
             </>

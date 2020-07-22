@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { Subtitle, Small } from '../../texts'
+import { Subtitle} from '../../texts'
 import { Input, FileInput, SelectSearch, Button, Calendar } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 

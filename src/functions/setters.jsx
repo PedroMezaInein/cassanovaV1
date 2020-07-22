@@ -1,5 +1,5 @@
 import { Small, B } from '../components/texts'
-import React, { Component }  from 'react';
+import React, { Component } from 'react';
 import Moment from 'react-moment'
 import NumberFormat from 'react-number-format';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,30 +7,29 @@ import { faFileAlt } from '@fortawesome/free-regular-svg-icons';
 import { faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { GOLD } from '../constants';
 
-export function setOptions( arreglo, name, value ){
+export function setOptions(arreglo, name, value) {
     let aux = []
-    arreglo.map( (element) => {
-        if( element.hasOwnProperty('cuentas') ){
-            aux.push({ name: element[name], value: element[value].toString(), cuentas: element['cuentas'] } )
-        }else
-        {
-            if(element.hasOwnProperty('subareas')){
-                aux.push({ name: element[name], value: element[value].toString(), subareas: element['subareas'] } )
-            }else{
-                if(element.hasOwnProperty('proyectos')){
-                    if(element.hasOwnProperty('contratos')){
-                        aux.push({ name: element[name], value: element[value].toString(), proyectos: element['proyectos'], contratos: element['contratos'] } )
-                    }else{
-                        aux.push({ name: element[name], value: element[value].toString(), proyectos: element['proyectos'] } )
+    arreglo.map((element) => {
+        if (element.hasOwnProperty('cuentas')) {
+            aux.push({ name: element[name], value: element[value].toString(), cuentas: element['cuentas'] })
+        } else {
+            if (element.hasOwnProperty('subareas')) {
+                aux.push({ name: element[name], value: element[value].toString(), subareas: element['subareas'] })
+            } else {
+                if (element.hasOwnProperty('proyectos')) {
+                    if (element.hasOwnProperty('contratos')) {
+                        aux.push({ name: element[name], value: element[value].toString(), proyectos: element['proyectos'], contratos: element['contratos'] })
+                    } else {
+                        aux.push({ name: element[name], value: element[value].toString(), proyectos: element['proyectos'] })
                     }
-                    
-                }else{
-                    if(element.hasOwnProperty('subpartidas')){
-                        aux.push({ name: element[name], value: element[value].toString(), subpartidas: element['subpartidas'] } )
-                    }else{
-                        aux.push({ name: element[name], value: element[value].toString() } )
+
+                } else {
+                    if (element.hasOwnProperty('subpartidas')) {
+                        aux.push({ name: element[name], value: element[value].toString(), subpartidas: element['subpartidas'] })
+                    } else {
+                        aux.push({ name: element[name], value: element[value].toString() })
                     }
-                    
+
                 }
             }
         }
@@ -38,7 +37,7 @@ export function setOptions( arreglo, name, value ){
     return aux
 }
 
-export function setSelectOptions(arreglo, name){
+export function setSelectOptions(arreglo, name) {
     let aux = []
     arreglo.map((element) => {
         aux.push({
@@ -49,19 +48,19 @@ export function setSelectOptions(arreglo, name){
     return aux
 }
 
-export function setTextTable( text ){
+export function setTextTable(text) {
     return (
-        <Small> 
-            {text} 
+        <Small>
+            {text}
         </Small>
     )
 
     /* return( */
-        
+
     /* ) */
 }
 
-export function setDateTable( date ){
+export function setDateTable(date) {
     return (
         <Small>
             <span className="d-none">
@@ -69,7 +68,7 @@ export function setDateTable( date ){
                     {date}
                 </Moment>
             </span>
-            
+
             <Moment format="DD/MM/YYYY">
                 {date}
             </Moment>
@@ -77,32 +76,32 @@ export function setDateTable( date ){
     )
 }
 
-export function setMoneyTable( value ){
+export function setMoneyTable(value) {
     let cantidad = 0
     cantidad = parseFloat(value).toFixed(2)
     return (
-        <NumberFormat value = { cantidad } displayType = { 'text' } thousandSeparator = { true } prefix = { '$' }
-                renderText = { cantidad => <Small> { cantidad } </Small> } />
+        <NumberFormat value={cantidad} displayType={'text'} thousandSeparator={true} prefix={'$'}
+            renderText={cantidad => <Small> {cantidad} </Small>} />
     )
 }
 
-export function setPercentTable( value ){
+export function setPercentTable(value) {
     let cantidad = 0
     cantidad = parseFloat(value).toFixed(2)
     return (
-        <NumberFormat value = { cantidad } displayType = { 'text' } thousandSeparator = { false } prefix = { '' }
-                renderText = { cantidad => <Small> { cantidad } %</Small> } />
+        <NumberFormat value={cantidad} displayType={'text'} thousandSeparator={false} prefix={''}
+            renderText={cantidad => <Small> {cantidad} %</Small>} />
     )
 }
 
-export function setListTable( arreglo, nombre ){
-    return(
+export function setListTable(arreglo, nombre) {
+    return (
         <ul>
             {
-                arreglo.map( (element, key) => {
-                    return(
+                arreglo.map((element, key) => {
+                    return (
                         <>
-                            <li key = {key}>
+                            <li key={key}>
                                 <Small>
                                     {
                                         element[nombre]
@@ -114,25 +113,25 @@ export function setListTable( arreglo, nombre ){
                 })
             }
         </ul>
-        
+
     )
 }
 
-export function setArrayTable( arreglo ){
+export function setArrayTable(arreglo) {
     return (
         arreglo.map((element) => {
-            return(
+            return (
                 <>
                     {
-                        element.name ? 
-                            <Small className = "mr-1" >
-                                <B color = "gold">
+                        element.name ?
+                            <Small className="mr-1" >
+                                <B color="gold">
                                     {
                                         element.name
                                     }:
                                 </B>
                             </Small>
-                        : ''
+                            : ''
                     }
                     {
                         element.url ?
@@ -143,7 +142,7 @@ export function setArrayTable( arreglo ){
                                     }
                                 </Small>
                             </a>
-                        :
+                            :
                             <Small>
                                 {
                                     element.text
@@ -157,28 +156,28 @@ export function setArrayTable( arreglo ){
     )
 }
 
-export function setFacturaTable( data ){
-    if(data.factura){
-        return(
+export function setFacturaTable(data) {
+    if (data.factura) {
+        return (
             <Small>
                 {
-                    data.facturas ? 
+                    data.facturas ?
                         data.facturas.xml
                         && <a href={data.facturas.xml.url} target="_blank">
                             <Small>
-                                <FontAwesomeIcon color = { GOLD } icon = { faFileAlt } className="mr-2" />
+                                <FontAwesomeIcon color={GOLD} icon={faFileAlt} className="mr-2" />
                                 Factura.xml
-                                <br/>
+                                <br />
                             </Small>
-                            </a>
+                        </a>
                         : ''
                 }
                 {
-                    data.facturas ? 
+                    data.facturas ?
                         data.facturas.pdf
                         && <a href={data.facturas.pdf.url} target="_blank">
                             <Small>
-                                <FontAwesomeIcon color = { GOLD } icon = { faFileAlt } className="mr-2" />
+                                <FontAwesomeIcon color={GOLD} icon={faFileAlt} className="mr-2" />
                                 Factura.pdf
                             </Small>
                             <br />
@@ -188,8 +187,8 @@ export function setFacturaTable( data ){
             </Small>
         )
     }
-    else{
-        return(
+    else {
+        return (
             <Small>
                 Sin factura
             </Small>
@@ -197,15 +196,14 @@ export function setFacturaTable( data ){
     }
 }
 
-export function setAdjuntosList(list){
+export function setAdjuntosList(list) {
     let aux = true
     return (
-        
+
         list.map((element, key) => {
-            if(element !== '')
-            {    
+            if (element !== '') {
                 aux = false
-                return(
+                return (
                     <li>
                         <a href={element.url} target="_blank">
                             <Small>
@@ -217,9 +215,8 @@ export function setAdjuntosList(list){
                     </li>
                 )
             }
-            if(element === '' && key === list.length - 1 && aux)
-            {
-                return(
+            if (element === '' && key === list.length - 1 && aux) {
+                return (
                     <Small color="gold">
                         Sin adjuntos
                     </Small>
@@ -229,8 +226,8 @@ export function setAdjuntosList(list){
     )
 }
 
-export function setContactoTable(contacto){
-    return(
+export function setContactoTable(contacto) {
+    return (
         <div>
             {
                 contacto.nombre ?
@@ -239,7 +236,7 @@ export function setContactoTable(contacto){
                             contacto.nombre
                         }
                     </Small>
-                : ''
+                    : ''
             }
             {
                 contacto.telefono &&
@@ -249,7 +246,7 @@ export function setContactoTable(contacto){
                             <FontAwesomeIcon className="mx-3" icon={faPhone} />
                             {contacto.telefono}
                         </Small>
-                        
+
                     </a>
                 </div>
             }
@@ -258,7 +255,7 @@ export function setContactoTable(contacto){
                 <div className="my-2">
                     <a target="_blank" href={`mailto:+${contacto.email}`}>
                         <Small>
-                            <FontAwesomeIcon className="mx-3"  icon={faEnvelope} />
+                            <FontAwesomeIcon className="mx-3" icon={faEnvelope} />
                             {contacto.email}
                         </Small>
                     </a>

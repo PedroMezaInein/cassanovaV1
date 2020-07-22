@@ -1,15 +1,11 @@
 import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
-//
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV, PARTIDAS_COLUMNS, GOLD } from '../../constants'
-
-// Functions
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setPercentTable, setArrayTable, setFacturaTable, setAdjuntosList, setListTable } from '../../functions/setters'
 import { waitAlert, errorAlert, createAlert,forbiddenAccessAlert } from '../../functions/alert'
-//
 import Layout from '../../components/layout/layout'
 import { Button } from '../../components/form-components'
 import { Modal, ModalDelete } from '../../components/singles'

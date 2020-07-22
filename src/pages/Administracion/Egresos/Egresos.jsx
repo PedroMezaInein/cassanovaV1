@@ -1,24 +1,15 @@
 import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
-
-//
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV, GOLD, PROVEEDORES_COLUMNS, EGRESOS_COLUMNS } from '../../../constants'
-
-// Functions
-import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../../functions/setters'
+import { setOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList } from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert } from '../../../functions/alert'
-
-//
 import Layout from '../../../components/layout/layout'
 import { Button, FileInput } from '../../../components/form-components'
 import { Modal, ModalDelete } from '../../../components/singles'
-import { faPlus, faTrash, faEdit, faMoneyBill, faFileAlt, faFileArchive, faReceipt } from '@fortawesome/free-solid-svg-icons'
-import { EgresosForm, FacturaForm } from '../../../components/forms'
-import { DataTable, FacturaTable } from '../../../components/tables'
-import { Subtitle } from '../../../components/texts'
+import { FacturaTable } from '../../../components/tables'
 import { Form, ProgressBar } from 'react-bootstrap'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 

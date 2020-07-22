@@ -1,21 +1,14 @@
 import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
-//
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
-import { URL_DEV, TIPOS_COLUMNS, GOLD } from '../../constants'
-
-// Functions
-import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setPercentTable, setArrayTable, setFacturaTable, setAdjuntosList, setListTable } from '../../functions/setters'
-import { waitAlert, errorAlert, createAlert,forbiddenAccessAlert } from '../../functions/alert'
-//
+import { URL_DEV, TIPOS_COLUMNS} from '../../constants'
+import { setTextTable} from '../../functions/setters'
+import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
-import { Button } from '../../components/form-components'
 import { Modal, ModalDelete } from '../../components/singles'
-import { faPlus, faLink, faEdit, faTrash, faReceipt, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons'
 import { TipoForm } from '../../components/forms'
-import { Subtitle, Small } from '../../components/texts'
 import NewTable from '../../components/tables/NewTable'
 
 class TiposContratos extends Component {

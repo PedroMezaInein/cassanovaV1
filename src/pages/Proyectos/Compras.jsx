@@ -1,31 +1,22 @@
 /* eslint-disable no-unused-vars */  
 import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
-//
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV, COMPRAS_COLUMNS, ADJUNTOS_COLUMNS } from '../../constants'
-
-// Functions
-import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
+import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList } from '../../functions/setters'
 import { errorAlert, waitAlert, createAlert, forbiddenAccessAlert, deleteAlert } from '../../functions/alert'
-
-//
 import Layout from '../../components/layout/layout'
 import { Button, FileInput } from '../../components/form-components'
 import { Modal, ModalDelete } from '../../components/singles'
-import { faPlus, faLink, faEdit, faTrash, faReceipt, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons'
 import { ComprasForm, FacturaForm } from '../../components/forms'
-import { DataTable, FacturaTable } from '../../components/tables'
-import Subtitle from '../../components/texts/Subtitle'
+import { FacturaTable } from '../../components/tables'
 import {SolicitudCompraCard} from '../../components/cards'
 import { Form, ProgressBar } from 'react-bootstrap'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import TableForModals from '../../components/tables/TableForModals'
 import AdjuntosForm from '../../components/forms/AdjuntosForm'
-import { wait } from '@testing-library/react'
-
 const $ = require('jquery');
 
 class Compras extends Component{
@@ -230,7 +221,6 @@ class Compras extends Component{
     }
 
     setActions = compra => {
-
         let aux = []
         aux.push(
             {
@@ -255,25 +245,18 @@ class Compras extends Component{
                 tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
             }
         )
-
-        if (compra.factura) {
-            aux.push(
-                {
-                    text: 'Facturas',
-                    btnclass: 'primary',
-                    iconclass: 'flaticon2-medical-records',
-                    action: 'facturas',
-                    tooltip: { id: 'taxes', text: 'Facturas' },
-                },
-                {
-                    text: 'Pedir&nbsp;factura',
-                    btnclass: 'info',
-                    iconclass: 'flaticon-file-1',
-                    action: 'askFacturas',
-                    tooltip: { id: 'ask-taxes', text: 'Facturas' },
-                }
-            )
-        }
+        
+        if (compra.factura) {  
+                    aux.push(
+                        {
+                            text: 'Facturas',
+                            btnclass: 'primary',
+                            iconclass: 'flaticon2-medical-records',
+                            action: 'facturas',
+                            tooltip: { id: 'taxes', text: 'Facturas' },
+                        }
+                    )
+                }   
         return aux
 
     }
@@ -1313,47 +1296,52 @@ class Compras extends Component{
                 </Modal>
                 <ModalDelete title={"¿Estás seguro que deseas eliminar la compra?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteCompraAxios() }}>
                 </ModalDelete>
-                <Modal size="xl" title={"Facturas"} show = { modalFacturas } handleClose = { this.handleCloseFacturas }>
-                    {
-                        compra.tipo_pago ?
-                            compra.tipo_pago.tipo !== 'TOTAL' ?
-                                <>
-                                    <div className="form-group row form-group-marginless pt-4">
-                                        <div className="col-md-12">
-                                            <ProgressBar animated label={`${porcentaje}%`} 
-                                                variant = { porcentaje > 100 ? 'danger' : porcentaje > 75 ? 'success' : 'warning'} 
-                                                now = {porcentaje} />
-                                        </div>
-                                    </div>
-                                    <Form onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios();}}>
-                                        <div className="row mx-0">
-                                            <div className="col-md-6 px-2">
-                                                
-                                                <FileInput 
-                                                    onChangeAdjunto = { this.onChangeAdjunto } 
-                                                    placeholder = { form['adjuntos']['factura']['placeholder'] }
-                                                    value = { form['adjuntos']['factura']['value'] }
-                                                    name = { 'factura' } 
-                                                    id = { 'factura' }
-                                                    accept = "text/xml, application/pdf" 
-                                                    files = { form['adjuntos']['factura']['files'] }
-                                                    deleteAdjunto = { this.clearFiles } multiple/>
+                
+                {
+                    form.factura === 'Con factura' ?
+                    <Modal size="xl" title={"Facturas"} show = { modalFacturas } handleClose = { this.handleCloseFacturas }>
+                        {
+                            compra.tipo_pago ?
+                                compra.tipo_pago.tipo !== 'TOTAL' ?
+                                    <>
+                                        <div className="form-group row form-group-marginless pt-4">
+                                            <div className="col-md-12">
+                                                <ProgressBar animated label={`${porcentaje}%`} 
+                                                    variant = { porcentaje > 100 ? 'danger' : porcentaje > 75 ? 'success' : 'warning'} 
+                                                    now = {porcentaje} />
                                             </div>
-                                            {
-                                                form.adjuntos.factura.files.length ?
-                                                    <div className="col-md-6 px-2 align-items-center d-flex">
-                                                        <Button icon='' className="mx-auto" type="submit" text="Enviar" />
-                                                    </div>
-                                                : ''
-                                            }
                                         </div>
-                                    </Form>
-                                </>
+                                        <Form onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios();}}>
+                                            <div className="row mx-0">
+                                                <div className="col-md-6 px-2">
+                                                    
+                                                    <FileInput 
+                                                        onChangeAdjunto = { this.onChangeAdjunto } 
+                                                        placeholder = { form['adjuntos']['factura']['placeholder'] }
+                                                        value = { form['adjuntos']['factura']['value'] }
+                                                        name = { 'factura' } 
+                                                        id = { 'factura' }
+                                                        accept = "text/xml, application/pdf" 
+                                                        files = { form['adjuntos']['factura']['files'] }
+                                                        deleteAdjunto = { this.clearFiles } multiple/>
+                                                </div>
+                                                {
+                                                    form.adjuntos.factura.files.length ?
+                                                        <div className="col-md-6 px-2 align-items-center d-flex">
+                                                            <Button icon='' className="mx-auto" type="submit" text="Enviar" />
+                                                        </div>
+                                                    : ''
+                                                }
+                                            </div>
+                                        </Form>
+                                    </>
+                                : ''
                             : ''
-                        : ''
-                    }
-                    <FacturaTable deleteFactura = { this.deleteFactura } facturas = { facturas } />
-                </Modal>
+                        }
+                        <FacturaTable deleteFactura = { this.deleteFactura } facturas = { facturas } />
+                    </Modal>
+                    : ''
+                }
                 <Modal size="xl" title={"Adjuntos"} show = { modalAdjuntos } handleClose = { this.handleCloseAdjuntos }>
                     <AdjuntosForm form = { form } onChangeAdjunto = { this.onChangeAdjunto } clearFiles = { this.clearFiles } 
                         onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.addAdjuntoCompraAxios() } }/>

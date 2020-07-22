@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { Subtitle, P } from '../../texts'
-import { SelectSearch, Select, Calendar, RadioGroup, FileInput, Button, Input, InputMoney } from '../../form-components'
+import { P } from '../../texts'
+import { Calendar, FileInput, Button, Input, InputMoney } from '../../form-components'
 import { Form, Accordion } from 'react-bootstrap'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import SliderImages from '../../singles/SliderImages'

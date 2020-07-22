@@ -1,21 +1,13 @@
 /* eslint-disable no-unused-vars */  
 
 import React, { Component } from 'react'
-
-//
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV } from '../../../constants'
-
-// Functions
-import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../../functions/setters'
+import { setOptions, setSelectOptions } from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert } from '../../../functions/alert'
-
-//
-import Layout from '../../../components/layout/layout'
-import NewTable from '../../../components/tables/NewTable'
-
+import Layout from '../../../components/layout/layout' 
 import { EgresosForm as EgresosFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
 
@@ -319,6 +311,7 @@ class EgresosForm extends Component{
                         form.fecha = new Date(egreso.created_at)
                         form.descripcion = egreso.descripcion
                         form.comision = egreso.comision
+                        form.factura = egreso.factura ? 'Con factura' : 'Sin factura'
                         if(egreso.proveedor){
                             form.proveedor = egreso.proveedor.id.toString()
                             form.rfc = egreso.proveedor.rfc
