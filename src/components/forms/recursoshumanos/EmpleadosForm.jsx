@@ -91,7 +91,7 @@ class EmpleadosForm extends Component {
                                             placeholder="CURP"
                                             iconclass={"far fa-address-card"}
                                             patterns={CURP}
-                                            messageinc="Incorrecto. Ej. ABCD123456EFGHIJ78"
+                                            messageinc="Incorrecto. Ej. SIHC400128HDFLLR01"
                                             maxLength="18"
                                         />
                                         <pre id="resultado"></pre>
