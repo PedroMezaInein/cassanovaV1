@@ -9,21 +9,20 @@ import Small from '../texts/Small'
 
 
 const IndeterminateCheckbox = React.forwardRef(
-    ( { indeterminate, ...rest }, ref) => {
+    ({ indeterminate, ...rest }, ref) => {
         const defaultRef = React.useRef()
         const resolvedRef = ref || defaultRef
         React.useEffect(() => {
             resolvedRef.current.indeterminate = indeterminate
         }, [resolvedRef, indeterminate])
-  
         return <input type="checkbox" ref={resolvedRef} {...rest} />
     }
 )
-function Table({ columns, data, hideSelector }){
-    const { 
-        getTableProps, 
-        getTableBodyProps, 
-        headerGroups, 
+function Table({ columns, data, hideSelector }) {
+    const {
+        getTableProps,
+        getTableBodyProps,
+        headerGroups,
         prepareRow,
         page,
         canPreviousPage,
@@ -37,12 +36,12 @@ function Table({ columns, data, hideSelector }){
         getToggleHideAllColumnsProps,
         allColumns,
         state: { pageIndex, pageSize },
-    } = useTable({ 
-        columns, 
+    } = useTable({
+        columns,
         data,
         initialState: { pageIndex: 0, pageSize: TABLE_SIZE }
-    }, useSortBy, usePagination );
-    return(
+    }, useSortBy, usePagination);
+    return (
         <>
             <div className={hideSelector ? "d-none hidding-columns" : "hidding-columns"}>
                 <div>
@@ -50,22 +49,22 @@ function Table({ columns, data, hideSelector }){
                 </div>
                 <div className="hidding-columns__single">
                     {
-                        allColumns.map(( column, x ) => (
+                        allColumns.map((column, x) => (
                             x !== 0 &&
-                                <div className="checkbox" key={column.id}>
-                                    <label className="text-capitalize">
-                                        <input type="checkbox" {...column.getToggleHiddenProps()} />{' '}
-                                        {
-                                            column.id
-                                        }
-                                    </label>
-                                </div>
+                            <div className="checkbox" key={column.id}>
+                                <label className="text-capitalize">
+                                    <input type="checkbox" {...column.getToggleHiddenProps()} />{' '}
+                                    {
+                                        column.id
+                                    }
+                                </label>
+                            </div>
                         ))
                     }
                 </div>
             </div>
             <div className="table__wrap">
-                <table className="table__container" { ...getTableProps() }>
+                <table className="table__container" {...getTableProps()}>
                     <thead>
                         {
                             headerGroups.map(headerGroup => (
@@ -79,8 +78,8 @@ function Table({ columns, data, hideSelector }){
                                                             column.render('Header')
                                                         }
                                                     </Small>
-                                                    
-                                                    <FontAwesomeIcon 
+
+                                                    <FontAwesomeIcon
                                                         icon={
                                                             i === 0 ? ''
                                                                 : column.isSorted
@@ -112,7 +111,7 @@ function Table({ columns, data, hideSelector }){
                                         </tr>
                                     )
                                 })
-                            :
+                                :
                                 <tr>
                                     <td colSpan={columns.length}>
                                         <Subtitle className="text-center py-3" color="gold">
@@ -130,13 +129,13 @@ function Table({ columns, data, hideSelector }){
                     <Button color="transparent" onClick={previousPage} disabled={!canPreviousPage} icon={faStepBackward} className="mx-2" />
                     <div className="d-flex align-items-center">
                         <span>
-                            Página 
+                            Página
                             <strong className="mx-1">
                                 {pageIndex + 1} de {pageOptions.length}
                             </strong>
                         </span>
                     </div>
-                    
+
                     <Button color="transparent" onClick={nextPage} disabled={!canNextPage} icon={faStepForward} className="mx-2" />
                 </div>
             }
@@ -145,20 +144,20 @@ function Table({ columns, data, hideSelector }){
 
 }
 
-class DataTable extends Component{
-    constructor(props){
+class DataTable extends Component {
+    constructor(props) {
         super(props)
     }
 
-    componentDidUpdate(){
+    componentDidUpdate() {
 
     }
 
-    render(){
+    render() {
         const { data, columns, hideSelector } = this.props
-        return(
+        return (
             <div>
-                <Table columns={columns} data={data} hideSelector = { hideSelector } />
+                <Table columns={columns} data={data} hideSelector={hideSelector} />
             </div>
         )
     }

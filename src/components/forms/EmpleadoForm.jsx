@@ -1,15 +1,9 @@
 import React, { Component } from 'react'
-import { Input, Button, RadioGroup, Select, Calendar, InputNumber, InputPhone, SelectSearchTrue } from '../form-components'
-import Accordion from 'react-bootstrap/Accordion'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons'
-import { Small } from '../texts'
+import { Input, Button, RadioGroup, Select, Calendar, InputNumber, InputPhone, SelectSearchTrue } from '../form-components' 
+import { faPlus } from '@fortawesome/free-solid-svg-icons' 
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
-import { RFC, DATE, NSS, CURP, TEL } from '../../constants'
-import Badge from 'react-bootstrap/Badge'
-import { Nav, Tab, Row, Col } from 'react-bootstrap'
-import { openWizard1, openWizard2, openWizard3 } from '../../functions/wizard'
-import { validateAlert } from '../../functions/alert'
+import { RFC, DATE, NSS, CURP, TEL } from '../../constants' 
+import { openWizard1, openWizard2, openWizard3 } from '../../functions/wizard' 
 
 function CustomToggle({ children, eventKey }) {
 

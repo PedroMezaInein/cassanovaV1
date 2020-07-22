@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom'
-import { renderToString } from 'react-dom/server'
-import { PlusCircle } from '../../assets/svg'
 import '../../styles/custom_datatable.css'
 import '../../styles/metronic/_datables.scss';
 
@@ -30,19 +27,19 @@ class TableForModals extends Component {
             e.preventDefault();
             let dataIdAux = ''
             var id = $(this).attr('id').toString()
-            var name = $(this).attr('name').toString() 
-            let aux = elements.find(function(element, index) { 
-                if(dataID){
-                    dataIdAux = dataID.toString()+'-'+element.id.toString()
-                    if(dataIdAux.toString() === id.toString()){
+            var name = $(this).attr('name').toString()
+            let aux = elements.find(function (element, index) {
+                if (dataID) {
+                    dataIdAux = dataID.toString() + '-' + element.id.toString()
+                    if (dataIdAux.toString() === id.toString()) {
                         return element
                     }
-                }else
-                    if(element.id.toString() === id) {
+                } else
+                    if (element.id.toString() === id) {
                         return element
                     }
             });
-            actions[name].function(aux) 
+            actions[name].function(aux)
         });
 
     }
@@ -75,12 +72,6 @@ class TableForModals extends Component {
                     var title = $(this).text();
 
                     if (global_variable.mostrar_acciones == false || global_variable.mostrar_acciones && contador != 0) {
-                        //No muestro 
-                        /*Opcioón 1*/
-                        //$(this).append('<br/><input class="form-control form-control-sm form-filter datatable-input" type="text"/>');
-                        /*Opción 2 */
-                        //$(this).append('<div class="mt-2 separator separator-dashed separator-border-2"></div><div class="mt-2 input-icon"><input type="text" class="form-control form-control-sm"/><span><i class="flaticon2-search-1 icon-sm"></i></span></div>');
-                        /*Opción 3 */
                         $(this).append('<div class="mt-2 separator separator-dashed separator-border-2"></div><div class="mt-2"><input type="text" class="form-control form-control-sm"/></div>');
 
                     }
@@ -147,7 +138,7 @@ class TableForModals extends Component {
             {
                 'targets': [0],
                 'data': null,
-                'searchable': mostrar_acciones? false : true,
+                'searchable': mostrar_acciones ? false : true,
                 'orderable': false,
                 render: function (data, type, row, meta) {
                     if (global_variable.mostrar_acciones == true) {
@@ -173,7 +164,7 @@ class TableForModals extends Component {
 
 
             lengthMenu: [[20, 30, 40, 50, -1], [20, 30, 40, 50, "Todos"]],
-            pageLength: 20,
+            pageLength: 20
 
         });
         table.on('responsive-resize.dt', function (e, datatable, columns) {
@@ -182,26 +173,26 @@ class TableForModals extends Component {
                 table.find('th:nth-child(' + index + ')').toggle(columns[i]);
             }
         });
-        
+
         $(this.refs.main).on('click', '.btn-actions-table', function (e) {
-            e.preventDefault();                 
+            e.preventDefault();
             let dataIdAux = ''
             var id = $(this).attr('id').toString()
-            var name = $(this).attr('name').toString() 
-            let aux = elements.find(function(element, index) { 
-                if(dataID){
-                    dataIdAux = dataID.toString()+'-'+element.id.toString()
-                    if(dataIdAux.toString() === id.toString()){
+            var name = $(this).attr('name').toString()
+            let aux = elements.find(function (element, index) {
+                if (dataID) {
+                    dataIdAux = dataID.toString() + '-' + element.id.toString()
+                    if (dataIdAux.toString() === id.toString()) {
                         return element
                     }
-                }else
-                    if(element.id.toString() === id) {
+                } else
+                    if (element.id.toString() === id) {
                         return element
                     }
             });
-            actions[name].function(aux) 
+            actions[name].function(aux)
         });
-    
+
     }
 
     componentWillUnmount() {
@@ -215,7 +206,6 @@ class TableForModals extends Component {
             this.reloadTableData(nextProps)
         }
         return false;
-
     }
     clickHandler = (e) => {
         if (typeof this.props.onClick === 'function') {
@@ -228,9 +218,7 @@ class TableForModals extends Component {
         }
     }
     render() {
-
         const { columns, data, title, subtitle, url, mostrar_boton, abrir_modal, exportar_boton } = this.props
-
         return (
             <>
                 <div className="card-toolbar">
@@ -239,26 +227,26 @@ class TableForModals extends Component {
                             <button onClick={() => this.clickHandlerExport()} className="btn btn-primary font-weight-bold mr-2">
                                 <i className="far fa-file-excel"></i> Exportar
                             </button>
-                        :
-                        ""
+                            :
+                            ""
                     }
                     {
                         (mostrar_boton == true) ?
-                        (abrir_modal == true) ?
-                            <button onClick={() => this.clickHandler()} className="btn btn-success font-weight-bold mr-2">
-                                <i className="flaticon-add"></i> Agregar
+                            (abrir_modal == true) ?
+                                <button onClick={() => this.clickHandler()} className="btn btn-success font-weight-bold mr-2">
+                                    <i className="flaticon-add"></i> Agregar
                             </button>
-                        :
-                            <a href={url} className="btn btn-success font-weight-bold mr-2">
-                                <i className="flaticon-add"></i> Agregar
+                                :
+                                <a href={url} className="btn btn-success font-weight-bold mr-2">
+                                    <i className="flaticon-add"></i> Agregar
                             </a>
-                        :
-                        ""
+                            :
+                            ""
                     }
                 </div>
-                    <div className="">                        
-                        <table ref="main" className="table table-separate table-head-custom table-checkable display w-100 table-hover text-justify responsive" id={this.props.idTable ? this.props.idTable : "kt_datatable2"} />
-                    </div>
+                <div className="">
+                    <table ref="main" className="table table-separate table-head-custom table-checkable display w-100 table-hover text-justify responsive" id={this.props.idTable ? this.props.idTable : "kt_datatable2"} />
+                </div>
             </>
         )
     }

@@ -1,10 +1,10 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import { faCaretSquareLeft, faCaretSquareRight } from '@fortawesome/free-solid-svg-icons'
-import { Small, P } from '../texts'
+import { P } from '../texts'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { ItemSlider } from './'
 
-class Slider extends Component{
+class Slider extends Component {
 
     state = {
         active: 0
@@ -13,8 +13,8 @@ class Slider extends Component{
     sliderBack = () => {
         const { elements } = this.props
         let { active } = this.state
-        if(active === 0)
-            active = elements.length - 1 
+        if (active === 0)
+            active = elements.length - 1
         else
             active = active - 1
         this.setState({
@@ -26,8 +26,8 @@ class Slider extends Component{
     sliderNext = () => {
         const { elements } = this.props
         let { active } = this.state
-        if(active === elements.length - 1)
-            active = 0 
+        if (active === elements.length - 1)
+            active = 0
         else
             active = active + 1
         this.setState({
@@ -36,13 +36,13 @@ class Slider extends Component{
         })
     }
 
-    render(){
+    render() {
         const { active } = this.state
-        const { elements, ... props } = this.props
-        return(
+        const { elements, ...props } = this.props
+        return (
             <>
                 <div className="d-flex w-100 align-items-center">
-                    <div className="cursor" onClick={ (e) => { e.preventDefault(); this.sliderBack();} }>
+                    <div className="cursor" onClick={(e) => { e.preventDefault(); this.sliderBack(); }}>
                         <FontAwesomeIcon icon={faCaretSquareLeft} className="mr-2 text-color__dark-blue" />
                     </div>
                     <div className="w-100 text-center px-2">
@@ -53,18 +53,18 @@ class Slider extends Component{
                                         elements[active].text
                                     }
                                 </P>
-                            : ''
+                                : ''
                         }
                     </div>
-                    <div className="cursor" onClick={ (e) => { e.preventDefault(); this.sliderNext();} }>
+                    <div className="cursor" onClick={(e) => { e.preventDefault(); this.sliderNext(); }}>
                         <FontAwesomeIcon icon={faCaretSquareRight} className="mr-2 text-color__dark-blue" />
                     </div>
                 </div>
                 <div>
                     {
                         elements[active].files ?
-                            <ItemSlider {... props} items = {elements[active].files} item = { elements[active] } />
-                        : ''
+                            <ItemSlider {...props} items={elements[active].files} item={elements[active]} />
+                            : ''
                     }
                 </div>
             </>

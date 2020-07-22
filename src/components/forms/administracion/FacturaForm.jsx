@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-import { Form } from 'react-bootstrap'
-import { Subtitle, Small } from '../../texts'
-import { Input, Select, SelectSearch, Button, Calendar, InputMoney, RadioGroup } from '../../form-components'
+import { Form } from 'react-bootstrap' 
+import { Input, SelectSearch, Button, Calendar, InputMoney} from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
-import { RFC, TEL, EMAIL } from '../../../constants'
+import { RFC, EMAIL } from '../../../constants'
 
 export default class FacturaForm extends Component {
 

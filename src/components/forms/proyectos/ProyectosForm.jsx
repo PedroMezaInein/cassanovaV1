@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
-import { Form, Accordion, Badge } from 'react-bootstrap'
-import { Subtitle, Small } from '../../texts'
-import { Input, Select, SelectSearch, Button, Calendar, InputMoney, FileInput, InputNumber, InputPhone } from '../../form-components'
+import { Form, Accordion } from 'react-bootstrap'
+import { Input, SelectSearch, Button, Calendar, FileInput, InputNumber, InputPhone } from '../../form-components'
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
-import { faPlus, faMinus, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faPlus} from '@fortawesome/free-solid-svg-icons'
 import { DATE, TEL, EMAIL } from '../../../constants'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { validateAlert } from '../../../functions/alert'
 
 function CustomToggle({ children, eventKey }) {

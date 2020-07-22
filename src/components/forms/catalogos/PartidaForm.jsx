@@ -1,10 +1,7 @@
 import React, { Component } from 'react'
-import { Form } from 'react-bootstrap'
-import { Subtitle } from '../../texts'
-import { Input, Select, SelectSearch, Button } from '../../form-components'
-import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Badge } from 'react-bootstrap'
+import { Form } from 'react-bootstrap' 
+import { Input, Button } from '../../form-components'
+import { faPlus} from '@fortawesome/free-solid-svg-icons' 
 import { validateAlert } from '../../../functions/alert'
 
 class PartidaForm extends Component {

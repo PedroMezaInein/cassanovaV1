@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { Subtitle } from '../../texts'
 import { SelectSearch, Select, Calendar, RadioGroup, FileInput, Button, Input, InputMoney, SelectSearchTrue } from '../../form-components'
 import { Form } from 'react-bootstrap'
 import { RFC, DATE } from '../../../constants'

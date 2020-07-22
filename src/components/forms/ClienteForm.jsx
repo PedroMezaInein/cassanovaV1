@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
-import Form from 'react-bootstrap/Form'
-import { Button, SelectSearch, Input, InputNumber } from '../form-components'
-import { Subtitle } from '../texts'
+import { SelectSearch, Input, InputNumber } from '../form-components'
 import { RFC } from '../../constants'
 
 class ClienteForm extends Component {

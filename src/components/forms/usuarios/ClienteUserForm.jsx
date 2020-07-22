@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-import Form from 'react-bootstrap/Form'
 import Badge from 'react-bootstrap/Badge'
-import { Button, Select, Calendar, RadioGroup, OptionsCheckbox, SelectSearch } from '../../form-components'
+import { SelectSearch } from '../../form-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+import { faTimes} from '@fortawesome/free-solid-svg-icons'
 
 class ClienteUserForm extends Component {
 

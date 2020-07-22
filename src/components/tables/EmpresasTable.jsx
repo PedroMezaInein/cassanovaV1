@@ -5,21 +5,21 @@ import { faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons'
 
 
 const IndeterminateCheckbox = React.forwardRef(
-    ( { indeterminate, ...rest }, ref) => {
+    ({ indeterminate, ...rest }, ref) => {
         const defaultRef = React.useRef()
         const resolvedRef = ref || defaultRef
         React.useEffect(() => {
             resolvedRef.current.indeterminate = indeterminate
         }, [resolvedRef, indeterminate])
-  
+
         return <input type="checkbox" ref={resolvedRef} {...rest} />
     }
 )
-function Table({ columns, data }){
-    const { 
-        getTableProps, 
-        getTableBodyProps, 
-        headerGroups, 
+function Table({ columns, data }) {
+    const {
+        getTableProps,
+        getTableBodyProps,
+        headerGroups,
         prepareRow,
         page,
         canPreviousPage,
@@ -33,12 +33,12 @@ function Table({ columns, data }){
         getToggleHideAllColumnsProps,
         allColumns,
         state: { pageIndex, pageSize },
-    } = useTable({ 
-        columns, 
+    } = useTable({
+        columns,
         data,
         initialState: { pageIndex: 0, pageSize: 15 }
-    }, useSortBy, usePagination );
-    return(
+    }, useSortBy, usePagination);
+    return (
         <>
             <div className="hidding-columns">
                 <div>
@@ -46,22 +46,22 @@ function Table({ columns, data }){
                 </div>
                 <div className="hidding-columns__single">
                     {
-                        allColumns.map(( column, x ) => (
+                        allColumns.map((column, x) => (
                             x !== 0 &&
-                                <div className="checkbox" key={column.id}>
-                                    <label className="text-capitalize">
-                                        <input type="checkbox" {...column.getToggleHiddenProps()} />{' '}
-                                        {
-                                            column.id
-                                        }
-                                    </label>
-                                </div>
+                            <div className="checkbox" key={column.id}>
+                                <label className="text-capitalize">
+                                    <input type="checkbox" {...column.getToggleHiddenProps()} />{' '}
+                                    {
+                                        column.id
+                                    }
+                                </label>
+                            </div>
                         ))
                     }
                 </div>
             </div>
             <div className="table__wrap">
-                <table className="table__container" { ...getTableProps() }>
+                <table className="table__container" {...getTableProps()}>
                     <thead>
                         {
                             headerGroups.map(headerGroup => (
@@ -73,7 +73,7 @@ function Table({ columns, data }){
                                                     {
                                                         column.render('Header')
                                                     }
-                                                    <FontAwesomeIcon 
+                                                    <FontAwesomeIcon
                                                         icon={
                                                             i === 0 ? ''
                                                                 : column.isSorted
@@ -112,16 +112,16 @@ function Table({ columns, data }){
 
 }
 
-class EmpresasTable extends Component{
-    constructor(props){
+class EmpresasTable extends Component {
+    constructor(props) {
         super(props)
     }
 
-    componentDidUpdate(){
+    componentDidUpdate() {
 
     }
 
-    render(){
+    render() {
         /* const data = [
             {
                 actions: '1',
@@ -140,7 +140,7 @@ class EmpresasTable extends Component{
             }
             
         ] */
-        const columns = [                
+        const columns = [
             {
                 Header: ' ',
                 accessor: 'actions',
@@ -159,7 +159,7 @@ class EmpresasTable extends Component{
             },
         ]
         const { data } = this.props
-        return(
+        return (
             <div>
                 <Table columns={columns} data={data} />
             </div>

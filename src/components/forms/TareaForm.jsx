@@ -1,15 +1,12 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { Input, SelectSearch, Button } from '../form-components'
-import { Badge } from 'react-bootstrap'
+import { Input, Button } from '../form-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes, faTrashAlt, faCheck, faTrash, faCalendarCheck } from '@fortawesome/free-solid-svg-icons'
+import { faTimes, faTrashAlt, faCheck, faCalendarCheck } from '@fortawesome/free-solid-svg-icons'
 import Calendar from '../form-components/Calendar'
 import { Small } from '../texts'
-import { GOLD, DARK_BLUE } from '../../constants'
+import { GOLD} from '../../constants'
 import ReactTooltip from "react-tooltip";
-import Tooltip from 'react-bootstrap/Tooltip'
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 
 class TareaForm extends Component {
 

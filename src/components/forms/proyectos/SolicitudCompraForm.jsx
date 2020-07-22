@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
-import { Form } from 'react-bootstrap'
-import { Subtitle, Small } from '../../texts'
+import { Form } from 'react-bootstrap' 
 import { Input, Select, SelectSearch, Button, Calendar, InputMoney, RadioGroup, FileInput } from '../../form-components'
-import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
 
