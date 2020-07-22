@@ -1,37 +1,37 @@
-/* eslint-disable no-unused-vars */  
+/* eslint-disable no-unused-vars */
 import React, { Component } from 'react'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import { URL_DEV, EMPTY_EMPLEADO} from '../../constants'
+import { URL_DEV } from '../../constants'
 import { Title, Subtitle, P, Small, B } from '../../components/texts'
 import { Button } from '../../components/form-components'
 import { faUserPlus, faUserEdit, faUserSlash, faKey } from '@fortawesome/free-solid-svg-icons'
 import { Card, Modal, ModalDelete } from '../../components/singles'
-import { RegisterUserForm, EmpleadoForm, PermisosForm, ClienteUserForm } from '../../components/forms'
+import { RegisterUserForm, PermisosForm, ClienteUserForm } from '../../components/forms'
 import swal from 'sweetalert'
 import { setOptions } from '../../functions/setters'
 import { forbiddenAccessAlert, errorAlert } from '../../functions/alert'
-class Usuarios extends Component{
-    constructor(props){
+class Usuarios extends Component {
+    constructor(props) {
         super(props)
     }
-
     state = {
         users: [],
         type_user: '',
-
         // Form 
-        form:{
+        form: {
             name: '',
             email: '',
-            tipo:0,
-            empleado:false
+            tipo: 0,
+            empleado: false,
+            departamentos: [],
+            departamento: ''
         },
-        empleadoForm:{
+        empleadoForm: {
             tipo_empleado: 0,
-            empresa:0,
-            puesto:'',
+            empresa: 0,
+            puesto: '',
             fecha_inicio: new Date,
             estatus: '',
             rfc: '',
@@ -45,19 +45,18 @@ class Usuarios extends Component{
             departamentos: [],
             departamento: ''
         },
-        clienteForm:{
+        clienteForm: {
             proyectos: [],
             proyecto: ''
         },
         proyectos: [],
         departamentos: [],
         options: [],
-        data:{
+        data: {
             proyectos: []
         },
         empresas_options: [],
         user_to_interact: '',
-
         // Modal
         modalSafeDeleteActive: false,
         modalActive: false,
@@ -65,15 +64,15 @@ class Usuarios extends Component{
         modalPermisos: false
     }
 
-    componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
+    componentDidMount() {
+        const { authUser: { user: { permisos: permisos } } } = this.props
+        const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props
-        const usuarios = permisos.find(function(element, index) {
+        const usuarios = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
             return pathname === url
         });
-        if(!usuarios)
+        if (!usuarios)
             history.push('/')
         this.getUsers();
     }
@@ -85,33 +84,24 @@ class Usuarios extends Component{
     }
 
     setUser = (data) => {
-        
         const { empleado } = data
         const { empleadoForm } = this.state
-        
-        if(empleado){
 
+        if (empleado) {
             empleadoForm['tipo_empleado'] = empleado.tipo_empleado ? empleado.tipo_empleado : ''
-        
             empleadoForm['empresa'] = empleado.empresa ? (empleado.empresa.id ? empleado.empresa.id : '') : ''
-            
             empleadoForm['puesto'] = empleado.puesto ? empleado.puesto : ''
             empleadoForm['fecha_inicio'] = empleado.fecha_inicio ? new Date(empleado.fecha_inicio) : ''
             empleadoForm['estatus'] = empleado.estatus ? empleado.estatus : ''
-            
             empleadoForm['rfc'] = empleado.rfc ? empleado.rfc : ''
             empleadoForm['nss'] = empleado.nss ? empleado.nss : ''
             empleadoForm['curp'] = empleado.curp ? empleado.curp : ''
-            
             empleadoForm['banco'] = empleado.banco_deposito ? empleado.banco_deposito : ''
             empleadoForm['cuenta'] = empleado.cuenta_deposito ? empleado.cuenta_deposito : ''
             empleadoForm['clabe'] = empleado.clabe_deposito ? empleado.clabe_deposito : ''
-    
             empleadoForm['nombre_emergencia'] = empleado.nombre_contacto ? empleado.nombre_contacto : ''
             empleadoForm['telefono_emergencia'] = empleado.telefono_contacto ? empleado.telefono_contacto : ''
-
         }
-        
 
         this.setState({
             ... this.state,
@@ -125,10 +115,12 @@ class Usuarios extends Component{
         this.setState({
             ... this.state,
             modalActive: true,
-            form:{
+            form: {
                 name: '',
                 email: '',
-                tipo: 0
+                tipo: 0,
+                departamentos: [],
+                departamento: ''
             },
             empleadoForm: this.clearEmpleadoForm()
         })
@@ -137,8 +129,8 @@ class Usuarios extends Component{
     clearEmpleadoForm = () => {
         const { empleadoForm } = this.state
         let aux = Object.keys(empleadoForm)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'fecha_inicio':
                     empleadoForm[element] = new Date()
                     break;
@@ -160,13 +152,13 @@ class Usuarios extends Component{
     // Functions to update users
 
     updateUser = (e) => (user) => {
-        const { name, email, tipo, departamentos  } = user
+        const { name, email, tipo, departamentos } = user
         let form = {
             name: name,
             email: email,
             tipo: tipo
         }
-        if(departamentos.length){
+        if (departamentos.length) {
             const { empleadoForm } = this.state
             empleadoForm.departamentos = setOptions(departamentos, 'nombre', 'id')
             this.setState({
@@ -176,7 +168,7 @@ class Usuarios extends Component{
                 form,
                 empleadoForm
             })
-        }else{
+        } else {
             this.setState({
                 ... this.state,
                 modalUpdateUser: true,
@@ -206,8 +198,6 @@ class Usuarios extends Component{
         })
     }
 
-    // 
-
     changePermisos = (e) => (user) => {
         this.setState({
             ... this.state,
@@ -219,9 +209,8 @@ class Usuarios extends Component{
     // Handle change on form
 
     handleChangeInput = (e) => {
-        e.preventDefault();
         const { name, value } = e.target
-        const { form }  = this.state
+        const { form } = this.state
         form[name] = value
         this.setState({
             ... this.state,
@@ -232,7 +221,7 @@ class Usuarios extends Component{
     handleChangeEmpleado = (e) => {
         /* e.preventDefault(); */
         const { name, value } = e.target
-        const { empleadoForm, form }  = this.state
+        const { empleadoForm, form } = this.state
         empleadoForm[name] = value
         form['empleado'] = true
         this.setState({
@@ -244,7 +233,7 @@ class Usuarios extends Component{
 
     onChangeCliente = (e) => {
         const { name, value } = e.target
-        const { clienteForm, form }  = this.state
+        const { clienteForm, form } = this.state
         clienteForm[name] = value
         this.setState({
             ... this.state,
@@ -255,9 +244,9 @@ class Usuarios extends Component{
 
     onChangeOptions = (e, arreglo) => {
         const { name, value } = e.target
-        const { clienteForm } = this.state
+        const { form } = this.state
         let { proyectos } = this.state
-        let auxArray = clienteForm[arreglo]
+        let auxArray = form[arreglo]
         let aux = []
         proyectos.find(function (_aux) {
             if (_aux.value.toString() === value.toString()) {
@@ -267,19 +256,19 @@ class Usuarios extends Component{
             }
         })
         proyectos = aux
-        clienteForm[arreglo] = auxArray
+        form[arreglo] = auxArray
         this.setState({
             ... this.state,
-            clienteForm,
+            form,
             proyectos
         })
     }
 
     onChangeOptionsEmpleado = (e, arreglo) => {
         const { name, value } = e.target
-        const { empleadoForm } = this.state
+        const { form } = this.state
         let { departamentos } = this.state
-        let auxArray = empleadoForm[arreglo]
+        let auxArray = form[arreglo]
         let aux = []
         departamentos.find(function (_aux) {
             if (_aux.value.toString() === value.toString()) {
@@ -289,43 +278,42 @@ class Usuarios extends Component{
             }
         })
         departamentos = aux
-        empleadoForm[arreglo] = auxArray
+        form[arreglo] = auxArray
         this.setState({
             ... this.state,
-            empleadoForm,
+            form,
             departamentos
         })
     }
 
     deleteOption = (element, array, tipo) => {
-        if(tipo === 'empleado'){
-            const { empleadoForm } = this.state
+        if (tipo === 'empleado') {
+            const { form } = this.state
             let _array = []
             let auxiliar = ''
-            empleadoForm[array].find( function(aux, key){
-                if(aux.value === element.value){
-                    if(auxiliar === '')
-                    auxiliar = key
+            form[array].find(function (aux, key) {
+                if (aux.value === element.value) {
+                    if (auxiliar === '')
+                        auxiliar = key
                 }
             })
-            empleadoForm[array].map((elemento, key) => {
-                if(auxiliar !== key){
+            form[array].map((elemento, key) => {
+                if (auxiliar !== key) {
                     _array.push(elemento)
                 }
             })
-            empleadoForm[array] = _array
+            form[array] = _array
             this.setState({
                 ... this.state,
-                empleadoForm
+                form
             })
         }
-        if(tipo === 'cliente'){
-
+        if (tipo === 'cliente') {
         }
     }
 
-    handleChangeDate = (date) =>{
-        const { empleadoForm, form }  = this.state
+    handleChangeDate = (date) => {
+        const { empleadoForm, form } = this.state
         empleadoForm['fecha_inicio'] = date
         form['empleado'] = true
         this.setState({
@@ -387,23 +375,23 @@ class Usuarios extends Component{
     // Axios Functions
 
     //Add user
-    async addUserAxios(){
+    async addUserAxios() {
         const { access_token } = this.props.authUser
         const { form, empleadoForm, clienteForm } = this.state
         form.empleado = empleadoForm
         form.proyectos = clienteForm.proyectos
-        await axios.post(URL_DEV + 'user', form, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
+        await axios.post(URL_DEV + 'user', form, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
-                const { data: {users: users} } = response
+                const { data: { users: users } } = response
                 this.setUsers(users);
                 this.setState({
                     modalActive: false,
-                    form:{
+                    form: {
                         name: '',
                         email: '',
-                        tipo:0
+                        tipo: 0
                     },
-                    clienteForm:{
+                    clienteForm: {
                         proyecto: '',
                         proyectos: []
                     },
@@ -416,13 +404,12 @@ class Usuarios extends Component{
                     buttons: false,
                     timer: 1500
                 })
-                
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -433,20 +420,20 @@ class Usuarios extends Component{
     }
 
     // Update user info
-    async updateUserAxios( user ){
+    async updateUserAxios(user) {
         const { access_token } = this.props.authUser
         const { form, empleadoForm } = this.state
         form.empleado = empleadoForm
-        await axios.put(URL_DEV + 'user/' + user, form, { headers: {Authorization:`Bearer ${access_token}`} }).then(
+        await axios.put(URL_DEV + 'user/' + user, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { data: {users: users} } = response
+                const { data: { users: users } } = response
                 this.setUsers(users);
                 this.setState({
                     modalUpdateUser: false,
-                    form:{
+                    form: {
                         name: '',
                         email: '',
-                        tipo:0,
+                        tipo: 0,
                     },
                     empleadoForm: this.clearEmpleadoForm()
                 })
@@ -457,13 +444,13 @@ class Usuarios extends Component{
                     buttons: false,
                     timer: 1500
                 })
-                
+
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -474,11 +461,11 @@ class Usuarios extends Component{
     }
 
     //Delete an user with id
-    async deleteUserAxios(user){
+    async deleteUserAxios(user) {
         const { access_token } = this.props.authUser
-        await axios.delete(URL_DEV + 'user/' +user, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
+        await axios.delete(URL_DEV + 'user/' + user, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
-                const { data: {users: users} } = response
+                const { data: { users: users } } = response
                 this.setUsers(users)
                 swal({
                     title: '¡Listo 👋!',
@@ -494,9 +481,9 @@ class Usuarios extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -506,18 +493,18 @@ class Usuarios extends Component{
         })
     }
 
-    async getOneUser(user){
+    async getOneUser(user) {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'user/user/' + user, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'user/user/' + user, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { data: {user: user} } = response
+                const { data: { user: user } } = response
                 this.setUser(user)
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -527,9 +514,9 @@ class Usuarios extends Component{
         })
     }
 
-    async getUsers(){
+    async getUsers() {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'user/users', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'user/users', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { users, proyectos, departamentos } = response.data
                 const { data } = this.state
@@ -556,9 +543,9 @@ class Usuarios extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -566,14 +553,12 @@ class Usuarios extends Component{
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
-
-        await axios.get(URL_DEV + 'empresa', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'empresa', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { data: {empresas: empresas} } = response
+                const { data: { empresas: empresas } } = response
                 let empresas_options = []
                 empresas.map((empresa, key) => {
                     const { id, name } = empresa
-                    
                     empresas_options.push({
                         value: id,
                         text: name
@@ -586,9 +571,9 @@ class Usuarios extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -598,39 +583,23 @@ class Usuarios extends Component{
         })
     }
 
-    render(){
-        const { users, modalActive, form, options, modalSafeDeleteActive, user_to_interact, modalUpdateUser, form: { tipo : tipo_form }, empleadoForm, clienteForm, proyectos, empresas_options, modalPermisos, departamentos } = this.state;
-        return(
+    render() {
+        const { users, modalActive, form, options, modalSafeDeleteActive, user_to_interact, modalUpdateUser, form: { tipo: tipo_form }, empleadoForm, clienteForm, proyectos, empresas_options, modalPermisos, departamentos } = this.state;
+        return (
             <>
-                <Layout active={'usuarios'}  { ...this.props}>
-                    {/* <NewTable  columns={EMPRESA_COLUMNS} data = { empresas } 
-                        title = 'LISTADO DE USUARIOS REGISTRADOS' subtitle = 'Listado de administradores, empleados y clientes'
-                        mostrar_boton={true}
-                        abrir_modal={true}
-                        onClick={this.addUser()}
-                        mostrar_acciones={true} 
-                            actions = {{
-                                'edit': {},
-                                'delete': {},
-                                'permisos':{}
-                            }}
-                        elements = { data.empresas }
-                        idTable = 'kt_datatable_usuarios'
-                    /> */}
-
+                <Layout active={'usuarios'}  {...this.props}>
                     <div className="d-flex align-items-center mb-2 flex-column flex-md-row justify-content-md-between">
                         <Title className="text-center">
                             Listado de usuarios registrados
                         </Title>
                         <div className="mt-3 mt-md-0 ml-auto">
                             <Button onClick={this.addUser()} text='' className="" icon={faUserPlus}
-                                tooltip={{id:'add', text:'Nuevo'}} />
+                                tooltip={{ id: 'add', text: 'Nuevo' }} />
                         </div>
-                        
                     </div>
                     {
                         users.map((tipo_users, key) => {
-                            return(
+                            return (
                                 <div key={key} className="col-md-12">
                                     <Subtitle>
                                         {tipo_users.tipo}
@@ -638,11 +607,11 @@ class Usuarios extends Component{
                                     <div className="row py-3 mx-0">
                                         {
                                             tipo_users.usuarios.map((user, _key) => {
-                                                return(
+                                                return (
                                                     <div className="col-md-6 col-xl-3 col-12 mb-2 px-0" key={_key}>
                                                         <Card className="mx-3" >
                                                             <Button onClick={(e) => { this.changePermisos(e)(user) }} icon={faKey} className="mr-2" color="gold-no-bg"
-                                                                tooltip={{id:'permisos', text:'Permisos de usuario'}} />
+                                                                tooltip={{ id: 'permisos', text: 'Permisos de usuario' }} />
                                                             <div className="text-center">
                                                                 <P>
                                                                     {user.name}
@@ -654,9 +623,9 @@ class Usuarios extends Component{
                                                             </div>
                                                             <div className="d-flex justify-content-between mt-3">
                                                                 <Button icon='' onClick={(e) => { this.updateUser(e)(user) }} icon={faUserEdit} className="mr-2" color="blue"
-                                                                    tooltip={{id:'edit', text:'Editar'}} />
+                                                                    tooltip={{ id: 'edit', text: 'Editar' }} />
                                                                 <Button icon='' onClick={(e) => { this.deleteuser(e)(user) }} icon={faUserSlash} color="red"
-                                                                    tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
+                                                                    tooltip={{ id: 'delete', text: 'Eliminar', type: 'error' }} />
                                                             </div>
                                                         </Card>
                                                     </div>
@@ -669,65 +638,41 @@ class Usuarios extends Component{
                         })
                     }
                     <Modal size="xl" title="Registrar usuario" show={modalActive} handleClose={this.handleCloseModal}>
-                        <RegisterUserForm className="px-3" form={ form } options={options} onSubmit={ this.handleSubmitAddUser} 
-                            onChange={(e) => {e.preventDefault(); this.handleChangeInput(e)}}>
-                            {
-                                tipo_form < 3 && tipo_form > 0 &&
-                                <EmpleadoForm 
-                                    form={empleadoForm} 
-                                    onChange={this.handleChangeEmpleado}
-                                    options = { {empresas: empresas_options, departamentos: departamentos} }
-                                    title="Datos del empleado" 
-                                    onChangeCalendar={this.handleChangeDate}
-                                    onChangeOptions = { this.onChangeOptionsEmpleado }
-                                    deleteOption = { this.deleteOption }
-                                    />
-                            }
+                        <RegisterUserForm className="px-3" form={form} options={options} onSubmit={this.handleSubmitAddUser}
+                            onChange={this.handleChangeInput} tipo={tipo_form} options2={{ empresas: empresas_options, departamentos: departamentos }} onChangeOptions={this.onChangeOptionsEmpleado} deleteOption={this.deleteOption}>
                             {
                                 tipo_form === '3' ?
                                     <ClienteUserForm
-                                        form = { clienteForm }
-                                        options = { {proyectos: proyectos} }
-                                        title = 'Datos del cliente'
-                                        onChange = { this.onChangeCliente }
-                                        onChangeOptions = { this.onChangeOptions }
-                                        />
-                                : ''
+                                        form={clienteForm}
+                                        options={{ proyectos: proyectos }}
+                                        title='Datos del cliente'
+                                        onChange={this.onChangeCliente}
+                                        onChangeOptions={this.onChangeOptions}
+                                    />
+                                    : ''
                             }
                         </RegisterUserForm>
                     </Modal>
                     <Modal title="Editar usuario" size="xl" show={modalUpdateUser} handleClose={this.handleCloseModalUpdateUser}>
-                        <RegisterUserForm form={ form } options={options} className="px-3" onSubmit={ this.handleSubmitEditUser } 
-                            onChange={(e) => {e.preventDefault(); this.handleChangeInput(e)}}>
-                            {
-                                tipo_form < 3 && tipo_form > 0 &&
-                                <EmpleadoForm 
-                                    form={empleadoForm} 
-                                    onChange={this.handleChangeEmpleado}
-                                    options = { {empresas: empresas_options, departamentos: departamentos} }
-                                    title="Datos del empleado" 
-                                    onChangeCalendar={this.handleChangeDate}
-                                    onChangeOptions = { this.onChangeOptionsEmpleado }
-                                    deleteOption = { this.deleteOption }
-                                    />
-                            }
+                        <RegisterUserForm form={form} options={options} className="px-3" onSubmit={this.handleSubmitEditUser}
+                            onChange={this.handleChangeInput} tipo={tipo_form} options={{ empresas: empresas_options, departamentos: departamentos }} onChangeOptions={this.onChangeOptionsEmpleado} deleteOption={this.deleteOption}>
                             {
                                 tipo_form === '3' ?
                                     <ClienteUserForm
-                                        form = { clienteForm }
-                                        options = { {proyectos: proyectos} }
-                                        title = 'Datos del cliente'
-                                        onChange = { this.onChangeCliente }
-                                        onChangeOptions = { this.onChangeOptions }
-                                        />
-                                : ''
+                                        form={clienteForm}
+                                        options={{ proyectos: proyectos }}
+                                        title='Datos del cliente'
+                                        onChange={this.onChangeCliente}
+                                        onChangeOptions={this.onChangeOptions}
+                                    />
+                                    : ''
                             }
                         </RegisterUserForm>
                     </Modal>
-                    <ModalDelete title= {user_to_interact === null ? "¿Estás seguro que deseas eliminar a ": "¿Estás seguro que deseas eliminar a "+user_to_interact.name +" ?"}  show={modalSafeDeleteActive} handleClose={this.handleCloseSafeModal} onClick={(e) => { this.deleteSafeUser(e)(user_to_interact.id) }}>
+                    <ModalDelete title={user_to_interact === null ? "¿Estás seguro que deseas eliminar a " : "¿Estás seguro que deseas eliminar a " + user_to_interact.name + " ?"} show={modalSafeDeleteActive} handleClose={this.handleCloseSafeModal} onClick={(e) => { this.deleteSafeUser(e)(user_to_interact.id) }}>
                     </ModalDelete>
-                    <Modal size="lg" title="Permisos de usuario"  show={modalPermisos} handleClose={this.handleCloseModalPermisos}>
-                        <PermisosForm {... this.props} handleClose={this.handleCloseModalPermisos} user={user_to_interact.id}/>
+                    <Modal size="lg" title="Permisos de usuario" show={modalPermisos} handleClose={this.handleCloseModalPermisos}>
+                        <PermisosForm {... this.props} handleClose={this.handleCloseModalPermisos} user={user_to_interact.id} />
                     </Modal>
                 </Layout>
             </>
@@ -736,7 +681,7 @@ class Usuarios extends Component{
 }
 
 const mapStateToProps = state => {
-    return{
+    return {
         authUser: state.authUser
     }
 }
