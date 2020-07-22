@@ -72,6 +72,7 @@ const AccountSettings = Loader(() => import('./pages/Perfil/AccountSettings') )
 
 const NominaObra = Loader(() => import('./pages/RecursosHumanos/NominaObra') )
 const NominaAdmin = Loader(() => import('./pages/RecursosHumanos/NominaAdmin') )
+const Empleados = Loader(() => import('./pages/RecursosHumanos/Empleados') )
 
 
 
@@ -199,6 +200,7 @@ class App extends Component{
                 <Route path = "/mi-perfil" exact component ={ AccountSettings } />
                 <Route path = "/rh/nomina-obras" exact component ={ NominaObra } />
                 <Route path = "/rh/nomina-admin" exact component ={ NominaAdmin } />
+                <Route path = "/rh/empleados" exact component ={ Empleados } />
 
             </>
         )

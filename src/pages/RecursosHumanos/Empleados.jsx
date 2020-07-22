@@ -4,13 +4,13 @@ import axios from 'axios'
 import swal from 'sweetalert'
 import Layout from '../../components/layout/layout' 
 import { Modal} from '../../components/singles' 
-import { NOMINA_ADMIN_COLUMNS, URL_DEV} from '../../constants'
+import { EMPLEADOS_COLUMNS, URL_DEV} from '../../constants'
 import NewTable from '../../components/tables/NewTable' 
-import { NominaAdminForm } from '../../components/forms'
+import { EmpleadosForm } from '../../components/forms'
 import { setOptions} from '../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert} from '../../functions/alert'
 
-class NominaAdmin extends Component {
+class Empleados extends Component {
     state = {  
         formeditado:0,
         modal:{
@@ -18,38 +18,43 @@ class NominaAdmin extends Component {
             delete: false,
             adjuntos: false,
         },
-        title: 'Nueva nómina administrativa',
+        title: 'Nuevo empleado',
         form:{
-            periodo : '',
-            empresas: '',
-            fechaInicio: new Date(),
+            nombre:'',
+            curp: '',
+            rfc: '',
+            nss: '',
+            nombre_emergencia: '',
+            telefono_emergencia: '',
+            banco: '',
+            cuenta: '',
+            clabe: '',
+            tipo_empleado: 0,
+            estatus_empleado: 0,
+            empresa:0,
+            fechaInicio: new Date,
             fechaFin: new Date(),
-            nominasAdmin:[{
-                usuario: '',
-                sueldoDiario: '',
-                diasVP: '',
-                diasVNP: '', 
-                nominImss: '',
-                restanteNomina: '',
-                extras: ''
-            }]
+            estatus_imss: 0,
+            puesto:'',
+            vacaciones_tomadas:'', 
+            fecha_alta_imss: new Date(),
+            numero_alta_imss: ''
         },
-        options: {
-            usuarios: [],
+        options: { 
             empresas:[]
         },
-        nominaAdmin:""
+        empleados:""
     }
 
     componentDidMount() {
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props
-        const nominaadmin = permisos.find(function (element, index) {
+        const empleados = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
             return pathname === url
         });
-        if (!nominaadmin)
+        if (!empleados)
             history.push('/')
             this.getOptionsAxios()
     }
@@ -71,8 +76,7 @@ class NominaAdmin extends Component {
             (response) => {
                 swal.close()
                 const { usuarios, empresas } = response.data
-                const { options, data } = this.state 
-                options['usuarios'] = setOptions( usuarios, 'name', 'id')
+                const { options, data } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 this.setState({
                     ... this.state,
@@ -131,31 +135,15 @@ class NominaAdmin extends Component {
             switch(element){
                 case 'fechaInicio':
                 case 'fechaFin':
+                case 'fecha_alta_imss':
                     form[element] = new Date()
                     break; 
-                case 'nominasAdmin':
-                    form[element] = [{
-                        usuarios: '',
-                        empresa:''
-                    }]
-                    break;
                 default:
                     form[element] = ''
                     break;
             }
         })
         return form;
-    }
-
-    onChangeNominasAdmin = (key, e, name) => {
-        const { value } = e.target
-        const { form } = this.state
-        form['nominasAdmin'][key][name]  = value
-        this.setState({
-            ...this.state,
-            form
-        })
-    
     }
 
     onChange = e => {
@@ -168,78 +156,33 @@ class NominaAdmin extends Component {
         })
     }
 
-    addRowNominaAdmin = () => {
-        const { form } = this.state
-        form.nominasAdmin.push(
-            {
-                nominasAdmin:[{
-                    usuario: '',
-                    sueldoDiario: '',
-                    diasVP: '',
-                    diasVNP: '', 
-                    nominImss: '',
-                    restanteNomina: '',
-                    extras: ''
-                }]
-            }
-        )
-        this.setState({
-            ... this.state,
-            form
-        })
-    }
-
-    deleteRowNominaAdmin = () => {
-        const { form } = this.state
-        form.nominasAdmin.pop(
-            {
-                nominasAdmin:[{
-                    usuario: '',
-                    sueldoDiario: '',
-                    diasVP: '',
-                    diasVNP: '', 
-                    nominImss: '',
-                    restanteNomina: '',
-                    extras: ''
-                }]
-            }
-        )
-        this.setState({
-            ... this.state,
-            form
-        })
-    }
-    
     render() {
         const { modal, options, title, data, form, formeditado} = this.state
 
         return (
             <Layout active={'rh'} {...this.props}>
                 <NewTable   
-                    columns = { NOMINA_ADMIN_COLUMNS } data = { "" } 
-                    title = 'Nómina Administrativa' subtitle = 'Listado de Nómina Administrativa'
+                    columns = { EMPLEADOS_COLUMNS } data = { "" } 
+                    title = 'Empleados' subtitle = 'Listado de empleados'
                     mostrar_boton={true}
                     abrir_modal={true} 
                     onClick={this.openModal} 
-                    mostrar_acciones={false} 
+                    mostrar_acciones={true} 
                     actions = {{
                     }}
                     elements = { "" }
                 />
 
                 <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseModal}>
-                    <NominaAdminForm
+                    <EmpleadosForm
                         formeditado={formeditado}
                         className=" px-3 "   
                         options = { options }
                         form ={form}
-                        addRowNominaAdmin = { this.addRowNominaAdmin }
-                        deleteRowNominaAdmin = { this.deleteRowNominaAdmin }
-                        onChangeNominasAdmin =  { this.onChangeNominasAdmin }
                         onChange = { this.onChange } 
                         onSubmit = { this.onSubmit }
                     >
-                    </NominaAdminForm>
+                    </EmpleadosForm>
                 </Modal>  
             </Layout>
         )
@@ -255,4 +198,4 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(NominaAdmin);
+export default connect(mapStateToProps, mapDispatchToProps)(Empleados);

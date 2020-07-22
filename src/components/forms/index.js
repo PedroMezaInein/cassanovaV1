@@ -33,6 +33,7 @@ import changePasswordForm from './perfil/ChangePasswordForm'
 import nominaObraForm from './recursoshumanos/NominaObraForm'
 import adjuntosForm from './AdjuntosForm'
 import nominaAdminForm from './recursoshumanos/NominaAdminForm'
+import empleadosForm from './recursoshumanos/EmpleadosForm'
 
 export const RegisterUserForm = registerUserForm
 export const EmpleadoForm = empleadoForm
@@ -69,3 +70,4 @@ export const ChangePasswordForm = changePasswordForm
 export const NominaObraForm = nominaObraForm
 export const AdjuntosForm = adjuntosForm
 export const NominaAdminForm = nominaAdminForm
+export const EmpleadosForm = empleadosForm
