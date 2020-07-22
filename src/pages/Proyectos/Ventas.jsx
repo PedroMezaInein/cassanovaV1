@@ -4,21 +4,22 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
-import { URL_DEV, VENTAS_COLUMNS, GOLD } from '../../constants'
+import { URL_DEV, VENTAS_COLUMNS, GOLD, ADJUNTOS_COLUMNS } from '../../constants'
 
 // Functions
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
-import { waitAlert, errorAlert, createAlert,forbiddenAccessAlert } from '../../functions/alert'
+import { waitAlert, errorAlert, createAlert,forbiddenAccessAlert, deleteAlert } from '../../functions/alert'
 //
 import Layout from '../../components/layout/layout'
 import { Button, FileInput } from '../../components/form-components'
 import { Modal, ModalDelete } from '../../components/singles'
 import { faPlus, faLink, faEdit, faTrash, faReceipt, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons'
-import { VentasForm, FacturaForm } from '../../components/forms'
+import { VentasForm, FacturaForm, AdjuntosForm } from '../../components/forms'
 import { DataTable, FacturaTable } from '../../components/tables'
 import Subtitle from '../../components/texts/Subtitle'
 import { Form, ProgressBar } from 'react-bootstrap'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
+import TableForModals from '../../components/tables/TableForModals'
 
 const $ = require('jquery');
 
@@ -30,10 +31,12 @@ class Ventas extends Component{
         modalDelete: false,
         modalFacturas: false,
         modalAskFactura: false,
+        modalAdjuntos: false,
         porcentaje: 0,
         title: 'Nueva venta',
         ventas: [],
         facturas: [],
+        adjuntos: [],
         venta: '',
         options:{
             empresas:[],
@@ -52,7 +55,8 @@ class Ventas extends Component{
             empresas: [],
             cuentas: [],
             proyectos: [],
-            ventas: []
+            ventas: [],
+            adjuntos: []
         },
         formeditado:0,
         form:{
@@ -224,6 +228,24 @@ class Ventas extends Component{
         })
     }
 
+    openModalAdjuntos = venta => {
+        const { data } = this.state
+        data.adjuntos = venta.adjuntos
+        this.setState({
+            ... this.state,
+            modalAdjuntos: true,
+            venta: venta,
+            form: this.clearForm(),
+            formeditado:0,
+            adjuntos: this.setAdjuntosTable(venta),
+            data
+        })
+    }
+
+    openModalDeleteAdjuntos = adjunto => {
+        deleteAlert('¿Seguro deseas borrar el adjunto?', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) }  )
+    }
+
     handleClose = () => {
         const { modal } = this.state
         this.setState({
@@ -260,6 +282,19 @@ class Ventas extends Component{
             modalAskFactura: false,
             venta: '',
             form: this.clearForm()
+        })
+    }
+
+    handleCloseAdjuntos = () => {
+        const { data } = this.state
+        data.adjuntos = []
+        this.setState({
+            ... this.state,
+            modalAdjuntos: false,
+            form: this.clearForm(),
+            adjuntos: [],
+            data,
+            venta: ''
         })
     }
 
@@ -306,6 +341,22 @@ class Ventas extends Component{
         return aux
     }
 
+    setAdjuntosTable = venta => {
+        let aux = []
+
+        venta.adjuntos.map( (adjunto) => {
+            aux.push({
+                actions: this.setActionsAdjuntos(adjunto),
+                url: renderToString(
+                    setAdjuntosList([{name: adjunto.name, url: adjunto.url}])
+                ),
+                tipo: renderToString(setTextTable(adjunto.pivot.tipo)),
+                id: 'adjuntos-'+adjunto.id
+            })
+        })
+        return aux
+    }
+
     setActions = venta => {
         let aux = []
         aux.push(
@@ -322,28 +373,48 @@ class Ventas extends Component{
                 iconclass: 'flaticon2-rubbish-bin',
                 action: 'delete',
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
+            },
+            {
+                text: 'Adjuntos',
+                btnclass: 'primary',
+                iconclass: 'flaticon-attachment',
+                action: 'adjuntos',
+                tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
             }
         )
         if(venta.factura){
+            aux.push(
+                {
+                    text: 'Facturas',
+                    btnclass: 'primary',
+                    iconclass: 'flaticon-file-1',
+                    action: 'taxes',
+                    tooltip: { id: 'taxes', text: 'Facturas' }
+                },
+                {
+                    text: 'Pedir&nbsp;factura',
+                    btnclass: 'info',
+                    iconclass: 'flaticon-file-1',
+                    action: 'bills',
+                    tooltip: { id: 'bills', text: 'Pedir factura' }
+                }
+            )
+        }
+        return aux
+    }
+
+    setActionsAdjuntos = adjunto => {
+        let aux = []
         aux.push(
             {
-                text: 'Facturas',
-                btnclass: 'primary',
-                iconclass: 'flaticon-file-1',
-                action: 'taxes',
-                tooltip: { id: 'taxes', text: 'Facturas' }
-            },
-            {
-                text: 'Pedir&nbsp;factura',
-                btnclass: 'info',
-                iconclass: 'flaticon-file-1',
-                action: 'bills',
-                tooltip: { id: 'bills', text: 'Pedir factura' }
-            }
-        )
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',
+                action: 'deleteAdjunto',
+                tooltip: { id: 'delete-Adjunto', text: 'Eliminar', type: 'error' },
+            })
+        return aux
     }
-    return aux
-}
 
     /* 
     setActions = venta => {
@@ -703,7 +774,7 @@ class Ventas extends Component{
     }
 
     async getVentasAxios(){
-        var table = $('#kt_datatable2')
+        var table = $('#kt_datatable2_ventas')
                     .DataTable();
 
                 table.ajax.reload();
@@ -1245,34 +1316,115 @@ class Ventas extends Component{
         })
     }
 
+    //adjuntos
+    async addAdjuntoVentaAxios(){
+
+        const { access_token } = this.props.authUser
+        const { form, venta } = this.state
+        const data = new FormData();
+        
+        let aux = Object.keys(form.adjuntos)
+        aux.map( (element) => {
+            if(form.adjuntos[element].value !== ''){
+                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                }
+                data.append('adjuntos[]', element)
+            }
+        })
+
+        data.append('id', venta.id )
+        
+        await axios.post(URL_DEV + 'ventas/adjuntos', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+
+                const { venta } = response.data
+                const { data } = this.state
+                data.adjuntos = venta.adjuntos
+                //AQUI
+                this.getVentasAxios()
+
+                this.setState({
+                    ... this.state,
+                    form: this.clearForm(),
+                    venta: venta,
+                    adjuntos: this.setAdjuntosTable(venta),
+                    modal: false,
+                    data
+                })
+                
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async deleteAdjuntoAxios(id){
+        const { access_token } = this.props.authUser
+        const { venta } = this.state
+        await axios.delete(URL_DEV + 'ventas/' + venta.id + '/adjuntos/' + id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { venta } = response.data
+                const { data } = this.state
+                data.adjuntos = venta.adjuntos
+                //AQUI
+                this.getVentasAxios()
+
+                this.setState({
+                    ... this.state,
+                    form: this.clearForm(),
+                    venta: venta,
+                    adjuntos: this.setAdjuntosTable(venta),
+                    data
+                })
+                
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render(){
 
-        const { modal, modalDelete, modalFacturas, modalAskFactura, title, options, form, ventas, venta, porcentaje, facturas,data, formeditado} = this.state
+        const { modal, modalDelete, modalFacturas, modalAskFactura, modalAdjuntos, adjuntos, title, options, form, ventas, venta, porcentaje, facturas,data, formeditado} = this.state
         return(
             <Layout active={'proyectos'}  { ...this.props}>
-                {/*<div className="text-right">
-                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon = { faPlus } color="green" />
-                </div>
-                */}
-                {/*<DataTable columns = { VENTAS_COLUMNS } data= { ventas }/>*/}
-
-                {/* <NewTable columns={VENTAS_COLUMNS} data={ventas}
-                    title='Ventas' subtitle='Listado de ventas'
-                    mostrar_boton={true}
-                    abrir_modal={true}
-                    mostrar_acciones={true}
-                    onClick={ this.openModal }
-                    actions={{
-                        'edit': { function: this.openModalEdit },
-                        'delete': { function: this.openModalDelete },                        
-                        'taxes': { function: this.openModalFacturas },                   
-                        'bills': { function: this.openModalAskFactura },
-
-                    }}
-                    elements={data.ventas}
-                    exportar_boton={true} 
-                    onClickExport={() => this.exportVentasAxios()}
-                /> */}
+                
                 <NewTableServerRender columns={VENTAS_COLUMNS} data={ventas}
                     title='Ventas' subtitle='Listado de ventas'
                     mostrar_boton={true}
@@ -1284,7 +1436,7 @@ class Ventas extends Component{
                         'delete': { function: this.openModalDelete },                        
                         'taxes': { function: this.openModalFacturas },                   
                         'bills': { function: this.openModalAskFactura },
-
+                        'adjuntos': { function: this.openModalAdjuntos }
                     }}
                     elements={data.ventas}
                     exportar_boton={true} 
@@ -1292,6 +1444,7 @@ class Ventas extends Component{
                     accessToken = { this.props.authUser.access_token }
                     setter = { this.setVentas }
                     urlRender = {URL_DEV + 'ventas'}
+                    idTable = 'kt_datatable2_ventas'
                 /> 
 
                 <Modal size="xl" show = {modal} handleClose = { this.handleClose } title = { title } >
@@ -1340,7 +1493,21 @@ class Ventas extends Component{
                     <FacturaForm options = { options } onChange = { this.onChange } form = { form } 
                         onSubmit = { this.onSubmitAskFactura } formeditado={formeditado} data ={data} />
                 </Modal>
-
+                <Modal size="xl" title={"Adjuntos"} show = { modalAdjuntos } handleClose = { this.handleCloseAdjuntos }>
+                    <AdjuntosForm form = { form } onChangeAdjunto = { this.onChangeAdjunto } clearFiles = { this.clearFiles } 
+                        onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.addAdjuntoVentaAxios() } }/>
+                    <TableForModals
+                        columns = { ADJUNTOS_COLUMNS } 
+                        data = { adjuntos } 
+                        hideSelector = { true } 
+                        mostrar_acciones={true}
+                        actions={{
+                            'deleteAdjunto': { function: this.openModalDeleteAdjuntos}
+                        }}
+                        dataID = 'adjuntos'
+                        elements={data.adjuntos}
+                            />
+                </Modal>
             </Layout>
         )
     }
