@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { Input, Button, Select } from '../form-components'
+import { Input, Button, Select, SelectSearchTrue } from '../form-components'
 import { EMAIL } from '../../constants'
 
 class RegisterUserForm extends Component {
@@ -9,8 +9,25 @@ class RegisterUserForm extends Component {
         super(props)
     }
 
+    updateDepartamento = value => {
+        const { onChange, onChangeOptions, options2, form } = this.props
+        options2.departamentos.map((departamento) => {
+            if (departamento.value === value) {
+                let aux = false;
+                form.departamentos.map((departamento) => {
+                    if (departamento.value === value)
+                        aux = true
+                })
+                if (!aux)
+                    onChangeOptions({ target: { value: departamento.value, name: 'departamento' } }, 'departamentos')
+            }
+
+        })
+        onChange({ target: { value: value, name: 'departamento' } })
+    }
+
     render() {
-        const { children, options, form, onChange, title } = this.props
+        const { children, options, options2, form, onChange, title, deleteOption } = this.props
         return (
             <Form
                 {... this.props}
@@ -54,6 +71,50 @@ class RegisterUserForm extends Component {
                     </div>
                 </div>
                 {children}
+                {
+                    form.tipo_form > 0 && form.tipo_form < 3 ?
+                        <div className="form-group row form-group-marginless">
+                            <div className="col-md-4">
+                                <SelectSearchTrue
+                                    options={options2.departamentos}
+                                    placeholder="SELECCIONA EL(LOS) DEPARTAMENTO(S)"
+                                    name="departamento"
+                                    value={form.departamento}
+                                    onChange={this.updateDepartamento}
+                                    iconclass={"fas fa-layer-group"}
+
+                                />
+                            </div>
+                            <div className="col-md-8">
+                                {
+                                    form.departamentos.length > 0 ?
+                                        <div className="col-md-12 row mx-0 align-items-center image-upload">
+                                            {
+                                                form.departamentos.map((departamento, key) => {
+                                                    return (
+                                                        <div key={key} className="tagify form-control p-1 col-md-3 px-2 d-flex justify-content-center align-items-center" tabIndex="-1" style={{ borderWidth: "0px" }}>
+                                                            <div className="tagify__tag tagify__tag--primary tagify--noAnim">
+                                                                <div
+                                                                    title="Borrar archivo"
+                                                                    className="tagify__tag__removeBtn"
+                                                                    role="button"
+                                                                    aria-label="remove tag"
+                                                                    onClick={(e) => { e.preventDefault(); deleteOption(departamento, 'departamentos', 'empleado') }}
+                                                                >
+                                                                </div>
+                                                                <div><span className="tagify__tag-text p-1 white-space">{departamento.name}</span></div>
+                                                            </div>
+                                                        </div>
+                                                    )
+                                                })
+                                            }
+                                        </div>
+                                        : ''
+                                }
+                            </div>
+                        </div>
+                        : ''
+                }
                 <div className="mt-3 text-center">
                     <Button icon='' className="mx-auto" type="submit" text="Enviar" />
                 </div>
