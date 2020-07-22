@@ -1,31 +1,22 @@
 /* eslint-disable no-unused-vars */  
 import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
-//
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV, COMPRAS_COLUMNS, ADJUNTOS_COLUMNS } from '../../constants'
-
-// Functions
-import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
+import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList } from '../../functions/setters'
 import { errorAlert, waitAlert, createAlert, forbiddenAccessAlert, deleteAlert } from '../../functions/alert'
-
-//
 import Layout from '../../components/layout/layout'
 import { Button, FileInput } from '../../components/form-components'
 import { Modal, ModalDelete } from '../../components/singles'
-import { faPlus, faLink, faEdit, faTrash, faReceipt, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons'
 import { ComprasForm, FacturaForm } from '../../components/forms'
-import { DataTable, FacturaTable } from '../../components/tables'
-import Subtitle from '../../components/texts/Subtitle'
+import { FacturaTable } from '../../components/tables'
 import {SolicitudCompraCard} from '../../components/cards'
 import { Form, ProgressBar } from 'react-bootstrap'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import TableForModals from '../../components/tables/TableForModals'
 import AdjuntosForm from '../../components/forms/AdjuntosForm'
-import { wait } from '@testing-library/react'
-
 const $ = require('jquery');
 
 class Compras extends Component{

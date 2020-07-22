@@ -1,21 +1,14 @@
 import React, { Component } from 'react'
-
-//
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV, REMISION_COLUMNS } from '../../constants'
-
-// Functions
-import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList } from '../../functions/setters'
-
-//
+import { setOptions, setTextTable, setDateTable} from '../../functions/setters'
 import Layout from '../../components/layout/layout'
 import { Button } from '../../components/form-components'
 import { Modal, ModalDelete } from '../../components/singles'
-import { faPlus, faLink, faEdit, faTrash, faSync } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faEdit, faTrash, faSync } from '@fortawesome/free-solid-svg-icons'
 import { DataTable } from '../../components/tables'
-import { Subtitle } from '../../components/texts'
 import { RemisionForm } from '../../components/forms'
 import { RemisionCard } from '../../components/cards'
 
