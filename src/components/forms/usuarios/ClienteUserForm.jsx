@@ -1,8 +1,5 @@
 import React, { Component } from 'react'
-import Badge from 'react-bootstrap/Badge'
 import { SelectSearch } from '../../form-components'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes} from '@fortawesome/free-solid-svg-icons'
 
 class ClienteUserForm extends Component {
 
@@ -35,19 +32,23 @@ class ClienteUserForm extends Component {
                     <div className="col-md-8">
                         {
                             form.proyectos.length > 0 ?
-                                <div className="col-md-12 d-flex align-items-center image-upload">
+                                <div className="col-md-12 row mx-0 align-items-center image-upload">
                                     {
                                         form.proyectos.map((proyecto, key) => {
                                             return (
-                                                <Badge variant="light" key={key} className="d-flex px-3 align-items-center" pill>
-                                                    <FontAwesomeIcon
-                                                        icon={faTimes}
-                                                        onClick={(e) => { e.preventDefault(); deleteOption(proyecto, 'proyectos') }}
-                                                        className="small-button mr-2" />
-                                                    {
-                                                        proyecto.name
-                                                    }
-                                                </Badge>
+                                                <div key={key} className="tagify form-control p-1 col-md-6 px-2 d-flex justify-content-center align-items-center" tabIndex="-1" style={{ borderWidth: "0px" }}>
+                                                    <div className="tagify__tag tagify__tag--primary tagify--noAnim">
+                                                        <div
+                                                            title="Borrar archivo"
+                                                            className="tagify__tag__removeBtn"
+                                                            role="button"
+                                                            aria-label="remove tag"
+                                                            onClick={(e) => { e.preventDefault(); deleteOption(proyecto, 'proyectos') }}
+                                                        >
+                                                        </div>
+                                                        <div><span className="tagify__tag-text p-1 white-space">{proyecto.name}</span></div>
+                                                    </div>
+                                                </div>
                                             )
                                         })
                                     }
