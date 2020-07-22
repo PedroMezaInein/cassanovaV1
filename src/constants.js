@@ -1344,3 +1344,38 @@ export const ADJUNTOS_COLUMNS = [
         accessor: 'tipo'
     }
 ]
+
+export const NOMINA_ADMIN_COLUMNS = [
+    {
+        Header: 'Opciones',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Periodo de Nómina Adminsitrativa',
+        accessor: 'periodo',
+    },
+    {
+        Header: 'Fecha inicio',
+        accessor: 'fechaInicio'
+    },
+    {
+        Header: 'Fecha fin',
+        accessor: 'fechaFin'
+    },
+    {
+        Header: 'Total Nómina IMSS',
+        accessor: 'totalNominaIMSS'
+    },
+    {
+        Header: 'Restante Nómina',
+        accessor: 'restanteNomina'
+    },
+    {
+        Header: 'Extras',
+        accessor: 'extras'
+    },
+    {
+        Header: 'Gran Total',
+        accessor: 'granTotal'
+    }
+]
