@@ -244,9 +244,9 @@ class Usuarios extends Component {
 
     onChangeOptions = (e, arreglo) => {
         const { name, value } = e.target
-        const { form } = this.state
+        const { clienteForm } = this.state
         let { proyectos } = this.state
-        let auxArray = form[arreglo]
+        let auxArray = clienteForm[arreglo]
         let aux = []
         proyectos.find(function (_aux) {
             if (_aux.value.toString() === value.toString()) {
@@ -256,10 +256,10 @@ class Usuarios extends Component {
             }
         })
         proyectos = aux
-        form[arreglo] = auxArray
+        clienteForm[arreglo] = auxArray
         this.setState({
             ... this.state,
-            form,
+            clienteForm,
             proyectos
         })
     }
@@ -311,7 +311,7 @@ class Usuarios extends Component {
         if (tipo === 'cliente') {
         }
     }
-
+    
     handleChangeDate = (date) => {
         const { empleadoForm, form } = this.state
         empleadoForm['fecha_inicio'] = date
@@ -638,8 +638,17 @@ class Usuarios extends Component {
                         })
                     }
                     <Modal size="xl" title="Registrar usuario" show={modalActive} handleClose={this.handleCloseModal}>
-                        <RegisterUserForm className="px-3" form={form} options={options} onSubmit={this.handleSubmitAddUser}
-                            onChange={this.handleChangeInput} tipo={tipo_form} options2={{ empresas: empresas_options, departamentos: departamentos }} onChangeOptions={this.onChangeOptionsEmpleado} deleteOption={this.deleteOption}>
+                        <RegisterUserForm 
+                            className="px-3" 
+                            form={form} 
+                            options={options} 
+                            onSubmit={this.handleSubmitAddUser}
+                            onChange={this.handleChangeInput} 
+                            tipo={tipo_form} 
+                            options2={{ empresas: empresas_options, departamentos: departamentos }} 
+                            onChangeOptions={this.onChangeOptionsEmpleado} 
+                            deleteOption={this.deleteOption}
+                            >
                             {
                                 tipo_form === '3' ?
                                     <ClienteUserForm
@@ -648,14 +657,23 @@ class Usuarios extends Component {
                                         title='Datos del cliente'
                                         onChange={this.onChangeCliente}
                                         onChangeOptions={this.onChangeOptions}
+                                        deleteOption={this.deleteOption}
                                     />
                                     : ''
                             }
                         </RegisterUserForm>
                     </Modal>
                     <Modal title="Editar usuario" size="xl" show={modalUpdateUser} handleClose={this.handleCloseModalUpdateUser}>
-                        <RegisterUserForm form={form} options={options} className="px-3" onSubmit={this.handleSubmitEditUser}
-                            onChange={this.handleChangeInput} tipo={tipo_form} options={{ empresas: empresas_options, departamentos: departamentos }} onChangeOptions={this.onChangeOptionsEmpleado} deleteOption={this.deleteOption}>
+                        <RegisterUserForm 
+                            form={form} 
+                            options={options} 
+                            className="px-3" 
+                            onSubmit={this.handleSubmitEditUser}
+                            onChange={this.handleChangeInput} 
+                            tipo={tipo_form} 
+                            options={{ empresas: empresas_options, departamentos: departamentos }} 
+                            onChangeOptions={this.onChangeOptionsEmpleado} 
+                            deleteOption={this.deleteOption}>
                             {
                                 tipo_form === '3' ?
                                     <ClienteUserForm
@@ -664,6 +682,7 @@ class Usuarios extends Component {
                                         title='Datos del cliente'
                                         onChange={this.onChangeCliente}
                                         onChangeOptions={this.onChangeOptions}
+                                        deleteOption={this.deleteOption}
                                     />
                                     : ''
                             }
