@@ -2,129 +2,101 @@ import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 import NumberFormat from 'react-number-format'
 
-let textoValido =false;
-class InputMoney extends Component{
+class InputMoney extends Component {
 
     state = {
         inputMoneyValido: !this.props.requirevalidation
     }
 
-    validarInputMoney(e){         
-        const { value } = e.target 
-        const {requirevalidation}= this.props
-        if(value !== '' && value !== null && value !== undefined)
-        {
-            if(requirevalidation){      
-                    if(value > 0){
-                        this.setState({
-                            inputMoneyValido: true
-                        })
-                    }else{
-                        this.setState({
-                            inputMoneyValido: false     
-                            
-                        })
-                    } 
-            }else{
+    validarInputMoney(e) {
+        const { value } = e.target
+        const { requirevalidation } = this.props
+        if (value !== '' && value !== null && value !== undefined) {
+            if (requirevalidation) {
+                if (value > 0) {
+                    this.setState({
+                        inputMoneyValido: true
+                    })
+                } else {
+                    this.setState({
+                        inputMoneyValido: false
+
+                    })
+                }
+            } else {
                 this.setState({
-                    inputMoneyValido: true     
-                    
+                    inputMoneyValido: true
+
                 })
             }
-        }else{
-            if(requirevalidation){
+        } else {
+            if (requirevalidation) {
                 this.setState({
                     inputMoneyValido: false
                 })
-            }else{
+            } else {
                 this.setState({
                     inputMoneyValido: true
                 })
             }
-            
+
         }
     }
 
-
-    /*validarInputMoney(e){
-        const { value } = e.target   
-        const {requirevalidation}= this.props
-        if(requirevalidation){
-            if(value > 0){
-                this.setState({
-                    inputMoneyValido: true
-                })
-            }else{
-                this.setState({
-                    inputMoneyValido: false     
-                    
-                })
-            }
-        }else{
-            this.setState({
-                inputMoneyValido: true     
-                
-            })
-        }
-    }*/
-
-    componentDidUpdate(nextProps){
-        if(nextProps.value !== this.props.value)
-            if(!nextProps.requirevalidation)
-            {
+    componentDidUpdate(nextProps) {
+        if (nextProps.value !== this.props.value)
+            if (!nextProps.requirevalidation) {
                 this.setState({
                     ... this.state,
                     inputMoneyValido: true
                 })
-            }else{
-                if(this.props.value !== '')
-                {
+            } else {
+                if (this.props.value !== '') {
                     this.validarInputMoney({ target: { value: this.props.value } })
                 }
             }
-            
+
     }
-    
-    componentDidMount(){
+
+    componentDidMount() {
         const { formeditado, value, name } = this.props
-        if(formeditado){
+        if (formeditado) {
             this.validarInputMoney({ target: { value: value } })
         }
     }
 
     onChange = values => {
-        const { onChange, name} = this.props
-        this.validarInputMoney({target:{value:values.value, name:name}})
-        onChange({target:{value:values.value, name:name}})
+        const { onChange, name } = this.props
+        this.validarInputMoney({ target: { value: values.value, name: name } })
+        onChange({ target: { value: values.value, name: name } })
 
     }
-    render(){
-        const { error, onChange, placeholder, value, prefix, thousandSeparator,iconclass } = this.props
+    render() {
+        const { placeholder, value, prefix, thousandSeparator, iconclass } = this.props
         const { inputMoneyValido } = this.state
 
-        return(
+        return (
             <div>
                 <Form.Label className="col-form-label">
                     {placeholder}
                 </Form.Label><br />
-                
+
                 <div className="input-icon">
                     <span className="input-icon input-icon-right">
-                        <i className={iconclass+" kt-font-boldest text-primary"}></i> 
+                        <i className={iconclass + " kt-font-boldest text-primary"}></i>
                     </span>
                     <NumberFormat
-                        value = { value } 
-                        displayType = { 'input' } 
-                        thousandSeparator = { thousandSeparator ? thousandSeparator : false } 
-                        prefix = { prefix }
-                        //prefix={'$'} 
-                        className={ inputMoneyValido ? " form-control is-valid text-uppercase" : " form-control is-invalid text-uppercase" }
-                        renderText = { value => <div> { value } </div> } 
-                        onValueChange = { (values) => this.onChange(values)}
-                        placeholder = {placeholder} 
+                        value={value}
+                        displayType={'input'}
+                        thousandSeparator={thousandSeparator ? thousandSeparator : false}
+                        prefix={prefix}
+                        className={inputMoneyValido ? " form-control is-valid text-uppercase" : " form-control is-invalid text-uppercase"}
+                        renderText={value => <div> {value} </div>}
+                        onValueChange={(values) => this.onChange(values)}
+                        placeholder={placeholder}
                     />
                 </div>
-                <span className={ inputMoneyValido ? "form-text text-danger hidden" : "form-text text-danger" }>Incorrecto. Ingresa la cantidad.</span>
+                <span className={inputMoneyValido ? "form-text text-danger hidden" : "form-text text-danger"}>Incorrecto. Ingresa la cantidad.</span>
             </div>
         )
     }

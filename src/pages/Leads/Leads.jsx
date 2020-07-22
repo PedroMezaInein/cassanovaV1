@@ -3,20 +3,18 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
-import { DataTable } from '../../components/tables'
-import { faPlus, faEdit, faTrash, faPhone, faEnvelope, faSync, faTruckLoading, faFileExport} from '@fortawesome/free-solid-svg-icons'
+import { faPhone, faEnvelope} from '@fortawesome/free-solid-svg-icons'
 import { Button } from '../../components/form-components'
 import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV, LEADS_COLUMNS } from '../../constants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Moment from 'react-moment'
 import { Modal } from '../../components/singles'
 import { LeadForm } from '../../components/forms'
-import { Subtitle, B, Small } from '../../components/texts'
+import { Small } from '../../components/texts'
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
-import { setOptions, setSelectOptions, setTextTable, setDateTable,setListTable, setMoneyTable, setArrayTable, setFacturaTable, setAdjuntosList, setContactoTable } from '../../functions/setters'
+import { setTextTable, setDateTable,setListTable, setContactoTable } from '../../functions/setters'
 import NewTable from '../../components/tables/NewTable'
 
 class Leads extends Component{

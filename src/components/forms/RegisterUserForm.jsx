@@ -27,7 +27,7 @@ class RegisterUserForm extends Component {
     }
 
     render() {
-        const { children, options, options2, form, onChange, title, deleteOption, tipo} = this.props
+        const { children, options, options2, form, onChange, deleteOption, tipo} = this.props
         return (
             <Form
                 {... this.props}
