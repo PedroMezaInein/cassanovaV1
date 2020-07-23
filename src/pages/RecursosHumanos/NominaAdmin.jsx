@@ -66,7 +66,11 @@ class NominaAdmin extends Component {
 
     onSubmit = e => {
         e.preventDefault()
-        this.addNominaAdminAxios()
+        const { title } = this.state
+        if(title === 'Editar nómina administrativa')
+            console.log('editar')
+        else    
+            this.addNominaAdminAxios()
     }
 
     async getNominasAxios(){
