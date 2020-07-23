@@ -1,14 +1,18 @@
-import React, { Component } from 'react' 
+import React, { Component } from 'react'
+import { renderToString } from 'react-dom/server' 
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import Layout from '../../components/layout/layout' 
-import { Modal} from '../../components/singles' 
+import { Modal, ModalDelete} from '../../components/singles' 
 import { EMPLEADOS_COLUMNS, URL_DEV} from '../../constants'
-import NewTable from '../../components/tables/NewTable' 
+import NewTableServerRender from '../../components/tables/NewTableServerRender' 
 import { EmpleadosForm } from '../../components/forms'
-import { setOptions} from '../../functions/setters'
+import { setOptions, setTextTable, setArrayTable, setMoneyTable, setAdjuntosList, setDateTable} from '../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert} from '../../functions/alert'
+import { Tabs, Tab, Form } from 'react-bootstrap' 
+
+const $ = require('jquery');
 
 class Empleados extends Component {
     state = {  
@@ -59,8 +63,7 @@ class Empleados extends Component {
         },
         options: { 
             empresas:[]
-        },
-        empleados:""
+        }
     }
 
     componentDidMount() {
@@ -76,12 +79,79 @@ class Empleados extends Component {
             this.getOptionsAxios()
     }
 
+    openModal = () => {
+        const { modal } = this.state
+        modal.form = true
+        this.setState({
+            ... this.state,
+            modal,
+            form: this.clearForm(),
+            formeditado:0,
+            title: 'Nuevo empleado',
+        })
+    }
+
+    openModalEdit = (empleado) => { 
+        const { form, options, modal } = this.state 
+
+        form.nombre = empleado.nombre 
+        form.curp = empleado.curp
+        form.rfc = empleado.rfc
+        form.nss = empleado.nss
+        form.nombre_emergencia = empleado.nombre_emergencia
+        form.telefono_emergencia = empleado.telefono_emergencia
+        form.banco = empleado.banco
+        form.cuenta = empleado.cuenta
+        form.clabe = empleado.clabe
+        form.tipo_empleado = empleado.tipo_empleado
+        form.estatus_empleado = empleado.estatus_empleado
+        if(empleado.empresa){
+            form.empresa = empleado.empresa.id.toString()
+        } 
+        form.fechaInicio = new Date(empleado.fecha_inicio)
+        form.fechaFin = new Date(empleado.fecha_fin)
+        form.puesto = empleado.puesto  
+        // form.estatus_imss = empleado.estatus_imss ? empleado.estatus_imss : 0, 
+        form.vacaciones_tomadas = empleado.vacaciones_tomadas 
+        form.fecha_alta_imss = new Date(empleado.fecha_alta_imss)
+        form.numero_alta_imss = empleado.numero_alta_imss  
+        modal.form = true
+        this.setState({
+            ... this.state,
+            modal,
+            title: 'Editar empleado',
+            form,
+            options,
+            empleado: empleado,
+            formeditado:1,
+        })
+    }
+
+    openModalDelete = empleado => {
+        const { modal } = this.state
+        modal.delete = true
+        this.setState({
+            ... this.state,
+            modal,
+            empleado: empleado
+        })
+    }
+
+    setOptions = (name, array) => {
+        const { options } = this.state
+        options[name] = setOptions(array, 'nombre', 'id')
+        this.setState({
+            ... this.state,
+            options
+        })
+    }
+
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'rh/empleado/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                swal.close() 
                 const { empresas } = response.data
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
@@ -143,7 +213,9 @@ class Empleados extends Component {
 
         await axios.post(URL_DEV + 'rh/empleado', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.setState({
+                this.getEmpleadosAxios();
+
+                this.setState({                    
                     ... this.state,
                     modal: false,
                     form: this.clearForm()
@@ -174,14 +246,93 @@ class Empleados extends Component {
         })
     }
     
-    openModal = () => {
-        const { modal } = this.state
-        modal.form = true
-        this.setState({
-            ... this.state,
-            modal,
-            form: this.clearForm(),
-            formeditado:0
+    async updateEmpleadoAxios() {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { form, empleado } = this.state
+
+        await axios.put(URL_DEV + 'rh/empleado/'+ empleado.id , form, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const {  modal } = this.state
+                this.getEmpleadosAxios();
+
+                this.setState({                    
+                    ... this.state,
+                    modal: false,
+                    form: this.clearForm()
+                })
+
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El empleado fue modificado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false,
+                })
+
+                modal.form = false
+
+                const { history } = this.props
+                history.push({
+                    pathname: '/rh/empleados'
+                });
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async deleteEmpleadoAxios() {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { form, empleado } = this.state
+
+        await axios.delete(URL_DEV + 'rh/empleado/'+ empleado.id , form, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { modal } = this.state
+                this.getEmpleadosAxios();
+
+                this.setState({                    
+                    ... this.state,
+                    modal: false,
+                    form: this.clearForm()
+                })
+
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El empleado fue eliminado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false,
+                })
+
+                modal.delete = false
+
+                const { history } = this.props
+                history.push({
+                    pathname: '/rh/empleados'
+                });
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -192,6 +343,17 @@ class Empleados extends Component {
             ... this.state,
             modal, 
             form: this.clearForm()
+        })
+    }
+
+    handleCloseModalDelete = () => {
+        const { modal } = this.state
+        modal.delete = false
+        this.setState({
+            ... this.state,
+            form: this.clearForm(),
+            modal, 
+            empleado: ''
         })
     }
 
@@ -259,6 +421,65 @@ class Empleados extends Component {
         })
     }
 
+    setEmpleado = empleados => {
+        console.log(empleados)
+        let aux = []
+        if (empleados)
+            empleados.map((empleado) => {
+                aux.push(
+                    {
+                        actions: this.setActions(empleado),
+                        nombre: renderToString(setTextTable(empleado.nombre)),
+                        empresa: renderToString(setTextTable(empleado.empresa ? empleado.empresa.name : '')),
+                        puesto: renderToString(setTextTable(empleado.puesto)),
+                        rfc: renderToString(setTextTable(empleado.rfc)),
+                        nss: renderToString(setTextTable(empleado.nss)),
+                        curp: renderToString(setTextTable(empleado.curp)),
+                        estatus: renderToString(setTextTable(empleado.estatus_empleado)),
+                        fechaInicio: renderToString(setDateTable(empleado.fecha_inicio)),
+                        tipo_empleado: renderToString(setTextTable(empleado.tipo_empleado)),
+                        cuenta: renderToString(setArrayTable(
+                            [
+                                { 'name': 'Banco', 'text': empleado.banco ? empleado.banco : 'Sin definir' },
+                                { 'name': 'No. Cuenta', 'text': empleado.cuenta ? empleado.cuenta : 'Sin definir' },
+                                { 'name': 'Clabe', 'text': empleado.clabe ? empleado.clabe : 'Sin definir' },
+                            ]
+                        )),
+                        nombre_emergencia: renderToString(setArrayTable(
+                            [
+                                { 'name': 'Nombre', 'text': empleado.nombre_emergencia ? empleado.nombre_emergencia : 'Sin definir' },
+                                { 'name': 'Teléfono', 'text': empleado.telefono_emergencia ? empleado.telefono_emergencia : 'Sin definir' }
+                            ]
+                        )),
+                        vacaciones_tomadas: renderToString(setTextTable(empleado.vacaciones_tomadas)),
+                        id: empleado.id
+                    }
+                )
+            })
+        return aux
+    }
+
+    setActions= empleado => {
+        let aux = []
+            aux.push(
+                {
+                    text: 'Editar',
+                    btnclass: 'success',
+                    iconclass: 'flaticon2-pen',
+                    action: 'edit',
+                    tooltip: {id:'edit', text:'Editar'},
+                },
+                {
+                    text: 'Eliminar',
+                    btnclass: 'danger',
+                    iconclass: 'flaticon2-rubbish-bin',                  
+                    action: 'delete',
+                    tooltip: {id:'delete', text:'Eliminar', type:'error'},
+                }
+        ) 
+        return aux 
+    }
+
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -295,24 +516,77 @@ class Empleados extends Component {
         e.preventDefault()
         this.addEmpleadoAxios()
     }
-    
+
+    async getEmpleadosAxios() {
+        var table = $('#kt_datatable2_empleados')
+            .DataTable();
+        table.ajax.reload();
+    }
+
 
     render() {
-        const { modal, options, title, data, form, formeditado} = this.state
+        const { modal, options, title, form, formeditado} = this.state
 
         return (
             <Layout active={'rh'} {...this.props}>
-                <NewTable   
-                    columns = { EMPLEADOS_COLUMNS } data = { "" } 
-                    title = 'Empleados' subtitle = 'Listado de empleados'
+                <NewTableServerRender
+                    columns={EMPLEADOS_COLUMNS}
+                    title='Empleados administrativos' subtitle='Listado de empleados'
                     mostrar_boton={true}
-                    abrir_modal={true} 
-                    onClick={this.openModal} 
-                    mostrar_acciones={true} 
-                    actions = {{
+                    abrir_modal={true}
+                    onClick={this.openModal}
+                    mostrar_acciones={true}
+                    actions={{
+                        'edit': {function: this.openModalEdit},
+                        'delete': {function: this.openModalDelete},
                     }}
-                    elements = { "" }
+                    accessToken={this.props.authUser.access_token}
+                    setter={this.setEmpleado}
+                    urlRender={URL_DEV + 'rh/empleado'}
+                    idTable='kt_datatable2_empleados'
                 />
+                
+                {/* <Tabs defaultActiveKey="administrativo">
+                    <Tab eventKey="administrativo" title="Administrativo">
+                        <div className="py-2">
+                            <NewTableServerRender
+                                columns={EMPLEADOS_COLUMNS} data={""}
+                                title='Empleados administrativos' subtitle='Listado de empleados'
+                                mostrar_boton={true}
+                                abrir_modal={true}
+                                onClick={this.openModal}
+                                mostrar_acciones={true}
+                                actions={{
+                                }}
+                                accessToken={this.props.authUser.access_token}
+                                setter={this.setEmpleado}
+                                urlRender={URL_DEV + 'empleado'}
+                                elements={""}
+                                idTable='kt_datatable2_empleados'
+                            />
+                        </div>
+                    </Tab> 
+
+                    <Tab eventKey="obra" title="Obra">
+                        <div className="py-2">
+                            <NewTableServerRender
+                                columns={EMPLEADOS_COLUMNS} data={""}
+                                title='Empleados obra' subtitle='Listado de empleados'
+                                mostrar_boton={true}
+                                abrir_modal={true}
+                                onClick={this.openModal}
+                                mostrar_acciones={true}
+                                actions={{
+                                }}
+                                accessToken={this.props.authUser.access_token}
+                                setter={this.setEmpleado}
+                                urlRender={URL_DEV + 'empleado'}
+                                elements={""}
+                                idTable='kt_datatable2_empleados'
+                            />
+                        </div>
+                    </Tab>
+                </Tabs> */}
 
                 <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseModal}>
                     <EmpleadosForm
@@ -324,9 +598,12 @@ class Empleados extends Component {
                         onSubmit = { this.onSubmit }
                         onChangeAdjunto = { this.onChangeAdjunto }
                         clearFiles = { this.clearFiles }
+                        title = {title}
                     >
                     </EmpleadosForm>
                 </Modal>  
+                <ModalDelete title={'¿Quieres eliminar el empleado?'} show = { modal.delete } handleClose = { this.handleCloseModalDelete } onClick=  { (e) => { e.preventDefault(); waitAlert(); this.deleteEmpleadoAxios() }}>
+                </ModalDelete>
             </Layout>
         )
     }

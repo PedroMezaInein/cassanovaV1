@@ -28,7 +28,7 @@ class EmpleadosForm extends Component {
 
 
     render() {
-        const { options, onChange, form, onSubmit, formeditado, onChangeAdjunto, clearFiles} = this.props
+        const { options, onChange, form, onSubmit, formeditado, onChangeAdjunto, clearFiles, title} = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -73,6 +73,7 @@ class EmpleadosForm extends Component {
                                         <Input
                                             onChange={onChange}
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             name="nombre"
                                             type="text"
                                             value={form.nombre}
@@ -84,6 +85,7 @@ class EmpleadosForm extends Component {
                                     <div className="col-md-4">
                                         <Input
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             onChange={onChange}
                                             name="curp"
                                             type="text"
@@ -99,6 +101,7 @@ class EmpleadosForm extends Component {
                                     <div className="col-md-4">
                                         <Input
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             onChange={onChange}
                                             name="rfc"
                                             type="text"
@@ -116,6 +119,7 @@ class EmpleadosForm extends Component {
                                     <div className="col-md-4">
                                         <InputNumber
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             onChange={onChange}
                                             name="nss"
                                             type="text"
@@ -130,6 +134,7 @@ class EmpleadosForm extends Component {
                                     <div className="col-md-4">
                                         <Input
                                             requirevalidation={0}
+                                            formeditado={formeditado}
                                             onChange={onChange}
                                             name="nombre_emergencia"
                                             type="text"
@@ -142,7 +147,7 @@ class EmpleadosForm extends Component {
                                     <div className="col-md-4">
                                         <InputPhone
                                             requirevalidation={1}
-                                            /* formeditado={formeditado} */
+                                            formeditado={formeditado}
                                             placeholder="TELÉFONO DE EMERGENCIA"
                                             name="telefono_emergencia"
                                             value={form.telefono_emergencia}
@@ -161,6 +166,7 @@ class EmpleadosForm extends Component {
                                     <div className="col-md-4">
                                         <Input
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             onChange={onChange}
                                             name="banco"
                                             type="text"
@@ -173,6 +179,7 @@ class EmpleadosForm extends Component {
                                     <div className="col-md-4">
                                         <InputNumber
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             onChange={onChange}
                                             name="cuenta"
                                             type="text"
@@ -185,6 +192,7 @@ class EmpleadosForm extends Component {
                                     <div className="col-md-4">
                                         <InputNumber
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             onChange={onChange}
                                             name="clabe"
                                             type="text"
@@ -196,24 +204,30 @@ class EmpleadosForm extends Component {
                                         />
                                     </div>
                                 </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-12">
-                                        <FileInput
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChangeAdjunto={onChangeAdjunto}
-                                            placeholder={form.adjuntos.datosGenerales.placeholder}
-                                            value={form.adjuntos.datosGenerales.value}
-                                            name='datosGenerales'
-                                            id='datosGenerales'
-                                            accept="image/*, application/pdf"
-                                            files={form.adjuntos.datosGenerales.files}
-                                            deleteAdjunto={clearFiles}
-                                            multiple
-                                        />
-                                    </div>
-                                </div>
+                                {
+                                    title === 'Editar empleado'
+                                        ? ''
+                                        : <>
+                                            <div className="separator separator-dashed mt-1 mb-2"></div>
+                                            <div className="form-group row form-group-marginless">
+                                                <div className="col-md-12">
+                                                    <FileInput
+                                                        requirevalidation={0}
+                                                        formeditado={formeditado}
+                                                        onChangeAdjunto={onChangeAdjunto}
+                                                        placeholder={form.adjuntos.datosGenerales.placeholder}
+                                                        value={form.adjuntos.datosGenerales.value}
+                                                        name='datosGenerales'
+                                                        id='datosGenerales'
+                                                        accept="image/*, application/pdf"
+                                                        files={form.adjuntos.datosGenerales.files}
+                                                        deleteAdjunto={clearFiles}
+                                                        multiple
+                                                    />
+                                                </div>
+                                            </div>
+                                        </>
+                                }
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2"></div>
                                     <div>
@@ -311,6 +325,7 @@ class EmpleadosForm extends Component {
                                     <div className="col-md-4">
                                         <Input
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             onChange={onChange}
                                             name="puesto"
                                             type="text"
@@ -321,24 +336,31 @@ class EmpleadosForm extends Component {
                                         />
                                     </div>
                                 </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-12">
-                                        <FileInput
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChangeAdjunto={onChangeAdjunto}
-                                            placeholder={form.adjuntos.recibosNomina.placeholder}
-                                            value={form.adjuntos.recibosNomina.value}
-                                            name='recibosNomina'
-                                            id='recibosNomina'
-                                            accept="image/*, application/pdf"
-                                            files={form.adjuntos.recibosNomina.files}
-                                            deleteAdjunto={clearFiles}
-                                            multiple
-                                        />
-                                    </div>
-                                </div>
+                                {
+                                    title === 'Editar empleado'
+                                        ? ''
+                                        :
+                                        <>
+                                            <div className="separator separator-dashed mt-1 mb-2"></div>
+                                            <div className="form-group row form-group-marginless">
+                                                <div className="col-md-12">
+                                                    <FileInput
+                                                        requirevalidation={0}
+                                                        formeditado={formeditado}
+                                                        onChangeAdjunto={onChangeAdjunto}
+                                                        placeholder={form.adjuntos.recibosNomina.placeholder}
+                                                        value={form.adjuntos.recibosNomina.value}
+                                                        name='recibosNomina'
+                                                        id='recibosNomina'
+                                                        accept="image/*, application/pdf"
+                                                        files={form.adjuntos.recibosNomina.files}
+                                                        deleteAdjunto={clearFiles}
+                                                        multiple
+                                                    />
+                                                </div>
+                                            </div>
+                                        </>
+                                }
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard1() }} data-wizard-type="action-prev">Anterior</button>
@@ -374,6 +396,7 @@ class EmpleadosForm extends Component {
                                     <div className="col-md-4">
                                         <Input
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             onChange={onChange}
                                             name="vacaciones_tomadas"
                                             type="text"
@@ -399,6 +422,7 @@ class EmpleadosForm extends Component {
                                     <div className="col-md-4">
                                         <InputNumber
                                             requirevalidation={1}
+                                            formeditado={formeditado}
                                             onChange={onChange}
                                             name="numero_alta_imss"
                                             type="text"
@@ -410,21 +434,26 @@ class EmpleadosForm extends Component {
                                             //maxLength="11"
                                         />
                                     </div>
-                                    <div className="col-md-8">
-                                        <FileInput
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChangeAdjunto={onChangeAdjunto}
-                                            placeholder={form.adjuntos.altasBajas.placeholder}
-                                            value={form.adjuntos.altasBajas.value}
-                                            name='altasBajas'
-                                            id='altasBajas'
-                                            accept="image/*, application/pdf"
-                                            files={form.adjuntos.altasBajas.files}
-                                            deleteAdjunto={clearFiles}
-                                            multiple
-                                        />
-                                    </div> 
+                                    {
+                                        title === 'Editar empleado'
+                                            ? ''
+                                            :
+                                            <div className="col-md-8">
+                                                <FileInput
+                                                    requirevalidation={0}
+                                                    formeditado={formeditado}
+                                                    onChangeAdjunto={onChangeAdjunto}
+                                                    placeholder={form.adjuntos.altasBajas.placeholder}
+                                                    value={form.adjuntos.altasBajas.value}
+                                                    name='altasBajas'
+                                                    id='altasBajas'
+                                                    accept="image/*, application/pdf"
+                                                    files={form.adjuntos.altasBajas.files}
+                                                    deleteAdjunto={clearFiles}
+                                                    multiple
+                                                />
+                                            </div>
+                                    }
                                 </div> 
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">

@@ -1415,7 +1415,7 @@ export const EMPLEADOS_COLUMNS = [
     },
     {
         Header: 'Fecha de Inicio',
-        accessor: 'fecha_inicio'
+        accessor: 'fechaInicio'
     },
     {
         Header: 'Tipo de Empleado',
