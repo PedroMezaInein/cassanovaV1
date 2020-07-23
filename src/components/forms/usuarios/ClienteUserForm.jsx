@@ -14,7 +14,7 @@ class ClienteUserForm extends Component {
 
 
     render() {
-        const { form, onChange, options, deleteOption, onChangeOption, clear} = this.props
+        const { form, options, deleteOption} = this.props
         return (
             <div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>

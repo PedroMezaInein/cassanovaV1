@@ -11,7 +11,6 @@ class Home extends Component{
         const { user : { id: tipo} } = this.props.authUser
         const { user : { permisos: permisos } } = this.props.authUser
         const { history } = this.props
-        let auxRoute = null
         
         const usuarios = permisos.find(function(element, index) {
             return element.modulo.slug === 'usuarios'

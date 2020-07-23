@@ -56,7 +56,7 @@ class Select extends Component {
     }
 
     componentDidMount() {
-        const { formeditado, value, name } = this.props
+        const { formeditado, value } = this.props
         if (formeditado) {
             this.validarSelect({ target: { value: value } })
         }

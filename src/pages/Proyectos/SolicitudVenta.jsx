@@ -258,7 +258,7 @@ class SolicitudVenta extends Component{
     }
 
     onChangeAdjunto = e => {
-        const { form, data, options } = this.state
+        const { form } = this.state
         const { files, value, name } = e.target
         let aux = []
         for(let counter = 0; counter < files.length; counter ++){
@@ -595,7 +595,7 @@ class SolicitudVenta extends Component{
         
         await axios.post(URL_DEV + 'solicitud-venta/update/' + solicitud.id, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const {solicitud, solicitudes} = response.data
+                const { solicitudes } = response.data
                 const { data } = this.state
                 data.solicitudes = solicitudes
                 swal({

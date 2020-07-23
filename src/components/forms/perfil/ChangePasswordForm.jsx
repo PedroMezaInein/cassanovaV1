@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import { validateAlert } from '../../../functions/alert'
-import { Button, SelectSearch, Input, InputNumber } from '../../form-components'
+import { Button, Input } from '../../form-components'
 import { Form } from 'react-bootstrap'
 
 class ChangePasswordFrom extends Component {

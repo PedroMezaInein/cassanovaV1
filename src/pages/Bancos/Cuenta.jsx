@@ -79,7 +79,7 @@ class Cuentas extends Component {
     }
 
     onChangeEmpresa = e => {
-        const { name, value } = e.target
+        const { value } = e.target
         const { empresas, form } = this.state
         let auxEmpresa = form.empresas
         let aux = []
@@ -124,7 +124,7 @@ class Cuentas extends Component {
 
     onSubmitEstado = e => {
         e.preventDefault()
-        const { adjunto, adjuntoFile, adjuntoName } = this.state
+        const { adjunto } = this.state
         if (adjunto) {
             swal({
                 title: '¡Un momento!',
@@ -290,43 +290,6 @@ class Cuentas extends Component {
         })
     } 
 
-    /*setActionsEstado = (estado) => {
-        return (
-            <>
-                <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" text='' icon={faTrash} color="red"
-                        onClick={() => {
-                            swal({
-                                title: '¿Estás seguro?',
-                                icon: 'warning',
-                                buttons: {
-                                    cancel: {
-                                        text: "Cancelar",
-                                        value: null,
-                                        visible: true,
-                                        className: "button__green btn-primary cancel",
-                                        closeModal: true,
-                                    },
-                                    confirm: {
-                                        text: "Aceptar",
-                                        value: true,
-                                        visible: true,
-                                        className: "button__red btn-primary",
-                                        closeModal: true
-                                    }
-                                }
-                            }).then((result) => {
-                                if (result) {
-                                    this.deleteEstadoAxios(estado.id)
-                                }
-                            })
-                        }} />
-                </div>
-            </>
-        )
-    }
-*/
-
     setText = text => {
         return (
             <Small className="">
@@ -381,23 +344,6 @@ class Cuentas extends Component {
         )
         return aux
     }
-
-    /*setActions = cuenta => {
-        return(
-            <>
-                <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalEdit(e)(cuenta)}  text='' icon={faEdit} 
-                        color="transparent" tooltip={{id:'edit', text:'Editar'}} />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalDelete(e)(cuenta) } text='' icon={faTrash} color="red" 
-                        tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
-                </div>
-                <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalAddEstado(e)(cuenta)}  text='' icon={faFolderPlus} 
-                        color="transparent" tooltip={{id:'estado', text:'Agregar estados de cuenta'}} />
-                </div>
-            </>
-        )
-    }*/
 
     setOptions = (array, name) => {
         const { form } = this.state
@@ -685,7 +631,7 @@ class Cuentas extends Component {
 
     async addEstadoAxios() {
         const { access_token } = this.props.authUser
-        const { fecha, adjunto, adjuntoName, adjuntoFile, cuenta } = this.state
+        const { fecha, adjuntoName, adjuntoFile, cuenta } = this.state
         const data = new FormData();
         data.append('adjunto', adjuntoFile)
         data.append('adjuntoName', adjuntoName)
@@ -768,7 +714,7 @@ class Cuentas extends Component {
     //delete
     async deleteCuentaAxios() {
         const { access_token } = this.props.authUser
-        const { cuenta, form } = this.state
+        const { cuenta } = this.state
         await axios.delete(URL_DEV + 'cuentas/' + cuenta.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { cuentas, cuentasCajaChica } = response.data
@@ -844,7 +790,7 @@ class Cuentas extends Component {
     }
 
     render() {
-        const { modal, modalDelete, modalEstado, bancos, estatus, tipos, form, cuentas, cuenta, empresas, estados, adjunto, adjuntoName, fecha, data,title, formeditado, tipo, cajas } = this.state
+        const { modal, modalDelete, modalEstado, bancos, estatus, tipos, form, cuentas, cuenta, empresas, estados, adjunto, adjuntoName, fecha, data, formeditado, tipo, cajas } = this.state
         return (
             <Layout active={'bancos'}  {...this.props}>
 

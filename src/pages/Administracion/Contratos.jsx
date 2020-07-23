@@ -232,7 +232,7 @@ class Contratos extends Component {
     }
 
     openModalAdjuntos = contrato => {
-        const { modal, data, adjuntos, form} = this.state
+        const { modal, data} = this.state
         modal.adjuntos = true   
         data.adjuntos = contrato.adjuntos
         this.setState({
@@ -686,7 +686,7 @@ class Contratos extends Component {
 
     async deleteContratoAxios(){
         const { access_token } = this.props.authUser
-        const { form, contrato } = this.state
+        const { contrato } = this.state
         await axios.delete(URL_DEV + 'contratos/' + contrato.id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { contratosClientes, contratosProveedores } = response.data

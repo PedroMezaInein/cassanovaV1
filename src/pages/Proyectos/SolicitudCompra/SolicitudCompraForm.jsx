@@ -69,8 +69,7 @@ class SolicitudCompraForm extends Component{
             case 'edit':
                 if(state){
                     if(state.solicitud)
-                    {
-                        const { form, options } = this.state
+                    { 
                         const { solicitud } = state
                         
                         let aux = this.setSolicitud(solicitud)
@@ -131,7 +130,7 @@ class SolicitudCompraForm extends Component{
     }
 
     onChangeAdjunto = e => {
-        const { form, data, options } = this.state
+        const { form } = this.state
         const { files, value, name } = e.target
         let aux = []
         for(let counter = 0; counter < files.length; counter ++){

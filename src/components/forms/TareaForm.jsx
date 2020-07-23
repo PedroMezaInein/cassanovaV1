@@ -65,7 +65,7 @@ class TareaForm extends Component {
     }
 
     render() {
-        const { form, participantes, participantesTask, deleteParticipante, changeValue, changeValueSend, deleteTarea, endTarea, requirevalidation, formeditado } = this.props
+        const { form, changeValue, changeValueSend, deleteTarea, endTarea, formeditado } = this.props
         const { activeEnd, activeDelete } = this.state
         return (
             <Form {... this.props}>

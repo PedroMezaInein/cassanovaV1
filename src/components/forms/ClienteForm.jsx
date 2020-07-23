@@ -10,7 +10,7 @@ class ClienteForm extends Component {
 
     render() {
 
-        const { title, form, onChange, changeCP, estado, municipio, colonias, updateColonia, formeditado } = this.props
+        const { form, onChange, changeCP, estado, municipio, colonias, updateColonia, formeditado } = this.props
         return (
             <>
                 <div className="form-group row form-group-marginless">

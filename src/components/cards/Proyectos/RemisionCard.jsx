@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import { Card } from '../../singles'
 import { P, Small, B } from '../../texts'
-import NumberFormat from 'react-number-format'
 import Moment from 'react-moment'
 
 export default class RemisionCard extends Component{

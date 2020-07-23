@@ -98,17 +98,7 @@ class NominaAdmin extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
-    }
-    //Submits
-    // onSubmit = e => {
-    //     e.preventDefault()
-    //     const { title } = this.state
-    //     waitAlert()
-    //     if(title === 'Editar nómina de obra')
-    //         this.editCompraAxios()
-    //     else
-    //         this.addCompraAxios()
-    // }
+    } 
     
     openModal = () => {
         const { modal } = this.state
@@ -227,7 +217,7 @@ class NominaAdmin extends Component {
     }
     
     render() {
-        const { modal, options, title, data, form, formeditado} = this.state
+        const { modal, options, title, form, formeditado} = this.state
 
         return (
             <Layout active={'rh'} {...this.props}>

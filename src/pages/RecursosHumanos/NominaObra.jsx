@@ -236,7 +236,7 @@ class NominaObra extends Component {
     }
     
     render() {
-        const { modal, options, title, data, form, formeditado} = this.state
+        const { modal, options, title, form, formeditado} = this.state
 
         return (
             <Layout active={'rh'} {...this.props}>

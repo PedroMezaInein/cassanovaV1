@@ -530,7 +530,6 @@ class egresos extends Component{
                 })
                 porcentaje = porcentaje * 100 / (egreso.total - egreso.comision)
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
-                let aux = []
                 this.getEgresosAxios()
                 this.setState({
                     ... this.state,

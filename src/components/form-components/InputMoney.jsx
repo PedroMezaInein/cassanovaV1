@@ -59,7 +59,7 @@ class InputMoney extends Component {
     }
 
     componentDidMount() {
-        const { formeditado, value, name } = this.props
+        const { formeditado, value } = this.props
         if (formeditado) {
             this.validarInputMoney({ target: { value: value } })
         }

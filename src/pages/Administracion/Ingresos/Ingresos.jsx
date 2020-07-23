@@ -343,27 +343,6 @@ class Ingresos extends Component {
             )
         }
         return aux
-
-        /* return(
-            <>
-                <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.changePageEdit(ingreso)} } text='' icon={faEdit} color="transparent" 
-                        tooltip={{id:'edit', text:'Editar'}} />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => { e.preventDefault(); this.openModalDelete(ingreso)} } text='' icon={faTrash} color="red" 
-                        tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
-                </div>
-                {
-                    ingreso.factura ?
-                        <div className="d-flex align-items-center flex-column flex-md-row">
-                            <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalFacturas(ingreso)} } text='' icon={faReceipt} color="transparent" 
-                                tooltip={{id:'taxes', text:'Facturas'}} />
-                            <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalAskFactura(ingreso)} } text='' icon={faEnvelopeOpenText} color="transparent" 
-                                tooltip={{id:'bills', text:'Pedir factura'}} />
-                        </div>
-                    : ''
-                }
-            </>
-        ) */
     }
 
     // Modales
@@ -519,7 +498,6 @@ class Ingresos extends Component {
 
     // Factura
     async sendFacturaAxios() {
-
         const { access_token } = this.props.authUser
         const { form, ingreso } = this.state
         const data = new FormData();
@@ -591,7 +569,6 @@ class Ingresos extends Component {
     }
 
     async deleteFacturaAxios(id) {
-
         const { access_token } = this.props.authUser
         const { ingreso } = this.state
         await axios.delete(URL_DEV + 'ingresos/' + ingreso.id + '/facturas/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -638,7 +615,6 @@ class Ingresos extends Component {
     }
 
     async askFacturaAxios() {
-
         const { access_token } = this.props.authUser
         const { form } = this.state
         await axios.post(URL_DEV + 'facturas/ask', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -673,11 +649,8 @@ class Ingresos extends Component {
     }
 
     async addClienteAxios(obj) {
-
         const { access_token } = this.props.authUser
-
         const data = new FormData();
-
 
         let cadena = obj.nombre_receptor.replace(/,/g, '')
         cadena = cadena.replace(/\./g, '').toUpperCase()
@@ -731,7 +704,6 @@ class Ingresos extends Component {
     }
 
     async exportIngresosAxios(){
-
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'exportar/ingresos', { responseType:'blob', headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
