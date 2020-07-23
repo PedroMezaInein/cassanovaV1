@@ -205,8 +205,8 @@ class EmpleadosForm extends Component {
                                             onChangeAdjunto={onChangeAdjunto}
                                             placeholder={form.adjuntos.datosGenerales.placeholder}
                                             value={form.adjuntos.datosGenerales.value}
-                                            name='adjunto'
-                                            id='adjunto'
+                                            name='datosGenerales'
+                                            id='datosGenerales'
                                             accept="image/*, application/pdf"
                                             files={form.adjuntos.datosGenerales.files}
                                             deleteAdjunto={clearFiles}
@@ -330,8 +330,8 @@ class EmpleadosForm extends Component {
                                             onChangeAdjunto={onChangeAdjunto}
                                             placeholder={form.adjuntos.recibosNomina.placeholder}
                                             value={form.adjuntos.recibosNomina.value}
-                                            name='adjunto'
-                                            id='adjunto'
+                                            name='recibosNomina'
+                                            id='recibosNomina'
                                             accept="image/*, application/pdf"
                                             files={form.adjuntos.recibosNomina.files}
                                             deleteAdjunto={clearFiles}
@@ -410,15 +410,15 @@ class EmpleadosForm extends Component {
                                             //maxLength="11"
                                         />
                                     </div>
-                                    <div className="col-md-12">
+                                    <div className="col-md-8">
                                         <FileInput
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             onChangeAdjunto={onChangeAdjunto}
                                             placeholder={form.adjuntos.altasBajas.placeholder}
                                             value={form.adjuntos.altasBajas.value}
-                                            name='adjunto'
-                                            id='adjunto'
+                                            name='altasBajas'
+                                            id='altasBajas'
                                             accept="image/*, application/pdf"
                                             files={form.adjuntos.altasBajas.files}
                                             deleteAdjunto={clearFiles}
