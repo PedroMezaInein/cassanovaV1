@@ -94,27 +94,30 @@ class NominaAdminForm extends Component {
                         />
                     </div>
                 </div>
-                <div className="separator separator-dashed mt-1 mb-2"></div>
+                
                 {
                     title !== 'Editar nómina administrativa' ?
-                        <div className="form-group row form-group-marginless">
-                            <div className="col-md-12">
-                                <FileInput
-                                    requirevalidation={0}
-                                    formeditado={formeditado}
-                                    onChangeAdjunto={onChangeAdjunto}
-                                    placeholder={form.adjuntos.adjunto.placeholder}
-                                    value={form.adjuntos.adjunto.value}
-                                    name='adjunto'
-                                    id='adjunto'
-                                    accept="image/*, application/pdf"
-                                    files={form.adjuntos.adjunto.files}
-                                    deleteAdjunto={clearFiles}
-                                    multiple
-                                />
+                        <>
+                            <div className="separator separator-dashed mt-1 mb-2"></div>
+                            <div className="form-group row form-group-marginless">
+                                <div className="col-md-12">
+                                    <FileInput
+                                        requirevalidation={0}
+                                        formeditado={formeditado}
+                                        onChangeAdjunto={onChangeAdjunto}
+                                        placeholder={form.adjuntos.adjunto.placeholder}
+                                        value={form.adjuntos.adjunto.value}
+                                        name='adjunto'
+                                        id='adjunto'
+                                        accept="image/*, application/pdf"
+                                        files={form.adjuntos.adjunto.files}
+                                        deleteAdjunto={clearFiles}
+                                        multiple
+                                    />
+                                </div>
                             </div>
-                        </div>
-                    : ''
+                        </>
+                        : ''
                 }
                 
 
