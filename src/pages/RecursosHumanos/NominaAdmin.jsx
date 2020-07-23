@@ -48,8 +48,7 @@ class NominaAdmin extends Component {
         options: {
             usuarios: [],
             empresas:[]
-        },
-        nominaAdmin:""
+        }
     }
 
     componentDidMount() {
