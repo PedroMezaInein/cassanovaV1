@@ -283,11 +283,13 @@ class Empleados extends Component {
             ... this.state,
             form
         })
-        
+    }
+
     onSubmit = e => {
         e.preventDefault()
         this.addEmpleadoAxios()
     }
+    
 
     render() {
         const { modal, options, title, data, form, formeditado} = this.state
