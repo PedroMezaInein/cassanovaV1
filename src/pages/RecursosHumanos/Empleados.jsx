@@ -105,6 +105,7 @@ class Empleados extends Component {
     }
 
     async addEmpleadoAxios() {
+        waitAlert()
         const { access_token } = this.props.authUser
         const { form } = this.state
         const data = new FormData();
@@ -113,10 +114,15 @@ class Empleados extends Component {
         aux.map((element) => {
             switch (element) {
                 case 'fechaInicio':
-                case 'fechaFin':
                 case 'fecha_alta_imss':
                     data.append(element, (new Date(form[element])).toDateString())
-                    break
+                    break;
+                case 'fechaFin':
+                    if(form[element])
+                        data.append(element, (new Date(form[element])).toDateString())
+                    else
+                        data.append(element, '')
+                    break;
                 case 'adjuntos':
                     break; 
                 default:
