@@ -1,14 +1,17 @@
 import React, { Component } from 'react' 
+import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import Layout from '../../components/layout/layout' 
 import { Modal} from '../../components/singles' 
 import { NOMINA_OBRA_COLUMNS, URL_DEV} from '../../constants'
-import NewTable from '../../components/tables/NewTable' 
+import NewTableServerRender from '../../components/tables/NewTableServerRender' 
 import { NominaObraForm } from '../../components/forms'
-import { setOptions} from '../../functions/setters'
+import { setOptions, setDateTable, setMoneyTable, setTextTable } from '../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert} from '../../functions/alert'
+
+const $ = require('jquery');
 
 class NominaObra extends Component {
     state = {  
@@ -47,8 +50,7 @@ class NominaObra extends Component {
             proyectos: [],
             usuarios: [],
             empresas:[]
-        },
-        nominaObra:""
+        }
     }
 
     componentDidMount() {
@@ -64,19 +66,15 @@ class NominaObra extends Component {
             this.getOptionsAxios()
     }
 
-    //Setters
-    setOptions = (name, array) => {
-        const {options} = this.state
-        options[name] = setOptions(array, 'nombre', 'id')
-        this.setState({
-            ... this.state,
-            options
-        })
-    }
-
     onSubmit = e => {
         e.preventDefault()
         this.addNominaObraAxios()
+    }
+
+    async getNominasAxios(){
+        var table = $('#kt_datatable2_nomina_obra')
+            .DataTable();
+        table.ajax.reload();
     }
 
     async getOptionsAxios(){
@@ -86,7 +84,7 @@ class NominaObra extends Component {
             (response) => {
                 swal.close()
                 const { proyectos, usuarios, empresas} = response.data
-                const { options, data } = this.state
+                const { options} = this.state
                 options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
                 options['usuarios'] = setOptions( usuarios, 'nombre', 'id')
                 options['empresas'] = setOptions(empresas, 'name', 'id')
@@ -168,7 +166,62 @@ class NominaObra extends Component {
             ... this.state,
             modal,
             form: this.clearForm(),
-            formeditado:0
+            formeditado:0,
+            title: 'Nueva nómina obra',
+        })
+    }
+
+    openModalEdit = nomina => {
+        const { modal, form } = this.state
+        modal.form = true
+
+        form.periodo = nomina.periodo
+        form.empresa = nomina.empresa ? nomina.empresa.id.toString() : ''
+        form.fechaInicio = new Date(nomina.fecha_inicio)
+        form.fechaFin = nomina.fecha_fin ? new Date(nomina.fecha_fin) : ''
+
+        let aux = []
+        nomina.nominas_obra.map( (nom, key) => {
+            console.log(key, ' - ', nom)
+            aux.push(
+                {
+                    usuario: nom.empleado ? nom.empleado.id.toString() : '',
+                    proyecto: nom.proyecto ? nom.proyecto.id.toString() : '',
+                    sueldoh: nom.sueldoh,
+                    hora1T: nom.hora1T,
+                    hora2T: nom.hora2T,
+                    hora3T: nom.hora3T,
+                    nominImss: nom.nominImss,
+                    restanteNomina:nom.restanteNomina,
+                    extras:nom.extras
+                }
+            )
+        })
+
+        if(aux.length){
+            form.nominas = aux
+        }else{
+            form.nominas = [{
+                usuario: '',
+                proyecto: '',
+                sueldoh: '',
+                hora1T: '', 
+                hora2T: '',
+                hora3T: '',
+                nominImss: '',
+                restanteNomina: '',
+                extras: ''
+            }]
+        }
+
+
+        this.setState({
+            ... this.state,
+            modal,
+            title: 'Editar nómina obra',
+            nomina: nomina,
+            form,
+            formeditado:1
         })
     }
 
@@ -321,22 +374,61 @@ class NominaObra extends Component {
             form
         })
     }
+
+    setNominaObra = nominas => {
+        let aux = []
+        nominas.map( (nomina) => {
+            aux.push(
+                {
+                    actions: this.setActions(nomina),
+                    periodo: renderToString(setTextTable(nomina.periodo)),
+                    fechaInicio: renderToString(setDateTable(nomina.fecha_inicio)),
+                    fechaFin: renderToString(setDateTable(nomina.fecha_fin)),
+                    totalNominaIMSS: renderToString(setMoneyTable(nomina.totalNominaImss)),
+                    restanteNomina: renderToString(setMoneyTable(nomina.totalRestanteNomina)),
+                    extras: renderToString(setMoneyTable(nomina.totalExtras)),
+                    granTotal: renderToString(setMoneyTable(nomina.totalNominaImss + nomina.totalRestanteNomina + nomina.totalExtras)),
+                    id: nomina.id
+                }
+            )
+        })
+        return aux
+    }
+
+    setActions = nomina => {
+        let aux = []
+        aux.push(
+            {
+                text: 'Editar',
+                btnclass: 'success',
+                iconclass: 'flaticon2-pen',
+                action: 'edit',
+                tooltip: { id: 'edit', text: 'Editar' }
+            }
+        )
+        return aux
+    }
+
     
     render() {
         const { modal, options, title, form, formeditado} = this.state
 
         return (
             <Layout active={'rh'} {...this.props}>
-                <NewTable   
-                    columns = { NOMINA_OBRA_COLUMNS } data = { "" } 
+                <NewTableServerRender   
+                    columns = { NOMINA_OBRA_COLUMNS }
                     title = 'Nómina de obra' subtitle = 'Listado de nómina de obra'
                     mostrar_boton={true}
                     abrir_modal={true} 
                     onClick={this.openModal} 
                     mostrar_acciones={false} 
-                    actions = {{
+                    actions={{
+                        'edit': { function: this.openModalEdit }
                     }}
-                    elements = { "" }
+                    accessToken = { this.props.authUser.access_token }
+                    setter = { this.setNominaObra }
+                    urlRender = {URL_DEV + 'rh/nomina-obra'}
+                    idTable = 'kt_datatable2_nomina_obra'
                 />
 
                 <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseModal}>
