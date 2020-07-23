@@ -36,9 +36,9 @@ class NominaObra extends Component {
                 extras: ''
             }],
             adjuntos:{
-                Adjuntos:{
+                adjunto:{
                     value: '',
-                    placeholder: 'Adjuntos',
+                    placeholder: 'Ingresa los adjuntos',
                     files: []
                 }
             }
@@ -102,18 +102,8 @@ class NominaObra extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
-    }
-    //Submits
-    // onSubmit = e => {
-    //     e.preventDefault()
-    //     const { title } = this.state
-    //     waitAlert()
-    //     if(title === 'Editar nómina de obra')
-    //         this.editCompraAxios()
-    //     else
-    //         this.addCompraAxios()
-    // }
-    
+    } 
+
     openModal = () => {
         const { modal } = this.state
         modal.form = true
@@ -153,9 +143,9 @@ class NominaObra extends Component {
                     break;
                 case 'adjuntos':
                     form[element] = {
-                        Adjuntos: {
+                        adjunto: {
                             value: '',
-                            placeholder: 'Adjuntos',
+                            placeholder: 'Ingresa los adjuntos',
                             files: []
                         }
                     }
@@ -166,6 +156,24 @@ class NominaObra extends Component {
             }
         })
         return form;
+    }
+
+    clearFiles = (name, key) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < form.adjuntos[name].files.length; counter++) {
+            if (counter !== key) {
+                aux.push(form.adjuntos[name].files[counter])
+            }
+        }
+        if (aux.length < 1) {
+            form.adjuntos[name].value = ''
+        }
+        form.adjuntos[name].files = aux
+        this.setState({
+            ... this.state,
+            form
+        })
     }
 
     onChangeNominas = (key, e, name) => {
@@ -185,6 +193,28 @@ class NominaObra extends Component {
         form[name] = value
         this.setState({
             ...this.state,
+            form
+        })
+    }
+
+    onChangeAdjunto = e => {
+        const { form } = this.state
+        const { files, value, name } = e.target
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form.adjuntos[name].value = value
+        form.adjuntos[name].files = aux
+        this.setState({
+            ... this.state,
             form
         })
     }
@@ -261,8 +291,9 @@ class NominaObra extends Component {
                         addRowNomina = { this.addRowNomina }
                         deleteRowNomina = { this.deleteRowNomina }
                         onChangeNominas =  { this.onChangeNominas }
-                        onChange = { this.onChange } 
-                        onSubmit = { this.onSubmit }
+                        onChange = { this.onChange }
+                        onChangeAdjunto = { this.onChangeAdjunto }
+                        clearFiles = { this.clearFiles }
                     >
                     </NominaObraForm>
                 </Modal>  

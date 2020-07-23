@@ -34,9 +34,9 @@ class NominaAdmin extends Component {
                 extras: ''
             }],
             adjuntos:{
-                Adjuntos:{
+                adjunto:{
                     value: '',
-                    placeholder: 'Adjuntos',
+                    placeholder: 'Ingresa los adjuntos',
                     files: []
                 }
             }
@@ -59,16 +59,6 @@ class NominaAdmin extends Component {
         if (!nominaadmin)
             history.push('/')
             this.getOptionsAxios()
-    }
-
-    //Setters
-    setOptions = (name, array) => {
-        const {options} = this.state
-        options[name] = setOptions(array, 'nombre', 'id')
-        this.setState({
-            ... this.state,
-            options
-        })
     }
 
     async getOptionsAxios(){
@@ -136,11 +126,11 @@ class NominaAdmin extends Component {
                         empresa:''
                     }]
                     break;
-                case 'adjuntos':
+                case 'adjuntos': 
                     form[element] = {
-                        Adjuntos: {
+                        adjunto:{
                             value: '',
-                            placeholder: 'Adjuntos',
+                            placeholder: 'Ingresa los adjuntos',
                             files: []
                         }
                     }
@@ -153,6 +143,23 @@ class NominaAdmin extends Component {
         return form;
     }
 
+    clearFiles = (name, key) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < form.adjuntos[name].files.length; counter++) {
+            if (counter !== key) {
+                aux.push(form.adjuntos[name].files[counter])
+            }
+        }
+        if (aux.length < 1) {
+            form.adjuntos[name].value = ''
+        }
+        form.adjuntos[name].files = aux
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
     onChangeNominasAdmin = (key, e, name) => {
         const { value } = e.target
         const { form } = this.state
@@ -170,6 +177,28 @@ class NominaAdmin extends Component {
         form[name] = value
         this.setState({
             ...this.state,
+            form
+        })
+    }
+
+    onChangeAdjunto = e => {
+        const { form } = this.state
+        const { files, value, name } = e.target
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form.adjuntos[name].value = value
+        form.adjuntos[name].files = aux
+        this.setState({
+            ... this.state,
             form
         })
     }
@@ -236,14 +265,15 @@ class NominaAdmin extends Component {
                 <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseModal}>
                     <NominaAdminForm
                         formeditado={formeditado}
-                        className=" px-3 "   
-                        options = { options }
-                        form ={form}
-                        addRowNominaAdmin = { this.addRowNominaAdmin }
-                        deleteRowNominaAdmin = { this.deleteRowNominaAdmin }
-                        onChangeNominasAdmin =  { this.onChangeNominasAdmin }
-                        onChange = { this.onChange } 
-                        onSubmit = { this.onSubmit }
+                        className=" px-3 "
+                        options={options}
+                        form={form}
+                        addRowNominaAdmin={this.addRowNominaAdmin}
+                        deleteRowNominaAdmin={this.deleteRowNominaAdmin}
+                        onChangeNominasAdmin={this.onChangeNominasAdmin}
+                        onChange={this.onChange}
+                        onChangeAdjunto={this.onChangeAdjunto}
+                        clearFiles={this.clearFiles}
                     >
                     </NominaAdminForm>
                 </Modal>  

@@ -29,12 +29,12 @@ class Empleados extends Component {
             banco: '',
             cuenta: '',
             clabe: '',
-            tipo_empleado: 0,
-            estatus_empleado: 0,
-            empresa:0,
+            tipo_empleado: 'Administrativo' ,
+            estatus_empleado: 'Activo',
+            empresa: '',
             fechaInicio: new Date,
             fechaFin: '',
-            estatus_imss: 0,
+            estatus_imss: 'Activo',
             puesto:'',
             vacaciones_tomadas:0, 
             fecha_alta_imss: new Date(),
@@ -192,31 +192,40 @@ class Empleados extends Component {
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'fechaInicio':
-                case 'fechaFin':
                 case 'fecha_alta_imss':
                     form[element] = new Date()
-                    break; 
+                    break;
                 case 'adjuntos':
                     form[element] = {
-                        datosGenerales:{
+                        datosGenerales: {
                             value: '',
                             placeholder: 'Datos generales',
                             files: []
                         },
-                        recibosNomina:{
+                        recibosNomina: {
                             value: '',
                             placeholder: 'Recibos de Nómina',
                             files: []
                         },
-                        altasBajas:{
+                        altasBajas: {
                             value: '',
                             placeholder: 'Altas y bajas',
                             files: []
                         }
                     }
+                    break;
+                case 'estatus_empleado':
+                case 'estatus_imss':
+                    form[element] = 'Activo'
+                    break;
+                case 'vacaciones_tomadas':
+                    form[element] = 0
+                    break;
+                case 'tipo_empleado':
+                    form[element] = 'Administrativo'
                     break;
                 default:
                     form[element] = ''
@@ -226,12 +235,52 @@ class Empleados extends Component {
         return form;
     }
 
+    clearFiles = (name, key) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < form.adjuntos[name].files.length; counter++) {
+            if (counter !== key) {
+                aux.push(form.adjuntos[name].files[counter])
+            }
+        }
+        if (aux.length < 1) {
+            form.adjuntos[name].value = ''
+        }
+        form.adjuntos[name].files = aux
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
         this.setState({
             ...this.state,
+            form
+        })
+    }
+
+    onChangeAdjunto = e => {
+        const { form } = this.state
+        const { files, value, name } = e.target
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form.adjuntos[name].value = value
+        form.adjuntos[name].files = aux
+        this.setState({
+            ... this.state,
             form
         })
     }
@@ -261,6 +310,8 @@ class Empleados extends Component {
                         form ={form}
                         onChange = { this.onChange } 
                         onSubmit = { this.onSubmit }
+                        onChangeAdjunto = { this.onChangeAdjunto }
+                        clearFiles = { this.clearFiles }
                     >
                     </EmpleadosForm>
                 </Modal>  

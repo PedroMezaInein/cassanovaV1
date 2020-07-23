@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { Input, Calendar, SelectSearch, Button } from '../../form-components'
+import { Input, Calendar, SelectSearch, Button, FileInput } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { DATE } from '../../../constants'
 
@@ -26,7 +26,7 @@ class NominaAdminForm extends Component {
     }
 
     render() {
-        const { options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, onChange, form, onSubmit, formeditado } = this.props
+        const { options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, onChange, onChangeAdjunto, clearFiles, form, onSubmit, formeditado } = this.props
         return (
             <Form id="form-nominaadmin"
                 onSubmit={
@@ -91,6 +91,24 @@ class NominaAdminForm extends Component {
                             minDate={form.fechaInicio}
                             iconclass={"far fa-calendar-alt"}
                             patterns={DATE}
+                        />
+                    </div>
+                </div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-12">
+                        <FileInput
+                            requirevalidation={0}
+                            formeditado={formeditado}
+                            onChangeAdjunto={onChangeAdjunto}
+                            placeholder={form.adjuntos.adjunto.placeholder}
+                            value={form.adjuntos.adjunto.value}
+                            name='adjunto'
+                            id='adjunto'
+                            accept="image/*, application/pdf"
+                            files={form.adjuntos.adjunto.files}
+                            deleteAdjunto={clearFiles}
+                            multiple
                         />
                     </div>
                 </div>

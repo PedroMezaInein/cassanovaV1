@@ -198,19 +198,21 @@ class EmpleadosForm extends Component {
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
-                                    <FileInput
-                                        requirevalidation={0}
-                                        formeditado={formeditado}
-                                        onChangeAdjunto={"onChangeAdjunto"}
-                                        placeholder={"form['adjuntos']['factura']['placeholder']"}
-                                        value={"form['adjuntos']['factura']['value']"}
-                                        name={'factura'} 
-                                        id={'factura'}
-                                        accept="text/xml, application/pdf"
-                                        files={"form['adjuntos']['factura']['files']"}
-                                        deleteAdjunto={"clearFiles"} multiple
-                                        messageinc="Incorrecto. Adjunta el documento."
-                                    />
+                                    <div className="col-md-12">
+                                        <FileInput
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
+                                            onChangeAdjunto={onChangeAdjunto}
+                                            placeholder={form.adjuntos.datosGenerales.placeholder}
+                                            value={form.adjuntos.datosGenerales.value}
+                                            name='adjunto'
+                                            id='adjunto'
+                                            accept="image/*, application/pdf"
+                                            files={form.adjuntos.datosGenerales.files}
+                                            deleteAdjunto={clearFiles}
+                                            multiple
+                                        />
+                                    </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2"></div>
@@ -321,7 +323,21 @@ class EmpleadosForm extends Component {
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
-
+                                    <div className="col-md-12">
+                                        <FileInput
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
+                                            onChangeAdjunto={onChangeAdjunto}
+                                            placeholder={form.adjuntos.recibosNomina.placeholder}
+                                            value={form.adjuntos.recibosNomina.value}
+                                            name='adjunto'
+                                            id='adjunto'
+                                            accept="image/*, application/pdf"
+                                            files={form.adjuntos.recibosNomina.files}
+                                            deleteAdjunto={clearFiles}
+                                            multiple
+                                        />
+                                    </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
@@ -378,6 +394,8 @@ class EmpleadosForm extends Component {
                                             patterns={DATE}
                                         />
                                     </div>
+                                </div>
+                                <div className="form-group row form-group-marginless"> 
                                     <div className="col-md-4">
                                         <InputNumber
                                             requirevalidation={1}
@@ -389,10 +407,25 @@ class EmpleadosForm extends Component {
                                             iconclass={"fas fa-hospital-user"}
                                             patterns={NSS}
                                             messageinc="Incorrecto. Ej. 01234567891"
-                                        //maxLength="11"
+                                            //maxLength="11"
                                         />
                                     </div>
-                                </div>
+                                    <div className="col-md-12">
+                                        <FileInput
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
+                                            onChangeAdjunto={onChangeAdjunto}
+                                            placeholder={form.adjuntos.altasBajas.placeholder}
+                                            value={form.adjuntos.altasBajas.value}
+                                            name='adjunto'
+                                            id='adjunto'
+                                            accept="image/*, application/pdf"
+                                            files={form.adjuntos.altasBajas.files}
+                                            deleteAdjunto={clearFiles}
+                                            multiple
+                                        />
+                                    </div> 
+                                </div> 
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
