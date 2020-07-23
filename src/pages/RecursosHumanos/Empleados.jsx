@@ -76,24 +76,14 @@ class Empleados extends Component {
             this.getOptionsAxios()
     }
 
-    //Setters
-    setOptions = (name, array) => {
-        const {options} = this.state
-        options[name] = setOptions(array, 'nombre', 'id')
-        this.setState({
-            ... this.state,
-            options
-        })
-    }
-
-    async getOptionsAxios(){
+    async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'rh/nomina-administrativa/options', { responseType:'json', headers: {Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'rh/nomina-administrativa/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                const { usuarios, empresas } = response.data
-                const { options, data } = this.state
+                const { empresas } = response.data
+                const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 this.setState({
                     ... this.state,
@@ -102,9 +92,9 @@ class Empleados extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -113,16 +103,70 @@ class Empleados extends Component {
             console.log(error, 'error')
         })
     }
-    //Submits
-    // onSubmit = e => {
-    //     e.preventDefault()
-    //     const { title } = this.state
-    //     waitAlert()
-    //     if(title === 'Editar nómina de obra')
-    //         this.editCompraAxios()
-    //     else
-    //         this.addCompraAxios()
-    // }
+
+    async addEmpleadoAxios() {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        const data = new FormData();
+
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                case 'fechaInicio':
+                case 'fechaFin':
+                case 'fecha_alta_imss':
+                    data.append(element, (new Date(form[element])).toDateString())
+                    break
+                case 'adjuntos':
+                    break; 
+                default:
+                    data.append(element, form[element])
+                    break
+            }
+        })
+        aux = Object.keys(form.adjuntos)
+        aux.map((element) => {
+            if (form.adjuntos[element].value !== '') {
+                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                }
+                data.append('adjuntos[]', element)
+            }
+        })
+
+        await axios.post(URL_DEV + 'prueba', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.setState({
+                    ... this.state,
+                    modal: false,
+                    form: this.clearForm()
+                })
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El empleado fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false,
+                })
+                const { history } = this.props
+                history.push({
+                    pathname: '/rh/empleados'
+                });
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     
     openModal = () => {
         const { modal } = this.state
