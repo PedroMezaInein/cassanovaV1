@@ -7,8 +7,12 @@ import { Modal} from '../../components/singles'
 import { NOMINA_ADMIN_COLUMNS, URL_DEV} from '../../constants'
 import NewTable from '../../components/tables/NewTable' 
 import { NominaAdminForm } from '../../components/forms'
-import { setOptions} from '../../functions/setters'
+import { setOptions, setDateTable, setMoneyTable, setTextTable } from '../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert} from '../../functions/alert'
+import NewTableServerRender from '../../components/tables/NewTableServerRender'
+import { renderToString } from 'react-dom/server'
+
+const $ = require('jquery');
 
 class NominaAdmin extends Component {
     state = {  
@@ -64,6 +68,12 @@ class NominaAdmin extends Component {
     onSubmit = e => {
         e.preventDefault()
         this.addNominaAdminAxios()
+    }
+
+    async getNominasAxios(){
+        var table = $('#kt_datatable2_nomina_admin')
+            .DataTable();
+        table.ajax.reload();
     }
 
     async getOptionsAxios(){
@@ -131,7 +141,8 @@ class NominaAdmin extends Component {
         await axios.post(URL_DEV + 'rh/nomina-administrativa', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                
+                this.handleCloseModal()
+                this.getNominasAxios()
             },
             (error) => {
                 console.log(error, 'error')
@@ -154,7 +165,58 @@ class NominaAdmin extends Component {
             ... this.state,
             modal,
             form: this.clearForm(),
-            formeditado:0
+            formeditado:0,
+            title: 'Nueva nómina administrativa',
+        })
+    }
+
+    openModalEdit = nomina => {
+        const { modal, form } = this.state
+        modal.form = true
+
+        form.periodo = nomina.periodo
+        form.empresa = nomina.empresa ? nomina.empresa.id.toString() : ''
+        form.fechaInicio = new Date(nomina.fecha_inicio)
+        form.fechaFin = nomina.fecha_fin ? new Date(nomina.fecha_fin) : ''
+
+        let aux = []
+        nomina.nominas_administrativas.map( (nom, key) => {
+            console.log(key, ' - ', nom)
+            aux.push(
+                {
+                    usuario: nom.empleado ? nom.empleado.id.toString() : '',
+                    sueldoDiario: nom.sueldo_diario,
+                    diasVP: nom.dias_vp,
+                    diasVNP: nom.dias_vnp,
+                    nominImss: nom.nomina_imss,
+                    restanteNomina: nom.restante_nomina,
+                    extras:nom.extras
+                }
+            )
+        })
+
+        if(aux.length){
+            form.nominasAdmin = aux
+        }else{
+            form.nominasAdmin = [{
+                usuario: '',
+                sueldoDiario: '',
+                diasVP: '',
+                diasVNP: '', 
+                nominImss: '',
+                restanteNomina: '',
+                extras: ''
+            }]
+        }
+
+
+        this.setState({
+            ... this.state,
+            modal,
+            title: 'Editar nómina administrativa',
+            nomina: nomina,
+            form,
+            formeditado:1
         })
     }
 
@@ -301,26 +363,65 @@ class NominaAdmin extends Component {
             form
         })
     }
+
+    setNominaAdmin = nominas => {
+        let aux = []
+        nominas.map( (nomina) => {
+            aux.push(
+                {
+                    actions: this.setActions(nomina),
+                    periodo: renderToString(setTextTable(nomina.periodo)),
+                    fechaInicio: renderToString(setDateTable(nomina.fecha_inicio)),
+                    fechaFin: renderToString(setDateTable(nomina.fecha_fin)),
+                    totalNominaIMSS: renderToString(setMoneyTable(nomina.totalNominaImss)),
+                    restanteNomina: renderToString(setMoneyTable(nomina.totalRestanteNomina)),
+                    extras: renderToString(setMoneyTable(nomina.totalExtras)),
+                    granTotal: renderToString(setMoneyTable(nomina.totalNominaImss + nomina.totalRestanteNomina + nomina.totalExtras)),
+                    id: nomina.id
+                }
+            )
+        })
+        return aux
+    }
+
+    setActions = nomina => {
+        let aux = []
+        aux.push(
+            {
+                text: 'Editar',
+                btnclass: 'success',
+                iconclass: 'flaticon2-pen',
+                action: 'edit',
+                tooltip: { id: 'edit', text: 'Editar' }
+            }
+        )
+        return aux
+    }
     
     render() {
         const { modal, options, title, form, formeditado} = this.state
 
         return (
             <Layout active={'rh'} {...this.props}>
-                <NewTable   
-                    columns = { NOMINA_ADMIN_COLUMNS } data = { "" } 
+                <NewTableServerRender   
+                    columns = { NOMINA_ADMIN_COLUMNS }
                     title = 'Nómina Administrativa' subtitle = 'Listado de Nómina Administrativa'
                     mostrar_boton={true}
                     abrir_modal={true} 
                     onClick={this.openModal} 
-                    mostrar_acciones={false} 
-                    actions = {{
+                    mostrar_acciones={true} 
+                    actions={{
+                        'edit': { function: this.openModalEdit }
                     }}
-                    elements = { "" }
+                    accessToken = { this.props.authUser.access_token }
+                    setter = { this.setNominaAdmin }
+                    urlRender = {URL_DEV + 'rh/nomina-administrativa'}
+                    idTable = 'kt_datatable2_nomina_admin'
                 />
 
                 <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseModal}>
                     <NominaAdminForm
+                        title = { title }
                         formeditado={formeditado}
                         className=" px-3 "
                         options={options}

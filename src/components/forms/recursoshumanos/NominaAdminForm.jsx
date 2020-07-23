@@ -26,7 +26,7 @@ class NominaAdminForm extends Component {
     }
 
     render() {
-        const { options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, onChange, onChangeAdjunto, clearFiles, form, onSubmit, formeditado } = this.props
+        const { options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, onChange, onChangeAdjunto, clearFiles, form, onSubmit, formeditado, title } = this.props
         return (
             <Form id="form-nominaadmin"
                 onSubmit={
@@ -95,23 +95,28 @@ class NominaAdminForm extends Component {
                     </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
-                <div className="form-group row form-group-marginless">
-                    <div className="col-md-12">
-                        <FileInput
-                            requirevalidation={0}
-                            formeditado={formeditado}
-                            onChangeAdjunto={onChangeAdjunto}
-                            placeholder={form.adjuntos.adjunto.placeholder}
-                            value={form.adjuntos.adjunto.value}
-                            name='adjunto'
-                            id='adjunto'
-                            accept="image/*, application/pdf"
-                            files={form.adjuntos.adjunto.files}
-                            deleteAdjunto={clearFiles}
-                            multiple
-                        />
-                    </div>
-                </div>
+                {
+                    title !== 'Editar nómina administrativa' ?
+                        <div className="form-group row form-group-marginless">
+                            <div className="col-md-12">
+                                <FileInput
+                                    requirevalidation={0}
+                                    formeditado={formeditado}
+                                    onChangeAdjunto={onChangeAdjunto}
+                                    placeholder={form.adjuntos.adjunto.placeholder}
+                                    value={form.adjuntos.adjunto.value}
+                                    name='adjunto'
+                                    id='adjunto'
+                                    accept="image/*, application/pdf"
+                                    files={form.adjuntos.adjunto.files}
+                                    deleteAdjunto={clearFiles}
+                                    multiple
+                                />
+                            </div>
+                        </div>
+                    : ''
+                }
+                
 
                 <table className="table table-separate table-responsive" id="tabla_obra">
                     <thead>
@@ -129,7 +134,7 @@ class NominaAdminForm extends Component {
                     <tbody>
 
                         {
-                            form.nominasAdmin.map((nominasAdmin, key) => {
+                            form.nominasAdmin.map((nominaAdmin, key) => {
                                 return (
                                     <tr key={key}>
                                         <td>
@@ -149,7 +154,7 @@ class NominaAdminForm extends Component {
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
                                                 name="sueldoDiario"
-                                                value={form.sueldoDiario}
+                                                value={form['nominasAdmin'][key]['sueldoDiario']}
                                                 onChange={e => onChangeNominasAdmin(key, e, 'sueldoDiario')}
                                                 placeholder={null}
                                                 style={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
@@ -160,7 +165,7 @@ class NominaAdminForm extends Component {
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
                                                 name="diasVP"
-                                                value={form.diasVP}
+                                                value={form['nominasAdmin'][key]['diasVP']}
                                                 onChange={e => onChangeNominasAdmin(key, e, 'diasVP')}
                                                 placeholder={null}
                                                 style={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
@@ -171,7 +176,7 @@ class NominaAdminForm extends Component {
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
                                                 name="diasVNP"
-                                                value={form.diasVNP}
+                                                value={form['nominasAdmin'][key]['diasVNP']}
                                                 onChange={e => onChangeNominasAdmin(key, e, 'diasVNP')}
                                                 placeholder={null}
                                                 style={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
@@ -182,7 +187,7 @@ class NominaAdminForm extends Component {
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
                                                 name="nominImss"
-                                                value={form.hora3T}
+                                                value={form['nominasAdmin'][key]['nominImss']}
                                                 onChange={e => onChangeNominasAdmin(key, e, 'nominImss')}
                                                 placeholder={null}
                                                 style={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
@@ -193,7 +198,7 @@ class NominaAdminForm extends Component {
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
                                                 name="restanteNomina"
-                                                value={form.restanteNomina}
+                                                value={form['nominasAdmin'][key]['restanteNomina']}
                                                 onChange={e => onChangeNominasAdmin(key, e, 'restanteNomina')}
                                                 placeholder={null}
                                                 style={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
@@ -204,7 +209,7 @@ class NominaAdminForm extends Component {
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
                                                 name="extras"
-                                                value={form.extras}
+                                                value={form['nominasAdmin'][key]['extras']}
                                                 onChange={e => onChangeNominasAdmin(key, e, 'extras')}
                                                 placeholder={null}
                                                 style={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
