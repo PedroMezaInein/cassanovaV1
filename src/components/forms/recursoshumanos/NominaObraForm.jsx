@@ -31,7 +31,7 @@ class NominaObraForm extends Component {
     }
 
     render() {
-        const { options, addRowNomina, deleteRowNomina, onChangeNominas, onChange, clearFiles, onChangeAdjunto, form, onSubmit, formeditado } = this.props
+        const { options, addRowNomina, deleteRowNomina, onChangeNominas, onChange, clearFiles, onChangeAdjunto, form, onSubmit, formeditado, title} = this.props
         return (
             <Form id="form-nominaobra"
                 onSubmit={
@@ -99,23 +99,29 @@ class NominaObraForm extends Component {
                         />
                     </div>
                 </div>
-                <div className="form-group row form-group-marginless">
-                    <div className="col-md-12">
-                        <FileInput
-                            requirevalidation={0}
-                            formeditado={formeditado}
-                            onChangeAdjunto={onChangeAdjunto}
-                            placeholder={form.adjuntos.adjunto.placeholder}
-                            value={form.adjuntos.adjunto.value}
-                            name='adjunto'
-                            id='adjunto'
-                            accept="image/*, application/pdf"
-                            files={form.adjuntos.adjunto.files}
-                            deleteAdjunto={clearFiles}
-                            multiple
-                        />
-                    </div>
-                </div>
+                {
+                    title !== 'Editar nómina obra' ?
+                        <>
+                            <div className="form-group row form-group-marginless">
+                                <div className="col-md-12">
+                                    <FileInput
+                                        requirevalidation={0}
+                                        formeditado={formeditado}
+                                        onChangeAdjunto={onChangeAdjunto}
+                                        placeholder={form.adjuntos.adjunto.placeholder}
+                                        value={form.adjuntos.adjunto.value}
+                                        name='adjunto'
+                                        id='adjunto'
+                                        accept="image/*, application/pdf"
+                                        files={form.adjuntos.adjunto.files}
+                                        deleteAdjunto={clearFiles}
+                                        multiple
+                                    />
+                                </div>
+                            </div>
+                        </>
+                        : ''
+                }
 
                 <table className="table table-separate table-responsive" id="tabla_obra">
                     <thead>
@@ -142,8 +148,7 @@ class NominaObraForm extends Component {
                                             <SelectSearch
                                                 formeditado={formeditado}
                                                 options={options.usuarios}
-                                                placeholder="Selecciona el empleado"
-                                                // placeholder={null}
+                                                placeholder="Selecciona el empleado" 
                                                 name="usuario"
                                                 value={form['nominas'][key]['usuario']}
                                                 onChange={(value) => this.updateUsuario(value, key)}
@@ -168,8 +173,8 @@ class NominaObraForm extends Component {
                                             <Input
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
-                                                name="sueldoh"
-                                                value={form.sueldoh}
+                                                name="sueldoh" 
+                                                value={form['nominas'][key]['sueldoh']}
                                                 onChange={e => onChangeNominas(key, e, 'sueldoh')}
                                                 placeholder={null}
                                                 style={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
@@ -179,8 +184,8 @@ class NominaObraForm extends Component {
                                             <Input
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
-                                                name="hora1T"
-                                                value={form.hora1T}
+                                                name="hora1T" 
+                                                value={form['nominas'][key]['hora1T']}
                                                 onChange={e => onChangeNominas(key, e, 'hora1T')}
                                                 placeholder={null}
                                                 style={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
@@ -190,8 +195,8 @@ class NominaObraForm extends Component {
                                             <Input
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
-                                                name="hora2T"
-                                                value={form.hora2T}
+                                                name="hora2T" 
+                                                value={form['nominas'][key]['hora2T']}
                                                 onChange={e => onChangeNominas(key, e, 'hora2T')}
                                                 placeholder={null}
                                                 style={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
@@ -201,8 +206,8 @@ class NominaObraForm extends Component {
                                             <Input
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
-                                                name="hora3T"
-                                                value={form.hora3T}
+                                                name="hora3T" 
+                                                value={form['nominas'][key]['hora3T']}
                                                 onChange={e => onChangeNominas(key, e, 'hora3T')}
                                                 placeholder={null}
                                                 style={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
@@ -212,8 +217,8 @@ class NominaObraForm extends Component {
                                             <Input
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
-                                                name="nominImss"
-                                                value={form.hora3T}
+                                                name="nominImss" 
+                                                value={form['nominas'][key]['nominImss']}
                                                 onChange={e => onChangeNominas(key, e, 'nominImss')}
                                                 placeholder={null}
                                                 style={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
@@ -224,7 +229,7 @@ class NominaObraForm extends Component {
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
                                                 name="restanteNomina"
-                                                value={form.restanteNomina}
+                                                value={form['nominas'][key]['restanteNomina']}
                                                 onChange={e => onChangeNominas(key, e, 'restanteNomina')}
                                                 placeholder={null}
                                                 style={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
@@ -235,7 +240,7 @@ class NominaObraForm extends Component {
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
                                                 name="extras"
-                                                value={form.extras}
+                                                value={form['nominas'][key]['extras']}
                                                 onChange={e => onChangeNominas(key, e, 'extras')}
                                                 placeholder={null}
                                                 style={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
