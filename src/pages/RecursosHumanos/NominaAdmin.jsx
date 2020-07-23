@@ -61,6 +61,11 @@ class NominaAdmin extends Component {
             this.getOptionsAxios()
     }
 
+    onSubmit = e => {
+        e.preventDefault()
+        this.addNominaAdminAxios()
+    }
+
     async getOptionsAxios(){
         waitAlert()
         const { access_token } = this.props.authUser
@@ -69,12 +74,64 @@ class NominaAdmin extends Component {
                 swal.close()
                 const { usuarios, empresas } = response.data
                 const { options, data } = this.state 
-                options['usuarios'] = setOptions( usuarios, 'name', 'id')
+                options['usuarios'] = setOptions( usuarios, 'nombre', 'id')
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 this.setState({
                     ... this.state,
                     options
                 })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async addNominaAdminAxios(){
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        const data = new FormData();
+
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                case 'fechaInicio':
+                case 'fechaFin':
+                    data.append(element, (new Date(form[element])).toDateString())
+                    break;
+                case 'nominasAdmin':
+                    data.append(element, JSON.stringify(form[element]))
+                    break;
+                case 'adjuntos':
+                    break; 
+                default:
+                    data.append(element, form[element])
+                    break
+            }
+        })
+        aux = Object.keys(form.adjuntos)
+        aux.map((element) => {
+            if (form.adjuntos[element].value !== '') {
+                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                }
+                data.append('adjuntos[]', element)
+            }
+        })
+        await axios.post(URL_DEV + 'rh/nomina-administrativa', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                swal.close()
+                
             },
             (error) => {
                 console.log(error, 'error')
@@ -274,6 +331,7 @@ class NominaAdmin extends Component {
                         onChange={this.onChange}
                         onChangeAdjunto={this.onChangeAdjunto}
                         clearFiles={this.clearFiles}
+                        onSubmit = { this.onSubmit }
                     >
                     </NominaAdminForm>
                 </Modal>  
