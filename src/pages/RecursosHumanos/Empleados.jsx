@@ -215,9 +215,12 @@ class Empleados extends Component {
             (response) => {
                 this.getEmpleadosAxios();
 
+                const { modal } = this.state
+                modal.form = false
+
                 this.setState({                    
                     ... this.state,
-                    modal: false,
+                    modal,
                     form: this.clearForm()
                 })
                 swal({
@@ -227,10 +230,6 @@ class Empleados extends Component {
                     timer: 1500,
                     buttons: false,
                 })
-                const { history } = this.props
-                history.push({
-                    pathname: '/rh/empleados'
-                });
             },
             (error) => {
                 console.log(error, 'error')
@@ -256,9 +255,12 @@ class Empleados extends Component {
                 const {  modal } = this.state
                 this.getEmpleadosAxios();
 
+                modal.form = false
+
                 this.setState({                    
                     ... this.state,
-                    modal: false,
+                    modal,
+                    empleado: '',
                     form: this.clearForm()
                 })
 
@@ -270,12 +272,7 @@ class Empleados extends Component {
                     buttons: false,
                 })
 
-                modal.form = false
-
-                const { history } = this.props
-                history.push({
-                    pathname: '/rh/empleados'
-                });
+                
             },
             (error) => {
                 console.log(error, 'error')
@@ -294,16 +291,18 @@ class Empleados extends Component {
     async deleteEmpleadoAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { form, empleado } = this.state
+        const { empleado } = this.state
 
-        await axios.delete(URL_DEV + 'rh/empleado/'+ empleado.id , form, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(URL_DEV + 'rh/empleado/'+ empleado.id, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { modal } = this.state
                 this.getEmpleadosAxios();
+                modal.delete = false
 
                 this.setState({                    
                     ... this.state,
-                    modal: false,
+                    modal,
+                    empleado: '',
                     form: this.clearForm()
                 })
 
@@ -314,13 +313,6 @@ class Empleados extends Component {
                     timer: 1500,
                     buttons: false,
                 })
-
-                modal.delete = false
-
-                const { history } = this.props
-                history.push({
-                    pathname: '/rh/empleados'
-                });
             },
             (error) => {
                 console.log(error, 'error')
@@ -514,7 +506,11 @@ class Empleados extends Component {
 
     onSubmit = e => {
         e.preventDefault()
-        this.addEmpleadoAxios()
+        const { title } = this.state
+        if(title === 'Editar empleado')
+            this.updateEmpleadoAxios()
+        else
+            this.addEmpleadoAxios()
     }
 
     async getEmpleadosAxios() {
