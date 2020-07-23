@@ -79,7 +79,7 @@ class Empleados extends Component {
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'rh/nomina-administrativa/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'rh/empleado/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
                 const { empresas } = response.data
@@ -135,7 +135,7 @@ class Empleados extends Component {
             }
         })
 
-        await axios.post(URL_DEV + 'prueba', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'rh/empleado', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.setState({
                     ... this.state,
@@ -283,6 +283,10 @@ class Empleados extends Component {
             ... this.state,
             form
         })
+        
+    onSubmit = e => {
+        e.preventDefault()
+        this.addEmpleadoAxios()
     }
 
     render() {
