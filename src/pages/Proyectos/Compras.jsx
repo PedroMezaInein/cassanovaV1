@@ -137,7 +137,8 @@ class Compras extends Component {
     setAdjuntosTable = compra => {
         let aux = []
 
-        compra.adjuntos.map((adjunto) => {
+        let adjuntos = compra.presupuestos.concat(compra.pagos)
+        adjuntos.map((adjunto) => {
             aux.push({
                 actions: this.setActionsAdjuntos(adjunto),
                 url: renderToString(
