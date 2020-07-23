@@ -196,7 +196,7 @@ class VentasForm extends Component {
                                         form.factura === 'Con factura' && title !== 'Editar venta' ?
                                             <div className="col-md-4">
                                                 <Input
-                                                    requirevalidation={1}
+                                                    requirevalidation={0}
                                                     formeditado={formeditado}
                                                     placeholder="RFC"
                                                     name="rfc"
@@ -213,6 +213,29 @@ class VentasForm extends Component {
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
+                                    <div className="col-md-4">
+                                        {
+                                            form.facturaObject ?
+                                                <Input
+                                                    placeholder="EMPRESA"
+                                                    name="empresa"
+                                                    readOnly
+                                                    value={form.empresa}
+                                                    onChange={onChange}
+                                                    iconclass={"far fa-building"}
+                                                />
+                                                :
+                                                <SelectSearch
+                                                    formeditado={formeditado}
+                                                    options={options.empresas}
+                                                    placeholder="SELECCIONA LA EMPRESA"
+                                                    name="empresas"
+                                                    value={form.empresa}
+                                                    onChange={this.updateEmpresa}
+                                                    iconclass={"far fa-building"}
+                                                />
+                                        }
+                                    </div>
                                     <div className="col-md-4">
                                         {
                                             form.facturaObject ?
@@ -252,29 +275,6 @@ class VentasForm extends Component {
                                             : ''
 
                                     }
-                                    <div className="col-md-4">
-                                        {
-                                            form.facturaObject ?
-                                                <Input
-                                                    placeholder="EMPRESA"
-                                                    name="empresa"
-                                                    readOnly
-                                                    value={form.empresa}
-                                                    onChange={onChange}
-                                                    iconclass={"far fa-building"}
-                                                />
-                                                :
-                                                <SelectSearch
-                                                    formeditado={formeditado}
-                                                    options={options.empresas}
-                                                    placeholder="SELECCIONA LA EMPRESA"
-                                                    name="empresas"
-                                                    value={form.empresa}
-                                                    onChange={this.updateEmpresa}
-                                                    iconclass={"far fa-building"}
-                                                />
-                                        }
-                                    </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2"></div>

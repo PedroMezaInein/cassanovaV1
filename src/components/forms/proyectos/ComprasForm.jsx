@@ -198,7 +198,7 @@ class ComprasForm extends Component {
                                         form.factura === 'Con factura' && title !== 'Editar compra' ?
                                             <div className="col-md-4">
                                                 <Input 
-                                                    requirevalidation={1}
+                                                    requirevalidation={0}
                                                     formeditado={formeditado}
                                                     placeholder="RFC" 
                                                     name="rfc" 
