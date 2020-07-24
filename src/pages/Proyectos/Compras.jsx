@@ -387,7 +387,8 @@ class Compras extends Component {
 
     openModalAdjuntos = compra => {
         const { data } = this.state
-        data.adjuntos = compra.adjuntos
+        console.log(compra, 'compra')
+        data.adjuntos = compra.presupuestos.concat(compra.pagos)
         this.setState({
             ... this.state,
             modalAdjuntos: true,
@@ -779,7 +780,7 @@ class Compras extends Component {
 
                 const { compra } = response.data
                 const { data } = this.state
-                data.adjuntos = compra.adjuntos
+                data.adjuntos = compra.presupuestos.concat(compra.pagos)
                 //AQUI
                 this.getComprasAxios()
 
@@ -1134,7 +1135,7 @@ class Compras extends Component {
             (response) => {
                 const { compra } = response.data
                 const { data } = this.state
-                data.adjuntos = compra.adjuntos
+                data.adjuntos = compra.presupuestos.concat(compra.pagos)
                 //AQUI
                 this.getComprasAxios()
 

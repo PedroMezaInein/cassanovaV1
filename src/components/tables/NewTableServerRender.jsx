@@ -17,7 +17,7 @@ const global_variable = {}
 
 function runAjax(settings, accessToken, request, setter, url) {
     var deferred = new $.Deferred();
-    waitAlert()
+    /* waitAlert() */
     $.ajax({
         data: request,
         url: url,
@@ -25,7 +25,7 @@ function runAjax(settings, accessToken, request, setter, url) {
         type: "GET",
         headers: {'Content-Type': 'application/json', Authorization:`Bearer ${accessToken}`},
         success: function (response) {
-            swal.close()
+            /* swal.close() */
             deferred.resolve({ data: setter(response.data), draw: response.draw, recordsTotal: response.recordsTotal, recordsFiltered: response.recordsFiltered, elements: response.data });
         },
         error: function (error) {
@@ -100,6 +100,7 @@ class NewTableServerRender extends Component {
                         ... _that.state,
                         newElements: response.elements
                     })
+                    swal.close()
                     drawCallback(response);
                 });
             },
