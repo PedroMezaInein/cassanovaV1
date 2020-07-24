@@ -240,7 +240,7 @@ class SolicitudCompra extends Component{
                     actions: this.setActions(solicitud),
                     proyecto: renderToString(setTextTable( solicitud.proyecto ? solicitud.proyecto.nombre : '')),
                     empresa: renderToString(setTextTable( solicitud.empresa ? solicitud.empresa.name : '' )),
-                    proveedor: renderToString(setTextTable( solicitud.proveedor ? solicitud.proveedor.nombre : '' )),
+                    proveedor: renderToString(setTextTable( solicitud.proveedor ? solicitud.proveedor.razon_social : '' )),
                     factura: renderToString(setTextTable(solicitud.factura ? 'Con factura' : 'Sin factura')),
                     monto: renderToString(setMoneyTable(solicitud.monto)),
                     tipoPago: renderToString(setTextTable(solicitud.tipo_pago.tipo)),

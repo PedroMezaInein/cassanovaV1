@@ -1430,3 +1430,58 @@ export const EMPLEADOS_COLUMNS = [
         accessor: 'vacaciones_tomadas'
     }
 ]
+
+export const EMPLEADOS_COLUMNS_OBRA = [
+    {
+        Header: 'Opciones',
+        accessor: 'actions_obra',
+    },
+    {
+        Header: 'Nombre',
+        accessor: 'nombre_obra',
+    },
+    {
+        Header: 'Empresa',
+        accessor: 'empresa_obra'
+    },
+    {
+        Header: 'Puesto',
+        accessor: 'puesto_obra'
+    },
+    {
+        Header: 'RFC',
+        accessor: 'rfc_obra'
+    },
+    {
+        Header: 'NSS',
+        accessor: 'nss_obra'
+    },
+    {
+        Header: 'CURP',
+        accessor: 'curp_obra'
+    },
+    {
+        Header: 'Estatus',
+        accessor: 'estatus_obra'
+    },
+    {
+        Header: 'Fecha de Inicio',
+        accessor: 'fechaInicio_obra'
+    },
+    {
+        Header: 'Tipo de Empleado',
+        accessor: 'tipo_empleado_obra'
+    },
+    {
+        Header: 'Cuenta de Depósito',
+        accessor: 'cuenta_obra'
+    },
+    {
+        Header: 'Contacto de Emergencia',
+        accessor: 'nombre_emergencia_obra'
+    },
+    {
+        Header: 'Días de Vacaciones Tomadas',
+        accessor: 'vacaciones_tomadas_obra'
+    }
+]
