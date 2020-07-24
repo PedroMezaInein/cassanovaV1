@@ -8,7 +8,7 @@ import { NOMINA_ADMIN_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS} from '../../constants'
 import NewTable from '../../components/tables/NewTable' 
 import { NominaAdminForm, AdjuntosForm} from '../../components/forms'
 import { setOptions, setDateTable, setMoneyTable, setTextTable, setAdjuntosList } from '../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert} from '../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, deleteAlert} from '../../functions/alert'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { renderToString } from 'react-dom/server'
 import TableForModals from '../../components/tables/TableForModals'
@@ -91,7 +91,6 @@ class NominaAdmin extends Component {
 
         let aux = []
         nomina.nominas_administrativas.map( (nom, key) => {
-            console.log(key, ' - ', nom)
             aux.push(
                 {
                     usuario: nom.empleado ? nom.empleado.id.toString() : '',
@@ -136,7 +135,6 @@ class NominaAdmin extends Component {
     openModalAdjuntos = nomina => {
         const { modal, data } = this.state
         modal.adjuntos = true
-        console.log(data)
         data.adjuntos = nomina.adjuntos
         this.setState({
             ... this.state,
@@ -146,6 +144,10 @@ class NominaAdmin extends Component {
             form: this.clearForm(),
             adjuntos: this.setAdjuntosTable(data.adjuntos)
         })
+    }
+
+    openModalDeleteAdjuntos = adjunto => {
+        deleteAlert('¿Seguro deseas borrar el adjunto?', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
     }
 
     setAdjuntosTable = adjuntos => {
@@ -419,6 +421,43 @@ class NominaAdmin extends Component {
         })
     }
 
+    async deleteAdjuntoAxios(id) {
+        const { access_token } = this.props.authUser
+        const { nomina } = this.state
+        await axios.delete(URL_DEV + 'rh/nomina-administrativa/' + nomina.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { nomina } = response.data
+                const { data, key } = this.state
+                data.adjuntos = nomina.adjuntos
+                if(key === 'administrativo'){
+                    this.getEmpleadosAxios()
+                }
+                if(key === 'obra'){
+                    this.getEmpleadosObraAxios()
+                }
+
+                this.setState({
+                    ... this.state,
+                    form: this.clearForm(),
+                    nomina: nomina,
+                    adjuntos: this.setAdjuntosTable(data.adjuntos),
+                    data
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
 
     handleCloseModal = () => {
         const { modal } = this.state 
