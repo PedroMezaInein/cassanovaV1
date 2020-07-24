@@ -111,7 +111,7 @@ class Empleados extends Component {
         form.fechaInicio = new Date(empleado.fecha_inicio)
         form.fechaFin = new Date(empleado.fecha_fin)
         form.puesto = empleado.puesto  
-        // form.estatus_imss = empleado.estatus_imss ? empleado.estatus_imss : 0, 
+        form.estatus_imss = this.showStatusImss(empleado.estatus_imss);
         form.vacaciones_tomadas = empleado.vacaciones_tomadas 
         form.fecha_alta_imss = new Date(empleado.fecha_alta_imss)
         form.numero_alta_imss = empleado.numero_alta_imss  
@@ -126,6 +126,21 @@ class Empleados extends Component {
             formeditado:1,
         })
     }
+    showStatusImss(valor) {
+        let texto = '';
+        switch (valor) {
+            case 0:
+                texto = 'Inactivo'
+                break;
+            case 1:
+                texto = 'Activo'
+                break;
+            default:
+                break;
+        }
+        return texto
+    }
+
 
     openModalDelete = empleado => {
         const { modal } = this.state
