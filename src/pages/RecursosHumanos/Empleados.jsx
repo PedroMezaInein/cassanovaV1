@@ -9,7 +9,7 @@ import { EMPLEADOS_COLUMNS, EMPLEADOS_COLUMNS_OBRA, URL_DEV, ADJUNTOS_COLUMNS} f
 import NewTableServerRender from '../../components/tables/NewTableServerRender' 
 import { EmpleadosForm, AdjuntosForm } from '../../components/forms'
 import { setOptions, setTextTable, setArrayTable, setMoneyTable, setAdjuntosList, setDateTable} from '../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert} from '../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, deleteAlert } from '../../functions/alert'
 import { Tabs, Tab, Form } from 'react-bootstrap' 
 import TableForModals from '../../components/tables/TableForModals'
 
@@ -171,6 +171,10 @@ class Empleados extends Component {
             form: this.clearForm(),
             adjuntos: this.setAdjuntosTable(data.adjuntos)
         })
+    }
+
+    openModalDeleteAdjuntos = adjunto => {
+        deleteAlert('¿Seguro deseas borrar el adjunto?', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
     }
 
     setAdjuntosTable = adjuntos => {
@@ -428,20 +432,24 @@ class Empleados extends Component {
 
         data.append('id', empleado.id)
 
-        await axios.post(URL_DEV + 'empleados/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'rh/empleado/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
 
                 const { empleado } = response.data
                 const { data, key } = this.state
-                data.adjuntos = empleado.adjuntos
-                //AQUI
-                this.getComprasAxios()
+                data.adjuntos = empleado.datos_generales.concat(empleado.recibos_nomina).concat(empleado.altas_bajas)
+                if(key === 'administrativo'){
+                    this.getEmpleadosAxios()
+                }
+                if(key === 'obra'){
+                    this.getEmpleadosObraAxios()
+                }
 
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
                     empleado: empleado,
-                    adjuntos: this.setAdjuntosTable(empleado),
+                    adjuntos: this.setAdjuntosTable(data.adjuntos),
                     data
                 })
 
@@ -451,6 +459,44 @@ class Empleados extends Component {
                     icon: 'success',
                     timer: 1500,
                     buttons: false
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async deleteAdjuntoAxios(id) {
+        const { access_token } = this.props.authUser
+        const { empleado } = this.state
+        await axios.delete(URL_DEV + 'rh/empleado/' + empleado.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empleado } = response.data
+                const { data, key } = this.state
+                data.adjuntos = empleado.datos_generales.concat(empleado.recibos_nomina).concat(empleado.altas_bajas)
+                if(key === 'administrativo'){
+                    this.getEmpleadosAxios()
+                }
+                if(key === 'obra'){
+                    this.getEmpleadosObraAxios()
+                }
+
+                this.setState({
+                    ... this.state,
+                    form: this.clearForm(),
+                    empleado: empleado,
+                    adjuntos: this.setAdjuntosTable(data.adjuntos),
+                    data
                 })
 
             },
