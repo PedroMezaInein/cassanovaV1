@@ -395,7 +395,7 @@ class EmpleadosForm extends Component {
                                     </div>
                                     <div className="col-md-4">
                                         <Input
-                                            requirevalidation={1}
+                                            requirevalidation={0}
                                             formeditado={formeditado}
                                             onChange={onChange}
                                             name="vacaciones_tomadas"
