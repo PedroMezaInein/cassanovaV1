@@ -249,9 +249,16 @@ class NominaAdmin extends Component {
         })
         await axios.post(URL_DEV + 'rh/nomina-administrativa', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
                 this.handleCloseModal()
                 this.getNominasAxios()
+
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'La nomina fue modificado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false,
+                })
             },
             (error) => {
                 console.log(error, 'error')
@@ -276,7 +283,7 @@ class NominaAdmin extends Component {
             (response) => {
                 const { modal } = this.state
                 const { nomina } = response.data
-                swal.close()
+
                 this.handleCloseModal()
                 this.getNominasAxios()
 
@@ -316,22 +323,13 @@ class NominaAdmin extends Component {
         const { access_token } = this.props.authUser
         const { form, nomina} = this.state
         
-        await axios.delete(URL_DEV + 'rh/administrativa' + nomina.id , form, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(URL_DEV + 'rh/nomina-administrativa/' + nomina.id, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { modal } = this.state
                 const { nomina } = response.data
-                swal.close()
-                this.handleCloseModal()
                 this.getNominasAxios()
 
-                modal.form = false
-
-                this.setState({                    
-                    ... this.state,
-                    modal,
-                    nomina: '',
-                    form: this.clearForm()
-                })
+                modal.delete = false
 
                 this.setState({                    
                     ... this.state,
