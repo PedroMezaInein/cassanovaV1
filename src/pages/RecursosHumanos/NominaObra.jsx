@@ -5,11 +5,12 @@ import axios from 'axios'
 import swal from 'sweetalert'
 import Layout from '../../components/layout/layout' 
 import { Modal, ModalDelete} from '../../components/singles' 
-import { NOMINA_OBRA_COLUMNS, URL_DEV} from '../../constants'
+import { NOMINA_OBRA_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS} from '../../constants'
 import NewTableServerRender from '../../components/tables/NewTableServerRender' 
-import { NominaObraForm } from '../../components/forms'
-import { setOptions, setDateTable, setMoneyTable, setTextTable } from '../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert} from '../../functions/alert'
+import { NominaObraForm, AdjuntosForm} from '../../components/forms'
+import { setOptions, setDateTable, setMoneyTable, setTextTable, setAdjuntosList} from '../../functions/setters'
+import { errorAlert, waitAlert, forbiddenAccessAlert, deleteAlert} from '../../functions/alert'
+import TableForModals from '../../components/tables/TableForModals'
 
 const $ = require('jquery');
 
@@ -92,10 +93,8 @@ class NominaObra extends Component {
         form.fechaInicio = new Date(nomina.fecha_inicio)
         form.fechaFin = nomina.fecha_fin ? new Date(nomina.fecha_fin) : ''
 
-        let aux = []
-        console.log(nomina)
+        let aux = [] 
         nomina.nominas_obras.map( (nom, key) => {
-            console.log(key, ' - ', nom)
             aux.push(
                 {
                     usuario: nom.empleado ? nom.empleado.id.toString() : '',
@@ -379,6 +378,104 @@ class NominaObra extends Component {
         })
     }
 
+    async addAdjuntoNominaAdminAxios() {
+
+        const { access_token } = this.props.authUser
+        const { form, nomina } = this.state
+        const data = new FormData();
+
+        let aux = Object.keys(form.adjuntos)
+        aux.map((element) => {
+            if (form.adjuntos[element].value !== '') {
+                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                }
+                data.append('adjuntos[]', element)
+            }
+        })
+
+        data.append('id', nomina.id)
+
+        await axios.post(URL_DEV + 'nomina/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+
+                const { nomina } = response.data
+                const { data, key } = this.state
+                data.adjuntos = nomina.adjuntos
+                //AQUI
+                this.getNominasAxios()
+
+                this.setState({
+                    ... this.state,
+                    form: this.clearForm(),
+                    nomina: nomina,
+                    adjuntos: this.setAdjuntosTable(nomina),
+                    data
+                })
+
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async deleteAdjuntoAxios(id) {
+        const { access_token } = this.props.authUser
+        const { nomina } = this.state
+        await axios.delete(URL_DEV + 'rh/nomina-obra/' + nomina.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { nomina } = response.data
+                const { data, key } = this.state
+                data.adjuntos = nomina.adjuntos
+                if(key === 'administrativo'){
+                    this.getEmpleadosAxios()
+                }
+                if(key === 'obra'){
+                    this.getEmpleadosObraAxios()
+                }
+
+                this.setState({
+                    ... this.state,
+                    form: this.clearForm(),
+                    nomina: nomina,
+                    adjuntos: this.setAdjuntosTable(data.adjuntos),
+                    data
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+
     handleCloseModal = () => {
         const { modal } = this.state 
         modal.form = false
@@ -392,6 +489,17 @@ class NominaObra extends Component {
     handleCloseModalDelete = () => {
         const { modal } = this.state
         modal.delete = false
+        this.setState({
+            ... this.state,
+            form: this.clearForm(),
+            modal, 
+            nomina: ''
+        })
+    }
+
+    handleCloseAdjuntos = () => {
+        const { modal } = this.state
+        modal.adjuntos = false
         this.setState({
             ... this.state,
             form: this.clearForm(),
@@ -452,7 +560,6 @@ class NominaObra extends Component {
     }
 
     setNominaObra = nominas => {
-        console.log(nominas)
         let aux = []
         nominas.map( (nomina) => {
             aux.push(
@@ -488,6 +595,13 @@ class NominaObra extends Component {
                 iconclass: 'flaticon2-rubbish-bin',                  
                 action: 'delete',
                 tooltip: {id:'delete', text:'Eliminar', type:'error'},
+            },
+            {
+                text: 'Adjuntos',
+                btnclass: 'primary',
+                iconclass: 'flaticon-attachment',
+                action: 'adjuntos',
+                tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
             }
         )
         return aux
@@ -598,7 +712,7 @@ class NominaObra extends Component {
     }
     
     render() {
-        const { modal, options, title, form, formeditado} = this.state
+        const { modal, options, title, form, formeditado, adjuntos, data} = this.state
 
         return (
             <Layout active={'rh'} {...this.props}>
@@ -611,7 +725,8 @@ class NominaObra extends Component {
                     mostrar_acciones={true} 
                     actions={{
                         'edit': { function: this.openModalEdit },
-                        'delete': {function: this.openModalDelete}
+                        'delete': {function: this.openModalDelete},
+                        'adjuntos': { function: this.openModalAdjuntos }
                     }}
                     accessToken = { this.props.authUser.access_token }
                     setter = { this.setNominaObra }
@@ -639,6 +754,24 @@ class NominaObra extends Component {
 
                 <ModalDelete title={'¿Desea eliminar la nómina?'} show = { modal.delete } handleClose = { this.handleCloseModalDelete } onClick=  { (e) => { e.preventDefault(); waitAlert(); this.deleteNominaObraAxios() }}>
                 </ModalDelete>
+
+                <Modal size="xl" title={"Adjuntos"} show={modal.adjuntos} handleClose={this.handleCloseAdjuntos}>
+                    <AdjuntosForm form={form} onChangeAdjunto={this.onChangeAdjunto} clearFiles={this.clearFiles}
+                        onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addAdjuntoNominaAdminAxios() }} 
+                        adjuntos = {['adjunto']}/>
+                    
+                    <TableForModals
+                        columns={ADJUNTOS_COLUMNS}
+                        data={adjuntos}
+                        hideSelector={true}
+                        mostrar_acciones={true}
+                        actions={{
+                            'deleteAdjunto': { function: this.openModalDeleteAdjuntos }
+                        }}
+                        dataID='adjuntos'
+                        elements={data.adjuntos}
+                    />
+                </Modal>
 
             </Layout>
         )
