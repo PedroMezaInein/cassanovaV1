@@ -448,7 +448,7 @@ class VentasForm extends Component {
                                             name={'presupuesto'} id={'presupuesto'}
                                             accept="text/xml, application/pdf"
                                             files={form['adjuntos']['presupuesto']['files']}
-                                            deleteAdjunto={clearFiles}
+                                            deleteAdjunto={clearFiles} multiple
                                         />
                                     </div>
                                     <div className="col-md-4">
@@ -461,7 +461,7 @@ class VentasForm extends Component {
                                             name={'pago'} id={'pago'}
                                             accept="text/xml, application/pdf"
                                             files={form['adjuntos']['pago']['files']}
-                                            deleteAdjunto={clearFiles}
+                                            deleteAdjunto={clearFiles} multiple
                                         />
                                     </div>
                                 </div>
