@@ -35,8 +35,11 @@ class NominaObraForm extends Component {
         let nominImss = form.nominasObra[key].nominImss === undefined ? 0 : form.nominasObra[key].nominImss
         let restanteNomina = form.nominasObra[key].restanteNomina === undefined ? 0 : form.nominasObra[key].restanteNomina
         let extras = form.nominasObra[key].extras === undefined ? 0 : form.nominasObra[key].extras
+        
+        var resultado = parseFloat(nominImss) + parseFloat(restanteNomina) + parseFloat(extras)
+        var separators = resultado.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-        return parseFloat(nominImss) + parseFloat(restanteNomina) + parseFloat(extras)
+        return '$' + separators
     }
 
     render() {
@@ -188,6 +191,7 @@ class NominaObraForm extends Component {
                                                 placeholder={null}
                                                 thousandSeparator={true} 
                                                 customstyle={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
+                                                prefix={'$'}
                                             />
                                         </td>
                                         <td>
@@ -200,6 +204,7 @@ class NominaObraForm extends Component {
                                                 placeholder={null}
                                                 thousandSeparator={true} 
                                                 customstyle={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
+                                                prefix={'$'}
                                             />
                                         </td>
                                         <td>
@@ -212,6 +217,7 @@ class NominaObraForm extends Component {
                                                 placeholder={null}
                                                 thousandSeparator={true} 
                                                 customstyle={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
+                                                prefix={'$'}
                                             />
                                         </td>
                                         <td>
@@ -224,6 +230,7 @@ class NominaObraForm extends Component {
                                                 placeholder={null}
                                                 thousandSeparator={true} 
                                                 customstyle={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
+                                                prefix={'$'}
                                             />
                                         </td>
                                         <td>
@@ -236,6 +243,7 @@ class NominaObraForm extends Component {
                                                 placeholder={null}
                                                 thousandSeparator={true} 
                                                 customstyle={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
+                                                prefix={'$'}
                                             />
                                         </td>
                                         <td>
@@ -248,6 +256,7 @@ class NominaObraForm extends Component {
                                                 placeholder={null}
                                                 thousandSeparator={true} 
                                                 customstyle={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
+                                                prefix={'$'}
                                             />
                                         </td>
                                         <td>
@@ -260,10 +269,11 @@ class NominaObraForm extends Component {
                                                 placeholder={null}
                                                 thousandSeparator={true} 
                                                 customstyle={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
+                                                prefix={'$'}
                                             />
                                         </td>
                                         <td>
-                                            <p style={{ paddingLeft: "10px", width: "131px", marginTop: "30px" }}>
+                                            <p className="font-size-lg font-weight-bolder" style={{ paddingLeft: "10px", width: "auto", marginTop: "42px", paddingRight: "20px" }}>
                                                 {
                                                     this.getSuma(key)
                                                 }
