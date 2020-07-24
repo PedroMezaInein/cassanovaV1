@@ -21,6 +21,9 @@ class NominaObra extends Component {
             delete: false,
             adjuntos: false,
         },
+        data:{
+            adjuntos: []
+        },
         title: 'Nueva nómina de obra',
         form:{
             periodo : '',
@@ -142,6 +145,52 @@ class NominaObra extends Component {
             modal,
             nomina: nomina
         })
+    }
+
+    openModalAdjuntos = nomina => {
+        const { modal, data } = this.state
+        modal.adjuntos = true
+        data.adjuntos = nomina.adjuntos
+        this.setState({
+            ... this.state,
+            modal,
+            nomina: nomina,
+            data,
+            form: this.clearForm(),
+            adjuntos: this.setAdjuntosTable(data.adjuntos)
+        })
+    }
+
+    openModalDeleteAdjuntos = adjunto => {
+        deleteAlert('¿Seguro deseas borrar el adjunto?', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
+    }
+
+    setAdjuntosTable = adjuntos => {
+        let aux = []
+        adjuntos.map((adjunto) => {
+            aux.push({
+                actions: this.setActionsAdjuntos(adjunto),
+                url: renderToString(
+                    setAdjuntosList([{ name: adjunto.name, url: adjunto.url }])
+                ),
+                tipo: renderToString(setTextTable(adjunto.pivot.tipo)),
+                id: 'adjuntos-' + adjunto.id
+            })
+        })
+        return aux
+    }
+
+    setActionsAdjuntos = adjunto => {
+        let aux = []
+        aux.push(
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',
+                action: 'deleteAdjunto',
+                tooltip: { id: 'delete-Adjunto', text: 'Eliminar', type: 'error' },
+            })
+        return aux
     }
 
     setOptions = (name, array) => {
