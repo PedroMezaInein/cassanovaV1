@@ -30,6 +30,15 @@ class NominaObraForm extends Component {
         onChangeNominasObra(key, { target: { value: value, name: 'usuario' } }, 'usuario')
     }
 
+    getSuma = key => {
+        const { form } = this.props
+        let nominImss = form.nominasObra[key].nominImss === undefined ? 0 : form.nominasObra[key].nominImss
+        let restanteNomina = form.nominasObra[key].restanteNomina === undefined ? 0 : form.nominasObra[key].restanteNomina
+        let extras = form.nominasObra[key].extras === undefined ? 0 : form.nominasObra[key].extras
+
+        return parseFloat(nominImss) + parseFloat(restanteNomina) + parseFloat(extras)
+    }
+
     render() {
         const { options, addRowNominaObra, deleteRowNominaObra, onChangeNominasObra, onChange, clearFiles, onChangeAdjunto, form, onSubmit, formeditado, title} = this.props
         return (
@@ -254,7 +263,11 @@ class NominaObraForm extends Component {
                                             />
                                         </td>
                                         <td>
-                                            <p style={{ paddingLeft: "10px", width: "131px", marginTop: "30px" }}></p>
+                                            <p style={{ paddingLeft: "10px", width: "131px", marginTop: "30px" }}>
+                                                {
+                                                    this.getSuma(key)
+                                                }
+                                            </p>
                                         </td>
                                     </tr>
                                 )
