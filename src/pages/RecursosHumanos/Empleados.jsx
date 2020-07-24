@@ -5,7 +5,7 @@ import axios from 'axios'
 import swal from 'sweetalert'
 import Layout from '../../components/layout/layout' 
 import { Modal, ModalDelete} from '../../components/singles' 
-import { EMPLEADOS_COLUMNS, URL_DEV} from '../../constants'
+import { EMPLEADOS_COLUMNS, EMPLEADOS_COLUMNS_OBRA, URL_DEV} from '../../constants'
 import NewTableServerRender from '../../components/tables/NewTableServerRender' 
 import { EmpleadosForm } from '../../components/forms'
 import { setOptions, setTextTable, setArrayTable, setMoneyTable, setAdjuntosList, setDateTable} from '../../functions/setters'
@@ -126,6 +126,7 @@ class Empleados extends Component {
             formeditado:1,
         })
     }
+    
     showStatusImss(valor) {
         let texto = '';
         switch (valor) {
@@ -273,10 +274,8 @@ class Empleados extends Component {
             (response) => {
                 const {  modal } = this.state
                 const { empleado } = response.data
-                if(empleado.tipo_empleado === 'Administrativo')
-                    this.getEmpleadosAxios();
-                if(empleado.tipo_empleado === 'Obra')
-                    this.getEmpleadosObraAxios();
+                
+                window.location.reload(false); 
 
                 modal.form = false
 
@@ -477,6 +476,43 @@ class Empleados extends Component {
         return aux
     }
 
+    setEmpleadoObra = empleados => {
+        let aux = []
+        if (empleados)
+            empleados.map((empleado) => {
+                aux.push(
+                    {
+                        actions_obra: this.setActions(empleado),
+                        nombre_obra: renderToString(setTextTable(empleado.nombre)),
+                        empresa_obra: renderToString(setTextTable(empleado.empresa ? empleado.empresa.name : '')),
+                        puesto_obra: renderToString(setTextTable(empleado.puesto)),
+                        rfc_obra: renderToString(setTextTable(empleado.rfc)),
+                        nss_obra: renderToString(setTextTable(empleado.nss)),
+                        curp_obra: renderToString(setTextTable(empleado.curp)),
+                        estatus_obra: renderToString(setTextTable(empleado.estatus_empleado)),
+                        fechaInicio_obra: renderToString(setDateTable(empleado.fecha_inicio)),
+                        tipo_empleado_obra: renderToString(setTextTable(empleado.tipo_empleado)),
+                        cuenta_obra: renderToString(setArrayTable(
+                            [
+                                { 'name': 'Banco', 'text': empleado.banco ? empleado.banco : 'Sin definir' },
+                                { 'name': 'No. Cuenta', 'text': empleado.cuenta ? empleado.cuenta : 'Sin definir' },
+                                { 'name': 'Clabe', 'text': empleado.clabe ? empleado.clabe : 'Sin definir' },
+                            ]
+                        )),
+                        nombre_emergencia_obra: renderToString(setArrayTable(
+                            [
+                                { 'name': 'Nombre', 'text': empleado.nombre_emergencia ? empleado.nombre_emergencia : 'Sin definir' },
+                                { 'name': 'Teléfono', 'text': empleado.telefono_emergencia ? empleado.telefono_emergencia : 'Sin definir' }
+                            ]
+                        )),
+                        vacaciones_tomadas_obra: renderToString(setTextTable(empleado.vacaciones_tomadas)),
+                        id: empleado.id
+                    }
+                )
+            })
+        return aux
+    }
+
     setActions= empleado => {
         let aux = []
             aux.push(
@@ -554,7 +590,6 @@ class Empleados extends Component {
 
     render() {
         const { modal, options, title, form, formeditado} = this.state
-
         return (
             <Layout active={'rh'} {...this.props}>
                 <Tabs defaultActiveKey="administrativo">
@@ -584,7 +619,7 @@ class Empleados extends Component {
                     <Tab eventKey="obra" title="Obra">
                         <div className="py-2">
                             <NewTableServerRender
-                                columns={EMPLEADOS_COLUMNS}
+                                columns={EMPLEADOS_COLUMNS_OBRA}
                                 title='Empleados de obra' 
                                 subtitle='Listado de empleados'
                                 mostrar_boton = {true}
@@ -596,14 +631,13 @@ class Empleados extends Component {
                                     'delete': {function: this.openModalDelete},
                                 }}
                                 accessToken = {this.props.authUser.access_token}
-                                setter = {this.setEmpleado}
+                                setter = {this.setEmpleadoObra}
                                 urlRender = { URL_DEV + 'rh/empleado/obra' }
                                 idTable = 'kt_datatable2_empleados_obra'
                                 />
                         </div>
                     </Tab>
                 </Tabs>
-
                 <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseModal}>
                     <EmpleadosForm
                         formeditado={formeditado}
