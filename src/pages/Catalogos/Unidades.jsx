@@ -157,7 +157,7 @@ class Unidades extends Component {
 
     onSubmit = e => {
         e.preventDefault()
-        const { form, title } = this.state
+        const { title } = this.state
         if (title === 'Nueva unidad')
             this.addUnidadAxios()
         if (title === 'Editar unidad')
@@ -197,7 +197,7 @@ class Unidades extends Component {
 
     async addUnidadAxios() {
         const { access_token } = this.props.authUser
-        const { form, data } = this.state
+        const { form } = this.state
         await axios.post(URL_DEV + 'unidades', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { unidades } = response.data

@@ -219,19 +219,6 @@ class Leads extends Component {
         return aux
     }
 
-    /*    setActions = cliente => {
-        return(
-            <>
-                <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalEdit(e)(cliente)} text='' icon={faEdit} color="transparent" 
-                        tooltip={{id:'edit', text:'Editar'}} />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalDelete(e)(cliente)} text='' icon={faTrash} color="red" 
-                        tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
-                </div>
-            </>
-        )
-    }*/
-
     setText = text => {
         return (
             <Small>
@@ -520,13 +507,7 @@ class Leads extends Component {
         const { clientes, modal, typeForm, form, estado, municipio, colonias, modalDelete, cliente, data, formeditado, onSubmit} = this.state
         return (
             <Layout active={'leads'}  {...this.props}>
-                {/*<div className="text-right">
-                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon={faPlus} color="green" 
-                        tooltip={{id:'add', text:'Nuevo'}} />
-                </div>
-                */}
-
-                {/* <DataTable columns = { CLIENTES_COLUMNS } data = { clientes } />*/}
+                
                 <NewTable columns={CLIENTES_COLUMNS} data={clientes}
                     title='Clientes' subtitle='Listado de clientes'
                     mostrar_boton={true}

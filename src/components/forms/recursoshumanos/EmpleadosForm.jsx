@@ -22,7 +22,7 @@ class EmpleadosForm extends Component {
     }
 
     updateEmpresa = value => {
-        const { onChange, setOptions } = this.props
+        const { onChange} = this.props
         onChange({ target: { value: value, name: 'empresa' } })
     }
 

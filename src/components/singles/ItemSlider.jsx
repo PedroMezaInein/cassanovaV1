@@ -1,10 +1,6 @@
 import React, { Component } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCaretSquareLeft, faCaretSquareRight } from '@fortawesome/free-regular-svg-icons'
 import { DropZone } from '../form-components'
-import { faImages, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { Subtitle, Small, P } from '../texts'
-import { Button } from '../form-components'
+import { Small} from '../texts'
 
 class ItemSlider extends Component {
 

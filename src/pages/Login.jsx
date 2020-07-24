@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import LoginForm from '../components/forms/LoginForm'
-import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Title } from '../components/texts'
 import { logout } from '../redux/reducers/auth_user'
 
 class Login extends Component{

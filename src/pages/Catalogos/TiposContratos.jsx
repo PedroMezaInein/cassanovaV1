@@ -157,7 +157,7 @@ class TiposContratos extends Component {
 
     onSubmit = e => {
         e.preventDefault()
-        const { form, title } = this.state
+        const { title } = this.state
         if (title === 'Nuevo tipo')
             this.addTipoContratoAxios()
         if (title === 'Editar tipo')
@@ -197,7 +197,7 @@ class TiposContratos extends Component {
 
     async addTipoContratoAxios() {
         const { access_token } = this.props.authUser
-        const { form, data } = this.state
+        const { form } = this.state
         await axios.post(URL_DEV + 'tipos-contratos', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { tipos } = response.data

@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { Subtitle, Small } from '../../texts'
-import { Input, Select, SelectSearch, Button, Calendar, InputMoney, RadioGroup } from '../../form-components'
+import { Input, SelectSearch, Button, InputMoney} from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 
 class ConceptoForm extends Component {

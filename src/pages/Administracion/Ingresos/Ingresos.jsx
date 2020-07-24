@@ -529,8 +529,8 @@ class Ingresos extends Component {
         await axios.post(URL_DEV + 'ingresos/factura', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
 
-                const { ingreso, ingresos } = response.data
-                let { porcentaje, data } = this.state
+                const { ingreso } = response.data
+                let { porcentaje} = this.state
                 porcentaje = 0
                 ingreso.facturas.map((factura) => {
                     porcentaje = porcentaje + factura.total
@@ -575,8 +575,8 @@ class Ingresos extends Component {
         await axios.delete(URL_DEV + 'ingresos/' + ingreso.id + '/facturas/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
 
-                const { ingresos, ingreso } = response.data
-                let { porcentaje, data } = this.state
+                const { ingreso } = response.data
+                let { porcentaje} = this.state
                 porcentaje = 0
                 ingreso.facturas.map((factura) => {
                     porcentaje = porcentaje + factura.total
@@ -741,15 +741,10 @@ class Ingresos extends Component {
     }
 
     render() {
-        const { ingresos, form, options, modalDelete, modalFacturas, porcentaje, facturas, ingreso, modalAskFactura, data, formeditado } = this.state
+        const { ingresos, form, options, modalDelete, modalFacturas, porcentaje, facturas, modalAskFactura, data, formeditado } = this.state
         return (
             <Layout active={'administracion'}  {...this.props}>
-                {/* <div className="text-right">
-                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.changePageAdd() } } text='' icon = { faPlus } color="green" 
-                        tooltip={{id:'add', text:'Nuevo'}} />
-                </div> */}
-
-                {/* <DataTable columns = {INGRESOS_COLUMNS} data= {ingresos}/> */}
+                
                 <NewTableServerRender columns={INGRESOS_COLUMNS} data={ingresos}
                     title='Ingresos' subtitle='Listado de ingresos'
                     mostrar_boton={true}
