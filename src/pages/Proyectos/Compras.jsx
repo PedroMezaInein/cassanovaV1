@@ -547,7 +547,8 @@ class Compras extends Component {
                         });
                         let auxProveedor = ''
                         data.proveedores.find(function (element, index) {
-                            let cadena = obj.nombre_emisor.replace(/,/g, '')
+                            let cadena = obj.nombre_emisor.replace(' S. C.',  'SC').toUpperCase()
+                            cadena = cadena.replace(/,/g, '').toUpperCase()
                             cadena = cadena.replace(/\./g, '').toUpperCase()
                             if (element.razon_social.toUpperCase() === obj.nombre_emisor.toUpperCase() ||
                                 element.razon_social.toUpperCase() === cadena) {
@@ -820,8 +821,9 @@ class Compras extends Component {
 
         const data = new FormData();
 
-        let cadena = obj.nombre_emisor.toUpperCase().replace(/,/g, '')
-        cadena = cadena.replace(/\./g, '')
+        let cadena = obj.nombre_emisor.replace(' S. C.',  'SC').toUpperCase()
+        cadena = cadena.replace(/,/g, '').toUpperCase()
+        cadena = cadena.replace(/\./g, '').toUpperCase()
         data.append('nombre', cadena)
         data.append('razonSocial', cadena)
         data.append('rfc', obj.rfc_emisor.toUpperCase())
