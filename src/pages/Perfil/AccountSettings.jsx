@@ -1,11 +1,10 @@
 import React, { Component } from 'react'; 
 import Layout from '../../components/layout/layout'
-import {Card, Form, Col, Tab, Nav } from 'react-bootstrap'
+import { Card } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../constants'
-import { validateAlert, waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
-import { Input, Button } from '../../components/form-components'
+import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
 
 import { ChangePasswordForm } from '../../components/forms'
 import swal from 'sweetalert';
@@ -31,7 +30,7 @@ class AccountSettings extends Component {
 	}
 
 	async changePasswordAxios() {
-		const { access_token, user } = this.props.authUser
+		const { access_token } = this.props.authUser
 		const { form } = this.state
         await axios.post(URL_DEV + 'user/users/change-password', form,  { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
@@ -66,7 +65,6 @@ class AccountSettings extends Component {
 	}
 
 	render(){		
-		const {onSubmit} = this.props
 		const { form } = this.state
 		return (
 			<>   

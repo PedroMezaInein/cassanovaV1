@@ -1,10 +1,6 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import Badge from 'react-bootstrap/Badge'
-import { Subtitle } from '../texts'
-import { Input, InputMoney, Select, Button, InputNumber } from '../form-components'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { Input, Select, Button, InputNumber } from '../form-components'
 import { validateAlert } from '../../functions/alert'
 
 class CuentaForm extends Component {

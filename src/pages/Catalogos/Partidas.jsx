@@ -202,7 +202,7 @@ class Partidas extends Component {
 
     onSubmit = e => {
         e.preventDefault()
-        const { form, title } = this.state
+        const { title } = this.state
         if (title === 'Nueva partida')
             this.addPartidaAxios()
         if (title === 'Editar partida')
@@ -242,7 +242,7 @@ class Partidas extends Component {
 
     async addPartidaAxios() {
         const { access_token } = this.props.authUser
-        const { form, data } = this.state
+        const { form } = this.state
         await axios.post(URL_DEV + 'partidas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { partidas } = response.data

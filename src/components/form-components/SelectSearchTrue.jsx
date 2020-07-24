@@ -34,7 +34,7 @@ class SelectSearchTrue extends Component{
 
     render(){
         
-        const { name, onChange, options,  placeholder, value, iconclass} = this.props 
+        const { options,  placeholder, iconclass} = this.props 
         return(
             <>
                 { 

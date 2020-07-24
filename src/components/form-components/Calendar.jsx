@@ -1,6 +1,4 @@
 import React, { Component } from 'react'
-import Input from './Input'
-
 import getDay from 'date-fns/getDay';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";

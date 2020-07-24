@@ -93,44 +93,6 @@ class EstadosCuenta extends Component {
         return aux
     }
 
-    /*
-       setAction = (id, cuentas ) => {
-           return(
-               <>
-                   <div className="d-flex align-items-center flex-column flex-md-row">
-                       <Button className="mx-2 my-2 my-md-0 small-button" text='' icon={faTrash} color="red" 
-                           tooltip={{id:'delete', text:'Eliminar', type:'error'}}
-                           onClick = { () => {
-                               swal({
-                                   title: '¿Estás seguro?',
-                                   icon: 'warning',
-                                   buttons: {
-                                       cancel: {
-                                           text: "Cancelar",
-                                           value: null,
-                                           visible: true,
-                                           className: "button__green btn-primary cancel",
-                                           closeModal: true,
-                                       },
-                                       confirm: {
-                                           text: "Aceptar",
-                                           value: true,
-                                           visible: true,
-                                           className: "button__red btn-primary",
-                                           closeModal: true
-                                       }
-                                   }
-                               }).then((result) => {
-                                   if(result){
-                                       this.deleteEstadoAxios(id, cuentas[0].id)
-                                   }
-                               })
-                           }} />
-                   </div>
-               </>
-           )
-       } 
-       */
     setLinks = value => {
         return (
             <a href={value.url} target="_blank">
@@ -299,7 +261,7 @@ class EstadosCuenta extends Component {
     }
     async addEstadoAxios() {
         const { access_token } = this.props.authUser
-        const { adjunto, adjuntoName, adjuntoFile, cuenta, fecha } = this.state
+        const { adjuntoName, adjuntoFile, cuenta, fecha } = this.state
         const data = new FormData();
         data.append('adjunto', adjuntoFile)
         data.append('adjuntoName', adjuntoName)
@@ -408,11 +370,6 @@ class EstadosCuenta extends Component {
         const { modal, modalDelete, adjunto, adjuntoName, adjuntoFile, cuentas, cuenta, estados, fecha, data, title } = this.state
         return (
             <Layout active={'bancos'}  {...this.props}>
-                {/* <div className="text-right">
-                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon={faPlus} color="green" 
-                        tooltip={{id:'add', text:'Nuevo'}} />
-                </div>*/
-                }
 
                 <NewTable columns={EDOS_CUENTAS_COLUMNS_2} data={estados}
                     title='Estados de cuenta' subtitle='Listado de estados de cuenta'

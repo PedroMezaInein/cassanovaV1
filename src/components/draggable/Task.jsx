@@ -1,12 +1,6 @@
 import React, { Component } from 'react'
-import { P, Subtitle, Small } from '../texts'
 import { Draggable } from 'react-beautiful-dnd'
-import { Button } from '../form-components'
-import { faEdit, faTrash, faPlus, faEye, faCalendarCheck } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { GOLD } from '../../constants'
 import moment from 'moment'
-import { Badge } from 'react-bootstrap'
 
 class Task extends Component{
 

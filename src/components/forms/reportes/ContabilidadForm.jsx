@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form' 
-import { Button, Select, Calendar, RadioGroup, OptionsCheckbox } from '../../form-components' 
+import { Button, Select, Calendar, OptionsCheckbox } from '../../form-components' 
 import { validateAlert } from '../../../functions/alert'
 
 class ContabilidadForm extends Component {
@@ -15,8 +15,8 @@ class ContabilidadForm extends Component {
     }
 
     handleChangeCheckbox = (e, aux) => {
-        const { value, checked, name } = e.target
-        const { options, form, onChange } = this.props
+        const { checked, name } = e.target
+        const { form, onChange } = this.props
         let optionesChecked = form[aux]
         optionesChecked.find(function (element, index) {
             if (element.id.toString() === name.toString()) {

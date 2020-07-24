@@ -149,7 +149,7 @@ class Remisiones extends Component{
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'remision', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { proyectos, areas, remisiones } = response.data
+                const { remisiones } = response.data
                 const { data } = this.state
                 data.remisiones = remisiones
                 this.setState({
@@ -235,13 +235,11 @@ class Remisiones extends Component{
 
     render(){
 
-        const { data, modalDelete, modalSingle, remisiones, remision, formeditado } = this.state
+        const { data, modalDelete, modalSingle, remisiones, remision } = this.state
 
         return(
             <Layout active={'proyectos'}  { ...this.props}>
 
-                
-                {/* <DataTable columns = { REMISION_COLUMNS } data = { remisiones } /> */}
                 <NewTable columns = { REMISION_COLUMNS } data = {remisiones} 
                     title = 'Remisiones' subtitle = 'Listado de demisiones'
                     mostrar_boton={true}
