@@ -413,7 +413,7 @@ class NominaObra extends Component {
                     periodo: renderToString(setTextTable(nomina.periodo)),
                     fechaInicio: renderToString(setDateTable(nomina.fecha_inicio)),
                     fechaFin: renderToString(setDateTable(nomina.fecha_fin)),
-                    totalPagoNomina: renderToString(setMoneyTable(nomina.totalPagoNomina)),
+                    totalPagoNomina: renderToString(setMoneyTable(nomina.totalNominaImss)),
                     restanteNomina: renderToString(setMoneyTable(nomina.totalRestanteNomina)),
                     extras: renderToString(setMoneyTable(nomina.totalExtras)),
                     granTotal: renderToString(setMoneyTable(nomina.totalNominaImss + nomina.totalRestanteNomina + nomina.totalExtras)),
@@ -535,7 +535,7 @@ class NominaObra extends Component {
             form
         })
     }
-    
+
     async getNominasAxios(){
         var table = $('#kt_datatable2_nomina_obra')
             .DataTable();
