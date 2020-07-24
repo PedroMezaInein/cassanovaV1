@@ -297,12 +297,10 @@ class NominaObra extends Component {
         const { access_token } = this.props.authUser
         const { form, nomina} = this.state
         
-        await axios.put(URL_DEV + 'rh/nomina-obra' + nomina.id , form, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(URL_DEV + 'rh/nomina-obra/' + nomina.id , form, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { modal } = this.state
-                const { nomina } = response.data
                 
-                this.handleCloseModal()
                 this.getNominasAxios()
 
                 modal.form = false
@@ -397,7 +395,7 @@ class NominaObra extends Component {
 
         data.append('id', nomina.id)
 
-        await axios.post(URL_DEV + 'nomina/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'rh/nomina-obra/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
 
                 const { nomina } = response.data
@@ -410,7 +408,7 @@ class NominaObra extends Component {
                     ... this.state,
                     form: this.clearForm(),
                     nomina: nomina,
-                    adjuntos: this.setAdjuntosTable(nomina),
+                    adjuntos: this.setAdjuntosTable(data.adjuntos),
                     data
                 })
 
@@ -445,13 +443,8 @@ class NominaObra extends Component {
                 const { nomina } = response.data
                 const { data, key } = this.state
                 data.adjuntos = nomina.adjuntos
-                if(key === 'administrativo'){
-                    this.getEmpleadosAxios()
-                }
-                if(key === 'obra'){
-                    this.getEmpleadosObraAxios()
-                }
-
+                
+                this.getNominasAxios()
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
