@@ -7,7 +7,7 @@ class modal extends Component {
     }
 
     render() {
-        const { show, handleClose, children, title, setShow, size } = this.props
+        const { show, handleClose, children, title, size } = this.props
 
         return (
             <>

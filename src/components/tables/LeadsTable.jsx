@@ -24,7 +24,6 @@ function Table({ columns, data }) {
         page,
         getToggleHideAllColumnsProps,
         allColumns,
-        state: { pageIndex, pageSize },
     } = useTable({
         columns,
         data,

@@ -27,7 +27,6 @@ export default class FacturaTable extends Component {
     //Setter
     setFactura = facturas => {
         let aux = []
-        const { data } = this.state
         facturas.map((factura) => {
             aux.push(
                 {

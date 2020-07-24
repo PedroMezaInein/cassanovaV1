@@ -20,31 +20,6 @@ import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import ItemSlider from '../../components/singles/ItemSlider'
 import {Nav, Tab, Col, Row} from 'react-bootstrap'
 
-function CustomToggle({ children, eventKey, icon = faPlus, iconColor = 'transparent' }) {
-
-    let variable = false
-    
-    const handleClick = useAccordionToggle(eventKey, (e) => {
-        if(variable){
-            variable = false
-        }else{
-            variable = true
-        }
-    },);
-
-    
-    return (
-        <div>
-            <div className="d-flex justify-content-between">
-                <div>
-                    {children}
-                </div>
-                <Button name = { eventKey } className = " small-button " color = { iconColor } icon = { icon } text = '' onClick = { handleClick } />
-            </div>
-        </div>
-        
-    );
-}
 class Proyectos extends Component {
 
     state = {
@@ -2057,88 +2032,6 @@ class Proyectos extends Component {
                                 </Tab.Container>         
                             </Card.Body>
                         </Card>
-                    
-                    {/* <Accordion>
-                        {
-                            form.adjuntos_grupo.map( (grupo, key) => {
-                                return(
-                                    <div key = {key}>
-                                        <div className="px-3 pt-2">
-                                            {
-                                                key > 0 ?
-                                                    <div className="separator separator-dashed mt-1 mb-2"></div>
-                                                : ''
-                                            }
-                                            <CustomToggle icon = { faList } iconColor = 'gold' iconColor = 'transparent' eventKey={grupo.id} >
-                                                <strong>
-                                                    <p className="label-form">
-                                                        {grupo.text}
-                                                    </p>
-                                                </strong>
-                                            </CustomToggle>
-                                            
-                                        </div>
-                                        <Accordion.Collapse eventKey={grupo.id}>
-                                            <div>
-                                                <div className="row mx-0 pl-2 py-2">
-                                                    <Accordion className="w-100">
-                                                        {
-                                                            grupo.adjuntos.map( (adjunto, key) => {
-                                                                return(
-                                                                    <div key = {key}>
-                                                                        <div className="px-3 pt-2">
-                                                                            <CustomToggle icon = { faFolderOpen } eventKey = { adjunto.id } >
-                                                                                <strong>
-                                                                                    <p className="label-form">
-                                                                                        {adjunto.placeholder}
-                                                                                    </p>
-                                                                                </strong>
-                                                                            </CustomToggle>
-                                                                            {
-                                                                                <div className="separator separator-dashed separator-secondary mt-1 mb-2"></div>
-                                                                            }
-                                                                        </div>
-                                                                        <Accordion.Collapse eventKey={adjunto.id}>
-                                                                            <div>
-                                                                                
-                                                                                {
-                                                                                    proyecto ? 
-                                                                                        proyecto[adjunto.id] ?
-                                                                                            proyecto[adjunto.id].length ?
-                                                                                                <div className="mt-2 d-flex justify-content-center">
-                                                                                                    <span className = 'btn btn-hover btn-text-success' onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.id]) }}>
-                                                                                                        <i className="fas fa-file-archive"></i> Descargar ZIP
-                                                                                                    </span>
-                                                                                                </div>
-                                                                                            : ''
-                                                                                        : ''
-                                                                                    : ''
-                                                                                }
-                                                                                {
-                                                                                    proyecto ? 
-                                                                                        proyecto[adjunto.id] ?
-                                                                                            <ItemSlider items = { proyecto[adjunto.id] }  handleChange = { this.handleChange }
-                                                                                            item = {adjunto.id} deleteFile = { this.deleteFile } />
-                                                                                        : ''    
-                                                                                    : ''
-                                                                                }
-                                                                            </div>
-                                                                        </Accordion.Collapse>
-                                                                    </div>
-                                                                )
-                                                            } )
-                                                        }
-                                                    </Accordion>            
-                                                </div>
-                                            </div>
-                                            
-                                        </Accordion.Collapse>
-                                    </div>
-                                )
-                                            
-                            })
-                        }
-                        </Accordion> */}
                     </div>
                 </Modal>
                 <Modal size="xl" title = { title } show = { modalAvances } handleClose = { this.handleCloseAvances }>

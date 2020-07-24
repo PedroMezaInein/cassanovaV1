@@ -317,8 +317,7 @@ class SolicitudCompraForm extends Component{
         })
 
         await axios.post(URL_DEV + 'solicitud-compra', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
-            (response) => {
-                const { solicitud } = response.data
+            (response) => { 
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.',
@@ -375,7 +374,6 @@ class SolicitudCompraForm extends Component{
         
         await axios.post(URL_DEV + 'solicitud-compra/update/' + solicitud.id, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const {solicitud} = response.data
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.',

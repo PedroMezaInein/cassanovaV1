@@ -650,7 +650,7 @@ class egresos extends Component{
     }
 
     render(){
-        const { egresos, modalDelete, modalFacturas, egreso, facturas, porcentaje, form, data } = this.state
+        const { egresos, modalDelete, modalFacturas, facturas, porcentaje, form, data } = this.state
         return(
             <Layout active={'administracion'}  { ...this.props}>
                 <NewTableServerRender columns = { EGRESOS_COLUMNS } data = { egresos } 

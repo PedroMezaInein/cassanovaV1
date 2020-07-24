@@ -164,7 +164,7 @@ class EstadosCuenta extends Component {
     }
     submitForm = e => {
         e.preventDefault();
-        const { cuenta, adjuntoFile, adjunto, adjuntoName } = this.state
+        const { adjunto } = this.state
         if (adjunto) {
             swal({
                 title: '¡Un momento!',

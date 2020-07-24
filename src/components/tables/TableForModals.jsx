@@ -65,19 +65,12 @@ class TableForModals extends Component {
         table.DataTable({
 
             initComplete: function () {
-                var html_append;
-                var html;
                 var contador = 0;
                 table.find("thead th").each(function () {
-                    var title = $(this).text();
-
                     if (global_variable.mostrar_acciones == false || global_variable.mostrar_acciones && contador != 0) {
                         $(this).append('<div class="mt-2 separator separator-dashed separator-border-2"></div><div class="mt-2"><input type="text" class="form-control form-control-sm"/></div>');
-
                     }
                     contador++;
-
-
                     //  html+='<th style="'+$(this).attr("style").toString()+'"><input class="form-control form-control-sm form-filter datatable-input" type="text"/></th>';
                 });
 
@@ -93,8 +86,6 @@ class TableForModals extends Component {
                         }
                     });
                 });
-
-
             },
 
             colReorder: true,
@@ -161,8 +152,6 @@ class TableForModals extends Component {
                 /* 'defaultContent': '<button type="button" class="btn btn-primary btn-edit">Edit</button>' */
             }
             ],
-
-
             lengthMenu: [[20, 30, 40, 50, -1], [20, 30, 40, 50, "Todos"]],
             pageLength: 20
 
@@ -192,7 +181,6 @@ class TableForModals extends Component {
             });
             actions[name].function(aux)
         });
-
     }
 
     componentWillUnmount() {
@@ -218,7 +206,7 @@ class TableForModals extends Component {
         }
     }
     render() {
-        const { columns, data, title, subtitle, url, mostrar_boton, abrir_modal, exportar_boton } = this.props
+        const { url, mostrar_boton, abrir_modal, exportar_boton } = this.props
         return (
             <>
                 <div className="card-toolbar">

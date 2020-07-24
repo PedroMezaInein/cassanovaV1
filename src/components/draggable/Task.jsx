@@ -21,7 +21,7 @@ class Task extends Component{
     }
 
     render(){
-        const { tarea, index, id, clickTask } = this.props
+        const { tarea, index, clickTask } = this.props
         let new_index = index
         let _fecha_limite = null
         if( tarea ){

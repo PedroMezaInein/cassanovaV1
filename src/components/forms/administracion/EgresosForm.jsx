@@ -36,7 +36,7 @@ class EgresosForm extends Component {
     }
 
     updateProveedor = value => {
-        const { onChange, data, form } = this.props
+        const { onChange, data } = this.props
         onChange({ target: { value: value, name: 'proveedor' } })
         data.proveedores.find(function (element, index) {
             if (value.toString() === element.id.toString()) {
