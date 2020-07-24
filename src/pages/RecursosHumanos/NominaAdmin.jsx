@@ -281,12 +281,10 @@ class NominaAdmin extends Component {
         const { access_token } = this.props.authUser
         const { form, nomina} = this.state
         
-        await axios.put(URL_DEV + 'rh/administrativa' + nomina.id , form, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(URL_DEV + 'rh/nomina-administrativa/' + nomina.id , form, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { modal } = this.state
-                const { nomina } = response.data
-
-                this.handleCloseModal()
+                
                 this.getNominasAxios()
 
                 modal.form = false
