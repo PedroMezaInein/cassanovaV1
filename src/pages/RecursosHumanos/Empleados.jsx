@@ -17,6 +17,7 @@ const $ = require('jquery');
 class Empleados extends Component {
     state = {  
         formeditado:0,
+        key: 'administrativo',
         modal:{
             form: false,
             delete: false,
@@ -229,13 +230,14 @@ class Empleados extends Component {
 
         await axios.post(URL_DEV + 'rh/empleado', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empleado } = response.data
-                if(empleado.tipo_empleado === 'Administrativo')
-                    this.getEmpleadosAxios();
-                if(empleado.tipo_empleado === 'Obra')
-                    this.getEmpleadosObraAxios();
-
-                const { modal } = this.state
+                const {  modal, key } = this.state
+                
+                if(key === 'administrativo'){
+                    this.getEmpleadosAxios()
+                }
+                if(key === 'obra'){
+                    this.getEmpleadosObraAxios()
+                }
                 modal.form = false
 
                 this.setState({                    
@@ -272,16 +274,12 @@ class Empleados extends Component {
 
         await axios.put(URL_DEV + 'rh/empleado/'+ empleado.id , form, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const {  modal } = this.state
-                const { empleado } = response.data
+                const {  modal, key } = this.state
                 
-                /* window.location.reload(false); */ 
-                if(empleado.tipo_empleado === 'Administrativo'){
-                    this.getEmpleadosObraAxios()
+                if(key === 'administrativo'){
                     this.getEmpleadosAxios()
                 }
-                if(empleado.tipo_empleado === 'Obra'){
-                    this.getEmpleadosAxios()
+                if(key === 'obra'){
                     this.getEmpleadosObraAxios()
                 }
 
@@ -325,12 +323,14 @@ class Empleados extends Component {
 
         await axios.delete(URL_DEV + 'rh/empleado/'+ empleado.id, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { modal } = this.state
-                const { empleado } = response.data
-                if(empleado.tipo_empleado === 'Administrativo')
-                    this.getEmpleadosAxios();
-                if(empleado.tipo_empleado === 'Obra')
-                    this.getEmpleadosObraAxios();
+                const {  modal, key } = this.state
+                
+                if(key === 'administrativo'){
+                    this.getEmpleadosAxios()
+                }
+                if(key === 'obra'){
+                    this.getEmpleadosObraAxios()
+                }
                 modal.delete = false
 
                 this.setState({                    
@@ -483,65 +483,7 @@ class Empleados extends Component {
         return aux
     }
 
-    setEmpleadoObra = empleados => {
-        let aux2 = []
-        if (empleados)
-            empleados.map((empleado) => {
-                aux2.push(
-                    {
-                        actions_obra: this.setActions2(empleado),
-                        nombre_obra: renderToString(setTextTable(empleado.nombre)),
-                        empresa_obra: renderToString(setTextTable(empleado.empresa ? empleado.empresa.name : '')),
-                        puesto_obra: renderToString(setTextTable(empleado.puesto)),
-                        rfc_obra: renderToString(setTextTable(empleado.rfc)),
-                        nss_obra: renderToString(setTextTable(empleado.nss)),
-                        curp_obra: renderToString(setTextTable(empleado.curp)),
-                        estatus_obra: renderToString(setTextTable(empleado.estatus_empleado)),
-                        fechaInicio_obra: renderToString(setDateTable(empleado.fecha_inicio)),
-                        tipo_empleado_obra: renderToString(setTextTable(empleado.tipo_empleado)),
-                        cuenta_obra: renderToString(setArrayTable(
-                            [
-                                { 'name': 'Banco', 'text': empleado.banco ? empleado.banco : 'Sin definir' },
-                                { 'name': 'No. Cuenta', 'text': empleado.cuenta ? empleado.cuenta : 'Sin definir' },
-                                { 'name': 'Clabe', 'text': empleado.clabe ? empleado.clabe : 'Sin definir' },
-                            ]
-                        )),
-                        nombre_emergencia_obra: renderToString(setArrayTable(
-                            [
-                                { 'name': 'Nombre', 'text': empleado.nombre_emergencia ? empleado.nombre_emergencia : 'Sin definir' },
-                                { 'name': 'Teléfono', 'text': empleado.telefono_emergencia ? empleado.telefono_emergencia : 'Sin definir' }
-                            ]
-                        )),
-                        vacaciones_tomadas_obra: renderToString(setTextTable(empleado.vacaciones_tomadas)),
-                        id: empleado.id
-                    }
-                )
-            })
-        return aux2
-    }
-
     setActions= empleado => {
-        let aux = []
-            aux.push(
-                {
-                    text: 'Editar',
-                    btnclass: 'success',
-                    iconclass: 'flaticon2-pen',
-                    action: 'edit',
-                    tooltip: {id:'edit', text:'Editar'},
-                },
-                {
-                    text: 'Eliminar',
-                    btnclass: 'danger',
-                    iconclass: 'flaticon2-rubbish-bin',                  
-                    action: 'delete',
-                    tooltip: {id:'delete', text:'Eliminar', type:'error'},
-                }
-        ) 
-        return aux 
-    }
-
-    setActions2= empleado => {
         let aux = []
             aux.push(
                 {
@@ -604,23 +546,32 @@ class Empleados extends Component {
     }
 
     async getEmpleadosAxios() {
-        let tableaux = $('#empleados_admin_table')
-            .DataTable();
-        tableaux.ajax.reload();
+        $('#empleados_admin_table').DataTable().ajax.reload();
     }
 
     async getEmpleadosObraAxios() {
-        let table2 = $('#empleados_obra_table')
-            .DataTable();
-        table2.ajax.reload();
+        $('#empleados_obra_table').DataTable().ajax.reload();
+    }
+
+    controlledTab = value => {
+        if(value === 'administrativo'){
+            this.getEmpleadosAxios()
+        }
+        if(value === 'obra'){
+            this.getEmpleadosObraAxios()
+        }
+        this.setState({
+            ... this.state,
+            key: value
+        })
     }
 
 
     render() {
-        const { modal, options, title, form, formeditado} = this.state
+        const { modal, options, title, form, formeditado, key} = this.state
         return (
             <Layout active={'rh'} {...this.props}>
-                <Tabs defaultActiveKey="administrativo">
+                <Tabs defaultActiveKey="administrativo" activeKey={key} onSelect = { (value) =>  { this.controlledTab(value)} }>
                     <Tab eventKey="administrativo" title="Administrativo">
                         <div className="py-2">
                             <NewTableServerRender
