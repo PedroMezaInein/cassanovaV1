@@ -462,7 +462,6 @@ class Empleados extends Component {
                         curp: renderToString(setTextTable(empleado.curp)),
                         estatus: renderToString(setTextTable(empleado.estatus_empleado)),
                         fechaInicio: renderToString(setDateTable(empleado.fecha_inicio)),
-                        tipo_empleado: renderToString(setTextTable(empleado.tipo_empleado)),
                         cuenta: renderToString(setArrayTable(
                             [
                                 { 'name': 'Banco', 'text': empleado.banco ? empleado.banco : 'Sin definir' },

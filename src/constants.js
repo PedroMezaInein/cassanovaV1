@@ -1418,10 +1418,6 @@ export const EMPLEADOS_COLUMNS = [
         accessor: 'fechaInicio'
     },
     {
-        Header: 'Tipo de Empleado',
-        accessor: 'tipo_empleado'
-    },
-    {
         Header: 'Cuenta de Depósito',
         accessor: 'cuenta'
     },

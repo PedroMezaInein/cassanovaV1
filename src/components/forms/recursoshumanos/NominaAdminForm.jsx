@@ -219,7 +219,7 @@ class NominaAdminForm extends Component {
                                             />
                                         </td>
                                         <td>
-
+                                            <p style={{ paddingLeft: "10px", width: "131px", marginTop: "30px" }}></p>
                                         </td>
                                     </tr>
                                 )
