@@ -872,6 +872,10 @@ export const COMPRAS_COLUMNS = [
         accessor: 'identificador'
     },
     {
+        Header: 'Fecha',
+        accessor: 'fecha',
+    },
+    {
         Header: 'Proyecto',
         accessor: 'proyecto'
     },
@@ -926,10 +930,6 @@ export const COMPRAS_COLUMNS = [
     {
         Header: 'Adjuntos',
         accessor: 'adjuntos',
-    },
-    {
-        Header: 'Fecha',
-        accessor: 'fecha',
     },
 ]
 

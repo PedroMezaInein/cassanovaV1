@@ -224,7 +224,7 @@ class Ventas extends Component{
 
     openModalAdjuntos = venta => {
         const { data } = this.state
-        data.adjuntos = venta.adjuntos
+        data.adjuntos = venta.presupuestos.concat(venta.pagos)
         this.setState({
             ... this.state,
             modalAdjuntos: true,
@@ -1337,7 +1337,7 @@ class Ventas extends Component{
 
                 const { venta } = response.data
                 const { data } = this.state
-                data.adjuntos = venta.adjuntos
+                data.adjuntos = venta.presupuestos.concat(venta.pagos)
                 //AQUI
                 this.getVentasAxios()
 
@@ -1380,7 +1380,7 @@ class Ventas extends Component{
             (response) => {
                 const { venta } = response.data
                 const { data } = this.state
-                data.adjuntos = venta.adjuntos
+                data.adjuntos = venta.presupuestos.concat(venta.pagos)
                 //AQUI
                 this.getVentasAxios()
 
