@@ -13,7 +13,7 @@ class InputMoney extends Component {
         const { requirevalidation } = this.props
         if (value !== '' && value !== null && value !== undefined) {
             if (requirevalidation) {
-                if (value > 0) {
+                if (value >= 0) {
                     this.setState({
                         inputMoneyValido: true
                     })
