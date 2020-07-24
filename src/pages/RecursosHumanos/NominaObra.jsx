@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import Layout from '../../components/layout/layout' 
-import { Modal} from '../../components/singles' 
+import { Modal, ModalDelete} from '../../components/singles' 
 import { NOMINA_OBRA_COLUMNS, URL_DEV} from '../../constants'
 import NewTableServerRender from '../../components/tables/NewTableServerRender' 
 import { NominaObraForm } from '../../components/forms'
@@ -433,6 +433,13 @@ class NominaObra extends Component {
                 iconclass: 'flaticon2-pen',
                 action: 'edit',
                 tooltip: { id: 'edit', text: 'Editar' }
+            },
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',                  
+                action: 'delete',
+                tooltip: {id:'delete', text:'Eliminar', type:'error'},
             }
         )
         return aux
@@ -474,7 +481,7 @@ class NominaObra extends Component {
         e.preventDefault()
         const { title } = this.state
         if(title === 'Editar nómina obra')
-            console.log('editar')
+            this.updateNominaObraAxios()
         else    
             this.addNominaObraAxios() 
     }
@@ -555,7 +562,8 @@ class NominaObra extends Component {
                     onClick={this.openModal} 
                     mostrar_acciones={true} 
                     actions={{
-                        'edit': { function: this.openModalEdit }
+                        'edit': { function: this.openModalEdit },
+                        'delete': {function: this.openModalDelete}
                     }}
                     accessToken = { this.props.authUser.access_token }
                     setter = { this.setNominaObra }
@@ -579,6 +587,10 @@ class NominaObra extends Component {
                     >
                     </NominaObraForm>
                 </Modal>  
+
+                <ModalDelete title={'¿Desea eliminar la nómina?'} show = { modal.delete } handleClose = { this.handleCloseModalDelete } onClick=  { (e) => { e.preventDefault(); waitAlert(); this.deleteNominaObraAxios() }}>
+                </ModalDelete>
+
             </Layout>
         )
     }
