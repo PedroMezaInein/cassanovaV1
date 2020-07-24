@@ -573,6 +573,7 @@ class NominaObra extends Component {
 
                 <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseModal}>
                     <NominaObraForm
+                        title = { title }
                         formeditado={formeditado}
                         className=" px-3 "   
                         options = { options }
