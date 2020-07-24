@@ -484,10 +484,10 @@ class Empleados extends Component {
     }
 
     setEmpleadoObra = empleados => {
-        let aux = []
+        let aux2 = []
         if (empleados)
             empleados.map((empleado) => {
-                aux.push(
+                aux2.push(
                     {
                         actions_obra: this.setActions2(empleado),
                         nombre_obra: renderToString(setTextTable(empleado.nombre)),
@@ -517,7 +517,7 @@ class Empleados extends Component {
                     }
                 )
             })
-        return aux
+        return aux2
     }
 
     setActions= empleado => {
@@ -647,7 +647,7 @@ class Empleados extends Component {
                     <Tab eventKey="obra" title="Obra">
                         <div className="py-2">
                             <NewTableServerRender
-                                columns={EMPLEADOS_COLUMNS_OBRA}
+                                columns={EMPLEADOS_COLUMNS}
                                 title='Empleados de obra' 
                                 subtitle='Listado de empleados'
                                 mostrar_boton = {true}
@@ -659,7 +659,7 @@ class Empleados extends Component {
                                     'delete': {function: this.openModalDelete},
                                 }}
                                 accessToken = {this.props.authUser.access_token}
-                                setter = {this.setEmpleadoObra}
+                                setter = {this.setEmpleado}
                                 urlRender = { URL_DEV + 'rh/empleado/obra' }
                                 idTable = 'empleados_obra_table'
                                 />
