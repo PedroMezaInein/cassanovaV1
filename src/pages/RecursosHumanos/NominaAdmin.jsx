@@ -30,9 +30,6 @@ class NominaAdmin extends Component {
             fechaFin: new Date(),
             nominasAdmin:[{
                 usuario: '',
-                sueldoDiario: '',
-                diasVP: '',
-                diasVNP: '', 
                 nominImss: '',
                 restanteNomina: '',
                 extras: ''
@@ -191,9 +188,6 @@ class NominaAdmin extends Component {
             aux.push(
                 {
                     usuario: nom.empleado ? nom.empleado.id.toString() : '',
-                    sueldoDiario: nom.sueldo_diario,
-                    diasVP: nom.dias_vp,
-                    diasVNP: nom.dias_vnp,
                     nominImss: nom.nomina_imss,
                     restanteNomina: nom.restante_nomina,
                     extras:nom.extras
@@ -206,9 +200,6 @@ class NominaAdmin extends Component {
         }else{
             form.nominasAdmin = [{
                 usuario: '',
-                sueldoDiario: '',
-                diasVP: '',
-                diasVNP: '', 
                 nominImss: '',
                 restanteNomina: '',
                 extras: ''
@@ -333,10 +324,7 @@ class NominaAdmin extends Component {
         form.nominasAdmin.push(
             {
                 nominasAdmin:[{
-                    usuario: '',
-                    sueldoDiario: '',
-                    diasVP: '',
-                    diasVNP: '', 
+                    usuario: '', 
                     nominImss: '',
                     restanteNomina: '',
                     extras: ''
@@ -355,9 +343,6 @@ class NominaAdmin extends Component {
             {
                 nominasAdmin:[{
                     usuario: '',
-                    sueldoDiario: '',
-                    diasVP: '',
-                    diasVNP: '', 
                     nominImss: '',
                     restanteNomina: '',
                     extras: ''
