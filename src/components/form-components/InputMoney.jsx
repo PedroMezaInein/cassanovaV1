@@ -72,7 +72,7 @@ class InputMoney extends Component {
 
     }
     render() {
-        const { placeholder, value, prefix, thousandSeparator, iconclass } = this.props
+        const { placeholder, value, prefix, thousandSeparator, iconclass, customstyle} = this.props
         const { inputMoneyValido } = this.state
 
         return (
@@ -94,6 +94,7 @@ class InputMoney extends Component {
                         renderText={value => <div> {value} </div>}
                         onValueChange={(values) => this.onChange(values)}
                         placeholder={placeholder}
+                        style={customstyle}
                     />
                 </div>
                 <span className={inputMoneyValido ? "form-text text-danger hidden" : "form-text text-danger"}>Incorrecto. Ingresa la cantidad.</span>
