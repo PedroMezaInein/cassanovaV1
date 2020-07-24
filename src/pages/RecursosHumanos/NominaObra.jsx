@@ -27,7 +27,7 @@ class NominaObra extends Component {
             empresas: '',
             fechaInicio: new Date(),
             fechaFin: new Date(),
-            nominas:[{
+            nominasObra:[{
                 usuario: '',
                 proyecto: '',
                 sueldoh: '',
@@ -54,6 +54,8 @@ class NominaObra extends Component {
     }
 
     componentDidMount() {
+        var element = document.getElementById("kt_datatable2_nomina_obra");
+        element.classList.remove("table-responsive");
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props
@@ -68,7 +70,11 @@ class NominaObra extends Component {
 
     onSubmit = e => {
         e.preventDefault()
-        this.addNominaObraAxios()
+        const { title } = this.state
+        if(title === 'Editar nómina obra')
+            console.log('editar')
+        else    
+            this.addNominaObraAxios() 
     }
 
     async getNominasAxios(){
@@ -120,7 +126,7 @@ class NominaObra extends Component {
                 case 'fechaFin':
                     data.append(element, (new Date(form[element])).toDateString())
                     break;
-                case 'nominas':
+                case 'nominasObra':
                     data.append(element, JSON.stringify(form[element]))
                     break;
                 case 'adjuntos':
@@ -143,7 +149,8 @@ class NominaObra extends Component {
         await axios.post(URL_DEV + 'rh/nomina-obra', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                
+                this.handleCloseModal()
+                this.getNominasAxios()
             },
             (error) => {
                 console.log(error, 'error')
@@ -181,27 +188,28 @@ class NominaObra extends Component {
         form.fechaFin = nomina.fecha_fin ? new Date(nomina.fecha_fin) : ''
 
         let aux = []
-        nomina.nominas_obra.map( (nom, key) => {
+        console.log(nomina)
+        nomina.nominas_obras.map( (nom, key) => {
             console.log(key, ' - ', nom)
             aux.push(
                 {
                     usuario: nom.empleado ? nom.empleado.id.toString() : '',
                     proyecto: nom.proyecto ? nom.proyecto.id.toString() : '',
-                    sueldoh: nom.sueldoh,
-                    hora1T: nom.hora1T,
-                    hora2T: nom.hora2T,
-                    hora3T: nom.hora3T,
-                    nominImss: nom.nominImss,
-                    restanteNomina:nom.restanteNomina,
+                    sueldoh: nom.sueldo_por_hora,
+                    hora1T: nom.horas_1t,
+                    hora2T: nom.horas_2t,
+                    hora3T: nom.horas_3t,
+                    nominImss: nom.nomina_imss,
+                    restanteNomina:nom.restante_nomina,
                     extras:nom.extras
                 }
             )
         })
 
         if(aux.length){
-            form.nominas = aux
+            form.nominasObra = aux
         }else{
-            form.nominas = [{
+            form.nominasObra = [{
                 usuario: '',
                 proyecto: '',
                 sueldoh: '',
@@ -213,7 +221,6 @@ class NominaObra extends Component {
                 extras: ''
             }]
         }
-
 
         this.setState({
             ... this.state,
@@ -244,7 +251,7 @@ class NominaObra extends Component {
                 case 'fechaFin':
                     form[element] = new Date()
                     break; 
-                case 'nominas':
+                case 'nominasObra':
                     form[element] = [{
                         usuarios: '',
                         proyecto: '',
@@ -286,10 +293,10 @@ class NominaObra extends Component {
         })
     }
 
-    onChangeNominas = (key, e, name) => {
+    onChangeNominasObra = (key, e, name) => {
         const { value } = e.target
         const { form } = this.state
-        form['nominas'][key][name]  = value
+        form['nominasObra'][key][name]  = value
         this.setState({
             ...this.state,
             form
@@ -329,11 +336,11 @@ class NominaObra extends Component {
         })
     }
 
-    addRowNomina = () => {
+    addRowNominaObra = () => {
         const { form } = this.state
-        form.nominas.push(
+        form.nominasObra.push(
             {
-                nominas:[{
+                nominasObra:[{
                     usuario: '',
                     proyecto: '',
                     sueldoh: '',
@@ -352,11 +359,11 @@ class NominaObra extends Component {
         })
     }
 
-    deleteRowNomina = () => {
+    deleteRowNominaObra = () => {
         const { form } = this.state
-        form.nominas.pop(
+        form.nominasObra.pop(
             {
-                nominas:[{
+                nominasObra:[{
                     usuario: '',
                     proyecto: '',
                     sueldoh: '',
@@ -376,6 +383,7 @@ class NominaObra extends Component {
     }
 
     setNominaObra = nominas => {
+        console.log(nominas)
         let aux = []
         nominas.map( (nomina) => {
             aux.push(
@@ -384,7 +392,7 @@ class NominaObra extends Component {
                     periodo: renderToString(setTextTable(nomina.periodo)),
                     fechaInicio: renderToString(setDateTable(nomina.fecha_inicio)),
                     fechaFin: renderToString(setDateTable(nomina.fecha_fin)),
-                    totalNominaIMSS: renderToString(setMoneyTable(nomina.totalNominaImss)),
+                    totalPagoNomina: renderToString(setMoneyTable(nomina.totalPagoNomina)),
                     restanteNomina: renderToString(setMoneyTable(nomina.totalRestanteNomina)),
                     extras: renderToString(setMoneyTable(nomina.totalExtras)),
                     granTotal: renderToString(setMoneyTable(nomina.totalNominaImss + nomina.totalRestanteNomina + nomina.totalExtras)),
@@ -421,7 +429,7 @@ class NominaObra extends Component {
                     mostrar_boton={true}
                     abrir_modal={true} 
                     onClick={this.openModal} 
-                    mostrar_acciones={false} 
+                    mostrar_acciones={true} 
                     actions={{
                         'edit': { function: this.openModalEdit }
                     }}
@@ -437,9 +445,9 @@ class NominaObra extends Component {
                         className=" px-3 "   
                         options = { options }
                         form ={form}
-                        addRowNomina = { this.addRowNomina }
-                        deleteRowNomina = { this.deleteRowNomina }
-                        onChangeNominas =  { this.onChangeNominas }
+                        addRowNominaObra = { this.addRowNominaObra }
+                        deleteRowNominaObra = { this.deleteRowNominaObra }
+                        onChangeNominasObra =  { this.onChangeNominasObra }
                         onChange = { this.onChange }
                         onChangeAdjunto = { this.onChangeAdjunto }
                         clearFiles = { this.clearFiles }
