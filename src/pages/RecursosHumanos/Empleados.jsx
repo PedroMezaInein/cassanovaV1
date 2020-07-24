@@ -5,12 +5,13 @@ import axios from 'axios'
 import swal from 'sweetalert'
 import Layout from '../../components/layout/layout' 
 import { Modal, ModalDelete} from '../../components/singles' 
-import { EMPLEADOS_COLUMNS, EMPLEADOS_COLUMNS_OBRA, URL_DEV} from '../../constants'
+import { EMPLEADOS_COLUMNS, EMPLEADOS_COLUMNS_OBRA, URL_DEV, ADJUNTOS_COLUMNS} from '../../constants'
 import NewTableServerRender from '../../components/tables/NewTableServerRender' 
-import { EmpleadosForm } from '../../components/forms'
+import { EmpleadosForm, AdjuntosForm } from '../../components/forms'
 import { setOptions, setTextTable, setArrayTable, setMoneyTable, setAdjuntosList, setDateTable} from '../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert} from '../../functions/alert'
 import { Tabs, Tab, Form } from 'react-bootstrap' 
+import TableForModals from '../../components/tables/TableForModals'
 
 const $ = require('jquery');
 
@@ -18,6 +19,10 @@ class Empleados extends Component {
     state = {  
         formeditado:0,
         key: 'administrativo',
+        data:{
+            adjuntos: []
+        },
+        adjuntos: [],
         modal:{
             form: false,
             delete: false,
@@ -152,6 +157,48 @@ class Empleados extends Component {
             modal,
             empleado: empleado
         })
+    }
+
+    openModalAdjuntos = empleado => {
+        const { modal, data } = this.state
+        modal.adjuntos = true
+        data.adjuntos = empleado.datos_generales.concat(empleado.recibos_nomina).concat(empleado.altas_bajas)
+        this.setState({
+            ... this.state,
+            modal,
+            empleado: empleado,
+            data,
+            form: this.clearForm(),
+            adjuntos: this.setAdjuntosTable(data.adjuntos)
+        })
+    }
+
+    setAdjuntosTable = adjuntos => {
+        let aux = []
+        adjuntos.map((adjunto) => {
+            aux.push({
+                actions: this.setActionsAdjuntos(adjunto),
+                url: renderToString(
+                    setAdjuntosList([{ name: adjunto.name, url: adjunto.url }])
+                ),
+                tipo: renderToString(setTextTable(adjunto.pivot.tipo)),
+                id: 'adjuntos-' + adjunto.id
+            })
+        })
+        return aux
+    }
+
+    setActionsAdjuntos = adjunto => {
+        let aux = []
+        aux.push(
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',
+                action: 'deleteAdjunto',
+                tooltip: { id: 'delete-Adjunto', text: 'Eliminar', type: 'error' },
+            })
+        return aux
     }
 
     setOptions = (name, array) => {
@@ -362,6 +409,65 @@ class Empleados extends Component {
         })
     }
 
+    async addAdjuntoEmpleadoAxios() {
+
+        const { access_token } = this.props.authUser
+        const { form, empleado } = this.state
+        const data = new FormData();
+
+        let aux = Object.keys(form.adjuntos)
+        aux.map((element) => {
+            if (form.adjuntos[element].value !== '') {
+                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                }
+                data.append('adjuntos[]', element)
+            }
+        })
+
+        data.append('id', empleado.id)
+
+        await axios.post(URL_DEV + 'empleados/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+
+                const { empleado } = response.data
+                const { data, key } = this.state
+                data.adjuntos = empleado.adjuntos
+                //AQUI
+                this.getComprasAxios()
+
+                this.setState({
+                    ... this.state,
+                    form: this.clearForm(),
+                    empleado: empleado,
+                    adjuntos: this.setAdjuntosTable(empleado),
+                    data
+                })
+
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     handleCloseModal = () => {
         const { modal } = this.state 
         modal.form = false
@@ -375,6 +481,17 @@ class Empleados extends Component {
     handleCloseModalDelete = () => {
         const { modal } = this.state
         modal.delete = false
+        this.setState({
+            ... this.state,
+            form: this.clearForm(),
+            modal, 
+            empleado: ''
+        })
+    }
+
+    handleCloseAdjuntos = () => {
+        const { modal } = this.state
+        modal.adjuntos = false
         this.setState({
             ... this.state,
             form: this.clearForm(),
@@ -499,6 +616,13 @@ class Empleados extends Component {
                     iconclass: 'flaticon2-rubbish-bin',                  
                     action: 'delete',
                     tooltip: {id:'delete', text:'Eliminar', type:'error'},
+                },
+                {
+                    text: 'Adjuntos',
+                    btnclass: 'primary',
+                    iconclass: 'flaticon-attachment',
+                    action: 'adjuntos',
+                    tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
                 }
         ) 
         return aux 
@@ -568,7 +692,7 @@ class Empleados extends Component {
 
 
     render() {
-        const { modal, options, title, form, formeditado, key} = this.state
+        const { modal, options, title, form, formeditado, key, adjuntos, data } = this.state
         return (
             <Layout active={'rh'} {...this.props}>
                 <Tabs defaultActiveKey="administrativo" activeKey={key} onSelect = { (value) =>  { this.controlledTab(value)} }>
@@ -586,6 +710,7 @@ class Empleados extends Component {
                                     {
                                         'edit': {function: this.openModalEdit},
                                         'delete': {function: this.openModalDelete},
+                                        'adjuntos': { function: this.openModalAdjuntos }
                                     }
                                 }
                                 accessToken = { this.props.authUser.access_token }
@@ -608,6 +733,7 @@ class Empleados extends Component {
                                 actions = {{
                                     'edit': {function: this.openModalEdit},
                                     'delete': {function: this.openModalDelete},
+                                    'adjuntos': { function: this.openModalAdjuntos }
                                 }}
                                 accessToken = {this.props.authUser.access_token}
                                 setter = {this.setEmpleado}
@@ -633,6 +759,23 @@ class Empleados extends Component {
                 </Modal>  
                 <ModalDelete title={'¿Quieres eliminar el empleado?'} show = { modal.delete } handleClose = { this.handleCloseModalDelete } onClick=  { (e) => { e.preventDefault(); waitAlert(); this.deleteEmpleadoAxios() }}>
                 </ModalDelete>
+                <Modal size="xl" title={"Adjuntos"} show={modal.adjuntos} handleClose={this.handleCloseAdjuntos}>
+                    <AdjuntosForm form={form} onChangeAdjunto={this.onChangeAdjunto} clearFiles={this.clearFiles}
+                        onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addAdjuntoEmpleadoAxios() }} 
+                        adjuntos = {['datosGenerales', 'recibosNomina', 'altasBajas']}/>
+                    
+                    <TableForModals
+                        columns={ADJUNTOS_COLUMNS}
+                        data={adjuntos}
+                        hideSelector={true}
+                        mostrar_acciones={true}
+                        actions={{
+                            'deleteAdjunto': { function: this.openModalDeleteAdjuntos }
+                        }}
+                        dataID='adjuntos'
+                        elements={data.adjuntos}
+                    />
+                </Modal>
             </Layout>
         )
     }
