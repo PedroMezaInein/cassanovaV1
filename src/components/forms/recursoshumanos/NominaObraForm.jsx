@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { Input, Calendar, SelectSearch, Button, FileInput} from '../../form-components'
+import { Input, Calendar, SelectSearch, Button, FileInput, InputMoney} from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { DATE } from '../../../constants'
 
@@ -170,80 +170,87 @@ class NominaObraForm extends Component {
                                             />
                                         </td>
                                         <td>
-                                            <Input
+                                            <InputMoney
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
                                                 name="sueldoh" 
                                                 value={form['nominasObra'][key]['sueldoh']}
                                                 onChange={e => onChangeNominasObra(key, e, 'sueldoh')}
                                                 placeholder={null}
-                                                style={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
+                                                thousandSeparator={true} 
+                                                customstyle={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
                                             />
                                         </td>
                                         <td>
-                                            <Input
+                                            <InputMoney
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
                                                 name="hora1T" 
                                                 value={form['nominasObra'][key]['hora1T']}
                                                 onChange={e => onChangeNominasObra(key, e, 'hora1T')}
                                                 placeholder={null}
-                                                style={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
+                                                thousandSeparator={true} 
+                                                customstyle={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
                                             />
                                         </td>
                                         <td>
-                                            <Input
+                                            <InputMoney
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
                                                 name="hora2T" 
                                                 value={form['nominasObra'][key]['hora2T']}
                                                 onChange={e => onChangeNominasObra(key, e, 'hora2T')}
                                                 placeholder={null}
-                                                style={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
+                                                thousandSeparator={true} 
+                                                customstyle={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
                                             />
                                         </td>
                                         <td>
-                                            <Input
+                                            <InputMoney
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
                                                 name="hora3T" 
                                                 value={form['nominasObra'][key]['hora3T']}
                                                 onChange={e => onChangeNominasObra(key, e, 'hora3T')}
                                                 placeholder={null}
-                                                style={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
+                                                thousandSeparator={true} 
+                                                customstyle={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
                                             />
                                         </td>
                                         <td>
-                                            <Input
+                                            <InputMoney
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
                                                 name="nominImss" 
                                                 value={form['nominasObra'][key]['nominImss']}
                                                 onChange={e => onChangeNominasObra(key, e, 'nominImss')}
                                                 placeholder={null}
-                                                style={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
+                                                thousandSeparator={true} 
+                                                customstyle={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
                                             />
                                         </td>
                                         <td>
-                                            <Input
+                                            <InputMoney
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
                                                 name="restanteNomina"
                                                 value={form['nominasObra'][key]['restanteNomina']}
                                                 onChange={e => onChangeNominasObra(key, e, 'restanteNomina')}
                                                 placeholder={null}
-                                                style={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
+                                                thousandSeparator={true} 
+                                                customstyle={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
                                             />
                                         </td>
                                         <td>
-                                            <Input
+                                            <InputMoney
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
                                                 name="extras"
                                                 value={form['nominasObra'][key]['extras']}
                                                 onChange={e => onChangeNominasObra(key, e, 'extras')}
                                                 placeholder={null}
-                                                style={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
+                                                thousandSeparator={true} 
+                                                customstyle={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
                                             />
                                         </td>
                                         <td>
