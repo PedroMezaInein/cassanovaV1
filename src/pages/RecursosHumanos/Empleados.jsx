@@ -275,7 +275,15 @@ class Empleados extends Component {
                 const {  modal } = this.state
                 const { empleado } = response.data
                 
-                window.location.reload(false); 
+                /* window.location.reload(false); */ 
+                if(empleado.tipo_empleado === 'Administrativo'){
+                    this.getEmpleadosObraAxios()
+                    this.getEmpleadosAxios()
+                }
+                if(empleado.tipo_empleado === 'Obra'){
+                    this.getEmpleadosAxios()
+                    this.getEmpleadosObraAxios()
+                }
 
                 modal.form = false
 
@@ -482,7 +490,7 @@ class Empleados extends Component {
             empleados.map((empleado) => {
                 aux.push(
                     {
-                        actions_obra: this.setActions(empleado),
+                        actions_obra: this.setActions2(empleado),
                         nombre_obra: renderToString(setTextTable(empleado.nombre)),
                         empresa_obra: renderToString(setTextTable(empleado.empresa ? empleado.empresa.name : '')),
                         puesto_obra: renderToString(setTextTable(empleado.puesto)),
@@ -514,6 +522,27 @@ class Empleados extends Component {
     }
 
     setActions= empleado => {
+        let aux = []
+            aux.push(
+                {
+                    text: 'Editar',
+                    btnclass: 'success',
+                    iconclass: 'flaticon2-pen',
+                    action: 'edit',
+                    tooltip: {id:'edit', text:'Editar'},
+                },
+                {
+                    text: 'Eliminar',
+                    btnclass: 'danger',
+                    iconclass: 'flaticon2-rubbish-bin',                  
+                    action: 'delete',
+                    tooltip: {id:'delete', text:'Eliminar', type:'error'},
+                }
+        ) 
+        return aux 
+    }
+
+    setActions2= empleado => {
         let aux = []
             aux.push(
                 {
@@ -576,13 +605,13 @@ class Empleados extends Component {
     }
 
     async getEmpleadosAxios() {
-        var table = $('#kt_datatable2_empleados')
+        let tableaux = $('#empleados_admin_table')
             .DataTable();
-        table.ajax.reload();
+        tableaux.ajax.reload();
     }
 
     async getEmpleadosObraAxios() {
-        var table2 = $('#kt_datatable2_empleados_obra')
+        let table2 = $('#empleados_obra_table')
             .DataTable();
         table2.ajax.reload();
     }
@@ -612,7 +641,7 @@ class Empleados extends Component {
                                 accessToken = { this.props.authUser.access_token }
                                 setter = { this.setEmpleado }
                                 urlRender = {URL_DEV + 'rh/empleado/admin' }
-                                idTable = 'kt_datatable2_empleados'
+                                idTable = 'empleados_admin_table'
                             />
                         </div>
                     </Tab> 
@@ -633,7 +662,7 @@ class Empleados extends Component {
                                 accessToken = {this.props.authUser.access_token}
                                 setter = {this.setEmpleadoObra}
                                 urlRender = { URL_DEV + 'rh/empleado/obra' }
-                                idTable = 'kt_datatable2_empleados_obra'
+                                idTable = 'empleados_obra_table'
                                 />
                         </div>
                     </Tab>
