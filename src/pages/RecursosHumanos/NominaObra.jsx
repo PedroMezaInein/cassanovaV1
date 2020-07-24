@@ -68,19 +68,89 @@ class NominaObra extends Component {
             this.getOptionsAxios()
     }
 
-    onSubmit = e => {
-        e.preventDefault()
-        const { title } = this.state
-        if(title === 'Editar nómina obra')
-            console.log('editar')
-        else    
-            this.addNominaObraAxios() 
+    openModal = () => {
+        const { modal } = this.state
+        modal.form = true
+        this.setState({
+            ... this.state,
+            modal,
+            form: this.clearForm(),
+            formeditado:0,
+            title: 'Nueva nómina obra',
+        })
     }
 
-    async getNominasAxios(){
-        var table = $('#kt_datatable2_nomina_obra')
-            .DataTable();
-        table.ajax.reload();
+    openModalEdit = nomina => {
+        const { modal, form } = this.state
+        modal.form = true
+
+        form.periodo = nomina.periodo
+        form.empresa = nomina.empresa ? nomina.empresa.id.toString() : ''
+        form.fechaInicio = new Date(nomina.fecha_inicio)
+        form.fechaFin = nomina.fecha_fin ? new Date(nomina.fecha_fin) : ''
+
+        let aux = []
+        console.log(nomina)
+        nomina.nominas_obras.map( (nom, key) => {
+            console.log(key, ' - ', nom)
+            aux.push(
+                {
+                    usuario: nom.empleado ? nom.empleado.id.toString() : '',
+                    proyecto: nom.proyecto ? nom.proyecto.id.toString() : '',
+                    sueldoh: nom.sueldo_por_hora,
+                    hora1T: nom.horas_1t,
+                    hora2T: nom.horas_2t,
+                    hora3T: nom.horas_3t,
+                    nominImss: nom.nomina_imss,
+                    restanteNomina:nom.restante_nomina,
+                    extras:nom.extras
+                }
+            )
+        })
+
+        if(aux.length){
+            form.nominasObra = aux
+        }else{
+            form.nominasObra = [{
+                usuario: '',
+                proyecto: '',
+                sueldoh: '',
+                hora1T: '', 
+                hora2T: '',
+                hora3T: '',
+                nominImss: '',
+                restanteNomina: '',
+                extras: ''
+            }]
+        }
+
+        this.setState({
+            ... this.state,
+            modal,
+            title: 'Editar nómina obra',
+            nomina: nomina,
+            form,
+            formeditado:1
+        })
+    }
+
+    openModalDelete = nomina => {
+        const { modal } = this.state
+        modal.delete = true
+        this.setState({
+            ... this.state,
+            modal,
+            nomina: nomina
+        })
+    }
+
+    setOptions = (name, array) => {
+        const { options } = this.state
+        options[name] = setOptions(array, 'nombre', 'id')
+        this.setState({
+            ... this.state,
+            options
+        })
     }
 
     async getOptionsAxios(){
@@ -166,69 +236,98 @@ class NominaObra extends Component {
         })
     } 
 
-    openModal = () => {
-        const { modal } = this.state
-        modal.form = true
-        this.setState({
-            ... this.state,
-            modal,
-            form: this.clearForm(),
-            formeditado:0,
-            title: 'Nueva nómina obra',
+    async updateNominaObraAxios(){
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { form, nomina} = this.state
+        
+        await axios.put(URL_DEV + 'rh/nomina-obra' + nomina.id , form, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { modal } = this.state
+                const { nomina } = response.data
+                swal.close()
+                this.handleCloseModal()
+                this.getNominasAxios()
+
+                modal.form = false
+
+                this.setState({                    
+                    ... this.state,
+                    modal,
+                    nomina: '',
+                    form: this.clearForm()
+                })
+
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'La nomina fue modificado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false,
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
-    openModalEdit = nomina => {
-        const { modal, form } = this.state
-        modal.form = true
+    async deleteNominaObraAxios(){
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { form, nomina} = this.state
+        
+        await axios.delete(URL_DEV + 'rh/nomina-obra' + nomina.id , form, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { modal } = this.state
+                const { nomina } = response.data
+                swal.close()
+                this.handleCloseModal()
+                this.getNominasAxios()
 
-        form.periodo = nomina.periodo
-        form.empresa = nomina.empresa ? nomina.empresa.id.toString() : ''
-        form.fechaInicio = new Date(nomina.fecha_inicio)
-        form.fechaFin = nomina.fecha_fin ? new Date(nomina.fecha_fin) : ''
+                modal.form = false
 
-        let aux = []
-        console.log(nomina)
-        nomina.nominas_obras.map( (nom, key) => {
-            console.log(key, ' - ', nom)
-            aux.push(
-                {
-                    usuario: nom.empleado ? nom.empleado.id.toString() : '',
-                    proyecto: nom.proyecto ? nom.proyecto.id.toString() : '',
-                    sueldoh: nom.sueldo_por_hora,
-                    hora1T: nom.horas_1t,
-                    hora2T: nom.horas_2t,
-                    hora3T: nom.horas_3t,
-                    nominImss: nom.nomina_imss,
-                    restanteNomina:nom.restante_nomina,
-                    extras:nom.extras
+                this.setState({                    
+                    ... this.state,
+                    modal,
+                    nomina: '',
+                    form: this.clearForm()
+                })
+
+                this.setState({                    
+                    ... this.state,
+                    modal,
+                    nomina: '',
+                    form: this.clearForm()
+                })
+
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'La nomina fue eliminada con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false,
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
-            )
-        })
-
-        if(aux.length){
-            form.nominasObra = aux
-        }else{
-            form.nominasObra = [{
-                usuario: '',
-                proyecto: '',
-                sueldoh: '',
-                hora1T: '', 
-                hora2T: '',
-                hora3T: '',
-                nominImss: '',
-                restanteNomina: '',
-                extras: ''
-            }]
-        }
-
-        this.setState({
-            ... this.state,
-            modal,
-            title: 'Editar nómina obra',
-            nomina: nomina,
-            form,
-            formeditado:1
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -239,6 +338,17 @@ class NominaObra extends Component {
             ... this.state,
             modal, 
             form: this.clearForm()
+        })
+    }
+
+    handleCloseModalDelete = () => {
+        const { modal } = this.state
+        modal.delete = false
+        this.setState({
+            ... this.state,
+            form: this.clearForm(),
+            modal, 
+            nomina: ''
         })
     }
 
@@ -293,15 +403,39 @@ class NominaObra extends Component {
         })
     }
 
-    onChangeNominasObra = (key, e, name) => {
-        const { value } = e.target
-        const { form } = this.state
-        form['nominasObra'][key][name]  = value
-        this.setState({
-            ...this.state,
-            form
+    setNominaObra = nominas => {
+        console.log(nominas)
+        let aux = []
+        nominas.map( (nomina) => {
+            aux.push(
+                {
+                    actions: this.setActions(nomina),
+                    periodo: renderToString(setTextTable(nomina.periodo)),
+                    fechaInicio: renderToString(setDateTable(nomina.fecha_inicio)),
+                    fechaFin: renderToString(setDateTable(nomina.fecha_fin)),
+                    totalPagoNomina: renderToString(setMoneyTable(nomina.totalNominaImss)),
+                    restanteNomina: renderToString(setMoneyTable(nomina.totalRestanteNomina)),
+                    extras: renderToString(setMoneyTable(nomina.totalExtras)),
+                    granTotal: renderToString(setMoneyTable(nomina.totalNominaImss + nomina.totalRestanteNomina + nomina.totalExtras)),
+                    id: nomina.id
+                }
+            )
         })
-    
+        return aux
+    }
+
+    setActions = nomina => {
+        let aux = []
+        aux.push(
+            {
+                text: 'Editar',
+                btnclass: 'success',
+                iconclass: 'flaticon2-pen',
+                action: 'edit',
+                tooltip: { id: 'edit', text: 'Editar' }
+            }
+        )
+        return aux
     }
 
     onChange = e => {
@@ -334,6 +468,26 @@ class NominaObra extends Component {
             ... this.state,
             form
         })
+    }
+
+    onSubmit = e => {
+        e.preventDefault()
+        const { title } = this.state
+        if(title === 'Editar nómina obra')
+            console.log('editar')
+        else    
+            this.addNominaObraAxios() 
+    }
+
+    onChangeNominasObra = (key, e, name) => {
+        const { value } = e.target
+        const { form } = this.state
+        form['nominasObra'][key][name]  = value
+        this.setState({
+            ...this.state,
+            form
+        })
+    
     }
 
     addRowNominaObra = () => {
@@ -382,41 +536,11 @@ class NominaObra extends Component {
         })
     }
 
-    setNominaObra = nominas => {
-        console.log(nominas)
-        let aux = []
-        nominas.map( (nomina) => {
-            aux.push(
-                {
-                    actions: this.setActions(nomina),
-                    periodo: renderToString(setTextTable(nomina.periodo)),
-                    fechaInicio: renderToString(setDateTable(nomina.fecha_inicio)),
-                    fechaFin: renderToString(setDateTable(nomina.fecha_fin)),
-                    totalPagoNomina: renderToString(setMoneyTable(nomina.totalPagoNomina)),
-                    restanteNomina: renderToString(setMoneyTable(nomina.totalRestanteNomina)),
-                    extras: renderToString(setMoneyTable(nomina.totalExtras)),
-                    granTotal: renderToString(setMoneyTable(nomina.totalNominaImss + nomina.totalRestanteNomina + nomina.totalExtras)),
-                    id: nomina.id
-                }
-            )
-        })
-        return aux
+    async getNominasAxios(){
+        var table = $('#kt_datatable2_nomina_obra')
+            .DataTable();
+        table.ajax.reload();
     }
-
-    setActions = nomina => {
-        let aux = []
-        aux.push(
-            {
-                text: 'Editar',
-                btnclass: 'success',
-                iconclass: 'flaticon2-pen',
-                action: 'edit',
-                tooltip: { id: 'edit', text: 'Editar' }
-            }
-        )
-        return aux
-    }
-
     
     render() {
         const { modal, options, title, form, formeditado} = this.state

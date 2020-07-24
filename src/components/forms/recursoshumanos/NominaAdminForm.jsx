@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { Input, Calendar, SelectSearch, Button, FileInput } from '../../form-components'
+import { Input, Calendar, SelectSearch, Button, FileInput, InputMoney} from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { DATE } from '../../../constants'
 
@@ -23,6 +23,18 @@ class NominaAdminForm extends Component {
     updateUsuario = (value, key) => {
         const { onChangeNominasAdmin } = this.props
         onChangeNominasAdmin(key, { target: { value: value, name: 'usuario' } }, 'usuario')
+    }
+
+    getSuma = key => {
+        const { form } = this.props
+        let nominImss = form.nominasAdmin[key].nominImss === undefined ? 0 : form.nominasAdmin[key].nominImss
+        let restanteNomina = form.nominasAdmin[key].restanteNomina === undefined ? 0 : form.nominasAdmin[key].restanteNomina
+        let extras = form.nominasAdmin[key].extras === undefined ? 0 : form.nominasAdmin[key].extras
+        
+        var resultado = parseFloat(nominImss) + parseFloat(restanteNomina) + parseFloat(extras)
+        var separators = resultado.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+        return '$' + separators
     }
 
     render() {
@@ -124,10 +136,7 @@ class NominaAdminForm extends Component {
                 <table className="table table-separate table-responsive" id="tabla_obra">
                     <thead>
                         <tr>
-                            <th>Empleado</th>
-                            <th>Sueldo Diario</th>
-                            <th>Días de V.P.</th>
-                            <th>Días de V.N.P.</th> 
+                            <th>Empleado</th> 
                             <th>Nómina IMSS</th>
                             <th>Restante Nómina</th>
                             <th>Extras</th>
@@ -151,75 +160,52 @@ class NominaAdminForm extends Component {
                                                 iconclass={"fas fa-building"}
                                                 customstyle={{ width: "auto" }}
                                             />
-                                        </td> 
+                                        </td>     
                                         <td>
-                                            <Input
-                                                requirevalidation={1}
-                                                formeditado={formeditado}
-                                                name="sueldoDiario"
-                                                value={form['nominasAdmin'][key]['sueldoDiario']}
-                                                onChange={e => onChangeNominasAdmin(key, e, 'sueldoDiario')}
-                                                placeholder={null}
-                                                style={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
-                                            />
-                                        </td>
-                                        <td>
-                                            <Input
-                                                requirevalidation={1}
-                                                formeditado={formeditado}
-                                                name="diasVP"
-                                                value={form['nominasAdmin'][key]['diasVP']}
-                                                onChange={e => onChangeNominasAdmin(key, e, 'diasVP')}
-                                                placeholder={null}
-                                                style={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
-                                            />
-                                        </td>
-                                        <td>
-                                            <Input
-                                                requirevalidation={1}
-                                                formeditado={formeditado}
-                                                name="diasVNP"
-                                                value={form['nominasAdmin'][key]['diasVNP']}
-                                                onChange={e => onChangeNominasAdmin(key, e, 'diasVNP')}
-                                                placeholder={null}
-                                                style={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
-                                            />
-                                        </td> 
-                                        <td>
-                                            <Input
+                                            <InputMoney
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
                                                 name="nominImss"
                                                 value={form['nominasAdmin'][key]['nominImss']}
                                                 onChange={e => onChangeNominasAdmin(key, e, 'nominImss')}
                                                 placeholder={null}
-                                                style={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
+                                                thousandSeparator={true} 
+                                                customstyle={{ paddingLeft: "10px", marginTop: "13px" }}
+                                                prefix={'$'}
                                             />
                                         </td>
                                         <td>
-                                            <Input
+                                            <InputMoney
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
                                                 name="restanteNomina"
                                                 value={form['nominasAdmin'][key]['restanteNomina']}
                                                 onChange={e => onChangeNominasAdmin(key, e, 'restanteNomina')}
                                                 placeholder={null}
-                                                style={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
+                                                thousandSeparator={true} 
+                                                customstyle={{ paddingLeft: "10px", marginTop: "13px" }}
+                                                prefix={'$'}
                                             />
                                         </td>
                                         <td>
-                                            <Input
+                                            <InputMoney
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
                                                 name="extras"
                                                 value={form['nominasAdmin'][key]['extras']}
                                                 onChange={e => onChangeNominasAdmin(key, e, 'extras')}
                                                 placeholder={null}
-                                                style={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
+                                                thousandSeparator={true} 
+                                                customstyle={{ paddingLeft: "10px", marginTop: "13px" }}
+                                                prefix={'$'}
                                             />
                                         </td>
                                         <td>
-                                            <p style={{ paddingLeft: "10px", width: "131px", marginTop: "30px" }}></p>
+                                            <p className="font-size-lg font-weight-bolder" style={{ paddingLeft: "10px", width: "auto", marginTop: "42px", paddingRight: "20px" }}>
+                                                {
+                                                    this.getSuma(key)
+                                                }
+                                            </p>
                                         </td>
                                     </tr>
                                 )
