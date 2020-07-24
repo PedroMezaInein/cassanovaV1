@@ -228,7 +228,11 @@ class Empleados extends Component {
 
         await axios.post(URL_DEV + 'rh/empleado', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getEmpleadosAxios();
+                const { empleado } = response.data
+                if(empleado.tipo_empleado === 'Administrativo')
+                    this.getEmpleadosAxios();
+                if(empleado.tipo_empleado === 'Obra')
+                    this.getEmpleadosObraAxios();
 
                 const { modal } = this.state
                 modal.form = false
@@ -268,7 +272,11 @@ class Empleados extends Component {
         await axios.put(URL_DEV + 'rh/empleado/'+ empleado.id , form, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const {  modal } = this.state
-                this.getEmpleadosAxios();
+                const { empleado } = response.data
+                if(empleado.tipo_empleado === 'Administrativo')
+                    this.getEmpleadosAxios();
+                if(empleado.tipo_empleado === 'Obra')
+                    this.getEmpleadosObraAxios();
 
                 modal.form = false
 
@@ -311,7 +319,11 @@ class Empleados extends Component {
         await axios.delete(URL_DEV + 'rh/empleado/'+ empleado.id, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { modal } = this.state
-                this.getEmpleadosAxios();
+                const { empleado } = response.data
+                if(empleado.tipo_empleado === 'Administrativo')
+                    this.getEmpleadosAxios();
+                if(empleado.tipo_empleado === 'Obra')
+                    this.getEmpleadosObraAxios();
                 modal.delete = false
 
                 this.setState({                    
@@ -429,7 +441,6 @@ class Empleados extends Component {
     }
 
     setEmpleado = empleados => {
-        console.log(empleados)
         let aux = []
         if (empleados)
             empleados.map((empleado) => {
@@ -534,70 +545,64 @@ class Empleados extends Component {
         table.ajax.reload();
     }
 
+    async getEmpleadosObraAxios() {
+        var table2 = $('#kt_datatable2_empleados_obra')
+            .DataTable();
+        table2.ajax.reload();
+    }
+
 
     render() {
         const { modal, options, title, form, formeditado} = this.state
 
         return (
             <Layout active={'rh'} {...this.props}>
-                <NewTableServerRender
-                    columns={EMPLEADOS_COLUMNS}
-                    title='Empleados administrativos' subtitle='Listado de empleados'
-                    mostrar_boton={true}
-                    abrir_modal={true}
-                    onClick={this.openModal}
-                    mostrar_acciones={true}
-                    actions={{
-                        'edit': {function: this.openModalEdit},
-                        'delete': {function: this.openModalDelete},
-                    }}
-                    accessToken={this.props.authUser.access_token}
-                    setter={this.setEmpleado}
-                    urlRender={URL_DEV + 'rh/empleado'}
-                    idTable='kt_datatable2_empleados'
-                />
-                
-                {/* <Tabs defaultActiveKey="administrativo">
+                <Tabs defaultActiveKey="administrativo">
                     <Tab eventKey="administrativo" title="Administrativo">
                         <div className="py-2">
                             <NewTableServerRender
-                                columns={EMPLEADOS_COLUMNS} data={""}
-                                title='Empleados administrativos' subtitle='Listado de empleados'
-                                mostrar_boton={true}
-                                abrir_modal={true}
-                                onClick={this.openModal}
-                                mostrar_acciones={true}
-                                actions={{
-                                }}
-                                accessToken={this.props.authUser.access_token}
-                                setter={this.setEmpleado}
-                                urlRender={URL_DEV + 'empleado'}
-                                elements={""}
-                                idTable='kt_datatable2_empleados'
+                                columns = { EMPLEADOS_COLUMNS }
+                                title = 'Empleados administrativos' 
+                                subtitle = 'Listado de empleados'
+                                mostrar_boton = { true }
+                                abrir_modal = { true }
+                                onClick = { this.openModal }
+                                mostrar_acciones = { true }
+                                actions = {
+                                    {
+                                        'edit': {function: this.openModalEdit},
+                                        'delete': {function: this.openModalDelete},
+                                    }
+                                }
+                                accessToken = { this.props.authUser.access_token }
+                                setter = { this.setEmpleado }
+                                urlRender = {URL_DEV + 'rh/empleado/admin' }
+                                idTable = 'kt_datatable2_empleados'
                             />
                         </div>
                     </Tab> 
-
                     <Tab eventKey="obra" title="Obra">
                         <div className="py-2">
                             <NewTableServerRender
-                                columns={EMPLEADOS_COLUMNS} data={""}
-                                title='Empleados obra' subtitle='Listado de empleados'
-                                mostrar_boton={true}
-                                abrir_modal={true}
-                                onClick={this.openModal}
-                                mostrar_acciones={true}
-                                actions={{
+                                columns={EMPLEADOS_COLUMNS}
+                                title='Empleados de obra' 
+                                subtitle='Listado de empleados'
+                                mostrar_boton = {true}
+                                abrir_modal = {true}
+                                onClick = {this.openModal}
+                                mostrar_acciones = {true}
+                                actions = {{
+                                    'edit': {function: this.openModalEdit},
+                                    'delete': {function: this.openModalDelete},
                                 }}
-                                accessToken={this.props.authUser.access_token}
-                                setter={this.setEmpleado}
-                                urlRender={URL_DEV + 'empleado'}
-                                elements={""}
-                                idTable='kt_datatable2_empleados'
-                            />
+                                accessToken = {this.props.authUser.access_token}
+                                setter = {this.setEmpleado}
+                                urlRender = { URL_DEV + 'rh/empleado/obra' }
+                                idTable = 'kt_datatable2_empleados_obra'
+                                />
                         </div>
                     </Tab>
-                </Tabs> */}
+                </Tabs>
 
                 <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseModal}>
                     <EmpleadosForm
