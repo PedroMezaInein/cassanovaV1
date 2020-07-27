@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { Input, SelectSearch, Button, InputMoney } from '../../form-components'
+import { Input, SelectSearch, Button, InputMoney, SelectSearchTrue } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 
 class ConceptoForm extends Component {
@@ -17,7 +17,6 @@ class ConceptoForm extends Component {
                 setOptions('subpartidas', element.subpartidas)
             }
         })
-
     }
 
     updateSubpartida = value => {
@@ -31,15 +30,8 @@ class ConceptoForm extends Component {
     }
 
     updateProveedor = value => {
-        const { onChange, data } = this.props
+        const { onChange } = this.props
         onChange({ target: { value: value, name: 'proveedor' } })
-        data.proveedores.find(function (element, index) {
-            if (value.toString() === element.id.toString()) {
-                if (element.rfc !== '') {
-                    onChange({ target: { value: element.rfc, name: 'rfc' } })
-                }
-            }
-        })
     }
 
     render() {
@@ -80,6 +72,20 @@ class ConceptoForm extends Component {
                     </div>
                     <div className="col-md-4">
                         <SelectSearch
+                            requirevalidation={1}
+                            formeditado={formeditado}
+                            options={options.proveedores}
+                            placeholder="SELECCIONA EL PROVEEDOR"
+                            name="proveedor"
+                            value={form.proveedor}
+                            onChange={this.updateProveedor}
+                        />
+                    </div>
+                </div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-4">
+                        <SelectSearch
                             formeditado={formeditado}
                             options={options.partidas}
                             placeholder="SELECCIONA LA PARTIDA"
@@ -89,32 +95,21 @@ class ConceptoForm extends Component {
                             iconclass={" fas fa-book"}
                         />
                     </div>
-                </div>
-                <div className="separator separator-dashed mt-1 mb-2"></div>
-                <div className="form-group row form-group-marginless">
-                    <div className="col-md-6">
-                        <SelectSearch
-                            formeditado={formeditado}
-                            options={options.subpartidas}
-                            placeholder="SELECCIONA LA SUBPARTIDA"
-                            name="subpartida"
-                            value={form.subpartida}
-                            onChange={this.updateSubpartida}
-                            iconclass={" fas fa-book"}
-                        />
-                    </div>
-                    <div className="col-md-6">
-                        <SelectSearch
-                            formeditado={formeditado}
-                            options={options.proveedores}
-                            placeholder="SELECCIONA EL PROVEEDOR"
-                            name="proveedores"
-                            value={form.proveedor}
-                            onChange={this.updateProveedor}
-                            iconclass={"far fa-user"}
-                            messageinc="Incorrecto. Selecciona el proveedor."
-                        />
-                    </div>
+                    {
+                        form.partida ?
+                        <div className="col-md-4">
+                            <SelectSearch
+                                formeditado={formeditado}
+                                options={options.subpartidas}
+                                placeholder="SELECCIONA LA SUBPARTIDA"
+                                name="subpartida"
+                                value={form.subpartida}
+                                onChange={this.updateSubpartida}
+                                iconclass={" fas fa-book"}
+                            />
+                        </div>
+                        : ''
+                    }
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
