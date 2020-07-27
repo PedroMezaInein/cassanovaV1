@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { Input, SelectSearch, Button, InputMoney} from '../../form-components'
+import { Input, SelectSearch, Button, InputMoney } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 
 class ConceptoForm extends Component {
@@ -28,6 +28,18 @@ class ConceptoForm extends Component {
     updateUnidades = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'unidad' } })
+    }
+
+    updateProveedor = value => {
+        const { onChange, data } = this.props
+        onChange({ target: { value: value, name: 'proveedor' } })
+        data.proveedores.find(function (element, index) {
+            if (value.toString() === element.id.toString()) {
+                if (element.rfc !== '') {
+                    onChange({ target: { value: element.rfc, name: 'rfc' } })
+                }
+            }
+        })
     }
 
     render() {
@@ -80,7 +92,7 @@ class ConceptoForm extends Component {
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-4">
+                    <div className="col-md-6">
                         <SelectSearch
                             formeditado={formeditado}
                             options={options.subpartidas}
@@ -91,13 +103,28 @@ class ConceptoForm extends Component {
                             iconclass={" fas fa-book"}
                         />
                     </div>
-                    <div className="col-md-8">
+                    <div className="col-md-6">
+                        <SelectSearch
+                            formeditado={formeditado}
+                            options={options.proveedores}
+                            placeholder="SELECCIONA EL PROVEEDOR"
+                            name="proveedores"
+                            value={form.proveedor}
+                            onChange={this.updateProveedor}
+                            iconclass={"far fa-user"}
+                            messageinc="Incorrecto. Selecciona el proveedor."
+                        />
+                    </div>
+                </div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-12">
                         <Input
                             requirevalidation={1}
                             formeditado={formeditado}
                             as="textarea"
                             placeholder="DESCRIPCIÓN"
-                            rows="1"
+                            rows="2"
                             value={form.descripcion}
                             name="descripcion"
                             onChange={onChange}
@@ -106,10 +133,10 @@ class ConceptoForm extends Component {
                         />
                     </div>
                 </div>
-                <div className="d-flex justify-content-center my-3">
-                    <Button icon='' type="submit" className="text-center mx-auto" text='Enviar' />
-                </div>
-            </Form>
+            <div className="d-flex justify-content-center my-3">
+                <Button icon='' type="submit" className="text-center mx-auto" text='Enviar' />
+            </div>
+            </Form >
         )
     }
 }
