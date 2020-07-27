@@ -181,7 +181,7 @@ class Compras extends Component {
                     )),
                     proyecto: renderToString(setTextTable(compra.proyecto ? compra.proyecto.nombre : '')),
                     proveedor: renderToString(setTextTable(compra.proveedor ? compra.proveedor.razon_social : '')),
-                    factura: renderToString(setTextTable(compra.facturas.length ? 'Con factura' : 'Sin factura')),
+                    factura: renderToString(setTextTable(compra.factura ? 'Con factura' : 'Sin factura')),
                     monto: renderToString(setMoneyTable(compra.monto)),
                     comision: renderToString(setMoneyTable(compra.comision)),
                     impuesto: renderToString(setTextTable(compra.tipo_impuesto ? compra.tipo_impuesto.tipo : 'Sin definir')),
