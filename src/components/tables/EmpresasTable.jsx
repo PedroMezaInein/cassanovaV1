@@ -113,24 +113,6 @@ class EmpresasTable extends Component {
     }
 
     render() {
-        /* const data = [
-            {
-                actions: '1',
-                name: 'Rocco',
-                logo: 'logo'
-            },
-            {
-                actions: '2',
-                name: 'Inein',
-                logo: 'logo'
-            },
-            {
-                actions: '3',
-                name: 'JOCAHEGA',
-                logo: 'logo'
-            }
-            
-        ] */
         const columns = [
             {
                 Header: ' ',

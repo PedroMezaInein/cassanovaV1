@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
@@ -159,19 +158,6 @@ class Rendimientos extends Component {
         return aux
     }
 
-    /*setActions = rendimiento => {
-        return(
-            <>
-                <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalEdit(rendimiento)} } text='' icon={faEdit} color="transparent" 
-                        tooltip={{id:'edit', text:'Editar'}} />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalDelete(rendimiento)} } text='' icon={faTrash} color="red" 
-                        tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
-                </div>
-            </>
-        )
-    }*/
-
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -305,7 +291,6 @@ class Rendimientos extends Component {
             switch (element) {
                 case 'adjunto':
                     if (form.adjunto.files.length > 0)
-                        //Falta adjuntar fotos
                         break;
                     break;
                 default:
@@ -461,7 +446,6 @@ class Rendimientos extends Component {
                         onChange={this.onChange} onSubmit={this.onSubmit} onChangeAdjunto={this.onChangeAdjunto}
                         clearFiles={this.clearFiles} formeditado={formeditado} />
                 </Modal>
-                {/*<DataTable columns = { RENDIMIENTOS_COLUMNS } data = { rendimientos } />*/}
                 <NewTable columns={RENDIMIENTOS_COLUMNS} data={rendimientos}
                     title='Rendimientos' subtitle='Listado de rendimientos'
                     mostrar_boton={true}

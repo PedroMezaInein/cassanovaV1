@@ -96,7 +96,6 @@ class InputPhone extends Component {
                         mask="_"
                         placeholder={placeholder}
                         className={inputPhone ? " form-control is-valid " : " form-control is-invalid"}
-                        //onChange={(e) => { e.preventDefault(); this.validarPhone(e); onChange(e) }} 
                         {...props}
                     />
                 </div>

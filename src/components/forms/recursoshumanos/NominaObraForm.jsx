@@ -173,7 +173,6 @@ class NominaObraForm extends Component {
                                                 formeditado={formeditado}
                                                 options={options.proyectos}
                                                 placeholder="Selecciona el proyecto"
-                                                // placeholder={null}
                                                 name="proyecto"
                                                 value={form['nominasObra'][key]['proyecto']}
                                                 onChange={(value) => this.updateProyecto(value, key)}

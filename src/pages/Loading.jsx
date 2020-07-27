@@ -14,7 +14,7 @@ class Loading extends Component{
         };
         return(
             <div className="">
-                 <Lottie options={defaultOptions}
+                <Lottie options={defaultOptions}
                     height={400}
                     width={400}
                     isStopped={false}

@@ -108,7 +108,6 @@ class Ventas extends Component{
         if(!egresos)
             history.push('/')
         this.getOptionsAxios()
-        /* this.getVentasAxios() */
         const { state } = this.props.location
         if(state){
             if(state.solicitud){
@@ -117,7 +116,6 @@ class Ventas extends Component{
         }
     }
 
-    // Modal
     openModal = () => {
         this.setState({
             ... this.state,
@@ -292,7 +290,6 @@ class Ventas extends Component{
         })
     }
 
-    //Setter
     setVentas = ventas => {
         const { data } = this.state
         data.ventas = ventas
@@ -410,35 +407,6 @@ class Ventas extends Component{
         return aux
     }
 
-    /* 
-    setActions = venta => {
-        return(
-            <>
-                <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalEdit(venta)} } text='' icon={faEdit} color="transparent" 
-                        tooltip={{id:'edit', text:'Editar'}} />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalDelete(venta)} } text='' icon={faTrash} color="red" 
-                        tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
-                </div>
-                <div className="d-flex align-items-center flex-column flex-md-row my-1">
-                    {
-                        venta.factura ?
-                            <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalFacturas(venta)} } text='' icon={faReceipt} color="transparent" 
-                                tooltip={{id:'taxes', text:'Facturas'}} />
-                        : ''
-                    }
-                    {
-                        venta.factura ?
-                            <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalAskFactura(venta)} } text='' icon={faEnvelopeOpenText} color="transparent" 
-                                tooltip={{id:'bills', text:'Pedir factura'}} />
-                        : ''
-                    }
-                </div>
-            </>
-        )
-    }
-    */
-
     setOptions = (name, array) => {
         const {options} = this.state
         options[name] = setOptions(array, 'nombre', 'id')
@@ -448,7 +416,6 @@ class Ventas extends Component{
         })
     }
 
-    // Form
     onChange = e => {
         const {form} = this.state
         const {name, value} = e.target
@@ -643,7 +610,6 @@ class Ventas extends Component{
         return form;
     }
 
-    //
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
@@ -659,8 +625,6 @@ class Ventas extends Component{
         waitAlert()
         this.askFacturaAxios()
     }
-
-    // Async
 
     async addClienteAxios(obj){
 
@@ -775,44 +739,7 @@ class Ventas extends Component{
 
                 table.ajax.reload();
     }
-    /* async getVentasAxios(){
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'ventas', { headers: {Authorization:`Bearer ${access_token}`}}).then(
-            (response) => {
-                const { ventas } = response.data
-                const { data } = this.state
-                data.ventas = ventas
-                swal.close()
-                this.setState({
-                    ... this.state,
-                    ventas: this.setVentas(ventas),
-                    data
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                }else{
-                    errorAlert(
-                        error.response.data.message !== undefined ? 
-                            error.response.data.message 
-                        : 'Ocurrió un error desconocido, intenta de nuevo.'
-                    )
-                }
-            }
-        ).catch((error) => {
-            console.log(error, 'CATCH ERROR')
-            errorAlert('Ocurrió un error desconocido, intenta de nuevo')
-        })
-    } */
-
+    
     async addVentaAxios(){
 
         const { access_token } = this.props.authUser
@@ -1004,15 +931,10 @@ class Ventas extends Component{
             (response) => {
 
                 this.getVentasAxios();
-                /* const { ventas } = response.data
-                const { data } = this.state
-                data.ventas = ventas */
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
-                    modal: false,
-                    
-                    /* data */
+                    modal: false
                 })
                 
                 swal({
@@ -1053,15 +975,12 @@ class Ventas extends Component{
         const { venta } = this.state
         await axios.delete(URL_DEV + 'ventas/' + venta.id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                
-/*                 const { ventas } = response.data */
                 this.getVentasAxios()
 
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
                     modalDelete: false,
-                    /* ventas: this.setVentas(ventas), */
                     venta: ''
                 })
 
@@ -1206,7 +1125,6 @@ class Ventas extends Component{
         })
     }
 
-    // Solicitud compra
     async getSolicitudVentaAxios(id){
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'solicitud-venta/'+id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
@@ -1285,7 +1203,7 @@ class Ventas extends Component{
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
                 link.href = url;
-                link.setAttribute('download', 'ventas.xlsx'); //or any other extension
+                link.setAttribute('download', 'ventas.xlsx');
                 document.body.appendChild(link);
                 link.click();
 
@@ -1312,7 +1230,6 @@ class Ventas extends Component{
         })
     }
 
-    //adjuntos
     async addAdjuntoVentaAxios(){
 
         const { access_token } = this.props.authUser
@@ -1338,7 +1255,6 @@ class Ventas extends Component{
                 const { venta } = response.data
                 const { data } = this.state
                 data.adjuntos = venta.presupuestos.concat(venta.pagos)
-                //AQUI
                 this.getVentasAxios()
 
                 this.setState({
@@ -1381,7 +1297,6 @@ class Ventas extends Component{
                 const { venta } = response.data
                 const { data } = this.state
                 data.adjuntos = venta.presupuestos.concat(venta.pagos)
-                //AQUI
                 this.getVentasAxios()
 
                 this.setState({

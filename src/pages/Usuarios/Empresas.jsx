@@ -40,7 +40,6 @@ class Empresas extends Component{
     componentDidMount(){
         var element = document.getElementById("kt_datatable_empresas");
         element.classList.remove("table-responsive");
-
         const { authUser: { user : { permisos : permisos } } } = this.props
         const { history : { location: { pathname: pathname } } } = this.props
         const { history } = this.props
@@ -51,10 +50,8 @@ class Empresas extends Component{
         if(!empresas)
             history.push('/')
         this.getEmpresas()
-
     }
 
-    // Get Empresas
     async getEmpresas(){
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'empresa', { headers: {Authorization:`Bearer ${access_token}`}}).then(
@@ -62,11 +59,6 @@ class Empresas extends Component{
                 const { data } = this.state
                 const { data: {empresas: empresas} } = response                
                 data.empresas = empresas
-                /* YO lo agregué this.setState({
-                    ... this.state,
-                    empresas: this.setEmpresas(empresas),
-                    data
-                })*/
                 this.setEmpresas(empresas)
             },
             (error) => {
@@ -97,7 +89,6 @@ class Empresas extends Component{
         })
     }
 
-    // Set empresas
     setEmpresas = (empresas_list) => {
         const { data } = this.state
         data.empresas = empresas_list
@@ -127,17 +118,6 @@ class Empresas extends Component{
         })
     }
 
-    /*setActions = (empresa) => {
-        return(
-            <div className="d-flex align-items-center">
-                <Button className="mx-2 small-button" onClick={(e) => this.openModalEditEmpresa(e)(empresa)} text='' icon={faEdit} color="yellow"
-                    tooltip={{id:'edit', text:'Editar'}} />
-                <Button className="mx-2 small-button" onClick={(e) => this.openModalDeleteEmpresa(e)(empresa)} text='' icon={faTrash} color="red" 
-                    tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
-            </div>
-        )
-    }
-    */
     setActions = proveedor => {
     let aux = []
         aux.push(
@@ -158,7 +138,7 @@ class Empresas extends Component{
         )
     return aux
     }
-    // Modal
+    
     openModalDeleteEmpresa =  (emp) => {
         this.setState({
             ... this.state,
@@ -230,7 +210,6 @@ class Empresas extends Component{
         })
     }
 
-    //Delete Empresa
     safeDeleteEmpresa = (e) => (empresa) => {
         this.deleteEmpresaAxios(empresa);
         this.setState({
@@ -241,7 +220,6 @@ class Empresas extends Component{
         })
     }
 
-    //Axios
     async deleteEmpresaAxios(empresa){
         const { access_token } = this.props.authUser
         await axios.delete(URL_DEV + 'empresa/' +empresa, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
@@ -380,8 +358,6 @@ class Empresas extends Component{
         })
     }
 
-    // Form
-
     handleChange = (e) => {
         e.preventDefault();
         const { name, value } = e.target
@@ -456,13 +432,6 @@ class Empresas extends Component{
         const { empresas, modalDelete, modalEdit, empresa, form, img, title, formAction,data, formeditado} = this.state
         return(
             <Layout active={'usuarios'} { ...this.props}>
-               
-               {/* <div className="text-right">
-                    <Button className="small-button ml-auto mr-4" onClick={(e) => this.openModal()} text='' icon={faPlus} color="green"
-                        tooltip={{id:'add', text:'Nuevo'}} />
-                </div>
-                */}
-                {/*<EmpresasTable data={empresas} />*/}
 
                 <NewTable  columns={EMPRESA_COLUMNS} data = { empresas } 
                             title = 'Empresas' subtitle = 'Listado de empresas'

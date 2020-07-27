@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */  
 import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'

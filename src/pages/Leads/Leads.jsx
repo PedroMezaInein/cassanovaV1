@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */  
 import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import Layout from '../../components/layout/layout'
@@ -50,7 +49,6 @@ class Leads extends Component{
         super(props)
     }
 
-    // Setters
     setLeads = leads => {
         const { data } = this.state
         data.leads = leads
@@ -136,26 +134,6 @@ class Leads extends Component{
         )
         return aux
     }
-
-    /*    setActions = (lead) => {
-        return(
-            <>
-                <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalEditLead(e)(lead)} text='' icon={faEdit} color="yellow" 
-                        tooltip={{id:'edit', text:'Editar'}}/>
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalSafeDelete(e)(lead)} text='' icon={faTrash} color="red" 
-                        tooltip={{id:'delete', text:'Eliminar', type: 'error'}}/>
-                </div>
-                <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalSafeConvert(e)(lead)} text='' icon={faSync} color="transparent"
-                        tooltip={{id:'prospecto', text:'Convertir en prospecto', type: 'success'}} />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalSafeConvertProveedor(e)(lead)} text='' icon={faTruckLoading} color="transparent"
-                        tooltip={{id:'proveedor', text:'Convertir en proveedor', type: 'success'}} />
-                </div>
-            </>
-        )
-    }
-    */
 
     setContacto = (lead) => {
         return(
@@ -253,9 +231,6 @@ class Leads extends Component{
             servicios: _servicios,
         })
     }
-
-    
-    // Modals
 
     openModal = () => {
         this.setState({
@@ -387,8 +362,6 @@ class Leads extends Component{
             leadId: ''
         })
     }
-    
-    // Forms
 
     handleSubmitAddLead = (e) => {
         e.preventDefault();
@@ -454,8 +427,6 @@ class Leads extends Component{
             form: form
         })
     }
-
-    // Axios
 
     async getLeads(){
         const { access_token } = this.props.authUser
@@ -694,16 +665,6 @@ class Leads extends Component{
         const { leads, modalAdd, form, origenes, empresas, servicios, title, tipoForm, modalDelete, leadId, modalConvert, convertir,data, formeditado } = this.state
         return(
             <Layout active={'leads'}  { ...this.props}>
-                {/*<div className="text-right d-flex justify-content-end">
-                    <Button className="small-button " onClick={ (e) => { this.exportToCSV() } } text='' icon={faFileExport} color="transparent"
-                        tooltip={{id:'export', text:'Exportar'}} /> 
-                    {/*<Button className="small-button ml-4 mr-4" onClick={ (e) => { this.openModal() } } text='' icon={faPlus} color="green"
-                        tooltip={{id:'add', text:'Nuevo'}} /> 
-                        
-                </div>
-                {/*   { leads && <DataTable columns={LEADS_COLUMNS} data={leads}/>}*/}
-                
-                
                 { 
                     <NewTable columns = { LEADS_COLUMNS } data = { leads } 
                         title = 'Leads' subtitle = 'Listado de leads'

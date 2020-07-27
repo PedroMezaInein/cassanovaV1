@@ -84,7 +84,7 @@ class ItemSlider extends Component {
         const url = item.url;
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', item.name); //or any other extension
+        link.setAttribute('download', item.name);
         document.body.appendChild(link);
         link.click();
     }

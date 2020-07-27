@@ -43,11 +43,7 @@ class FlujosForm extends Component {
                             value={form.cuenta}
                             onChange={this.updateCuenta}
                             iconclass={"fas fa-credit-card"}
-                        />
-                        {/* <div className="btn btn-outline-primary mt-3 p-2" onClick = { this.mostrarTodasCuentas }>
-                            <i className={"fas fa-list-ol icon-nm"}><span className="pl-2 font-size-sm">Muestra todas las cuentas</span></i> 
-                        </div> */}
-
+                        /> 
                         <a className="btn btn-outline-primary mt-3" onClick={this.mostrarTodasCuentas}>
                             <i className="fas fa-list-ol icon-md"></i> Seleccionar todas las cuentas
                         </a>

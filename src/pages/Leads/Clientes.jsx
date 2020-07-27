@@ -51,8 +51,6 @@ class Leads extends Component {
         this.getClientesAxios();
     }
 
-    // Form
-
     clearForm = (name, empty) => {
         let aux = Object.keys(empty)
         let _form = this.state[name]
@@ -104,7 +102,6 @@ class Leads extends Component {
         this.deleteClienteAxios()
     }
 
-    // Modal
     handleCloseModal = () => {
         this.setState({
             ... this.state,
@@ -173,8 +170,6 @@ class Leads extends Component {
             formeditado:1
         })
     }
-
-    // Setters
 
     setClientes = clientes => {
         let aux = [];
@@ -259,8 +254,6 @@ class Leads extends Component {
         )
     }
 
-    // Axios
-
     async getClientesAxios() {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'cliente', { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -271,7 +264,6 @@ class Leads extends Component {
                 this.setClientes(clientes)
                 this.setState({
                     ... this.state,
-                    //clientes: this.setClientes(clientes),
                     data
                 })
             },

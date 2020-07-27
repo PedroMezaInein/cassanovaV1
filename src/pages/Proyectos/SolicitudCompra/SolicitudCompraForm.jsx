@@ -118,7 +118,6 @@ class SolicitudCompraForm extends Component{
         this.getSolicitudesCompraAxios()
     }
 
-    //Handle change
     onChange = e => {
         const {form} = this.state
         const {name, value} = e.target
@@ -183,7 +182,6 @@ class SolicitudCompraForm extends Component{
             this.addSolicitudCompraAxios()
     }
 
-    //Setters
     setOptions = (name, array) => {
         const {options} = this.state
         options[name] = setOptions(array, 'nombre', 'id')
@@ -254,7 +252,6 @@ class SolicitudCompraForm extends Component{
         return aux
     }
 
-    //Async
     async getSolicitudesCompraAxios(){
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'solicitud-compra', { headers: {Authorization:`Bearer ${access_token}`}}).then(

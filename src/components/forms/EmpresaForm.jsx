@@ -16,7 +16,7 @@ class EmpresaForm extends Component {
     }
 
     render() {
-        const { form, onChange, title, img, removeFile, onSubmit, formeditado } = this.props
+        const { form, onChange, img, removeFile, onSubmit, formeditado } = this.props
         return (
             <Form id="form-empresa"
                 onSubmit={

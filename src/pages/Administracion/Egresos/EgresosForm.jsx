@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */  
-
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
@@ -69,7 +67,6 @@ class EgresosForm extends Component{
         formeditado:0
     }
 
-    // On change
     onChange = e => {
         const {form} = this.state
         const {name, value} = e.target
@@ -349,7 +346,6 @@ class EgresosForm extends Component{
         this.getEgresosAxios()
     }
 
-    //Setters
     setOptions = (name, array) => {
         const {options} = this.state
         options[name] = setOptions(array, 'nombre', 'id')
@@ -359,7 +355,6 @@ class EgresosForm extends Component{
         })
     }
 
-    //ASYNC
     async getEgresosAxios(){
         waitAlert()
         const { access_token } = this.props.authUser

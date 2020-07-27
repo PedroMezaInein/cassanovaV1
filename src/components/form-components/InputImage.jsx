@@ -3,10 +3,6 @@ import Form from 'react-bootstrap/Form'
 
 class InputImage extends Component {
 
-    /* constructor(props){
-        super(props)
-    } */
-
     render() {
         const { error, onChange, placeholder, iconclass,spantext } = this.props 
         return (

@@ -11,7 +11,6 @@ import UserPanel from '../../../src/components/layout/UserPanel/userPanel'
 
 function openUserProfile (){  
     if(document.getElementsByClassName("offcanvas")[0].classList.contains("offcanvas-on")){
-        // console.log(document.getElementsByClassName("offcanvas")[0].classList);
         document.getElementsByClassName("offcanvas")[0].classList.remove("offcanvas-on");
     }
     else

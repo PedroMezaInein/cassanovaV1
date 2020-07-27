@@ -29,18 +29,10 @@ class ProveedorForm extends Component {
 
     render() {
         const { title, options, form, onChange, setOptions, onSubmit, formeditado, ...props } = this.props
-        // const formeditado = 1;
         return (
             <Form id="form-proveedor"
                 onSubmit={
                     (e) => {
-                        /* e.preventDefault(); 
-                        var elementsInvalid = document.getElementById("form-proveedor").getElementsByClassName("is-invalid"); 
-                        if(elementsInvalid.length===0){   
-                            onSubmit(e)
-                        }else{ 
-                            alert("Rellena todos los campos")
-                        }  */
                         e.preventDefault();
                         validateAlert(onSubmit, e, 'form-proveedor')
                     }
@@ -126,11 +118,7 @@ class ProveedorForm extends Component {
                                 formeditado={formeditado}
                             />
                         </div>
-
-                        {/* <div className="col-md-4">
-                            <Input name="cuenta" value={form.cuenta} placeholder="Cuenta" onChange={onChange} iconclass={"la la-file-text-o"}/>
-                        </div> */}
-
+                        
                         <div className="col-md-4">
                             <InputNumber
                                 requirevalidation={0}

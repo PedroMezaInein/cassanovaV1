@@ -128,7 +128,6 @@ class EmpleadosForm extends Component {
                                             iconclass={"fas fa-hospital-user"}
                                             patterns={NSS}
                                             messageinc="Incorrecto. Ej. 01234567891"
-                                        //maxLength="11"
                                         />
                                     </div>
                                     <div className="col-md-4">

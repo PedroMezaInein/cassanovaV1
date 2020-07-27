@@ -47,8 +47,6 @@ class EstadosCuenta extends Component {
         this.getEstadosCuenta()
     }
 
-    // Setters
-
     setEstados = estados => {
         let aux = []
         estados.map((estado, key) => {
@@ -139,7 +137,7 @@ class EstadosCuenta extends Component {
             </Small>
         )
     }
-    // Form
+
     onChangeAdjunto = (e) => {
         this.setState({
             ... this.state,
@@ -174,7 +172,7 @@ class EstadosCuenta extends Component {
             this.addEstadoAxios()
         }
     }
-    // Modal
+
     handleClose = () => {
         const { modal } = this.state
         this.setState({
@@ -213,8 +211,7 @@ class EstadosCuenta extends Component {
             fecha: date
         })
     }
-    // Axios
-    // Get
+
     async getEstadosCuenta() {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'estados-cuentas', { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -229,8 +226,7 @@ class EstadosCuenta extends Component {
                 })
                 this.setState({
                     ... this.state,
-                    cuentas: aux,
-                    //  estados: this.setEstados(estados)
+                    cuentas: aux
                 })
 
             },
@@ -325,7 +321,6 @@ class EstadosCuenta extends Component {
                 data.estados = estados
                 this.setState({
                     ... this.state,
-                    //estados: this.setEstados(estados),
                     modalDelete: false,
                     estado: '',
                     data

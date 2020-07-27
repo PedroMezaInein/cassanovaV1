@@ -67,7 +67,6 @@ class Cuentas extends Component {
         this.getCuentas()
     }
 
-    //
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -169,8 +168,6 @@ class Cuentas extends Component {
             adjuntoName: ''
         })
     }
-
-    // Setters
 
     setEmptyForm = () => {
         return {
@@ -371,8 +368,6 @@ class Cuentas extends Component {
         return aux
     }
 
-    // Modal
-
     handleClose = () => {
         const { modal } = this.state
         this.setState({
@@ -545,10 +540,6 @@ class Cuentas extends Component {
         
     }
 
-    // Axios
-
-    // Get
-
     async getCuentas() {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'cuentas', { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -588,8 +579,6 @@ class Cuentas extends Component {
             console.log(error, 'error')
         })
     }
-
-    // Post
 
     async addCuentaAxios() {
         const { access_token } = this.props.authUser
@@ -670,8 +659,6 @@ class Cuentas extends Component {
         })
     }
 
-    // PUT
-
     async editCuentaAxios() {
         const { access_token } = this.props.authUser
         const { cuenta, form } = this.state
@@ -711,7 +698,6 @@ class Cuentas extends Component {
         })
     }
 
-    //delete
     async deleteCuentaAxios() {
         const { access_token } = this.props.authUser
         const { cuenta } = this.state
@@ -910,7 +896,6 @@ class Cuentas extends Component {
                         </div>
                     </Form>
                     <div className="separator separator-dashed mt-1 mb-2"></div>
-                    {/* estados.length > 0 &&  <NewTable columns={EDOS_CUENTAS_COLUMNS} data={estados} />*/}
                     {estados.length > 0 && 
                     <TableForModals 
                             columns={EDOS_CUENTAS_COLUMNS} 

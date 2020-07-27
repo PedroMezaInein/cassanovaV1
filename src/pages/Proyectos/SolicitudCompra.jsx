@@ -222,7 +222,6 @@ class SolicitudCompra extends Component{
             this.addSolicitudCompraAxios()
     }
 
-    //Setters
     setOptions = (name, array) => {
         const {options} = this.state
         options[name] = setOptions(array, 'nombre', 'id')
@@ -282,22 +281,6 @@ class SolicitudCompra extends Component{
         )
         return aux
     }
-    /*setActions = solicitud => {
-        return(
-            <>
-                <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalEdit(solicitud)} } text='' icon={faEdit} color="transparent" 
-                        tooltip={{id:'edit', text:'Editar'}} />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.openModalDelete(solicitud)} } text='' icon={faTrash} color="red" 
-                        tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
-                </div>
-                <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.convertirSolicitud(solicitud)} } text='' icon={faSync} color="transparent" 
-                        tooltip={{id:'convertir', text:'Comprar', type:'success'}} />
-                </div>
-            </>
-        )
-    }*/
 
     convertirSolicitud = solicitud => {
         const { history } = this.props
@@ -308,7 +291,6 @@ class SolicitudCompra extends Component{
         });
     }
 
-    //Async
     async getSolicitudesCompraAxios(){
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'solicitud-compra', { headers: {Authorization:`Bearer ${access_token}`}}).then(
@@ -613,8 +595,6 @@ class SolicitudCompra extends Component{
                     <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon = { faPlus } color="green" />
                 </div>
             
-                {/* <DataTable columns = { SOLICITUD_COMPRA_COLUMNS } data= { solicitudes }/>*/}
-                
                 <NewTable columns={SOLICITUD_COMPRA_COLUMNS} data={solicitudes}
                     title='Solicitudes' subtitle='Listado de solicitudes'
                     mostrar_boton={true}

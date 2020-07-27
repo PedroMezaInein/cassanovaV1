@@ -7,7 +7,7 @@ import { validateAlert } from '../../../functions/alert'
 class ConceptoForm extends Component {
 
     updateProyecto = value => {
-        const { onChange, form } = this.props
+        const { onChange} = this.props
         onChange({ target: { value: value, name: 'proyecto' } })
     }
 
@@ -26,7 +26,7 @@ class ConceptoForm extends Component {
     }
 
     updateSubarea = value => {
-        const { onChange, setOptions } = this.props
+        const { onChange} = this.props
         onChange({ target: { name: 'subarea', value: value.toString() } })
     }
 

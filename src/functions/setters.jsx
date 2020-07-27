@@ -54,10 +54,6 @@ export function setTextTable(text) {
             {text}
         </Small>
     )
-
-    /* return( */
-
-    /* ) */
 }
 
 export function setDateTable(date) {

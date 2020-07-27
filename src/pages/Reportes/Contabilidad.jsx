@@ -193,7 +193,7 @@ class Contabilidad extends Component {
                 const url = URL_ASSETS+'/storage/contabilidad.zip'
                 const link = document.createElement('a');
                 link.href = url;
-                link.setAttribute('download', 'data.zip'); //or any other extension
+                link.setAttribute('download', 'data.zip');
                 document.body.appendChild(link);
                 link.click();
 

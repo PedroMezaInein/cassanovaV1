@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */  
 import React, { Component } from 'react'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
@@ -61,8 +60,6 @@ class Tareas extends Component{
         var then = new Date(comentario.created_at);
 
         var diff = moment.duration(moment(now).diff(moment(then)));
-        
-        /* var months = parseInt(diff.asMonths()); */
         var months = parseInt( moment(now).diff(moment(then), 'month' ) )
         
         var days = parseInt(diff.asDays());
@@ -106,7 +103,6 @@ class Tareas extends Component{
     
     }
 
-    // Modals
     handleCloseModal = () => {
         this.setState({
             ... this.state,
@@ -156,8 +152,6 @@ class Tareas extends Component{
         })
     }
 
-    // Sets
-
     setOptions = tarea => {
         const { users } = this.state
 
@@ -197,7 +191,6 @@ class Tareas extends Component{
         })
     }
 
-    // Dragable
     onDragEnd = result => {
         const { destination, source, draggableId } = result
 
@@ -224,7 +217,6 @@ class Tareas extends Component{
 
     }
 
-    // Handle Buttons
 
     handleAccordion = activeKey => {
         const { form } = this.state
@@ -236,7 +228,6 @@ class Tareas extends Component{
         })
     }
 
-    // Handle add Button
     submitAdd = () => {
         const { form } = this.state
         this.addTaskAxios();
@@ -314,7 +305,7 @@ class Tareas extends Component{
             }
         })
     }
-    // Axios
+
     async getTareasAxios(){
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'user/tareas', { headers: {Authorization:`Bearer ${access_token}`, } }).then(
@@ -889,21 +880,7 @@ class Tareas extends Component{
                                                         </div>
                                                     </div>
                                                 </div>
-                                                </div> 
-
-                                                // {
-                                                //     comentario.adjunto &&
-                                                //         <div className="text-left mb-0">
-                                                //             <a href={comentario.adjunto.url} target="_blank">
-                                                //                 <Small className="ml-2" color="dark-blue">
-                                                //                     <FontAwesomeIcon icon={faFileAlt} color={DARK_BLUE} className="mr-1"/>
-                                                //                     {
-                                                //                         comentario.adjunto.name
-                                                //                     }
-                                                //                 </Small>
-                                                //             </a>
-                                                //         </div>
-                                                // }
+                                                </div>
                                             
                                         )
                                     })
