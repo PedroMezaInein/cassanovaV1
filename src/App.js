@@ -35,6 +35,7 @@ const Traspasos = Loader(() => import('./pages/Bancos/Traspasos') )
 
 const Conceptos = Loader(() => import('./pages/Presupuesto/Conceptos') )
 const Rendimiento = Loader(() => import('./pages/Presupuesto/Rendimiento') )
+const Presupuesto = Loader(() => import('./pages/Presupuesto/Presupuesto') )
 
 const Ingresos = Loader(() => import('./pages/Administracion/Ingresos/Ingresos') )
 const IngresosForm = Loader(() => import('./pages/Administracion/Ingresos/IngresosForm') )
@@ -155,6 +156,7 @@ class App extends Component{
 
                 <Route path = "/presupuesto/conceptos" exact component ={ Conceptos } />
                 <Route path = "/presupuesto/rendimiento" exact component ={ Rendimiento } />
+                <Route path = "/presupuesto/presupuesto" exact component ={ Presupuesto } />
 
                 <Route path = "/proyectos/proyectos" exact component ={ Proyectos } />
                 <Route path = "/proyectos/ventas" exact component ={ Ventas } />
