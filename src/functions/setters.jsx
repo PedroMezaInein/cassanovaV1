@@ -81,6 +81,15 @@ export function setMoneyTable(value) {
     )
 }
 
+export function setMoneyTableForNominas(value) {
+    let cantidad = 0
+    cantidad = parseFloat(value).toFixed(2)
+    return (
+        <NumberFormat value={cantidad} displayType={'text'} thousandSeparator={true} prefix={'$'}
+            renderText={cantidad => <p className="font-weight-bolder mb-0" style={{fontSize: "1.01rem"}}> {cantidad} </p>} />
+    )
+}
+
 export function setPercentTable(value) {
     let cantidad = 0
     cantidad = parseFloat(value).toFixed(2)

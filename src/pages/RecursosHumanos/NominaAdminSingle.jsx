@@ -4,9 +4,7 @@ import Layout from '../../components/layout/layout'
 import NewTable from '../../components/tables/NewTable';
 import { NOMINA_ADMIN_SINGLE_COLUMNS } from '../../constants';
 import { renderToString } from 'react-dom/server';
-import { setTextTable, setMoneyTable } from '../../functions/setters'
-
-const $ = require('jquery');
+import { setTextTable, setMoneyTable,setMoneyTableForNominas } from '../../functions/setters'
 
 class NominaAdminSingle extends Component {
     state = {  
@@ -71,10 +69,10 @@ class NominaAdminSingle extends Component {
 
     setTotales = nomina => {
         return {
-                totalNominaImss: renderToString(setMoneyTable(nomina.totalNominaImss)),
-                totalRestanteNomina: renderToString(setMoneyTable(nomina.totalRestanteNomina)),
-                totalExtras: renderToString(setMoneyTable(nomina.totalExtras)),
-                total: renderToString(setMoneyTable(nomina.totalExtras + nomina.totalRestanteNomina + nomina.totalNominaImss)),
+                totalNominaImss: renderToString(setMoneyTableForNominas(nomina.totalNominaImss)),
+                totalRestanteNomina: renderToString(setMoneyTableForNominas(nomina.totalRestanteNomina)),
+                totalExtras: renderToString(setMoneyTableForNominas(nomina.totalExtras)),
+                total: renderToString(setMoneyTableForNominas(nomina.totalExtras + nomina.totalRestanteNomina + nomina.totalNominaImss)),
             }
     }
 
@@ -110,6 +108,7 @@ class NominaAdminSingle extends Component {
                             mostrar_acciones = {false}
                             elements = { data.nominaData }
                             totales = { totales }
+                            idTable = 'kt_datatable2_nomina_admin'
                             />
                     : ''
                 }
