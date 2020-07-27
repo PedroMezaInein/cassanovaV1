@@ -62,7 +62,7 @@ class NominaObraSingle extends Component {
                     hora1T: renderToString(setMoneyTable(nomina.hora1T)),
                     hora2T: renderToString(setMoneyTable(nomina.hora2T)),
                     hora3T: renderToString(setMoneyTable(nomina.hora3T)),
-                    nominaIMSS: renderToString(setMoneyTable(nomina.nominaIMSS)),
+                    nominaIMSS: renderToString(setMoneyTable(nomina.nomina_imss)),
                     extras: renderToString(setMoneyTable(nomina.restante_nomina)),
                     viaticos: renderToString(setMoneyTable(nomina.extras)),
                     total: renderToString(setMoneyTable(nomina.extras + nomina.restante_nomina + nomina.nomina_imss)),
