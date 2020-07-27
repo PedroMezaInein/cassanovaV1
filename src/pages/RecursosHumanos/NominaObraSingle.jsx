@@ -2,11 +2,11 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Layout from '../../components/layout/layout' 
 import NewTable from '../../components/tables/NewTable';
-import { NOMINA_ADMIN_SINGLE_COLUMNS } from '../../constants';
+import { NOMINA_OBRA_SINGLE_COLUMNS } from '../../constants';
 import { renderToString } from 'react-dom/server';
-import { setTextTable, setMoneyTable,setMoneyTableForNominas } from '../../functions/setters'
+import { setTextTable, setMoneyTable, setMoneyTableForNominas} from '../../functions/setters'
 
-class NominaAdminSingle extends Component {
+class NominaObraSingle extends Component {
     state = {  
         nomina: '',
         nominaData: [],
@@ -18,7 +18,7 @@ class NominaAdminSingle extends Component {
     }
 
     componentDidMount() {
-        var element = document.getElementById("kt_datatable2_nomina_admin");
+        var element = document.getElementById("kt_datatable2_nomina_obra");
         if(element)
             element.classList.remove("table-responsive");
 
@@ -26,12 +26,12 @@ class NominaAdminSingle extends Component {
         const { history: { location: { pathname: pathname } } } = this.props
         const { match : { params: { id: id } } } = this.props
         const { history } = this.props
-        const nominaadmin = permisos.find(function (element, index) {
+        const nominaobra = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
             return pathname === url + '/' + id
         });
         
-        if (!nominaadmin)
+        if (!nominaobra)
             history.push('/')
 
         const { state } = this.props.location
@@ -39,9 +39,10 @@ class NominaAdminSingle extends Component {
         if(state) {
             if(state.nomina) {
                 data.nominaData = state.nomina
+                console.log(state.nomina)
                 this.setState({
                     nomina: state.nomina,
-                    nominaData: this.setNominasAdministrativas(state.nomina.nominas_administrativas),
+                    nominaData: this.setNominasAdministrativas(state.nomina.nominas_obras),
                     totales: this.setTotales(state.nomina),
                     data
                 })
@@ -56,7 +57,12 @@ class NominaAdminSingle extends Component {
                 {
                     idEmpleado: renderToString(setTextTable(nomina.empleado ? nomina.empleado.id : '')),
                     empleado: renderToString(setTextTable(nomina.empleado ? nomina.empleado.nombre : '')),
-                    nominaIMSS: renderToString(setMoneyTable(nomina.nomina_imss)),
+                    proyecto: renderToString(setTextTable(nomina.proyecto ? nomina.proyecto.nombre : '')),
+                    sueldo_hora: renderToString(setMoneyTable(nomina.sueldo_hora)),
+                    hora1T: renderToString(setMoneyTable(nomina.hora1T)),
+                    hora2T: renderToString(setMoneyTable(nomina.hora2T)),
+                    hora3T: renderToString(setMoneyTable(nomina.hora3T)),
+                    nominaIMSS: renderToString(setMoneyTable(nomina.nominaIMSS)),
                     extras: renderToString(setMoneyTable(nomina.restante_nomina)),
                     viaticos: renderToString(setMoneyTable(nomina.extras)),
                     total: renderToString(setMoneyTable(nomina.extras + nomina.restante_nomina + nomina.nomina_imss)),
@@ -99,7 +105,7 @@ class NominaAdminSingle extends Component {
                 {
                     nomina ? 
                         <NewTable 
-                            columns = { NOMINA_ADMIN_SINGLE_COLUMNS } 
+                            columns = { NOMINA_OBRA_SINGLE_COLUMNS } 
                             data = { nominaData }
                             title = { nomina.periodo } 
                             subtitle = { this.setSubtitle(nomina) }
@@ -108,8 +114,8 @@ class NominaAdminSingle extends Component {
                             mostrar_acciones = {false}
                             elements = { data.nominaData }
                             totales = { totales }
-                            idTable = 'kt_datatable2_nomina_admin'
                             />
+                            
                     : ''
                 }
             </Layout>
@@ -126,4 +132,4 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(NominaAdminSingle);
+export default connect(mapStateToProps, mapDispatchToProps)(NominaObraSingle);
