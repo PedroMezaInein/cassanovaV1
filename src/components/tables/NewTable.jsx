@@ -72,9 +72,9 @@ class NewTable extends Component {
                         $(this).append('<div class="mt-2 separator separator-dashed separator-border-2"></div><div class="mt-2"><input type="text" id=' + cellIndex + ' class="form-control form-control-sm"/></div>');
                         if(total)
                         {
-                            $(this).append('<div class="mt-2 text-primary bg-primary-o-40 font-weight-boldest"></div>'+totales[total]);
+                            $(this).append('<div class="mt-2 text-primary bg-primary-o-40 font-weight-boldest">'+totales[total]+'</div>');
                         }else{
-                            $(this).append('<div class="mt-2 text-white  font-weight-boldest"></div'+totales[total]);
+                            $(this).append('<div class="mt-2 text-white  font-weight-boldest">'+totales[total]+'</div');
                         }
 
                     }
