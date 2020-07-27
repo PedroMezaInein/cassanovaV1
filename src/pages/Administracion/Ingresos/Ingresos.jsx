@@ -760,6 +760,7 @@ class Ingresos extends Component {
                     accessToken = { this.props.authUser.access_token }
                     setter = { this.setIngresos }
                     urlRender = {URL_DEV + 'ingresos'}
+                    elementClass = 'total'
                     />
 
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el ingreso?"}show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteIngresoAxios() }}>

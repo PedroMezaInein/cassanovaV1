@@ -1359,6 +1359,8 @@ class Ventas extends Component{
                     setter = { this.setVentas }
                     urlRender = {URL_DEV + 'ventas'}
                     idTable = 'kt_datatable2_ventas'
+                    elementClass = 'total'
+                    // zeroRed = { true }
                 /> 
 
                 <Modal size="xl" show = {modal} handleClose = { this.handleClose } title = { title } >
