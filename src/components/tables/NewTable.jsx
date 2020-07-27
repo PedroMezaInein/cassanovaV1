@@ -107,12 +107,19 @@ class NewTable extends Component {
             createdRow: function (row, data, dataIndex, cells) {
                 if (elementClass) {
                     let auxiliar = data[elementClass].split('<!-- -->')
-                    if (auxiliar[1] === '$0.00')
-                        $(row).addClass('zero');
+                    if (auxiliar.length > 1) {
+                        if (auxiliar[1] === '$0.00')
+                            $(row).addClass('zero');
+                        else {
+                            let auxiliar2 = auxiliar[1].charAt(0)
+                            if (auxiliar2 === '-')
+                                $(row).addClass('negative');
+                        }
+                    }
                     else {
-                        let auxiliar2 = auxiliar[1].charAt(0)
-                        if (auxiliar2 === '-')
-                            $(row).addClass('negative');
+                        let auxiliar = data[elementClass].includes('Inactivo')
+                        if (auxiliar)
+                            $(row).addClass('inactivos');
                     }
                 }
             },
