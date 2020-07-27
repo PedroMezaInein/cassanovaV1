@@ -81,6 +81,8 @@ class Conceptos extends Component {
                 form.subpartida = concepto.subpartida.id.toString()
             }
         }
+        if(concepto.proveedor)
+            form.proveedor = concepto.proveedor.id.toString()
         this.setState({
             ... this.state,
             modal: true,
@@ -134,6 +136,7 @@ class Conceptos extends Component {
                     costo: renderToString(setMoneyTable(concepto.costo)),
                     partida: concepto.subpartida ? concepto.subpartida.partida ? renderToString(setTextTable(concepto.subpartida.partida.nombre)) : '' : '',
                     subpartida: concepto.subpartida ? renderToString(setTextTable(concepto.subpartida.nombre)) : '',
+                    proveedor: renderToString(setTextTable(concepto.proveedor ? concepto.proveedor.razon_social : '')),
                     id: concepto.id
                 }
             )
