@@ -592,11 +592,7 @@ export const FACTURAS_COLUMNS = [
         accessor: 'fecha',
     },
     {
-        Header: 'Expedición',
-        accessor: 'expedicion'
-    },
-    {
-        Header: 'Folio Fiscal',
+        Header: 'Descripción',
         accessor: 'noCertificado'
     },
 ]

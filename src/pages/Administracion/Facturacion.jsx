@@ -41,11 +41,10 @@ class Facturacion extends Component {
                 {
                     folio: renderToString(setTextTable(factura.folio)),
                     serie: renderToString(setTextTable(factura.serie)),
-                    noCertificado: renderToString(setTextTable(factura.numero_certificado)),
+                    noCertificado: renderToString(setTextTable(factura.descripcion)),
                     emisor: renderToString(this.setInfoTable(factura.rfc_emisor, factura.nombre_emisor)),
                     receptor: renderToString(this.setInfoTable(factura.rfc_receptor, factura.nombre_receptor)),
                     usoCFDI: renderToString(setTextTable(factura.uso_cfdi)),
-                    expedicion: renderToString(this.setExpedicionTable(factura)),
                     subtotal: renderToString(setMoneyTable(factura.subtotal)),
                     total: renderToString(setMoneyTable(factura.total)),
                     acumulado: renderToString(setMoneyTable(factura.ventas_count + factura.ingresos_count)),
