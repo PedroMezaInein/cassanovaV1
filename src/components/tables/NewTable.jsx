@@ -74,7 +74,7 @@ class NewTable extends Component {
                         {
                             $(this).append('<div class="mt-2 text-primary bg-primary-o-40 font-weight-boldest">'+totales[total]+'</div>');
                         }else{
-                            $(this).append('<div class="mt-2 text-white  font-weight-boldest">.</div');
+                            // $(this).append('<div class="mt-2 text-white  font-weight-boldest">.</div');
                         }
 
                     }
