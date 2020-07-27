@@ -1380,6 +1380,33 @@ export const NOMINA_ADMIN_COLUMNS = [
     }
 ]
 
+export const NOMINA_ADMIN_SINGLE_COLUMNS = [
+    {
+        Header: 'ID del empleado',
+        accessor: 'idEmpleado',
+    },
+    {
+        Header: 'Empleado',
+        accessor: 'empleado'
+    },
+    {
+        Header: 'Nómina IMSS',
+        accessor: 'nominaIMSS'
+    },
+    {
+        Header: 'Extras',
+        accessor: 'extras'
+    },
+    {
+        Header: 'Viáticos',
+        accessor: 'viaticos'
+    },
+    {
+        Header: 'Total',
+        accessor: 'total'
+    }
+]
+
 export const EMPLEADOS_COLUMNS = [
     {
         Header: 'Opciones',

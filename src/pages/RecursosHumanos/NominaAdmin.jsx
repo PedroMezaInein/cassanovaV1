@@ -68,6 +68,14 @@ class NominaAdmin extends Component {
             this.getOptionsAxios()
     }
 
+    changeSinglePage = (nomina) => {
+        const { history } = this.props
+        history.push({
+            pathname: '/rh/nomina-admin/'+nomina.id,
+            state: { nomina: nomina }
+        });
+    }
+
     openModal = () => {
         const { modal } = this.state
         modal.form = true
@@ -575,7 +583,14 @@ class NominaAdmin extends Component {
                 btnclass: 'primary',
                 iconclass: 'flaticon-attachment',
                 action: 'adjuntos',
-                tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
+                tooltip: { id: 'adjuntos', text: 'Adjuntos'}
+            },
+            {
+                text: 'Mostrar',
+                btnclass: 'primary',
+                iconclass: 'flaticon-eye',
+                action: 'show',
+                tooltip: { id: 'show', text: 'Mostrar'}
             }
         )
         return aux
@@ -690,7 +705,8 @@ class NominaAdmin extends Component {
                     actions={{
                         'edit': { function: this.openModalEdit },
                         'delete': {function: this.openModalDelete},
-                        'adjuntos': { function: this.openModalAdjuntos }
+                        'adjuntos': { function: this.openModalAdjuntos },
+                        'show': { function: this.changeSinglePage}
                     }}
                     accessToken = { this.props.authUser.access_token }
                     setter = { this.setNominaAdmin }
