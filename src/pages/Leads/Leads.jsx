@@ -15,6 +15,7 @@ import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 import { setTextTable, setDateTable,setListTable, setContactoTable } from '../../functions/setters'
 import NewTable from '../../components/tables/NewTable'
+import { waitAlert } from '../../functions/alert'
 
 class Leads extends Component{
 
@@ -365,11 +366,13 @@ class Leads extends Component{
 
     handleSubmitAddLead = (e) => {
         e.preventDefault();
+        waitAlert();
         this.addLeadAxios()
     }
 
     handleSubmitEditLead = (e) => {
         e.preventDefault();
+        waitAlert();
         this.editLeadAxios()
     }
 
