@@ -24,15 +24,19 @@ class Conceptos extends Component {
         title: 'Nuevo presupuesto',
         form: {
             proyecto: '',
-            fecha: new Date(),
-            empresa: '',
             area: '',
-            tiempo_ejecucion: ''
+            empresa: '',
+            fecha: new Date(),            
+            tiempo_ejecucion: '',
+            partida: '',
+            subpartida: '',
         },
         options: { 
             proyectos: [],
             empresas:[],
             areas: [],
+            partidas: [],
+            subpartidas: []
         }
     }
 
@@ -73,14 +77,15 @@ class Conceptos extends Component {
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'presupuesto/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'presupuestos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close() 
-                const { empresas, proyectos, areas} = response.data
+                const { empresas, proyectos, areas, partidas} = response.data
                 const { options} = this.state
                 options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
+                options['partidas'] = setOptions(partidas, 'nombre', 'id')
                 this.setState({
                     ... this.state,
                     options
