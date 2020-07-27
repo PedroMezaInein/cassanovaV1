@@ -19,7 +19,8 @@ class Conceptos extends Component {
         options: {
             unidades: [],
             partidas: [],
-            subpartidas: []
+            subpartidas: [],
+            proveedores: [],
         },
         data: {
             conceptos: []
@@ -205,11 +206,12 @@ class Conceptos extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'conceptos', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { unidades, partidas, conceptos } = response.data
+                const { unidades, partidas, conceptos, proveedores} = response.data
                 const { options, data } = this.state
                 data.conceptos = conceptos
                 options['unidades'] = setOptions(unidades, 'nombre', 'id')
                 options['partidas'] = setOptions(partidas, 'nombre', 'id')
+                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
                 this.setState({
                     ... this.state,
                     options,
