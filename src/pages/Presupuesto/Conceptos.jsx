@@ -31,7 +31,8 @@ class Conceptos extends Component {
             partida: '',
             subpartida: '',
             descripcion: '',
-            costo: ''
+            costo: '',
+            proveedor: '',
         },
         conceptos: [],
         concepto: ''
@@ -81,8 +82,10 @@ class Conceptos extends Component {
                 form.subpartida = concepto.subpartida.id.toString()
             }
         }
+
         if(concepto.proveedor)
             form.proveedor = concepto.proveedor.id.toString()
+
         this.setState({
             ... this.state,
             modal: true,
@@ -125,6 +128,7 @@ class Conceptos extends Component {
     }
 
     setConceptos = conceptos => {
+        console.log(conceptos)
         let aux = []
         conceptos.map((concepto) => {
             aux.push(
