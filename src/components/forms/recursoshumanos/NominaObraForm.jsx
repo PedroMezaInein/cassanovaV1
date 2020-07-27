@@ -140,7 +140,7 @@ class NominaObraForm extends Component {
                         <tr>
                             <th>Empleado</th>
                             <th>Proyecto</th>
-                            <th>Suledo por Hora</th>
+                            <th>Salario Hora</th>
                             <th>1 Hora T</th>
                             <th>2 Horas T</th>
                             <th>3 Horas T</th>

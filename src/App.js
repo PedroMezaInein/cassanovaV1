@@ -72,6 +72,7 @@ const Contabilidad = Loader( () => import('./pages/Reportes/Contabilidad') )
 const AccountSettings = Loader(() => import('./pages/Perfil/AccountSettings') )
 
 const NominaObra = Loader(() => import('./pages/RecursosHumanos/NominaObra') )
+const NominaObraSingle = Loader(() => import('./pages/RecursosHumanos/NominaObraSingle') )
 const NominaAdmin = Loader(() => import('./pages/RecursosHumanos/NominaAdmin') )
 const NominaAdminSingle = Loader(() => import('./pages/RecursosHumanos/NominaAdminSingle') )
 const Empleados = Loader(() => import('./pages/RecursosHumanos/Empleados') )
@@ -201,7 +202,8 @@ class App extends Component{
 
                 <Route path = "/reportes/contabilidad" exact component ={ Contabilidad } />
                 <Route path = "/mi-perfil" exact component ={ AccountSettings } />
-                <Route path = "/rh/nomina-obras" exact component ={ NominaObra } />
+                <Route path = "/rh/nomina-obras" exact component ={ NominaObra } />                
+                <Route path = "/rh/nomina-obras/:id" exact component ={ NominaObraSingle } />
                 <Route path = "/rh/nomina-admin" exact component ={ NominaAdmin } />
                 <Route path = "/rh/nomina-admin/:id" exact component ={ NominaAdminSingle } />
                 <Route path = "/rh/empleados" exact component ={ Empleados } />

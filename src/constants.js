@@ -1330,6 +1330,57 @@ export const NOMINA_OBRA_COLUMNS = [
     }
 ]
 
+export const NOMINA_OBRA_SINGLE_COLUMNS = [
+    {
+        Header: 'ID del empleado',
+        accessor: 'idEmpleado',
+    },
+    {
+        Header: 'Empleado',
+        accessor: 'empleado'
+    },
+    {
+        Header: 'Proyecto',
+        accessor: 'proyecto'
+    },
+    {
+        Header: 'Salario Hora',
+        accessor: 'sueldo_hora'
+    },
+    {
+        Header: '1 Hora T',
+        accessor: 'hora1T'
+    },
+    {
+        Header: '2 Horas T',
+        accessor: 'hora2T'
+    },
+    {
+        Header: '3 Horas T',
+        accessor: 'hora3T'
+    },
+    {
+        Header: 'Nómina IMSS',
+        accessor: 'nominaIMSS',
+        total: 'totalNominaImss'
+    },
+    {
+        Header: 'Extras',
+        accessor: 'extras',
+        total: 'totalRestanteNomina'
+    },
+    {
+        Header: 'Viáticos',
+        accessor: 'viaticos',
+        total: 'totalExtras'
+    },
+    {
+        Header: 'Total',
+        accessor: 'total',
+        total: 'total'
+    }
+]
+
 export const ADJUNTOS_COLUMNS = [
     {
         Header: 'Opciones',
