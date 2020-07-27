@@ -1485,3 +1485,31 @@ export const EMPLEADOS_COLUMNS_OBRA = [
         accessor: 'vacaciones_tomadas_obra'
     }
 ]
+
+export const PRESUPUESTO_COLUMNS = [
+    {
+        Header: 'Opciones',
+        accessor: 'opciones',
+    },
+    {
+        Header: 'Proyecto',
+        accessor: 'proyecto'
+    },
+    {
+        Header: 'Empresa',
+        accessor: 'empresa',
+    },
+    {
+        Header: 'Área',
+        accessor: 'area'
+    },
+    {
+        Header: 'Fecha',
+        accessor: 'fecha',
+    },
+    {
+        Header: 'Tiempo de ejecución',
+        accessor: 'tiempo_ejecucion'
+    },
+    
+]
