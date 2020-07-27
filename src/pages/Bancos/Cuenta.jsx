@@ -798,6 +798,7 @@ class Cuentas extends Component {
                             }}
                             elements = {data.cuentas}
                             idTable = 'cuentas_bancos'
+                            elementClass = 'estatus'
                         />
                     </Tab>
                     <Tab eventKey="cajas" title="Caja chica">
@@ -817,6 +818,7 @@ class Cuentas extends Component {
                             }}
                             elements = { data.cajas }
                             idTable = 'cuentas_cajas'
+                            elementClass = 'estatus'
                         />
                     </Tab>
                 </Tabs>
