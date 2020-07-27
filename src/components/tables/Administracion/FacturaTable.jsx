@@ -32,7 +32,7 @@ export default class FacturaTable extends Component {
                     actions: this.setActions(factura),
                     folio: renderToString(setTextTable(factura.folio)),
                     serie: renderToString(setTextTable(factura.serie)),
-                    noCertificado: renderToString(setTextTable(factura.numero_certificado)),
+                    noCertificado: renderToString(setTextTable(factura.descripcion)),
                     emisor: renderToString(setArrayTable(
                         [
                             { name: 'RFC', text: factura.rfc_emisor },

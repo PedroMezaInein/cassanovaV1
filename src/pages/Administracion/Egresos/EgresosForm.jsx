@@ -95,6 +95,7 @@ class EgresosForm extends Component{
                         const emisor = xml.getElementsByTagName('cfdi:Emisor')[0]
                         const receptor = xml.getElementsByTagName('cfdi:Receptor')[0]
                         const timbreFiscalDigital = xml.getElementsByTagName('tfd:TimbreFiscalDigital')[0]
+                        const concepto = xml.getElementsByTagName('cfdi:Concepto')[0]
                         let obj = {
                             rfc_receptor: receptor.attributes.Rfc ? receptor.attributes.Rfc : '',
                             nombre_receptor: receptor.attributes.Nombre ? receptor.attributes.Nombre : '',
@@ -111,6 +112,7 @@ class EgresosForm extends Component{
                             tipo_cambio: xml.attributes.TipoCambio ? xml.attributes.TipoCambio : '',
                             moneda: xml.attributes.Moneda ? xml.attributes.Moneda : '',
                             numero_certificado: timbreFiscalDigital.attributes.UUID ? timbreFiscalDigital.attributes.UUID : '',
+                            descripcion: concepto.attributes.Descripcion,
                             folio: xml.attributes.Folio ? xml.attributes.Folio : '',
                             serie: xml.attributes.Serie ? xml.attributes.Serie : '',
                         }
