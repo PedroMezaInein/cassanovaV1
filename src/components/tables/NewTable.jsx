@@ -72,8 +72,6 @@ class NewTable extends Component {
                         $(this).append('<div class="mt-2 separator separator-dashed separator-border-2"></div><div class="mt-2"><input type="text" id=' + cellIndex + ' class="form-control form-control-sm"/></div>');
                         if(total)
                         {
-                            console.log(totales, 'totales')
-                            console.log(total, 'total')
                             $(this).append('<div class="mt-2 separator separator-dashed separator-border-2">'+totales[total]+'</div>');
                         }
 
