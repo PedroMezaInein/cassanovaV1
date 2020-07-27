@@ -389,7 +389,7 @@ class MiProyecto extends Component{
                 const url =  URL_ASSETS+'/storage/adjuntos.zip'
                 const link = document.createElement('a');
                 link.href = url;
-                link.setAttribute('download', proyecto.nombre+'.zip'); //or any other extension
+                link.setAttribute('download', proyecto.nombre+'.zip');
                 document.body.appendChild(link);
                 link.click();
             },
@@ -415,7 +415,6 @@ class MiProyecto extends Component{
                     <div className="d-flex flex-row-fluid bgi-size-cover bgi-position-center min-h-350px mb-4 d-flex justify-content-center align-items-center" style ={ { backgroundImage: "url('/proyecto.jpg')", margin:"-25px" } }>
                         <div className="container">
                             <div className="d-flex align-items-stretch text-center flex-column py-40">
-                                {/*<h2 className="text-dark font-weight-bolder mb-12"></h2>*/}
                                 
                                 <div className="form-group row form-group-marginless d-flex justify-content-center align-items-center">
                                     <div className="col-md-5">
@@ -426,7 +425,6 @@ class MiProyecto extends Component{
                                             value = { form.proyecto }
                                             onChange = { this.updateProyecto }
                                             requirevalidation = { 1 } 
-                                            // style={{backgroundColor: "#F3F6F9", borderColor: "#F3F6F9"}} 
                                             /> 
                                     </div>
                                 </div>
@@ -481,7 +479,6 @@ class MiProyecto extends Component{
                                                         {
                                                             proyecto ? 
                                                                 <div> 
-                                                                    {/* {proyecto.contacto} */}
                                                                     <Small className="mr-1 mb-0" >
                                                                         {proyecto.calle}, colonia
                                                                     </Small>
@@ -581,11 +578,10 @@ class MiProyecto extends Component{
                                     
                                     <Card.Body>
                                         <>
-                                        {/* {console.log("actualizando "+defaultactivekey)}*/}
                                         <Tab.Container id="left-tabs-example" activeKey = { subActiveKey ? subActiveKey : defaultactivekey } defaultActiveKey={defaultactivekey}
                                             onSelect = { (select) => { this.updateActiveTabContainer(select) } }>
                                             <Row>
-                                                <Col md={4}> {/* className="border-nav" */}
+                                                <Col md={4}>
                                                     <Nav variant="pills" className="flex-column navi navi-hover navi-active">                                                    
                                                         { 
                                                             showadjuntos.map((adjunto, key) => { 

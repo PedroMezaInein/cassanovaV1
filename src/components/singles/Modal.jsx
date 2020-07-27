@@ -15,7 +15,6 @@ class modal extends Component {
                     show={show}
                     size={size}
                     onHide={handleClose}
-                    //backdrop="static"
                     keyboard={true}
                     centered
                 >

@@ -102,9 +102,7 @@ class egresos extends Component{
                         var xml = new XMLParser().parseFromString(text);
                         const emisor = xml.getElementsByTagName('cfdi:Emisor')[0]
                         const receptor = xml.getElementsByTagName('cfdi:Receptor')[0]
-                        //Cmabiando el timbre fiscal
                         const timbreFiscalDigital = xml.getElementsByTagName('tfd:TimbreFiscalDigital')[0]
-                        //
                         let obj = {
                             rfc_receptor: receptor.attributes.Rfc ? receptor.attributes.Rfc : '',
                             nombre_receptor: receptor.attributes.Nombre ? receptor.attributes.Nombre : '',
@@ -120,9 +118,7 @@ class egresos extends Component{
                             subtotal: xml.attributes.SubTotal ? xml.attributes.SubTotal : '',
                             tipo_cambio: xml.attributes.TipoCambio ? xml.attributes.TipoCambio : '',
                             moneda: xml.attributes.Moneda ? xml.attributes.Moneda : '',
-                            //Cmabiando el timbre fiscal
                             numero_certificado: timbreFiscalDigital.attributes.UUID ? timbreFiscalDigital.attributes.UUID : '',
-                            //
                             folio: xml.attributes.Folio ? xml.attributes.Folio : '',
                             serie: xml.attributes.Serie ? xml.attributes.Serie : '',
                         }
@@ -226,7 +222,6 @@ class egresos extends Component{
         })
     }
 
-    // TABLA
     setEgresos = egresos => {
         let aux = []
         if(egresos)
@@ -491,7 +486,6 @@ class egresos extends Component{
         })
     }
 
-    // Factura
     async sendFacturaAxios(){
 
         const { access_token } = this.props.authUser
@@ -622,7 +616,7 @@ class egresos extends Component{
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
                 link.href = url;
-                link.setAttribute('download', 'egresos.xlsx'); //or any other extension
+                link.setAttribute('download', 'egresos.xlsx');
                 document.body.appendChild(link);
                 link.click();
 

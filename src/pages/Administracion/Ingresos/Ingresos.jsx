@@ -74,13 +74,11 @@ class Ingresos extends Component {
             history.push('/')
         this.getOptionsAxios()
     }
-    // Submit 
     onSubmitAskFactura = e => {
         e.preventDefault()
         waitAlert()
         this.askFacturaAxios()
     }
-    // Form
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -252,7 +250,6 @@ class Ingresos extends Component {
         })
     }
 
-    // Route page
     changePageAdd = () => {
         const { history } = this.props
         history.push({
@@ -268,7 +265,6 @@ class Ingresos extends Component {
         });
     }
 
-    // TABLA
     setIngresos = ingresos => {
         let aux = []
         ingresos.map((ingreso) => {
@@ -346,7 +342,6 @@ class Ingresos extends Component {
         return aux
     }
 
-    // Modales
     openModalDelete = (ingreso) => {
         this.setState({
             ... this.state,
@@ -497,7 +492,6 @@ class Ingresos extends Component {
         })
     }
 
-    // Factura
     async sendFacturaAxios() {
         const { access_token } = this.props.authUser
         const { form, ingreso } = this.state
@@ -713,7 +707,7 @@ class Ingresos extends Component {
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
                 link.href = url;
-                link.setAttribute('download', 'ingresos.xlsx'); //or any other extension
+                link.setAttribute('download', 'ingresos.xlsx');
                 document.body.appendChild(link);
                 link.click();
 

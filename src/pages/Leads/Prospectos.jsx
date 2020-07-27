@@ -111,27 +111,6 @@ class Leads extends Component {
         })
     }
 
-    /*activeModalHistory = contactos => {
-        let aux = []
-        contactos.map((contacto) => {
-            aux.push(
-                {
-                    usuario: renderToString(this.setText(contacto.user.name)),
-                    fecha: renderToString(this.setDateTable(contacto.created_at)),
-                    medio: renderToString(this.setText(contacto.tipo_contacto.tipo)),
-                    estado: contacto.success ? renderToString(this.setText('Contactado')) : renderToString(this.setText('Sin respuesta')),
-                    comentario: renderToString(this.setText(contacto.comentario)),
-                    //id: contacto.id
-                }
-            )
-        })
-        this.setState({
-            ... this.state,
-            modalHistoryContact: true,
-            contactHistory: aux
-        })
-    }*/
-
     activeFormContact = prospecto => {
         this.clearForm('formContacto', EMPTY_CONTACTO)
         this.setState({
@@ -221,8 +200,6 @@ class Leads extends Component {
             state: { prospectos: prospecto }
         });
     }
-
-    // Setters
 
     setTipos = (list, name) => {
         let aux = [{ value: 'New', name: '+ Agregar nuevo' }]
@@ -347,33 +324,7 @@ class Leads extends Component {
     }
     return aux
     }
-    /*
-    setActions = prospecto => {
-        return (
-            <>
-                <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openEdit(e)(prospecto)} text='' icon={faEdit} color="transparent"
-                        tooltip={{ id: 'edit', text: 'Editar' }} />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openSafeDelete(e)(prospecto)} text='' icon={faTrash} color="red"
-                        tooltip={{ id: 'delete', text: 'Eliminar', type: 'error' }} />
-                </div>
-                <div className="d-flex align-items-center flex-column flex-md-row my-2">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.activeFormContact(e)(prospecto.id)} text='' icon={faPhoneVolume} color="transparent"
-                        tooltip={{ id: 'contacto', text: 'Contacto', type: 'success' }} />
-                    {
-                        prospecto.contactos.length > 0 &&
-                        <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.activeModalHistory(e)(prospecto.contactos)} text='' icon={faCalendarAlt} color="transparent"
-                            tooltip={{ id: 'historial', text: 'Historial de contacto' }} />
-                    }
-                </div>
-                <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openConvert(e)(prospecto)} text='' icon={faSyncAlt} color="transparent"
-                        tooltip={{ id: 'convert', text: 'Convertir en proyecto', type: 'success' }} />
-                </div>
-            </>
-        )
-    }
-    */
+
     setLeadTable = lead => {
         return (
             <div>
@@ -439,7 +390,6 @@ class Leads extends Component {
             </Moment>
         )
     }
-    // Form
 
     clearForm = (name, empty) => {
         let aux = Object.keys(empty)
@@ -509,7 +459,6 @@ class Leads extends Component {
         const { formContacto, prospecto } = this.state
         this.addContactoAxios(formContacto, prospecto)
     }
-    // Axios
 
     async getProspectos() {
         const { access_token } = this.props.authUser
@@ -521,14 +470,12 @@ class Leads extends Component {
                 this.setTipos(tipoProyectos, 'tipoProyectos')
                 this.setEstatus(estatusProspectos, 'estatusProspectos')
                 this.setVendedores(vendedores)
-                /* this.setClientes(clientes) */
                 this.setTipos(tiposContactos, 'tiposContactos')
                 this.setProspectos(prospectos)
                 this.setState({
                     ... this.state,
                     clientes: setOptions(clientes, 'nombre', 'id'),
                     data
-                    //prospectos: this.setProspectos(prospectos)
                 })
 
             },
@@ -568,7 +515,6 @@ class Leads extends Component {
                 this.setTipos(tipoProyectos, 'tipoProyectos')
                 this.setEstatus(estatusProspectos, 'estatusProspectos')
                 this.setVendedores(vendedores)
-                /* this.setClientes(clientes) */
                 this.setTipos(tiposContactos, 'tiposContactos')
                 this.setProspectos(prospectos)
                 this.clearForm('form', EMPTY_PROSPECTO)
@@ -672,7 +618,6 @@ class Leads extends Component {
                 this.setTipos(tipoProyectos, 'tipoProyectos')
                 this.setEstatus(estatusProspectos, 'estatusProspectos')
                 this.setVendedores(vendedores)
-                /* this.setClientes(clientes) */
                 this.setTipos(tiposContactos, 'tiposContactos')
                 this.setProspectos(prospectos)
                 this.clearForm('form', EMPTY_PROSPECTO)
@@ -815,11 +760,6 @@ class Leads extends Component {
 
         return (
             <Layout active={'leads'}  {...this.props}>
-                {/* {
-                    prospectos &&
-                    <DataTable columns={PROSPECTOS_COLUMNS} data={prospectos} />
-                }
-                */}
                 <NewTable columns = { PROSPECTOS_COLUMNS } data = { prospectos } 
                             title = 'Prospectos' subtitle = 'Listado de prospectos'
                             mostrar_boton={false}

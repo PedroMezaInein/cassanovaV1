@@ -94,8 +94,6 @@ class Input extends Component {
                     e.target.value = ("" + e.target.value).toUpperCase();
             }
         };
-        
-      //  let  inputValido   = this.props.value!==""? true : this.state.inputValido 
         return (
             <div >
                 <label className="col-form-label">{placeholder}</label>
@@ -108,7 +106,6 @@ class Input extends Component {
                             className={ inputValido ? " form-control is-valid " : " form-control is-invalid " }
                             onChange={(e) => { e.preventDefault(); this.validarInput(e); onChange(e) }}  
                             onInput={toInputUppercase}
-                            /* onInput = { (e) => { this.letterCase(e) }  } */
                             {...props} 
                         /> 
                     </div>

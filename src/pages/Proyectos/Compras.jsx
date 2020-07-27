@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
@@ -123,8 +122,6 @@ class Compras extends Component {
         }
     }
 
-    // Setters
-
     setOptions = (name, array) => {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
@@ -194,10 +191,6 @@ class Compras extends Component {
                     subarea: renderToString(setTextTable(compra.subarea ? compra.subarea.nombre : '')),
                     estatusCompra: renderToString(setTextTable(compra.estatus_compra ? compra.estatus_compra.estatus : '')),
                     total: renderToString(setMoneyTable(compra.total)),
-                    /* adjuntos: renderToString(setAdjuntosList([
-                        compra.pago ? {name: 'Pago', url: compra.pago.url} : '',
-                        compra.presupuesto ? {name: 'Presupuesto', url: compra.presupuesto.url} : '',
-                    ])), */
                     adjuntos: renderToString(setArrayTable(_aux)),
                     fecha: renderToString(setDateTable(compra.created_at)),
                     id: compra.id
@@ -262,8 +255,6 @@ class Compras extends Component {
 
     }
 
-
-    //Add, edit y convert modal
     openModal = () => {
         this.setState({
             ... this.state,
@@ -279,8 +270,6 @@ class Compras extends Component {
         form.factura = compra.factura ? 'Con factura' : 'Sin factura'
         if (compra.proyecto) {
             if (compra.proyecto.cliente) {
-                /* form.cliente = compra.proyecto.cliente.id.toString()
-                options['proyectos'] = setOptions(compra.proyecto.cliente.proyectos, 'nombre', 'id') */
                 form.proyecto = compra.proyecto.id.toString()
             }
         }
@@ -343,7 +332,7 @@ class Compras extends Component {
             title: 'Nueva venta'
         })
     }
-    // Delete
+
     openModalDelete = (compra) => {
         this.setState({
             ... this.state,
@@ -365,7 +354,6 @@ class Compras extends Component {
         })
     }
 
-    //Facturas
     openModalFacturas = compra => {
         let { porcentaje } = this.state
         porcentaje = 0
@@ -423,7 +411,6 @@ class Compras extends Component {
         })
     }
 
-    //ClearForm
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -470,7 +457,6 @@ class Compras extends Component {
         return form;
     }
 
-    //Form
     onChange = e => {
         const { form } = this.state
         const { name, value } = e.target
@@ -621,7 +607,6 @@ class Compras extends Component {
         })
     }
 
-    //Submits
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
@@ -637,8 +622,6 @@ class Compras extends Component {
         this.deleteFacturaAxios(id)
     }
 
-    // Async
-    // Compras
     async getOptionsAxios() {
         const { access_token } = this.props.authUser
         waitAlert()
@@ -651,7 +634,6 @@ class Compras extends Component {
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
-                /* options['contratos'] = setOptions(contratos, 'nombre', 'id') */
                 options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
                 options['tiposPagos'] = setSelectOptions(tiposPagos, 'tipo')
                 options['tiposImpuestos'] = setSelectOptions(tiposImpuestos, 'tipo')
@@ -781,7 +763,6 @@ class Compras extends Component {
                 const { compra } = response.data
                 const { data } = this.state
                 data.adjuntos = compra.presupuestos.concat(compra.pagos)
-                //AQUI
                 this.getComprasAxios()
 
                 this.setState({
@@ -974,7 +955,6 @@ class Compras extends Component {
         })
     }
 
-    // Solicitud compra
     async getSolicitudCompraAxios(id) {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'solicitud-compra/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -1002,7 +982,6 @@ class Compras extends Component {
                     if (solicitud.proyecto.cliente) {
                         if (solicitud.proyecto.cliente.proyectos) {
                             options['proyectos'] = setOptions(solicitud.proyecto.cliente.proyectos, 'nombre', 'id')
-                            /* form.cliente = solicitud.proyecto.cliente.id.toString() */
                             form.proyecto = solicitud.proyecto.id.toString()
                         }
                     }
@@ -1055,7 +1034,6 @@ class Compras extends Component {
         })
     }
 
-    // Factura
     async sendFacturaAxios() {
 
         const { access_token } = this.props.authUser
@@ -1136,7 +1114,6 @@ class Compras extends Component {
                 const { compra } = response.data
                 const { data } = this.state
                 data.adjuntos = compra.presupuestos.concat(compra.pagos)
-                //AQUI
                 this.getComprasAxios()
 
                 this.setState({
@@ -1225,7 +1202,7 @@ class Compras extends Component {
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
                 link.href = url;
-                link.setAttribute('download', 'compras.xlsx'); //or any other extension
+                link.setAttribute('download', 'compras.xlsx');
                 document.body.appendChild(link);
                 link.click();
 

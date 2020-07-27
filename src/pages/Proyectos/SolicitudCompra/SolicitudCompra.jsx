@@ -152,7 +152,6 @@ class SolicitudCompra extends Component{
         });
     }
 
-    //Async
     async getSolicitudesCompraAxios(){
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'solicitud-compra', { headers: {Authorization:`Bearer ${access_token}`}}).then(

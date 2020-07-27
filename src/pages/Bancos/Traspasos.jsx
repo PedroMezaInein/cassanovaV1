@@ -54,8 +54,6 @@ class Traspasos extends Component{
         this.getTraspasos()
     }
 
-    // Form
-
     onchange = e => {
         const { form } = this.state
         const { name, value } = e.target
@@ -149,8 +147,6 @@ class Traspasos extends Component{
         return form
     }
 
-    // Modal
-
     handleClose = () => {
         const { modal } = this.state
         this.setState({
@@ -217,10 +213,6 @@ class Traspasos extends Component{
         })
     }
     adjuntoTranspaso = (traspaso) => {
-        /* const { history } = this.props
-        history.push({
-            pathname: traspaso.adjunto.url
-        });*/
         var win = window.open( traspaso.adjunto.url, '_blank');
         win.focus();
     }
@@ -233,7 +225,6 @@ class Traspasos extends Component{
         })
     }
 
-    // Setters
     setTraspasos = traspasos => {
         let _aux = []
         traspasos.map( (traspaso) => {
@@ -268,29 +259,6 @@ class Traspasos extends Component{
             traspasos: _aux
         })
     }
-
-   /* setActions = traspaso => {
-        return(
-            <>
-                <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openEdit(e)(traspaso)}  text='' icon={faEdit} 
-                        color="transparent" tooltip={{id:'edit', text:'Editar'}} />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openDelete(e)(traspaso) } text='' icon={faTrash} 
-                        color="red" tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
-                </div>
-                <div className="d-flex align-items-center flex-column flex-md-row">
-                    {
-                        traspaso.adjunto && 
-                        <a href={traspaso.adjunto.url} target="_blank" className="">
-                            <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => console.log(traspaso)}  text='' icon={faPaperclip} 
-                                color="transparent" tooltip={{id:'adjuntos', text:'Mostrar adjunto'}} />
-                        </a>
-                    }
-                </div>
-            </>
-        )
-    }
-    */
 
     setActions = traspaso => {
         let aux = []
@@ -377,8 +345,6 @@ class Traspasos extends Component{
         )
     }
 
-    // AXIOS
-
     async getTraspasos(){
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'traspasos', { headers: {Authorization:`Bearer ${access_token}`}}).then(
@@ -394,8 +360,7 @@ class Traspasos extends Component{
                 this.setState({
                     ... this.state,
                     cuentas: aux,   
-                    data                
-                    //traspasos:this.setTraspasos(traspasos)
+                    data
                 })
             },
             (error) => {
@@ -609,7 +574,7 @@ class Traspasos extends Component{
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
                 link.href = url;
-                link.setAttribute('download', 'traspasos.xlsx'); //or any other extension
+                link.setAttribute('download', 'traspasos.xlsx');
                 document.body.appendChild(link);
                 link.click();
 
@@ -642,11 +607,6 @@ class Traspasos extends Component{
 
         return(
             <Layout active={'bancos'}  { ...this.props}>
-                {/* <div className="text-right">
-                    <Button className="small-button ml-auto mr-4" onClick={ (e) => { this.openModal() } } text='' icon={faPlus} color="green" />
-                </div>
-                <DataTable columns = { TRASPASOS_COLUMNS } data = { traspasos } />
-                */}
                 <NewTable columns={TRASPASOS_COLUMNS} data={traspasos}
                     title='Traspasos' subtitle='Listado de traspasos'
                     mostrar_boton={true}

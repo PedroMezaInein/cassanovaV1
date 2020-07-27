@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */  
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
@@ -153,7 +152,6 @@ class IngresosForm extends Component{
         this.getOptionsAxios()
     }
 
-    // On change
     onChange = e => {
         const {form} = this.state
         const {name, value} = e.target
@@ -344,7 +342,6 @@ class IngresosForm extends Component{
         return form;
     }
 
-    //Setters
     setOptions = (name, array) => {
         const {options} = this.state
         options[name] = setOptions(array, 'nombre', 'id')
@@ -354,7 +351,6 @@ class IngresosForm extends Component{
         })
     }
 
-    // SUbmit
     onSubmit = e => {
         e.preventDefault()
         const{ title } = this.state
@@ -365,7 +361,6 @@ class IngresosForm extends Component{
             this.addIngresoAxios()
     }
 
-    //ASYNC
     async getOptionsAxios(){
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'ingresos/options', { headers: {Authorization:`Bearer ${access_token}`}}).then(

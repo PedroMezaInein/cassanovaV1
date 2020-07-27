@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
@@ -19,7 +18,6 @@ class Usuarios extends Component {
     state = {
         users: [],
         type_user: '',
-        // Form 
         form: {
             name: '',
             email: '',
@@ -57,7 +55,6 @@ class Usuarios extends Component {
         },
         empresas_options: [],
         user_to_interact: '',
-        // Modal
         modalSafeDeleteActive: false,
         modalActive: false,
         modalUpdateUser: false,
@@ -109,8 +106,6 @@ class Usuarios extends Component {
         })
     }
 
-    // Functions to add users
-
     addUser = (value) => (e) => {
         this.setState({
             ... this.state,
@@ -149,8 +144,6 @@ class Usuarios extends Component {
         return empleadoForm;
     }
 
-    // Functions to update users
-
     updateUser = (e) => (user) => {
         const { name, email, tipo, departamentos } = user
         let form = {
@@ -179,8 +172,6 @@ class Usuarios extends Component {
         this.getOneUser(user.id)
     }
 
-    // Functions for delete user
-
     deleteuser = (e) => (user) => {
         this.setState({
             ... this.state,
@@ -206,8 +197,6 @@ class Usuarios extends Component {
         })
     }
 
-    // Handle change on form
-
     handleChangeInput = (e) => {
         const { name, value } = e.target
         const { form } = this.state
@@ -219,7 +208,6 @@ class Usuarios extends Component {
     }
 
     handleChangeEmpleado = (e) => {
-        /* e.preventDefault(); */
         const { name, value } = e.target
         const { empleadoForm, form } = this.state
         empleadoForm[name] = value
@@ -323,8 +311,6 @@ class Usuarios extends Component {
         })
     }
 
-    // Submit forms handlers
-
     handleSubmitAddUser = (e) => {
         e.preventDefault();
         this.addUserAxios()
@@ -335,8 +321,6 @@ class Usuarios extends Component {
         const { id } = this.state.user_to_interact
         this.updateUserAxios(id)
     }
-
-    // Modal hanlders
 
     handleCloseModal = () => {
         this.setState({
@@ -372,9 +356,6 @@ class Usuarios extends Component {
         })
     }
 
-    // Axios Functions
-
-    //Add user
     async addUserAxios() {
         const { access_token } = this.props.authUser
         const { form, empleadoForm, clienteForm } = this.state
@@ -419,7 +400,6 @@ class Usuarios extends Component {
         })
     }
 
-    // Update user info
     async updateUserAxios(user) {
         const { access_token } = this.props.authUser
         const { form, empleadoForm } = this.state
@@ -460,7 +440,6 @@ class Usuarios extends Component {
         })
     }
 
-    //Delete an user with id
     async deleteUserAxios(user) {
         const { access_token } = this.props.authUser
         await axios.delete(URL_DEV + 'user/' + user, { headers: { Authorization: `Bearer ${access_token}`, } }).then(

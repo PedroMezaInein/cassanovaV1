@@ -30,23 +30,6 @@ class UrlLocation extends Component {
         let submodulo_name;
         let submodulo;
 
-        /* for (let i = 0; i < modulos.length; i ++) {
-            if (modulos[i].slug == active) {
-                icon = modulos[i].icon               
-                modulo_name = modulos[i].name
-                submodulo = modulos[i].modulos 
-                for (let j = 0; j < submodulo.length; j ++) {
-                    if (submodulo[j].slug == paths[1]) {
-                        submodulo_name = submodulo[j].name
-                        break;
-                    }else{
-                    }
-                }
-                break;
-            }else{
-            }            
-        } */
-
         if (modulos) {
             if (paths.length === 1) {
                 for (let i = 0; i < modulos.length; i++) {

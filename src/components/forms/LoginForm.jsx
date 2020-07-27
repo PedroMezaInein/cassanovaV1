@@ -141,7 +141,6 @@ class LoginForm extends React.Component {
                         type="text"
                         placeholder="INGRESA TU CORREO ELECRÓNICO"
                         required
-                        //className={this.state.error.email !== '' ? 'error ' : ''}
                         value={this.state.form.email}
                         onChange={this.handleChange}
                         name="email"
@@ -161,22 +160,8 @@ class LoginForm extends React.Component {
                         required
                         value={this.state.form.password}
                         onChange={this.handleChange}
-                        //className={this.state.error.password !== '' ? 'error' : 'mt-3'}>
                         name="password"
                     />
-                    {/*<InputGroup.Prepend 
-                        onClick={this.changeInputType}
-                        className={this.state.error.password !== '' ? 'error' : 'mt-3'}>
-                        <InputGroup.Text id="inputGroupPrepend">
-                            {
-                                this.state.showPassword ?
-                                    <FontAwesomeIcon icon={faEye} />
-                                :
-                                    <FontAwesomeIcon icon={faEyeSlash} />
-                            }
-                        </InputGroup.Text>
-                    </InputGroup.Prepend>
-                    */}
                 </div>
                 {
                     this.state.error.password !== '' &&

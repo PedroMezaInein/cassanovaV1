@@ -84,14 +84,6 @@ class ContratoForm extends Component {
                                     iconclass={"far fa-user"}
                                 />
                         }
-                        {/*<span className="form-text text-muted">Por favor, selecciona el 
-                            {
-                                tipo === 'Cliente'?
-                                    'cliente'
-                                :
-                                    'proveedor'
-                            }
-                        </span>*/}
                     </div>
                     <div className="col-md-4">
                         <SelectSearch

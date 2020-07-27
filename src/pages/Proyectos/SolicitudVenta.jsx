@@ -90,7 +90,6 @@ class SolicitudVenta extends Component{
                 this.getSolicitudVentaAxios(id)
             }
         }
-        /* this.getSolicitudesVentaAxios() */
     }
 
     clearForm = () => {
@@ -317,7 +316,6 @@ class SolicitudVenta extends Component{
         this.askFacturaAxios()
     }
 
-    //Setters
     setOptions = (name, array) => {
         const {options} = this.state
         options[name] = setOptions(array, 'nombre', 'id')

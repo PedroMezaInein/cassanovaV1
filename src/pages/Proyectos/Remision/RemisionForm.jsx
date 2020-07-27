@@ -100,7 +100,6 @@ class RemisionForm extends Component{
         this.getRemisionesAxios()
     }
 
-    // On change
     onChange = e => {
         const {form} = this.state
         const {name, value} = e.target
@@ -161,7 +160,6 @@ class RemisionForm extends Component{
             this.addRemisionAxios()
     }
 
-    //Setters
     setOptions = (name, array) => {
         const {options} = this.state
         options[name] = setOptions(array, 'nombre', 'id')

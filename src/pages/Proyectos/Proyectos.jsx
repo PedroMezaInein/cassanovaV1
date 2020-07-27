@@ -570,36 +570,7 @@ class Proyectos extends Component {
     openModalAdjuntos = proyecto => {
         let { adjuntos } = this.state
         let auxheaders = [
-            /* { name: 'cotizaciones', placeholder: 'Cotización', form: 'cotizacion' },
-            { name: 'comprobante_pagos', placeholder: 'Comprobante de pagos', form: 'comprobantePagos' },
-            { name: 'catalogo_conceptos', placeholder: 'Catálogo de conceptos', form: 'catalogoConceptos' },
-            { name: 'programas_obra', placeholder: 'Programas de obra', form: 'programasObra' },
-            { name: 'descripcion', placeholder: 'Descripción de los trabajos', form: 'descripcion' },
-            { name: 'levantamientos', placeholder: 'Levantamiento', form: 'levantamientos' },
-            { name: 'fotos_durante', placeholder: 'Fotos durante', form: 'fotosDurante' },
-            { name: 'fotos_fin', placeholder: 'Fotos fin', form: 'fotosFin' },
-            { name: 'planos', placeholder: 'Planos', form: 'planos' },
-            { name: 'renders', placeholder: 'Renders', form: 'renders' },
-            { name: 'fichas_tecnicas', placeholder: 'Fichas técnicas', form: 'fichasTecnicas' },
-            { name: 'dictamenes', placeholder: 'Dictámenes y memorias de cálculo', form: 'dictamenes' },
-            { name: 'mantenimiento', placeholder: 'Consignas de mantenimiento', form: 'mantenimiento' },
-            { name: 'moodboard', placeholder: 'Moodboard', form: 'moodboard' },
-            { name: 'diseños_aprobados', placeholder: 'Diseños aprobados por cliente', form: 'diseñosAprobados' },
-            { name: 'garantia', placeholder: 'Garantía de vicios ocultos', form: 'garantia' },
-            { name: 'contratos', placeholder: 'Contratos', form: 'contratos' } */
         ]
-        /* let aux = []
-            auxheaders.map((element) => {
-                aux.push({
-                    id: element.name,
-                    text: element.placeholder,
-                    files: proyecto[element.name],
-                    form: element.form,
-                    url: ''
-                })
-            })
-            adjuntos = aux;
-        */
         this.setState({
             ... this.state,
             modalAdjuntos: true,
@@ -613,23 +584,6 @@ class Proyectos extends Component {
     setAdjuntosSlider = proyecto => {
 
         let auxheaders = [
-            /* { name: 'cotizaciones', placeholder: 'Cotización', form: 'cotizacion' },
-            { name: 'comprobante_pagos', placeholder: 'Comprobante de pagos', form: 'comprobantePagos' },
-            { name: 'catalogo_conceptos', placeholder: 'Catálogo de conceptos', form: 'catalogoConceptos' },
-            { name: 'programas_obra', placeholder: 'Programas de obra', form: 'programasObra' },
-            { name: 'descripcion', placeholder: 'Descripción de los trabajos', form: 'descripcion' },
-            { name: 'levantamientos', placeholder: 'Levantamiento', form: 'levantamientos' },
-            { name: 'fotos_durante', placeholder: 'Fotos durante', form: 'fotosDurante' },
-            { name: 'fotos_fin', placeholder: 'Fotos fin', form: 'fotosFin' },
-            { name: 'planos', placeholder: 'Planos', form: 'planos' },
-            { name: 'renders', placeholder: 'Renders', form: 'renders' },
-            { name: 'fichas_tecnicas', placeholder: 'Fichas técnicas', form: 'fichasTecnicas' },
-            { name: 'dictamenes', placeholder: 'Dictámenes y memorias de cálculo', form: 'dictamenes' },
-            { name: 'mantenimiento', placeholder: 'Consignas de mantenimiento', form: 'mantenimiento' },
-            { name: 'moodboard', placeholder: 'Moodboard', form: 'moodboard' },
-            { name: 'diseños_aprobados', placeholder: 'Diseños aprobados por cliente', form: 'diseñosAprobados' },
-            { name: 'garantia', placeholder: 'Garantía de vicios ocultos', form: 'garantia' },
-            { name: 'contratos', placeholder: 'Contratos', form: 'contratos' } */
         ]
 
         let aux = []
@@ -1093,22 +1047,6 @@ class Proyectos extends Component {
         )
         return aux
     }
-    /*setActions = proyecto => {
-        return(
-            <>
-                <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalEdit(e)(proyecto) } text='' icon={faEdit} color="transparent" 
-                        tooltip={{id:'edit', text:'Editar'}} />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalDelete(e)(proyecto) } text='' icon={faTrash} color="red" 
-                        tooltip={{id:'delete', text:'Eliminar', type:'error'}} />
-                </div>
-                <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => { e.preventDefault(); this.openModalAdjuntos(proyecto)} } text='' icon={faLink} 
-                        color="transparent" tooltip={{id:'adjuntos', text:'Adjuntos'}} />
-                </div>
-            </>
-        )
-    }*/
 
     setDireccionTable = proyecto => {
         return (
@@ -1352,8 +1290,6 @@ class Proyectos extends Component {
                     data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
                     data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
                 }
-                /* if (element.toString() !== 'image')
-                    data.append('adjuntos[]', element) */
             }
         })
         if (prospecto) {
@@ -1422,8 +1358,6 @@ class Proyectos extends Component {
                     break;
                 case 'avances':
                     break;
-                    /* data.append(element, JSON.stringify(form[element]))
-                    break; */
                 case 'correos':
                     data.append(element, JSON.stringify(form[element]))
                     break;
@@ -1950,8 +1884,6 @@ class Proyectos extends Component {
 
                 <Modal size="xl" title = "Adjuntos del proyecto" show={modalAdjuntos} handleClose={this.handleCloseAdjuntos} >
                     <div className="p-2">
-                        {/* <Slider elements={adjuntos.length > 0 ? adjuntos : []}
-                            deleteFile={this.deleteFile} handleChange={this.handleChange} /> */}
                         <Card className="card-custom card-without-box-shadown"> 
                             <Card.Header className="pl-0 pr-0 justify-content-start">
                                 <Card.Title> 

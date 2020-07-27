@@ -75,7 +75,6 @@ class FileInput extends Component {
                     </span>
                     <div className={'custom-file'}>
                         <input
-                            //onChange = { onChangeAdjunto }
                             onChange={(e) => { e.preventDefault(); this.validarFileInput(e); onChangeAdjunto(e) }}
                             value={value}
                             name={name}

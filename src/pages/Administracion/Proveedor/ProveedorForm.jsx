@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */  
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
@@ -99,7 +98,6 @@ class ProveedorForm extends Component{
         this.getProveedoresAxios()
     }
 
-    // Form
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -117,7 +115,6 @@ class ProveedorForm extends Component{
         return form;
     }
 
-    // On change
     onChange = e => {
         const {form} = this.state
         const {name, value} = e.target
@@ -134,7 +131,6 @@ class ProveedorForm extends Component{
         })
     }
 
-    //Submit
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
@@ -145,7 +141,6 @@ class ProveedorForm extends Component{
             this.addProveedorAxios()
     }
 
-    //Setters
     setOptions = (name, array) => {
         const {options} = this.state
         options[name] = setOptions(array, 'nombre', 'id')

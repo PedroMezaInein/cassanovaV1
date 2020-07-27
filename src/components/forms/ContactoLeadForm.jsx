@@ -65,7 +65,6 @@ class ContactoLeadForm extends Component {
                             placeholder="SELECCIONA EL MEDIO DE CONTACTO"
                             name="tipoContacto"
                             value={formContacto.tipoContacto}
-                            /* defaultValue = { formContacto.tipoContacto }  */
                             onChange={this.updateTipoContacto}
                         />
                     </div>

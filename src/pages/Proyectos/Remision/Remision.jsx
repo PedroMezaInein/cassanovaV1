@@ -79,7 +79,6 @@ class Remisiones extends Component{
         })
     }
 
-    // Setters
     setRemisiones = remisiones => {
         let aux = []
         remisiones.map( (remision) => {

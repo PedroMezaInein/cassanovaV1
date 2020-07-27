@@ -3,10 +3,6 @@ import Form from 'react-bootstrap/Form'
 
 class Input extends Component{
 
-    /* constructor(props){
-        super(props)
-    } */
-
     render(){
         const { error, onChange, placeholder, options  } = this.props
         return(

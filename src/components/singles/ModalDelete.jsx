@@ -12,7 +12,6 @@ export default class ModalDelete extends Component {
                     onHide={handleClose}
                     keyboard={true}
                     centered
-                //size="xl"
                 >
                     <Modal.Header>
                         <h5 className="modal-title" id="exampleModalLabel">{title}</h5>

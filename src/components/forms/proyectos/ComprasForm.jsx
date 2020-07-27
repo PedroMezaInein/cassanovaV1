@@ -152,7 +152,6 @@ class ComprasForm extends Component {
                             }
                             {...props}
                             >
-                            {/*<Subtitle className="text-center" color="gold">{title}</Subtitle>*/}
                             <div id="wizard-1-content" className="pb-3" data-wizard-type="step-content" data-wizard-state="current">
                                 <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos de la factura</h5>
                                 <div className="form-group row form-group-marginless">
@@ -190,7 +189,6 @@ class ComprasForm extends Component {
                                                     files={form['adjuntos']['factura']['files']}
                                                     deleteAdjunto={clearFiles} multiple 
                                                 />
-                                                {/*<span className="form-text text-muted">Por favor, adjunta el documento. </span>*/}
                                             </div>
                                         : ''
                                     }
@@ -209,7 +207,6 @@ class ComprasForm extends Component {
                                                     messageinc="Incorrecto. Ej. ABCD001122ABC"
                                                     maxLength="13"
                                                 />
-                                                {/*<span className="form-text text-muted">Por favor, ingresa el RFC. </span>*/}
                                             </div>
                                             : ''
                                     }
@@ -226,7 +223,6 @@ class ComprasForm extends Component {
                                             onChange={this.updateProveedor} 
                                             iconclass={"far fa-user"}
                                         />
-                                        {/*<span className="form-text text-muted">Por favor, selecciona el proveedor</span>*/}
                                     </div>
                                     <div className="col-md-4">
                                         <SelectSearch 
@@ -238,7 +234,6 @@ class ComprasForm extends Component {
                                             onChange={this.updateProyecto}
                                             iconclass={"far fa-folder-open"} 
                                         />
-                                        {/*<span className="form-text text-muted">Por favor, selecciona el proyecto.</span>*/}
                                     </div>
                                     <div className="col-md-4">
                                         {
@@ -262,7 +257,6 @@ class ComprasForm extends Component {
                                                     iconclass={"far fa-building"}
                                                 />
                                         }
-                                        {/*<span className="form-text text-muted">Por favor, selecciona la empresa.</span>*/}
                                     </div>
                                 </div>  
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
@@ -284,7 +278,6 @@ class ComprasForm extends Component {
                                             value={form.fecha}
                                             patterns={DATE}
                                         />
-                                        {/*<span className="form-text text-muted">Por favor, selecciona la fecha.</span>*/}
                                     </div>
                                     <div className="col-md-4">
                                         <SelectSearch 
@@ -296,7 +289,6 @@ class ComprasForm extends Component {
                                             onChange={this.updateArea}
                                             iconclass={"far fa-window-maximize"} 
                                         />
-                                        {/*<span className="form-text text-muted">Por favor, selecciona el área.</span>*/}
                                     </div>
                                     {
                                         form.area ?
@@ -310,7 +302,6 @@ class ComprasForm extends Component {
                                                     onChange={this.updateSubarea}
                                                     iconclass={"far fa-window-restore"} 
                                                 />
-                                                {/*<span className="form-text text-muted">Por favor, selecciona la sub-área.</span>*/}
                                             </div>
                                         : ''
                                     }
@@ -329,7 +320,6 @@ class ComprasForm extends Component {
                                             messageinc="Incorrecto. Ingresa una descripción."
                                             style={{paddingLeft:"10px"}} 
                                         />
-                                        {/*<span className="form-text text-muted">Por favor, ingresa la descripción.</span>*/}
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
@@ -356,7 +346,6 @@ class ComprasForm extends Component {
                                                     onChange={this.updateCuenta}
                                                     iconclass={"far fa-credit-card"} 
                                                 />
-                                                {/*<span className="form-text text-muted">Por favor, selecciona la cuenta.</span>*/}
                                             </div>
                                         : ''
                                     }
@@ -373,7 +362,6 @@ class ComprasForm extends Component {
                                             iconclass={"fas fa-file-invoice-dollar"}
                                             required
                                         />
-                                        {/*<span className="form-text text-muted">Por favor, selecciona el impuesto.</span>*/}
                                     </div>
                                     <div className="col-md-4">
                                         <Select 
@@ -388,7 +376,6 @@ class ComprasForm extends Component {
                                             required
                                             iconclass={"flaticon2-time"}
                                         />
-                                        {/*<span className="form-text text-muted">Por favor, selecciona el estatus de compra.</span>*/}
                                     </div>
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
@@ -408,7 +395,6 @@ class ComprasForm extends Component {
                                                     iconclass={"fas fa-coins"}
                                                     required
                                                 />
-                                                {/*<span className="form-text text-muted">Por favor, selecciona el tipo de pago.</span>*/}
                                             </div>
                                             : ''
                                     }
@@ -423,7 +409,6 @@ class ComprasForm extends Component {
                                             onChange={onChange}
                                             iconclass={"fas fa-money-check-alt"}
                                         />
-                                        {/*<span className="form-text text-muted">Por favor, ingresa el monto.</span>*/}
                                     </div>
                                     <div className="col-md-3">
                                         <InputMoney 
@@ -436,7 +421,6 @@ class ComprasForm extends Component {
                                             onChange={onChange} 
                                             iconclass={"fas fa-money-bill-alt"} 
                                         />
-                                        {/*<span className="form-text text-muted">Por favor, ingresa la comisión.</span>*/}
                                     </div>
                                     <div className="col-md-3">
                                         <SelectSearchTrue 
@@ -449,7 +433,6 @@ class ComprasForm extends Component {
                                             onChange={this.updateContrato} 
                                             iconclass={"fas fa-file-signature"}
                                         />
-                                        {/*<span className="form-text text-muted">Por favor, selecciona el contrato.</span>*/}
                                     </div>
                                 </div>
                                 {

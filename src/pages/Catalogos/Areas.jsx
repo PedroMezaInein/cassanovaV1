@@ -110,19 +110,6 @@ class Areas extends Component {
         return aux
     }
 
-    /*setActions= area => {
-        return(
-            <>
-                <div className="d-flex align-items-center flex-column flex-md-row">
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalEdit(e)(area) } text='' icon={faEdit} color="transparent" 
-                        tooltip={{id:'edit', text:'Editar'}} />
-                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => this.openModalDelete(e)(area) } text='' icon={faTrash} color="red"
-                        tooltip={{id:'delete', text:'Eliminar', type: 'error'}} />
-                </div>
-            </>
-        )
-    }*/
-
     setActions = concepto => {
         let aux = []
         aux.push(
