@@ -1,12 +1,12 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import { Card } from '../../singles'
 import { P, Small, B } from '../../texts'
 import Moment from 'react-moment'
 
-export default class RemisionCard extends Component{
-    render(){
+export default class RemisionCard extends Component {
+    render() {
         const { data, children } = this.props
-        return(
+        return (
             <Card className="mx-md-5 my-3">
                 <div className="row mx-0">
                     <div className="col-md-12 mb-3">
@@ -33,7 +33,7 @@ export default class RemisionCard extends Component{
                                 </Small>
                                 <hr />
                             </div>
-                        : ''
+                            : ''
                     }
                     {
                         data.created_at ?
@@ -49,10 +49,10 @@ export default class RemisionCard extends Component{
                                         {data.created_at}
                                     </Moment>
                                 </Small>
-                                
+
                                 <hr />
                             </div>
-                        : ''
+                            : ''
                     }
                     {
                         data.subarea ?
@@ -73,7 +73,7 @@ export default class RemisionCard extends Component{
                                             </Small>
                                             <hr />
                                         </div>
-                                    : ''
+                                        : ''
                                 }
                                 <div className="col-md-6">
                                     <Small>
@@ -90,7 +90,7 @@ export default class RemisionCard extends Component{
                                     <hr />
                                 </div>
                             </>
-                        : ''
+                            : ''
                     }
                     <div className="col-md-6">
                         <Small>
@@ -108,7 +108,7 @@ export default class RemisionCard extends Component{
                                         }
                                     </Small>
                                 </a>
-                            :
+                                :
                                 <Small>
                                     Sin adjunto
                                 </Small>
@@ -131,9 +131,9 @@ export default class RemisionCard extends Component{
                                 </Small>
                                 <hr />
                             </div>
-                        : ''
+                            : ''
                     }
-                    
+
                 </div>
             </Card>
         )

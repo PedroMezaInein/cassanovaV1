@@ -60,11 +60,7 @@ class Task extends Component{
                                     {
                                         (_fecha_limite && _fecha_limite >= 0 && _fecha_limite < 7) ?
                                             <div className="text-right">
-                                                <span className="label label-inline label-light-danger font-weight-bold">{ _fecha_limite }</span> 
-                                                {/* <Badge pill variant="warning" className="text-white">
-                                                    <FontAwesomeIcon icon={faCalendarCheck} color="white" className="mr-2" />
-                                                    Restan { _fecha_limite } días
-                                                </Badge> */}
+                                                <span className="label label-inline label-light-danger font-weight-bold">{ _fecha_limite }</span>
                                             </div>
                                         : ''
                                     }

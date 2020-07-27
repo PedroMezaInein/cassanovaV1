@@ -1,13 +1,13 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import { Card } from '../../singles'
 import { P, Small, B } from '../../texts'
 import NumberFormat from 'react-number-format'
 import Moment from 'react-moment'
 
-export default class SolicitudCompraCard extends Component{
-    render(){
+export default class SolicitudCompraCard extends Component {
+    render() {
         const { data, children } = this.props
-        return(
+        return (
             <Card className="mx-md-5 my-3">
                 <div className="row mx-0">
                     <div className="col-md-12 mb-3">
@@ -34,7 +34,7 @@ export default class SolicitudCompraCard extends Component{
                                 </Small>
                                 <hr />
                             </div>
-                        : ''
+                            : ''
                     }
                     {
                         data.proveedor ?
@@ -52,7 +52,7 @@ export default class SolicitudCompraCard extends Component{
                                 </Small>
                                 <hr />
                             </div>
-                        : ''
+                            : ''
                     }
                     {
                         data.empresa ?
@@ -70,7 +70,7 @@ export default class SolicitudCompraCard extends Component{
                                 </Small>
                                 <hr />
                             </div>
-                        : ''
+                            : ''
                     }
                     {
                         data.monto ?
@@ -81,11 +81,11 @@ export default class SolicitudCompraCard extends Component{
                                     </B>
                                 </Small>
                                 <br />
-                                <NumberFormat value = { data.monto } displayType = { 'text' } thousandSeparator = { true } prefix = { '$' }
-                                    renderText = { value => <Small color="dark-blue"> { value } </Small> } />
+                                <NumberFormat value={data.monto} displayType={'text'} thousandSeparator={true} prefix={'$'}
+                                    renderText={value => <Small color="dark-blue"> {value} </Small>} />
                                 <hr />
                             </div>
-                        : ''
+                            : ''
                     }
                     <div className="col-md-6">
                         <Small>
@@ -117,7 +117,7 @@ export default class SolicitudCompraCard extends Component{
                                 </Small>
                                 <hr />
                             </div>
-                        : ''
+                            : ''
                     }
                     {
                         data.subarea ?
@@ -138,7 +138,7 @@ export default class SolicitudCompraCard extends Component{
                                             </Small>
                                             <hr />
                                         </div>
-                                    : ''
+                                        : ''
                                 }
                                 <div className="col-md-6">
                                     <Small>
@@ -155,7 +155,7 @@ export default class SolicitudCompraCard extends Component{
                                     <hr />
                                 </div>
                             </>
-                        : ''
+                            : ''
                     }
                     {
                         data.created_at ?
@@ -171,10 +171,10 @@ export default class SolicitudCompraCard extends Component{
                                         {data.created_at}
                                     </Moment>
                                 </Small>
-                                
+
                                 <hr />
                             </div>
-                        : ''
+                            : ''
                     }
                     <div className="col-md-6">
                         <Small>
@@ -192,7 +192,7 @@ export default class SolicitudCompraCard extends Component{
                                         }
                                     </Small>
                                 </a>
-                            :
+                                :
                                 <Small>
                                     Sin adjunto
                                 </Small>
@@ -215,7 +215,7 @@ export default class SolicitudCompraCard extends Component{
                                 </Small>
                                 <hr />
                             </div>
-                        : ''
+                            : ''
                     }
                 </div>
             </Card>
