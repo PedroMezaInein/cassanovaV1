@@ -40,7 +40,7 @@ class NewTable extends Component {
     }
 
     componentDidMount() {
-        const { actions, elements, data, mostrar_acciones, elementClass } = this.props
+        const { actions, elements, data, mostrar_acciones, elementClass, totales } = this.props
         global_variable["mostrar_acciones"] = mostrar_acciones;
         var header = this.props.columns;
         var columns = [];
@@ -66,9 +66,14 @@ class NewTable extends Component {
                 table.find("thead th").each(function () {
                     var title = $(this).text();
                     let cellIndex = $(this)[0].cellIndex
+                    let total = header[cellIndex].total
                     cellIndex = header[cellIndex].accessor
                     if (global_variable.mostrar_acciones == false || global_variable.mostrar_acciones && contador != 0) {
                         $(this).append('<div class="mt-2 separator separator-dashed separator-border-2"></div><div class="mt-2"><input type="text" id=' + cellIndex + ' class="form-control form-control-sm"/></div>');
+                        if(total)
+                        {
+                            $(this).append('<div class="mt-2 separator separator-dashed separator-border-2">'+totales[total]+'</div>');
+                        }
 
                     }
                     contador++;
