@@ -12,6 +12,7 @@ class NominaAdminSingle extends Component {
     state = {  
         nomina: '',
         nominaData: [],
+        totales: [],
         data:{
             nominaData: []
         }
@@ -43,6 +44,7 @@ class NominaAdminSingle extends Component {
                 this.setState({
                     nomina: state.nomina,
                     nominaData: this.setNominasAdministrativas(state.nomina.nominas_administrativas),
+                    totales: this.setTotales(state.nomina),
                     data
                 })
             }
@@ -67,8 +69,17 @@ class NominaAdminSingle extends Component {
         return aux
     }
 
+    setTotales = nomina => {
+        return {
+                totalNominaImss: renderToString(setMoneyTable(nomina.totalNominaImss)),
+                totalRestanteNomina: renderToString(setMoneyTable(nomina.totalRestanteNomina)),
+                totalExtras: renderToString(setMoneyTable(nomina.totalExtras)),
+                total: renderToString(setMoneyTable(nomina.totalExtras + nomina.totalRestanteNomina + nomina.totalNominaImss)),
+            }
+    }
+
     setSubtitle = nomina => {
-        
+        console.log(nomina, 'nomina')
         let aux = ''
         if(nomina.empresa)
             aux = aux + nomina.empresa.name + ' '
@@ -80,11 +91,11 @@ class NominaAdminSingle extends Component {
         fecha_fin = fecha_fin.getDate()  + "-" + months[fecha_fin.getMonth()] + "-" + fecha_fin.getFullYear()
         aux = aux + fecha_inicio + ' ' + fecha_fin
         return aux
-        
+
     }
     
     render() {
-        const { nomina, nominaData, data } = this.state
+        const { nomina, nominaData, data, totales } = this.state
         return (
             <Layout active={'rh'} {...this.props}>
                 {
@@ -98,6 +109,7 @@ class NominaAdminSingle extends Component {
                             abrir_modal = {false}
                             mostrar_acciones = {false}
                             elements = { data.nominaData }
+                            totales = { totales }
                             />
                     : ''
                 }

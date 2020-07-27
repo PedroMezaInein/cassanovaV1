@@ -1391,19 +1391,23 @@ export const NOMINA_ADMIN_SINGLE_COLUMNS = [
     },
     {
         Header: 'Nómina IMSS',
-        accessor: 'nominaIMSS'
+        accessor: 'nominaIMSS',
+        total: 'totalNominaImss'
     },
     {
         Header: 'Extras',
-        accessor: 'extras'
+        accessor: 'extras',
+        total: 'totalRestanteNomina'
     },
     {
         Header: 'Viáticos',
-        accessor: 'viaticos'
+        accessor: 'viaticos',
+        total: 'totalExtras'
     },
     {
         Header: 'Total',
-        accessor: 'total'
+        accessor: 'total',
+        total: 'total'
     }
 ]
 
