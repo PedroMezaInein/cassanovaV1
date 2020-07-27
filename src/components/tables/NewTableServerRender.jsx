@@ -117,8 +117,10 @@ class NewTableServerRender extends Component {
                                 $(row).addClass('negative');
                         }
                     }
-                    else{
+                    else {
                         let auxiliar = data[elementClass].includes('Inactivo')
+                        if (auxiliar)
+                            $(row).addClass('inactivos');
                     }
                 }
             },
