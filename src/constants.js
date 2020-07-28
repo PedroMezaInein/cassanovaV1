@@ -423,28 +423,40 @@ export const INGRESOS_COLUMNS = [
         accessor: 'identificador'
     },
     {
-        Header: 'Cuenta',
-        accessor: 'cuenta'
-    },
-    {
-        Header: 'Cliente',
-        accessor: 'cliente'
+        Header: 'Fecha',
+        accessor: 'fecha',
     },
     {
         Header: 'Factura',
         accessor: 'factura'
     },
     {
-        Header: 'Monto',
-        accessor: 'monto'
+        Header: 'Área',
+        accessor: 'area'
     },
     {
-        Header: 'Impuesto',
-        accessor: 'impuesto'
+        Header: 'Sub-A',
+        accessor: 'subarea'
     },
     {
         Header: 'Total',
         accessor: 'total'
+    },
+    {
+        Header: 'Cuenta',
+        accessor: 'cuenta'
+    },
+    {
+        Header: 'Monto',
+        accessor: 'monto'
+    },
+    {
+        Header: 'Cliente',
+        accessor: 'cliente'
+    },
+    {
+        Header: 'Impuesto',
+        accessor: 'impuesto'
     },
     {
         Header: 'Pago',
@@ -455,25 +467,13 @@ export const INGRESOS_COLUMNS = [
         accessor: 'descripcion'
     },
     {
-        Header: 'Área',
-        accessor: 'area'
-    },
-    {
-        Header: 'Sub-Área',
-        accessor: 'subarea'
-    },
-    {
         Header: 'Estatus',
         accessor: 'estatusCompra'
     },
     {
         Header: 'Adjuntos',
         accessor: 'adjuntos',
-    },
-    {
-        Header: 'Fecha',
-        accessor: 'fecha',
-    },
+    }
 ]
 
 export const EGRESOS_COLUMNS = [
@@ -485,10 +485,10 @@ export const EGRESOS_COLUMNS = [
     {
         Header: 'ID',
         accessor: 'identificador'
-    },
+    },    
     {
-        Header: 'Cuenta',
-        accessor: 'cuenta'
+        Header: 'Fecha',
+        accessor: 'fecha',
     },
     {
         Header: 'Proveedor',
@@ -497,6 +497,22 @@ export const EGRESOS_COLUMNS = [
     {
         Header: 'Factura',
         accessor: 'factura'
+    },    
+    {
+        Header: 'Área',
+        accessor: 'area'
+    },
+    {
+        Header: 'Sub-Área',
+        accessor: 'subarea'
+    },    
+    {
+        Header: 'Total',
+        accessor: 'total'
+    },
+    {
+        Header: 'Cuenta',
+        accessor: 'cuenta'
     },
     {
         Header: 'Monto',
@@ -507,29 +523,12 @@ export const EGRESOS_COLUMNS = [
         accessor: 'comision'
     },
     {
-        Header: 'Fecha',
-        accessor: 'fecha',
-    },
-    {
-        Header: 'Total',
-        accessor: 'total'
-    },
-    {
         Header: 'Pago', //Cambié de Tipo de pago a Pago
         accessor: 'tipoPago'
-    },
-    
+    },    
     {
         Header: 'Impuesto',
         accessor: 'impuesto'
-    },
-    {
-        Header: 'Área',
-        accessor: 'area'
-    },
-    {
-        Header: 'Sub-Área',
-        accessor: 'subarea'
     },
     {
         Header: 'Estatus',
@@ -802,32 +801,44 @@ export const VENTAS_COLUMNS = [
         accessor: 'identificador'
     },
     {
+        Header: 'Fecha',
+        accessor: 'fecha',
+    },
+    {
         Header: 'Proyecto',
         accessor: 'proyecto'
-    },
-    {
-        Header: 'Cliente',
-        accessor: 'cliente'
-    },
-    {
-        Header: 'Cuenta',
-        accessor: 'cuenta'
     },
     {
         Header: 'Factura',
         accessor: 'factura'
     },
     {
-        Header: 'Monto',
-        accessor: 'monto'
+        Header: 'Área',
+        accessor: 'area'
     },
     {
-        Header: 'Impuesto',
-        accessor: 'impuesto'
+        Header: 'Sub-A',
+        accessor: 'subarea'
     },
     {
         Header: 'Total',
         accessor: 'total'
+    },
+    {
+        Header: 'Cuenta',
+        accessor: 'cuenta'
+    },
+    {
+        Header: 'Monto',
+        accessor: 'monto'
+    },
+    {
+        Header: 'Cliente',
+        accessor: 'cliente'
+    },
+    {
+        Header: 'Impuesto',
+        accessor: 'impuesto'
     },
     {
         Header: 'Pago',
@@ -838,25 +849,13 @@ export const VENTAS_COLUMNS = [
         accessor: 'descripcion'
     },
     {
-        Header: 'Área',
-        accessor: 'area'
-    },
-    {
-        Header: 'Sub-Área',
-        accessor: 'subarea'
-    },
-    {
         Header: 'Estatus',
         accessor: 'estatusCompra'
     },
     {
         Header: 'Adjuntos',
         accessor: 'adjuntos',
-    },
-    {
-        Header: 'Fecha',
-        accessor: 'fecha',
-    },
+    }
 ]
 
 export const COMPRAS_COLUMNS = [
@@ -871,22 +870,34 @@ export const COMPRAS_COLUMNS = [
     {
         Header: 'Fecha',
         accessor: 'fecha',
+    },    
+    {
+        Header: 'Proveedor',
+        accessor: 'proveedor'
     },
     {
         Header: 'Proyecto',
         accessor: 'proyecto'
     },
     {
-        Header: 'Proveedor',
-        accessor: 'proveedor'
+        Header: 'Factura',
+        accessor: 'factura'
+    },
+    {
+        Header: 'Área',
+        accessor: 'area'
+    },
+    {
+        Header: 'Sub-A',
+        accessor: 'subarea'
+    },
+    {
+        Header: 'Total',
+        accessor: 'total'
     },
     {
         Header: 'Cuenta',
         accessor: 'cuenta'
-    },
-    {
-        Header: 'Factura',
-        accessor: 'factura'
     },
     {
         Header: 'Monto',
@@ -901,24 +912,12 @@ export const COMPRAS_COLUMNS = [
         accessor: 'impuesto'
     },
     {
-        Header: 'Total',
-        accessor: 'total'
-    },
-    {
         Header: 'Pago',
         accessor: 'tipoPago'
     },    
     {
         Header: 'Estatus',
         accessor: 'estatusCompra'
-    },
-    {
-        Header: 'Área',
-        accessor: 'area'
-    },
-    {
-        Header: 'Sub-A',
-        accessor: 'subarea'
     },
     {
         Header: 'Descripción',
