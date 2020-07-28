@@ -54,16 +54,16 @@ class EstadosCuenta extends Component {
 
                 actions: this.setActions(estado),
                 identificador: renderToString(setTextTable(estado.id)),
-                cuenta: estado.cuentas.length > 0 ?
+                cuenta: estado.cuenta ?
                     renderToString(setArrayTable(
                         [
-                            { 'name': 'Cuenta', 'text': estado.cuentas[0].nombre ? estado.cuentas[0].nombre : 'Sin definir' },
-                            { 'name': 'No. Cuenta', 'text': estado.cuentas[0].numero ? estado.cuentas[0].numero : 'Sin definir' },
+                            { 'name': 'Cuenta', 'text': estado.cuenta.nombre ? estado.cuenta.nombre : 'Sin definir' },
+                            { 'name': 'No. Cuenta', 'text': estado.cuenta.numero ? estado.cuenta.numero : 'Sin definir' },
                         ]
                     ))
                     : '',
 
-                estado: renderToString(setArrayTable([{ url: estado.url, text: estado.name }])),
+                estado: renderToString(setArrayTable([{ url: estado.adjunto.url, text: estado.adjunto.name }])),
 
                 fecha: renderToString(setDateTable(estado.created_at)),
                 id: estado.id
