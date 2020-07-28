@@ -13,7 +13,6 @@ import { Small } from '../../components/texts'
 import NumberFormat from 'react-number-format';
 import { Form, Tabs, Tab } from 'react-bootstrap'
 import Calendar from '../../components/form-components/Calendar'
-import NewTable from '../../components/tables/NewTable'
 import TableForModals from '../../components/tables/TableForModals'
 import { setTextTable, setDateTable, setListTable, setMoneyTable, setArrayTable } from '../../functions/setters'
 import { errorAlert, forbiddenAccessAlert, waitAlert } from '../../functions/alert'
@@ -136,7 +135,6 @@ class Cuentas extends Component {
             })
             this.addEstadoAxios()
         }
-
     }
 
     onEditSubmit = e => {
@@ -189,26 +187,18 @@ class Cuentas extends Component {
     }
 
     setCuentas = cuentas => {
-        console.log(cuentas)
-
         let aux = []
         cuentas.map((cuenta, key) => {
             aux.push({
-
                 actions: this.setActions(cuenta),
-
                 nombre: renderToString(setTextTable(cuenta.nombre)),
                 numero: renderToString(setTextTable(cuenta.numero)),
-
                 balance: renderToString(setMoneyTable(cuenta.balance)),
-
                 descripcion: renderToString(setTextTable(cuenta.descripcion)),
-
                 banco: renderToString(setTextTable(cuenta.banco ? cuenta.banco.nombre : '')),
                 tipo: renderToString(setTextTable(cuenta.tipo ? cuenta.tipo.tipo : '')),
                 estatus: renderToString(setTextTable(cuenta.estatus ? cuenta.estatus.estatus : '')),
                 empresa: renderToString(setListTable(cuenta.empresa, 'name')),
-
                 fecha: renderToString(setDateTable(cuenta.created_at)),
                 id: cuenta.id
             })
@@ -217,7 +207,6 @@ class Cuentas extends Component {
     }
 
     setEstados = estados => {
-
         let aux = []
         estados.map((estado, key) => {
             aux.push({
@@ -537,12 +526,10 @@ class Cuentas extends Component {
     }
 
     openModalDelete = cuenta => {
-
         this.setState({
             modalDelete: true,
             cuenta: cuenta
         })
-
     }
 
     async getOptionsAxios() {
