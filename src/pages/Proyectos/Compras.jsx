@@ -193,8 +193,8 @@ class Compras extends Component {
                     total: renderToString(setMoneyTable(compra.total)),
                     adjuntos: renderToString(setArrayTable(_aux)),
                     fecha: renderToString(setDateTable(compra.created_at)),
-                    id: compra.id
-
+                    id: compra.id,
+                    objeto: compra
                 }
             )
         })
@@ -1261,6 +1261,7 @@ class Compras extends Component {
                     setter={this.setCompras}
                     urlRender={URL_DEV + 'compras'}
                     idTable='kt_datatable2_compras'
+                    validateFactura = { true }
                 />
 
                 <Modal size="xl" title={title} show={modal} handleClose={this.handleClose} >
