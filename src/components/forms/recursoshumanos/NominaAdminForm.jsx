@@ -37,8 +37,14 @@ class NominaAdminForm extends Component {
         return '$' + separators
     }
 
+    getSumaNomina = valor => {
+        var total = 0;	;
+
+        return '$' + total
+    }
+
     render() {
-        const { options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, onChange, onChangeAdjunto, clearFiles, form, onSubmit, formeditado, title } = this.props
+        const { options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, onChange, onChangeAdjunto, clearFiles, form, onSubmit, formeditado, title,nomina} = this.props
         return (
             <Form id="form-nominaadmin"
                 onSubmit={
@@ -136,11 +142,17 @@ class NominaAdminForm extends Component {
                 <table className="table table-separate table-responsive" id="tabla_obra">
                     <thead>
                         <tr>
-                            <th>Empleado</th> 
-                            <th>Nómina IMSS</th>
-                            <th>Restante Nómina</th>
-                            <th>Extras</th>
-                            <th>Total</th>
+                            <th rowspan="2"><p className="mt-2">Empleado</p></th> 
+                            <th className="pb-0 border-bottom-0">Nómina IMSS</th>
+                            <th className="pb-0 border-bottom-0">Restante Nómina</th>
+                            <th className="pb-0 border-bottom-0">Extras</th>
+                            <th className="pb-0 border-bottom-0">Total</th>
+                        </tr>
+                        <tr>  
+                            <th className="pt-2"><p className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">{this.getSumaNomina(nomina)}</p></th>
+                            <th className="pt-2"><p className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">Restante Nómina</p></th>
+                            <th className="pt-2"><p className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">Extras</p></th>
+                            <th className="pt-2"><p className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">Total</p></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -172,6 +184,7 @@ class NominaAdminForm extends Component {
                                                 thousandSeparator={true} 
                                                 customstyle={{ paddingLeft: "10px", marginTop: "13px" }}
                                                 prefix={'$'}
+                                                onkeyup={this.getSumaNomina}
                                             />
                                         </td>
                                         <td>
@@ -185,6 +198,7 @@ class NominaAdminForm extends Component {
                                                 thousandSeparator={true} 
                                                 customstyle={{ paddingLeft: "10px", marginTop: "13px" }}
                                                 prefix={'$'}
+                                                onkeyup={this.getSumaNomina}
                                             />
                                         </td>
                                         <td>
@@ -198,6 +212,7 @@ class NominaAdminForm extends Component {
                                                 thousandSeparator={true} 
                                                 customstyle={{ paddingLeft: "10px", marginTop: "13px" }}
                                                 prefix={'$'}
+                                                onkeyup={this.getSumaNomina}
                                             />
                                         </td>
                                         <td>
