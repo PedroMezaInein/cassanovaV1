@@ -255,7 +255,8 @@ class egresos extends Component{
                             egreso.presupuesto ? {name: 'Presupuesto', url: egreso.presupuesto.url} : '',
                         ])),
                         fecha: renderToString(setDateTable(egreso.created_at)),
-                        id: egreso.id
+                        id: egreso.id,
+                        objeto: egreso
                     }
                 )
             })
@@ -667,6 +668,7 @@ class egresos extends Component{
                             accessToken = { this.props.authUser.access_token }
                             setter = { this.setEgresos }
                             urlRender = {URL_DEV + 'egresos'}
+                            validateFactura = { true }
                             />
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el egreso?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteEgresoAxios() }}>
                 </ModalDelete>
