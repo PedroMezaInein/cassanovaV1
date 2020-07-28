@@ -427,6 +427,10 @@ export const INGRESOS_COLUMNS = [
         accessor: 'fecha',
     },
     {
+        Header: 'Cliente',
+        accessor: 'cliente'
+    },
+    {
         Header: 'Factura',
         accessor: 'factura'
     },
@@ -445,14 +449,6 @@ export const INGRESOS_COLUMNS = [
     {
         Header: 'Cuenta',
         accessor: 'cuenta'
-    },
-    {
-        Header: 'Monto',
-        accessor: 'monto'
-    },
-    {
-        Header: 'Cliente',
-        accessor: 'cliente'
     },
     {
         Header: 'Impuesto',
@@ -806,6 +802,10 @@ export const VENTAS_COLUMNS = [
         accessor: 'fecha',
     },
     {
+        Header: 'Cliente',
+        accessor: 'cliente'
+    },
+    {
         Header: 'Proyecto',
         accessor: 'proyecto'
     },
@@ -828,14 +828,6 @@ export const VENTAS_COLUMNS = [
     {
         Header: 'Cuenta',
         accessor: 'cuenta'
-    },
-    {
-        Header: 'Monto',
-        accessor: 'monto'
-    },
-    {
-        Header: 'Cliente',
-        accessor: 'cliente'
     },
     {
         Header: 'Impuesto',
