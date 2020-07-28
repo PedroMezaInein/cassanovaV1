@@ -36,11 +36,28 @@ class NominaAdminForm extends Component {
 
         return '$' + separators
     }
+ 
+    getSumaNomina() {
+        var total = 0;
+{/* <input id="num1" type="number" />
+        Valor numero 2: 
+        <input id="num2" type="number" /> 
+ 
+        <button onclick="clic()">Calcular</button>
+ 
+        <script>
+ 
+            function clic() {
+                var num1 = document.getElementById("num1").value;
+                var num2 = document.getElementById("num2").value;
+ 
+                var resultado = parseFloat(num1) + parseInt(num2);
+ 
+                console.log(resultado);
+            }
+ 
+        </script> */}
 
-    getSumaNomina = valor => {
-        var total = 0;	;
-
-        return '$' + total
     }
 
     render() {
@@ -142,7 +159,7 @@ class NominaAdminForm extends Component {
                 <table className="table table-separate table-responsive" id="tabla_obra">
                     <thead>
                         <tr>
-                            <th rowspan="2"><p className="mt-2">Empleado</p></th> 
+                            <th rowSpan="2"><p className="mt-2">Empleado</p></th> 
                             <th className="pb-0 border-bottom-0">Nómina IMSS</th>
                             <th className="pb-0 border-bottom-0">Restante Nómina</th>
                             <th className="pb-0 border-bottom-0">Extras</th>
@@ -184,7 +201,7 @@ class NominaAdminForm extends Component {
                                                 thousandSeparator={true} 
                                                 customstyle={{ paddingLeft: "10px", marginTop: "13px" }}
                                                 prefix={'$'}
-                                                onkeyup={this.getSumaNomina}
+                                                onkeyup={this.getSumaNomina()}
                                             />
                                         </td>
                                         <td>
@@ -198,7 +215,7 @@ class NominaAdminForm extends Component {
                                                 thousandSeparator={true} 
                                                 customstyle={{ paddingLeft: "10px", marginTop: "13px" }}
                                                 prefix={'$'}
-                                                onkeyup={this.getSumaNomina}
+                                                onkeyup={this.getSumaNomina()}
                                             />
                                         </td>
                                         <td>
@@ -212,7 +229,7 @@ class NominaAdminForm extends Component {
                                                 thousandSeparator={true} 
                                                 customstyle={{ paddingLeft: "10px", marginTop: "13px" }}
                                                 prefix={'$'}
-                                                onkeyup={this.getSumaNomina}
+                                                onkeyup={this.getSumaNomina()}
                                             />
                                         </td>
                                         <td>
