@@ -108,7 +108,6 @@ class NewTableServerRender extends Component {
             createdRow: function(row, data) {
                 if(validateFactura){
                     const { objeto } = data
-                    console.log(objeto)
                     if(objeto.factura && objeto.total === objeto.total_facturas){
                         $(row).addClass('verde');
                     }
