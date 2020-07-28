@@ -2,21 +2,25 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
-import { Button} from '../../components/form-components'
+import { Button } from '../../components/form-components'
 import { Modal } from '../../components/singles'
 import axios from 'axios'
 import swal from 'sweetalert'
-import { URL_DEV, CUENTAS_COLUMNS, EDOS_CUENTAS_COLUMNS} from '../../constants'
+import { URL_DEV, CUENTAS_COLUMNS, EDOS_CUENTAS_COLUMNS } from '../../constants'
 import { CuentaForm } from '../../components/forms'
 import Moment from 'react-moment'
-import { Small} from '../../components/texts'
+import { Small } from '../../components/texts'
 import NumberFormat from 'react-number-format';
 import { Form, Tabs, Tab } from 'react-bootstrap'
 import Calendar from '../../components/form-components/Calendar'
 import NewTable from '../../components/tables/NewTable'
 import TableForModals from '../../components/tables/TableForModals'
-import { setTextTable, setDateTable, setListTable, setMoneyTable, setArrayTable} from '../../functions/setters'
-import { errorAlert, forbiddenAccessAlert } from '../../functions/alert'
+import { setTextTable, setDateTable, setListTable, setMoneyTable, setArrayTable } from '../../functions/setters'
+import { errorAlert, forbiddenAccessAlert, waitAlert } from '../../functions/alert'
+import NewTableServerRender from '../../components/tables/NewTableServerRender'
+
+const $ = require('jquery');
+
 class Cuentas extends Component {
 
     state = {
@@ -44,7 +48,7 @@ class Cuentas extends Component {
         data: {
             cuentas: []
         },
-        formeditado:0,
+        formeditado: 0,
         cuentas: [],
         cajas: [],
         cuenta: null,
@@ -64,7 +68,7 @@ class Cuentas extends Component {
         });
         if (!leads)
             history.push('/')
-        this.getCuentas()
+        this.getOptionsAxios()
     }
 
     onChange = e => {
@@ -185,6 +189,7 @@ class Cuentas extends Component {
     }
 
     setCuentas = cuentas => {
+        console.log(cuentas)
 
         let aux = []
         cuentas.map((cuenta, key) => {
@@ -219,7 +224,7 @@ class Cuentas extends Component {
                 actions: this.setActionsEstado(estado),
                 estado: renderToString(setArrayTable([{ url: estado.url, text: estado.name }])),
                 fecha: renderToString(setDateTable(estado.created_at)),
-                id:estado.id
+                id: estado.id
             })
         })
         this.setState({
@@ -255,8 +260,8 @@ class Cuentas extends Component {
                 iconclass: 'flaticon2-rubbish-bin',
                 action: 'deleteAction',
                 tooltip: { id: 'deleteEstado', text: 'Eliminar', type: 'error' }
-            }            
-        )        
+            }
+        )
         return aux
     }
 
@@ -282,10 +287,10 @@ class Cuentas extends Component {
             }
         }).then((result) => {
             if (result) {
-                this.deleteEstadoAxios(estado.id)                
-            }            
+                this.deleteEstadoAxios(estado.id)
+            }
         })
-    } 
+    }
 
     setText = text => {
         return (
@@ -409,7 +414,7 @@ class Cuentas extends Component {
             cuenta: null,
             form: this.setEmptyForm(),
             empresas: aux,
-            formeditado:0,
+            formeditado: 0,
             tipo: 'Bancaria'
         })
     }
@@ -425,7 +430,7 @@ class Cuentas extends Component {
             cuenta: null,
             form: this.setEmptyForm(),
             empresas: aux,
-            formeditado:0,
+            formeditado: 0,
             tipo: 'Caja chica'
         })
     }
@@ -468,7 +473,7 @@ class Cuentas extends Component {
             cuenta: cuenta,
             form: aux,
             empresas: empresaOptionsAux,
-            formeditado:1,
+            formeditado: 1,
             tipo: 'Bancaria'
         })
     }
@@ -511,7 +516,7 @@ class Cuentas extends Component {
             cuenta: cuenta,
             form: aux,
             empresas: empresaOptionsAux,
-            formeditado:1,
+            formeditado: 1,
             tipo: 'Caja chica'
         })
     }
@@ -519,13 +524,13 @@ class Cuentas extends Component {
     openModalAddEstado = cuenta => {
         const { data } = this.state
         data.estados = cuenta ? cuenta.estados : []
-        
+
         this.setState({
             modalEstado: true,
             cuenta: cuenta,
             data,
             estados: [],
-            formeditado:0
+            formeditado: 0
         })
 
         this.setEstados(cuenta ? cuenta.estados : [])
@@ -537,40 +542,36 @@ class Cuentas extends Component {
             modalDelete: true,
             cuenta: cuenta
         })
-        
+
     }
 
-    async getCuentas() {
+    async getOptionsAxios() {
+        waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'cuentas', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'cuentas/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { data } = this.state
-                const { bancos, estatus, tipo, cuentas, empresas, cuentasCajaChica } = response.data
-                data.cuentas = cuentas
-                data.cajas = cuentasCajaChica
+                swal.close()
+                const { bancos, estatus, tipo, empresas } = response.data
                 let aux = []
-                bancos.map( (banco) => {
-                    if(banco.nombre !== 'CAJA CHICA')
+                bancos.map((banco) => {
+                    if (banco.nombre !== 'CAJA CHICA')
                         aux.push(banco)
                 })
-                
+
                 this.setState({
                     ... this.state,
                     bancos: this.setOptions(aux, 'nombre'),
                     estatus: this.setOptions(estatus, 'estatus'),
                     tipos: this.setOptions(tipo, 'tipo'),
                     empresas: this.setOptions(empresas, 'name'),
-                    empresasOptions: this.setOptions(empresas, 'name'),
-                    data,
-                    cuentas: this.setCuentas(cuentas),
-                    cajas: this.setCuentas(cuentasCajaChica)
+                    empresasOptions: this.setOptions(empresas, 'name')
                 })
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -587,15 +588,20 @@ class Cuentas extends Component {
         form.tipoBanco = tipo
         await axios.post(URL_DEV + 'cuentas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { cuentas, cuentasCajaChica } = response.data
-                const { data } = this.state
+                const { cuentas } = response.data
+                const { data, key } = this.state
                 data.cuentas = cuentas
-                data.cajas = cuentasCajaChica
+
+                if (key === 'bancos') {
+                    this.getBancosAxios()
+                }
+                if (key === 'cajas') {
+                    this.getCajasAxios()
+                }
+
                 this.setState({
                     modal: false,
-                    form: this.setEmptyForm(),
-                    cuentas: this.setCuentas(cuentas),
-                    cajas: this.setCuentas(cuentasCajaChica),
+                    form: this.setEmptyForm()
                 })
                 swal({
                     title: '¡Felicidades 🥳!',
@@ -606,9 +612,9 @@ class Cuentas extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -628,28 +634,32 @@ class Cuentas extends Component {
         data.append('fecha', (new Date(fecha)).toDateString())
         await axios.post(URL_DEV + 'cuentas/estado', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { cuentas, cuenta, cuentasCajaChica } = response.data
-                const { data } = this.state
+                const { cuenta } = response.data
+                const { data, key } = this.state
                 data.estados = cuenta.estados
-                data.cajas = cuentasCajaChica
-                data.cuentas = cuentas
+
+                if (key === 'bancos') {
+                    this.getBancosAxios()
+                }
+                if (key === 'cajas') {
+                    this.getCajasAxios()
+                }
+
                 this.setState({
                     adjunto: '',
                     adjuntoFile: '',
                     adjuntoName: '',
                     fecha: new Date(),
-                    data,
-                    cuentas: this.setCuentas(cuentas),
-                    cajas: this.setCuentas(cuentasCajaChica)
+                    data
                 })
                 this.setEstados(cuenta.estados)
                 swal.close()
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -664,17 +674,19 @@ class Cuentas extends Component {
         const { cuenta, form } = this.state
         await axios.put(URL_DEV + 'cuentas/' + cuenta.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { cuentas, cuentasCajaChica } = response.data
-                const { data } = this.state
-                data.cuentas = cuentas
-                data.cuentasCajaChica = cuentasCajaChica
+
+                const { key } = this.state
+                if (key === 'bancos') {
+                    this.getBancosAxios()
+                }
+                if (key === 'cajas') {
+                    this.getCajasAxios()
+                }
+
                 this.setState({
                     modal: false,
                     form: this.setEmptyForm(),
-                    cuenta: null,
-                    data,
-                    cuentas: this.setCuentas(cuentas),
-                    cajas: this.setCuentas(cuentasCajaChica)
+                    cuenta: null
                 })
                 swal({
                     title: '¡Felicidades 🥳!',
@@ -686,9 +698,9 @@ class Cuentas extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -703,18 +715,19 @@ class Cuentas extends Component {
         const { cuenta } = this.state
         await axios.delete(URL_DEV + 'cuentas/' + cuenta.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { cuentas, cuentasCajaChica } = response.data
-                const { data } = this.state
-                data.cuentas = cuentas
-                data.cajas = cuentasCajaChica
 
-                
+                const { key } = this.state
+
+                if (key === 'bancos') {
+                    this.getBancosAxios()
+                }
+                if (key === 'cajas') {
+                    this.getCajasAxios()
+                }
+
                 this.setState({
                     modalDelete: false,
                     cuenta: null,
-                    data,
-                    cuentas: this.setCuentas(cuentas),
-                    cajas: this.setCuentas(cuentasCajaChica)
                 })
                 swal({
                     title: '¡Listo 👋!',
@@ -725,9 +738,9 @@ class Cuentas extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -742,16 +755,20 @@ class Cuentas extends Component {
         const { cuenta } = this.state
         await axios.delete(URL_DEV + 'cuentas/' + cuenta.id + '/estado/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { cuentas, cuenta, cuentasCajaChica } = response.data
-                const { data } = this.state
-                data.cuentas = cuentas
-                data.cuentasCajaChica = cuentasCajaChica
+                const { cuenta } = response.data
+                const { data, key } = this.state
                 data.estados = cuenta.estados
+
+                if (key === 'bancos') {
+                    this.getBancosAxios()
+                }
+                if (key === 'cajas') {
+                    this.getCajasAxios()
+                }
+
                 this.setState({
                     ... this.state,
-                    data,
-                    cuentas: this.setCuentas(cuentas),
-                    cuentasCajaChica: this.setCuentas(cuentasCajaChica)
+                    data
                 })
                 this.setEstados(cuenta.estados)
                 swal({
@@ -763,9 +780,9 @@ class Cuentas extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -775,68 +792,101 @@ class Cuentas extends Component {
         })
     }
 
+    async getBancosAxios() {
+        $('#cuentas_bancos').DataTable().ajax.reload();
+    }
+
+    async getCajasAxios() {
+        $('#cuentas_cajas').DataTable().ajax.reload();
+    }
+
+    controlledTab = value => {
+        if (value === 'bancos') {
+            this.getBancosAxios()
+        }
+        if (value === 'cajas') {
+            this.getCajasAxios()
+        }
+        this.setState({
+            ... this.state,
+            key: value
+        })
+    }
+
     render() {
-        const { modal, modalDelete, modalEstado, bancos, estatus, tipos, form, cuentas, cuenta, empresas, estados, adjunto, adjuntoName, fecha, data, formeditado, tipo, cajas } = this.state
+        const { modal, modalDelete, modalEstado, bancos, estatus, tipos, key, form, cuentas, cuenta, empresas, estados, adjunto, adjuntoName, fecha, data, formeditado, tipo, cajas } = this.state
         return (
             <Layout active={'bancos'}  {...this.props}>
 
-                <Tabs defaultActiveKey="bancos">
+                <Tabs defaultActiveKey="bancos" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
                     <Tab eventKey="bancos" title="Banco">
-                        <NewTable 
-                            columns = {CUENTAS_COLUMNS} 
-                            data = {cuentas}
-                            title = 'Cuentas' 
-                            subtitle = 'Listado de cuentas'
-                            mostrar_boton = { true }
-                            abrir_modal = { true }
-                            onClick = { this.openModal }
-                            mostrar_acciones = { true }
+                        <NewTableServerRender
+                            columns={CUENTAS_COLUMNS}
+                            title='Cuentas'
+                            subtitle='Listado de cuentas'
+                            mostrar_boton={true}
+                            abrir_modal={true}
+                            onClick={this.openModal}
+                            mostrar_acciones={true}
                             actions={{
                                 'edit': { function: this.openModalEdit },
                                 'delete': { function: this.openModalDelete },
                                 'estado': { function: this.openModalAddEstado }
                             }}
-                            elements = {data.cuentas}
-                            idTable = 'cuentas_bancos'
-                            elementClass = 'estatus'
+                            accessToken={this.props.authUser.access_token}
+                            setter={this.setCuentas}
+                            urlRender={URL_DEV + 'cuentas/cuentas'}
+                            idTable='cuentas_bancos'
+                            elementClass='estatus'
                         />
                     </Tab>
                     <Tab eventKey="cajas" title="Caja chica">
-                        <NewTable 
-                            columns = { CUENTAS_COLUMNS }
-                            data = { cajas }
-                            title = 'Cajas chicas' 
-                            subtitle = 'Listado de cajas chicas'
-                            mostrar_boton = { true }
-                            abrir_modal = { true }
-                            onClick = { this.openModalCajaChica }
-                            mostrar_acciones = { true }
-                            actions = {{
+                        <NewTableServerRender
+                            columns={CUENTAS_COLUMNS}
+                            title='Cajas chicas'
+                            subtitle='Listado de cajas chicas'
+                            mostrar_boton={true}
+                            abrir_modal={true}
+                            onClick={this.openModalCajaChica}
+                            mostrar_acciones={true}
+                            actions={{
                                 'edit': { function: this.openModalEditCajaChica },
                                 'delete': { function: this.openModalDelete },
                                 'estado': { function: this.openModalAddEstado }
                             }}
-                            elements = { data.cajas }
-                            idTable = 'cuentas_cajas'
-                            elementClass = 'estatus'
+                            accessToken={this.props.authUser.access_token}
+                            setter={this.setCuentas}
+                            urlRender={URL_DEV + 'cuentas/cajas'}
+                            idTable='cuentas_cajas'
+                            elementClass='estatus'
                         />
                     </Tab>
                 </Tabs>
-                
 
-                <Modal size="xl" title={cuenta === null ? "Nueva cuenta" : 'Editar cuenta'}  show={modal} handleClose={this.handleClose} >
-                    <CuentaForm tipo = { tipo } bancos={bancos} estatus={estatus} tipos={tipos}
-                        empresas={empresas} form={form} onChange={this.onChange} onChangeEmpresa={this.onChangeEmpresa}
-                        updateEmpresa={this.updateEmpresa} onSubmit={cuenta === null ? this.onSubmit : this.onEditSubmit} formeditado={formeditado} />
+
+                <Modal size="xl" title={cuenta === null ? "Nueva cuenta" : 'Editar cuenta'} show={modal} handleClose={this.handleClose} >
+                    <CuentaForm
+                        tipo={tipo}
+                        bancos={bancos}
+                        estatus={estatus}
+                        tipos={tipos}
+                        empresas={empresas}
+                        form={form}
+                        onChange={this.onChange}
+                        onChangeEmpresa={this.onChangeEmpresa}
+                        updateEmpresa={this.updateEmpresa}
+                        onSubmit={cuenta === null ? this.onSubmit : this.onEditSubmit}
+                        formeditado={formeditado}
+                    />
                 </Modal>
-                <Modal size="xl" title= {cuenta === null ? "¿Estás seguro que deseas eliminar la cuenta ": "¿Estás seguro que deseas eliminar la cuenta "+ cuenta.nombre +" ?"} show={modalDelete} handleClose={this.handleDeleteModal} >
+                <Modal size="xl" title={cuenta === null ? "¿Estás seguro que deseas eliminar la cuenta " : "¿Estás seguro que deseas eliminar la cuenta " + cuenta.nombre + " ?"} show={modalDelete} handleClose={this.handleDeleteModal} >
                     <div className="d-flex justify-content-center mt-3">
                         <Button icon='' onClick={this.handleDeleteModal} text="Cancelar" className={"btn btn-light-primary font-weight-bolder mr-3"} />
-                        <Button icon='' onClick={(e) => { this.safeDelete(e)() }} text="Continuar" className={"btn btn-danger font-weight-bold mr-2"}/>
+                        <Button icon='' onClick={(e) => { this.safeDelete(e)() }} text="Continuar" className={"btn btn-danger font-weight-bold mr-2"} />
                     </div>
-                </Modal> 
-                <Modal size="xl" title= {cuenta === null ? "Estados de cuenta para": "Estados de cuenta para "+cuenta.nombre} show={modalEstado} handleClose={this.handleEstadoClose} >
-                    
+                </Modal>
+                <Modal size="xl" title={cuenta === null ? "Estados de cuenta para" : "Estados de cuenta para " + cuenta.nombre} show={modalEstado} handleClose={this.handleEstadoClose} >
+
                     <Form onSubmit={this.onSubmitEstado} >
                         <div className="form-group row form-group-marginless pt-4">
                             <div className="col-md-4">
@@ -849,7 +899,7 @@ class Cuentas extends Component {
                             </div>
 
                             <div className="col-md-4">
-                                <label className = "col-form-label ">Adjunto de estado de cuenta</label>
+                                <label className="col-form-label ">Adjunto de estado de cuenta</label>
                                 <div className="col-md-6 px-2">
                                     <div className="d-flex align-items-center">
                                         <div className="image-upload d-flex align-items-center">
@@ -862,29 +912,29 @@ class Cuentas extends Component {
                                                     id="adjunto"
                                                     accept="application/pdf" />
                                             </div>
-                                            {                                            
+                                            {
                                                 adjuntoName &&
                                                 <div className="">
-                                                    <div className="tagify form-control p-1" tabIndex="-1" style={{borderWidth:"0px"}}>
-                                                            <div className="tagify__tag tagify__tag--primary tagify--noAnim">
-                                                                <div 
-                                                                    title="Borrar archivo" 
-                                                                    className="tagify__tag__removeBtn" 
-                                                                    role="button" 
-                                                                    aria-label="remove tag" 
-                                                                    onClick={(e) => { e.preventDefault(); this.deleteAdjunto() }}
-                                                                    >
-                                                                </div>                                                            
-                                                                    <div><span className="tagify__tag-text p-1 white-space">{adjuntoName}</span></div>
+                                                    <div className="tagify form-control p-1" tabIndex="-1" style={{ borderWidth: "0px" }}>
+                                                        <div className="tagify__tag tagify__tag--primary tagify--noAnim">
+                                                            <div
+                                                                title="Borrar archivo"
+                                                                className="tagify__tag__removeBtn"
+                                                                role="button"
+                                                                aria-label="remove tag"
+                                                                onClick={(e) => { e.preventDefault(); this.deleteAdjunto() }}
+                                                            >
                                                             </div>
+                                                            <div><span className="tagify__tag-text p-1 white-space">{adjuntoName}</span></div>
+                                                        </div>
                                                     </div>
-                                                </div> 
+                                                </div>
                                             }
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                                
+
                         </div>
                         <div className="form-group row form-group-marginless">
                             <div className="col-md-12 text-center">
@@ -898,16 +948,16 @@ class Cuentas extends Component {
                         </div>
                     </Form>
                     <div className="separator separator-dashed mt-1 mb-2"></div>
-                    {estados.length > 0 && 
-                    <TableForModals 
-                            columns={EDOS_CUENTAS_COLUMNS} 
-                            data={estados} 
+                    {estados.length > 0 &&
+                        <TableForModals
+                            columns={EDOS_CUENTAS_COLUMNS}
+                            data={estados}
                             mostrar_acciones={true}
                             actions={{
-                                'deleteAction': { function: this.openModalDeleteEstado}
+                                'deleteAction': { function: this.openModalDeleteEstado }
                             }}
                             elements={data.estados}
-                            idTable = 'kt_datatable_estado'
+                            idTable='kt_datatable_estado'
                         />
                     }
                 </Modal>
