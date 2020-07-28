@@ -417,11 +417,11 @@ class egresos extends Component{
         })
     }
 
-    async getEgresosAxios(){
+    async getEgresosAxios() {
         var table = $('#egresos')
-                    .DataTable();
+            .DataTable();
 
-                table.ajax.reload();
+        table.ajax.reload();
     }
 
     async getOptionsAxios(){
