@@ -4,10 +4,9 @@ import axios from 'axios'
 import swal from 'sweetalert'
 import { renderToString } from 'react-dom/server'
 import { waitAlert, errorAlert, forbiddenAccessAlert, validateAlert } from '../../functions/alert'
-import { setOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable} from '../../functions/setters'
+import { setOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable } from '../../functions/setters'
 import Layout from '../../components/layout/layout'
 import { Tabs, Tab, Form } from 'react-bootstrap'
-import NewTable from '../../components/tables/NewTable'
 import { CONTRATOS_PROVEEDORES_COLUMNS, CONTRATOS_CLIENTES_COLUMNS, URL_DEV, ADJ_CONTRATOS_COLUMNS } from '../../constants'
 import { Modal, ModalDelete } from '../../components/singles'
 import ContratoForm from '../../components/forms/administracion/ContratoForm'
@@ -15,35 +14,39 @@ import { Button } from '../../components/form-components'
 import FileInput from '../../components/form-components/FileInput'
 import TableForModals from '../../components/tables/TableForModals'
 
+import NewTableServerRender from '../../components/tables/NewTableServerRender'
+
+const $ = require('jquery');
+
 class Contratos extends Component {
 
     state = {
-        contratos:{
+        contratos: {
             clientes: [],
             proveedores: []
         },
-        data:{
+        data: {
             clientes: [],
-            contratos:{
+            contratos: {
                 clientes: [],
                 proveedores: []
             },
-            adjuntos:[]            
+            adjuntos: []
         },
-        formeditado:0,
-        adjuntos:[],
-        modal:{
+        formeditado: 0,
+        adjuntos: [],
+        modal: {
             form: false,
             delete: false,
             adjuntos: false,
         },
-        options:{
+        options: {
             empresas: [],
             clientes: [],
             proveedores: [],
             tiposContratos: []
         },
-        form:{
+        form: {
             cliente: '',
             proveedor: '',
             empresa: '',
@@ -54,21 +57,25 @@ class Contratos extends Component {
             descripcion: '',
             tipo: 'cliente',
             nombre: '',
-            adjuntos:{
-                adjunto:{
+            adjuntos: {
+                adjunto: {
                     value: '',
                     placeholder: 'Ingresa los adjuntos',
                     files: []
                 }
             }
         },
-        title:'Nuevo contrato de cliente',
+        title: 'Nuevo contrato de cliente',
         tipo: 'Cliente',
         contrato: '',
         clientes: []
     }
 
     componentDidMount() {
+        var elements = document.getElementsByClassName("dataTable")
+        for (let cont = 0; cont < elements.length; cont++) {
+            elements[cont].classList.remove("table-responsive");
+        }
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props
@@ -78,7 +85,7 @@ class Contratos extends Component {
         });
         if (!contratos)
             history.push('/')
-        this.getContratosAxios()
+        this.getOptionsAxios()
     }
 
     openModalCliente = () => {
@@ -90,38 +97,38 @@ class Contratos extends Component {
             modal,
             tipo: 'Cliente',
             title: 'Nuevo contrato de cliente',
-            formeditado:0
+            formeditado: 0
         })
     }
 
     openModalEditCliente = contrato => {
         const { modal, form } = this.state
-        if(contrato.empresa){
+        if (contrato.empresa) {
             form.empresa = contrato.empresa.id.toString()
         }
-        if(contrato.cliente){
+        if (contrato.cliente) {
             form.cliente = contrato.cliente.id.toString()
         }
         form.fechaInicio = new Date(contrato.fecha_inicio)
         form.fechaFin = new Date(contrato.fecha_fin)
         form.descripcion = contrato.descripcion
-        if(contrato.tipo_contrato)
+        if (contrato.tipo_contrato)
             form.tipoContrato = contrato.tipo_contrato.id.toString()
         form.monto = contrato.monto
         form.nombre = contrato.nombre
         let aux = []
-        if(contrato.adjuntos)
-            contrato.adjuntos.map( (adj) => {
+        if (contrato.adjuntos)
+            contrato.adjuntos.map((adj) => {
                 aux.push(
                     {
                         name: adj.name, url: adj.url
                     }
                 )
             })
-        
+
         form.adjuntos.adjunto.files = aux
         modal.form = true
-        
+
         this.setState({
             ... this.state,
             modal,
@@ -129,34 +136,34 @@ class Contratos extends Component {
             title: 'Editar contrato de cliente',
             contrato: contrato,
             form,
-            formeditado:1
+            formeditado: 1
         })
     }
 
     openModalEditProveedor = contrato => {
         const { modal, form } = this.state
-        if(contrato.empresa){
+        if (contrato.empresa) {
             form.empresa = contrato.empresa.id.toString()
         }
-        if(contrato.proveedor){
+        if (contrato.proveedor) {
             form.proveedor = contrato.proveedor.id.toString()
         }
         form.fechaInicio = new Date(contrato.fecha_inicio)
         form.fechaFin = new Date(contrato.fecha_fin)
         form.descripcion = contrato.descripcion
-        if(contrato.tipo_contrato)
+        if (contrato.tipo_contrato)
             form.tipoContrato = contrato.tipo_contrato.id.toString()
         form.monto = contrato.monto
         form.nombre = contrato.nombre
         modal.form = true
         this.setState({
             ... this.state,
-            form, 
+            form,
             modal,
             tipo: 'Proveedor',
             title: 'Editar contrato de proveedor',
             contrato: contrato,
-            formeditado:1
+            formeditado: 1
         })
     }
 
@@ -191,7 +198,7 @@ class Contratos extends Component {
             modal,
             tipo: 'Proveedor',
             title: 'Nuevo contrato de proveedor',
-            formeditado:0
+            formeditado: 0
         })
     }
 
@@ -232,8 +239,8 @@ class Contratos extends Component {
     }
 
     openModalAdjuntos = contrato => {
-        const { modal, data} = this.state
-        modal.adjuntos = true   
+        const { modal, data } = this.state
+        modal.adjuntos = true
         data.adjuntos = contrato.adjuntos
         this.setState({
             ... this.state,
@@ -244,7 +251,7 @@ class Contratos extends Component {
         })
     }
 
-    handleCloseAdjuntos = () =>{
+    handleCloseAdjuntos = () => {
         const { modal } = this.state
         modal.adjuntos = false
         this.setState({
@@ -254,14 +261,14 @@ class Contratos extends Component {
         })
     }
 
-    setAdjuntos = adjuntos =>{
+    setAdjuntos = adjuntos => {
         let aux = []
         adjuntos.map((documento) => {
             aux.push({
                 actions: this.setActionsAdjuntos(documento),
-                adjunto: renderToString(setArrayTable([{text: documento.name, url: documento.url}])),
+                adjunto: renderToString(setArrayTable([{ text: documento.name, url: documento.url }])),
                 id: documento.id
-            }) 
+            })
         })
         return aux
     }
@@ -325,8 +332,8 @@ class Contratos extends Component {
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'fechaInicio':
                 case 'fechaFin':
                     form[element] = new Date()
@@ -336,7 +343,7 @@ class Contratos extends Component {
                     break;
                 case 'adjuntos':
                     form[element] = {
-                        adjunto:{
+                        adjunto: {
                             value: '',
                             placeholder: 'Adjunto(s)',
                             files: []
@@ -351,15 +358,14 @@ class Contratos extends Component {
         return form;
     }
 
-    setContratos = (contratos, tipo) => {
+    setContratosCliente = (contratos) => {
         let aux = []
         contratos.map((contrato) => {
             aux.push({
-                actions: this.setActions(contrato, tipo),
+                actions: this.setActionsCliente(contrato),
                 nombre: renderToString(setTextTable(contrato.nombre)),
-                cliente: tipo === 'Cliente' && contrato.cliente ? renderToString(setTextTable(contrato.cliente.empresa)) : '',
-                proveedor: tipo === 'Proveedor' && contrato.proveedor ? renderToString(setTextTable(contrato.proveedor.razon_social)) : '',
-
+                cliente: renderToString(setTextTable(contrato.cliente.empresa)),
+                empresa: contrato.empresa ? renderToString(setTextTable(contrato.empresa.name)) : '',
                 fechaInicio: renderToString(setDateTable(contrato.fecha_inicio)),
                 fechaFin: renderToString(setDateTable(contrato.fecha_fin)),
                 monto: renderToString(setMoneyTable(contrato.monto)),
@@ -367,27 +373,47 @@ class Contratos extends Component {
                 pendiente: renderToString(setMoneyTable(contrato.sumatoria ? contrato.monto - contrato.sumatoria : contrato.monto)),
                 contrato: contrato.tipo_contrato ? renderToString((setTextTable(contrato.tipo_contrato.tipo))) : '',
                 descripcion: renderToString(setTextTable(contrato.descripcion)),
-                empresa: contrato.empresa ? renderToString(setTextTable(contrato.empresa.name)) : '',
                 id: contrato.id
             })
         })
         return aux
     }
-    setActionsAdjuntos = documento => { 
+
+    setContratosProveedor = (contratos) => {
+        let aux = []
+        contratos.map((contrato) => {
+            aux.push({
+                actions: this.setActionsProveedor(contrato),
+                nombre: renderToString(setTextTable(contrato.nombre)),
+                empresa: contrato.empresa ? renderToString(setTextTable(contrato.empresa.name)) : '',
+                proveedor: renderToString(setTextTable(contrato.proveedor.razon_social)),
+                fechaInicio: renderToString(setDateTable(contrato.fecha_inicio)),
+                fechaFin: renderToString(setDateTable(contrato.fecha_fin)),
+                monto: renderToString(setMoneyTable(contrato.monto)),
+                acumulado: renderToString(setMoneyTable(contrato.sumatoria ? contrato.sumatoria : 0)),
+                pendiente: renderToString(setMoneyTable(contrato.sumatoria ? contrato.monto - contrato.sumatoria : contrato.monto)),
+                contrato: contrato.tipo_contrato ? renderToString((setTextTable(contrato.tipo_contrato.tipo))) : '',
+                descripcion: renderToString(setTextTable(contrato.descripcion)),
+                id: contrato.id
+            })
+        })
+        return aux
+    }
+    setActionsAdjuntos = documento => {
         let aux = []
         aux.push(
-            
+
             {
                 text: 'Eliminar',
                 btnclass: 'danger',
                 iconclass: 'flaticon2-rubbish-bin',
                 action: 'deleteAdjunto',
                 tooltip: { id: 'deleteAdjunto', text: 'Eliminar', type: 'error' }
-            } 
+            }
         )
         return aux
-    } 
-    
+    }
+
     openModalDeleteAdjunto = (adjunto) => {
         swal({
             title: '¿Estás seguro?',
@@ -410,26 +436,54 @@ class Contratos extends Component {
             }
         }).then((result) => {
             if (result) {
-                this.deleteAdjuntoContratoAxios(adjunto.id)                
-            }            
+                this.deleteAdjuntoContratoAxios(adjunto.id)
+            }
         })
-    } 
+    }
 
-    setActions = (contrato, tipo) => {
+    setActionsCliente = (contrato) => {
         let aux = []
         aux.push(
             {
                 text: 'Editar',
                 btnclass: 'success',
                 iconclass: 'flaticon2-pen',
-                action: tipo === 'Cliente' ? 'editCliente' : 'editProveedor',
+                action: 'edit',
                 tooltip: { id: 'edit', text: 'Editar' }
             },
             {
                 text: 'Eliminar',
                 btnclass: 'danger',
                 iconclass: 'flaticon2-rubbish-bin',
-                action: tipo === 'Cliente' ? 'deleteCliente' : 'deleteProveedor',
+                action: 'delete',
+                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
+            },
+            {
+                text: 'Adjuntos',
+                btnclass: 'primary',
+                iconclass: 'flaticon-attachment',
+                action: 'adjuntos',
+                tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
+            }
+        )
+        return aux
+    }
+
+    setActionsProveedor = (contrato) => {
+        let aux = []
+        aux.push(
+            {
+                text: 'Editar',
+                btnclass: 'success',
+                iconclass: 'flaticon2-pen',
+                action: 'edit',
+                tooltip: { id: 'edit', text: 'Editar' }
+            },
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',
+                action: 'delete',
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
             },
             {
@@ -446,10 +500,10 @@ class Contratos extends Component {
     onSubmit = e => {
         e.preventDefault()
         const { title, tipo, form } = this.state
-        if(tipo === 'Cliente'){
+        if (tipo === 'Cliente') {
             form.tipo = 'cliente'
         }
-        if(tipo === 'Proveedor'){
+        if (tipo === 'Proveedor') {
             form.tipo = 'proveedor'
         }
         this.setState({
@@ -462,33 +516,29 @@ class Contratos extends Component {
             buttons: false
         })
         let aux = title.split(' ');
-        if(aux.length){
-            if(aux[0] === 'Editar'){
+        if (aux.length) {
+            if (aux[0] === 'Editar') {
                 this.updateContratoAxios()
-            }else{
+            } else {
                 this.addContratoAxios()
             }
         }
     }
 
-    async getContratosAxios(){
+    async getOptionsAxios() {
+        waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'contratos', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'contratos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { contratosClientes, contratosProveedores, empresas, 
-                    clientes, proveedores, tiposContratos } = response.data
+                swal.close()
+                const { empresas, clientes, proveedores, tiposContratos } = response.data
                 const { data, contratos, options } = this.state
 
                 options.empresas = setOptions(empresas, 'name', 'id')
                 options.proveedores = setOptions(proveedores, 'razon_social', 'id')
                 options.clientes = setOptions(clientes, 'empresa', 'id')
                 options.tiposContratos = setOptions(tiposContratos, 'tipo', 'id')
-                
-                data.contratos.proveedores = contratosProveedores
-                contratos.proveedores = this.setContratos(contratosProveedores, 'Proveedor')
-                data.contratos.clientes = contratosClientes
-                contratos.clientes = this.setContratos(contratosClientes, 'Cliente')
-                
+
                 this.setState({
                     ... this.state,
                     data,
@@ -498,9 +548,9 @@ class Contratos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -510,14 +560,14 @@ class Contratos extends Component {
         })
     }
 
-    async addContratoAxios(){
+    async addContratoAxios() {
         const { access_token } = this.props.authUser
         const { form } = this.state
         const data = new FormData();
-        
+
         let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'fechaInicio':
                 case 'fechaFin':
                     data.append(element, (new Date(form[element])).toDateString())
@@ -531,8 +581,8 @@ class Contratos extends Component {
             }
         })
         aux = Object.keys(form.adjuntos)
-        aux.map( (element) => {
-            if(form.adjuntos[element].value !== ''){
+        aux.map((element) => {
+            if (form.adjuntos[element].value !== '') {
                 for (var i = 0; i < form.adjuntos[element].files.length; i++) {
                     data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
                     data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
@@ -540,9 +590,8 @@ class Contratos extends Component {
                 data.append('adjuntos[]', element)
             }
         })
-        await axios.post(URL_DEV + 'contratos', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'contratos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { contratosClientes, contratosProveedores } = response.data
                 let { data, contratos, modal } = this.state
 
                 swal({
@@ -553,13 +602,8 @@ class Contratos extends Component {
                     buttons: false
                 })
 
-                data.contratos.proveedores = contratosProveedores
-                contratos.proveedores = this.setContratos(contratosProveedores, 'Proveedor')
-                data.contratos.clientes = contratosClientes
-                contratos.clientes = this.setContratos(contratosClientes, 'Cliente')
-
                 modal.form = false
-                
+
                 this.setState({
                     ... this.state,
                     data,
@@ -569,9 +613,9 @@ class Contratos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -581,14 +625,14 @@ class Contratos extends Component {
         })
     }
 
-    async addAdjuntoContratoAxios(){
+    async addAdjuntoContratoAxios() {
         const { access_token } = this.props.authUser
         const { form, contrato } = this.state
         const data = new FormData();
-        
+
         let aux = Object.keys(form.adjuntos)
-        aux.map( (element) => {
-            if(form.adjuntos[element].value !== ''){
+        aux.map((element) => {
+            if (form.adjuntos[element].value !== '') {
                 for (var i = 0; i < form.adjuntos[element].files.length; i++) {
                     data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
                     data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
@@ -597,9 +641,9 @@ class Contratos extends Component {
             }
         })
 
-        await axios.post(URL_DEV + 'contratos/' + contrato.id +'/adjunto/', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'contratos/' + contrato.id + '/adjunto/', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { contratosClientes, contratosProveedores, contrato } = response.data
+                const { contrato } = response.data
                 const { data, contratos, modal } = this.state
 
                 swal({
@@ -610,14 +654,10 @@ class Contratos extends Component {
                     buttons: false
                 })
 
-                data.contratos.proveedores = contratosProveedores
-                contratos.proveedores = this.setContratos(contratosProveedores, 'Proveedor')
-                data.contratos.clientes = contratosClientes
-                contratos.clientes = this.setContratos(contratosClientes, 'Cliente')
                 data.adjuntos = contrato.adjuntos
 
                 modal.form = false
-                
+
                 this.setState({
                     ... this.state,
                     data,
@@ -628,9 +668,9 @@ class Contratos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -640,12 +680,11 @@ class Contratos extends Component {
         })
     }
 
-    async updateContratoAxios(){
+    async updateContratoAxios() {
         const { access_token } = this.props.authUser
         const { form, contrato } = this.state
-        await axios.put(URL_DEV + 'contratos/' + contrato.id, form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.put(URL_DEV + 'contratos/' + contrato.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { contratosClientes, contratosProveedores } = response.data
                 const { data, contratos, modal } = this.state
 
                 swal({
@@ -658,11 +697,6 @@ class Contratos extends Component {
 
                 modal.form = false
 
-                data.contratos.proveedores = contratosProveedores
-                contratos.proveedores = this.setContratos(contratosProveedores, 'Proveedor')
-                data.contratos.clientes = contratosClientes
-                contratos.clientes = this.setContratos(contratosClientes, 'Cliente')
-                
                 this.setState({
                     ... this.state,
                     data,
@@ -672,9 +706,9 @@ class Contratos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -684,12 +718,11 @@ class Contratos extends Component {
         })
     }
 
-    async deleteContratoAxios(){
+    async deleteContratoAxios() {
         const { access_token } = this.props.authUser
         const { contrato } = this.state
-        await axios.delete(URL_DEV + 'contratos/' + contrato.id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.delete(URL_DEV + 'contratos/' + contrato.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { contratosClientes, contratosProveedores } = response.data
                 const { data, contratos, modal } = this.state
 
                 swal({
@@ -702,11 +735,6 @@ class Contratos extends Component {
 
                 modal.delete = false
 
-                data.contratos.proveedores = contratosProveedores
-                contratos.proveedores = this.setContratos(contratosProveedores, 'Proveedor')
-                data.contratos.clientes = contratosClientes
-                contratos.clientes = this.setContratos(contratosClientes, 'Cliente')
-                
                 this.setState({
                     ... this.state,
                     data,
@@ -717,9 +745,9 @@ class Contratos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -729,12 +757,12 @@ class Contratos extends Component {
         })
     }
 
-    async deleteAdjuntoContratoAxios(adjunto){
+    async deleteAdjuntoContratoAxios(adjunto) {
         const { access_token } = this.props.authUser
         const { form, contrato } = this.state
-        await axios.delete(URL_DEV + 'contratos/' + contrato.id +'/adjunto/' + adjunto, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.delete(URL_DEV + 'contratos/' + contrato.id + '/adjunto/' + adjunto, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { contratosClientes, contratosProveedores, contrato } = response.data
+                const { contrato } = response.data
                 const { data, contratos, modal } = this.state
 
                 swal({
@@ -747,11 +775,6 @@ class Contratos extends Component {
 
                 swal.close()
 
-                data.contratos.proveedores = contratosProveedores
-                contratos.proveedores = this.setContratos(contratosProveedores, 'Proveedor')
-                data.contratos.clientes = contratosClientes
-                contratos.clientes = this.setContratos(contratosClientes, 'Cliente')
-                
                 this.setState({
                     ... this.state,
                     data,
@@ -763,9 +786,9 @@ class Contratos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -775,75 +798,103 @@ class Contratos extends Component {
         })
     }
 
+    async getBancosAxios() {
+        $('#kt_datatable_cliente').DataTable().ajax.reload();
+    }
+
+    async getCajasAxios() {
+        $('#kt_datatable_proveedor').DataTable().ajax.reload();
+    }
+
+    controlledTab = value => {
+        if (value === 'cliente') {
+            this.getBancosAxios()
+        }
+        if (value === 'proveedor') {
+            this.getCajasAxios()
+        }
+        this.setState({
+            ... this.state,
+            key: value
+        })
+    }
+
+
     render() {
-        const { data, contratos, title, options, form, modal, tipo, formeditado, adjuntos} = this.state
+        const { data, contratos, title, options, form, modal, tipo, formeditado, adjuntos, key } = this.state
         return (
             <Layout active={'administracion'}  {...this.props}>
 
-                <Tabs defaultActiveKey="cliente">
+                <Tabs defaultActiveKey="cliente" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
                     <Tab eventKey="cliente" title="Cliente">
                         <div className="py-2">
-                            <NewTable
-                                columns = { CONTRATOS_CLIENTES_COLUMNS } 
-                                data = { contratos.clientes }
-                                title = 'Contratos de clientes' 
-                                subtitle = 'Listado de contratos de clientes'
-                                mostrar_boton = { true }
-                                abrir_modal = { true }
-                                mostrar_acciones = { true }
-                                onClick = { this.openModalCliente }
-                                actions = {{
-                                    'editCliente': {function: this.openModalEditCliente},
-                                    'deleteCliente': {function: this.openModalDeleteCliente},
-                                    'editProveedor': {function: this.openModalEditProveedor},
-                                    'deleteProveedor': {function: this.openModalDeleteProveedor},
-                                    'adjuntos': {function: this.openModalAdjuntos},
+                            <NewTableServerRender
+                                columns={CONTRATOS_CLIENTES_COLUMNS}
+                                title='Contratos de clientes'
+                                subtitle='Listado de contratos de clientes'
+                                mostrar_boton={true}
+                                abrir_modal={true}
+                                mostrar_acciones={true}
+                                onClick={this.openModalCliente}
+                                actions={{
+                                    'edit': { function: this.openModalEditCliente },
+                                    'delete': { function: this.openModalDeleteCliente },
+                                    'adjuntos': { function: this.openModalAdjuntos },
                                 }}
-                                elements = { data.contratos.clientes }
-                                idTable = 'kt_datatable_cliente'
-                                />
+                                idTable='kt_datatable_cliente'
+                                accessToken={this.props.authUser.access_token}
+                                setter={this.setContratosCliente}
+                                urlRender={URL_DEV + 'contratos/clientes'}
+                            />
                         </div>
                     </Tab>
                     <Tab eventKey="proveedor" title="Proveedor">
                         <div className="py-2">
-                            <NewTable
-                                columns = { CONTRATOS_PROVEEDORES_COLUMNS } 
-                                data = { contratos.proveedores }
-                                title = 'Contratos de proveedores' 
-                                subtitle = 'Listado de contratos de proveedores'
-                                mostrar_boton = { true }
-                                abrir_modal = { true }
-                                mostrar_acciones = { true }
-                                onClick = { this.openModalProveedor }
-                                actions = {{
-                                    'editCliente': {function: this.openModalEditCliente},
-                                    'deleteCliente': {function: this.openModalDeleteCliente},
-                                    'editProveedor': {function: this.openModalEditProveedor},
-                                    'deleteProveedor': {function: this.openModalDeleteProveedor},
-                                    'adjuntos': {function: this.openModalAdjuntos},
+                            <NewTableServerRender
+                                columns={CONTRATOS_PROVEEDORES_COLUMNS}
+                                title='Contratos de proveedores'
+                                subtitle='Listado de contratos de proveedores'
+                                mostrar_boton={true}
+                                abrir_modal={true}
+                                mostrar_acciones={true}
+                                onClick={this.openModalProveedor}
+                                actions={{
+                                    'edit': { function: this.openModalEditProveedor },
+                                    'delete': { function: this.openModalDeleteProveedor },
+                                    'adjuntos': { function: this.openModalAdjuntos },
                                 }}
-                                elements = { data.contratos.proveedores }
-                                idTable = 'kt_datatable_proveedor'
-                                />
+                                idTable='kt_datatable_proveedor'
+                                accessToken={this.props.authUser.access_token}
+                                setter={this.setContratosProveedor}
+                                urlRender={URL_DEV + 'contratos/proveedores'}
+                            />
                         </div>
                     </Tab>
                 </Tabs>
-                <Modal size="xl" title = { title } show = { modal.form } handleClose = { this.handleCloseModal }>
-                    <ContratoForm tipo = { tipo } options = { options } form = { form } onChange = { this.onChange } 
-                        onSubmit = { this.onSubmit } formeditado={formeditado} onChangeAdjunto = { this.onChangeAdjunto } 
-                        clearFiles = { this.clearFiles } title = {title} />
+                <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseModal}>
+                    <ContratoForm
+                        tipo={tipo}
+                        options={options}
+                        form={form}
+                        onChange={this.onChange}
+                        onSubmit={this.onSubmit}
+                        formeditado={formeditado}
+                        onChangeAdjunto={this.onChangeAdjunto}
+                        clearFiles={this.clearFiles}
+                        title={title}
+                    />
                 </Modal>
-                <ModalDelete title={tipo === 'Cliente' ? '¿Quieres eliminar el contrato de cliente?' : '¿Quieres eliminar el contrato de proveedor?'} show = { modal.delete } handleClose = { this.handleCloseModalDelete } onClick=  { (e) => { e.preventDefault(); waitAlert(); this.deleteContratoAxios() }}>
+                <ModalDelete title={tipo === 'Cliente' ? '¿Quieres eliminar el contrato de cliente?' : '¿Quieres eliminar el contrato de proveedor?'} show={modal.delete} handleClose={this.handleCloseModalDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteContratoAxios() }}>
                 </ModalDelete>
-                <Modal size="xl" title = 'Adjuntos del contrato' show = { modal.adjuntos } handleClose = { this.handleCloseModalAdjuntos }>
+                <Modal size="xl" title='Adjuntos del contrato' show={modal.adjuntos} handleClose={this.handleCloseModalAdjuntos}>
                     <Form id="form-adjuntos"
-                        onSubmit = { 
+                        onSubmit={
                             (e) => {
-                                e.preventDefault(); 
+                                e.preventDefault();
                                 validateAlert(this.onSubmitAdjuntos, e, 'form-adjuntos')
                             }
                         }
-                        >
+                    >
                         <div className="form-group row form-group-marginless pt-4">
                             <div className="col-md-6">
                                 <FileInput
@@ -851,12 +902,12 @@ class Contratos extends Component {
                                     onChangeAdjunto={this.onChangeAdjunto}
                                     placeholder={form.adjuntos.adjunto.placeholder}
                                     value={form.adjuntos.adjunto.value}
-                                    name='adjunto' 
+                                    name='adjunto'
                                     id='adjunto'
                                     accept="image/*, application/pdf"
                                     files={form.adjuntos.adjunto.files}
-                                    deleteAdjunto={this.clearFiles} 
-                                    multiple 
+                                    deleteAdjunto={this.clearFiles}
+                                    multiple
                                 />
                             </div>
                         </div>
@@ -865,17 +916,17 @@ class Contratos extends Component {
                         </div>
                     </Form>
                     <div className="separator separator-dashed mt-1 mb-2"></div>
-                    
-                        <TableForModals 
-                            columns={ADJ_CONTRATOS_COLUMNS} 
-                            data={adjuntos} 
-                            mostrar_acciones={true}
-                            actions={{
-                                'deleteAdjunto': { function: this.openModalDeleteAdjunto}
-                            }}
-                            elements={data.adjuntos}
-                            idTable = 'kt_datatable_estado'
-                        />
+
+                    <TableForModals
+                        columns={ADJ_CONTRATOS_COLUMNS}
+                        data={adjuntos}
+                        mostrar_acciones={true}
+                        actions={{
+                            'deleteAdjunto': { function: this.openModalDeleteAdjunto }
+                        }}
+                        elements={data.adjuntos}
+                        idTable='kt_datatable_estado'
+                    />
                 </Modal>
             </Layout>
         )
