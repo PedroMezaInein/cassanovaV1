@@ -507,8 +507,8 @@ export const EGRESOS_COLUMNS = [
         accessor: 'comision'
     },
     {
-        Header: 'Impuesto',
-        accessor: 'impuesto'
+        Header: 'Fecha',
+        accessor: 'fecha',
     },
     {
         Header: 'Total',
@@ -518,9 +518,10 @@ export const EGRESOS_COLUMNS = [
         Header: 'Pago', //Cambié de Tipo de pago a Pago
         accessor: 'tipoPago'
     },
+    
     {
-        Header: 'Descripción',
-        accessor: 'descripcion'
+        Header: 'Impuesto',
+        accessor: 'impuesto'
     },
     {
         Header: 'Área',
@@ -535,12 +536,12 @@ export const EGRESOS_COLUMNS = [
         accessor: 'estatusCompra'
     },
     {
-        Header: 'Fecha',
-        accessor: 'fecha',
-    },
-    {
         Header: 'Adjuntos',
         accessor: 'adjuntos',
+    },    
+    {
+        Header: 'Descripción',
+        accessor: 'descripcion'
     },
 ]
 
