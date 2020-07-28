@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV, CONCEPTOS_COLUMNS } from '../../constants'
-import { setOptions, setTextTable, setMoneyTable} from '../../functions/setters'
+import { setOptions, setTextTable, setMoneyTable } from '../../functions/setters'
 import Layout from '../../components/layout/layout'
 import { Modal, ModalDelete } from '../../components/singles'
 import { ConceptoForm } from '../../components/forms'
@@ -25,7 +25,7 @@ class Conceptos extends Component {
         data: {
             conceptos: []
         },
-        formeditado:0,
+        formeditado: 0,
         form: {
             unidad: '',
             partida: '',
@@ -37,7 +37,6 @@ class Conceptos extends Component {
         conceptos: [],
         concepto: ''
     }
-
     componentDidMount() {
         var element = document.getElementById("kt_datatable_conceptos");
         element.classList.remove("table-responsive");
@@ -63,7 +62,7 @@ class Conceptos extends Component {
             modal: true,
             title: 'Nuevo concepto',
             form: this.clearForm(),
-            formeditado:0
+            formeditado: 0
         })
     }
 
@@ -75,15 +74,15 @@ class Conceptos extends Component {
 
         form.unidad = concepto.unidad.id.toString()
 
-        if(concepto.subpartida){
-            if(concepto.subpartida.partida){
+        if (concepto.subpartida) {
+            if (concepto.subpartida.partida) {
                 form.partida = concepto.subpartida.partida.id.toString()
-                options['subareas'] = setOptions(concepto.subpartida.partida.subpartidas, 'nombre', 'id')
+                options['subarea'] = setOptions(concepto.subpartida.partida.subpartidas, 'nombre', 'id')
                 form.subpartida = concepto.subpartida.id.toString()
+                options['subpartidas'] = setOptions(concepto.subpartida.partida.subpartidas, 'nombre', 'id')
             }
         }
-
-        if(concepto.proveedor)
+        if (concepto.proveedor)
             form.proveedor = concepto.proveedor.id.toString()
 
         this.setState({
@@ -93,7 +92,7 @@ class Conceptos extends Component {
             form,
             concepto: concepto,
             options,
-            formeditado:1
+            formeditado: 1
         })
     }
 
@@ -168,7 +167,7 @@ class Conceptos extends Component {
         return aux
     }
     setOptions = (name, array) => {
-        const {options} = this.state
+        const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
             ... this.state,
@@ -213,7 +212,7 @@ class Conceptos extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'conceptos', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { unidades, partidas, conceptos, proveedores} = response.data
+                const { unidades, partidas, conceptos, proveedores } = response.data
                 const { options, data } = this.state
                 data.conceptos = conceptos
                 options['unidades'] = setOptions(unidades, 'nombre', 'id')
@@ -403,13 +402,19 @@ class Conceptos extends Component {
 
     render() {
 
-        const { modal, modalDelete, title, form, options, conceptos, data, formeditado} = this.state
+        const { modal, modalDelete, title, form, options, conceptos, data, formeditado } = this.state
 
         return (
             <Layout active={'presupuesto'}  {...this.props}>
                 <Modal size="xl" title={title} show={modal} handleClose={this.handleClose} >
-                    <ConceptoForm  form={form} options={options} setOptions = { this.setOptions }
-                        onChange={this.onChange} onSubmit = { this.onSubmit } formeditado={formeditado}/>
+                    <ConceptoForm
+                        form={form}
+                        options={options}
+                        setOptions={this.setOptions}
+                        onChange={this.onChange}
+                        onSubmit={this.onSubmit}
+                        formeditado={formeditado}
+                    />
                 </Modal>
 
                 <NewTable columns={CONCEPTOS_COLUMNS} data={conceptos}
@@ -417,15 +422,15 @@ class Conceptos extends Component {
                     mostrar_boton={true}
                     abrir_modal={true}
                     mostrar_acciones={true}
-                    onClick={ this.openModal }
+                    onClick={this.openModal}
                     actions={{
                         'edit': { function: this.openModalEdit },
                         'delete': { function: this.openModalDelete }
                     }}
                     elements={data.conceptos}
-                    idTable = 'kt_datatable_conceptos'
+                    idTable='kt_datatable_conceptos'
                 />
-                
+
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el concepto?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); this.deleteConceptoAxios() }}>
                 </ModalDelete>
             </Layout>
