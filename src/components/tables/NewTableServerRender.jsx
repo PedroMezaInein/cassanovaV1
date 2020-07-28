@@ -105,25 +105,29 @@ class NewTableServerRender extends Component {
                 });
             },
             columns,
-            createdRow: function(row, data, dataIndex, cells) {
+            createdRow: function(row, data) {
                 if(validateFactura){
                     const { objeto } = data
+                    console.log(objeto)
+                    // if(objeto.factura && objeto.total === x){
+
+                    // }
                 }
                 if (elementClass) {
                     let auxiliar = data[elementClass].split('<!-- -->')
                     if(auxiliar.length > 1){
                         if (auxiliar[1] === '$0.00')
-                            $(row).addClass('zero-total');
+                            $(row).addClass('rojo');
                         else {
                             let auxiliar2 = auxiliar[1].charAt(0)
                             if (auxiliar2 === '-')
-                                $(row).addClass('negative');
+                                $(row).addClass('rojo');
                         }
                     }
                     else {
                         let auxiliar = data[elementClass].includes('Inactivo')
                         if (auxiliar)
-                            $(row).addClass('inactivos');
+                            $(row).addClass('gris');
                     }
                 }
             },

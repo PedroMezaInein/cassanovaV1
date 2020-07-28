@@ -109,17 +109,17 @@ class NewTable extends Component {
                     let auxiliar = data[elementClass].split('<!-- -->')
                     if (auxiliar.length > 1) {
                         if (auxiliar[1] === '$0.00')
-                            $(row).addClass('zero');
+                            $(row).addClass('verde');
                         else {
                             let auxiliar2 = auxiliar[1].charAt(0)
                             if (auxiliar2 === '-')
-                                $(row).addClass('negative');
+                                $(row).addClass('rojo');
                         }
                     }
                     else {
                         let auxiliar = data[elementClass].includes('Inactivo')
                         if (auxiliar)
-                            $(row).addClass('inactivos');
+                            $(row).addClass('gris');
                     }
                 }
             },
