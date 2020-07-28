@@ -311,10 +311,6 @@ export const CUENTAS_COLUMNS = [
         accessor: 'balance',
     },
     {
-        Header: 'Descripción',
-        accessor: 'descripcion',
-    },
-    {
         Header: 'Estatus',
         accessor: 'estatus',
     },
@@ -325,6 +321,10 @@ export const CUENTAS_COLUMNS = [
     {
         Header: 'Fecha',
         accessor: 'fecha',
+    },    
+    {
+        Header: 'Descripción',
+        accessor: 'descripcion',
     },
 ]
 
