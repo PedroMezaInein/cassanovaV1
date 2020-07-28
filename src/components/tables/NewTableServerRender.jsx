@@ -43,7 +43,7 @@ class NewTableServerRender extends Component {
     }
 
     componentDidMount() {
-        const { actions, mostrar_acciones, elementClass, accessToken, setter, urlRender, idTable, validateFactura } = this.props
+        const { actions, mostrar_acciones, elementClass, accessToken, setter, urlRender, validateFactura } = this.props
         global_variable["mostrar_acciones"] = mostrar_acciones;
         var header = this.props.columns;
         var columns = [];
@@ -109,9 +109,9 @@ class NewTableServerRender extends Component {
                 if(validateFactura){
                     const { objeto } = data
                     console.log(objeto)
-                    // if(objeto.factura && objeto.total === x){
-
-                    // }
+                    if(objeto.factura && objeto.total === objeto.total_facturas){
+                        $(row).addClass('verde');
+                    }
                 }
                 if (elementClass) {
                     let auxiliar = data[elementClass].split('<!-- -->')

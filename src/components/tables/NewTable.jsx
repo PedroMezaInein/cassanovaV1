@@ -40,7 +40,7 @@ class NewTable extends Component {
     }
 
     componentDidMount() {
-        const { actions, elements, data, mostrar_acciones, elementClass, totales } = this.props
+        const { data, mostrar_acciones, elementClass, totales, validateFactura} = this.props
         global_variable["mostrar_acciones"] = mostrar_acciones;
         var header = this.props.columns;
         var columns = [];
@@ -104,12 +104,18 @@ class NewTable extends Component {
             responsive: true,
             data: data,
             columns,
-            createdRow: function (row, data, dataIndex, cells) {
+            createdRow: function(row, data) {
+                if(validateFactura){
+                    const { objeto } = data
+                    if(objeto.factura && objeto.total === objeto.total_facturas){
+                        $(row).addClass('verde');
+                    }
+                }
                 if (elementClass) {
                     let auxiliar = data[elementClass].split('<!-- -->')
-                    if (auxiliar.length > 1) {
+                    if(auxiliar.length > 1){
                         if (auxiliar[1] === '$0.00')
-                            $(row).addClass('verde');
+                            $(row).addClass('rojo');
                         else {
                             let auxiliar2 = auxiliar[1].charAt(0)
                             if (auxiliar2 === '-')
