@@ -32,9 +32,6 @@ class EstadosCuenta extends Component {
     }
 
     componentDidMount() {
-        var element = document.getElementById("kt_datatable_estados_cuenta");
-        element.classList.remove("table-responsive");
-
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props
@@ -362,7 +359,7 @@ class EstadosCuenta extends Component {
 
     }
     render() {
-        const { modal, modalDelete, adjunto, adjuntoName, adjuntoFile, cuentas, cuenta, estados, fecha, data, title } = this.state
+        const { modal, modalDelete, adjunto, adjuntoName, cuentas, cuenta, estados, fecha, data } = this.state
         return (
             <Layout active={'bancos'}  {...this.props}>
 

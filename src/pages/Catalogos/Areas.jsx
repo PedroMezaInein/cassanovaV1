@@ -38,10 +38,6 @@ class Areas extends Component {
     }
     
     componentDidMount() {
-        var elements = document.getElementsByClassName("dataTable")        
-        for(let cont = 0; cont < elements.length; cont ++){
-            elements[cont].classList.remove("table-responsive"); 
-        }
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props

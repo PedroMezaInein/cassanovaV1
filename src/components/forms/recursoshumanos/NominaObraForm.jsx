@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { Input, Calendar, SelectSearch, Button, FileInput, InputMoney} from '../../form-components'
+import { Input, Calendar, SelectSearch, Button, FileInput, InputMoneySinText, SelectSearchSinText} from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { DATE } from '../../../constants'
+import { setMoneyTableForNominas } from '../../../functions/setters'
 
 class NominaObraForm extends Component {
 
@@ -30,17 +31,62 @@ class NominaObraForm extends Component {
         onChangeNominasObra(key, { target: { value: value, name: 'usuario' } }, 'usuario')
     }
 
-    getSuma = key => {
+    getTotal(key) {
         const { form } = this.props
+
         let nominImss = form.nominasObra[key].nominImss === undefined ? 0 : form.nominasObra[key].nominImss
         let restanteNomina = form.nominasObra[key].restanteNomina === undefined ? 0 : form.nominasObra[key].restanteNomina
         let extras = form.nominasObra[key].extras === undefined ? 0 : form.nominasObra[key].extras
-        
-        var resultado = parseFloat(nominImss) + parseFloat(restanteNomina) + parseFloat(extras)
-        var separators = resultado.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-        return '$' + separators
+        return parseFloat(nominImss) + parseFloat(restanteNomina) + parseFloat(extras)
     }
+
+
+    getTotalNominaImss(key) {
+        const { form } = this.props
+        var suma = 0
+        form.nominasObra.forEach(element => {
+            let aux = element[key] === undefined ? 0 : element[key]
+            suma = suma + parseFloat(aux)
+        })
+        return suma
+    }
+
+    getTotalRestanteNomina(key) {
+        const { form } = this.props
+        var suma = 0
+        form.nominasObra.forEach(element => {
+            let aux = element[key] === undefined ? 0 : element[key]
+            suma = suma + parseFloat(aux)
+        })
+        return suma
+    }
+
+    getTotalExtra(key) {
+        const { form } = this.props
+        var suma = 0
+        form.nominasObra.forEach(element => {
+            let aux = element[key] === undefined ? 0 : element[key]
+            suma = suma + parseFloat(aux)
+        })
+        return suma
+    }
+
+    getTotales() {
+        const { form } = this.props
+
+        let sumaNomImss = 0;
+        let sumaRestanteNomina = 0;
+        let sumaExtras = 0;
+        let sumaTotal = 0;
+
+        form.nominasObra.forEach(element => {
+            sumaNomImss += element.nominImss === undefined ? 0 : parseFloat(element.nominImss);
+            sumaRestanteNomina += element.restanteNomina === undefined ? 0 : parseFloat(element.restanteNomina);
+            sumaExtras += element.extras === undefined ? 0 : parseFloat(element.extras);
+        });
+        return sumaTotal = sumaNomImss + sumaRestanteNomina + sumaExtras
+    }
+
 
     render() {
         const { options, addRowNominaObra, deleteRowNominaObra, onChangeNominasObra, onChange, clearFiles, onChangeAdjunto, form, onSubmit, formeditado, title} = this.props
@@ -138,16 +184,22 @@ class NominaObraForm extends Component {
                 <table className="table table-separate table-responsive" id="tabla_obra">
                     <thead>
                         <tr>
-                            <th>Empleado</th>
-                            <th>Proyecto</th>
-                            <th>Salario Hora</th>
-                            <th>1 Hora T</th>
-                            <th>2 Horas T</th>
-                            <th>3 Horas T</th>
-                            <th>Nómina IMSS</th>
-                            <th>Restante Nómina</th>
-                            <th>Extras</th>
-                            <th>Total</th>
+                            <th rowSpan="2"><div className="mt-2 pb-3">Empleado</div></th>
+                            <th rowSpan="2"><div className="mt-2 pb-3">Proyecto</div></th>
+                            <th rowSpan="2"><div className="mt-2 pb-3">Salario Hora</div></th>
+                            <th rowSpan="2"><div className="mt-2 pb-3">1 Hora T</div></th>
+                            <th rowSpan="2"><div className="mt-2 pb-3">2 Horas T</div></th>
+                            <th rowSpan="2"><div className="mt-2 pb-3">3 Horas T</div></th>
+                            <th className="pb-0 border-bottom-0">Nómina IMSS</th>
+                            <th className="pb-0 border-bottom-0">Restante Nómina</th>
+                            <th className="pb-0 border-bottom-0">Extras</th>
+                            <th className="pb-0 border-bottom-0">Total</th>
+                        </tr>
+                        <tr>
+                            <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">{setMoneyTableForNominas(this.getTotalNominaImss("nominImss"))}</div></th>
+                            <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">{setMoneyTableForNominas(this.getTotalRestanteNomina("restanteNomina"))}</div></th>
+                            <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">{setMoneyTableForNominas(this.getTotalExtra("extras"))}</div></th>
+                            <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">{setMoneyTableForNominas(this.getTotales())}</div></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -157,126 +209,117 @@ class NominaObraForm extends Component {
                                 return (
                                     <tr key={key}>
                                         <td>
-                                            <SelectSearch
+                                            <SelectSearchSinText
                                                 formeditado={formeditado}
                                                 options={options.usuarios}
                                                 placeholder="Selecciona el empleado" 
                                                 name="usuario"
                                                 value={form['nominasObra'][key]['usuario']}
                                                 onChange={(value) => this.updateUsuario(value, key)}
-                                                iconclass={"fas fa-building"}
-                                                customstyle={{ width: "auto" }}
+                                                customstyle={{ width: "269px" }}
                                             />
                                         </td>
                                         <td>
-                                            <SelectSearch
+                                            <SelectSearchSinText
                                                 formeditado={formeditado}
                                                 options={options.proyectos}
                                                 placeholder="Selecciona el proyecto"
                                                 name="proyecto"
                                                 value={form['nominasObra'][key]['proyecto']}
                                                 onChange={(value) => this.updateProyecto(value, key)}
-                                                iconclass={"far fa-folder-open"}
-                                                customstyle={{ width: "300px" }}
+                                                customstyle={{ width: "269px" }}
                                             />
                                         </td>
                                         <td>
-                                            <InputMoney
+                                            <InputMoneySinText
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
                                                 name="sueldoh" 
                                                 value={form['nominasObra'][key]['sueldoh']}
                                                 onChange={e => onChangeNominasObra(key, e, 'sueldoh')}
-                                                placeholder={null}
-                                                thousandSeparator={true} 
-                                                customstyle={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
+                                                thousandSeparator={true}
                                                 prefix={'$'}
+                                                customstyle={{ width: "121px" }}
                                             />
                                         </td>
                                         <td>
-                                            <InputMoney
+                                            <InputMoneySinText
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
                                                 name="hora1T" 
                                                 value={form['nominasObra'][key]['hora1T']}
                                                 onChange={e => onChangeNominasObra(key, e, 'hora1T')}
-                                                placeholder={null}
-                                                thousandSeparator={true} 
-                                                customstyle={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
+                                                thousandSeparator={true}
                                                 prefix={'$'}
+                                                customstyle={{ width: "121px" }}
                                             />
                                         </td>
                                         <td>
-                                            <InputMoney
+                                            <InputMoneySinText
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
                                                 name="hora2T" 
                                                 value={form['nominasObra'][key]['hora2T']}
                                                 onChange={e => onChangeNominasObra(key, e, 'hora2T')}
-                                                placeholder={null}
-                                                thousandSeparator={true} 
-                                                customstyle={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
+                                                thousandSeparator={true}
                                                 prefix={'$'}
+                                                customstyle={{ width: "121px" }}
                                             />
                                         </td>
                                         <td>
-                                            <InputMoney
+                                            <InputMoneySinText
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
                                                 name="hora3T" 
                                                 value={form['nominasObra'][key]['hora3T']}
                                                 onChange={e => onChangeNominasObra(key, e, 'hora3T')}
-                                                placeholder={null}
-                                                thousandSeparator={true} 
-                                                customstyle={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
+                                                thousandSeparator={true}
                                                 prefix={'$'}
+                                                customstyle={{ width: "121px" }}
                                             />
                                         </td>
                                         <td>
-                                            <InputMoney
+                                            <InputMoneySinText
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
                                                 name="nominImss" 
                                                 value={form['nominasObra'][key]['nominImss']}
                                                 onChange={e => onChangeNominasObra(key, e, 'nominImss')}
-                                                placeholder={null}
                                                 thousandSeparator={true} 
-                                                customstyle={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
                                                 prefix={'$'}
+                                                customstyle={{ width: "121px" }}
                                             />
                                         </td>
                                         <td>
-                                            <InputMoney
+                                            <InputMoneySinText
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
                                                 name="restanteNomina"
                                                 value={form['nominasObra'][key]['restanteNomina']}
                                                 onChange={e => onChangeNominasObra(key, e, 'restanteNomina')}
-                                                placeholder={null}
-                                                thousandSeparator={true} 
-                                                customstyle={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
+                                                thousandSeparator={true}
                                                 prefix={'$'}
+                                                customstyle={{ width: "121px" }}
                                             />
                                         </td>
                                         <td>
-                                            <InputMoney
+                                            <InputMoneySinText
                                                 requirevalidation={1}
                                                 formeditado={formeditado}
                                                 name="extras"
                                                 value={form['nominasObra'][key]['extras']}
                                                 onChange={e => onChangeNominasObra(key, e, 'extras')}
-                                                placeholder={null}
                                                 thousandSeparator={true} 
-                                                customstyle={{ paddingLeft: "10px", width: "131px", marginTop: "10px" }}
                                                 prefix={'$'}
+                                                customstyle={{ width: "121px" }}
                                             />
                                         </td>
                                         <td>
-                                            <p className="font-size-lg font-weight-bolder" style={{ paddingLeft: "10px", width: "auto", marginTop: "42px", paddingRight: "20px" }}>
+                                            <div className="font-size-lg font-weight-bolder text-center" style={{ width: "138px" }}>
                                                 {
-                                                    this.getSuma(key)
+                                                    setMoneyTableForNominas(this.getTotal(key))
                                                 }
-                                            </p>
+                                            </div>
                                         </td>
                                     </tr>
                                 )

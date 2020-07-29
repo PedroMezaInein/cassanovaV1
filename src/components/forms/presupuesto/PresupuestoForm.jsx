@@ -65,7 +65,7 @@ class PresupuestoForm extends Component {
 
 
     render() {
-        const { title, options, form, onChange, onSubmit, formeditado } = this.props
+        const { options, form, onChange, onSubmit, formeditado } = this.props
         return (
             <Form id="form-presupuesto"
                 onSubmit={

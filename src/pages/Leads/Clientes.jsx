@@ -35,7 +35,6 @@ class Leads extends Component {
 
     constructor(props) {
         super(props);
-        const { state } = props.location
     }
 
     componentDidMount() {
@@ -143,7 +142,7 @@ class Leads extends Component {
 
     openModalEdit = cliente => {
 
-        const { form, colonias } = this.state
+        const { form } = this.state
 
         if (cliente.cp) {
             this.cpAxios(cliente.cp)
@@ -352,7 +351,7 @@ class Leads extends Component {
         const { form, cliente } = this.state
         await axios.put(URL_DEV + 'cliente/' + cliente.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { clientes, message } = response.data
+                const { clientes } = response.data
                 const { data } = this.state
                 data.clientes = clientes
                 this.setClientes(clientes)
@@ -401,7 +400,7 @@ class Leads extends Component {
 
     async deleteClienteAxios() {
         const { access_token } = this.props.authUser
-        const { form, cliente } = this.state
+        const { cliente } = this.state
         await axios.delete(URL_DEV + 'cliente/' + cliente.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { clientes } = response.data
@@ -496,7 +495,7 @@ class Leads extends Component {
     }
 
     render() {
-        const { clientes, modal, typeForm, form, estado, municipio, colonias, modalDelete, cliente, data, formeditado, onSubmit} = this.state
+        const { clientes, modal, typeForm, form, estado, municipio, colonias, modalDelete, cliente, data, formeditado} = this.state
         return (
             <Layout active={'leads'}  {...this.props}>
                 

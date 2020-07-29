@@ -111,7 +111,7 @@ class RemisionForm extends Component{
     }
 
     onChangeAdjunto = e => {
-        const { form, data, options } = this.state
+        const { form } = this.state
         const { files, value, name } = e.target
         let aux = []
         for(let counter = 0; counter < files.length; counter ++){
@@ -173,7 +173,7 @@ class RemisionForm extends Component{
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'remision', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { proyectos, areas, remisiones } = response.data
+                const { proyectos, areas } = response.data
                 const { options } = this.state
                 options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
@@ -285,7 +285,6 @@ class RemisionForm extends Component{
         
         await axios.post(URL_DEV + 'remision/update/' + remision.id, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const {remision} = response.data
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.',
