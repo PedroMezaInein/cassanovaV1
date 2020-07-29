@@ -13,6 +13,8 @@ import dropZone from './DropZone'
 import inputImage from './InputImage'
 import inputNumber from './InputNumber'
 import inputPhone from './InputPhone'
+import inputMoneySinText from './InputMoneySinText'
+import selectSearchSinText from './SelectSearchSinText'
 
 export const Button = button
 export const Input = input
@@ -29,3 +31,5 @@ export const DropZone = dropZone
 export const InputImage = inputImage
 export const InputNumber = inputNumber
 export const InputPhone = inputPhone
+export const InputMoneySinText = inputMoneySinText
+export const SelectSearchSinText = selectSearchSinText
