@@ -5,13 +5,11 @@ import swal from 'sweetalert'
 import { URL_DEV, PRESUPUESTO_COLUMNS } from '../../constants'
 import { setOptions} from '../../functions/setters'
 import Layout from '../../components/layout/layout'
-import { Modal } from '../../components/singles'
-import { PresupuestoForm } from '../../components/forms'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { errorAlert, waitAlert, forbiddenAccessAlert} from '../../functions/alert'
 const $ = require('jquery');
 
-class Conceptos extends Component {
+class Presupuesto extends Component {
 
     state = {
         formeditado:0,
@@ -52,18 +50,6 @@ class Conceptos extends Component {
             this.getOptionsAxios()
     }
 
-    openModal = () => {
-        const { modal } = this.state
-        modal.form = true
-        this.setState({
-            ... this.state,
-            modal,
-            form: this.clearForm(),
-            formeditado:0,
-            title: 'Nuevo presupuesto',
-        })
-    }
-
     setOptions = (name, array) => {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
@@ -80,11 +66,12 @@ class Conceptos extends Component {
             (response) => {
                 swal.close() 
                 const { empresas, proyectos, areas, partidas} = response.data
-                const { options} = this.state
+                const { options} = this.state 
                 options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
                 options['partidas'] = setOptions(partidas, 'nombre', 'id')
+
                 this.setState({
                     ... this.state,
                     options
@@ -103,6 +90,38 @@ class Conceptos extends Component {
             console.log(error, 'error')
         })
     }
+
+    // async addPresupuestoAxios(){
+    //     waitAlert()
+    //     const { access_token } = this.props.authUser
+    //     const { form } = this.state 
+
+    //     await axios.post(URL_DEV + 'presupuesto/presupuesto',  { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+    //         (response) => {
+    //             this.handleCloseModal()
+    //             this.getPresupuestoAxios()
+
+    //             swal({
+    //                 title: '¡Felicidades 🥳!',
+    //                 text: response.data.message !== undefined ? response.data.message : 'El presupuesto fue creado con éxito.',
+    //                 icon: 'success',
+    //                 timer: 1500,
+    //                 buttons: false,
+    //             })
+    //         },
+    //         (error) => {
+    //             console.log(error, 'error')
+    //             if(error.response.status === 401){
+    //                 forbiddenAccessAlert()
+    //             }else{
+    //                 errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+    //             }
+    //         }
+    //     ).catch((error) => {
+    //         errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+    //         console.log(error, 'error')
+    //     })
+    // }
 
     handleCloseModal = () => {
         const { modal } = this.state 
@@ -140,10 +159,30 @@ class Conceptos extends Component {
         })
     }
 
-    async getNominasAxios(){
+    // onSubmit = e => {
+    //     e.preventDefault()
+    //     const { title } = this.state
+    //     if(title === 'Editar presupuesto')
+    //         this.updatedPresupuestosAxios() 
+    //     else    
+    //         this.addPresupuestoAxios()
+    // }
+
+    async getPresupuestoAxios(){
         var table = $('#kt_datatable2_presupuesto')
             .DataTable();
         table.ajax.reload();
+    }
+
+    setPresupuestos = () => {
+        return []
+    }
+
+    changePageAdd = () => {
+        const { history } = this.props
+        history.push({
+            pathname: '/presupuesto/presupuesto/add'
+        });
     }
 
     render() {
@@ -151,34 +190,21 @@ class Conceptos extends Component {
         const { modal, title, form, options, formeditado} = this.state
 
         return (
-            <Layout active={'presupuesto'}  {...this.props}>
-                <Modal size="xl" title={title} show={modal.form}  handleClose={this.handleCloseModal}>
-                    <PresupuestoForm  
-                        form={form} 
-                        options={options} 
-                        setOptions = { this.setOptions }
-                        onChange={this.onChange} 
-                        onSubmit = { this.onSubmit } 
-                        formeditado={formeditado}
-                    />
-                </Modal>
-
+            <Layout active={'presupuesto'}  {...this.props}> 
                 <NewTableServerRender columns={PRESUPUESTO_COLUMNS}
-                    title='Presupuesto' subtitle='Listado de presupuestos'
+                    title='Presupuesto' subtitle='Listado de presupuestos' 
+                    url='/presupuesto/presupuesto/add'
                     mostrar_boton={true}
-                    abrir_modal={true}
-                    mostrar_acciones={true}
-                    onClick={ this.openModal }
-                    actions={{
-                        'edit': { function: this.openModalEdit },
-                        'delete': { function: this.openModalDelete }
-                    }}
-                    accessToken = { this.props.authUser.access_token }
-                    // setter = {  }
-                    urlRender = {URL_DEV + 'presupuesto'}
-                    idTable = 'kt_datatable2_presupuesto'
+                    abrir_modal={false}
+                    mostrar_acciones={false} 
+                    idTable='kt_datatable2_presupuesto'
+                    accessToken={this.props.authUser.access_token}
+                    setter={this.setPresupuestos}
+                    urlRender={URL_DEV + 'presupuestos'}
                 />
             </Layout>
+
+            
         )
     }
 }
@@ -192,4 +218,4 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Conceptos);
+export default connect(mapStateToProps, mapDispatchToProps)(Presupuesto);
