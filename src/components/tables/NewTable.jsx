@@ -281,7 +281,7 @@ class NewTable extends Component {
                     </div>
                     <div className="separator separator-solid mt-3"></div>
                     <div className="card-body">
-                        <table ref="main" className="table table-responsive table-separate table-head-custom table-checkable display table-hover text-justify" id={this.props.idTable ? this.props.idTable : "kt_datatable2"} />
+                        <table ref="main" className="table table-responsive-md table-separate table-head-custom table-checkable display table-hover text-justify" id={this.props.idTable ? this.props.idTable : "kt_datatable2"} />
                     </div>
                 </div>
             </>
