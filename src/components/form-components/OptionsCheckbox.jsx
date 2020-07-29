@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form'
 class Input extends Component{
 
     render(){
-        const { error, onChange, placeholder, options  } = this.props
+        const { onChange, placeholder, options  } = this.props
         return(
             <div>
                 <Form.Label className="font-weight-bolder">{placeholder}</Form.Label>

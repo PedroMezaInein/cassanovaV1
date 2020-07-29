@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form'
 class InputImage extends Component {
 
     render() {
-        const { error, onChange, placeholder, iconclass,spantext } = this.props 
+        const { error, onChange, placeholder} = this.props 
         return (
             <div >
                 <label className="col-form-label">{placeholder}</label>

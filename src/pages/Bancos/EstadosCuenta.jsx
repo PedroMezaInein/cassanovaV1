@@ -359,7 +359,7 @@ class EstadosCuenta extends Component {
 
     }
     render() {
-        const { modal, modalDelete, adjunto, adjuntoName, adjuntoFile, cuentas, cuenta, estados, fecha, data, title } = this.state
+        const { modal, modalDelete, adjunto, adjuntoName, cuentas, cuenta, estados, fecha, data } = this.state
         return (
             <Layout active={'bancos'}  {...this.props}>
 

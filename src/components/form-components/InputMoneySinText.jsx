@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import Form from 'react-bootstrap/Form'
 import NumberFormat from 'react-number-format'
 
 class InputMoneySinText extends Component {
@@ -68,7 +67,7 @@ class InputMoneySinText extends Component {
 
     }
     render() {
-        const { placeholder, value, prefix, thousandSeparator, iconclass, customstyle } = this.props
+        const { placeholder, value, prefix, thousandSeparator, customstyle } = this.props
         const { inputMoneyValido } = this.state
 
         return (
