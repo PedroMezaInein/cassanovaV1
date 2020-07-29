@@ -6,6 +6,16 @@ import { DATE } from '../../../constants'
 
 class PresupuestoForm extends Component {
 
+    state={
+        data: {
+            partidas: []
+        },
+        options: {  
+            partidas: [],
+            subpartidas: []
+        }
+    }
+
     updateProyecto = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'proyecto' } })
@@ -48,7 +58,9 @@ class PresupuestoForm extends Component {
 
     render() {
         const { options, form, onChange, onSubmit, formeditado } = this.props
-        console.log(this.props) 
+        const { data } = this.state
+        console.log(data.partidas = options.partidas) 
+        console.log(data.partidas)
         return (
             <Form id="form-presupuesto"
                 onSubmit={
@@ -191,6 +203,7 @@ class PresupuestoForm extends Component {
                         })
                     }
                 </Accordion> */}
+
                 <div className="d-flex justify-content-center my-3">
                     <Button icon='' type="submit" className="text-center mx-auto" text='Enviar' />
                 </div>
