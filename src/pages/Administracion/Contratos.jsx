@@ -567,7 +567,6 @@ class Contratos extends Component {
                 case 'fechaFin':
                     data.append(element, (new Date(form[element])).toDateString())
                     break
-                    break
                 case 'adjuntos':
                     break;
                 default:
