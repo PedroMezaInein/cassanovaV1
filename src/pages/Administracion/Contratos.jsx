@@ -68,7 +68,8 @@ class Contratos extends Component {
         title: 'Nuevo contrato de cliente',
         tipo: 'Cliente',
         contrato: '',
-        clientes: []
+        clientes: [],
+        key: 'cliente'
     }
 
     componentDidMount() {
