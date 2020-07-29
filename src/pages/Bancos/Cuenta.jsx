@@ -54,7 +54,8 @@ class Cuentas extends Component {
         adjunto: '',
         adjuntoFile: '',
         adjuntoName: '',
-        fecha: new Date()
+        fecha: new Date(),
+        key: 'bancos'
     }
 
     componentDidMount() {
