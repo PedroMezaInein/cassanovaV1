@@ -10,8 +10,8 @@ class RegisterUserForm extends Component {
     }
 
     updateDepartamento = value => {
-        const { onChange, onChangeOptions, options2, form } = this.props
-        options2.departamentos.map((departamento) => {
+        const { onChange, onChangeOptions, options, form } = this.props
+        options.departamentos.map((departamento) => {
             if (departamento.value === value) {
                 let aux = false;
                 form.departamentos.map((departamento) => {
@@ -26,12 +26,27 @@ class RegisterUserForm extends Component {
         onChange({ target: { value: value, name: 'departamento' } })
     }
 
+    updateProyecto = value => {
+        const { onChange, onChangeOptions, options, form } = this.props
+        options.proyectos.map((proyecto) => {
+            if (proyecto.value === value) {
+                let aux = false;
+                form.proyectos.map((proyecto) => {
+                    if (proyecto.value === value)
+                        aux = true
+                })
+                if (!aux)
+                    onChangeOptions({ target: { value: proyecto.value, name: 'proyecto' } }, 'proyectos')
+            }
+
+        })
+        onChange({ target: { value: value, name: 'proyecto' } })
+    }
+
     render() {
-        const { children, options, options2, form, onChange, deleteOption, tipo} = this.props
+        const { options, form, onChange, deleteOption, onChangeOptions, ...props} = this.props
         return (
-            <Form
-                {... this.props}
-            >
+            <Form {... props} >
                 <div className="form-group row form-group-marginless pt-4">
                     <div className="col-md-4">
                         <Input
@@ -64,19 +79,18 @@ class RegisterUserForm extends Component {
                             name="tipo"
                             value={form.tipo}
                             placeholder="SELECCIONA EL TIPO DE USUARIO"
-                            options={options}
+                            options={options.tipos}
                             iconclass={"fas fa-user-cog"}
                             messageinc="Incorrecto. Selecciona el tipo de usuario."
                         />
                     </div>
                 </div>
-                {children}
                 {
-                    tipo > 0 && tipo < 3 ?
+                    form.tipo > 0 && form.tipo < 3 ?
                         <div className="form-group row form-group-marginless">
                             <div className="col-md-4">
                                 <SelectSearchTrue
-                                    options={options2.departamentos}
+                                    options={options.departamentos}
                                     placeholder="SELECCIONA EL(LOS) DEPARTAMENTO(S)"
                                     name="departamento"
                                     value={form.departamento}
@@ -99,10 +113,54 @@ class RegisterUserForm extends Component {
                                                                     className="tagify__tag__removeBtn"
                                                                     role="button"
                                                                     aria-label="remove tag"
-                                                                    onClick={(e) => { e.preventDefault(); deleteOption(departamento, 'departamentos', 'empleado') }}
+                                                                    onClick={(e) => { e.preventDefault(); deleteOption(departamento, 'departamentos') }}
                                                                 >
                                                                 </div>
                                                                 <div><span className="tagify__tag-text p-1 white-space">{departamento.name}</span></div>
+                                                            </div>
+                                                        </div>
+                                                    )
+                                                })
+                                            }
+                                        </div>
+                                        : ''
+                                }
+                            </div>
+                        </div>
+                        : ''
+                }
+                {
+                    form.tipo == 3 ?
+                        <div className="form-group row form-group-marginless">
+                            <div className="col-md-4">
+                                <SelectSearchTrue
+                                    options={options.proyectos}
+                                    placeholder="SELECCIONA EL(LOS) PROYECTO(S)"
+                                    name="proyecto"
+                                    value={form.proyecto}
+                                    onChange={this.updateProyecto}
+                                    iconclass={"fas fa-layer-group"}
+
+                                />
+                            </div>
+                            <div className="col-md-8">
+                                {
+                                    form.proyectos.length > 0 ?
+                                        <div className="col-md-12 row mx-0 align-items-center image-upload">
+                                            {
+                                                form.proyectos.map((proyecto, key) => {
+                                                    return (
+                                                        <div key={key} className="tagify form-control p-1 col-md-3 px-2 d-flex justify-content-center align-items-center" tabIndex="-1" style={{ borderWidth: "0px" }}>
+                                                            <div className="tagify__tag tagify__tag--primary tagify--noAnim">
+                                                                <div
+                                                                    title="Borrar archivo"
+                                                                    className="tagify__tag__removeBtn"
+                                                                    role="button"
+                                                                    aria-label="remove tag"
+                                                                    onClick={(e) => { e.preventDefault(); deleteOption(proyecto, 'proyectos') }}
+                                                                >
+                                                                </div>
+                                                                <div><span className="tagify__tag-text p-1 white-space">{proyecto.name}</span></div>
                                                             </div>
                                                         </div>
                                                     )

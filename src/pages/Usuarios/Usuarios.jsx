@@ -9,56 +9,39 @@ import { faUserPlus, faUserEdit, faUserSlash, faKey } from '@fortawesome/free-so
 import { Card, Modal, ModalDelete } from '../../components/singles'
 import { RegisterUserForm, PermisosForm, ClienteUserForm } from '../../components/forms'
 import swal from 'sweetalert'
-import { setOptions } from '../../functions/setters'
-import { forbiddenAccessAlert, errorAlert } from '../../functions/alert'
+import { setOptions, setSelectOptions } from '../../functions/setters'
+import { forbiddenAccessAlert, errorAlert, waitAlert } from '../../functions/alert'
+import modal from '../../components/singles/Modal'
+
 class Usuarios extends Component {
-    constructor(props) {
-        super(props)
-    }
+
     state = {
         users: [],
-        type_user: '',
+        user: '',
+        modal: {
+            form: false,
+            delete: false,
+            permisos: false
+        },
+        title: 'Registrar nuevo usuario',
         form: {
             name: '',
             email: '',
             tipo: 0,
-            empleado: false,
             departamentos: [],
-            departamento: ''
-        },
-        empleadoForm: {
-            tipo_empleado: 0,
-            empresa: 0,
-            puesto: '',
-            fecha_inicio: new Date,
-            estatus: '',
-            rfc: '',
-            nss: '',
-            curp: '',
-            banco: '',
-            cuenta: '',
-            clabe: '',
-            nombre_emergencia: '',
-            telefono_emergencia: '',
-            departamentos: [],
-            departamento: ''
-        },
-        clienteForm: {
+            departamento: '',
             proyectos: [],
             proyecto: ''
         },
-        proyectos: [],
-        departamentos: [],
-        options: [],
-        data: {
-            proyectos: []
+        options:{
+            tipos: [],
+            proyectos: [],
+            departamentos: []
         },
-        empresas_options: [],
-        user_to_interact: '',
-        modalSafeDeleteActive: false,
-        modalActive: false,
-        modalUpdateUser: false,
-        modalPermisos: false
+        data:{
+            proyectos: [],
+            departamentos: []
+        }
     }
 
     componentDidMount() {
@@ -69,135 +52,116 @@ class Usuarios extends Component {
             const { modulo: { url: url } } = element
             return pathname === url
         });
-        if (!usuarios)
-            history.push('/')
+        /* if (!usuarios)
+            history.push('/') */
         this.getUsers();
     }
 
-    setUsers = (data) => {
-        this.setState({
-            users: data
-        })
-    }
-
-    setUser = (data) => {
-        const { empleado } = data
-        const { empleadoForm } = this.state
-
-        if (empleado) {
-            empleadoForm['tipo_empleado'] = empleado.tipo_empleado ? empleado.tipo_empleado : ''
-            empleadoForm['empresa'] = empleado.empresa ? (empleado.empresa.id ? empleado.empresa.id : '') : ''
-            empleadoForm['puesto'] = empleado.puesto ? empleado.puesto : ''
-            empleadoForm['fecha_inicio'] = empleado.fecha_inicio ? new Date(empleado.fecha_inicio) : ''
-            empleadoForm['estatus'] = empleado.estatus ? empleado.estatus : ''
-            empleadoForm['rfc'] = empleado.rfc ? empleado.rfc : ''
-            empleadoForm['nss'] = empleado.nss ? empleado.nss : ''
-            empleadoForm['curp'] = empleado.curp ? empleado.curp : ''
-            empleadoForm['banco'] = empleado.banco_deposito ? empleado.banco_deposito : ''
-            empleadoForm['cuenta'] = empleado.cuenta_deposito ? empleado.cuenta_deposito : ''
-            empleadoForm['clabe'] = empleado.clabe_deposito ? empleado.clabe_deposito : ''
-            empleadoForm['nombre_emergencia'] = empleado.nombre_contacto ? empleado.nombre_contacto : ''
-            empleadoForm['telefono_emergencia'] = empleado.telefono_contacto ? empleado.telefono_contacto : ''
-        }
+    openModal = () => {
+        const { modal, data, options } = this.state
+        modal.form = true
+        options.departamentos = setOptions(data.departamentos, 'nombre', 'id')
+        options.proyectos = setOptions(data.proyectos, 'nombre', 'id')
 
         this.setState({
             ... this.state,
-            empleadoForm
+            title: 'Registrar nuevo usuario',
+            form: this.clearForm(),
+            modal,
+            options
         })
     }
 
-    addUser = (value) => (e) => {
+    openModalEdit = user => {
+        const { modal, form } = this.state
+        modal.form = true
+        form.name = user.name
+        form.email = user.email
+        form.tipo = user.tipo
+        form.departamentos = setOptions(user.departamentos, 'nombre', 'id')
+        form.proyectos = setOptions(user.proyectos, 'nombre', 'id')
         this.setState({
             ... this.state,
-            modalActive: true,
-            form: {
-                name: '',
-                email: '',
-                tipo: 0,
-                departamentos: [],
-                departamento: ''
-            },
-            empleadoForm: this.clearEmpleadoForm()
+            user: user,
+            modal,
+            form,
+            title: 'Editar usuario'
         })
     }
 
-    clearEmpleadoForm = () => {
-        const { empleadoForm } = this.state
-        let aux = Object.keys(empleadoForm)
+    openModalDelete = (user) => {
+        const { modal } = this.state
+        modal.delete = true
+        this.setState({
+            ... this.state,
+            modal,
+            user: user
+        })
+    }
+
+    openModalPermisos = user => {
+        const { modal } = this.state
+        modal.permisos = true
+        this.setState({
+            ... this.state,
+            modal,
+            user: user
+        })
+    }
+
+    handleClose = () => {
+        const { modal } = this.state
+        modal.form = false
+        this.setState({
+            ... this.state,
+            title: 'Registrar nuevo usuario',
+            form: this.clearForm(),
+            modal,
+            user: ''
+        })
+    }
+
+    handleCloseDelete = () => {
+        const { modal } = this.state
+        modal.delete = false
+        this.setState({
+            ... this.state,
+            modal,
+            user: ''
+        })
+    }
+
+    handleCloseModalPermisos = () => {
+        const { modal } = this.state
+        modal.permisos = false
+        this.setState({
+            ... this.state,
+            modal,
+            user: ''
+        })
+    }
+    
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
         aux.map((element) => {
             switch (element) {
-                case 'fecha_inicio':
-                    empleadoForm[element] = new Date()
+                case 'tipo':
+                    form[element] = 0
                     break;
                 case 'departamentos':
-                    empleadoForm[element] = []
-                    break;
-                case 'tipo_empleado':
-                case 'empresa':
-                    empleadoForm[element] = 0
+                case 'proyectos':
+                    form[element] = []
                     break;
                 default:
-                    empleadoForm[element] = ''
+                    form[element] = ''
                     break;
             }
         })
-        return empleadoForm;
+        return form;
     }
 
-    updateUser = (e) => (user) => {
-        const { name, email, tipo, departamentos } = user
-        let form = {
-            name: name,
-            email: email,
-            tipo: tipo
-        }
-        if (departamentos.length) {
-            const { empleadoForm } = this.state
-            empleadoForm.departamentos = setOptions(departamentos, 'nombre', 'id')
-            this.setState({
-                ... this.state,
-                modalUpdateUser: true,
-                user_to_interact: user,
-                form,
-                empleadoForm
-            })
-        } else {
-            this.setState({
-                ... this.state,
-                modalUpdateUser: true,
-                user_to_interact: user,
-                form
-            })
-        }
-        this.getOneUser(user.id)
-    }
-
-    deleteuser = (e) => (user) => {
-        this.setState({
-            ... this.state,
-            modalSafeDeleteActive: true,
-            user_to_interact: user
-        })
-    }
-
-    deleteSafeUser = (e) => (user) => {
-        this.deleteUserAxios(user);
-        this.setState({
-            ... this.state,
-            modalSafeDeleteActive: false,
-            user_to_interact: ''
-        })
-    }
-
-    changePermisos = (e) => (user) => {
-        this.setState({
-            ... this.state,
-            modalPermisos: true,
-            user_to_interact: user
-        })
-    }
-
-    handleChangeInput = (e) => {
+    onChange = (e) => {
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
@@ -207,177 +171,106 @@ class Usuarios extends Component {
         })
     }
 
-    handleChangeEmpleado = (e) => {
-        const { name, value } = e.target
-        const { empleadoForm, form } = this.state
-        empleadoForm[name] = value
-        form['empleado'] = true
-        this.setState({
-            ... this.state,
-            empleadoForm,
-            form
-        })
-    }
-
-    onChangeCliente = (e) => {
-        const { name, value } = e.target
-        const { clienteForm, form } = this.state
-        clienteForm[name] = value
-        this.setState({
-            ... this.state,
-            clienteForm,
-            form
-        })
-    }
-
     onChangeOptions = (e, arreglo) => {
         const { name, value } = e.target
-        const { clienteForm } = this.state
-        let { proyectos } = this.state
-        let auxArray = clienteForm[arreglo]
-        let aux = []
-        proyectos.find(function (_aux) {
-            if (_aux.value.toString() === value.toString()) {
-                auxArray.push(_aux)
-            } else {
-                aux.push(_aux)
-            }
-        })
-        proyectos = aux
-        clienteForm[arreglo] = auxArray
-        this.setState({
-            ... this.state,
-            clienteForm,
-            proyectos
-        })
-    }
-
-    onChangeOptionsEmpleado = (e, arreglo) => {
-        const { name, value } = e.target
-        const { form } = this.state
-        let { departamentos } = this.state
+        const { form, options } = this.state
         let auxArray = form[arreglo]
         let aux = []
-        departamentos.find(function (_aux) {
+        options[arreglo].find(function (_aux) {
             if (_aux.value.toString() === value.toString()) {
                 auxArray.push(_aux)
             } else {
                 aux.push(_aux)
             }
         })
-        departamentos = aux
+        /* options[arreglo] = aux */
         form[arreglo] = auxArray
         this.setState({
             ... this.state,
             form,
-            departamentos
+            options
         })
     }
 
-    deleteOption = (element, array, tipo) => {
-        if (tipo === 'empleado') {
-            const { form } = this.state
-            let _array = []
-            let auxiliar = ''
-            form[array].find(function (aux, key) {
-                if (aux.value === element.value) {
-                    if (auxiliar === '')
-                        auxiliar = key
-                }
-            })
-            form[array].map((elemento, key) => {
-                if (auxiliar !== key) {
-                    _array.push(elemento)
-                }
-            })
-            form[array] = _array
-            this.setState({
-                ... this.state,
-                form
-            })
-        }
-        if (tipo === 'cliente') {
-        }
-    }
-    
-    handleChangeDate = (date) => {
-        const { empleadoForm, form } = this.state
-        empleadoForm['fecha_inicio'] = date
-        form['empleado'] = true
+    deleteOption = (element, array) => {
+        let { form } = this.state
+        let auxForm = []
+        form[array].map( ( elemento, key ) => {
+            if(element !== elemento){
+                auxForm.push(elemento)
+            }
+        })
+        form[array] = auxForm
         this.setState({
             ... this.state,
-            empleadoForm,
             form
         })
     }
 
-    handleSubmitAddUser = (e) => {
+    onSubmit = e => {
         e.preventDefault();
-        this.addUserAxios()
+        waitAlert()
+        const { title } = this.state
+        if(title === 'Editar usuario')
+            this.updateUserAxios()
+        else
+            this.addUserAxios()
     }
 
-    handleSubmitEditUser = (e) => {
-        e.preventDefault();
-        const { id } = this.state.user_to_interact
-        this.updateUserAxios(id)
-    }
+    async getUsers() {
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'user/users', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { users, departamentos, proyectos } = response.data
+                const { data, options  } = this.state
 
-    handleCloseModal = () => {
-        this.setState({
-            ... this.state,
-            modalActive: !this.state.modalActive,
-            empleadoForm: this.clearEmpleadoForm()
-        })
-    }
+                data.departamentos = departamentos
+                options.departamentos = setOptions( departamentos, 'nombre', 'id')
+                
+                data.proyectos = proyectos
+                options.proyectos = setOptions( proyectos, 'nombre', 'id')
 
-    handleCloseSafeModal = () => {
-        const { modalSafeDeleteActive, user_to_interact } = this.state
-        this.setState({
-            ... this.state,
-            user_to_interact: modalSafeDeleteActive ? {} : user_to_interact,
-            modalSafeDeleteActive: !this.state.modalSafeDeleteActive,
-        })
-    }
-
-    handleCloseModalUpdateUser = () => {
-        this.setState({
-            ... this.state,
-            modalUpdateUser: !this.state.modalUpdateUser,
-            empleadoForm: this.clearEmpleadoForm()
-        })
-    }
-
-    handleCloseModalPermisos = () => {
-        const { modalPermisos, user_to_interact } = this.state
-        this.setState({
-            ... this.state,
-            user_to_interact: modalPermisos ? {} : user_to_interact,
-            modalPermisos: !this.state.modalPermisos,
+                options.tipos = setSelectOptions( users, 'tipo' )
+                
+                this.setState({
+                    ... this.state,
+                    users: users,
+                    options,
+                    data
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
     async addUserAxios() {
         const { access_token } = this.props.authUser
-        const { form, empleadoForm, clienteForm } = this.state
-        form.empleado = empleadoForm
-        form.proyectos = clienteForm.proyectos
+        const { form } = this.state
+        
         await axios.post(URL_DEV + 'user', form, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
-                const { data: { users: users } } = response
-                this.setUsers(users);
+
+                const { users } = response.data
+                const { modal } = this.state
+                modal.form = false
+                
                 this.setState({
-                    modalActive: false,
-                    form: {
-                        name: '',
-                        email: '',
-                        tipo: 0
-                    },
-                    clienteForm: {
-                        proyecto: '',
-                        proyectos: []
-                    },
-                    empleadoForm: this.clearEmpleadoForm()
+                    ... this.state,
+                    users: users,
+                    modal,
+                    form: this.clearForm()
                 })
+
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'Agregaste con éxito al usuario.',
@@ -400,23 +293,24 @@ class Usuarios extends Component {
         })
     }
 
-    async updateUserAxios(user) {
+    async updateUserAxios() {
         const { access_token } = this.props.authUser
-        const { form, empleadoForm } = this.state
-        form.empleado = empleadoForm
-        await axios.put(URL_DEV + 'user/' + user, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { form, user } = this.state
+        await axios.put(URL_DEV + 'user/' + user.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { data: { users: users } } = response
-                this.setUsers(users);
+                
+                const { users } = response.data
+                const { modal } = this.state
+                modal.form = false
+                
                 this.setState({
-                    modalUpdateUser: false,
-                    form: {
-                        name: '',
-                        email: '',
-                        tipo: 0,
-                    },
-                    empleadoForm: this.clearEmpleadoForm()
+                    ... this.state,
+                    users: users,
+                    modal,
+                    form: this.clearForm(),
+                    user: ''
                 })
+
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'Actualizaste con éxito al usuario.',
@@ -440,12 +334,24 @@ class Usuarios extends Component {
         })
     }
 
-    async deleteUserAxios(user) {
+    async deleteUserAxios() {
         const { access_token } = this.props.authUser
-        await axios.delete(URL_DEV + 'user/' + user, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
+        const { user } = this.state
+        await axios.delete(URL_DEV + 'user/' + user.id, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
-                const { data: { users: users } } = response
-                this.setUsers(users)
+                
+                const { users } = response.data
+                const { modal } = this.state
+                modal.delete = false
+                
+                this.setState({
+                    ... this.state,
+                    users: users,
+                    modal,
+                    form: this.clearForm(),
+                    user: ''
+                })
+                
                 swal({
                     title: '¡Listo 👋!',
                     text: response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito al usuario.',
@@ -453,10 +359,6 @@ class Usuarios extends Component {
                     buttons: false,
                     timer: 1500
                 })
-                this.setState({
-                    ... this.state,
-                    empleadoForm: this.clearEmpleadoForm()
-                })
             },
             (error) => {
                 console.log(error, 'error')
@@ -472,208 +374,88 @@ class Usuarios extends Component {
         })
     }
 
-    async getOneUser(user) {
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'user/user/' + user, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { data: { user: user } } = response
-                this.setUser(user)
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-    async getUsers() {
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'user/users', { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { users, proyectos, departamentos } = response.data
-                const { data } = this.state
-                data.proyectos = proyectos
-                this.setUsers(users)
-                users.map((user, key) => {
-                    const { id, tipo } = user
-                    const { options } = this.state
-                    options.push({
-                        value: id,
-                        text: tipo
-                    })
-                    this.setState({
-                        ... this.state,
-                        options
-                    })
-                })
-                this.setState({
-                    ... this.state,
-                    proyectos: setOptions(proyectos, 'nombre', 'id'),
-                    departamentos: setOptions(departamentos, 'nombre', 'id'),
-                    data
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-        await axios.get(URL_DEV + 'empresa', { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { data: { empresas: empresas } } = response
-                let empresas_options = []
-                empresas.map((empresa, key) => {
-                    const { id, name } = empresa
-                    empresas_options.push({
-                        value: id,
-                        text: name
-                    })
-                    this.setState({
-                        ... this.state,
-                        empresas_options
-                    })
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-    render() {
-        const { users, modalActive, form, options, modalSafeDeleteActive, user_to_interact, modalUpdateUser, form: { tipo: tipo_form }, empleadoForm, clienteForm, proyectos, empresas_options, modalPermisos, departamentos } = this.state;
+    render(){
+        const { modal, title, users, user, form, options } = this.state
         return (
-            <>
-                <Layout active={'usuarios'}  {...this.props}>
-                    <div className="d-flex align-items-center mb-2 flex-column flex-md-row justify-content-md-between">
-                        <Title className="text-center">
-                            Listado de usuarios registrados
-                        </Title>
-                        <div className="mt-3 mt-md-0 ml-auto">
-                            <Button onClick={this.addUser()} text='' className="" icon={faUserPlus}
-                                tooltip={{ id: 'add', text: 'Nuevo' }} />
-                        </div>
+            <Layout active = { 'usuarios' }  { ...this.props } >
+                <div className="d-flex align-items-center mb-2 flex-column flex-md-row justify-content-md-between">
+                    <div className="mt-3 mt-md-0 ml-auto">
+                        <Button onClick = { this.openModal } text = '' className = "" icon = { faUserPlus }
+                            tooltip={{ id: 'add', text: 'Nuevo' }} />
                     </div>
-                    {
-                        users.map((tipo_users, key) => {
-                            return (
-                                <div key={key} className="col-md-12">
-                                    <Subtitle>
-                                        {tipo_users.tipo}
-                                    </Subtitle>
-                                    <div className="row py-3 mx-0">
-                                        {
-                                            tipo_users.usuarios.map((user, _key) => {
-                                                return (
-                                                    <div className="col-md-6 col-xl-3 col-12 mb-2 px-0" key={_key}>
-                                                        <Card className="mx-3" >
-                                                            <Button onClick={(e) => { this.changePermisos(e)(user) }} icon={faKey} className="mr-2" color="gold-no-bg"
-                                                                tooltip={{ id: 'permisos', text: 'Permisos de usuario' }} />
-                                                            <div className="text-center">
-                                                                <P>
-                                                                    {user.name}
-                                                                </P>
-
-                                                                <Small>
-                                                                    {user.email}
-                                                                </Small>
-                                                            </div>
-                                                            <div className="d-flex justify-content-between mt-3">
-                                                                <Button icon='' onClick={(e) => { this.updateUser(e)(user) }} icon={faUserEdit} className="mr-2" color="blue"
-                                                                    tooltip={{ id: 'edit', text: 'Editar' }} />
-                                                                <Button icon='' onClick={(e) => { this.deleteuser(e)(user) }} icon={faUserSlash} color="red"
-                                                                    tooltip={{ id: 'delete', text: 'Eliminar', type: 'error' }} />
-                                                            </div>
-                                                        </Card>
+                </div>
+            
+                {/* Lista de usuarios */}
+            
+                {
+                    users.map((tipo_users, key) => {
+                        return (
+                            <div key = { key } className="col-md-12">
+                                <Subtitle>
+                                    { tipo_users.tipo }
+                                </Subtitle>
+                                <div className = "row py-3 mx-0" >
+                                {
+                                    tipo_users.usuarios.map( (user, _key) => {
+                                        return (
+                                            <div className = "col-md-6 col-xl-3 col-12 mb-2 px-0" key = { _key } >
+                                                <Card className="mx-3" >
+                                                    <Button onClick = { (e) => { this.openModalPermisos(user) }} 
+                                                        icon = { faKey } className="mr-2" color="gold-no-bg"
+                                                        tooltip={{ id: 'permisos', text: 'Permisos de usuario' }} />
+                                                    <div className="text-center">
+                                                        <P>
+                                                            { user.name }
+                                                        </P>
+                                                        <Small>
+                                                            { user.email }
+                                                        </Small>
                                                     </div>
-                                                )
-                                            })
-                                        }
-                                    </div>
+                                                    <div className="d-flex justify-content-between mt-3">
+                                                        <Button icon = '' 
+                                                            onClick = { (e) => { this.openModalEdit(user) }} icon = { faUserEdit } 
+                                                            className = "mr-2" color = "blue"
+                                                            tooltip={{ id: 'edit', text: 'Editar' }} />
+                                                        <Button icon = '' 
+                                                            onClick = { (e) => { this.openModalDelete(user) }} icon = { faUserSlash } 
+                                                            color="red"
+                                                            tooltip={{ id: 'delete', text: 'Eliminar', type: 'error' }} />
+                                                    </div>
+                                                </Card>
+                                            </div>
+                                        )
+                                    })
+                                }
                                 </div>
-                            )
-                        })
-                    }
-                    <Modal size="xl" title="Registrar usuario" show={modalActive} handleClose={this.handleCloseModal}>
-                        <RegisterUserForm 
-                            className="px-3" 
-                            form={form} 
-                            options={options} 
-                            onSubmit={this.handleSubmitAddUser}
-                            onChange={this.handleChangeInput} 
-                            tipo={tipo_form} 
-                            options2={{ empresas: empresas_options, departamentos: departamentos }} 
-                            onChangeOptions={this.onChangeOptionsEmpleado} 
-                            deleteOption={this.deleteOption}
-                            >
-                            {
-                                tipo_form === '3' ?
-                                    <ClienteUserForm
-                                        form={clienteForm}
-                                        options={{ proyectos: proyectos }}
-                                        title='Datos del cliente'
-                                        onChange={this.onChangeCliente}
-                                        onChangeOptions={this.onChangeOptions}
-                                        deleteOption={this.deleteOption}
-                                    />
-                                    : ''
-                            }
-                        </RegisterUserForm>
-                    </Modal>
-                    <Modal title="Editar usuario" size="xl" show={modalUpdateUser} handleClose={this.handleCloseModalUpdateUser}>
-                        <RegisterUserForm 
-                            form={form} 
-                            options={options} 
-                            className="px-3" 
-                            onSubmit={this.handleSubmitEditUser}
-                            onChange={this.handleChangeInput} 
-                            tipo={tipo_form} 
-                            options={{ empresas: empresas_options, departamentos: departamentos }} 
-                            onChangeOptions={this.onChangeOptionsEmpleado} 
-                            deleteOption={this.deleteOption}>
-                            {
-                                tipo_form === '3' ?
-                                    <ClienteUserForm
-                                        form={clienteForm}
-                                        options={{ proyectos: proyectos }}
-                                        title='Datos del cliente'
-                                        onChange={this.onChangeCliente}
-                                        onChangeOptions={this.onChangeOptions}
-                                        deleteOption={this.deleteOption}
-                                    />
-                                    : ''
-                            }
-                        </RegisterUserForm>
-                    </Modal>
-                    <ModalDelete title={user_to_interact === null ? "¿Estás seguro que deseas eliminar a " : "¿Estás seguro que deseas eliminar a " + user_to_interact.name + " ?"} show={modalSafeDeleteActive} handleClose={this.handleCloseSafeModal} onClick={(e) => { this.deleteSafeUser(e)(user_to_interact.id) }}>
-                    </ModalDelete>
-                    <Modal size="lg" title="Permisos de usuario" show={modalPermisos} handleClose={this.handleCloseModalPermisos}>
-                        <PermisosForm {... this.props} handleClose={this.handleCloseModalPermisos} user={user_to_interact.id} />
-                    </Modal>
-                </Layout>
-            </>
+                            </div>
+                        )
+                    })
+                }
+                {/* Fin de lista de usuarios */}
+
+                <Modal size="xl" title = { title } 
+                    show = { modal.form } 
+                    handleClose = { this.handleClose } >
+                    <RegisterUserForm 
+                        className = 'px-3' form = { form } options = { options }
+                        onSubmit = { this.onSubmit } onChange = { this.onChange }
+                        onChangeOptions =  { this.onChangeOptions }
+                        deleteOption = { this.deleteOption }
+                        />
+                </Modal>
+                <ModalDelete 
+                    title = { user === null ? "¿Estás seguro que deseas eliminar a " : "¿Estás seguro que deseas eliminar a " + user.name + " ?"} 
+                    show = { modal.delete } handleClose = { this.handleCloseDelete } 
+                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteUserAxios() }}>
+                </ModalDelete>
+
+                <Modal size = "lg" title = "Permisos de usuario" 
+                    show = { modal.permisos } 
+                    handleClose = { this.handleCloseModalPermisos } >
+                    <PermisosForm {... this.props} handleClose={this.handleCloseModalPermisos} user = {user.id} />
+                </Modal>
+
+            </Layout>
         )
     }
 }
