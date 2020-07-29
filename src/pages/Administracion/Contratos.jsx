@@ -532,7 +532,7 @@ class Contratos extends Component {
             (response) => {
                 swal.close()
                 const { empresas, clientes, proveedores, tiposContratos } = response.data
-                const { data, contratos, options } = this.state
+                const { options } = this.state
 
                 options.empresas = setOptions(empresas, 'name', 'id')
                 options.proveedores = setOptions(proveedores, 'razon_social', 'id')
@@ -541,8 +541,6 @@ class Contratos extends Component {
 
                 this.setState({
                     ... this.state,
-                    data,
-                    contratos,
                     options
                 })
             },
@@ -592,7 +590,13 @@ class Contratos extends Component {
         })
         await axios.post(URL_DEV + 'contratos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                let { data, contratos, modal } = this.state
+                const { modal, key } = this.state
+                if(key === 'cliente') {
+                    this.getBancosAxios()
+                }
+                if(key === 'proveedor') {
+                    this.getCajasAxios()
+                }
 
                 swal({
                     title: '¡Felicidades 🥳!',
@@ -606,8 +610,6 @@ class Contratos extends Component {
 
                 this.setState({
                     ... this.state,
-                    data,
-                    contratos,
                     modal
                 })
             },
@@ -644,8 +646,13 @@ class Contratos extends Component {
         await axios.post(URL_DEV + 'contratos/' + contrato.id + '/adjunto/', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { contrato } = response.data
-                const { data, contratos, modal } = this.state
-
+                const { data, modal, key } = this.state
+                if(key === 'cliente') {
+                    this.getBancosAxios()
+                }
+                if(key === 'proveedor') {
+                    this.getCajasAxios()
+                }
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'El contrato fue registrado con éxito.',
@@ -661,7 +668,6 @@ class Contratos extends Component {
                 this.setState({
                     ... this.state,
                     data,
-                    contratos,
                     modal,
                     adjuntos: this.setAdjuntos(contrato.adjuntos)
                 })
@@ -685,7 +691,13 @@ class Contratos extends Component {
         const { form, contrato } = this.state
         await axios.put(URL_DEV + 'contratos/' + contrato.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { data, contratos, modal } = this.state
+                const { modal, key } = this.state
+                if(key === 'cliente') {
+                    this.getBancosAxios()
+                }
+                if(key === 'proveedor') {
+                    this.getCajasAxios()
+                }
 
                 swal({
                     title: '¡Felicidades 🥳!',
@@ -699,8 +711,6 @@ class Contratos extends Component {
 
                 this.setState({
                     ... this.state,
-                    data,
-                    contratos,
                     contrato: ''
                 })
             },
@@ -723,7 +733,13 @@ class Contratos extends Component {
         const { contrato } = this.state
         await axios.delete(URL_DEV + 'contratos/' + contrato.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { data, contratos, modal } = this.state
+                const { modal, key } = this.state
+                if(key === 'cliente') {
+                    this.getBancosAxios()
+                }
+                if(key === 'proveedor') {
+                    this.getCajasAxios()
+                }
 
                 swal({
                     title: '¡Felicidades 🥳!',
@@ -737,8 +753,6 @@ class Contratos extends Component {
 
                 this.setState({
                     ... this.state,
-                    data,
-                    contratos,
                     contrato: '',
                     modal
                 })
@@ -763,7 +777,13 @@ class Contratos extends Component {
         await axios.delete(URL_DEV + 'contratos/' + contrato.id + '/adjunto/' + adjunto, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { contrato } = response.data
-                const { data, contratos, modal } = this.state
+                const { modal, key } = this.state
+                if(key === 'cliente') {
+                    this.getBancosAxios()
+                }
+                if(key === 'proveedor') {
+                    this.getCajasAxios()
+                }
 
                 swal({
                     title: '¡Felicidades 🥳!',
@@ -773,12 +793,8 @@ class Contratos extends Component {
                     buttons: false
                 })
 
-                swal.close()
-
                 this.setState({
                     ... this.state,
-                    data,
-                    contratos,
                     contrato: '',
                     modal,
                     adjuntos: this.setAdjuntos(contrato.adjuntos)
