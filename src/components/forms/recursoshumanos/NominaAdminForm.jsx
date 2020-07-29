@@ -3,9 +3,18 @@ import Form from 'react-bootstrap/Form'
 import { Input, Calendar, SelectSearch, Button, FileInput, InputMoney} from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { DATE } from '../../../constants'
+import { setMoneyTable} from '../../../functions/setters'
+
 
 class NominaAdminForm extends Component {
 
+    state = {
+        sumaNomImss:0,
+        sumaRestanteNomina:0,
+        sumaExtras:0,
+        sumaTotal:0,
+        sumaNomina:{}
+    }
     handleChangeDateInicio = date => {
         const { onChange } = this.props
         onChange({ target: { value: date, name: 'fechaInicio' } })
@@ -27,41 +36,36 @@ class NominaAdminForm extends Component {
 
     getSuma = key => {
         const { form } = this.props
+        const { sumaNomina } = this.state
         let nominImss = form.nominasAdmin[key].nominImss === undefined ? 0 : form.nominasAdmin[key].nominImss
         let restanteNomina = form.nominasAdmin[key].restanteNomina === undefined ? 0 : form.nominasAdmin[key].restanteNomina
         let extras = form.nominasAdmin[key].extras === undefined ? 0 : form.nominasAdmin[key].extras
-        
-        var resultado = parseFloat(nominImss) + parseFloat(restanteNomina) + parseFloat(extras)
-        var separators = resultado.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-        return '$' + separators
-    }
- 
-    getSumaNomina() {
-        var total = 0;
-{/* <input id="num1" type="number" />
-        Valor numero 2: 
-        <input id="num2" type="number" /> 
- 
-        <button onclick="clic()">Calcular</button>
- 
-        <script>
- 
-            function clic() {
-                var num1 = document.getElementById("num1").value;
-                var num2 = document.getElementById("num2").value;
- 
-                var resultado = parseFloat(num1) + parseInt(num2);
- 
-                console.log(resultado);
-            }
- 
-        </script> */}
+        sumaNomina[key] = parseFloat(nominImss) + parseFloat(restanteNomina) + parseFloat(extras)
+       // sumaNomina[key] = sumaNomina[key].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        let sumaNomImss=0;
+        let sumaRestanteNomina=0;
+        let sumaExtras=0;
+        let sumaTotal=0;
+        form.nominasAdmin.forEach(element => {
+            sumaNomImss+= element.nominImss===undefined?0:parseFloat(element.nominImss);
+            sumaRestanteNomina+=element.restanteNomina===undefined?0:parseFloat(element.restanteNomina);
+            sumaExtras+=element.extras===undefined?0:parseFloat(element.extras);
+        });
+        sumaTotal=sumaNomImss+sumaRestanteNomina+sumaExtras 
 
+        this.setState({
+            sumaNomImss:sumaNomImss,
+            sumaRestanteNomina:sumaRestanteNomina,
+            sumaExtras:sumaExtras,
+            sumaTotal:sumaTotal,
+            sumaNomina:sumaNomina
+        }) 
     }
 
     render() {
-        const { options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, onChange, onChangeAdjunto, clearFiles, form, onSubmit, formeditado, title,nomina} = this.props
+        const { options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, onChange, onChangeAdjunto, clearFiles, form, onSubmit, formeditado, title} = this.props
+        const {sumaNomImss, sumaRestanteNomina, sumaExtras, sumaTotal,sumaNomina}= this.state
         return (
             <Form id="form-nominaadmin"
                 onSubmit={
@@ -166,10 +170,10 @@ class NominaAdminForm extends Component {
                             <th className="pb-0 border-bottom-0">Total</th>
                         </tr>
                         <tr>  
-                            <th className="pt-2"><p className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">{this.getSumaNomina(nomina)}</p></th>
-                            <th className="pt-2"><p className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">Restante Nómina</p></th>
-                            <th className="pt-2"><p className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">Extras</p></th>
-                            <th className="pt-2"><p className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">Total</p></th>
+                            <th className="pt-2"><p className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">{setMoneyTable(sumaNomImss)}</p></th>
+                            <th className="pt-2"><p className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">{setMoneyTable(sumaRestanteNomina)}</p></th>
+                            <th className="pt-2"><p className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">{setMoneyTable(sumaExtras)}</p></th>
+                            <th className="pt-2"><p className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">{setMoneyTable(sumaTotal)}</p></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -196,12 +200,11 @@ class NominaAdminForm extends Component {
                                                 formeditado={formeditado}
                                                 name="nominImss"
                                                 value={form['nominasAdmin'][key]['nominImss']}
-                                                onChange={e => onChangeNominasAdmin(key, e, 'nominImss')}
+                                                onChange={e => {onChangeNominasAdmin(key, e, 'nominImss'); this.getSuma(key)} }
                                                 placeholder={null}
                                                 thousandSeparator={true} 
                                                 customstyle={{ paddingLeft: "10px", marginTop: "13px" }}
                                                 prefix={'$'}
-                                                onkeyup={this.getSumaNomina()}
                                             />
                                         </td>
                                         <td>
@@ -210,12 +213,11 @@ class NominaAdminForm extends Component {
                                                 formeditado={formeditado}
                                                 name="restanteNomina"
                                                 value={form['nominasAdmin'][key]['restanteNomina']}
-                                                onChange={e => onChangeNominasAdmin(key, e, 'restanteNomina')}
+                                                onChange={e => {onChangeNominasAdmin(key, e, 'restanteNomina'); this.getSuma(key)} }
                                                 placeholder={null}
                                                 thousandSeparator={true} 
                                                 customstyle={{ paddingLeft: "10px", marginTop: "13px" }}
                                                 prefix={'$'}
-                                                onkeyup={this.getSumaNomina()}
                                             />
                                         </td>
                                         <td>
@@ -224,18 +226,17 @@ class NominaAdminForm extends Component {
                                                 formeditado={formeditado}
                                                 name="extras"
                                                 value={form['nominasAdmin'][key]['extras']}
-                                                onChange={e => onChangeNominasAdmin(key, e, 'extras')}
+                                                onChange={e => {onChangeNominasAdmin(key, e, 'extras'); this.getSuma(key)} }
                                                 placeholder={null}
                                                 thousandSeparator={true} 
                                                 customstyle={{ paddingLeft: "10px", marginTop: "13px" }}
                                                 prefix={'$'}
-                                                onkeyup={this.getSumaNomina()}
                                             />
                                         </td>
                                         <td>
                                             <p className="font-size-lg font-weight-bolder" style={{ paddingLeft: "10px", width: "auto", marginTop: "42px", paddingRight: "20px" }}>
                                                 {
-                                                    this.getSuma(key)
+                                                    "$ "+sumaNomina[key]
                                                 }
                                             </p>
                                         </td>
