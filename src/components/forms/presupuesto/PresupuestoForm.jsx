@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { Form } from 'react-bootstrap'
-import { Input, SelectSearch, Button, Calendar } from '../../form-components'
+import { Form, Accordion, Card} from 'react-bootstrap'
+import { Input, SelectSearch, Button, Calendar, ToggleButton } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { DATE } from '../../../constants'
 
@@ -48,6 +48,7 @@ class PresupuestoForm extends Component {
 
     render() {
         const { options, form, onChange, onSubmit, formeditado } = this.props
+        console.log(this.props) 
         return (
             <Form id="form-presupuesto"
                 onSubmit={
@@ -57,7 +58,7 @@ class PresupuestoForm extends Component {
                     }
                 }
             >
-                <div className="form-group row form-group-marginless pt-4">
+                <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <SelectSearch
                             formeditado={formeditado}
@@ -129,6 +130,67 @@ class PresupuestoForm extends Component {
                         />
                     </div>
                 </div>
+
+                {/* <Accordion activeKey={activeKey} className="accordion accordion-light">
+                    {
+                        grupos !== null && grupos.map((grupo, key) => {
+                            return (
+                                <div key={key}>
+                                    <Card>
+                                        <Accordion.Toggle as={Card.Header} eventKey={grupo.name} onClick={() => this.handleAccordion(grupo.name)}>
+                                            <div className="d-flex align-items-center">
+                                                <ToggleButton
+                                                    {...grupo}
+                                                    onToggle={(e) => this.handleGroupToggler(e)}
+                                                    leftBG={"#ECF0F3"}
+                                                    rightBG={"#ECF0F3"}
+                                                    borderColor={"#ECF0F3"}
+                                                    leftKnobColor={"#FFF"}
+                                                    rightKnobColor={"#2171c1"}
+                                                />
+                                                <div className="card-title collapsed pl-2">{grupo.nombre}</div>
+
+                                            </div>
+                                        </Accordion.Toggle>
+                                        <Accordion.Collapse eventKey={grupo.name}>
+                                            <Card.Body className="bg-light">
+                                                <div className="row mx-0 mt-2 d-flex justify-content-center">
+                                                    {
+                                                        grupo.modulos.map((modulo, key) => {
+                                                            return (
+                                                                <div key={key} className="col-md-2 pt-4 px-3">
+                                                                    <div className="text-center">
+                                                                        <p className="font-size-sm font-weight-bold">{modulo.nombre}</p>
+                                                                    </div>
+                                                                    <div className="d-flex justify-content-center">
+                                                                        <Form.Group>
+                                                                            <div className="checkbox-list pt-2">
+                                                                                <label className="checkbox checkbox-outline checkbox-outline-2x checkbox-primary">
+                                                                                    <input
+                                                                                        name={modulo.name}
+                                                                                        type="checkbox"
+                                                                                        checked={modulo.checked}
+                                                                                        onChange={this.handleCheckbox(modulo)}
+                                                                                    />
+                                                                                    <span></span>
+                                                                                </label>
+                                                                            </div>
+                                                                        </Form.Group>
+                                                                    </div>
+                                                                </div>
+                                                            )
+                                                        })
+                                                    }
+                                                </div>
+                                            </Card.Body>
+                                        </Accordion.Collapse>
+                                    </Card>
+                                    <div className="separator separator-solid"></div>
+                                </div>
+                            )
+                        })
+                    }
+                </Accordion> */}
                 <div className="d-flex justify-content-center my-3">
                     <Button icon='' type="submit" className="text-center mx-auto" text='Enviar' />
                 </div>
