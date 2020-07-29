@@ -17,10 +17,7 @@ class Utilidad extends Component {
         }
     }
 
-    componentDidMount() {
-        var element = document.getElementById("kt_datatable_utilidad");
-        element.classList.remove("table-responsive");
-
+    componentDidMount() { 
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props

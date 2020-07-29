@@ -41,9 +41,6 @@ class Rendimientos extends Component {
     }
 
     componentDidMount() {
-        var element = document.getElementById("kt_datatable_rendimiento");
-        element.classList.remove("table-responsive");
-
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props

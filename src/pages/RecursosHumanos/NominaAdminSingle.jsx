@@ -17,11 +17,7 @@ class NominaAdminSingle extends Component {
         
     }
 
-    componentDidMount() {
-        var element = document.getElementById("kt_datatable2_nomina_admin");
-        if(element)
-            element.classList.remove("table-responsive");
-
+    componentDidMount() { 
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
         const { match : { params: { id: id } } } = this.props
