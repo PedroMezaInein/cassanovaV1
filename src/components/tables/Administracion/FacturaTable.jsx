@@ -31,8 +31,8 @@ export default class FacturaTable extends Component {
                 {
                     actions: this.setActions(factura),
                     folio: renderToString(setTextTable(factura.folio)),
+                    fecha: renderToString(setDateTable(factura.fecha)),
                     serie: renderToString(setTextTable(factura.serie)),
-                    noCertificado: renderToString(setTextTable(factura.descripcion)),
                     emisor: renderToString(setArrayTable(
                         [
                             { name: 'RFC', text: factura.rfc_emisor },
@@ -43,18 +43,15 @@ export default class FacturaTable extends Component {
                             { name: 'RFC', text: factura.rfc_receptor },
                             { name: 'Nombre', text: factura.nombre_receptor }
                         ])),
-                    usoCFDI: renderToString(setTextTable(factura.uso_cfdi)),
-                    expedicion: renderToString(setArrayTable(
-                        [
-                            { name: 'Lugar', text: factura.lugar_expedicion }
-                        ])),
                     subtotal: renderToString(setMoneyTable(factura.subtotal)),
                     total: renderToString(setMoneyTable(factura.total)),
                     adjuntos: renderToString(setAdjuntosList([
                         factura.pdf ? { name: 'factura.pdf', url: factura.pdf.url } : '',
                         factura.xml ? { name: 'factura.xml', url: factura.xml.url } : '',
                     ])),
-                    fecha: renderToString(setDateTable(factura.fecha)),
+                    descripcion: renderToString(setTextTable(factura.descripcion)),
+                    usoCFDI: renderToString(setTextTable(factura.uso_cfdi)),
+                    noCertificado: renderToString(setTextTable(factura.descripcion)),
                     id: factura.id
                 }
             )

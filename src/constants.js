@@ -586,6 +586,10 @@ export const FACTURAS_COLUMNS = [
     },
     {
         Header: 'Descripción',
+        accessor: 'descripcion'
+    },   
+    {
+        Header: 'Número de certificado',
         accessor: 'noCertificado'
     },    
     {
@@ -604,12 +608,12 @@ export const FACTURAS_COLUMNS_2 = [
         accessor: 'folio',
     },
     {
-        Header: 'Serie',
-        accessor: 'serie'
+        Header: 'Fecha',
+        accessor: 'fecha',
     },
     {
-        Header: 'Folio Fiscal',
-        accessor: 'noCertificado'
+        Header: 'Serie',
+        accessor: 'serie'
     },
     {
         Header: 'Emisor',
@@ -618,14 +622,6 @@ export const FACTURAS_COLUMNS_2 = [
     {
         Header: 'Receptor',
         accessor: 'receptor'
-    },
-    {
-        Header: 'Uso CFDI',
-        accessor: 'usoCFDI'
-    },
-    {
-        Header: 'Expedición',
-        accessor: 'expedicion'
     },
     {
         Header: 'Subtotal',
@@ -640,8 +636,16 @@ export const FACTURAS_COLUMNS_2 = [
         accessor: 'adjuntos',
     },
     {
-        Header: 'Fecha',
-        accessor: 'fecha',
+        Header: 'Descripción',
+        accessor: 'descripcion'
+    },
+    {
+        Header: 'Uso CFDI',
+        accessor: 'usoCFDI'
+    },
+    {
+        Header: 'Folio Fiscal',
+        accessor: 'noCertificado'
     },
 ]
 
