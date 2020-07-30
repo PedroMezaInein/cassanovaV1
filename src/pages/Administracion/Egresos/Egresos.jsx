@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV, EGRESOS_COLUMNS } from '../../../constants'
-import { setOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList } from '../../../functions/setters'
+import { setOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList, setSelectOptions } from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Button, FileInput } from '../../../components/form-components'
@@ -12,6 +12,7 @@ import { Modal, ModalDelete } from '../../../components/singles'
 import { FacturaTable } from '../../../components/tables'
 import { Form, ProgressBar } from 'react-bootstrap'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
+import Select from '../../../components/form-components/Select'
 
 const $ = require('jquery');
 class egresos extends Component{
@@ -35,6 +36,7 @@ class egresos extends Component{
             metodoPago: '',
             estatusFactura: '',
             facturaObject: '',
+            estatusCompra: 0,
             adjuntos:{
                 factura:{
                     value: '',
@@ -46,7 +48,8 @@ class egresos extends Component{
         options:{
             formasPagos: [],
             metodosPagos: [],
-            estatusFacturas: []
+            estatusFacturas: [],
+            estatusCompras: []
         }
     }
 
@@ -77,12 +80,25 @@ class egresos extends Component{
                         }
                     }
                     break;
+                case 'estatusCompra':
+                    form[element] = 0
+                    break;
                 default:
                     form[element] = ''
                     break;
             }
         })
         return form;
+    }
+
+    onChange = e => {
+        const {form} = this.state
+        const {name, value} = e.target
+        form[name] = value
+        this.setState({
+            ... this.state,
+            form
+        })
     }
 
     onChangeAdjunto = e => {
@@ -320,7 +336,9 @@ class egresos extends Component{
     }
 
     openModalFacturas = egreso => {
-        let { porcentaje } = this.state
+        let { porcentaje, form } = this.state
+        form = this.clearForm()
+        form.estatusCompra = egreso.estatus_compra.id
         porcentaje = 0
         egreso.facturas.map((factura)=>{
             porcentaje = porcentaje + factura.total
@@ -430,14 +448,15 @@ class egresos extends Component{
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'egresos/options', { responseType:'json', headers: {Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { data } = this.state
-                const { proveedores, empresas } = response.data
+                const { data, options } = this.state
+                const { proveedores, empresas, estatusCompras } = response.data
                 data.proveedores = proveedores
                 data.empresas = empresas
+                options['estatusCompras'] = setSelectOptions( estatusCompras, 'estatus' )
                 swal.close()
                 this.setState({
                     ... this.state,
-                    data
+                    data, options
                 })
             },
             (error) => {
@@ -501,6 +520,9 @@ class egresos extends Component{
                 case 'facturaObject':
                     data.append(element, JSON.stringify(form[element]))
                     break;
+                case 'estatusCompra':
+                    data.append(element, form[element]);
+                    break;
                 default:
                     break
             }
@@ -522,7 +544,9 @@ class egresos extends Component{
             (response) => {
 
                 const { egreso } = response.data
-                let { porcentaje, data } = this.state
+                let { porcentaje, data, form } = this.state
+                form = this.clearForm()
+                form.estatusCompra = egreso.estatus_compra.id
                 porcentaje = 0
                 egreso.facturas.map((factura)=>{
                     porcentaje = porcentaje + factura.total
@@ -532,7 +556,7 @@ class egresos extends Component{
                 this.getEgresosAxios()
                 this.setState({
                     ... this.state,
-                    form: this.clearForm(),
+                    form,
                     egreso: egreso,
                     facturas: egreso.facturas,
                     porcentaje,
@@ -647,7 +671,7 @@ class egresos extends Component{
     }
 
     render(){
-        const { egresos, modalDelete, modalFacturas, facturas, porcentaje, form, data } = this.state
+        const { egresos, modalDelete, modalFacturas, facturas, porcentaje, form, data, options } = this.state
         return(
             <Layout active={'administracion'}  { ...this.props}>
                 <NewTableServerRender columns = { EGRESOS_COLUMNS } data = { egresos } 
@@ -697,14 +721,27 @@ class egresos extends Component{
                                     deleteAdjunto = { this.clearFiles } multiple
                                 />
                             </div>
-                            {
-                                form.adjuntos.factura.files.length ?
-                                    <div className="col-md-6 px-2 align-items-center d-flex">
-                                        <Button icon='' className="mx-auto" type="submit" text="Enviar" />
-                                    </div>
-                                : ''
-                            }
+                            <div className="col-md-6 px-2">
+                                <Select
+                                    requirevalidation={1}
+                                    formeditado={1}
+                                    placeholder="SELECCIONA EL ESTATUS DE COMPRA"
+                                    options={options.estatusCompras}
+                                    name="estatusCompra"
+                                    value={form.estatusCompra}
+                                    onChange={this.onChange}
+                                    iconclass={"flaticon2-time"}
+                                    messageinc="Incorrecto. Selecciona el estatus de compra."
+                                    />
+                            </div>
                         </div>
+                        {
+                            form.adjuntos.factura.files.length ?
+                                <div className="col-md-12 px-2 align-items-center d-flex">
+                                    <Button icon='' className="mx-auto" type="submit" text="Enviar" />
+                                </div>
+                            : ''
+                        }
                     </Form>
                     <FacturaTable deleteFactura = { this.deleteFactura } facturas = { facturas } />
                 </Modal>

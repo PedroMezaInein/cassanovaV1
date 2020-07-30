@@ -16,6 +16,7 @@ import { Form, ProgressBar } from 'react-bootstrap'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import TableForModals from '../../components/tables/TableForModals'
 import AdjuntosForm from '../../components/forms/AdjuntosForm'
+import Select from '../../components/form-components/Select'
 const $ = require('jquery');
 
 class Compras extends Component {
@@ -355,7 +356,9 @@ class Compras extends Component {
     }
 
     openModalFacturas = compra => {
-        let { porcentaje } = this.state
+        let { porcentaje, form } = this.state
+        form = this.clearForm()
+        form.estatusCompra = compra.estatus_compra.id
         porcentaje = 0
         compra.facturas.map((factura) => {
             porcentaje = porcentaje + factura.total
@@ -368,7 +371,7 @@ class Compras extends Component {
             compra: compra,
             facturas: compra.facturas,
             porcentaje,
-            form: this.clearForm(),
+            form,
             formeditado: 0
         })
     }
@@ -1056,6 +1059,9 @@ class Compras extends Component {
                 case 'facturaObject':
                     data.append(element, JSON.stringify(form[element]))
                     break;
+                case 'estatusCompra':
+                    data.append(element, form[element]);
+                    break;
                 default:
                     break
             }
@@ -1078,7 +1084,9 @@ class Compras extends Component {
 
                 this.getComprasAxios()
                 const { compra } = response.data
-                let { porcentaje } = this.state
+                let { porcentaje, form } = this.state
+                form = this.clearForm()
+                form.estatusCompra = compra.estatus_compra.id
                 porcentaje = 0
                 compra.facturas.map((factura) => {
                     porcentaje = porcentaje + factura.total
@@ -1087,7 +1095,7 @@ class Compras extends Component {
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
                 this.setState({
                     ... this.state,
-                    form: this.clearForm(),
+                    form,
                     compra: compra,
                     facturas: compra.facturas,
                     porcentaje
@@ -1308,9 +1316,24 @@ class Compras extends Component {
                                     files={form['adjuntos']['factura']['files']}
                                     deleteAdjunto={this.clearFiles} multiple />
                             </div>
+
+                            <div className="col-md-6 px-2">
+                                <Select
+                                    requirevalidation={1}
+                                    formeditado={1}
+                                    placeholder="SELECCIONA EL ESTATUS DE COMPRA"
+                                    options={options.estatusCompras}
+                                    name="estatusCompra"
+                                    value={form.estatusCompra}
+                                    onChange={this.onChange}
+                                    iconclass={"flaticon2-time"}
+                                    messageinc="Incorrecto. Selecciona el estatus de compra."
+                                    />
+                            </div>
+
                             {
                                 form.adjuntos.factura.files.length ?
-                                    <div className="col-md-6 px-2 align-items-center d-flex">
+                                    <div className="col-md-12 px-2 align-items-center d-flex">
                                         <Button icon='' className="mx-auto" type="submit" text="Enviar" />
                                     </div>
                                     : ''
