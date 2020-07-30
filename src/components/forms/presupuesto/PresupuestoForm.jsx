@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
 import { Form, Accordion, Card } from 'react-bootstrap'
-import { Input, SelectSearch, Button, Calendar, ToggleButton, SelectSearchSinText} from '../../form-components'
+import { Input, SelectSearch, Button, Calendar, ToggleButton, SelectSearchSinText } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
-import { DATE } from '../../../constants' 
+import { DATE } from '../../../constants'
+import ReactTooltip from "react-tooltip";
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Tooltip from 'react-bootstrap/Tooltip'
 
 class PresupuestoForm extends Component {
 
@@ -55,6 +58,14 @@ class PresupuestoForm extends Component {
         onChange({ target: { value: value, name: 'subpartida' } })
     }
 
+    mostrarFormulario() {
+        var element = document.getElementById("form-presupuesto");
+        if (element.style.display === "none") {
+            element.style.display = "block";
+        } else {
+            element.style.display = "none";
+        }
+    }
 
     render() {
         const { options, form, onChange, onSubmit, formeditado } = this.props
@@ -73,7 +84,7 @@ class PresupuestoForm extends Component {
                                         <h4 className="font-weight-bold mb-0 mr-5">PARTIDA</h4>
                                     </div>
                                     <div className="d-flex">
-                                        <div className="navi navi-hover navi-active navi-link-rounded navi-bold d-flex flex-row"> 
+                                        <div className="navi navi-hover navi-active navi-link-rounded navi-bold d-flex flex-row">
                                             <div className="navi-item">
                                                 <SelectSearchSinText
                                                     formeditado={formeditado}
@@ -81,9 +92,9 @@ class PresupuestoForm extends Component {
                                                     placeholder="SELECCIONA LA PARTIDA"
                                                     name="partida"
                                                     value={form.partida}
-                                                    onChange={this.updatePartida} 
+                                                    onChange={this.updatePartida}
                                                     customstyle={{ width: "250px" }}
-                                                    
+
                                                 />
                                             </div>
                                             <div className="navi-item mx-2">
@@ -95,10 +106,10 @@ class PresupuestoForm extends Component {
                                                             placeholder="SELECCIONA LA SUBPARTIDA"
                                                             name="subpartida"
                                                             value={form.subpartida}
-                                                            onChange={this.updateSubpartida} 
+                                                            onChange={this.updateSubpartida}
                                                             customstyle={{ width: "250px" }}
                                                         />
-                                                    : ''
+                                                        : ''
                                                 }
                                             </div>
                                         </div>
@@ -172,8 +183,15 @@ class PresupuestoForm extends Component {
                                             <div
                                                 className="d-flex align-items-center justify-content-between flex-wrap card-spacer-x py-3">
                                                 <div className="d-flex flex-column mr-2 py-2">
-                                                    <a className="text-dark text-hover-primary font-weight-bold font-size-h4 mr-3"> CONCEPTOS SELECCIONADOS</a> 
-                                                </div> 
+                                                    <a className="text-dark text-hover-primary font-weight-bold font-size-h4 mr-3"> CONCEPTOS SELECCIONADOS</a>
+                                                </div>                                            
+                                                <div class="d-flex py-2">
+                                                    <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Formulario</Tooltip>}> 
+                                                    <button class="btn btn-default btn-sm btn-icon" data-dismiss="modal" onClick={() => { this.mostrarFormulario() }}>
+                                                        <i class="ki ki-bold-more-hor font-size-md"></i>
+                                                    </button>
+                                                    </OverlayTrigger>
+                                                </div>
                                                 <Form id="form-presupuesto"
                                                     onSubmit={
                                                         (e) => {
@@ -183,83 +201,83 @@ class PresupuestoForm extends Component {
                                                     }
                                                 >
                                                     <div className="col-md-12">
-                                                    <div className="form-group row form-group-marginless pt-4">
-                                                        <div className="col-md-6">
-                                                            <SelectSearch
-                                                                formeditado={formeditado}
-                                                                options={options.proyectos}
-                                                                placeholder="SELECCIONA EL PROYECTO"
-                                                                name="proyecto"
-                                                                value={form.proyecto}
-                                                                onChange={this.updateProyecto}
-                                                                iconclass={"far fa-folder-open"} 
-                                                            />
+                                                        <div className="form-group row form-group-marginless pt-4">
+                                                            <div className="col-md-6">
+                                                                <SelectSearch
+                                                                    formeditado={formeditado}
+                                                                    options={options.proyectos}
+                                                                    placeholder="SELECCIONA EL PROYECTO"
+                                                                    name="proyecto"
+                                                                    value={form.proyecto}
+                                                                    onChange={this.updateProyecto}
+                                                                    iconclass={"far fa-folder-open"}
+                                                                />
+                                                            </div>
+                                                            <div className="col-md-6">
+                                                                <SelectSearch
+                                                                    formeditado={formeditado}
+                                                                    options={options.areas}
+                                                                    placeholder="SELECCIONA EL ÁREA"
+                                                                    name="areas"
+                                                                    value={form.area}
+                                                                    onChange={this.updateArea}
+                                                                    iconclass={"far fa-window-maximize"}
+                                                                />
+                                                            </div>
+                                                            <div className="col-md-12 separator separator-dashed mt-4 mb-2"></div>
+                                                            <div className="col-md-6">
+                                                                {
+                                                                    form.facturaObject ?
+                                                                        <Input
+                                                                            placeholder="EMPRESA"
+                                                                            name="empresa"
+                                                                            readOnly
+                                                                            value={form.empresa}
+                                                                            onChange={onChange}
+                                                                            iconclass={"far fa-building"}
+                                                                        />
+                                                                        :
+                                                                        <SelectSearch
+                                                                            formeditado={formeditado}
+                                                                            options={options.empresas}
+                                                                            placeholder="SELECCIONA LA EMPRESA"
+                                                                            name="empresas"
+                                                                            value={form.empresa}
+                                                                            onChange={this.updateEmpresa}
+                                                                            iconclass={"far fa-building"}
+                                                                        />
+                                                                }
+                                                            </div>
+                                                            <div className="col-md-6">
+                                                                <Input
+                                                                    requirevalidation={1}
+                                                                    formeditado={formeditado}
+                                                                    placeholder="TIEMPO DE EJECUCIÓN"
+                                                                    value={form.tiempo_ejecucion}
+                                                                    name="tiempo_ejecucion"
+                                                                    onChange={onChange}
+                                                                    iconclass={"flaticon-calendar-with-a-clock-time-tools"}
+                                                                    messageinc="Incorrecto. Ingresa un tiempo de ejecución."
+                                                                />
+                                                            </div>
+                                                            <div className="col-md-12 separator separator-dashed mt-4 mb-2"></div>
+                                                            <div className="col-md-6">
+                                                                <Calendar
+                                                                    formeditado={formeditado}
+                                                                    onChangeCalendar={this.handleChangeDate}
+                                                                    placeholder="FECHA"
+                                                                    name="fecha"
+                                                                    value={form.fecha}
+                                                                    patterns={DATE}
+                                                                />
+                                                            </div>
                                                         </div>
-                                                        <div className="col-md-6">
-                                                            <SelectSearch
-                                                                formeditado={formeditado}
-                                                                options={options.areas}
-                                                                placeholder="SELECCIONA EL ÁREA"
-                                                                name="areas"
-                                                                value={form.area}
-                                                                onChange={this.updateArea}
-                                                                iconclass={"far fa-window-maximize"}
-                                                            />
-                                                        </div>
-                                                        <div className="col-md-12 separator separator-dashed mt-4 mb-2"></div> 
-                                                        <div className="col-md-6">
-                                                            {
-                                                                form.facturaObject ?
-                                                                    <Input
-                                                                        placeholder="EMPRESA"
-                                                                        name="empresa"
-                                                                        readOnly
-                                                                        value={form.empresa}
-                                                                        onChange={onChange}
-                                                                        iconclass={"far fa-building"}
-                                                                    />
-                                                                    :
-                                                                    <SelectSearch
-                                                                        formeditado={formeditado}
-                                                                        options={options.empresas}
-                                                                        placeholder="SELECCIONA LA EMPRESA"
-                                                                        name="empresas"
-                                                                        value={form.empresa}
-                                                                        onChange={this.updateEmpresa}
-                                                                        iconclass={"far fa-building"}
-                                                                    />
-                                                            }
-                                                        </div>                                                        
-                                                        <div className="col-md-6">
-                                                            <Input
-                                                                requirevalidation={1}
-                                                                formeditado={formeditado}
-                                                                placeholder="TIEMPO DE EJECUCIÓN"
-                                                                value={form.tiempo_ejecucion}
-                                                                name="tiempo_ejecucion"
-                                                                onChange={onChange}
-                                                                iconclass={"flaticon-calendar-with-a-clock-time-tools"}
-                                                                messageinc="Incorrecto. Ingresa un tiempo de ejecución."
-                                                            />
-                                                        </div>
-                                                        <div className="col-md-12 separator separator-dashed mt-4 mb-2"></div> 
-                                                        <div className="col-md-6">
-                                                            <Calendar
-                                                                formeditado={formeditado}
-                                                                onChangeCalendar={this.handleChangeDate}
-                                                                placeholder="FECHA"
-                                                                name="fecha"
-                                                                value={form.fecha}
-                                                                patterns={DATE}
-                                                            />
-                                                        </div>
-                                                    </div>
                                                     </div>
                                                     <div className="d-flex justify-content-center my-3">
                                                         <Button icon='' type="submit" className="text-center mx-auto" text='Enviar' />
                                                     </div>
                                                 </Form>
-                                            </div>
+                                            </div>                                           
                                         </div>
                                     </div>
                                 </div>
@@ -267,7 +285,7 @@ class PresupuestoForm extends Component {
                         </div>
                     </div>
                 </div>
-            </div> 
+            </div>
         )
     }
 }
