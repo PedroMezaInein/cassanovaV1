@@ -7,21 +7,21 @@ export default class SolicitudCompraCard extends Component {
     render() {
         const { data, children } = this.props
         return (
-            <div class="col-md-12">
+            <div className="col-md-12">
                 <Card className="card card-without-box-shadown border-0">
-                    <div class="card-body d-flex align-items-center justify-content-between flex-wrap pb-2 pl-0 pr-0">
-                        <div class="mr-2">
+                    <div className="card-body d-flex align-items-center justify-content-between flex-wrap pb-2 pl-0 pr-0">
+                        <div className="mr-2">
                             {
                                 data.proyecto ?
                                     <>
-                                        <p class="font-size-h3 mb-0">Proyecto:&nbsp;<strong class="font-size-h4"> {data.proyecto.nombre}</strong></p>
+                                        <p className="font-size-h3 mb-0">Proyecto:&nbsp;<strong className="font-size-h4"> {data.proyecto.nombre}</strong></p>
                                     </>
                                     : ''
                             }
                             {
                                 data.empresa ?
                                     <>
-                                        <p class="font-size-h5 text-muted font-size-lg mt-0">Empresa:&nbsp;<strong class="font-size-h6"> {data.empresa.name} </strong></p>
+                                        <p className="font-size-h5 text-muted font-size-lg mt-0">Empresa:&nbsp;<strong className="font-size-h6"> {data.empresa.name} </strong></p>
                                     </>
                                     : ''
                             }
@@ -29,13 +29,13 @@ export default class SolicitudCompraCard extends Component {
                         {children}
                     </div>
                     <div className="separator separator-solid mb-3"></div>
-                    <div class="mb-5">
-                        <div class="row row-paddingless mb-4">
-                            <div class="col-md-3">
-                                <div class="d-flex align-items-center">
-                                    <div class="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
-                                        <div class="symbol-label">
-                                            <span class="svg-icon svg-icon-lg svg-icon-info">
+                    <div className="mb-5">
+                        <div className="row row-paddingless mb-4">
+                            <div className="col-md-3">
+                                <div className="d-flex align-items-center">
+                                    <div className="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
+                                        <div className="symbol-label">
+                                            <span className="svg-icon svg-icon-lg svg-icon-info">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                                     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                                         <rect x="0" y="0" width="24" height="24" />
@@ -56,18 +56,18 @@ export default class SolicitudCompraCard extends Component {
                                                         thousandSeparator={true}
                                                         prefix={'$'}
                                                         renderText={value => <div className="font-size-h6 text-dark-75 font-weight-bolder"> {value} </div>} />
-                                                    <div class="font-size-sm text-muted font-weight-bold mt-1">Monto</div>
+                                                    <div className="font-size-sm text-muted font-weight-bold mt-1">Monto</div>
                                                 </>
                                                 : ''
                                         }
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <div class="d-flex align-items-center mr-2">
-                                    <div class="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
-                                        <div class="symbol-label">
-                                            <span class="svg-icon svg-icon-lg svg-icon-primary">
+                            <div className="col-md-3">
+                                <div className="d-flex align-items-center mr-2">
+                                    <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
+                                        <div className="symbol-label">
+                                            <span className="svg-icon svg-icon-lg svg-icon-primary">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                                     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                                         <polygon points="0 0 24 0 24 24 0 24" />
@@ -80,16 +80,16 @@ export default class SolicitudCompraCard extends Component {
                                         </div>
                                     </div>
                                     <div>
-                                        <div class="font-size-h6 text-dark-75 font-weight-bolder">{data.factura ? 'Con factura' : 'Sin factura'}</div>
-                                        <div class="font-size-sm text-muted font-weight-bold mt-1">Factura</div>
+                                        <div className="font-size-h6 text-dark-75 font-weight-bolder">{data.factura ? 'Con factura' : 'Sin factura'}</div>
+                                        <div className="font-size-sm text-muted font-weight-bold mt-1">Factura</div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <div class="d-flex align-items-center mr-2">
-                                    <div class="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
-                                        <div class="symbol-label">
-                                            <span class="svg-icon svg-icon-lg svg-icon-info">
+                            <div className="col-md-3">
+                                <div className="d-flex align-items-center mr-2">
+                                    <div className="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
+                                        <div className="symbol-label">
+                                            <span className="svg-icon svg-icon-lg svg-icon-info">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                                     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                                         <rect x="0" y="0" width="24" height="24" />
@@ -104,18 +104,18 @@ export default class SolicitudCompraCard extends Component {
                                     <div>
                                         {
                                             data.tipo_pago ?
-                                                <div class="font-size-h6 text-dark-75 font-weight-bolder">{data.tipo_pago.tipo}</div>
+                                                <div className="font-size-h6 text-dark-75 font-weight-bolder">{data.tipo_pago.tipo}</div>
                                                 : ''
                                         }
-                                        <div class="font-size-sm text-muted font-weight-bold mt-1">TIPO DE PAGO</div>
+                                        <div className="font-size-sm text-muted font-weight-bold mt-1">TIPO DE PAGO</div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <div class="d-flex align-items-center mr-2">
-                                    <div class="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
-                                        <div class="symbol-label">
-                                            <span class="svg-icon svg-icon-lg svg-icon-primary">
+                            <div className="col-md-3">
+                                <div className="d-flex align-items-center mr-2">
+                                    <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
+                                        <div className="symbol-label">
+                                            <span className="svg-icon svg-icon-lg svg-icon-primary">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                                     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                                         <rect x="0" y="0" width="24" height="24" />
@@ -129,24 +129,24 @@ export default class SolicitudCompraCard extends Component {
                                     <div>
                                         {
                                             data.created_at ?
-                                                <div class="font-size-h6 text-dark-75 font-weight-bolder">
+                                                <div className="font-size-h6 text-dark-75 font-weight-bolder">
                                                     <Moment format="DD/MM/YYYY">
                                                         {data.created_at}
                                                     </Moment>
                                                 </div>
                                                 : ''
                                         }
-                                        <div class="font-size-sm text-muted font-weight-bold mt-1">FECHA</div>
+                                        <div className="font-size-sm text-muted font-weight-bold mt-1">FECHA</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row row-paddingless">
-                            <div class="col-md-3">
-                                <div class="d-flex align-items-center mr-2">
-                                    <div class="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
-                                        <div class="symbol-label">
-                                            <span class="svg-icon svg-icon-lg svg-icon-primary">
+                        <div className="row row-paddingless">
+                            <div className="col-md-3">
+                                <div className="d-flex align-items-center mr-2">
+                                    <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
+                                        <div className="symbol-label">
+                                            <span className="svg-icon svg-icon-lg svg-icon-primary">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                                     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                                         <rect x="0" y="0" width="24" height="24" />
@@ -160,18 +160,18 @@ export default class SolicitudCompraCard extends Component {
                                     <div>
                                         {
                                             data.subarea ?
-                                                <div class="font-size-h6 text-dark-75 font-weight-bolder">{data.subarea.area.nombre}</div>
+                                                <div className="font-size-h6 text-dark-75 font-weight-bolder">{data.subarea.area.nombre}</div>
                                                 : ''
                                         }
-                                        <div class="font-size-sm text-muted font-weight-bold mt-1">ÁREA</div>
+                                        <div className="font-size-sm text-muted font-weight-bold mt-1">ÁREA</div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <div class="d-flex align-items-center mr-2">
-                                    <div class="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
-                                        <div class="symbol-label">
-                                            <span class="svg-icon svg-icon-lg svg-icon-info">
+                            <div className="col-md-3">
+                                <div className="d-flex align-items-center mr-2">
+                                    <div className="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
+                                        <div className="symbol-label">
+                                            <span className="svg-icon svg-icon-lg svg-icon-info">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                                     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                                         <rect x="0" y="0" width="24" height="24" />
@@ -185,18 +185,18 @@ export default class SolicitudCompraCard extends Component {
                                     <div>
                                         {
                                             data.subarea ?
-                                                <div class="font-size-h6 text-dark-75 font-weight-bolder">{data.subarea.nombre}</div>
+                                                <div className="font-size-h6 text-dark-75 font-weight-bolder">{data.subarea.nombre}</div>
                                                 : ''
                                         }
-                                        <div class="font-size-sm text-muted font-weight-bold mt-1">SUB-ÁREA</div>
+                                        <div className="font-size-sm text-muted font-weight-bold mt-1">SUB-ÁREA</div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-5">
-                                <div class="d-flex align-items-center mr-2">
-                                    <div class="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
-                                        <div class="symbol-label">
-                                            <span class="svg-icon svg-icon-lg svg-icon-primary">
+                            <div className="col-md-5">
+                                <div className="d-flex align-items-center mr-2">
+                                    <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
+                                        <div className="symbol-label">
+                                            <span className="svg-icon svg-icon-lg svg-icon-primary">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                                     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                                         <rect x="0" y="0" width="24" height="24" />
@@ -210,12 +210,12 @@ export default class SolicitudCompraCard extends Component {
                                         {
                                             data.adjunto ?
                                                 <a href={data.adjunto.url} target="_blank">
-                                                    <div class="font-size-h6 text-dark-75 font-weight-bolder">{data.adjunto.name}</div>
+                                                    <div className="font-size-h6 text-dark-75 font-weight-bolder">{data.adjunto.name}</div>
                                                 </a>
                                                 :
-                                                <div class="font-size-h6 text-dark-75 font-weight-bolder">SIN ADJUNTO</div>
+                                                <div className="font-size-h6 text-dark-75 font-weight-bolder">SIN ADJUNTO</div>
                                         }
-                                        <div class="font-size-sm text-muted font-weight-bold mt-1">Adjunto</div>
+                                        <div className="font-size-sm text-muted font-weight-bold mt-1">Adjunto</div>
                                     </div>
                                 </div>
                             </div>
