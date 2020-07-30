@@ -108,12 +108,18 @@ class NewTableServerRender extends Component {
             createdRow: function(row, data) {
                 if(validateFactura){
                     const { objeto } = data
-                    if(objeto.factura && objeto.total === objeto.total_facturas){
-                        $(row).addClass('verde');
-                    }
-                    if(objeto.total_facturas === 0 || objeto.total_facturas === null){
+                    // if(objeto.factura && objeto.total === objeto.total_facturas){
+                    //     $(row).addClass('verde');
+                    // }
+                    // if(objeto.total_facturas === 0 || objeto.total_facturas === null){
+                    //     $(row).addClass('rojo');
+                    // }
+                    if(objeto.factura && objeto.total_facturas < objeto.total){
                         $(row).addClass('rojo');
+                    }else{
+                        $(row).addClass('blanco');
                     }
+                    
                 }
                 if (elementClass) {
                     let auxiliar = data[elementClass].split('<!-- -->')
