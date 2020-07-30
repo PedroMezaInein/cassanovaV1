@@ -18,7 +18,6 @@ const Login = Loader(() => import('./pages/Login') )
 const Home = Loader(() => import('./pages/Home') )
 
 const Tareas = Loader(() => import('./pages/Usuarios/Tareas') )
-const Tareas2 = Loader(() => import('./pages/Usuarios/Tareas2') )
 const Empresas = Loader(() => import('./pages/Usuarios/Empresas') )
 const Usuarios = Loader(() => import('./pages/Usuarios/Usuarios') )
 
@@ -155,7 +154,6 @@ class App extends Component{
 
                 <Route path = "/usuarios/usuarios" exact component = { Usuarios } />
                 <Route path = "/usuarios/tareas" exact component = { Tareas } />
-                <Route path = "/usuarios/tareas2" exact component = { Tareas2 } />
                 <Route path = "/usuarios/empresas" exact component ={ Empresas } />
 
                 <Route path = "/presupuesto/conceptos" exact component ={ Conceptos } />
