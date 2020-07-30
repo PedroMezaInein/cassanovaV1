@@ -28,7 +28,7 @@ class Task extends Component{
             _fecha_limite = this.diffDate(tarea.fecha_limite)
         }
         if(tarea){
-            new_index = tarea.index
+            new_index = tarea.posicion
         }
         
         return(
