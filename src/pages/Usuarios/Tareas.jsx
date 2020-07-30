@@ -765,6 +765,7 @@ class Tareas extends Component{
                             {
                                 tarea.comentarios.length > 0 &&
                                     tarea.comentarios.map((comentario, key) => {
+                                        console.log(comentario, 'comentario')
                                         return(
                                             <div key={key} className="form-group row form-group-marginless px-3">
                                                 <div className="col-md-12">
@@ -778,12 +779,22 @@ class Tareas extends Component{
                                                                     <span className="text-primary font-weight-bold">{this.diffCommentDate(comentario)}</span>
                                                                     <span className="text-muted ml-2">{comentario.user.name}</span>
                                                                     <p className="p-0">{comentario.comentario}</p>
+                                                                    {
+                                                                        comentario.adjunto ?
+                                                                            <div className="d-flex justify-content-end">
+                                                                                <a href = { comentario.adjunto.url } target = '_blank' >
+                                                                                    { comentario.adjunto.name }
+                                                                                </a>
+                                                                            </div>    
+                                                                        :  ''
+                                                                    }
+                                                                    
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                </div>
+                                            </div>
                                             
                                         )
                                     })
