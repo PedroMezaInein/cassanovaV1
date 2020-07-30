@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV, INGRESOS_COLUMNS } from '../../../constants'
-import { setOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList } from '../../../functions/setters'
+import { setOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList, setSelectOptions } from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete } from '../../../components/singles'
@@ -13,6 +13,7 @@ import { FacturaForm } from '../../../components/forms'
 import { FacturaTable } from '../../../components/tables'
 import { Form, ProgressBar } from 'react-bootstrap'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
+import Select from '../../../components/form-components/Select'
 
 const $ = require('jquery');
 class Ingresos extends Component {
@@ -362,7 +363,9 @@ class Ingresos extends Component {
     }
 
     openModalFacturas = (ingreso) => {
-        let { porcentaje } = this.state
+        let { porcentaje, form } = this.state
+        form = this.clearForm()
+        form.estatusCompra = ingreso.estatus_compra.id
         porcentaje = 0
         ingreso.facturas.map((factura) => {
             porcentaje = porcentaje + factura.total
@@ -375,7 +378,7 @@ class Ingresos extends Component {
             ingreso: ingreso,
             facturas: ingreso.facturas,
             porcentaje,
-            form: this.clearForm(),
+            form,
             formeditado:0
         })
     }
@@ -432,10 +435,11 @@ class Ingresos extends Component {
         await axios.get(URL_DEV + 'ingresos/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { data, options } = this.state
-                const { clientes, empresas, formasPago, metodosPago, estatusFacturas } = response.data
+                const { clientes, empresas, formasPago, metodosPago, estatusFacturas, estatusCompras } = response.data
                 options['metodosPago'] = setOptions(metodosPago, 'nombre', 'id')
                 options['formasPago'] = setOptions(formasPago, 'nombre', 'id')
                 options['estatusFacturas'] = setOptions(estatusFacturas, 'estatus', 'id')
+                options['estatusCompras'] = setSelectOptions( estatusCompras, 'estatus' )
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['clientes'] = setOptions(clientes, 'empresa', 'id')
                 data.clientes = clientes
@@ -505,6 +509,9 @@ class Ingresos extends Component {
                 case 'facturaObject':
                     data.append(element, JSON.stringify(form[element]))
                     break;
+                case 'estatusCompra':
+                    data.append(element, form[element]);
+                    break;
                 default:
                     break
             }
@@ -526,7 +533,9 @@ class Ingresos extends Component {
             (response) => {
 
                 const { ingreso } = response.data
-                let { porcentaje} = this.state
+                let { porcentaje, form } = this.state
+                form = this.clearForm()
+                form.estatusCompra = ingreso.estatus_compra.id
                 porcentaje = 0
                 ingreso.facturas.map((factura) => {
                     porcentaje = porcentaje + factura.total
@@ -536,7 +545,7 @@ class Ingresos extends Component {
                 this.getIngresosAxios()
                 this.setState({
                     ... this.state,
-                    form: this.clearForm(),
+                    form,
                     ingreso: ingreso,
                     facturas: ingreso.facturas,
                     porcentaje
@@ -789,9 +798,22 @@ class Ingresos extends Component {
                                     files={form['adjuntos']['factura']['files']}
                                     deleteAdjunto={this.clearFiles} multiple />
                             </div>
+                            <div className="col-md-6 px-2">
+                                <Select
+                                    requirevalidation={1}
+                                    formeditado={1}
+                                    placeholder="SELECCIONA EL ESTATUS DE COMPRA"
+                                    options={options.estatusCompras}
+                                    name="estatusCompra"
+                                    value={form.estatusCompra}
+                                    onChange={this.onChange}
+                                    iconclass={"flaticon2-time"}
+                                    messageinc="Incorrecto. Selecciona el estatus de compra."
+                                    />
+                            </div>
                             {
                                 form.adjuntos.factura.files.length ?
-                                    <div className="col-md-6 px-2 align-items-center d-flex">
+                                    <div className="col-md-12 px-2 align-items-center d-flex">
                                         <Button icon='' className="mx-auto" type="submit" text="Enviar" />
                                     </div>
                                     : ''
