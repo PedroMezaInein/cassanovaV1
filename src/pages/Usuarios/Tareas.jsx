@@ -118,27 +118,7 @@ class Tareas extends Component{
     
         const { users } = this.state
 
-        let aux = []
-        tarea.participantes.map( ( participante, key ) => {
-            aux.push( {name: participante.name, value:participante.email, identificador: participante.id} )
-        })
-
-        let _aux = []
-        users.map( ( participante, key ) => {
-            _aux.push( {name: participante.name, value:participante.email, identificador: participante.id} )
-        })
-
         let _index = []
-        
-        _aux.map((element, index) => {
-            let validador = false
-            aux.map((_element, key) => {
-                if(element.identificador === _element.identificador)
-                    validador = true
-            })
-            if(!validador)
-                _index.push(element)
-        })
 
         this.setState({
             ... this.state,
@@ -147,8 +127,6 @@ class Tareas extends Component{
             adjuntoName: '',
             adjuntoFile: '',
             adjunto: '',
-            participantesTask: aux,
-            participantes: _index
         })
     }
 
@@ -192,6 +170,8 @@ class Tareas extends Component{
     }
 
     onDragEnd = result => {
+        console.log('result, ', result)
+        
         const { destination, source, draggableId } = result
 
         if(!destination)
@@ -430,10 +410,7 @@ class Tareas extends Component{
         data.append('id', tarea.id)
         await axios.post(URL_DEV + 'user/tareas/comentario', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
-                const { data : { tareas : columns } } = response
-                const { data : { user : user } } = response
-                const { data : { tarea : tarea } } = response
-                const { tableros } = response.data
+                const { tableros, tarea } = response.data
                 tableros.map((tablero) => {
                     if(tablero.nombre == subActiveKey){
                         this.setTareas(tablero.tareas)
@@ -441,7 +418,6 @@ class Tareas extends Component{
                 })
                 this.setState({
                     ... this.state,
-                    user: user,
                     comentario: '',
                     tarea: tarea,
                     adjunto: '',
@@ -461,6 +437,7 @@ class Tareas extends Component{
                         confirmButtonText: 'Inicia sesión'
                     })
                 }else{
+                    console.log(error, 'error')
                     swal({
                         title: '¡Ups 😕!',
                         text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
@@ -470,6 +447,7 @@ class Tareas extends Component{
                 }
             }
         ).catch((error) => {
+            console.log(error, 'error')
             swal({
                 title: '¡Ups 😕!',
                 text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
@@ -513,100 +491,6 @@ class Tareas extends Component{
         })
     }
 
-    async deleteParticipanteAxios(id_user){
-        const { access_token } = this.props.authUser
-        const { tarea: { id: id } } = this.state
-        await axios.delete(URL_DEV + `user/tareas/${id}/participante/${id_user}`, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
-            (response) => {
-                const { data : { tareas : columns } } = response
-                const { data : { user : user } } = response
-                const { data : { users : users } } = response
-                const { data : { tarea : tarea } } = response
-                this.setState({
-                    user: user
-                })
-                this.setTareas(columns)
-                this.setOptions(tarea)
-                if( user.id === id_user){
-                    this.setState({
-                        modal: false,
-                        tarea: '',
-                        adjuntoName: '',
-                        adjuntoFile: '',
-                        adjunto: ''
-                    })
-                }
-            },
-            (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    })
-                }else{
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
-                        icon: 'error',
-                        
-                    })
-                }
-            }
-        ).catch((error) => {
-            swal({
-                title: '¡Ups 😕!',
-                text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
-                icon: 'error',
-                
-            })
-        })
-    }
-
-    async addParticipanteAxios(tarea_id, user_id){
-        const { access_token } = this.props.authUser
-        await axios.put(URL_DEV + `user/tareas/${tarea_id}/participante/${user_id}`, {}, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
-            (response) => {
-                const { data : { tareas : columns } } = response
-                const { data : { user : user } } = response
-                const { data : { users : users } } = response
-                const { data : { tarea : tarea } } = response
-                this.setState({
-                    user: user
-                })
-                this.setTareas(columns)
-                this.setOptions(tarea)
-            },
-            (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    })
-                }else{
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
-                        icon: 'error',
-                        
-                    })
-                }
-            }
-        ).catch((error) => {
-            swal({
-                title: '¡Ups 😕!',
-                text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
-                icon: 'error',
-                
-            })
-        })
-    }
-
     deleteTarea = (id) => {
         this.deleteTareaAxios(id)
     }
@@ -617,17 +501,23 @@ class Tareas extends Component{
 
     async deleteTareaAxios(id){
         const { access_token } = this.props.authUser
+        const { form, subActiveKey} = this.state
         await axios.delete(URL_DEV + 'user/tareas/' + id, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
-                const { data : { tareas : columns } } = response
-                this.setTareas(columns)
+                const { tableros, tarea } = response.data
+                tableros.map((tablero) => {
+                    if(tablero.nombre == subActiveKey){
+                        this.setTareas(tablero.tareas)
+                    }
+                })
                 this.setState({
                     ... this.state,
                     modal: false,
                     tarea: '',
                     adjuntoName: '',
                     adjuntoFile: '',
-                    adjunto: ''
+                    adjunto: '',
+                    tableros:tableros
                 })
             },
             (error) => {
@@ -649,6 +539,7 @@ class Tareas extends Component{
                 }
             }
         ).catch((error) => {
+            console.log(error, 'error')
             swal({
                 title: '¡Ups 😕!',
                 text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
@@ -659,10 +550,15 @@ class Tareas extends Component{
     }
     async endTareaAxios(id){
         const { access_token } = this.props.authUser
+        const { subActiveKey } = this.state
         await axios.put(URL_DEV + 'user/tareas/' + id + '/end', {}, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
-                const { data : { tareas : columns } } = response
-                this.setTareas(columns)
+                const { tableros, tarea } = response.data
+                tableros.map((tablero) => {
+                    if(tablero.nombre == subActiveKey){
+                        this.setTareas(tablero.tareas)
+                    }
+                })
                 this.setState({
                     ... this.state,
                     modal: false,
@@ -670,7 +566,8 @@ class Tareas extends Component{
                     adjuntoName: '',
                     adjuntoFile: '',
                     adjunto: '',
-                    formeditado:1
+                    formeditado:1,
+                    tableros:tableros
                 })
             },
             (error) => {
@@ -703,14 +600,20 @@ class Tareas extends Component{
 
     async reordeingTasksAxios(source, destination, task){
         const { access_token } = this.props.authUser
+        const { subActiveKey } = this.state
         await axios.put(URL_DEV + 'user/tareas/order', {source, destination, task}, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
-                const { data : { tareas : columns } } = response
-                const { data : { user : user } } = response
-                this.setState({
-                    user: user
+                const { tableros, tarea } = response.data
+                tableros.map((tablero) => {
+                    if(tablero.nombre == subActiveKey){
+                        this.setTareas(tablero.tareas)
+                    }
                 })
-                this.setTareas(columns)
+                this.setState({
+                    ... this.state,
+                    modal: false,
+                    tableros:tableros
+                })
             },
             (error) => {
                 console.log(error, 'error')
@@ -873,7 +776,7 @@ class Tareas extends Component{
                                                                 </div>
                                                                 <div className="timeline-content">
                                                                     <span className="text-primary font-weight-bold">{this.diffCommentDate(comentario)}</span>
-                                                                    <span class="text-muted ml-2">{comentario.user.name}</span>
+                                                                    <span className="text-muted ml-2">{comentario.user.name}</span>
                                                                     <p className="p-0">{comentario.comentario}</p>
                                                                 </div>
                                                             </div>
