@@ -111,6 +111,9 @@ class NewTableServerRender extends Component {
                     if(objeto.factura && objeto.total === objeto.total_facturas){
                         $(row).addClass('verde');
                     }
+                    if(objeto.total_facturas === 0 || objeto.total_facturas === null){
+                        $(row).addClass('rojo');
+                    }
                 }
                 if (elementClass) {
                     let auxiliar = data[elementClass].split('<!-- -->')
