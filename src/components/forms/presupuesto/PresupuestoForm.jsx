@@ -6,6 +6,7 @@ import { DATE } from '../../../constants'
 import ReactTooltip from "react-tooltip";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
+import { setMoneyTable } from '../../../functions/setters'
 
 class PresupuestoForm extends Component {
 
@@ -68,10 +69,10 @@ class PresupuestoForm extends Component {
     }
 
     render() {
-        const { options, form, onChange, onSubmit, formeditado } = this.props
-        const { data } = this.state
-        console.log(data.partidas = options.partidas)
-        console.log(data.partidas)
+        const { options, form, onChange, onSubmit, formeditado, data, checkButton } = this.props
+        /* const { data } = this.state */
+        /* console.log(data.partidas = options.partidas)
+        console.log(data.partidas) */
         return (
 
             <div className="row">
@@ -138,40 +139,53 @@ class PresupuestoForm extends Component {
                                         <div className="card-body p-0">
                                             <div className="table-responsive">
                                                 <div className="list list-hover min-w-500px" data-inbox="list">
-                                                    <div className="d-flex align-items-start list-item card-spacer-x pt-4 pb-5" data-inbox="message">
-                                                        <div className="d-flex align-items-center col-1">
-                                                            <div className="d-flex align-items-center mr-3" data-inbox="actions">
-                                                                <label className="checkbox checkbox-single checkbox-primary flex-shrink-0 mr-3">
-                                                                    <input type="checkbox" />
-                                                                    <span></span>
-                                                                </label>
-                                                            </div>
-                                                        </div>
-                                                        <div className="flex-grow-1 mt-1 mr-2 col-2" data-toggle="view">
-                                                            <div className="font-weight-bold mr-2">25.1.20</div>
-                                                        </div>
-                                                        <div className="flex-grow-1 mt-1 mr-2 col-5" data-toggle="view">
-                                                            <div className="font-weight-bold mr-2 font-size-sm text-justify">
-                                                                SUMINISTRO Y COLOCACIÓN DE MURO DE 12 CM DE
-                                                                ESPESOR A DOS CARAS, A BASE DE TABLAROCA
-                                                                TIPO RH AL FUEGO MARCA USG DE 15.9 MM DE
-                                                                ESPESOR, BASTIDOR ARMADO A BASE CANALES Y
-                                                                POSTES DE LÁMINA GALVANIZADA CAL. 26 DE 7.5
-                                                                CM. DE ANCHO COLOCADOS A CADA 60 CM DE
-                                                                SEPARACIÓN. INCLUYE MATERIALES, ACARREOS,
-                                                                ELEVACIONES, CORTES, DESPERDICIOS, FIJACIÓN,
-                                                                MANO DE OBRA, EQUIPO Y HERRAMIENTA.
+                                                    {
+                                                        data.conceptos.map( (concepto, key) => {
+                                                            console.log(concepto, 'concepto')
+                                                            console.log(form, 'form')
+                                                            return(
+                                                                <div key={key} className="d-flex align-items-start list-item card-spacer-x pt-4 pb-5" data-inbox="message">
+                                                                    <div className="d-flex align-items-center col-1">
+                                                                        <div className="d-flex align-items-center mr-3" data-inbox="actions">
+                                                                            <label className="checkbox checkbox-single checkbox-primary flex-shrink-0 mr-3">
+                                                                            <input 
+                                                                                type="checkbox" 
+                                                                                onChange={ (e) => { checkButton(e)} } 
+                                                                                name = { concepto.clave }
+                                                                                checked = { form.conceptos[concepto.clave] }
+                                                                                value = { form.conceptos[concepto.clave] } 
+                                                                                />
+                                                                                <span></span>
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="flex-grow-1 mt-1 mr-2 col-2" data-toggle="view">
+                                                                        <div className="font-weight-bold mr-2">{concepto.clave}</div>
+                                                                    </div>
+                                                                    <div className="flex-grow-1 mt-1 mr-2 col-5" data-toggle="view">
+                                                                        <div className="font-weight-bold mr-2 font-size-sm text-justify">
+                                                                            {
+                                                                                concepto.descripcion
+                                                                            }    
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="d-flex align-items-center justify-content-center flex-wrap col-2" data-toggle="view">
+                                                                        <div className="font-weight-bolder position-absolute" data-toggle="view">UNIDAD</div>
+                                                                        <span className="label label-light-primary  label-inline position-relative" style={{top:"22px"}} >hola</span>
+                                                                    </div>
+                                                                    <div className="d-flex align-items-center justify-content-center flex-wrap col-2" data-toggle="view">
+                                                                        <div className="font-weight-bolder position-absolute" data-toggle="view">COSTO</div>
+                                                                        <span className="label label-light-primary  label-inline position-relative" style={{top:"22px"}}>
+                                                                            {
+                                                                                setMoneyTable(concepto.costo)
+                                                                            }
+                                                                        </span>
+                                                                    </div>
                                                                 </div>
-                                                        </div>
-                                                        <div className="d-flex align-items-center justify-content-center flex-wrap col-2" data-toggle="view">
-                                                            <div className="font-weight-bolder position-absolute" data-toggle="view">UNIDAD</div>
-                                                            <span className="label label-light-primary  label-inline position-relative" style={{top:"22px"}} >EQUIPO</span>
-                                                        </div>
-                                                        <div className="d-flex align-items-center justify-content-center flex-wrap col-2" data-toggle="view">
-                                                            <div className="font-weight-bolder position-absolute" data-toggle="view">COSTO</div>
-                                                            <span className="label label-light-primary  label-inline position-relative" style={{top:"22px"}}>$10,8225.00</span>
-                                                        </div>
-                                                    </div>
+                                                            )
+                                                        })
+                                                        
+                                                    }
                                                 </div>
                                             </div>
                                         </div>

@@ -35,6 +35,12 @@ class AddPresupuestoForm extends Component {
             partidas: [],
             subpartidas: [],
         },
+        data:{
+            partidas: [],
+            subpartidas: [],
+            conceptos: []
+        },
+        conceptos: {}
     };
 
     componentDidMount() {
@@ -123,8 +129,15 @@ class AddPresupuestoForm extends Component {
             .then(
                 (response) => {
                     swal.close();
-                    const { empresas, proyectos, areas, partidas } = response.data;
-                    const { options } = this.state;
+                    const { empresas, proyectos, areas, partidas, conceptos } = response.data;
+                    const { options, data, form } = this.state;
+                    data.partidas = partidas
+                    data.conceptos = conceptos
+                    let aux = {}
+                    conceptos.map( (concepto) => {
+                        aux[concepto.clave] = false
+                    })
+                    form.conceptos = aux;
                     options["proyectos"] = setOptions(proyectos, "nombre", "id");
                     options["empresas"] = setOptions(empresas, "name", "id");
                     options["areas"] = setOptions(areas, "nombre", "id");
@@ -156,13 +169,46 @@ class AddPresupuestoForm extends Component {
 
     onChange = (e) => {
         const { name, value } = e.target;
+        const { data } = this.state
+        switch(name){
+            case 'partida':
+                data.partidas.map( (partida) => {
+                    if(partida.id.toString() === value){
+                        data.subpartidas = partida.subpartidas
+                    }
+                })
+            break;
+            case 'subpartida':
+                data.subpartidas.map( (subpartida) => {
+                    if(subpartida.id.toString() === value){
+                        data.conceptos = subpartida.conceptos
+                    }
+                })
+            break;
+            default:
+            break;
+        }
+
         const { form } = this.state;
         form[name] = value;
         this.setState({
             ...this.state,
             form,
+            data
         });
+
+        console.log(data, 'Data on change')
     };
+
+    checkButton = e => {
+        const { name, value, checked } = e.target
+        const { form } = this.state
+        form.conceptos[name] = checked
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
 
     // save = () => {
     //     const { form } = this.state
@@ -198,6 +244,7 @@ class AddPresupuestoForm extends Component {
                     title={title}
                     form={form}
                     onChange={this.onChange}
+                    checkButton={this.checkButton}
                     options={options}
                     setOptions={this.setOptions}
                     onSubmit={this.onSubmit}
