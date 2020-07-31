@@ -81,7 +81,7 @@ class PresupuestoForm extends Component {
                             <div className="card card-custom gutter-b">
                                 <div className="table-responsive-md card-body d-flex align-items-center justify-content-between flex-wrap py-3">
                                     <div className="d-flex align-items-center mr-2 py-2">
-                                        <h4 className="font-weight-bold mb-0 mr-5">PARTIDA</h4>
+                                        <h4 className="font-weight-bold mb-0 mr-5">PARTIDAS Y SUB-PARTIDAS</h4>
                                     </div>
                                     <div className="d-flex">
                                         <div className="navi navi-hover navi-active navi-link-rounded navi-bold d-flex flex-row">
@@ -130,7 +130,7 @@ class PresupuestoForm extends Component {
                                                     </label>
                                                     <div className="d-flex flex-column mr-2 py-2">
                                                         <a
-                                                            className="text-dark text-hover-primary font-weight-bold font-size-h4 mx-3">SUB-PARTIDAS</a>
+                                                            className="text-dark text-hover-primary font-weight-bold font-size-h4 mx-3">CONCEPTOS</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -185,10 +185,10 @@ class PresupuestoForm extends Component {
                                                 <div className="d-flex flex-column mr-2 py-2">
                                                     <a className="text-dark text-hover-primary font-weight-bold font-size-h4 mr-3"> CONCEPTOS SELECCIONADOS</a>
                                                 </div>                                            
-                                                <div class="d-flex py-2">
+                                                <div className="d-flex py-2">
                                                     <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Formulario</Tooltip>}> 
-                                                    <button class="btn btn-default btn-sm btn-icon" data-dismiss="modal" onClick={() => { this.mostrarFormulario() }}>
-                                                        <i class="ki ki-bold-more-hor font-size-md"></i>
+                                                    <button className="btn btn-default btn-sm btn-icon" data-dismiss="modal" onClick={() => { this.mostrarFormulario() }}>
+                                                        <i className="ki ki-bold-more-hor font-size-md"></i>
                                                     </button>
                                                     </OverlayTrigger>
                                                 </div>
