@@ -3,16 +3,12 @@ import { connect } from "react-redux";
 import axios from "axios";
 import swal from "sweetalert";
 import { URL_DEV } from "../../constants";
-import { setOptions, setSelectOptions } from "../../functions/setters";
-import {
-    errorAlert,
-    waitAlert,
-    forbiddenAccessAlert,
-    createAlert,
-} from "../../functions/alert";
+import { setOptions } from "../../functions/setters";
+import { errorAlert, waitAlert, forbiddenAccessAlert } from "../../functions/alert";
 import Layout from "../../components/layout/layout";
 import { PresupuestoForm } from "../../components/forms";
-import { Card } from "react-bootstrap";
+// import { save, deleteForm } from '../../redux/reducers/formulario'
+// import FloatButtons from '../../components/singles/FloatButtons'
 
 class AddPresupuestoForm extends Component {
     state = {
@@ -168,11 +164,35 @@ class AddPresupuestoForm extends Component {
         });
     };
 
+    // save = () => {
+    //     const { form } = this.state
+    //     const { save } = this.props
+    //     let auxObject = {}
+    //     let aux = Object.keys(form)
+    //     aux.map((element) => {
+    //         auxObject[element] = form[element]
+    //     })
+    //     save({
+    //         form: auxObject,
+    //         page: 'presupuesto/presupuesto/add'
+    //     })
+    // }
+
+    // recover = () => {
+    //     const { formulario, deleteForm } = this.props
+    //     this.setState({
+    //         ... this.state,
+    //         form: formulario.form
+    //     })
+    //     deleteForm()
+    // }
+
     render() {
         const { form, title, options, formeditado, data } = this.state;
+        // const { formulario, deleteForm } = this.props 
         return (
             <Layout active={"presupuesto"} {...this.props}>
-
+                {/* <FloatButtons save = { this.save } recover =  { this.recover } formulario = { formulario } url = { 'presupuesto/presupuesto/add' } /> */}
                 <PresupuestoForm
                     formeditado={formeditado}
                     title={title}
