@@ -40,17 +40,18 @@ class Facturacion extends Component {
             aux.push(
                 {
                     folio: renderToString(setTextTable(factura.folio)),
+                    fecha: renderToString(this.setDateTable(factura.fecha)),
                     serie: renderToString(setTextTable(factura.serie)),
-                    noCertificado: renderToString(setTextTable(factura.descripcion)),
                     emisor: renderToString(this.setInfoTable(factura.rfc_emisor, factura.nombre_emisor)),
                     receptor: renderToString(this.setInfoTable(factura.rfc_receptor, factura.nombre_receptor)),
-                    usoCFDI: renderToString(setTextTable(factura.uso_cfdi)),
                     subtotal: renderToString(setMoneyTable(factura.subtotal)),
                     total: renderToString(setMoneyTable(factura.total)),
                     acumulado: renderToString(setMoneyTable(factura.ventas_count + factura.ingresos_count)),
                     restante: renderToString(setMoneyTable(factura.total - factura.ventas_count - factura.ingresos_count)),
                     adjuntos: renderToString(this.setAdjuntosTable(factura)),
-                    fecha: renderToString(this.setDateTable(factura.fecha)),
+                    descripcion: renderToString(setTextTable(factura.descripcion)),
+                    noCertificado: renderToString(setTextTable(factura.numero_certificado)),
+                    usoCFDI: renderToString(setTextTable(factura.uso_cfdi)),
                     id: factura.id
                 }
             )
