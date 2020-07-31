@@ -165,11 +165,11 @@ class PresupuestoForm extends Component {
                                                         </div>
                                                         <div className="d-flex align-items-center justify-content-center flex-wrap col-2" data-toggle="view">
                                                             <div className="font-weight-bolder position-absolute" data-toggle="view">UNIDAD</div>
-                                                            <span className="label label-light-primary  label-inline mr-2 position-relative" style={{top:"22px"}} >EQUIPO</span>
+                                                            <span className="label label-light-primary  label-inline position-relative" style={{top:"22px"}} >EQUIPO</span>
                                                         </div>
                                                         <div className="d-flex align-items-center justify-content-center flex-wrap col-2" data-toggle="view">
                                                             <div className="font-weight-bolder position-absolute" data-toggle="view">COSTO</div>
-                                                            <span className="label label-light-primary  label-inline mr-2 position-relative" style={{top:"22px"}}>$10,8225.00</span>
+                                                            <span className="label label-light-primary  label-inline position-relative" style={{top:"22px"}}>$10,8225.00</span>
                                                         </div>
                                                     </div>
                                                 </div>
