@@ -3,6 +3,7 @@ import '../../styles/custom_datatable.css'
 import '../../styles/metronic/_datables.scss';
 import { waitAlert, errorAlert } from '../../functions/alert'
 import swal from 'sweetalert'
+import { objectOf } from 'prop-types';
 
 const $ = require('jquery');
 $.DataTable = require('datatables.net');
@@ -108,7 +109,7 @@ class NewTableServerRender extends Component {
             createdRow: function(row, data) {
                 if(validateFactura){
                     const { objeto } = data 
-                    if(objeto.factura){
+                    if(objeto.factura && objeto.total_facturas < objeto.total){
                         $(row).addClass('rojo');
                     }else{
                         $(row).addClass('blanco');

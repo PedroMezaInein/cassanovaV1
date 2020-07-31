@@ -394,37 +394,47 @@ class EgresosForm extends Component {
                                         />
                                     </div>
                                 </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-6">
-                                        <FileInput
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChangeAdjunto={onChangeAdjunto}
-                                            placeholder={form['adjuntos']['presupuesto']['placeholder']}
-                                            value={form['adjuntos']['presupuesto']['value']}
-                                            name={'presupuesto'} id={'presupuesto'}
-                                            accept="text/xml, application/pdf"
-                                            files={form['adjuntos']['presupuesto']['files']}
-                                            deleteAdjunto={clearFiles}
-                                            messageinc="Incorrecto. Adjunta el documento."
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <FileInput
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChangeAdjunto={onChangeAdjunto}
-                                            placeholder={form['adjuntos']['pago']['placeholder']}
-                                            value={form['adjuntos']['pago']['value']}
-                                            name={'pago'} id={'pago'}
-                                            accept="text/xml, application/pdf"
-                                            files={form['adjuntos']['pago']['files']}
-                                            deleteAdjunto={clearFiles}
-                                            messageinc="Incorrecto. Adjunta el documento."
-                                        />
-                                    </div>
-                                </div>
+                                
+                                {
+                                    title !== 'Editar egreso' ?
+                                        <>
+                                            <div className="separator separator-dashed mt-1 mb-2"></div>
+                                            <div className="form-group row form-group-marginless">
+                                                <div className="col-md-6">
+                                                    <FileInput
+                                                        requirevalidation={0}
+                                                        formeditado={formeditado}
+                                                        onChangeAdjunto={onChangeAdjunto}
+                                                        placeholder={form['adjuntos']['presupuesto']['placeholder']}
+                                                        value={form['adjuntos']['presupuesto']['value']}
+                                                        name={'presupuesto'} id={'presupuesto'}
+                                                        accept="text/xml, application/pdf"
+                                                        files={form['adjuntos']['presupuesto']['files']}
+                                                        deleteAdjunto={clearFiles}
+                                                        messageinc="Incorrecto. Adjunta el documento."
+                                                        multiple
+                                                    />
+                                                </div>
+                                                <div className="col-md-6">
+                                                    <FileInput
+                                                        requirevalidation={0}
+                                                        formeditado={formeditado}
+                                                        onChangeAdjunto={onChangeAdjunto}
+                                                        placeholder={form['adjuntos']['pago']['placeholder']}
+                                                        value={form['adjuntos']['pago']['value']}
+                                                        name={'pago'} id={'pago'}
+                                                        accept="text/xml, application/pdf"
+                                                        files={form['adjuntos']['pago']['files']}
+                                                        deleteAdjunto={clearFiles}
+                                                        messageinc="Incorrecto. Adjunta el documento."
+                                                        multiple
+                                                    />
+                                                </div>
+                                            </div>
+                                        </>
+                                    : ''
+                                }
+                                
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
