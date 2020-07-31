@@ -84,7 +84,7 @@ class EmpleadosForm extends Component {
                                     </div>
                                     <div className="col-md-4">
                                         <Input
-                                            requirevalidation={1}
+                                            requirevalidation={0}
                                             formeditado={formeditado}
                                             onChange={onChange}
                                             name="curp"
@@ -100,7 +100,7 @@ class EmpleadosForm extends Component {
                                     </div>
                                     <div className="col-md-4">
                                         <Input
-                                            requirevalidation={1}
+                                            requirevalidation={0}
                                             formeditado={formeditado}
                                             onChange={onChange}
                                             name="rfc"
@@ -118,7 +118,7 @@ class EmpleadosForm extends Component {
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <InputNumber
-                                            requirevalidation={1}
+                                            requirevalidation={0}
                                             formeditado={formeditado}
                                             onChange={onChange}
                                             name="nss"
@@ -145,7 +145,7 @@ class EmpleadosForm extends Component {
                                     </div>
                                     <div className="col-md-4">
                                         <InputPhone
-                                            requirevalidation={1}
+                                            requirevalidation={0}
                                             formeditado={formeditado}
                                             placeholder="TELÉFONO DE EMERGENCIA"
                                             name="telefono_emergencia"
@@ -164,7 +164,7 @@ class EmpleadosForm extends Component {
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <Input
-                                            requirevalidation={1}
+                                            requirevalidation={0}
                                             formeditado={formeditado}
                                             onChange={onChange}
                                             name="banco"
@@ -177,7 +177,7 @@ class EmpleadosForm extends Component {
                                     </div>
                                     <div className="col-md-4">
                                         <InputNumber
-                                            requirevalidation={1}
+                                            requirevalidation={0}
                                             formeditado={formeditado}
                                             onChange={onChange}
                                             name="cuenta"
@@ -190,7 +190,7 @@ class EmpleadosForm extends Component {
                                     </div>
                                     <div className="col-md-4">
                                         <InputNumber
-                                            requirevalidation={1}
+                                            requirevalidation={0}
                                             formeditado={formeditado}
                                             onChange={onChange}
                                             name="clabe"
@@ -307,7 +307,7 @@ class EmpleadosForm extends Component {
                                     </div>
                                     <div className="col-md-4">
                                         <Calendar
-                                            requirevalidation={1}
+                                            requirevalidation={0}
                                             formeditado={formeditado}
                                             onChangeCalendar={this.handleChangeDateFin}
                                             placeholder="Fecha final"
@@ -420,7 +420,7 @@ class EmpleadosForm extends Component {
                                 <div className="form-group row form-group-marginless"> 
                                     <div className="col-md-4">
                                         <InputNumber
-                                            requirevalidation={1}
+                                            requirevalidation={0}
                                             formeditado={formeditado}
                                             onChange={onChange}
                                             name="numero_alta_imss"
