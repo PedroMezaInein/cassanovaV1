@@ -5,7 +5,7 @@ class FloatButtons extends Component{
         const { save, recover, formulario, url } = this.props
 
         return(
-            <div className="position-fixed float-button">
+            <div className="position-fixed float-button d-flex align-items-center">
                 <div>
                     <button onClick={ save } className="ml-2 my-2 btn btn-actions-table btn-md btn-icon btn-bg-white btn-text-success btn-hover-success" 
                         title='Guardar'>
