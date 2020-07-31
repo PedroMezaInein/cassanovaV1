@@ -47,7 +47,7 @@ class Empleados extends Component {
             estatus_imss: 'Activo',
             puesto:'',
             vacaciones_tomadas:0, 
-            fecha_alta_imss: new Date(),
+            fecha_alta_imss: '',
             numero_alta_imss: '',
             adjuntos:{
                 datosGenerales:{
@@ -552,7 +552,6 @@ class Empleados extends Component {
         aux.map((element) => {
             switch (element) {
                 case 'fechaInicio':
-                case 'fecha_alta_imss':
                     form[element] = new Date()
                     break;
                 case 'adjuntos':
