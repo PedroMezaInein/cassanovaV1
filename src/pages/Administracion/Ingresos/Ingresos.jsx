@@ -122,7 +122,7 @@ class Ingresos extends Component {
         for (let counter = 0; counter < files.length; counter++) {
             if (name === 'factura') {
                 let extension = files[counter].name.slice((Math.max(0, files[counter].name.lastIndexOf(".")) || Infinity) + 1);
-                if (extension === 'xml') {
+                if (extension.toUpperCase() === 'XML') {
                     waitAlert()
                     const reader = new FileReader()
                     reader.onload = async (e) => {
