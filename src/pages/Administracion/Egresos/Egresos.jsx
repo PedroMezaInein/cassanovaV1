@@ -265,8 +265,24 @@ class egresos extends Component{
 
     setEgresos = egresos => {
         let aux = []
+        let _aux = []
         if(egresos)
             egresos.map( (egreso) => {
+            _aux = []
+            if (egreso.presupuestos) {
+                egreso.presupuestos.map((presupuesto) => {
+                    _aux.push({
+                        name: 'Presupuesto', text: presupuesto.name, url: presupuesto.url
+                    })
+                })
+            }
+            if (egreso.pagos) {
+                egreso.pagos.map((pago) => {
+                    _aux.push({
+                        name: 'Pago', text: pago.name, url: pago.url
+                    })
+                })
+            }
                 aux.push(
                     {
                         actions: this.setActions(egreso),
@@ -289,10 +305,7 @@ class egresos extends Component{
                         area: renderToString(setTextTable( egreso.subarea ? egreso.subarea.area.nombre : '' )),
                         subarea: renderToString(setTextTable( egreso.subarea ? egreso.subarea.nombre : '' )),
                         estatusCompra: renderToString(setTextTable( egreso.estatus_compra ? egreso.estatus_compra.estatus : '' )),
-                        adjuntos: renderToString(setAdjuntosList([
-                            egreso.pago ? {name: 'Pago', url: egreso.pago.url} : '',
-                            egreso.presupuesto ? {name: 'Presupuesto', url: egreso.presupuesto.url} : '',
-                        ])),
+                        adjuntos: renderToString(setArrayTable(_aux)),
                         fecha: renderToString(setDateTable(egreso.created_at)),
                         id: egreso.id,
                         objeto: egreso
