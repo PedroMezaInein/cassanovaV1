@@ -142,7 +142,6 @@ class PresupuestoForm extends Component {
                                                     {
                                                         data.conceptos.map( (concepto, key) => {
                                                             console.log(concepto, 'concepto')
-                                                            console.log(form, 'form')
                                                             return(
                                                                 <div key={key} className="d-flex align-items-start list-item card-spacer-x pt-4 pb-5" data-inbox="message">
                                                                     <div className="d-flex align-items-center col-1">

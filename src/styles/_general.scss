@@ -178,3 +178,13 @@ a.text-hover-danger2:hover, .text-hover-danger2:hover{
     border-radius: 5px !important;
     width: 39px !important;
 }
+
+
+
+.modal-dialog{
+    &.modal-xl{
+        @include screen($md){
+            max-width: 85vw!important;
+        }
+    }
+}
