@@ -72,7 +72,7 @@ class Layout extends Component {
         const { children, } = this.props
         const { menu } = this.state   
         return (
-            <> 
+            <div /* className="position-relative" */> 
             <MobileHeader/>
 
             <div className="d-flex flex-column flex-root">
@@ -150,7 +150,7 @@ class Layout extends Component {
                 </div>
             </div>
             <UserPanel clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {... this.props} />
-            </>
+            </div>
         )
     }
     
