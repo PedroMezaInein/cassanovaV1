@@ -407,7 +407,7 @@ class EmpleadosForm extends Component {
                                     </div>
                                     <div className="col-md-4">
                                         <Calendar
-                                            requirevalidation={1}
+                                            requirevalidation={0}
                                             formeditado={formeditado}
                                             onChangeCalendar={this.handleChangeDate}
                                             placeholder="FECHA DE ALTA AL IMSS"
