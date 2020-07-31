@@ -6,3 +6,13 @@
         background-color: $dark-blue;
     }
 }
+
+
+
+.modal-dialog{
+    &.modal-xl{
+        @include up-screen($md){
+            max-width: 85vw!important;
+        }
+    }
+}

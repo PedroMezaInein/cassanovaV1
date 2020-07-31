@@ -181,7 +181,7 @@ class NominaObraForm extends Component {
                         : ''
                 }
 
-                <table className="table table-separate table-responsive" id="tabla_obra">
+                <table className="table table-separate table-responsive table_nominas" id="tabla_obra">
                     <thead>
                         <tr>
                             <th rowSpan="2"><div className="mt-2 pb-3">Empleado</div></th>

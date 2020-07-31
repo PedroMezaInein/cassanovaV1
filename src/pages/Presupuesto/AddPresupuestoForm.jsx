@@ -27,6 +27,7 @@ class AddPresupuestoForm extends Component {
             tiempo_ejecucion: "",
             partida: "",
             subpartida: "",
+            conceptos: {}
         },
         options: {
             proyectos: [],
@@ -40,7 +41,6 @@ class AddPresupuestoForm extends Component {
             subpartidas: [],
             conceptos: []
         },
-        conceptos: {}
     };
 
     componentDidMount() {
@@ -173,6 +173,7 @@ class AddPresupuestoForm extends Component {
         switch(name){
             case 'partida':
                 data.partidas.map( (partida) => {
+                    data.conceptos = []
                     if(partida.id.toString() === value){
                         data.subpartidas = partida.subpartidas
                     }
@@ -249,7 +250,7 @@ class AddPresupuestoForm extends Component {
                     setOptions={this.setOptions}
                     onSubmit={this.onSubmit}
                     data={data}
-                    {... this.props}
+                    /* {... this.props} */
                 />
             </Layout>
         );
