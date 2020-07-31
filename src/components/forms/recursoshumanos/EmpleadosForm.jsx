@@ -128,6 +128,7 @@ class EmpleadosForm extends Component {
                                             iconclass={"fas fa-hospital-user"}
                                             patterns={NSS}
                                             messageinc="Incorrecto. Ej. 01234567891"
+                                            typeformat ="###########"
                                         />
                                     </div>
                                     <div className="col-md-4">
@@ -186,6 +187,7 @@ class EmpleadosForm extends Component {
                                             placeholder="CUENTA"
                                             iconclass={" fas fa-id-card "}
                                             messageinc="Incorrecto. Ingresa el número de cuenta."
+                                            typeformat ="##################"
                                         />
                                     </div>
                                     <div className="col-md-4">
@@ -199,7 +201,7 @@ class EmpleadosForm extends Component {
                                             placeholder="CLABE"
                                             iconclass={"fas fa-money-check-alt"}
                                             messageinc="Incorrecto. Ingresa la clabe."
-                                            maxLength="18"
+                                            typeformat ="##################"
                                         />
                                     </div>
                                 </div>
@@ -430,7 +432,7 @@ class EmpleadosForm extends Component {
                                             iconclass={"fas fa-hospital-user"}
                                             patterns={NSS}
                                             messageinc="Incorrecto. Ej. 01234567891"
-                                            //maxLength="11"
+                                            typeformat ="###########"
                                         />
                                     </div>
                                     {
