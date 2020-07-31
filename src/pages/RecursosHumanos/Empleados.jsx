@@ -252,10 +252,10 @@ class Empleados extends Component {
         aux.map((element) => {
             switch (element) {
                 case 'fechaInicio':
-                case 'fecha_alta_imss':
                     data.append(element, (new Date(form[element])).toDateString())
                     break;
                 case 'fechaFin':
+                case 'fecha_alta_imss':
                     if(form[element])
                         data.append(element, (new Date(form[element])).toDateString())
                     else
