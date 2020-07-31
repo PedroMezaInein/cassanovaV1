@@ -13,6 +13,8 @@ import { setOptions, setSelectOptions } from '../../functions/setters'
 import { forbiddenAccessAlert, errorAlert, waitAlert } from '../../functions/alert'
 import modal from '../../components/singles/Modal'
 
+import { save, deleteForm } from '../../redux/reducers/formulario'
+import FloatButtons from '../../components/singles/FloatButtons'
 class Usuarios extends Component {
 
     state = {
@@ -255,10 +257,13 @@ class Usuarios extends Component {
 
     async addUserAxios() {
         const { access_token } = this.props.authUser
+        const { deleteForm } = this.props
         const { form } = this.state
         
         await axios.post(URL_DEV + 'user', form, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
+
+                deleteForm()
 
                 const { users } = response.data
                 const { modal } = this.state
@@ -295,10 +300,13 @@ class Usuarios extends Component {
 
     async updateUserAxios() {
         const { access_token } = this.props.authUser
+        const { deleteForm } = this.props
         const { form, user } = this.state
         await axios.put(URL_DEV + 'user/' + user.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 
+                deleteForm()
+
                 const { users } = response.data
                 const { modal } = this.state
                 modal.form = false
@@ -374,8 +382,33 @@ class Usuarios extends Component {
         })
     }
 
+    save = () => {
+        const { form } = this.state
+        const { save } = this.props
+        let auxObject = {}
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            auxObject[element] = form[element]
+        })
+        save({
+            form: auxObject,
+            page: 'usuarios/usuarios'
+        })
+    }
+
+    recover = () => {
+        const { formulario, deleteForm } = this.props
+        this.setState({
+            ... this.state,
+            form: formulario.form
+        })
+        deleteForm()
+    }
+
     render(){
         const { modal, title, users, user, form, options } = this.state
+        const { formulario, deleteForm } = this.props
+        console.log(formulario, 'render formulario')
         return (
             <Layout active = { 'usuarios' }  { ...this.props } >
                 <div className="d-flex align-items-center mb-2 flex-column flex-md-row justify-content-md-between">
@@ -436,12 +469,17 @@ class Usuarios extends Component {
                 <Modal size="xl" title = { title } 
                     show = { modal.form } 
                     handleClose = { this.handleClose } >
-                    <RegisterUserForm 
-                        className = 'px-3' form = { form } options = { options }
-                        onSubmit = { this.onSubmit } onChange = { this.onChange }
-                        onChangeOptions =  { this.onChangeOptions }
-                        deleteOption = { this.deleteOption }
-                        />
+                    <div className="position-relative">
+                        <div /* className="position-absolute" */>
+                            <FloatButtons save = { this.save } recover =  { this.recover } formulario = { formulario } url = { 'usuarios/usuarios' } />
+                        </div>
+                        <RegisterUserForm 
+                            className = 'px-3' form = { form } options = { options }
+                            onSubmit = { this.onSubmit } onChange = { this.onChange }
+                            onChangeOptions =  { this.onChangeOptions }
+                            deleteOption = { this.deleteOption }
+                            />
+                    </div>
                 </Modal>
                 <ModalDelete 
                     title = { user === null ? "¿Estás seguro que deseas eliminar a " : "¿Estás seguro que deseas eliminar a " + user.name + " ?"} 
@@ -462,11 +500,14 @@ class Usuarios extends Component {
 
 const mapStateToProps = state => {
     return {
-        authUser: state.authUser
+        authUser: state.authUser,
+        formulario: state.formulario
     }
 }
 
 const mapDispatchToProps = dispatch => ({
+    save: payload => dispatch(save(payload)),
+    deleteForm: () => dispatch(deleteForm()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Usuarios);
