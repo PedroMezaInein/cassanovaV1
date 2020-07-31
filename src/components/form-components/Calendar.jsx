@@ -5,6 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import es from "date-fns/locale/es";
 import Form from 'react-bootstrap/Form'
 
+
 registerLocale("es", es);
 
 class Calendar extends Component{
@@ -12,8 +13,10 @@ class Calendar extends Component{
     state = {
         calendarValido: true
     }
-    validarFecha(e)
-    {         
+    validarFecha(e) {    
+        const { requirevalidation } = this.props 
+        let validado = false;
+        if (requirevalidation) {    
             if(e instanceof Date){
                 this.setState({
                     calendarValido: true
@@ -24,6 +27,9 @@ class Calendar extends Component{
                     
                 })
             } 
+        }else{
+            validado = true
+        }
     }
     
     isWeekday = date => {
