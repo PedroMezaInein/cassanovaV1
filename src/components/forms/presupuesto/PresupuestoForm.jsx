@@ -139,7 +139,7 @@ class PresupuestoForm extends Component {
                                             <div className="table-responsive">
                                                 <div className="list list-hover min-w-500px" data-inbox="list">
                                                     <div className="d-flex align-items-start list-item card-spacer-x pt-4 pb-5" data-inbox="message">
-                                                        <div className="d-flex align-items-center">
+                                                        <div className="d-flex align-items-center col-1">
                                                             <div className="d-flex align-items-center mr-3" data-inbox="actions">
                                                                 <label className="checkbox checkbox-single checkbox-primary flex-shrink-0 mr-3">
                                                                     <input type="checkbox" />
@@ -147,10 +147,10 @@ class PresupuestoForm extends Component {
                                                                 </label>
                                                             </div>
                                                         </div>
-                                                        <div className="flex-grow-1 mt-1 mr-2" data-toggle="view">
+                                                        <div className="flex-grow-1 mt-1 mr-2 col-2" data-toggle="view">
                                                             <div className="font-weight-bold mr-2">25.1.20</div>
                                                         </div>
-                                                        <div className="flex-grow-1 mt-1 mr-2" data-toggle="view">
+                                                        <div className="flex-grow-1 mt-1 mr-2 col-5" data-toggle="view">
                                                             <div className="font-weight-bold mr-2 font-size-sm text-justify">
                                                                 SUMINISTRO Y COLOCACIÓN DE MURO DE 12 CM DE
                                                                 ESPESOR A DOS CARAS, A BASE DE TABLAROCA
@@ -163,13 +163,13 @@ class PresupuestoForm extends Component {
                                                                 MANO DE OBRA, EQUIPO Y HERRAMIENTA.
                                                                 </div>
                                                         </div>
-                                                        <div className="d-flex align-items-center justify-content-center flex-wrap" data-toggle="view">
-                                                            <div className="font-weight-bolder" data-toggle="view">UNIDAD</div>
-                                                            <span className="label label-light-primary  label-inline mr-2">EQUIPO</span>
+                                                        <div className="d-flex align-items-center justify-content-center flex-wrap col-2" data-toggle="view">
+                                                            <div className="font-weight-bolder position-absolute" data-toggle="view">UNIDAD</div>
+                                                            <span className="label label-light-primary  label-inline mr-2 position-relative" style={{top:"22px"}} >EQUIPO</span>
                                                         </div>
-                                                        <div className="d-flex align-items-center justify-content-center flex-wrap" data-toggle="view">
-                                                            <div className="font-weight-bolder" data-toggle="view">COSTO</div>
-                                                            <span className="label label-light-primary  label-inline mr-2">$10,8225.00</span>
+                                                        <div className="d-flex align-items-center justify-content-center flex-wrap col-2" data-toggle="view">
+                                                            <div className="font-weight-bolder position-absolute" data-toggle="view">COSTO</div>
+                                                            <span className="label label-light-primary  label-inline mr-2 position-relative" style={{top:"22px"}}>$10,8225.00</span>
                                                         </div>
                                                     </div>
                                                 </div>
