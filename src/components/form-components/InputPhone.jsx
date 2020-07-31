@@ -13,7 +13,7 @@ class InputPhone extends Component {
         if (value !== '' && value !== null && value !== undefined) {
             if (requirevalidation) {
                 var expRegular = new RegExp(patterns);
-                if (value > 0 && expRegular.test(value)) {
+                if (value >= 0 && expRegular.test(value)) {
                     this.setState({
                         inputPhone: true
                     })

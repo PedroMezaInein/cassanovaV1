@@ -12,7 +12,7 @@ class InputNumber extends Component {
         const { requirevalidation } = this.props
         if (value !== '' && value !== null && value !== undefined) {
             if (requirevalidation) {
-                if (value > 0) {
+                if (value >= 0) {
                     this.setState({
                         inputValido: true
                     })
