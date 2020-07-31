@@ -1592,3 +1592,18 @@ export const PRESUPUESTO_COLUMNS = [
     },
     
 ]
+
+export const USUARIOS = [                
+    {
+        Header: 'OPCIONES',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Nombre',
+        accessor: 'name',
+    },
+    {
+        Header: 'Correo',
+        accessor: 'email',
+    }
+]
