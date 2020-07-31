@@ -437,7 +437,7 @@ class Ventas extends Component{
             if(name === 'factura')
             {
                 let extension = files[counter].name.slice((Math.max(0, files[counter].name.lastIndexOf(".")) || Infinity) + 1);
-                if(extension === 'xml'){
+                if(extension.toUpperCase() === 'XML'){
                     waitAlert()
                     const reader = new FileReader()
                     reader.onload = async (e) => { 

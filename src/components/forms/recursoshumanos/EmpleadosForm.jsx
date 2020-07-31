@@ -18,7 +18,7 @@ class EmpleadosForm extends Component {
 
     handleChangeDate = date => {
         const { onChange } = this.props
-        onChange({ target: { value: date, name: 'fecha' } })
+        onChange({ target: { value: date, name: 'fecha_alta_imss' } })
     }
 
     updateEmpresa = value => {
