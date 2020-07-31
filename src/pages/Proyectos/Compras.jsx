@@ -1330,14 +1330,9 @@ class Compras extends Component {
                                     messageinc="Incorrecto. Selecciona el estatus de compra."
                                     />
                             </div>
-
-                            {
-                                form.adjuntos.factura.files.length ?
-                                    <div className="col-md-12 px-2 align-items-center d-flex">
-                                        <Button icon='' className="mx-auto" type="submit" text="Enviar" />
-                                    </div>
-                                    : ''
-                            }
+                            <div className="col-md-12 px-2 align-items-center d-flex">
+                                <Button icon='' className="mx-auto" type="submit" text="Enviar" />
+                            </div>
                         </div>
                     </Form>
                     <FacturaTable deleteFactura={this.deleteFactura} facturas={facturas} />
