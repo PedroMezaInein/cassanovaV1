@@ -197,7 +197,7 @@ class AddPresupuestoForm extends Component {
             data
         });
 
-        console.log(data, 'Data on change')
+        // console.log(data, 'Data on change')
     };
 
     checkButton = e => {
