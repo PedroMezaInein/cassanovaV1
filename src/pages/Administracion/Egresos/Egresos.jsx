@@ -268,21 +268,21 @@ class egresos extends Component{
         let _aux = []
         if(egresos)
             egresos.map( (egreso) => {
-            _aux = []
-            if (egreso.presupuestos) {
-                egreso.presupuestos.map((presupuesto) => {
-                    _aux.push({
-                        name: 'Presupuesto', text: presupuesto.name, url: presupuesto.url
+                _aux = []
+                if (egreso.presupuestos) {
+                    egreso.presupuestos.map((presupuesto) => {
+                        _aux.push({
+                            name: 'Presupuesto', text: presupuesto.name, url: presupuesto.url
+                        })
                     })
-                })
-            }
-            if (egreso.pagos) {
-                egreso.pagos.map((pago) => {
-                    _aux.push({
-                        name: 'Pago', text: pago.name, url: pago.url
+                }
+                if (egreso.pagos) {
+                    egreso.pagos.map((pago) => {
+                        _aux.push({
+                            name: 'Pago', text: pago.name, url: pago.url
+                        })
                     })
-                })
-            }
+                }
                 aux.push(
                     {
                         actions: this.setActions(egreso),
@@ -295,7 +295,7 @@ class egresos extends Component{
                             ]
                         )),
                         cliente: renderToString(setTextTable(egreso.proveedor ? egreso.proveedor.razon_social : '')),
-                        factura: renderToString(setTextTable(egreso.facturas.length ? 'Con factura' : 'Sin factura')),
+                        factura: renderToString(setTextTable(egreso.factura ? 'Con factura' : 'Sin factura')),
                         monto: renderToString(setMoneyTable(egreso.monto)),
                         comision: renderToString(setMoneyTable(egreso.comision)),
                         total: renderToString(setMoneyTable(egreso.total)),
