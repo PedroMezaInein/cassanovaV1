@@ -351,7 +351,7 @@ class egresos extends Component{
             egreso: egreso,
             facturas: egreso.facturas,
             porcentaje,
-            form: this.clearForm()
+            form
         })
     }
 
