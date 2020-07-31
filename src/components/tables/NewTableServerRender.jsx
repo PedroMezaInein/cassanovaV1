@@ -109,7 +109,13 @@ class NewTableServerRender extends Component {
             createdRow: function(row, data) {
                 if(validateFactura){
                     const { objeto } = data 
-                    if(objeto.factura && objeto.total_facturas < objeto.total){
+                    let resta = objeto.total - objeto.total_facturas
+                    if(objeto.factura && 
+                        !(
+                            resta < 1 && resta > -1
+                        )
+                    )
+                    {
                         $(row).addClass('rojo');
                     }else{
                         $(row).addClass('blanco');
