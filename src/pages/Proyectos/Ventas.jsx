@@ -314,7 +314,7 @@ class Ventas extends Component{
                     )),
                     proyecto: renderToString(setTextTable( venta.proyecto ? venta.proyecto.nombre : '' )),
                     cliente: renderToString(setTextTable( venta.cliente ? venta.cliente.empresa : '' )),
-                    factura: renderToString(setTextTable(venta.facturas.length ? 'Con factura' : 'Sin factura')),
+                    factura: renderToString(setTextTable(venta.factura ? 'Con factura' : 'Sin factura')),
                     monto: renderToString(setMoneyTable(venta.monto)),
                     impuesto: renderToString(setTextTable( venta.tipo_impuesto ? venta.tipo_impuesto.tipo : 'Sin definir')),
                     tipoPago: renderToString(setTextTable( venta.tipo_pago ? venta.tipo_pago.tipo: '' )),
