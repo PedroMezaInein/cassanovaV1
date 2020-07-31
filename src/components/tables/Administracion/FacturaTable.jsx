@@ -51,7 +51,7 @@ export default class FacturaTable extends Component {
                     ])),
                     descripcion: renderToString(setTextTable(factura.descripcion)),
                     usoCFDI: renderToString(setTextTable(factura.uso_cfdi)),
-                    noCertificado: renderToString(setTextTable(factura.descripcion)),
+                    noCertificado: renderToString(setTextTable(factura.numero_certificado)),
                     id: factura.id
                 }
             )
