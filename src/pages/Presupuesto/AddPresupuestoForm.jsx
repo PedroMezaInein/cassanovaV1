@@ -132,7 +132,8 @@ class AddPresupuestoForm extends Component {
                     const { empresas, proyectos, areas, partidas, conceptos } = response.data;
                     const { options, data, form } = this.state;
                     data.partidas = partidas
-                    data.conceptos = conceptos
+                    
+                    //data.conceptos = conceptos
                     let aux = {}
                     conceptos.map( (concepto) => {
                         aux[concepto.clave] = false
