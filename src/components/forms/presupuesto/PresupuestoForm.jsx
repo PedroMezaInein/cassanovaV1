@@ -183,9 +183,7 @@ class PresupuestoForm extends Component {
                                                 </div>
                                                 <div className="d-flex py-2">
                                                     <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Formulario</Tooltip>}>
-                                                        <button className="btn btn-default btn-sm btn-icon" data-dismiss="modal" onClick={() => { this.mostrarFormulario() }}>
-                                                            <i className="ki ki-bold-more-hor font-size-md"></i>
-                                                        </button>
+                                                        <button type="button" class="btn btn-secondary" onClick={() => { this.mostrarFormulario() }}>Siguiente</button>
                                                     </OverlayTrigger>
                                                 </div>
                                                 <Form id="form-presupuesto"
