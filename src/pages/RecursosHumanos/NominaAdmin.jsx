@@ -199,12 +199,14 @@ class NominaAdmin extends Component {
             (response) => {
                 swal.close()
                 const { usuarios, empresas } = response.data
-                const { options, data } = this.state 
+                const { options, data } = this.state
+                data.usuarios = usuarios
                 options['usuarios'] = setOptions( usuarios, 'nombre', 'id')
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 this.setState({
                     ... this.state,
-                    options
+                    options,
+                    data
                 })
             },
             (error) => {
@@ -597,6 +599,7 @@ class NominaAdmin extends Component {
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
+        console.log(name, 'name')
         this.setState({
             ...this.state,
             form
@@ -636,7 +639,13 @@ class NominaAdmin extends Component {
 
     onChangeNominasAdmin = (key, e, name) => {
         const { value } = e.target
-        const { form } = this.state
+        const { form,data } = this.state
+        if(name === 'usuario'){
+            data.usuarios.map( (empleado) => {
+                if(value.toString() === empleado.id.toString())
+                    form['nominasAdmin'][key].nominImss  = empleado.nomina_imss
+            }) 
+        }
         form['nominasAdmin'][key][name]  = value
         this.setState({
             ...this.state,

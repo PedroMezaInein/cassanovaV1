@@ -209,8 +209,7 @@ class NominaAdminForm extends Component {
                                                 name="usuario"
                                                 value={form['nominasAdmin'][key]['usuario']}
                                                 onChange={(value) => this.updateUsuario(value, key)}
-                                                customstyle={{ width: "300px" }}
-                                            />
+                                                customstyle={{ minWidth: "300px" }}/>
                                         </td>
                                         <td>
                                             <InputMoneySinText
@@ -221,7 +220,7 @@ class NominaAdminForm extends Component {
                                                 onChange={e => onChangeNominasAdmin(key, e, 'nominImss')}
                                                 thousandSeparator={true}
                                                 prefix={'$'}
-                                                customstyle={{ width: "160px" }}
+                                                customstyle={{ minWidth: "160px" }}
                                             />
                                         </td>
                                         <td>
@@ -233,7 +232,7 @@ class NominaAdminForm extends Component {
                                                 onChange={e => onChangeNominasAdmin(key, e, 'restanteNomina')}
                                                 thousandSeparator={true}
                                                 prefix={'$'}
-                                                customstyle={{ width: "160px" }}
+                                                customstyle={{ minWidth: "160px" }}
                                             />
                                         </td>
                                         <td>
@@ -245,7 +244,7 @@ class NominaAdminForm extends Component {
                                                 onChange={e => onChangeNominasAdmin(key, e, 'extras')}
                                                 thousandSeparator={true}
                                                 prefix={'$'}
-                                                customstyle={{ width: "160px" }}
+                                                customstyle={{ minWidth: "160px" }}
                                             />
                                         </td>
                                         <td>
