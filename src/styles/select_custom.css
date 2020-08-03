@@ -142,7 +142,7 @@
 
 .select-search:not(.select-search--multiple) .select-search__select {
     position: absolute;
-    z-index: 2;
+    z-index: 3;
     top: 39px; /*Código para subir o bajar las opciones del selectsearch  */    
     right: 1px;
     left: 2px;
