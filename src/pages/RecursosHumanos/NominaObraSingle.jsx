@@ -54,13 +54,13 @@ class NominaObraSingle extends Component {
                     idEmpleado: renderToString(setTextTable(nomina.empleado ? nomina.empleado.id : '')),
                     empleado: renderToString(setTextTable(nomina.empleado ? nomina.empleado.nombre : '')),
                     proyecto: renderToString(setTextTable(nomina.proyecto ? nomina.proyecto.nombre : '')),
-                    sueldo_hora: renderToString(setMoneyTable(nomina.sueldo_hora)),
-                    hora1T: renderToString(setMoneyTable(nomina.hora1T)),
-                    hora2T: renderToString(setMoneyTable(nomina.hora2T)),
-                    hora3T: renderToString(setMoneyTable(nomina.hora3T)),
-                    nominaIMSS: renderToString(setMoneyTable(nomina.nomina_imss)),
-                    extras: renderToString(setMoneyTable(nomina.restante_nomina)),
-                    viaticos: renderToString(setMoneyTable(nomina.extras)),
+                    sueldo_hora: renderToString(setMoneyTable(nomina.sueldo_hora ? nomina.sueldo_hora : 0.0)),
+                    hora1T: renderToString(setMoneyTable(nomina.hora1T ? nomina.hora1T : 0.0)),
+                    hora2T: renderToString(setMoneyTable(nomina.hora2T ? nomina.hora2T : 0.0)),
+                    hora3T: renderToString(setMoneyTable(nomina.hora3T ? nomina.hora3T: 0.0)),
+                    nominaIMSS: renderToString(setMoneyTable(nomina.nomina_imss ? nomina.nomina_imss : 0.0)),
+                    extras: renderToString(setMoneyTable(nomina.restante_nomina ? nomina.restante_nomina : 0.0)),
+                    viaticos: renderToString(setMoneyTable(nomina.extras ? nomina.extras : 0.0)),
                     total: renderToString(setMoneyTable(nomina.extras + nomina.restante_nomina + nomina.nomina_imss)),
                     id: nomina.id
                 }
@@ -78,6 +78,7 @@ class NominaObraSingle extends Component {
             }
     }
 
+    
     setSubtitle = nomina => {
         console.log(nomina, 'nomina')
         let aux = ''
@@ -87,11 +88,12 @@ class NominaObraSingle extends Component {
         let fecha_inicio = new Date(nomina.fecha_inicio)
         let fecha_fin = new Date(nomina.fecha_fin)
         let months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
-        fecha_inicio = fecha_inicio.getDate()  + "-" + months[fecha_inicio.getMonth()] + "-" + fecha_inicio.getFullYear()
-        fecha_fin = fecha_fin.getDate()  + "-" + months[fecha_fin.getMonth()] + "-" + fecha_fin.getFullYear()
+        let days = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', 
+            '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31']
+        fecha_inicio = days[fecha_inicio.getDate()]  + "/" + months[fecha_inicio.getMonth()] + "/" + fecha_inicio.getFullYear()
+        fecha_fin = days[fecha_fin.getDate()]  + "/" + months[fecha_fin.getMonth()] + "/" + fecha_fin.getFullYear()
         aux = aux + fecha_inicio + ' ' + fecha_fin
         return aux
-
     }
     
     render() {
