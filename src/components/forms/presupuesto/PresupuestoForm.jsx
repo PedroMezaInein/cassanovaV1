@@ -10,16 +10,6 @@ import { setMoneyTable } from '../../../functions/setters'
 
 class PresupuestoForm extends Component {
 
-    state = {
-        data: {
-            partidas: []
-        },
-        options: {
-            partidas: [],
-            subpartidas: []
-        }
-    }
-
     updateProyecto = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'proyecto' } })
@@ -70,11 +60,7 @@ class PresupuestoForm extends Component {
 
     render() {
         const { options, form, onChange, onSubmit, formeditado, data, checkButton } = this.props
-        /* const { data } = this.state */
-        /* console.log(data.partidas = options.partidas)
-        console.log(data.partidas) */
         return (
-
             <div className="row">
                 <div className="col-lg-12">
                     <div className="flex-row-fluid ml-lg-8">
@@ -95,7 +81,6 @@ class PresupuestoForm extends Component {
                                                     value={form.partida}
                                                     onChange={this.updatePartida}
                                                     customstyle={{ width: "250px" }}
-
                                                 />
                                             </div>
                                             <div className="navi-item mx-2">
@@ -140,19 +125,18 @@ class PresupuestoForm extends Component {
                                             <div className="table-responsive">
                                                 <div className="list list-hover min-w-500px" data-inbox="list">
                                                     {
-                                                        data.conceptos.map( (concepto, key) => {
-                                                            console.log(concepto, 'concepto')
-                                                            return(
+                                                        data.conceptos.map((concepto, key) => {
+                                                            return (
                                                                 <div key={key} className="d-flex align-items-start list-item card-spacer-x pt-4 pb-5" data-inbox="message">
                                                                     <div className="d-flex align-items-center col-1">
                                                                         <div className="d-flex align-items-center mr-3" data-inbox="actions">
                                                                             <label className="checkbox checkbox-single checkbox-primary flex-shrink-0 mr-3">
-                                                                            <input 
-                                                                                type="checkbox" 
-                                                                                onChange={ (e) => { checkButton(e)} } 
-                                                                                name = { concepto.clave }
-                                                                                checked = { form.conceptos[concepto.clave] }
-                                                                                value = { form.conceptos[concepto.clave] } 
+                                                                                <input
+                                                                                    type="checkbox"
+                                                                                    onChange={(e) => { checkButton(e) }}
+                                                                                    name={concepto.clave}
+                                                                                    checked={form.conceptos[concepto.clave]}
+                                                                                    value={form.conceptos[concepto.clave]}
                                                                                 />
                                                                                 <span></span>
                                                                             </label>
@@ -165,16 +149,16 @@ class PresupuestoForm extends Component {
                                                                         <div className="font-weight-bold mr-2 font-size-sm text-justify">
                                                                             {
                                                                                 concepto.descripcion
-                                                                            }    
+                                                                            }
                                                                         </div>
                                                                     </div>
                                                                     <div className="d-flex align-items-center justify-content-center flex-wrap col-2" data-toggle="view">
                                                                         <div className="font-weight-bolder position-absolute" data-toggle="view">UNIDAD</div>
-                                                                        <span className="label label-light-primary  label-inline position-relative" style={{top:"22px"}} >hola</span>
+                                                                        <span className="label label-light-primary  label-inline position-relative" style={{ top: "22px" }} >hola</span>
                                                                     </div>
                                                                     <div className="d-flex align-items-center justify-content-center flex-wrap col-2" data-toggle="view">
                                                                         <div className="font-weight-bolder position-absolute" data-toggle="view">COSTO</div>
-                                                                        <span className="label label-light-primary  label-inline position-relative" style={{top:"22px"}}>
+                                                                        <span className="label label-light-primary  label-inline position-relative" style={{ top: "22px" }}>
                                                                             {
                                                                                 setMoneyTable(concepto.costo)
                                                                             }
@@ -183,7 +167,6 @@ class PresupuestoForm extends Component {
                                                                 </div>
                                                             )
                                                         })
-                                                        
                                                     }
                                                 </div>
                                             </div>
@@ -197,12 +180,12 @@ class PresupuestoForm extends Component {
                                                 className="d-flex align-items-center justify-content-between flex-wrap card-spacer-x py-3">
                                                 <div className="d-flex flex-column mr-2 py-2">
                                                     <a className="text-dark text-hover-primary font-weight-bold font-size-h4 mr-3"> CONCEPTOS SELECCIONADOS</a>
-                                                </div>                                            
+                                                </div>
                                                 <div className="d-flex py-2">
-                                                    <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Formulario</Tooltip>}> 
-                                                    <button className="btn btn-default btn-sm btn-icon" data-dismiss="modal" onClick={() => { this.mostrarFormulario() }}>
-                                                        <i className="ki ki-bold-more-hor font-size-md"></i>
-                                                    </button>
+                                                    <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Formulario</Tooltip>}>
+                                                        <button className="btn btn-default btn-sm btn-icon" data-dismiss="modal" onClick={() => { this.mostrarFormulario() }}>
+                                                            <i className="ki ki-bold-more-hor font-size-md"></i>
+                                                        </button>
                                                     </OverlayTrigger>
                                                 </div>
                                                 <Form id="form-presupuesto"
@@ -290,7 +273,65 @@ class PresupuestoForm extends Component {
                                                         <Button icon='' type="submit" className="text-center mx-auto" text='Enviar' />
                                                     </div>
                                                 </Form>
-                                            </div>                                           
+                                            </div>
+                                            <div className="table-responsive">
+                                                <div className="list list-hover min-w-500px" data-inbox="list">
+                                                    {
+                                                        data.partidas.map((partida, key1) => {
+                                                            return (
+                                                                partida.subpartidas.map((subpartida, key2) => {
+                                                                    return (
+                                                                        subpartida.conceptos.map((concepto, key3) => {
+                                                                            if (form.conceptos[concepto.clave]) {
+                                                                                return (
+                                                                                    <div key={concepto.clave} className="d-flex align-items-start list-item card-spacer-x pt-4 pb-5" data-inbox="message">
+                                                                                        <div className="d-flex align-items-center col-1">
+                                                                                            <div className="d-flex align-items-center mr-3" data-inbox="actions">
+                                                                                                <label className="checkbox checkbox-single checkbox-danger flex-shrink-0 mr-3">
+                                                                                                    <input
+                                                                                                        type="checkbox"
+                                                                                                        onChange={(e) => { checkButton(e) }}
+                                                                                                        name={concepto.clave}
+                                                                                                        checked={form.conceptos[concepto.clave]}
+                                                                                                        value={form.conceptos[concepto.clave]}
+                                                                                                    />
+                                                                                                    <span></span>
+                                                                                                </label>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div className="flex-grow-1 mt-1 mr-2 col-2" data-toggle="view">
+                                                                                            <div className="font-weight-bold mr-2">{concepto.clave}</div>
+                                                                                        </div>
+                                                                                        <div className="flex-grow-1 mt-1 mr-2 col-5" data-toggle="view">
+                                                                                            <div className="font-weight-bold mr-2 font-size-sm text-justify">
+                                                                                                {
+                                                                                                    concepto.descripcion
+                                                                                                }
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div className="d-flex align-items-center justify-content-center flex-wrap col-2" data-toggle="view">
+                                                                                            <div className="font-weight-bolder position-absolute" data-toggle="view">UNIDAD</div>
+                                                                                            <span className="label label-light-primary  label-inline position-relative" style={{ top: "22px" }} >hola</span>
+                                                                                        </div>
+                                                                                        <div className="d-flex align-items-center justify-content-center flex-wrap col-2" data-toggle="view">
+                                                                                            <div className="font-weight-bolder position-absolute" data-toggle="view">COSTO</div>
+                                                                                            <span className="label label-light-primary  label-inline position-relative" style={{ top: "22px" }}>
+                                                                                                {
+                                                                                                    setMoneyTable(concepto.costo)
+                                                                                                }
+                                                                                            </span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                )
+                                                                            }
+                                                                        })
+                                                                    )
+                                                                })
+                                                            )
+                                                        })
+                                                    }
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
