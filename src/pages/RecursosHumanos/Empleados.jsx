@@ -50,8 +50,8 @@ class Empleados extends Component {
             fecha_alta_imss: '',
             numero_alta_imss: '',
             nomina_imss: 0.0,
-            salario_hr_dia: 0.0,
-            salario_hr_noche: 0.0,
+            salario_hr: 0.0,
+            salario_hr_extra: 0.0,
             adjuntos:{
                 datosGenerales:{
                     value: '',
@@ -115,8 +115,8 @@ class Empleados extends Component {
         form.tipo_empleado = empleado.tipo_empleado
         form.estatus_empleado = empleado.estatus_empleado
         form.nomina_imss = empleado.nomina_imss
-        form.salario_hr_dia = empleado.salario_hr_dia
-        form.salario_hr_noche = empleado.salario_hr_noche
+        form.salario_hr = empleado.salario_hr
+        form.salario_hr_extra = empleado.salario_hr_extra
         if(empleado.empresa){
             form.empresa = empleado.empresa.id.toString()
         } 
@@ -584,8 +584,8 @@ class Empleados extends Component {
                     form[element] = 'Activo'
                     break;
                 case 'nomina_imss':
-                case 'salario_hr_dia':
-                case 'salario_hr_noche':
+                case 'salario_hr':
+                case 'salario_hr_extra':
                 case 'vacaciones_tomadas':
                     form[element] = 0
                     break;
