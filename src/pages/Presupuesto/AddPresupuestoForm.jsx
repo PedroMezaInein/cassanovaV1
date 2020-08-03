@@ -7,8 +7,6 @@ import { setOptions } from "../../functions/setters";
 import { errorAlert, waitAlert, forbiddenAccessAlert } from "../../functions/alert";
 import Layout from "../../components/layout/layout";
 import { PresupuestoForm } from "../../components/forms";
-// import { save, deleteForm } from '../../redux/reducers/formulario'
-// import FloatButtons from '../../components/singles/FloatButtons'
 
 class AddPresupuestoForm extends Component {
     state = {
@@ -36,7 +34,7 @@ class AddPresupuestoForm extends Component {
             partidas: [],
             subpartidas: [],
         },
-        data:{
+        data: {
             partidas: [],
             subpartidas: [],
             conceptos: []
@@ -46,7 +44,7 @@ class AddPresupuestoForm extends Component {
     componentDidMount() {
         var elemento = document.getElementById("form-presupuesto");
         elemento.style.display = 'none';
-        
+
         const {
             authUser: {
                 user: { permisos: permisos },
@@ -132,10 +130,8 @@ class AddPresupuestoForm extends Component {
                     const { empresas, proyectos, areas, partidas, conceptos } = response.data;
                     const { options, data, form } = this.state;
                     data.partidas = partidas
-                    
-                    //data.conceptos = conceptos
                     let aux = {}
-                    conceptos.map( (concepto) => {
+                    conceptos.map((concepto) => {
                         aux[concepto.clave] = false
                     })
                     form.conceptos = aux;
@@ -168,27 +164,65 @@ class AddPresupuestoForm extends Component {
             });
     }
 
+    async addPresupuestosAxios() {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        const data = new FormData();
+
+        await axios.post(URL_DEV + 'presupuesto', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.setState({
+                    ... this.state,
+                    modal: false,
+                    form: this.clearForm()
+                })
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false,
+                })
+                const { history } = this.props
+                history.push({
+                    pathname: '/presupuesto/presupuesto'
+                });
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     onChange = (e) => {
         const { name, value } = e.target;
         const { data } = this.state
-        switch(name){
+        switch (name) {
             case 'partida':
-                data.partidas.map( (partida) => {
+                data.partidas.map((partida) => {
                     data.conceptos = []
-                    if(partida.id.toString() === value){
+                    if (partida.id.toString() === value) {
                         data.subpartidas = partida.subpartidas
                     }
                 })
-            break;
+                break;
             case 'subpartida':
-                data.subpartidas.map( (subpartida) => {
-                    if(subpartida.id.toString() === value){
+                data.subpartidas.map((subpartida) => {
+                    if (subpartida.id.toString() === value) {
                         data.conceptos = subpartida.conceptos
                     }
                 })
-            break;
+                break;
             default:
-            break;
+                break;
         }
 
         const { form } = this.state;
@@ -198,8 +232,6 @@ class AddPresupuestoForm extends Component {
             form,
             data
         });
-
-        console.log(data, 'Data on change')
     };
 
     checkButton = e => {
@@ -212,35 +244,17 @@ class AddPresupuestoForm extends Component {
         })
     }
 
-    // save = () => {
-    //     const { form } = this.state
-    //     const { save } = this.props
-    //     let auxObject = {}
-    //     let aux = Object.keys(form)
-    //     aux.map((element) => {
-    //         auxObject[element] = form[element]
-    //     })
-    //     save({
-    //         form: auxObject,
-    //         page: 'presupuesto/presupuesto/add'
-    //     })
-    // }
-
-    // recover = () => {
-    //     const { formulario, deleteForm } = this.props
-    //     this.setState({
-    //         ... this.state,
-    //         form: formulario.form
-    //     })
-    //     deleteForm()
-    // }
+    onSubmit = e => {
+        e.preventDefault()
+        const { title } = this.state
+        waitAlert()
+        this.addPresupuestosAxios()
+    }
 
     render() {
         const { form, title, options, formeditado, data } = this.state;
-        // const { formulario, deleteForm } = this.props 
         return (
             <Layout active={"presupuesto"} {...this.props}>
-                {/* <FloatButtons save = { this.save } recover =  { this.recover } formulario = { formulario } url = { 'presupuesto/presupuesto/add' } /> */}
                 <PresupuestoForm
                     formeditado={formeditado}
                     title={title}
@@ -251,7 +265,7 @@ class AddPresupuestoForm extends Component {
                     setOptions={this.setOptions}
                     onSubmit={this.onSubmit}
                     data={data}
-                    /* {... this.props} */
+                /* {... this.props} */
                 />
             </Layout>
         );
