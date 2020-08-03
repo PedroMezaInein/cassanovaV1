@@ -121,10 +121,10 @@ class NominaObra extends Component {
                 {
                     usuario: nom.empleado ? nom.empleado.id.toString() : '',
                     proyecto: nom.proyecto ? nom.proyecto.id.toString() : '',
-                    salario_hr: nom.sueldo_por_hora,
-                    salario_hr_extra: nom.horas_1t,
-                    hr_trabajadas: nom.horas_2t,
-                    hr_extra: nom.horas_3t,
+                    salario_hr: nom.salario_hr,
+                    salario_hr_extra: nom.salario_hr_extra,
+                    hr_trabajadas: nom.hr_trabajadas,
+                    hr_extra: nom.hr_extra,
                     nominImss: nom.nomina_imss,
                     restanteNomina:nom.restante_nomina,
                     extras:nom.extras
@@ -230,13 +230,15 @@ class NominaObra extends Component {
             (response) => {
                 swal.close()
                 const { proyectos, usuarios, empresas} = response.data
-                const { options} = this.state
+                const { options, data} = this.state
+                data.usuarios = usuarios
                 options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
                 options['usuarios'] = setOptions( usuarios, 'nombre', 'id')
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 this.setState({
                     ... this.state,
-                    options
+                    options,
+                    data
                 })
             },
             (error) => {
@@ -633,6 +635,7 @@ class NominaObra extends Component {
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
+        console.log(name, 'name')
         this.setState({
             ...this.state,
             form
@@ -672,13 +675,20 @@ class NominaObra extends Component {
 
     onChangeNominasObra = (key, e, name) => {
         const { value } = e.target
-        const { form } = this.state
-        form['nominasObra'][key][name]  = value
+        const { form, data} = this.state
+        if(name === 'usuario'){
+            data.usuarios.map( (empleado) => {
+                if(value.toString() === empleado.id.toString())
+                    form['nominasObra'][key].nominImss  = empleado.nomina_imss
+                    form['nominasObra'][key].salario_hr  = empleado.salario_hr
+                    form['nominasObra'][key].salario_hr_extra  = empleado.salario_hr_extra
+            }) 
+        }
+        form['nominasObra'][key][name] = value
         this.setState({
             ...this.state,
             form
         })
-    
     }
 
     addRowNominaObra = () => {
@@ -735,8 +745,6 @@ class NominaObra extends Component {
     
     render() {
         const {nominaOmbra, modal, options, title, form, formeditado, adjuntos, data} = this.state
-        
-        console.log(this.props)
         return (
             <Layout active={'rh'} {...this.props}>
                 <NewTableServerRender   

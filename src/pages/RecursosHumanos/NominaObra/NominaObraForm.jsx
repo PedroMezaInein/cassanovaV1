@@ -59,10 +59,7 @@ class NominaObraForm extends Component {
         const { history: { location: { pathname: pathname } } } = this.props
         const { match: { params: { action: action } } } = this.props
         const { history, location: { state: state } } = this.props
-        // const nominaobra = permisos.find(function (element, index) {
-        //     const { modulo: { url: url } } = element
-        //     return pathname === url
-        // });
+
         const nominaOmbra = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
             return pathname === url + '/' + action
@@ -91,10 +88,10 @@ class NominaObraForm extends Component {
                                 {
                                     usuario: nom.empleado ? nom.empleado.id.toString() : '',
                                     proyecto: nom.proyecto ? nom.proyecto.id.toString() : '',
-                                    salario_hr: nom.sueldo_por_hora,
-                                    salario_hr_extra: nom.horas_1t,
-                                    hr_trabajadas: nom.horas_2t,
-                                    hr_extra: nom.horas_3t,
+                                    salario_hr: nom.salario_hr,
+                                    salario_hr_extra: nom.salario_hr_extra,
+                                    hr_trabajadas: nom.hr_trabajadas,
+                                    hr_extra: nom.hr_extra,
                                     nominImss: nom.nomina_imss,
                                     restanteNomina: nom.restante_nomina,
                                     extras: nom.extras
@@ -122,7 +119,7 @@ class NominaObraForm extends Component {
                             title: 'Editar nómina obra',
                             nomina: nomina,
                             form,
-                            // options,
+                            options,
                             formeditado: 1
                         })
                     }
@@ -192,7 +189,8 @@ class NominaObraForm extends Component {
 
                 this.setState({
                     ... this.state,
-                    options
+                    options,
+                    data
                 })
             },
             (error) => {
@@ -575,17 +573,18 @@ class NominaObraForm extends Component {
         const { value } = e.target
         const { form, data} = this.state
         if(name === 'usuario'){
-            // data.usuarios.map( (empleado) => {
-            //     if(value.toString() === empleado.id.toString())
-            //         form['nominasObra'][key].nominImss  = empleado.nomina_imss
-            // }) 
+            data.usuarios.map( (empleado) => {
+                if(value.toString() === empleado.id.toString())
+                    form['nominasObra'][key].nominImss = empleado.nomina_imss
+                    form['nominasObra'][key].salario_hr = empleado.salario_hr
+                    form['nominasObra'][key].salario_hr_extra = empleado.salario_hr_extra
+            }) 
         }
         form['nominasObra'][key][name] = value
         this.setState({
             ...this.state,
             form
         })
-
     }
 
     addRowNominaObra = () => {
@@ -651,7 +650,6 @@ class NominaObraForm extends Component {
                             <h3 className="card-label">{title}</h3>
                         </Card.Title>
                     </Card.Header>
-                    <>
                         <NominaObraFormulario
                             title={title}
                             formeditado={formeditado}
@@ -666,8 +664,7 @@ class NominaObraForm extends Component {
                             clearFiles={this.clearFiles}
                             onSubmit={this.onSubmit}
                         >
-                        </NominaObraFormulario>
-                    </>
+                        </NominaObraFormulario> 
                 </Card>
             </Layout>
         )
