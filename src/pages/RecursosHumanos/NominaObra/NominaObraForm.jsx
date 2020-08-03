@@ -1,145 +1,142 @@
-import React, { Component } from 'react' 
+import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
-import Layout from '../../components/layout/layout' 
-import { Modal, ModalDelete} from '../../components/singles' 
-import { NOMINA_OBRA_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS} from '../../constants'
-import NewTableServerRender from '../../components/tables/NewTableServerRender' 
-import { NominaObraForm, AdjuntosForm} from '../../components/forms'
-import { setOptions, setDateTable, setMoneyTable, setTextTable, setAdjuntosList} from '../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, deleteAlert} from '../../functions/alert'
-import TableForModals from '../../components/tables/TableForModals'
+import Layout from '../../../components/layout/layout'
+import { Modal, ModalDelete } from '../../../components/singles'
+import { NOMINA_OBRA_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS } from '../../../constants'
+import NewTableServerRender from '../../../components/tables/NewTableServerRender'
+import { AdjuntosForm } from '../../../components/forms'
+import { setOptions, setDateTable, setMoneyTable, setTextTable, setAdjuntosList } from '../../../functions/setters'
+import { errorAlert, waitAlert, forbiddenAccessAlert, deleteAlert } from '../../../functions/alert'
+import TableForModals from '../../../components/tables/TableForModals'
+import { NominaObraForm as NominaObraFormulario } from '../../../components/forms'
+import { Card } from 'react-bootstrap'
 
 const $ = require('jquery');
 
-class NominaObra extends Component {
-    state = {  
-        formeditado:0,
-        modal:{
-            form: false,
-            delete: false,
-            adjuntos: false,
-        },
-        data:{
+class NominaObraForm extends Component {
+    state = {
+        formeditado: 0,
+        data: {
             adjuntos: []
         },
         title: 'Nueva nómina de obra',
-        form:{
-            periodo : '',
+        form: {
+            periodo: '',
             empresas: '',
             fechaInicio: new Date(),
             fechaFin: new Date(),
-            nominasObra:[{
+            nominasObra: [{
                 usuario: '',
                 proyecto: '',
-                sueldoh: '',
-                hora1T: '',
-                hora2T: '',
-                hora3T: '',
+                salario_hr: '',
+                salario_hr_extra: '',
+                hr_trabajadas: '',
+                hr_extra: '',
                 nominImss: '',
                 restanteNomina: '',
                 extras: ''
             }],
-            adjuntos:{
-                adjunto:{
+            adjuntos: {
+                adjunto: {
                     value: '',
                     placeholder: 'Ingresa los adjuntos',
                     files: []
                 }
             }
         },
-        options: { 
+        options: {
             proyectos: [],
             usuarios: [],
-            empresas:[]
+            empresas: []
         }
     }
 
-    componentDidMount() { 
+    componentDidMount() {
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
-        const { history } = this.props
-        const nominaobra = permisos.find(function (element, index) {
+        const { match: { params: { action: action } } } = this.props
+        const { history, location: { state: state } } = this.props
+        // const nominaobra = permisos.find(function (element, index) {
+        //     const { modulo: { url: url } } = element
+        //     return pathname === url
+        // });
+        const nominaOmbra = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
-            return pathname === url
+            return pathname === url + '/' + action
         });
-        if (!nominaobra)
-            history.push('/')
-            this.getOptionsAxios()
-    }
-    
-    changeSinglePage = (nomina) => {
-        const { history } = this.props
-        history.push({
-            pathname: '/rh/nomina-obras/'+nomina.id,
-            state: { nomina: nomina }
-        });
-    }
+        switch (action) {
+            case 'add':
+                this.setState({
+                    ... this.state,
+                    title: 'Nueva nómina obra',
+                    formeditado: 0
+                })
+                break;
+            case 'edit':
+                if (state) {
+                    if (state.nomina) {
+                        const { nomina } = state
+                        const { form, options } = this.state
+                        form.periodo = nomina.periodo
+                        form.empresa = nomina.empresa ? nomina.empresa.id.toString() : ''
+                        form.fechaInicio = new Date(nomina.fecha_inicio)
+                        form.fechaFin = nomina.fecha_fin ? new Date(nomina.fecha_fin) : ''
 
-    openModal = () => {
-        const { modal } = this.state
-        modal.form = true
-        this.setState({
-            ... this.state,
-            modal,
-            form: this.clearForm(),
-            formeditado:0,
-            title: 'Nueva nómina obra',
-        })
-    }
+                        let aux = []
+                        nomina.nominas_obras.map((nom, key) => {
+                            aux.push(
+                                {
+                                    usuario: nom.empleado ? nom.empleado.id.toString() : '',
+                                    proyecto: nom.proyecto ? nom.proyecto.id.toString() : '',
+                                    salario_hr: nom.sueldo_por_hora,
+                                    salario_hr_extra: nom.horas_1t,
+                                    hr_trabajadas: nom.horas_2t,
+                                    hr_extra: nom.horas_3t,
+                                    nominImss: nom.nomina_imss,
+                                    restanteNomina: nom.restante_nomina,
+                                    extras: nom.extras
+                                }
+                            )
+                        })
 
-    openModalEdit = nomina => {
-        const { modal, form } = this.state
-        modal.form = true
-
-        form.periodo = nomina.periodo
-        form.empresa = nomina.empresa ? nomina.empresa.id.toString() : ''
-        form.fechaInicio = new Date(nomina.fecha_inicio)
-        form.fechaFin = nomina.fecha_fin ? new Date(nomina.fecha_fin) : ''
-
-        let aux = [] 
-        nomina.nominas_obras.map( (nom, key) => {
-            aux.push(
-                {
-                    usuario: nom.empleado ? nom.empleado.id.toString() : '',
-                    proyecto: nom.proyecto ? nom.proyecto.id.toString() : '',
-                    sueldoh: nom.sueldo_por_hora,
-                    hora1T: nom.horas_1t,
-                    hora2T: nom.horas_2t,
-                    hora3T: nom.horas_3t,
-                    nominImss: nom.nomina_imss,
-                    restanteNomina:nom.restante_nomina,
-                    extras:nom.extras
-                }
-            )
-        })
-
-        if(aux.length){
-            form.nominasObra = aux
-        }else{
-            form.nominasObra = [{
-                usuario: '',
-                proyecto: '',
-                sueldoh: '',
-                hora1T: '', 
-                hora2T: '',
-                hora3T: '',
-                nominImss: '',
-                restanteNomina: '',
-                extras: ''
-            }]
+                        if (aux.length) {
+                            form.nominasObra = aux
+                        } else {
+                            form.nominasObra = [{
+                                usuario: '',
+                                proyecto: '',
+                                salario_hr: '',
+                                salario_hr_extra: '',
+                                hr_trabajadas: '',
+                                hr_extra: '',
+                                nominImss: '',
+                                restanteNomina: '',
+                                extras: ''
+                            }]
+                        }
+                        this.setState({
+                            ... this.state,
+                            title: 'Editar nómina obra',
+                            nomina: nomina,
+                            form,
+                            // options,
+                            formeditado: 1
+                        })
+                    }
+                    else
+                        history.push('/rh/nomina-obras')
+                } else
+                    history.push('/rh/nomina-obras')
+                break;
+            default:
+                break;
         }
-
-        this.setState({
-            ... this.state,
-            modal,
-            title: 'Editar nómina obra',
-            nomina: nomina,
-            form,
-            formeditado:1
-        })
+        if (!nominaOmbra)
+            history.push('/')
+        this.getOptionsAxios()
     }
 
     openModalDelete = nomina => {
@@ -170,33 +167,6 @@ class NominaObra extends Component {
         deleteAlert('¿Seguro deseas borrar el adjunto?', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
     }
 
-    setAdjuntosTable = adjuntos => {
-        let aux = []
-        adjuntos.map((adjunto) => {
-            aux.push({
-                actions: this.setActionsAdjuntos(adjunto),
-                url: renderToString(
-                    setAdjuntosList([{ name: adjunto.name, url: adjunto.url }])
-                ),
-                tipo: renderToString(setTextTable(adjunto.pivot.tipo)),
-                id: 'adjuntos-' + adjunto.id
-            })
-        })
-        return aux
-    }
-
-    setActionsAdjuntos = adjunto => {
-        let aux = []
-        aux.push(
-            {
-                text: 'Eliminar',
-                btnclass: 'danger',
-                iconclass: 'flaticon2-rubbish-bin',
-                action: 'deleteAdjunto',
-                tooltip: { id: 'delete-Adjunto', text: 'Eliminar', type: 'error' },
-            })
-        return aux
-    }
 
     setOptions = (name, array) => {
         const { options } = this.state
@@ -207,17 +177,19 @@ class NominaObra extends Component {
         })
     }
 
-    async getOptionsAxios(){
+    async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'rh/nomina-obra/options', { responseType:'json', headers: {Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'rh/nomina-obra/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                const { proyectos, usuarios, empresas} = response.data
-                const { options} = this.state
+                const { proyectos, usuarios, empresas } = response.data
+                const { options, data } = this.state
+                data.usuarios = usuarios
                 options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
-                options['usuarios'] = setOptions( usuarios, 'nombre', 'id')
+                options['usuarios'] = setOptions(usuarios, 'nombre', 'id')
                 options['empresas'] = setOptions(empresas, 'name', 'id')
+
                 this.setState({
                     ... this.state,
                     options
@@ -225,9 +197,9 @@ class NominaObra extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -235,9 +207,9 @@ class NominaObra extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
-    } 
+    }
 
-    async addNominaObraAxios(){
+    async addNominaObraAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -254,7 +226,7 @@ class NominaObra extends Component {
                     data.append(element, JSON.stringify(form[element]))
                     break;
                 case 'adjuntos':
-                    break; 
+                    break;
                 default:
                     data.append(element, form[element])
                     break
@@ -286,9 +258,9 @@ class NominaObra extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -296,22 +268,22 @@ class NominaObra extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
-    } 
+    }
 
-    async updateNominaObraAxios(){
+    async updateNominaObraAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { form, nomina} = this.state
-        
-        await axios.put(URL_DEV + 'rh/nomina-obra/' + nomina.id , form, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
+        const { form, nomina } = this.state
+
+        await axios.put(URL_DEV + 'rh/nomina-obra/' + nomina.id, form, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { modal } = this.state
-                
+
                 this.getNominasAxios()
 
                 modal.form = false
 
-                this.setState({                    
+                this.setState({
                     ... this.state,
                     modal,
                     nomina: '',
@@ -328,9 +300,9 @@ class NominaObra extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -340,12 +312,12 @@ class NominaObra extends Component {
         })
     }
 
-    async deleteNominaObraAxios(){
+    async deleteNominaObraAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { form, nomina} = this.state
-        
-        await axios.delete(URL_DEV + 'rh/nomina-obra/' + nomina.id , { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
+        const { form, nomina } = this.state
+
+        await axios.delete(URL_DEV + 'rh/nomina-obra/' + nomina.id, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { modal } = this.state
                 const { nomina } = response.data
@@ -353,7 +325,7 @@ class NominaObra extends Component {
 
                 modal.delete = false
 
-                this.setState({                    
+                this.setState({
                     ... this.state,
                     modal,
                     nomina: '',
@@ -370,9 +342,9 @@ class NominaObra extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -449,7 +421,7 @@ class NominaObra extends Component {
                 const { nomina } = response.data
                 const { data, key } = this.state
                 data.adjuntos = nomina.adjuntos
-                
+
                 this.getNominasAxios()
                 this.setState({
                     ... this.state,
@@ -476,11 +448,11 @@ class NominaObra extends Component {
 
 
     handleCloseModal = () => {
-        const { modal } = this.state 
+        const { modal } = this.state
         modal.form = false
         this.setState({
             ... this.state,
-            modal, 
+            modal,
             form: this.clearForm()
         })
     }
@@ -491,7 +463,7 @@ class NominaObra extends Component {
         this.setState({
             ... this.state,
             form: this.clearForm(),
-            modal, 
+            modal,
             nomina: ''
         })
     }
@@ -502,7 +474,7 @@ class NominaObra extends Component {
         this.setState({
             ... this.state,
             form: this.clearForm(),
-            modal, 
+            modal,
             nomina: ''
         })
     }
@@ -510,17 +482,17 @@ class NominaObra extends Component {
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'fechaInicio':
                 case 'fechaFin':
                     form[element] = new Date()
-                    break; 
+                    break;
                 case 'nominasObra':
                     form[element] = [{
                         usuarios: '',
                         proyecto: '',
-                        empresa:''
+                        empresa: ''
                     }]
                     break;
                 case 'adjuntos':
@@ -558,61 +530,6 @@ class NominaObra extends Component {
         })
     }
 
-    setNominaObra = nominas => {
-        let aux = []
-        nominas.map( (nomina) => {
-            aux.push(
-                {
-                    actions: this.setActions(nomina),
-                    periodo: renderToString(setTextTable(nomina.periodo)),
-                    fechaInicio: renderToString(setDateTable(nomina.fecha_inicio)),
-                    fechaFin: renderToString(setDateTable(nomina.fecha_fin)),
-                    totalPagoNomina: renderToString(setMoneyTable(nomina.totalNominaImss)),
-                    restanteNomina: renderToString(setMoneyTable(nomina.totalRestanteNomina)),
-                    extras: renderToString(setMoneyTable(nomina.totalExtras)),
-                    granTotal: renderToString(setMoneyTable(nomina.totalNominaImss + nomina.totalRestanteNomina + nomina.totalExtras)),
-                    id: nomina.id
-                }
-            )
-        })
-        return aux
-    }
-
-    setActions = nomina => {
-        let aux = []
-        aux.push(
-            {
-                text: 'Editar',
-                btnclass: 'success',
-                iconclass: 'flaticon2-pen',
-                action: 'edit',
-                tooltip: { id: 'edit', text: 'Editar' }
-            },
-            {
-                text: 'Eliminar',
-                btnclass: 'danger',
-                iconclass: 'flaticon2-rubbish-bin',                  
-                action: 'delete',
-                tooltip: {id:'delete', text:'Eliminar', type:'error'},
-            },
-            {
-                text: 'Adjuntos',
-                btnclass: 'primary',
-                iconclass: 'flaticon-attachment',
-                action: 'adjuntos',
-                tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
-            },
-            {
-                text: 'Mostrar',
-                btnclass: 'primary',
-                iconclass: 'flaticon-eye',
-                action: 'show',
-                tooltip: { id: 'show', text: 'Mostrar'}
-            }
-        )
-        return aux
-    }
-
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -648,34 +565,40 @@ class NominaObra extends Component {
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
-        if(title === 'Editar nómina obra')
+        if (title === 'Editar nómina obra')
             this.updateNominaObraAxios()
-        else    
-            this.addNominaObraAxios() 
+        else
+            this.addNominaObraAxios()
     }
 
     onChangeNominasObra = (key, e, name) => {
         const { value } = e.target
-        const { form } = this.state
-        form['nominasObra'][key][name]  = value
+        const { form, data} = this.state
+        if(name === 'usuario'){
+            // data.usuarios.map( (empleado) => {
+            //     if(value.toString() === empleado.id.toString())
+            //         form['nominasObra'][key].nominImss  = empleado.nomina_imss
+            // }) 
+        }
+        form['nominasObra'][key][name] = value
         this.setState({
             ...this.state,
             form
         })
-    
+
     }
 
     addRowNominaObra = () => {
         const { form } = this.state
         form.nominasObra.push(
             {
-                nominasObra:[{
+                nominasObra: [{
                     usuario: '',
                     proyecto: '',
-                    sueldoh: '',
-                    hora1T: '',
-                    hora2T: '',
-                    hora3T: '',
+                    salario_hr: '',
+                    salario_hr_extra: '',
+                    hr_trabajadas: '',
+                    hr_extra: '',
                     nominImss: '',
                     restanteNomina: '',
                     extras: ''
@@ -692,13 +615,13 @@ class NominaObra extends Component {
         const { form } = this.state
         form.nominasObra.pop(
             {
-                nominasObra:[{
+                nominasObra: [{
                     usuario: '',
                     proyecto: '',
-                    sueldoh: '',
-                    hora1T: '',
-                    hora2T: '',
-                    hora3T: '',
+                    salario_hr: '',
+                    salario_hr_extra: '',
+                    hr_trabajadas: '',
+                    hr_extra: '',
                     nominImss: '',
                     restanteNomina: '',
                     extras: ''
@@ -711,82 +634,48 @@ class NominaObra extends Component {
         })
     }
 
-    async getNominasAxios(){
+    async getNominasAxios() {
         var table = $('#kt_datatable2_nomina_obra')
             .DataTable();
         table.ajax.reload();
     }
-    
+
     render() {
-        const { modal, options, title, form, formeditado, adjuntos, data} = this.state
+        const { modal, options, title, form, formeditado, adjuntos, data } = this.state
 
         return (
             <Layout active={'rh'} {...this.props}>
-                <NewTableServerRender   
-                    columns = { NOMINA_OBRA_COLUMNS }
-                    title = 'Nómina de obra' subtitle = 'Listado de nómina de obra'
-                    mostrar_boton={true}
-                    abrir_modal={true} 
-                    onClick={this.openModal} 
-                    mostrar_acciones={true} 
-                    actions={{
-                        'edit': { function: this.openModalEdit },
-                        'delete': {function: this.openModalDelete},
-                        'adjuntos': { function: this.openModalAdjuntos },
-                        'show': { function: this.changeSinglePage }
-                    }}
-                    accessToken = { this.props.authUser.access_token }
-                    setter = { this.setNominaObra }
-                    urlRender = {URL_DEV + 'rh/nomina-obra'}
-                    idTable = 'kt_datatable2_nomina_obra'
-                />
-
-                <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseModal}>
-                    <NominaObraForm
-                        title = { title }
-                        formeditado={formeditado}
-                        className=" px-3 "   
-                        options = { options }
-                        form ={form}
-                        addRowNominaObra = { this.addRowNominaObra }
-                        deleteRowNominaObra = { this.deleteRowNominaObra }
-                        onChangeNominasObra =  { this.onChangeNominasObra }
-                        onChange = { this.onChange }
-                        onChangeAdjunto = { this.onChangeAdjunto }
-                        clearFiles = { this.clearFiles }
-                        onSubmit = { this.onSubmit }
-                    >
-                    </NominaObraForm>
-                </Modal>  
-
-                <ModalDelete title={'¿Desea eliminar la nómina?'} show = { modal.delete } handleClose = { this.handleCloseModalDelete } onClick=  { (e) => { e.preventDefault(); waitAlert(); this.deleteNominaObraAxios() }}>
-                </ModalDelete>
-
-                <Modal size="xl" title={"Adjuntos"} show={modal.adjuntos} handleClose={this.handleCloseAdjuntos}>
-                    <AdjuntosForm form={form} onChangeAdjunto={this.onChangeAdjunto} clearFiles={this.clearFiles}
-                        onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addAdjuntoNominaAdminAxios() }} 
-                        adjuntos = {['adjunto']}/>
-                    
-                    <TableForModals
-                        columns={ADJUNTOS_COLUMNS}
-                        data={adjuntos}
-                        hideSelector={true}
-                        mostrar_acciones={true}
-                        actions={{
-                            'deleteAdjunto': { function: this.openModalDeleteAdjuntos }
-                        }}
-                        dataID='adjuntos'
-                        elements={data.adjuntos}
-                    />
-                </Modal>
-
+                <Card className="card card-custom gutter-b example example-compact">
+                    <Card.Header>
+                        <Card.Title>
+                            <h3 className="card-label">{title}</h3>
+                        </Card.Title>
+                    </Card.Header>
+                    <>
+                        <NominaObraFormulario
+                            title={title}
+                            formeditado={formeditado}
+                            className=" px-3 "
+                            options={options}
+                            form={form}
+                            addRowNominaObra={this.addRowNominaObra}
+                            deleteRowNominaObra={this.deleteRowNominaObra}
+                            onChangeNominasObra={this.onChangeNominasObra}
+                            onChange={this.onChange}
+                            onChangeAdjunto={this.onChangeAdjunto}
+                            clearFiles={this.clearFiles}
+                            onSubmit={this.onSubmit}
+                        >
+                        </NominaObraFormulario>
+                    </>
+                </Card>
             </Layout>
         )
     }
 
 }
 const mapStateToProps = state => {
-    return{
+    return {
         authUser: state.authUser
     }
 }
@@ -794,4 +683,4 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(NominaObra);
+export default connect(mapStateToProps, mapDispatchToProps)(NominaObraForm);
