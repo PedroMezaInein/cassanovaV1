@@ -482,12 +482,12 @@ class EmpleadosForm extends Component {
                                                             requirevalidation={0}
                                                             formeditado={formeditado}
                                                             onChange={onChange}
-                                                            name="salario_hr_dia"
+                                                            name="salario_hr"
                                                             type="text"
-                                                            value={form.salario_hr_dia}
-                                                            placeholder="Salario por hora (día)"
+                                                            value={form.salario_hr}
+                                                            placeholder="Salario por hora"
                                                             iconclass={"fas fa-money-check-alt"}
-                                                            messageinc="Incorrecto. Ingresa el salario por hora (día)."
+                                                            messageinc="Incorrecto. Ingresa el salario por hora."
                                                             thousandSeparator={true} 
                                                             prefix={'$'}
                                                         />
@@ -497,12 +497,12 @@ class EmpleadosForm extends Component {
                                                             requirevalidation={0}
                                                             formeditado={formeditado}
                                                             onChange={onChange}
-                                                            name="salario_hr_noche"
+                                                            name="salario_hr_extra"
                                                             type="text"
-                                                            value={form.salario_hr_noche}
-                                                            placeholder="Salario por hora (noche)"
+                                                            value={form.salario_hr_extra}
+                                                            placeholder="Salario por hora extra"
                                                             iconclass={"fas fa-money-check-alt"}
-                                                            messageinc="Incorrecto. Ingresa el salario por hora (noche)."
+                                                            messageinc="Incorrecto. Ingresa el salario por hora extra."
                                                             thousandSeparator={true} 
                                                             prefix={'$'}
                                                         />
