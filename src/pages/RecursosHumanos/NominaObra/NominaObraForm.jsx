@@ -644,12 +644,7 @@ class NominaObraForm extends Component {
 
         return (
             <Layout active={'rh'} {...this.props}>
-                <Card className="card card-custom gutter-b example example-compact">
-                    <Card.Header>
-                        <Card.Title>
-                            <h3 className="card-label">{title}</h3>
-                        </Card.Title>
-                    </Card.Header>
+                
                         <NominaObraFormulario
                             title={title}
                             formeditado={formeditado}
@@ -665,7 +660,6 @@ class NominaObraForm extends Component {
                             onSubmit={this.onSubmit}
                         >
                         </NominaObraFormulario> 
-                </Card>
             </Layout>
         )
     }
