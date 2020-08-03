@@ -50,7 +50,7 @@ class EmpleadosForm extends Component {
                         <div id="wizard-3" className="wizard-step" data-wizard-type="step" onClick={() => { openWizard3() }}>
                             <div className="wizard-label">
                                 <h3 className="wizard-title">
-                                    <span>3.</span> INFORMACIÓN GENERAL DE IMSS</h3>
+                                    <span>3.</span> INFORMACIÓN GENERAL DE LAS PRESTACIONES</h3>
                                 <div className="wizard-bar"></div>
                             </div>
                         </div>
@@ -372,7 +372,7 @@ class EmpleadosForm extends Component {
                                 </div>
                             </div>
                             <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
-                                <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos del IMSS</h5>
+                                <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos de las prestaciones</h5>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <RadioGroup
@@ -455,7 +455,63 @@ class EmpleadosForm extends Component {
                                                 />
                                             </div>
                                     }
-                                </div> 
+                                    
+                                </div>
+                                <div className="form-group row form-group-marginless"> 
+                                    <div className="col-md-4">
+                                        <InputNumber
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
+                                            onChange={onChange}
+                                            name="nomina_imss"
+                                            type="text"
+                                            value={form.nomina_imss}
+                                            placeholder="Nomina IMSS"
+                                            iconclass={"fas fa-money-check-alt"}
+                                            messageinc="Incorrecto. Ingresa la nomina imss."
+                                            thousandSeparator={true} 
+                                            prefix={'$'}
+                                        />
+                                    </div>
+                                    {
+                                        form.tipo_empleado === 'Obra'
+                                            ?
+                                                <>
+                                                    <div className="col-md-4">
+                                                        <InputNumber
+                                                            requirevalidation={0}
+                                                            formeditado={formeditado}
+                                                            onChange={onChange}
+                                                            name="salario_hr_dia"
+                                                            type="text"
+                                                            value={form.salario_hr_dia}
+                                                            placeholder="Salario por hora (día)"
+                                                            iconclass={"fas fa-money-check-alt"}
+                                                            messageinc="Incorrecto. Ingresa el salario por hora (día)."
+                                                            thousandSeparator={true} 
+                                                            prefix={'$'}
+                                                        />
+                                                    </div>
+                                                    <div className="col-md-4">
+                                                        <InputNumber
+                                                            requirevalidation={0}
+                                                            formeditado={formeditado}
+                                                            onChange={onChange}
+                                                            name="salario_hr_noche"
+                                                            type="text"
+                                                            value={form.salario_hr_noche}
+                                                            placeholder="Salario por hora (noche)"
+                                                            iconclass={"fas fa-money-check-alt"}
+                                                            messageinc="Incorrecto. Ingresa el salario por hora (noche)."
+                                                            thousandSeparator={true} 
+                                                            prefix={'$'}
+                                                        />
+                                                    </div>
+                                                </>
+                                            : ''
+                                    }
+                                    
+                                </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>

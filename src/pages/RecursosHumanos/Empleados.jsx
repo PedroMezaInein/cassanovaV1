@@ -49,6 +49,9 @@ class Empleados extends Component {
             vacaciones_tomadas:0, 
             fecha_alta_imss: '',
             numero_alta_imss: '',
+            nomina_imss: 0.0,
+            salario_hr_dia: 0.0,
+            salario_hr_noche: 0.0,
             adjuntos:{
                 datosGenerales:{
                     value: '',
@@ -111,6 +114,9 @@ class Empleados extends Component {
         form.clabe = empleado.clabe
         form.tipo_empleado = empleado.tipo_empleado
         form.estatus_empleado = empleado.estatus_empleado
+        form.nomina_imss = empleado.nomina_imss
+        form.salario_hr_dia = empleado.salario_hr_dia
+        form.salario_hr_noche = empleado.salario_hr_noche
         if(empleado.empresa){
             form.empresa = empleado.empresa.id.toString()
         } 
@@ -547,7 +553,7 @@ class Empleados extends Component {
     }
 
     clearForm = () => {
-        const { form } = this.state
+        const { form, key } = this.state
         let aux = Object.keys(form)
         aux.map((element) => {
             switch (element) {
@@ -577,10 +583,16 @@ class Empleados extends Component {
                 case 'estatus_imss':
                     form[element] = 'Activo'
                     break;
+                case 'nomina_imss':
+                case 'salario_hr_dia':
+                case 'salario_hr_noche':
                 case 'vacaciones_tomadas':
                     form[element] = 0
                     break;
                 case 'tipo_empleado':
+                    if(key === 'obra')
+                    form[element] = 'Obra'
+                    else
                     form[element] = 'Administrativo'
                     break;
                 default:
@@ -674,7 +686,9 @@ class Empleados extends Component {
     }
 
     onChange = e => {
+
         const { name, value } = e.target
+        console.log(name, value, 'name', 'value')
         const { form } = this.state
         form[name] = value
         this.setState({
@@ -723,15 +737,18 @@ class Empleados extends Component {
     }
 
     controlledTab = value => {
+        const { form } = this.state
         if(value === 'administrativo'){
             this.getEmpleadosAxios()
         }
         if(value === 'obra'){
             this.getEmpleadosObraAxios()
+            form.tipo_empleado = 'Obra'
         }
         this.setState({
             ... this.state,
-            key: value
+            key: value,
+            form
         })
     }
 
