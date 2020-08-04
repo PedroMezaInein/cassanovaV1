@@ -87,29 +87,72 @@ only screen and (max-width: 760px),
     }
 }
 
+.table_nominas{
+    @include screen($md){
+        min-height: 30vh;
+        padding-bottom: 8rem;
+    }
+}
 
-// .table_nominas{
-//     @include screen($md){
-//         min-height: 30vh;
-//         padding-bottom: 8rem;
-//     }
-// }
-// .table_nominas {
-
-//     @media only screen and (max-width: 760px),
-//     (min-device-width: 768px) and (max-device-width: 1024px) {
-
-//         tr, td {
-//             width: 30px;
-//         }
-
-//     }
-// }
-@media all and (max-width: 699px) and (min-width: 520px),
-(min-width: 1151px) {
-    .table_nominas_obras{
-        input.form-control.form-control-sm.is-invalid.sin_icono.text-uppercase{
-            width: 100px;
-        }
+input#empleado,
+input#proyecto {
+    @include down-screen($md) {
+        width: 205px;
+        padding-left: 6px;
+    }
+    @include screen ($md) {
+        min-width: 205px;
+    }
+    @include screen ($lg) {
+        min-width: 170px;
+    }
+    @include screen ($xl) {
+        min-width: 300px;
+    }
+}
+input#salario_hr,
+input#hr_trabajadas,
+input#salario_hr_extra,
+input#hr_extra,
+input#nominImss,
+input#restanteNomina,
+input#extras,
+div#total {
+    @include down-screen($md) {
+        width: 72px;
+        padding-left: 6px;
+    }
+    @include screen ($md) {
+        min-width: 72px;
+    }
+    @include screen ($lg) {
+        min-width: 67px;
+    }
+    @include screen ($xl) {
+        min-width: 72px;
+    }
+}
+.mt-2.pb-3.font-size-sm, th.pb-0.border-bottom-0.font-size-sm, .mt-2.pb-3{
+    @include down-screen($md) {
+        text-align: center;
+        font-size: 12px;
+    }
+    @include screen ($md) {
+        text-align: center;
+        font-size: 12px;
+    }
+    @include screen ($lg) {
+        text-align: center;
+        font-size: 12px;
+    }
+    @include screen ($xl) {
+        text-align: center;
+        font-size: 12px;
+    }
+}
+th{
+    @include screen($lg) {
+        padding: 3px ;
+        width: 72px;
     }
 }
