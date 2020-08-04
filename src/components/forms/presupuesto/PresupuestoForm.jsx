@@ -64,15 +64,23 @@ class PresupuestoForm extends Component {
             <div className="row">
                 <div className="col-lg-12">
                     <div className="flex-row-fluid ml-lg-8">
-                        <div className="d-flex flex-column flex-grow-1">
-                            <div className="card card-custom gutter-b">
-                                <div className="table-responsive-md card-body d-flex align-items-center justify-content-between flex-wrap py-3">
-                                    <div className="d-flex align-items-center mr-2 py-2">
-                                        <h4 className="font-weight-bold mb-0 mr-5">PARTIDAS Y SUB-PARTIDAS</h4>
-                                    </div>
-                                    <div className="d-flex">
-                                        <div className="navi navi-hover navi-active navi-link-rounded navi-bold d-flex flex-row">
-                                            <div className="navi-item">
+                        <div className="d-flex flex-column flex-grow-1">                            
+                            <div className="row">
+                                <div className="col-xl-6">
+                                    <div className="card card-custom card-stretch" id="kt_todo_list">
+                                        <div className="card-header align-items-center flex-wrap py-4 border-0 h-auto">
+                                            <div className="d-flex flex-wrap align-items-center">
+                                                <div className="d-flex align-items-center mr-1 my-2">
+                                                    <label data-inbox="group-select" className="checkbox checkbox-single checkbox-primary mr-3">
+                                                        <input type="checkbox" />
+                                                        <span className="symbol-label"></span>
+                                                    </label>
+                                                    <div className="d-flex flex-column mr-2 py-2">
+                                                        <a className="text-dark text-hover-primary font-weight-bold font-size-h4 mx-3">CONCEPTOS</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="d-flex flex-column mr-2 py-2 d-flex justify-content-end ">
                                                 <SelectSearchSinText
                                                     formeditado={formeditado}
                                                     options={options.partidas}
@@ -83,88 +91,62 @@ class PresupuestoForm extends Component {
                                                     customstyle={{ width: "250px" }}
                                                 />
                                             </div>
-                                            <div className="navi-item mx-2">
-                                                {
-                                                    form.partida ?
-                                                        <SelectSearchSinText
-                                                            formeditado={formeditado}
-                                                            options={options.subpartidas}
-                                                            placeholder="SELECCIONA LA SUBPARTIDA"
-                                                            name="subpartida"
-                                                            value={form.subpartida}
-                                                            onChange={this.updateSubpartida}
-                                                            customstyle={{ width: "250px" }}
-                                                        />
-                                                        : ''
-                                                }
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="row">
-                                <div className="col-xl-6">
-                                    <div className="card card-custom card-stretch" id="kt_todo_list">
-                                        <div
-                                            className="card-header align-items-center flex-wrap py-4 border-0 h-auto">
-                                            <div className="d-flex flex-wrap align-items-center">
-                                                <div className="d-flex align-items-center mr-1 my-2">
-                                                    <label data-inbox="group-select"
-                                                        className="checkbox checkbox-single checkbox-primary mr-3">
-                                                        <input type="checkbox" />
-                                                        <span className="symbol-label"></span>
-                                                    </label>
-                                                    <div className="d-flex flex-column mr-2 py-2">
-                                                        <a
-                                                            className="text-dark text-hover-primary font-weight-bold font-size-h4 mx-3">CONCEPTOS</a>
-                                                    </div>
-                                                </div>
-                                            </div>
                                         </div>
                                         <div className="card-body p-0">
                                             <div className="table-responsive">
                                                 <div className="list list-hover min-w-500px" data-inbox="list">
                                                     {
-                                                        data.conceptos.map((concepto, key) => {
+                                                        data.subpartidas.map((subpartida, key) => {
                                                             return (
-                                                                <div key={key} className="d-flex align-items-start list-item card-spacer-x pt-4 pb-5" data-inbox="message">
-                                                                    <div className="d-flex align-items-center col-1">
-                                                                        <div className="d-flex align-items-center mr-3" data-inbox="actions">
-                                                                            <label className="checkbox checkbox-single checkbox-primary flex-shrink-0 mr-3">
-                                                                                <input
-                                                                                    type="checkbox"
-                                                                                    onChange={(e) => { checkButton(e) }}
-                                                                                    name={concepto.clave}
-                                                                                    checked={form.conceptos[concepto.clave]}
-                                                                                    value={form.conceptos[concepto.clave]}
-                                                                                />
-                                                                                <span></span>
-                                                                            </label>
-                                                                        </div>
+                                                                <>
+                                                                    <div key={key} className="d-flex align-items-center bg-light-primary">
+                                                                        <div className="ml-4 font-weight-bold text-primary font-size-lg mb-1 py-2">{subpartida.nombre}</div>
                                                                     </div>
-                                                                    <div className="flex-grow-1 mt-1 mr-2 col-2" data-toggle="view">
-                                                                        <div className="font-weight-bold mr-2">{concepto.clave}</div>
-                                                                    </div>
-                                                                    <div className="flex-grow-1 mt-1 mr-2 col-5" data-toggle="view">
-                                                                        <div className="font-weight-bold mr-2 font-size-sm text-justify">
-                                                                            {
-                                                                                concepto.descripcion
-                                                                            }
-                                                                        </div>
-                                                                    </div>
-                                                                    <div className="d-flex align-items-center justify-content-center flex-wrap col-2" data-toggle="view">
-                                                                        <div className="font-weight-bolder position-absolute" data-toggle="view">UNIDAD</div>
-                                                                        <span className="label label-light-primary  label-inline position-relative" style={{ top: "22px" }} >hola</span>
-                                                                    </div>
-                                                                    <div className="d-flex align-items-center justify-content-center flex-wrap col-2" data-toggle="view">
-                                                                        <div className="font-weight-bolder position-absolute" data-toggle="view">COSTO</div>
-                                                                        <span className="label label-light-primary  label-inline position-relative" style={{ top: "22px" }}>
-                                                                            {
-                                                                                setMoneyTable(concepto.costo)
-                                                                            }
-                                                                        </span>
-                                                                    </div>
-                                                                </div>
+                                                                    {
+                                                                        subpartida.conceptos.map((concepto, key) => {
+                                                                            return (
+                                                                                <div key={key} className="d-flex align-items-start list-item card-spacer-x pt-4 pb-5" data-inbox="message">
+                                                                                    <div className="d-flex align-items-center col-1">
+                                                                                        <div className="d-flex align-items-center mr-3" data-inbox="actions">
+                                                                                            <label className="checkbox checkbox-single checkbox-primary flex-shrink-0 mr-3">
+                                                                                                <input
+                                                                                                    type="checkbox"
+                                                                                                    onChange={(e) => { checkButton(e) }}
+                                                                                                    name={concepto.clave}
+                                                                                                    checked={form.conceptos[concepto.clave]}
+                                                                                                    value={form.conceptos[concepto.clave]}
+                                                                                                />
+                                                                                                <span></span>
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div className="flex-grow-1 mt-1 mr-2 col-2" data-toggle="view">
+                                                                                        <div className="font-weight-bold mr-2">{concepto.clave}</div>
+                                                                                    </div>
+                                                                                    <div className="flex-grow-1 mt-1 mr-2 col-5" data-toggle="view">
+                                                                                        <div className="font-weight-bold mr-2 font-size-sm text-justify">
+                                                                                            {
+                                                                                                concepto.descripcion
+                                                                                            }
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div className="d-flex align-items-center justify-content-center flex-wrap col-2" data-toggle="view">
+                                                                                        <div className="font-weight-bolder position-absolute" data-toggle="view">UNIDAD</div>
+                                                                                        <span className="label label-light-primary  label-inline position-relative" style={{ top: "22px" }} >hola</span>
+                                                                                    </div>
+                                                                                    <div className="d-flex align-items-center justify-content-center flex-wrap col-2" data-toggle="view">
+                                                                                        <div className="font-weight-bolder position-absolute" data-toggle="view">COSTO</div>
+                                                                                        <span className="label label-light-primary  label-inline position-relative" style={{ top: "22px" }}>
+                                                                                            {
+                                                                                                setMoneyTable(concepto.costo)
+                                                                                            }
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                </>
                                                             )
                                                         })
                                                     }
@@ -183,7 +165,7 @@ class PresupuestoForm extends Component {
                                                 </div>
                                                 <div className="d-flex py-2">
                                                     <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Formulario</Tooltip>}>
-                                                        <button type="button" class="btn btn-secondary" onClick={() => { this.mostrarFormulario() }}>Siguiente</button>
+                                                        <button type="button" className="btn btn-light-primary font-weight-bold mr-2" onClick={() => { this.mostrarFormulario() }}>Siguiente</button>
                                                     </OverlayTrigger>
                                                 </div>
                                                 <Form id="form-presupuesto"
