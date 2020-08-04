@@ -179,6 +179,11 @@ a.text-hover-danger2:hover, .text-hover-danger2:hover{
     width: 39px !important;
 }
 
+//Se quita el icono de los inputs
+.sin_icono{
+    background-image: none !important;
+    padding-right: 0 !important;
+}
 
 
 .modal-dialog{
@@ -188,3 +193,4 @@ a.text-hover-danger2:hover, .text-hover-danger2:hover{
         }
     }
 }
+

@@ -71,7 +71,7 @@ class InputNumberSinText extends Component {
             <div > 
                     <NumberFormat
                         placeholder={placeholder}
-                        className={inputValido ? " form-control form-control-sm is-valid text-uppercase" : " form-control form-control-sm is-invalid text-uppercase"}
+                        className={inputValido ? " form-control form-control-sm is-valid sin_icono text-uppercase" : " form-control form-control-sm is-invalid sin_icono text-uppercase"}
                         onChange={(e) => { e.preventDefault(); this.validarInput(e); onChange(e) }}
                         {...props}
                         format={typeformat} 
