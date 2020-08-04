@@ -297,7 +297,7 @@ class egresos extends Component{
                         cliente: renderToString(setTextTable(egreso.proveedor ? egreso.proveedor.razon_social : '')),
                         factura: renderToString(setTextTable(egreso.factura ? 'Con factura' : 'Sin factura')),
                         monto: renderToString(setMoneyTable(egreso.monto)),
-                        comision: renderToString(setMoneyTable(egreso.comision)),
+                        comision: renderToString(setMoneyTable(egreso.comision ? egreso.comision : 0.0)),
                         total: renderToString(setMoneyTable(egreso.total)),
                         impuesto: renderToString(setTextTable( egreso.tipo_impuesto ? egreso.tipo_impuesto.tipo : 'Sin definir')),
                         tipoPago: renderToString(setTextTable( egreso.tipo_pago ? egreso.tipo_pago.tipo: '')),
