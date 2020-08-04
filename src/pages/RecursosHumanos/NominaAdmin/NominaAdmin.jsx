@@ -2,16 +2,16 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
-import Layout from '../../components/layout/layout' 
-import { Modal, ModalDelete} from '../../components/singles' 
-import { NOMINA_ADMIN_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS} from '../../constants'
-import NewTable from '../../components/tables/NewTable' 
-import { NominaAdminForm, AdjuntosForm} from '../../components/forms'
-import { setOptions, setDateTable, setMoneyTable, setTextTable, setAdjuntosList } from '../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, deleteAlert} from '../../functions/alert'
-import NewTableServerRender from '../../components/tables/NewTableServerRender'
+import Layout from '../../../components/layout/layout' 
+import { Modal, ModalDelete} from '../../../components/singles' 
+import { NOMINA_ADMIN_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS} from '../../../constants'
+import NewTable from '../../../components/tables/NewTable' 
+import { NominaAdminForm, AdjuntosForm} from '../../../components/forms'
+import { setOptions, setDateTable, setMoneyTable, setTextTable, setAdjuntosList } from '../../../functions/setters'
+import { errorAlert, waitAlert, forbiddenAccessAlert, deleteAlert} from '../../../functions/alert'
+import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { renderToString } from 'react-dom/server'
-import TableForModals from '../../components/tables/TableForModals'
+import TableForModals from '../../../components/tables/TableForModals'
 
 const $ = require('jquery');
 
@@ -73,19 +73,15 @@ class NominaAdmin extends Component {
         });
     }
 
-    openModal = () => {
-        const { modal } = this.state
-        modal.form = true
-        this.setState({
-            ... this.state,
-            modal,
-            form: this.clearForm(),
-            formeditado:0,
-            title: 'Nueva nómina administrativa',
-        })
+    changeEditPage = nomina => {
+        const { history } = this.props
+        history.push({
+            pathname: '/rh/nomina-admin/edit',
+            state: { nomina: nomina }
+        });
     }
 
-    openModalEdit = nomina => {
+    /* openModalEdit = nomina => {
         const { modal, form } = this.state
         modal.form = true
 
@@ -125,7 +121,7 @@ class NominaAdmin extends Component {
             form,
             formeditado:1
         })
-    }
+    } */
 
     openModalDelete = nomina => {
         const { modal } = this.state
@@ -163,7 +159,7 @@ class NominaAdmin extends Component {
                 url: renderToString(
                     setAdjuntosList([{ name: adjunto.name, url: adjunto.url }])
                 ),
-                tipo: renderToString(setTextTable(adjunto.pivot.tipo)),
+                tipo: renderToString(setTextTable('Adjunto')),
                 id: 'adjuntos-' + adjunto.id
             })
         })
@@ -207,108 +203,6 @@ class NominaAdmin extends Component {
                     ... this.state,
                     options,
                     data
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-    async addNominaAdminAxios(){
-        waitAlert()
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-        const data = new FormData();
-
-        let aux = Object.keys(form)
-        aux.map((element) => {
-            switch (element) {
-                case 'fechaInicio':
-                case 'fechaFin':
-                    data.append(element, (new Date(form[element])).toDateString())
-                    break;
-                case 'nominasAdmin':
-                    data.append(element, JSON.stringify(form[element]))
-                    break;
-                case 'adjuntos':
-                    break; 
-                default:
-                    data.append(element, form[element])
-                    break
-            }
-        })
-        aux = Object.keys(form.adjuntos)
-        aux.map((element) => {
-            if (form.adjuntos[element].value !== '') {
-                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
-                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
-                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
-                }
-                data.append('adjuntos[]', element)
-            }
-        })
-        await axios.post(URL_DEV + 'rh/nomina-administrativa', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                this.handleCloseModal()
-                this.getNominasAxios()
-
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'La nomina fue modificado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false,
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-    async updatedNominaAdminAxios(){
-        waitAlert()
-        const { access_token } = this.props.authUser
-        const { form, nomina} = this.state
-        
-        await axios.put(URL_DEV + 'rh/nomina-administrativa/' + nomina.id , form, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { modal } = this.state
-                
-                this.getNominasAxios()
-
-                modal.form = false
-
-                this.setState({                    
-                    ... this.state,
-                    modal,
-                    nomina: '',
-                    form: this.clearForm()
-                })
-
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'La nomina fue modificado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false,
                 })
             },
             (error) => {
@@ -455,16 +349,6 @@ class NominaAdmin extends Component {
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
-        })
-    }
-
-    handleCloseModal = () => {
-        const { modal } = this.state 
-        modal.form = false
-        this.setState({
-            ... this.state,
-            modal, 
-            form: this.clearForm()
         })
     }
 
@@ -628,68 +512,6 @@ class NominaAdmin extends Component {
         })
     }
 
-    onSubmit = e => {
-        e.preventDefault()
-        const { title } = this.state
-        if(title === 'Editar nómina administrativa')
-            this.updatedNominaAdminAxios() 
-        else    
-            this.addNominaAdminAxios()
-    }
-
-    onChangeNominasAdmin = (key, e, name) => {
-        const { value } = e.target
-        const { form,data } = this.state
-        if(name === 'usuario'){
-            data.usuarios.map( (empleado) => {
-                if(value.toString() === empleado.id.toString())
-                    form['nominasAdmin'][key].nominImss  = empleado.nomina_imss
-            }) 
-        }
-        form['nominasAdmin'][key][name]  = value
-        this.setState({
-            ...this.state,
-            form
-        })
-    
-    }
-
-    addRowNominaAdmin = () => {
-        const { form } = this.state
-        form.nominasAdmin.push(
-            {
-                nominasAdmin:[{
-                    usuario: '', 
-                    nominImss: '',
-                    restanteNomina: '',
-                    extras: ''
-                }]
-            }
-        )
-        this.setState({
-            ... this.state,
-            form
-        })
-    }
-
-    deleteRowNominaAdmin = () => {
-        const { form } = this.state
-        form.nominasAdmin.pop(
-            {
-                nominasAdmin:[{
-                    usuario: '',
-                    nominImss: '',
-                    restanteNomina: '',
-                    extras: ''
-                }]
-            }
-        )
-        this.setState({
-            ... this.state,
-            form
-        })
-    }
-
     async getNominasAxios(){
         var table = $('#kt_datatable2_nomina_admin')
             .DataTable();
@@ -705,11 +527,11 @@ class NominaAdmin extends Component {
                     columns = { NOMINA_ADMIN_COLUMNS }
                     title = 'Nómina Administrativa' subtitle = 'Listado de Nómina Administrativa'
                     mostrar_boton={true}
-                    abrir_modal={true} 
-                    onClick={this.openModal} 
+                    abrir_modal={false} 
+                    url = '/rh/nomina-admin/add'
                     mostrar_acciones={true} 
                     actions={{
-                        'edit': { function: this.openModalEdit },
+                        'edit': { function: this.changeEditPage },
                         'delete': {function: this.openModalDelete},
                         'adjuntos': { function: this.openModalAdjuntos },
                         'show': { function: this.changeSinglePage}
@@ -719,26 +541,8 @@ class NominaAdmin extends Component {
                     urlRender = {URL_DEV + 'rh/nomina-administrativa'}
                     idTable = 'kt_datatable2_nomina_admin'
                 />
-
-                <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseModal}>
-                    <NominaAdminForm
-                        title = { title }
-                        formeditado={formeditado}
-                        className=" px-3 "
-                        options={options}
-                        form={form}
-                        addRowNominaAdmin={this.addRowNominaAdmin}
-                        deleteRowNominaAdmin={this.deleteRowNominaAdmin}
-                        onChangeNominasAdmin={this.onChangeNominasAdmin}
-                        onChange={this.onChange}
-                        onChangeAdjunto={this.onChangeAdjunto}
-                        clearFiles={this.clearFiles}
-                        onSubmit = { this.onSubmit }
-                    >
-                    </NominaAdminForm>
-                </Modal>  
-                <ModalDelete title={'¿Desea eliminar la nómina?'} show = { modal.delete } handleClose = { this.handleCloseModalDelete } onClick=  { (e) => { e.preventDefault(); waitAlert(); this.deleteNominaAdminAxios() }}>
-                </ModalDelete>
+                 
+                <ModalDelete title={'¿Desea eliminar la nómina?'} show = { modal.delete } handleClose = { this.handleCloseModalDelete } onClick=  { (e) => { e.preventDefault(); waitAlert(); this.deleteNominaAdminAxios() }} />
 
                 <Modal size="xl" title={"Adjuntos"} show={modal.adjuntos} handleClose={this.handleCloseAdjuntos}>
                     <AdjuntosForm form={form} onChangeAdjunto={this.onChangeAdjunto} clearFiles={this.clearFiles}

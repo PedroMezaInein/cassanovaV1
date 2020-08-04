@@ -678,10 +678,11 @@ class NominaObra extends Component {
         const { form, data} = this.state
         if(name === 'usuario'){
             data.usuarios.map( (empleado) => {
-                if(value.toString() === empleado.id.toString())
+                if(value.toString() === empleado.id.toString()){
                     form['nominasObra'][key].nominImss  = empleado.nomina_imss
                     form['nominasObra'][key].salario_hr  = empleado.salario_hr
                     form['nominasObra'][key].salario_hr_extra  = empleado.salario_hr_extra
+                }
             }) 
         }
         form['nominasObra'][key][name] = value

@@ -4,6 +4,7 @@ import { Input, Calendar, SelectSearch, Button, FileInput, InputMoneySinText, Se
 import { validateAlert } from '../../../functions/alert'
 import { DATE } from '../../../constants'
 import { setMoneyTableForNominas } from '../../../functions/setters'
+import { Card } from 'react-bootstrap'
 
 
 class NominaAdminForm extends Component {
@@ -87,188 +88,201 @@ class NominaAdminForm extends Component {
         const { options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, onChange, onChangeAdjunto, clearFiles, form, onSubmit, formeditado, title } = this.props
         
         return (
-            <Form id="form-nominaadmin"
-                onSubmit={
-                    (e) => {
-                        e.preventDefault();
-                        validateAlert(onSubmit, e, 'form-nominaadmin')
+            <Card className="card card-custom gutter-b example example-compact">
+                <Card.Header>
+                    <Card.Title>
+                        <h3 className="card-label">{title}</h3>
+                    </Card.Title>
+                </Card.Header>
+                <Form id="form-nominaadmin"
+                    onSubmit={
+                        (e) => {
+                            e.preventDefault();
+                            validateAlert(onSubmit, e, 'form-nominaadmin')
+                        }
                     }
-                }
-            >
-                <div className="form-group row form-group-marginless pt-4">
-                    <div className="col-md-6">
-                        <Input
-                            requirevalidation={1}
-                            formeditado={formeditado}
-                            name="periodo"
-                            value={form.periodo}
-                            placeholder="PERIODO DE NÓMINA ADMINISTRATIVA"
-                            onChange={onChange}
-                            iconclass={"far fa-window-maximize"}
-                            messageinc="Incorrecto. Ingresa el periodo de nómina Administrativa."
-                        />
-                    </div>
-
-                    <div className="col-md-6">
-                        <SelectSearch
-                            formeditado={formeditado}
-                            options={options.empresas}
-                            placeholder="Selecciona la empresa"
-                            name="empresa"
-                            value={form.empresa}
-                            onChange={this.updateEmpresa}
-                            iconclass={"far fa-building"}
-                        />
-                    </div>
-                </div>
-                <div className="separator separator-dashed mt-1 mb-2"></div>
-                <div className="form-group row form-group-marginless">
-                    <div className="col-md-6">
-                        <Calendar
-                            formeditado={formeditado}
-                            onChangeCalendar={this.handleChangeDateInicio}
-                            placeholder="Fecha de inicio"
-                            name="fechaInicio"
-                            value={form.fechaInicio}
-                            selectsStart
-                            startDate={form.fechaInicio}
-                            endDate={form.fechaFin}
-                            iconclass={"far fa-calendar-alt"}
-                            patterns={DATE}
-                        />
-                    </div>
-                    <div className="col-md-6">
-                        <Calendar
-                            formeditado={formeditado}
-                            onChangeCalendar={this.handleChangeDateFin}
-                            placeholder="Fecha final"
-                            name="fechaFin"
-                            value={form.fechaFin}
-                            selectsEnd
-                            startDate={form.fechaInicio}
-                            endDate={form.fechaFin}
-                            minDate={form.fechaInicio}
-                            iconclass={"far fa-calendar-alt"}
-                            patterns={DATE}
-                        />
-                    </div>
-                </div>
-
-                {
-                    title !== 'Editar nómina administrativa' ?
-                        <>
-                            <div className="separator separator-dashed mt-1 mb-2"></div>
-                            <div className="form-group row form-group-marginless">
-                                <div className="col-md-12">
-                                    <FileInput
-                                        requirevalidation={0}
-                                        formeditado={formeditado}
-                                        onChangeAdjunto={onChangeAdjunto}
-                                        placeholder={form.adjuntos.adjunto.placeholder}
-                                        value={form.adjuntos.adjunto.value}
-                                        name='adjunto'
-                                        id='adjunto'
-                                        accept="image/*, application/pdf"
-                                        files={form.adjuntos.adjunto.files}
-                                        deleteAdjunto={clearFiles}
-                                        multiple
-                                    />
-                                </div>
+                >
+                    <Card.Body>
+                        <div className="form-group row form-group-marginless pt-4">
+                            <div className="col-md-6">
+                                <Input
+                                    requirevalidation={1}
+                                    formeditado={formeditado}
+                                    name="periodo"
+                                    value={form.periodo}
+                                    placeholder="PERIODO DE NÓMINA ADMINISTRATIVA"
+                                    onChange={onChange}
+                                    iconclass={"far fa-window-maximize"}
+                                    messageinc="Incorrecto. Ingresa el periodo de nómina Administrativa."
+                                />
                             </div>
-                        </>
-                        : ''
-                }
 
-                <table className="table table-separate table-responsive-sm table_nominas" id="tabla_obra">
-                    <thead>
-                        <tr>
-                            <th rowSpan="2"><div className="mt-2 pb-3">Empleado</div></th>
-                            <th className="pb-0 border-bottom-0">Nómina IMSS</th>
-                            <th className="pb-0 border-bottom-0">Restante Nómina</th>
-                            <th className="pb-0 border-bottom-0">Extras</th>
-                            <th className="pb-0 border-bottom-0">Total</th>
-                        </tr>
-                        <tr>
-                            <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">{setMoneyTableForNominas(this.getTotalNominaImss("nominImss"))}</div></th>
-                            <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">{setMoneyTableForNominas(this.getTotalRestanteNomina("restanteNomina"))}</div></th>
-                            <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">{setMoneyTableForNominas(this.getTotalExtra("extras"))}</div></th>
-                            <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">{setMoneyTableForNominas(this.getTotales())}</div></th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                            <div className="col-md-6">
+                                <SelectSearch
+                                    formeditado={formeditado}
+                                    options={options.empresas}
+                                    placeholder="Selecciona la empresa"
+                                    name="empresa"
+                                    value={form.empresa}
+                                    onChange={this.updateEmpresa}
+                                    iconclass={"far fa-building"}
+                                />
+                            </div>
+                        </div>
+                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                        <div className="form-group row form-group-marginless">
+                            <div className="col-md-6">
+                                <Calendar
+                                    formeditado={formeditado}
+                                    onChangeCalendar={this.handleChangeDateInicio}
+                                    placeholder="Fecha de inicio"
+                                    name="fechaInicio"
+                                    value={form.fechaInicio}
+                                    selectsStart
+                                    startDate={form.fechaInicio}
+                                    endDate={form.fechaFin}
+                                    iconclass={"far fa-calendar-alt"}
+                                    patterns={DATE}
+                                />
+                            </div>
+                            <div className="col-md-6">
+                                <Calendar
+                                    formeditado={formeditado}
+                                    onChangeCalendar={this.handleChangeDateFin}
+                                    placeholder="Fecha final"
+                                    name="fechaFin"
+                                    value={form.fechaFin}
+                                    selectsEnd
+                                    startDate={form.fechaInicio}
+                                    endDate={form.fechaFin}
+                                    minDate={form.fechaInicio}
+                                    iconclass={"far fa-calendar-alt"}
+                                    patterns={DATE}
+                                />
+                            </div>
+                        </div>
 
                         {
-                            form.nominasAdmin.map((nominaAdmin, key) => {
-                                return (
-                                    <tr key={key}>
-                                        <td>
-                                            <SelectSearchSinText
+                            title !== 'Editar nómina administrativa' ?
+                                <>
+                                    <div className="separator separator-dashed mt-1 mb-2"></div>
+                                    <div className="form-group row form-group-marginless">
+                                        <div className="col-md-12">
+                                            <FileInput
+                                                requirevalidation={0}
                                                 formeditado={formeditado}
-                                                options={options.usuarios}
-                                                placeholder="Selecciona el empleado"
-                                                name="usuario"
-                                                value={form['nominasAdmin'][key]['usuario']}
-                                                onChange={(value) => this.updateUsuario(value, key)}
-                                                customstyle={{ minWidth: "300px" }}/>
-                                        </td>
-                                        <td>
-                                            <InputMoneySinText
-                                                requirevalidation={1}
-                                                formeditado={formeditado}
-                                                name="nominImss"
-                                                value={form['nominasAdmin'][key]['nominImss']}
-                                                onChange={e => onChangeNominasAdmin(key, e, 'nominImss')}
-                                                thousandSeparator={true}
-                                                prefix={'$'}
-                                                customstyle={{ minWidth: "160px" }}
+                                                onChangeAdjunto={onChangeAdjunto}
+                                                placeholder={form.adjuntos.adjunto.placeholder}
+                                                value={form.adjuntos.adjunto.value}
+                                                name='adjunto'
+                                                id='adjunto'
+                                                accept="image/*, application/pdf"
+                                                files={form.adjuntos.adjunto.files}
+                                                deleteAdjunto={clearFiles}
+                                                multiple
                                             />
-                                        </td>
-                                        <td>
-                                            <InputMoneySinText
-                                                requirevalidation={1}
-                                                formeditado={formeditado}
-                                                name="restanteNomina"
-                                                value={form['nominasAdmin'][key]['restanteNomina']}
-                                                onChange={e => onChangeNominasAdmin(key, e, 'restanteNomina')}
-                                                thousandSeparator={true}
-                                                prefix={'$'}
-                                                customstyle={{ minWidth: "160px" }}
-                                            />
-                                        </td>
-                                        <td>
-                                            <InputMoneySinText
-                                                requirevalidation={1}
-                                                formeditado={formeditado}
-                                                name="extras"
-                                                value={form['nominasAdmin'][key]['extras']}
-                                                onChange={e => onChangeNominasAdmin(key, e, 'extras')}
-                                                thousandSeparator={true}
-                                                prefix={'$'}
-                                                customstyle={{ minWidth: "160px" }}
-                                            />
-                                        </td>
-                                        <td>
-                                            <div className="font-size-lg font-weight-bolder text-center" style={{ width: "138px" }}>
-                                                {
-                                                    setMoneyTableForNominas(this.getTotal(key))
-                                                }
-                                            </div>
-                                        </td>
-                                    </tr>
-                                )
-                            })
+                                        </div>
+                                    </div>
+                                </>
+                                : ''
                         }
-                    </tbody>
-                </table>
-                <div className="form-group d-flex justify-content-center">
-                    <button type="button" className="btn btn-light-primary font-weight-bold mr-2" onClick={addRowNominaAdmin} >Agregar Fila</button>
-                    <button type="button" className="btn btn-light-danger font-weight-bold mr-2" onClick={deleteRowNominaAdmin} >Eliminar Fila</button>
-                </div>
-                <div className="separator separator-dashed mt-1 mb-2"></div>
-                <div className="d-flex justify-content-center mt-2 mb-4">
-                    <Button text='Enviar' type='submit' />
-                </div>
-            </Form>
+
+                        <table className="table table-separate table-responsive-sm table_nominas_obras" id="tabla_obra">
+                            <thead>
+                                <tr>
+                                    <th rowSpan="2"><div className="mt-2 pb-3">Empleado</div></th>
+                                    <th className="pb-0 border-bottom-0">Nómina IMSS</th>
+                                    <th className="pb-0 border-bottom-0">Restante Nómina</th>
+                                    <th className="pb-0 border-bottom-0">Extras</th>
+                                    <th className="pb-0 border-bottom-0">Total</th>
+                                </tr>
+                                <tr>
+                                    <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">{setMoneyTableForNominas(this.getTotalNominaImss("nominImss"))}</div></th>
+                                    <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">{setMoneyTableForNominas(this.getTotalRestanteNomina("restanteNomina"))}</div></th>
+                                    <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">{setMoneyTableForNominas(this.getTotalExtra("extras"))}</div></th>
+                                    <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder">{setMoneyTableForNominas(this.getTotales())}</div></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                {
+                                    form.nominasAdmin.map((nominaAdmin, key) => {
+                                        return (
+                                            <tr key={key}>
+                                                <td>
+                                                    <SelectSearchSinText
+                                                        formeditado={formeditado}
+                                                        options={options.usuarios}
+                                                        placeholder="Selecciona el empleado"
+                                                        name="usuario"
+                                                        value={form['nominasAdmin'][key]['usuario']}
+                                                        onChange={(value) => this.updateUsuario(value, key)}
+                                                        customstyle={{ minWidth: "300px" }}/>
+                                                </td>
+                                                <td>
+                                                    <InputMoneySinText
+                                                        requirevalidation={1}
+                                                        formeditado={formeditado}
+                                                        name="nominImss"
+                                                        value={form['nominasAdmin'][key]['nominImss']}
+                                                        onChange={e => onChangeNominasAdmin(key, e, 'nominImss')}
+                                                        thousandSeparator={true}
+                                                        prefix={'$'}
+                                                        customstyle={{ minWidth: "160px" }}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <InputMoneySinText
+                                                        requirevalidation={1}
+                                                        formeditado={formeditado}
+                                                        name="restanteNomina"
+                                                        value={form['nominasAdmin'][key]['restanteNomina']}
+                                                        onChange={e => onChangeNominasAdmin(key, e, 'restanteNomina')}
+                                                        thousandSeparator={true}
+                                                        prefix={'$'}
+                                                        customstyle={{ minWidth: "160px" }}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <InputMoneySinText
+                                                        requirevalidation={1}
+                                                        formeditado={formeditado}
+                                                        name="extras"
+                                                        value={form['nominasAdmin'][key]['extras']}
+                                                        onChange={e => onChangeNominasAdmin(key, e, 'extras')}
+                                                        thousandSeparator={true}
+                                                        prefix={'$'}
+                                                        customstyle={{ minWidth: "160px" }}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <div className="font-size-lg font-weight-bolder text-center" style={{ width: "138px" }}>
+                                                        {
+                                                            setMoneyTableForNominas(this.getTotal(key))
+                                                        }
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
+                                }
+                            </tbody>
+                        </table>
+                        <div className="form-group d-flex justify-content-center">
+                            <button type="button" className="btn btn-light-primary font-weight-bold mr-2" onClick={addRowNominaAdmin} >Agregar Fila</button>
+                            <button type="button" className="btn btn-light-danger font-weight-bold mr-2" onClick={deleteRowNominaAdmin} >Eliminar Fila</button>
+                        </div>
+                        
+                    </Card.Body>
+                    <Card.Footer>
+                        <div className="row">
+                            <div className="col-lg-12 text-right">
+                                <Button text='Enviar' type='submit' className="btn btn-primary mr-2" />
+                            </div>
+                        </div>
+                    </Card.Footer>
+                </Form>
+            </Card>
         )
     }
 }

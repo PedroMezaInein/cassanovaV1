@@ -1,10 +1,10 @@
 import React, { Component } from 'react' 
 import { connect } from 'react-redux'
-import Layout from '../../components/layout/layout' 
-import NewTable from '../../components/tables/NewTable';
-import { NOMINA_ADMIN_SINGLE_COLUMNS } from '../../constants';
+import Layout from '../../../components/layout/layout' 
+import NewTable from '../../../components/tables/NewTable';
+import { NOMINA_ADMIN_SINGLE_COLUMNS } from '../../../constants';
 import { renderToString } from 'react-dom/server';
-import { setTextTable, setMoneyTable,setMoneyTableForNominas } from '../../functions/setters'
+import { setTextTable, setMoneyTable,setMoneyTableForNominas } from '../../../functions/setters'
 
 class NominaAdminSingle extends Component {
     state = {  
