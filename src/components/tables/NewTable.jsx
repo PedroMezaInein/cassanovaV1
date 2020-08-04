@@ -52,6 +52,7 @@ class NewTable extends Component {
             var titulo = new Object();
             titulo["title"] = header[i].Header;
             titulo["data"] = header[i].accessor;
+            titulo["class"] = header[i].class;
             columns[i] = titulo;
             if (aux > 0)
                 aux.push(i)
@@ -67,9 +68,14 @@ class NewTable extends Component {
                     var title = $(this).text();
                     let cellIndex = $(this)[0].cellIndex
                     let total = header[cellIndex].total
+                    let clase = header[cellIndex].class
                     cellIndex = header[cellIndex].accessor
+                    
                     if (global_variable.mostrar_acciones == false || global_variable.mostrar_acciones && contador != 0) {
-                        $(this).append('<div class="mt-2 separator separator-dashed separator-border-2"></div><div class="mt-2"><input type="text" id=' + cellIndex + ' class="form-control form-control-sm"/></div>');
+                        if(clase){
+                            $(this).append(`<div class="mt-2 separator separator-dashed separator-border-2 ${clase}"></div><div class="mt-2"><input type="text" id=${cellIndex} class="form-control form-control-sm"/></div>`);
+                        }else
+                            $(this).append('<div class="mt-2 separator separator-dashed separator-border-2"></div><div class="mt-2"><input type="text" id=' + cellIndex + ' class="form-control form-control-sm"/></div>');
                         if(total)
                         {
                             $(this).append('<div class="mt-2 text-primary bg-primary-o-40 font-weight-boldest">'+totales[total]+'</div>');
@@ -95,9 +101,7 @@ class NewTable extends Component {
                                 .draw();
                         }
                     });
-                });
-
-
+                })
             },
 
             colReorder: true,

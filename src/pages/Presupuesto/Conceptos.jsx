@@ -124,7 +124,6 @@ class Conceptos extends Component {
     }
 
     setConceptos = conceptos => {
-        console.log(conceptos)
         let aux = []
         conceptos.map((concepto) => {
             aux.push(
