@@ -10,37 +10,38 @@ class InputMoneySinText extends Component {
     validarInputMoney(e) {
         const { value } = e.target
         const { requirevalidation } = this.props
+        const { inputMoneyValido } = this.state
+        let inputValido = false
         if (value !== '' && value !== null && value !== undefined) {
             if (requirevalidation) {
                 if (value >= 0) {
-                    this.setState({
-                        inputMoneyValido: true
-                    })
+                    inputValido = true
                 } else {
-                    this.setState({
-                        inputMoneyValido: false
-                    })
+                    inputValido = false
                 }
             } else {
-                this.setState({
-                    inputMoneyValido: true
-                })
+                inputValido = true
             }
         } else {
             if (requirevalidation) {
-                this.setState({
-                    inputMoneyValido: false
-                })
+                inputValido = false
             } else {
-                this.setState({
-                    inputMoneyValido: true
-                })
+                inputValido = true
             }
         }
+
+        console.log(inputMoneyValido, inputValido, 'verificacion')
+        if(inputValido !== inputMoneyValido)
+            this.setState({
+                ... this.state,
+                inputMoneyValido: inputValido
+            })
     }
 
     componentDidUpdate(nextProps) {
-        if (nextProps.value !== this.props.value)
+        /* console.log(nextProps, 'nextProps')
+        console.log(this.props, 'this.props') */
+        if (nextProps.value !== this.props.value){
             if (!nextProps.requirevalidation) {
                 this.setState({
                     ... this.state,
@@ -51,6 +52,7 @@ class InputMoneySinText extends Component {
                     this.validarInputMoney({ target: { value: this.props.value } })
                 }
             }
+        }
     }
 
     componentDidMount() {
