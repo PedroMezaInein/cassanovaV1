@@ -24,7 +24,7 @@ class NominaAdminSingle extends Component {
         const { history } = this.props
         const nominaadmin = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
-            return pathname === url + '/' + id
+            return pathname === url + '/single/' + id
         });
         
         if (!nominaadmin)
