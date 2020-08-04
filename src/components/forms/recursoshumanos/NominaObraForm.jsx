@@ -188,22 +188,22 @@ class NominaObraForm extends Component {
                         <table className="table table-separate table-responsive-xl table_nominas_obras pt-5" id="tabla_obra">
                             <thead>
                                 <tr>
-                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm text-center">Empleado</div></th>
-                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm text-center">Proyecto</div></th>
-                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm text-center">Salario Hora</div></th>
-                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm text-center">Horas trabajadas</div></th>
-                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm text-center">Salario hora extra</div></th>
-                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm text-center">Horas Extras</div></th>
-                                    <th className="pb-0 border-bottom-0 font-size-sm text-center">Nómina IMSS</th>
-                                    <th className="pb-0 border-bottom-0 font-size-sm text-center">Restante Nómina</th>
-                                    <th className="pb-0 border-bottom-0 font-size-sm text-center">Extras</th>
-                                    <th className="pb-0 border-bottom-0 font-size-sm text-center">Total</th>
+                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Empleado</div></th>
+                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Proyecto</div></th>
+                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Salario Hora</div></th>
+                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Horas trabajadas</div></th>
+                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Salario hora extra</div></th>
+                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Horas Extras</div></th>
+                                    <th className="pb-0 border-bottom-0 font-size-sm ">Nómina IMSS</th>
+                                    <th className="pb-0 border-bottom-0 font-size-sm ">Restante Nómina</th>
+                                    <th className="pb-0 border-bottom-0 font-size-sm ">Extras</th>
+                                    <th className="pb-0 border-bottom-0 font-size-sm ">Total</th>
                                 </tr>
                                 <tr>
-                                    <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder font-size-sm text-center">{setMoneyTableForNominas(this.getTotalNominaImss("nominImss"))}</div></th>
-                                    <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder font-size-sm text-center">{setMoneyTableForNominas(this.getTotalRestanteNomina("restanteNomina"))}</div></th>
-                                    <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder font-size-sm text-center">{setMoneyTableForNominas(this.getTotalExtra("extras"))}</div></th>
-                                    <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder font-size-sm text-center">{setMoneyTableForNominas(this.getTotales())}</div></th>
+                                    <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder font-size-sm ">{setMoneyTableForNominas(this.getTotalNominaImss("nominImss"))}</div></th>
+                                    <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder font-size-sm ">{setMoneyTableForNominas(this.getTotalRestanteNomina("restanteNomina"))}</div></th>
+                                    <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder font-size-sm ">{setMoneyTableForNominas(this.getTotalExtra("extras"))}</div></th>
+                                    <th className="pt-2"><div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder font-size-sm ">{setMoneyTableForNominas(this.getTotales())}</div></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -214,28 +214,29 @@ class NominaObraForm extends Component {
                                             <tr key={key}>
                                                 <td>
                                                     <SelectSearchSinText
+                                                        identificador={"empleado"}
                                                         formeditado={formeditado}
                                                         options={options.usuarios}
                                                         placeholder="Selecciona el empleado"
                                                         name="usuario"
                                                         value={form['nominasObra'][key]['usuario']}
                                                         onChange={(value) => this.updateUsuario(value, key)}
-                                                        // customstyle={{ minWidth: "150px" }}
                                                     />
                                                 </td>
                                                 <td>
                                                     <SelectSearchSinText
+                                                        identificador={"proyecto"}
                                                         formeditado={formeditado}
                                                         options={options.proyectos}
                                                         placeholder="Selecciona el proyecto"
                                                         name="proyecto"
                                                         value={form['nominasObra'][key]['proyecto']}
                                                         onChange={(value) => this.updateProyecto(value, key)}
-                                                        // customstyle={{ minWidth: "150px" }}
                                                     />
                                                 </td>
                                                 <td>
                                                     <InputMoneySinText
+                                                        identificador={"salario_hr"}
                                                         requirevalidation={1}
                                                         formeditado={formeditado}
                                                         name="salario_hr"
@@ -243,11 +244,11 @@ class NominaObraForm extends Component {
                                                         onChange={e => onChangeNominasObra(key, e, 'salario_hr')}
                                                         thousandSeparator={true}
                                                         prefix={'$'}
-                                                        // customstyle={{ minWidth: "150px" }}
                                                     />
                                                 </td>
                                                 <td>
                                                     <InputNumberSinText
+                                                        identificador={"hr_trabajadas"}
                                                         requirevalidation={1}
                                                         formeditado={formeditado}
                                                         name="hr_trabajadas"
@@ -255,11 +256,11 @@ class NominaObraForm extends Component {
                                                         onChange={e => onChangeNominasObra(key, e, 'hr_trabajadas')}
                                                         thousandSeparator={true}
                                                         typeformat="###########"
-                                                        // customstyle={{ minWidth: "150px" }}
                                                     />
                                                 </td>
                                                 <td>
                                                     <InputMoneySinText
+                                                        identificador={"salario_hr_extra"}
                                                         requirevalidation={1}
                                                         formeditado={formeditado}
                                                         name="salario_hr_extra"
@@ -267,11 +268,11 @@ class NominaObraForm extends Component {
                                                         onChange={e => onChangeNominasObra(key, e, 'salario_hr_extra')}
                                                         thousandSeparator={true}
                                                         prefix={'$'}
-                                                        // customstyle={{ minWidth: "150px" }}
                                                     />
                                                 </td>
                                                 <td>
                                                     <InputNumberSinText
+                                                        identificador={"hr_extra"}
                                                         requirevalidation={1}
                                                         formeditado={formeditado}
                                                         name="hr_extra"
@@ -279,11 +280,11 @@ class NominaObraForm extends Component {
                                                         onChange={e => onChangeNominasObra(key, e, 'hr_extra')}
                                                         thousandSeparator={true}
                                                         typeformat="###########"
-                                                        // customstyle={{ minWidth: "150px" }}
                                                     />
                                                 </td>
                                                 <td>
                                                     <InputMoneySinText
+                                                        identificador={"nominImss"}
                                                         requirevalidation={1}
                                                         formeditado={formeditado}
                                                         name="nominImss"
@@ -291,11 +292,11 @@ class NominaObraForm extends Component {
                                                         onChange={e => onChangeNominasObra(key, e, 'nominImss')}
                                                         thousandSeparator={true}
                                                         prefix={'$'}
-                                                        // customstyle={{ minWidth: "150px" }}
                                                     />
                                                 </td>
                                                 <td>
                                                     <InputMoneySinText
+                                                        identificador={"restanteNomina"}
                                                         requirevalidation={1}
                                                         formeditado={formeditado}
                                                         name="restanteNomina"
@@ -303,11 +304,11 @@ class NominaObraForm extends Component {
                                                         onChange={e => onChangeNominasObra(key, e, 'restanteNomina')}
                                                         thousandSeparator={true}
                                                         prefix={'$'}
-                                                        // customstyle={{ minWidth: "150px" }}
                                                     />
                                                 </td>
                                                 <td>
                                                     <InputMoneySinText
+                                                        identificador={"extras"}
                                                         requirevalidation={1}
                                                         formeditado={formeditado}
                                                         name="extras"
@@ -315,11 +316,10 @@ class NominaObraForm extends Component {
                                                         onChange={e => onChangeNominasObra(key, e, 'extras')}
                                                         thousandSeparator={true}
                                                         prefix={'$'}
-                                                        // customstyle={{ minWidth: "150px" }}
                                                     />
                                                 </td>
                                                 <td>
-                                                    <div className="font-size-lg font-weight-bolder text-center" style={{ width: "138px" }}>
+                                                    <div id="total" className="font-size-lg font-weight-bolder text-center">
                                                         {
                                                             setMoneyTableForNominas(this.getTotal(key))
                                                         }
@@ -331,7 +331,6 @@ class NominaObraForm extends Component {
                                 }
                             </tbody>
                         </table>
-
                         <div className="form-group d-flex justify-content-center">
                             <button type="button" className="btn btn-light-primary font-weight-bold mr-2" onClick={addRowNominaObra} >Agregar Fila</button>
                             <button type="button" className="btn btn-light-danger font-weight-bold mr-2" onClick={deleteRowNominaObra} >Eliminar Fila</button>
