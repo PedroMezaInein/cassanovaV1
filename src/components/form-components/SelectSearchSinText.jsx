@@ -11,7 +11,7 @@ class SelectSearchSinText extends Component {
 
     renderFontValue = (valueProps, onChange) => {
         const { requirevalidation } = this.state
-        const { customstyle, placeholder } = this.props
+        const { customstyle, placeholder,identificador } = this.props
         let validado = false;
         if (requirevalidation) {
             if (onChange === null || onChange.value === null) {
@@ -24,6 +24,7 @@ class SelectSearchSinText extends Component {
         }
         return (
             <input
+                id={identificador}
                 className={validado ? " form-control form-control-sm is-valid sin_icono text-uppercase" : " form-control form-control-sm is-invalid sin_icono text-uppercase"}
                 {...valueProps}
                 style={customstyle}

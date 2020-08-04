@@ -67,11 +67,12 @@ class InputMoneySinText extends Component {
 
     }
     render() {
-        const { placeholder, value, prefix, thousandSeparator, customstyle } = this.props
+        const { placeholder, value, prefix, thousandSeparator, customstyle, identificador } = this.props
         const { inputMoneyValido } = this.state
 
         return (
             <NumberFormat
+                id={identificador}
                 value={value}
                 displayType={'input'}
                 thousandSeparator={thousandSeparator ? thousandSeparator : false}

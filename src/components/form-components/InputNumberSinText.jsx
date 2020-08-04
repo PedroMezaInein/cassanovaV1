@@ -65,11 +65,12 @@ class InputNumberSinText extends Component {
     }
 
     render() {
-        const { error, onChange, placeholder, iconclass, messageinc, typeformat, ...props } = this.props
+        const { error, onChange, placeholder, iconclass, messageinc, identificador, typeformat, ...props } = this.props
         const { inputValido } = this.state
         return (
             <div > 
                     <NumberFormat
+                        id={identificador}
                         placeholder={placeholder}
                         className={inputValido ? " form-control form-control-sm is-valid sin_icono text-uppercase" : " form-control form-control-sm is-invalid sin_icono text-uppercase"}
                         onChange={(e) => { e.preventDefault(); this.validarInput(e); onChange(e) }}
