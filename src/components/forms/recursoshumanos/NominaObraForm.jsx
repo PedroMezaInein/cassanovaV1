@@ -185,7 +185,7 @@ class NominaObraForm extends Component {
                                     : ''
                             }
                         </div>
-                        <table className="table table-separate table-responsive-xl table_nominas pt-5" id="tabla_obra">
+                        <table className="table table-separate table-responsive-xl table_nominas_obras pt-5" id="tabla_obra">
                             <thead>
                                 <tr>
                                     <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm text-center">Empleado</div></th>
@@ -220,7 +220,7 @@ class NominaObraForm extends Component {
                                                         name="usuario"
                                                         value={form['nominasObra'][key]['usuario']}
                                                         onChange={(value) => this.updateUsuario(value, key)}
-                                                        customstyle={{ minWidth: "150px" }}
+                                                        // customstyle={{ minWidth: "150px" }}
                                                     />
                                                 </td>
                                                 <td>
@@ -231,7 +231,7 @@ class NominaObraForm extends Component {
                                                         name="proyecto"
                                                         value={form['nominasObra'][key]['proyecto']}
                                                         onChange={(value) => this.updateProyecto(value, key)}
-                                                        customstyle={{ minWidth: "150px" }}
+                                                        // customstyle={{ minWidth: "150px" }}
                                                     />
                                                 </td>
                                                 <td>
@@ -243,7 +243,7 @@ class NominaObraForm extends Component {
                                                         onChange={e => onChangeNominasObra(key, e, 'salario_hr')}
                                                         thousandSeparator={true}
                                                         prefix={'$'}
-                                                        customstyle={{ minWidth: "150px" }}
+                                                        // customstyle={{ minWidth: "150px" }}
                                                     />
                                                 </td>
                                                 <td>
@@ -255,7 +255,7 @@ class NominaObraForm extends Component {
                                                         onChange={e => onChangeNominasObra(key, e, 'hr_trabajadas')}
                                                         thousandSeparator={true}
                                                         typeformat="###########"
-                                                        customstyle={{ minWidth: "150px" }}
+                                                        // customstyle={{ minWidth: "150px" }}
                                                     />
                                                 </td>
                                                 <td>
@@ -267,7 +267,7 @@ class NominaObraForm extends Component {
                                                         onChange={e => onChangeNominasObra(key, e, 'salario_hr_extra')}
                                                         thousandSeparator={true}
                                                         prefix={'$'}
-                                                        customstyle={{ minWidth: "150px" }}
+                                                        // customstyle={{ minWidth: "150px" }}
                                                     />
                                                 </td>
                                                 <td>
@@ -279,7 +279,7 @@ class NominaObraForm extends Component {
                                                         onChange={e => onChangeNominasObra(key, e, 'hr_extra')}
                                                         thousandSeparator={true}
                                                         typeformat="###########"
-                                                        customstyle={{ minWidth: "150px" }}
+                                                        // customstyle={{ minWidth: "150px" }}
                                                     />
                                                 </td>
                                                 <td>
@@ -291,7 +291,7 @@ class NominaObraForm extends Component {
                                                         onChange={e => onChangeNominasObra(key, e, 'nominImss')}
                                                         thousandSeparator={true}
                                                         prefix={'$'}
-                                                        customstyle={{ minWidth: "150px" }}
+                                                        // customstyle={{ minWidth: "150px" }}
                                                     />
                                                 </td>
                                                 <td>
@@ -303,7 +303,7 @@ class NominaObraForm extends Component {
                                                         onChange={e => onChangeNominasObra(key, e, 'restanteNomina')}
                                                         thousandSeparator={true}
                                                         prefix={'$'}
-                                                        customstyle={{ minWidth: "150px" }}
+                                                        // customstyle={{ minWidth: "150px" }}
                                                     />
                                                 </td>
                                                 <td>
@@ -315,7 +315,7 @@ class NominaObraForm extends Component {
                                                         onChange={e => onChangeNominasObra(key, e, 'extras')}
                                                         thousandSeparator={true}
                                                         prefix={'$'}
-                                                        customstyle={{ minWidth: "150px" }}
+                                                        // customstyle={{ minWidth: "150px" }}
                                                     />
                                                 </td>
                                                 <td>
