@@ -180,13 +180,12 @@ class ActualizarPresupuestoForm extends Component {
                         <h4 className="text-dark m-0">Actualización</h4>
                     </Card.Header>
                     <Card.Body>
-                        <table className="table table-separate table-responsive-xl pt-5">
+                        <table className="table table-separate table-responsive-sm pt-5">
                             <thead>
                                 <tr>
                                     <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Clave</div></th>
-                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Categoría</div></th>
                                     <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Descripcion</div></th>
-                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Unidad</div></th>
+                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Unidad</div></th> 
                                     <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Cantidad</div></th>
                                     <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Costo</div></th>
                                     <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Margen</div></th>
@@ -199,27 +198,7 @@ class ActualizarPresupuestoForm extends Component {
 
                                 <tr>
                                     <td>
-                                        <InputNumberSinText
-                                            identificador={"clave"}
-                                            requirevalidation={1}
-                                            formeditado={formeditado}
-                                            name="clave"
-                                            value={"form['nominasObra'][key]['clave']"}
-                                            onChange={"e => onChangeNominasObra(key, e, 'clave')"}
-                                            thousandSeparator={true}
-                                            typeformat="###########"
-                                        />
-                                    </td>
-                                    <td>
-                                        <SelectSearchSinText
-                                            identificador={"proyecto"}
-                                            formeditado={formeditado}
-                                            options={options.proyectos}
-                                            placeholder="Categoria"
-                                            name="proyecto"
-                                            value={"form['nominasObra'][key]['proyecto']"}
-                                            onChange={"(value) => this.updateProyecto(value, key)"}
-                                        />
+                                        Clave
                                     </td>
                                     <td>
                                         <InputSinText
@@ -232,15 +211,7 @@ class ActualizarPresupuestoForm extends Component {
                                         />
                                     </td>
                                     <td>
-                                        <SelectSearchSinText
-                                            identificador={"proyecto"}
-                                            formeditado={formeditado}
-                                            options={options.proyectos}
-                                            placeholder="Unidad"
-                                            name="proyecto"
-                                            value={"form['nominasObra'][key]['proyecto']"}
-                                            onChange={"(value) => this.updateProyecto(value, key)"}
-                                        />
+                                        Unidad
                                     </td>
                                     <td>
                                         <InputMoneySinText
@@ -263,11 +234,11 @@ class ActualizarPresupuestoForm extends Component {
                                             value={"form['nominasObra'][key]['costo']"}
                                             onChange={"e => onChangeNominasObra(key, e, 'costo')"}
                                             thousandSeparator={true}
-                                            prefix={'$'}
+                                            typeformat="###########"
                                         />
                                     </td>
                                     <td>
-                                        <InputNumberSinText
+                                        <InputMoneySinText
                                             identificador={"margen"}
                                             requirevalidation={1}
                                             formeditado={formeditado}
@@ -275,16 +246,18 @@ class ActualizarPresupuestoForm extends Component {
                                             value={"form['nominasObra'][key]['margen']"}
                                             onChange={"e => onChangeNominasObra(key, e, 'margen')"}
                                             thousandSeparator={true}
-                                            prefix={'$'}
+                                            typeformat="###########"
                                         />
                                     </td>
+                                    
+                                    
                                     <td>
                                         <InputMoneySinText
                                             identificador={"precio"}
                                             requirevalidation={1}
                                             formeditado={formeditado}
                                             name="precio"
-                                            value={"form['nominasObra'][key]['extras']"}
+                                            value={"form['nominasObra'][key]['precio']"}
                                             onChange={"e => onChangeNominasObra(key, e, 'precio')"}
                                             thousandSeparator={true}
                                             prefix={'$'}
@@ -292,12 +265,12 @@ class ActualizarPresupuestoForm extends Component {
                                     </td>
                                     <td>
                                         <InputNumberSinText
-                                            identificador={"margen"}
+                                            identificador={"desperdicio"}
                                             requirevalidation={1}
                                             formeditado={formeditado}
-                                            name="margen"
-                                            value={"form['nominasObra'][key]['margen']"}
-                                            onChange={"e => onChangeNominasObra(key, e, 'margen')"}
+                                            name="desperdicio"
+                                            value={"form['nominasObra'][key]['desperdicio']"}
+                                            onChange={"e => onChangeNominasObra(key, e, 'desperdicio')"}
                                             thousandSeparator={true}
                                             prefix={'$'}
                                         />
