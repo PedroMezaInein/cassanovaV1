@@ -9,7 +9,7 @@ import { Small, B } from '../../components/texts'
 import Moment from 'react-moment'
 import NumberFormat from 'react-number-format';
 import swal from 'sweetalert'
-import { setTextTable, setMoneyTable} from '../../functions/setters'
+import { setTextTable, setMoneyTable, setDateTable } from '../../functions/setters'
 
 class Facturacion extends Component {
 
@@ -40,7 +40,7 @@ class Facturacion extends Component {
             aux.push(
                 {
                     folio: renderToString(setTextTable(factura.folio)),
-                    fecha: renderToString(this.setDateTable(factura.fecha)),
+                    fecha: renderToString(setDateTable(factura.fecha)),
                     serie: renderToString(setTextTable(factura.serie)),
                     emisor: renderToString(this.setInfoTable(factura.rfc_emisor, factura.nombre_emisor)),
                     receptor: renderToString(this.setInfoTable(factura.rfc_receptor, factura.nombre_receptor)),

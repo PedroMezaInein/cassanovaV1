@@ -57,8 +57,16 @@ export function setTextTable(text) {
 }
 
 export function setDateTable(date) {
+    let seconds = new Date(date);
+    seconds = seconds.getTime() / 1000; //1440516958
+    console.log(date, seconds)
     return (
         <Small>
+            <span className="d-none">
+                {
+                    seconds
+                }
+            </span>
             <span className="d-none">
                 <Moment format="YYYY/MM/DD">
                     {date}
