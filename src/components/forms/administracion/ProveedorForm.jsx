@@ -90,7 +90,7 @@ class ProveedorForm extends Component {
                     <div className="form-group row form-group-marginless">
                         <div className="col-md-4">
                             <Input
-                                requirevalidation={1}
+                                requirevalidation={0}
                                 name="correo"
                                 value={form.correo}
                                 placeholder="CORREO ELECTRÓNICO"
@@ -105,7 +105,7 @@ class ProveedorForm extends Component {
 
                         <div className="col-md-4">
                             <InputPhone
-                                requirevalidation={1}
+                                requirevalidation={0}
                                 thousandSeparator={false}
                                 prefix={''}
                                 name="telefono"
