@@ -16,6 +16,7 @@ import inputPhone from './InputPhone'
 import inputMoneySinText from './InputMoneySinText'
 import selectSearchSinText from './SelectSearchSinText'
 import inputNumberSinText from './InputNumberSinText'
+import inputSinText from './InputSinText'
 
 export const Button = button
 export const Input = input
@@ -35,3 +36,4 @@ export const InputPhone = inputPhone
 export const InputMoneySinText = inputMoneySinText
 export const SelectSearchSinText = selectSearchSinText
 export const InputNumberSinText = inputNumberSinText
+export const InputSinText = inputSinText
