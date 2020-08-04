@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { Input, SelectSearch, Button, InputMoney } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
+import SelectSearchTrue from '../../form-components/SelectSearchTrue'
 
 class ConceptoForm extends Component {
 
@@ -50,43 +51,6 @@ class ConceptoForm extends Component {
                     <div className="col-md-4">
                         <SelectSearch
                             formeditado={formeditado}
-                            options={options.unidades}
-                            placeholder="SELECCIONA LA UNIDAD"
-                            name="unidad"
-                            value={form.unidad}
-                            onChange={this.updateUnidades}
-                            iconclass={" fas fa-weight-hanging"}
-                        />
-                    </div>
-                    <div className="col-md-4">
-                        <InputMoney
-                            requirevalidation={1}
-                            formeditado={formeditado}
-                            thousandSeparator={true}
-                            placeholder="COSTO"
-                            value={form.costo}
-                            name="costo"
-                            onChange={onChange}
-                            iconclass={"fas fa-dollar-sign"}
-                        />
-                    </div>
-                    <div className="col-md-4">
-                        <SelectSearch
-                            requirevalidation={0}
-                            formeditado={formeditado}
-                            options={options.proveedores}
-                            placeholder="SELECCIONA EL PROVEEDOR"
-                            name="proveedor"
-                            value={form.proveedor}
-                            onChange={this.updateProveedor}
-                        />
-                    </div>
-                </div>
-                <div className="separator separator-dashed mt-1 mb-2"></div>
-                <div className="form-group row form-group-marginless">
-                    <div className="col-md-4">
-                        <SelectSearch
-                            formeditado={formeditado}
                             options={options.partidas}
                             placeholder="SELECCIONA LA PARTIDA"
                             name="partida"
@@ -95,21 +59,29 @@ class ConceptoForm extends Component {
                             iconclass={" fas fa-book"}
                         />
                     </div>
-                    {
-                        form.partida ?
-                        <div className="col-md-4">
-                            <SelectSearch
-                                formeditado={formeditado}
-                                options={options.subpartidas}
-                                placeholder="SELECCIONA LA SUBPARTIDA"
-                                name="subpartida"
-                                value={form.subpartida}
-                                onChange={this.updateSubpartida}
-                                iconclass={" fas fa-book"}
-                            />
-                        </div>
-                        : ''
-                    }
+                    <div className="col-md-4">
+                        <SelectSearch
+                            formeditado={formeditado}
+                            options={options.subpartidas}
+                            placeholder="SELECCIONA LA SUBPARTIDA"
+                            name="subpartida"
+                            value={form.subpartida}
+                            onChange={this.updateSubpartida}
+                            iconclass={" fas fa-book"}
+                        />
+                    </div>
+                    <div className="col-md-4">
+                        <SelectSearch
+                            formeditado={formeditado}
+                            options={options.unidades}
+                            placeholder="SELECCIONA LA UNIDAD"
+                            name="unidad"
+                            value={form.unidad}
+                            onChange={this.updateUnidades}
+                            iconclass={" fas fa-weight-hanging"}
+                        />
+                    </div>
+                    
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
@@ -125,6 +97,31 @@ class ConceptoForm extends Component {
                             onChange={onChange}
                             messageinc="Incorrecto. Ingresa una descripción."
                             style={{ paddingLeft: "10px" }}
+                        />
+                    </div>
+                </div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-4">
+                        <SelectSearchTrue
+                            requirevalidation={false}
+                            options={options.proveedores}
+                            placeholder="SELECCIONA EL PROVEEDOR"
+                            name="proveedor"
+                            value={form.proveedor}
+                            onChange={this.updateProveedor}
+                        />
+                    </div>
+                    <div className="col-md-4">
+                        <InputMoney
+                            requirevalidation={1}
+                            formeditado={formeditado}
+                            thousandSeparator={true}
+                            placeholder="COSTO"
+                            value={form.costo}
+                            name="costo"
+                            onChange={onChange}
+                            iconclass={"fas fa-dollar-sign"}
                         />
                     </div>
                 </div>

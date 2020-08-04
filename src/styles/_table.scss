@@ -156,3 +156,12 @@ th{
         width: 72px;
     }
 }
+
+.desc-big{
+    @include screen($lg){
+        width: 40vw;
+    }
+    @include screen($md){
+        width: 30vw;
+    }
+}
