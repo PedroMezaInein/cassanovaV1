@@ -1,0 +1,11 @@
+.select-search {
+    &__select{
+        li *{
+            text-transform: uppercase!important;
+        }
+        li{
+            height: auto!important;
+            overflow-y: hidden!important;
+        }
+    }
+}
