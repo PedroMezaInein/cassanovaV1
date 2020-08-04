@@ -24,7 +24,7 @@ class SelectSearchSinText extends Component {
         }
         return (
             <input
-                className={validado ? " form-control form-control-sm is-valid text-uppercase" : " form-control form-control-sm is-invalid text-uppercase"}
+                className={validado ? " form-control form-control-sm is-valid sin_icono text-uppercase" : " form-control form-control-sm is-invalid sin_icono text-uppercase"}
                 {...valueProps}
                 style={customstyle}
                 placeholder={placeholder}

@@ -88,9 +88,28 @@ only screen and (max-width: 760px),
 }
 
 
-.table_nominas{
-    @include screen($md){
-        min-height: 30vh;
-        padding-bottom: 8rem;
+// .table_nominas{
+//     @include screen($md){
+//         min-height: 30vh;
+//         padding-bottom: 8rem;
+//     }
+// }
+// .table_nominas {
+
+//     @media only screen and (max-width: 760px),
+//     (min-device-width: 768px) and (max-device-width: 1024px) {
+
+//         tr, td {
+//             width: 30px;
+//         }
+
+//     }
+// }
+@media all and (max-width: 699px) and (min-width: 520px),
+(min-width: 1151px) {
+    .table_nominas_obras{
+        input.form-control.form-control-sm.is-invalid.sin_icono.text-uppercase{
+            width: 100px;
+        }
     }
 }

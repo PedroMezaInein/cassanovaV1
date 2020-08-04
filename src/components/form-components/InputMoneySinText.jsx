@@ -76,7 +76,7 @@ class InputMoneySinText extends Component {
                 displayType={'input'}
                 thousandSeparator={thousandSeparator ? thousandSeparator : false}
                 prefix={prefix}
-                className={inputMoneyValido ? " form-control form-control-sm is-valid text-uppercase" : " form-control form-control-sm is-invalid text-uppercase"}
+                className={inputMoneyValido ? " form-control form-control-sm is-valid sin_icono text-uppercase" : " form-control form-control-sm is-invalid sin_icono text-uppercase"}
                 renderText={value => <div> {value} </div>}
                 onValueChange={(values) => this.onChange(values)}
                 placeholder={placeholder}

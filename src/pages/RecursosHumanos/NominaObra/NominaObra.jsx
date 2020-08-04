@@ -3,14 +3,15 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
-import Layout from '../../components/layout/layout' 
-import { Modal, ModalDelete} from '../../components/singles' 
-import { NOMINA_OBRA_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS} from '../../constants'
-import NewTableServerRender from '../../components/tables/NewTableServerRender' 
-import { NominaObraForm, AdjuntosForm} from '../../components/forms'
-import { setOptions, setDateTable, setMoneyTable, setTextTable, setAdjuntosList} from '../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, deleteAlert} from '../../functions/alert'
-import TableForModals from '../../components/tables/TableForModals'
+import Layout from '../../../components/layout/layout' 
+import { Modal, ModalDelete} from '../../../components/singles' 
+import { NOMINA_OBRA_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS} from '../../../constants'
+import NewTableServerRender from '../../../components/tables/NewTableServerRender' 
+import { NominaObraForm, AdjuntosForm} from '../../../components/forms'
+import { setOptions, setDateTable, setMoneyTable, setTextTable, setAdjuntosList} from '../../../functions/setters'
+import { errorAlert, waitAlert, forbiddenAccessAlert, deleteAlert} from '../../../functions/alert'
+import TableForModals from '../../../components/tables/TableForModals'
+import { format } from 'date-fns'
 
 const $ = require('jquery');
 
@@ -34,10 +35,10 @@ class NominaObra extends Component {
             nominasObra:[{
                 usuario: '',
                 proyecto: '',
-                sueldoh: '',
-                hora1T: '',
-                hora2T: '',
-                hora3T: '',
+                salario_hr: '',
+                salario_hr_extra: '',
+                hr_trabajadas: '',
+                hr_extra: '',
                 nominImss: '',
                 restanteNomina: '',
                 extras: ''
@@ -78,6 +79,21 @@ class NominaObra extends Component {
         });
     }
 
+    changePageAdd = () => {
+        const { history } = this.props
+        history.push({
+            pathname: '/rh/nomina-obras/add'
+        });
+    }
+
+    changePageEdit = (nomina) => {
+        const { history } = this.props
+        history.push({
+            pathname: '/rh/nomina-obras/edit',
+            state: { nomina: nomina}
+        });
+    }
+
     openModal = () => {
         const { modal } = this.state
         modal.form = true
@@ -105,10 +121,10 @@ class NominaObra extends Component {
                 {
                     usuario: nom.empleado ? nom.empleado.id.toString() : '',
                     proyecto: nom.proyecto ? nom.proyecto.id.toString() : '',
-                    sueldoh: nom.sueldo_por_hora,
-                    hora1T: nom.horas_1t,
-                    hora2T: nom.horas_2t,
-                    hora3T: nom.horas_3t,
+                    salario_hr: nom.salario_hr,
+                    salario_hr_extra: nom.salario_hr_extra,
+                    hr_trabajadas: nom.hr_trabajadas,
+                    hr_extra: nom.hr_extra,
                     nominImss: nom.nomina_imss,
                     restanteNomina:nom.restante_nomina,
                     extras:nom.extras
@@ -122,10 +138,10 @@ class NominaObra extends Component {
             form.nominasObra = [{
                 usuario: '',
                 proyecto: '',
-                sueldoh: '',
-                hora1T: '', 
-                hora2T: '',
-                hora3T: '',
+                salario_hr: '',
+                salario_hr_extra: '', 
+                hr_trabajadas: '',
+                hr_extra: '',
                 nominImss: '',
                 restanteNomina: '',
                 extras: ''
@@ -214,13 +230,15 @@ class NominaObra extends Component {
             (response) => {
                 swal.close()
                 const { proyectos, usuarios, empresas} = response.data
-                const { options} = this.state
+                const { options, data} = this.state
+                data.usuarios = usuarios
                 options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
                 options['usuarios'] = setOptions( usuarios, 'nombre', 'id')
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 this.setState({
                     ... this.state,
-                    options
+                    options,
+                    data
                 })
             },
             (error) => {
@@ -617,6 +635,7 @@ class NominaObra extends Component {
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
+        console.log(name, 'name')
         this.setState({
             ...this.state,
             form
@@ -656,13 +675,20 @@ class NominaObra extends Component {
 
     onChangeNominasObra = (key, e, name) => {
         const { value } = e.target
-        const { form } = this.state
-        form['nominasObra'][key][name]  = value
+        const { form, data} = this.state
+        if(name === 'usuario'){
+            data.usuarios.map( (empleado) => {
+                if(value.toString() === empleado.id.toString())
+                    form['nominasObra'][key].nominImss  = empleado.nomina_imss
+                    form['nominasObra'][key].salario_hr  = empleado.salario_hr
+                    form['nominasObra'][key].salario_hr_extra  = empleado.salario_hr_extra
+            }) 
+        }
+        form['nominasObra'][key][name] = value
         this.setState({
             ...this.state,
             form
         })
-    
     }
 
     addRowNominaObra = () => {
@@ -672,10 +698,10 @@ class NominaObra extends Component {
                 nominasObra:[{
                     usuario: '',
                     proyecto: '',
-                    sueldoh: '',
-                    hora1T: '',
-                    hora2T: '',
-                    hora3T: '',
+                    salario_hr: '',
+                    salario_hr_extra: '',
+                    hr_trabajadas: '',
+                    hr_extra: '',
                     nominImss: '',
                     restanteNomina: '',
                     extras: ''
@@ -695,10 +721,10 @@ class NominaObra extends Component {
                 nominasObra:[{
                     usuario: '',
                     proyecto: '',
-                    sueldoh: '',
-                    hora1T: '',
-                    hora2T: '',
-                    hora3T: '',
+                    salario_hr: '',
+                    salario_hr_extra: '',
+                    hr_trabajadas: '',
+                    hr_extra: '',
                     nominImss: '',
                     restanteNomina: '',
                     extras: ''
@@ -718,19 +744,18 @@ class NominaObra extends Component {
     }
     
     render() {
-        const { modal, options, title, form, formeditado, adjuntos, data} = this.state
-
+        const {nominaOmbra, modal, options, title, form, formeditado, adjuntos, data} = this.state
         return (
             <Layout active={'rh'} {...this.props}>
                 <NewTableServerRender   
                     columns = { NOMINA_OBRA_COLUMNS }
                     title = 'Nómina de obra' subtitle = 'Listado de nómina de obra'
                     mostrar_boton={true}
-                    abrir_modal={true} 
-                    onClick={this.openModal} 
+                    url = '/rh/nomina-obras/add'
+                    abrir_modal={false} 
                     mostrar_acciones={true} 
                     actions={{
-                        'edit': { function: this.openModalEdit },
+                        'edit': { function: this.changePageEdit },
                         'delete': {function: this.openModalDelete},
                         'adjuntos': { function: this.openModalAdjuntos },
                         'show': { function: this.changeSinglePage }
@@ -740,25 +765,6 @@ class NominaObra extends Component {
                     urlRender = {URL_DEV + 'rh/nomina-obra'}
                     idTable = 'kt_datatable2_nomina_obra'
                 />
-
-                <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseModal}>
-                    <NominaObraForm
-                        title = { title }
-                        formeditado={formeditado}
-                        className=" px-3 "   
-                        options = { options }
-                        form ={form}
-                        addRowNominaObra = { this.addRowNominaObra }
-                        deleteRowNominaObra = { this.deleteRowNominaObra }
-                        onChangeNominasObra =  { this.onChangeNominasObra }
-                        onChange = { this.onChange }
-                        onChangeAdjunto = { this.onChangeAdjunto }
-                        clearFiles = { this.clearFiles }
-                        onSubmit = { this.onSubmit }
-                    >
-                    </NominaObraForm>
-                </Modal>  
-
                 <ModalDelete title={'¿Desea eliminar la nómina?'} show = { modal.delete } handleClose = { this.handleCloseModalDelete } onClick=  { (e) => { e.preventDefault(); waitAlert(); this.deleteNominaObraAxios() }}>
                 </ModalDelete>
 
