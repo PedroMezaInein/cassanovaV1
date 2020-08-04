@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV, PARTIDAS_COLUMNS} from '../../constants'
-import { setTextTable, setListTable } from '../../functions/setters'
+import { setTextTable, setArrayTable } from '../../functions/setters'
 import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Modal, ModalDelete } from '../../components/singles'
@@ -94,9 +94,22 @@ class Partidas extends Component {
         partidas.map((partida) => {
             aux.push({
                 actions: this.setActions(partida),
+                clave: renderToString(setTextTable(partida.id)),
                 partida: renderToString(setTextTable(partida.nombre)),
-                subpartidas: renderToString(setListTable(partida.subpartidas, 'nombre')),
+                subpartidas: renderToString(setArrayTable(this.setArrayTable(partida.subpartidas))),
                 id: partida.id
+            })
+        })
+        return aux
+    }
+
+    setArrayTable = subpartidas => {
+        let aux = []
+        subpartidas.map( (subpartida) => {
+            aux.push({
+                name: subpartida.clave,
+                text: subpartida.nombre,
+                lista: true
             })
         })
         return aux

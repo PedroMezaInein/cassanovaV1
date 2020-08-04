@@ -58,8 +58,7 @@ export function setTextTable(text) {
 
 export function setDateTable(date) {
     let seconds = new Date(date);
-    seconds = seconds.getTime() / 1000; //1440516958
-    console.log(date, seconds)
+    seconds = seconds.getTime() / 1000;
     return (
         <Small>
             <span className="d-none">
@@ -140,8 +139,10 @@ export function setArrayTable(arreglo) {
                             <Small className="mr-1" >
                                 <B color="gold">
                                     {
-                                        element.name
-                                    }:
+                                        element.lista ?
+                                            element.name + '.'
+                                        : element.name + ':'
+                                    }
                                 </B>
                             </Small>
                             : ''

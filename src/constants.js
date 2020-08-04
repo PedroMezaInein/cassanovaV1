@@ -713,6 +713,10 @@ export const PARTIDAS_COLUMNS = [
         accessor: 'actions',
     },
     {
+        Header: 'Clave',
+        accessor: 'clave'
+    },
+    {
         Header: 'Partida',
         accessor: 'partida'
     },
