@@ -1341,20 +1341,20 @@ export const NOMINA_OBRA_SINGLE_COLUMNS = [
         accessor: 'proyecto'
     },
     {
-        Header: 'Salario Hora',
-        accessor: 'sueldo_hora'
+        Header: 'Salario x hr',
+        accessor: 'salario_hr'
     },
     {
-        Header: '1 Hora T',
-        accessor: 'hora1T'
+        Header: 'Horas trabajadas',
+        accessor: 'hr_trabajadas'
     },
     {
-        Header: '2 Horas T',
-        accessor: 'hora2T'
+        Header: 'Salario x hr extra',
+        accessor: 'salario_hr_extras'
     },
     {
-        Header: '3 Horas T',
-        accessor: 'hora3T'
+        Header: 'Horas trabajadas extras',
+        accessor: 'hr_extras'
     },
     {
         Header: 'Nómina IMSS',
