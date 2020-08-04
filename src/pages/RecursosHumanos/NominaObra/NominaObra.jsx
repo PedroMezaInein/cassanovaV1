@@ -74,7 +74,7 @@ class NominaObra extends Component {
     changeSinglePage = (nomina) => {
         const { history } = this.props
         history.push({
-            pathname: '/rh/nomina-obras/'+nomina.id,
+            pathname: '/rh/nomina-obras/one/'+nomina.id,
             state: { nomina: nomina }
         });
     }

@@ -24,7 +24,7 @@ class NominaObraSingle extends Component {
         const { history } = this.props
         const nominaobra = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
-            return pathname === url + '/' + id
+            return pathname === url + '/one/' + id
         });
         
         if (!nominaobra)
