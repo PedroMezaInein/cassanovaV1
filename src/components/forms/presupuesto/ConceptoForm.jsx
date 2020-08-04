@@ -72,7 +72,7 @@ class ConceptoForm extends Component {
                     </div>
                     <div className="col-md-4">
                         <SelectSearch
-                            requirevalidation={1}
+                            requirevalidation={0}
                             formeditado={formeditado}
                             options={options.proveedores}
                             placeholder="SELECCIONA EL PROVEEDOR"
