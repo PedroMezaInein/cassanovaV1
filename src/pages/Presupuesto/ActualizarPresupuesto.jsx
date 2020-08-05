@@ -56,7 +56,8 @@ class ActualizarPresupuesto extends Component {
                 this.setState({
                     ... this.state,
                     presupuesto,
-                    form
+                    form,
+                    formeditado: 1
                 })
             }
         }
