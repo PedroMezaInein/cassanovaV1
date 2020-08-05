@@ -6,6 +6,13 @@ class modal extends Component {
         super(props)
     }
 
+    componentDidUpdate(){
+        var elementos = document.getElementsByClassName('modal');
+        for(let cont = 0; cont < elementos.length; cont ++){
+            elementos[cont].removeAttribute("tabindex")
+        }
+    }
+
     render() {
         const { show, handleClose, children, title, size } = this.props
 
