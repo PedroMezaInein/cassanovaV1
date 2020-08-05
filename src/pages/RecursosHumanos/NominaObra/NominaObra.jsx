@@ -635,7 +635,6 @@ class NominaObra extends Component {
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
-        console.log(name, 'name')
         this.setState({
             ...this.state,
             form

@@ -686,9 +686,7 @@ class Empleados extends Component {
     }
 
     onChange = e => {
-
         const { name, value } = e.target
-        console.log(name, value, 'name', 'value')
         const { form } = this.state
         form[name] = value
         this.setState({

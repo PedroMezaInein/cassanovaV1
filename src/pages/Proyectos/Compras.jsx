@@ -378,7 +378,6 @@ class Compras extends Component {
 
     openModalAdjuntos = compra => {
         const { data } = this.state
-        console.log(compra, 'compra')
         data.adjuntos = compra.presupuestos.concat(compra.pagos)
         this.setState({
             ... this.state,
@@ -494,8 +493,6 @@ class Compras extends Component {
                         conceptos.forEach(element => {
                             desc = desc + element.attributes.Descripcion + '. ';
                         });
-
-                        console.log('desc', desc)
 
                         let obj = {
                             rfc_receptor: receptor.attributes.Rfc ? receptor.attributes.Rfc : '',

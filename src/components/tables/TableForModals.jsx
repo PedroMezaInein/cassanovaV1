@@ -136,8 +136,7 @@ class TableForModals extends Component {
                         let aux = ''
                         {
                             data.map((element) => {
-                                console.log(element.action, 'element')
-                                aux = aux + /* `<input type="button" onClick = { console.log('hola')} value="Edit" class="btnEdit sfBtn sfPrimaryBtn sfLocale" />` */
+                                aux = aux + 
                                     `<button name=${element.action}  id = ${row.id} class="ml-2 btn btn-actions-table btn-xs btn-icon btn-text-${element.btnclass} btn-hover-${element.btnclass}" title=${element.text}><i class=${element.iconclass}></i></button>`
                             })
                         }

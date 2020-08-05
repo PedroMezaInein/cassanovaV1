@@ -30,7 +30,6 @@ class InputMoneySinText extends Component {
             }
         }
 
-        console.log(inputMoneyValido, inputValido, 'verificacion')
         if(inputValido !== inputMoneyValido)
             this.setState({
                 ... this.state,
@@ -39,8 +38,6 @@ class InputMoneySinText extends Component {
     }
 
     componentDidUpdate(nextProps) {
-        /* console.log(nextProps, 'nextProps')
-        console.log(this.props, 'this.props') */
         if (nextProps.value !== this.props.value){
             if (!nextProps.requirevalidation) {
                 this.setState({

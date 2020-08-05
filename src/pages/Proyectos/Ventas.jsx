@@ -524,7 +524,6 @@ class Ventas extends Component{
                         if(auxEmpresa && auxCliente){
                             swal.close()
                         }
-                        console.log(obj, 'obj')
                         form.facturaObject = obj
                         form.rfc = obj.rfc_receptor
                         this.setState({

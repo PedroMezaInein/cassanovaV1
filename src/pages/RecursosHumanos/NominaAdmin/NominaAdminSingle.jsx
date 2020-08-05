@@ -73,7 +73,6 @@ class NominaAdminSingle extends Component {
     }
 
     setSubtitle = nomina => {
-        console.log(nomina, 'nomina')
         let aux = ''
         if(nomina.empresa)
             aux = aux + nomina.empresa.name + ' '
