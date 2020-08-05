@@ -183,49 +183,48 @@ class ActualizarPresupuestoForm extends Component {
                         <table className="table table-separate table-responsive-sm pt-5">
                             <thead>
                                 <tr>
-                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Clave</div></th>
-                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Descripcion</div></th>
-                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Unidad</div></th> 
-                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Cantidad</div></th>
+                                    <th className="check_desc " rowSpan="2"><div className="mt-2 pb-3 font-size-sm"></div></th>
+                                    <th className="clave" rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Clave</div></th>
+                                    <th className="descripcion" rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Descripción</div></th>
+                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Unidad</div></th>                                     
                                     <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Costo</div></th>
-                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Margen</div></th>
-                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Precio</div></th>
-                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Desperdicio</div></th>
-                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Opciones</div></th>
+                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Cantidad Preliminar</div></th>
+                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">% Despercicio</div></th>
+                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Cantidad</div></th>
+                                    <th rowSpan="2"><div className="mt-2 pb-3 font-size-sm">Importe</div></th>
+                                    
                                 </tr>
                             </thead>
                             <tbody>
 
                                 <tr>
-                                    <td>
-                                        Clave
+                                    <td className="check_desc text-center">
+                                        <label data-inbox="group-select" className="checkbox checkbox-single checkbox-primary mr-3">
+                                            <input
+                                                type="checkbox"
+                                            />
+                                            <span className="symbol-label"></span>
+                                        </label> 
                                     </td>
-                                    <td>
+                                    <td className="clave text-center">
+                                        <div class="font-weight-bold font-size-sm">27.1.5</div>
+                                    </td>
+                                    <td className="descripcion text-center">
                                         <InputSinText
                                             identificador={"descipcion"}
                                             requirevalidation={1}
                                             formeditado={formeditado}
                                             name="descipcion"
+                                            rows="3"
+                                            as="textarea"
                                             value={"form['nominasObra'][key]['descipcion']"}
                                             onChange={"e => onChangeNominasObra(key, e, 'descipcion')"}
                                         />
                                     </td>
-                                    <td>
-                                        Unidad
+                                    <td className="text-center">
+                                        <div class="font-weight-bold font-size-sm">EQUIPO</div>
                                     </td>
-                                    <td>
-                                        <InputMoneySinText
-                                            identificador={"cantidad"}
-                                            requirevalidation={1}
-                                            formeditado={formeditado}
-                                            name="cantidad"
-                                            value={"form['nominasObra'][key]['cantidad']"}
-                                            onChange={"e => onChangeNominasObra(key, e, 'cantidad')"}
-                                            thousandSeparator={true}
-                                            typeformat="###########"
-                                        />
-                                    </td>
-                                    <td>
+                                    <td className="text-center">
                                         <InputMoneySinText
                                             identificador={"costo"}
                                             requirevalidation={1}
@@ -237,33 +236,19 @@ class ActualizarPresupuestoForm extends Component {
                                             typeformat="###########"
                                         />
                                     </td>
-                                    <td>
+                                    <td className="text-center">
                                         <InputMoneySinText
-                                            identificador={"margen"}
+                                            identificador={"cantidad_preeliminar"}
                                             requirevalidation={1}
                                             formeditado={formeditado}
-                                            name="margen"
-                                            value={"form['nominasObra'][key]['margen']"}
-                                            onChange={"e => onChangeNominasObra(key, e, 'margen')"}
+                                            name="cantidad_preeliminar"
+                                            value={"form['nominasObra'][key]['cantidad_preeliminar']"}
+                                            onChange={"e => onChangeNominasObra(key, e, 'cantidad_preeliminar')"}
                                             thousandSeparator={true}
                                             typeformat="###########"
                                         />
                                     </td>
-                                    
-                                    
-                                    <td>
-                                        <InputMoneySinText
-                                            identificador={"precio"}
-                                            requirevalidation={1}
-                                            formeditado={formeditado}
-                                            name="precio"
-                                            value={"form['nominasObra'][key]['precio']"}
-                                            onChange={"e => onChangeNominasObra(key, e, 'precio')"}
-                                            thousandSeparator={true}
-                                            prefix={'$'}
-                                        />
-                                    </td>
-                                    <td>
+                                    <td className="text-center">
                                         <InputNumberSinText
                                             identificador={"desperdicio"}
                                             requirevalidation={1}
@@ -272,12 +257,16 @@ class ActualizarPresupuestoForm extends Component {
                                             value={"form['nominasObra'][key]['desperdicio']"}
                                             onChange={"e => onChangeNominasObra(key, e, 'desperdicio')"}
                                             thousandSeparator={true}
-                                            prefix={'$'}
+                                            prefix={'%'}
                                         />
                                     </td>
-                                    <td>
-                                        
+                                    <td className="text-center">
+                                        <div class="font-weight-bold font-size-sm">237823</div>
                                     </td>
+                                    <td className="text-center">
+                                        <div class="font-weight-bold font-size-sm">28928932</div>
+                                    </td>
+                                    
                                 </tr>
                             </tbody>
                         </table>

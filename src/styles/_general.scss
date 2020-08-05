@@ -193,4 +193,34 @@ a.text-hover-danger2:hover, .text-hover-danger2:hover{
         }
     }
 }
+// Inicio: Tabla actualización de presupuestos
+th.check_desc, th.clave, th.descripcion{
+    @include screen ($xl) {
+        width: 1px;
+        padding: 4px;
+        
+    }
+}
+
+td.check_desc{
+    @include screen ($xl) {
+        padding-right: 0px;
+    }
+}
+
+td.clave{
+    @include screen ($xl) {
+        min-width: 59px;
+    }
+}
+
+td.descripcion{
+    @include screen ($xl) {
+        min-width: 1000px;
+    }
+}
+
+// Fin: Tabla actualización de presupuestos
+
+
 
