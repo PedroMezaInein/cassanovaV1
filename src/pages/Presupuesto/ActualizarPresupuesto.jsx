@@ -34,6 +34,32 @@ class ActualizarPresupuesto extends Component {
             return pathname === url + "/" + "update";
         });
 
+        if (state) {
+            if (state.presupuesto) {
+                const { presupuesto } = state
+                const { form } = this.state
+
+                let aux = []
+                presupuesto.conceptos.map((concepto) => {
+                    aux.push({
+                        descripcion: concepto.descripcion,
+                        costo: concepto.costo,
+                        cantidad_preliminar: concepto.cantidad_preliminar,
+                        desperdicio: concepto.desperdicio,
+                        active:true
+                    })
+
+                })
+
+                form.conceptos = aux
+
+                this.setState({
+                    ... this.state,
+                    presupuesto,
+                    form
+                })
+            }
+        }
         if (!presupuesto) history.push("/");
     }
 
@@ -51,12 +77,10 @@ class ActualizarPresupuesto extends Component {
         const { name, value, checked } = e.target
         const { form } = this.state
 
-        console.log(form.conceptos)
-        console.log(name, 'name')
-        console.log(checked, 'checked')
-        console.log(key, 'key')
+        console.log(form, 'FORM')
 
-        form.conceptos[key][name]= !checked
+        form.conceptos[key][name] = checked
+        
         this.setState({
             ... this.state,
             form
@@ -71,15 +95,16 @@ class ActualizarPresupuesto extends Component {
     }
 
     render() {
-        const { form, title, options, formeditado, data } = this.state;
+        const { form, title, options, formeditado, presupuesto } = this.state;
         return (
             <Layout active={"presupuesto"} {...this.props}>
                 <ActualizarPresupuestoForm
-                    formeditado={formeditado}
-                    form={form}
-                    onChange={this.onChange}
-                    checkButton={this.checkButton}
-                    onSubmit={this.onSubmit}
+                    formeditado = { formeditado }
+                    form = { form }
+                    onChange = { this.onChange }
+                    checkButton = { this.checkButton }
+                    onSubmit = { this.onSubmit }
+                    presupuesto = { presupuesto }
                     {...this.props}
                 />
             </Layout>
