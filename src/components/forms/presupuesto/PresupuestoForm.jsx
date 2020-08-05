@@ -170,7 +170,11 @@ class PresupuestoForm extends Component {
                                                                                     </div>
                                                                                     <div className="d-flex align-items-center justify-content-center flex-wrap col-2 pr-0" data-toggle="view">
                                                                                         <div className="font-weight-bolder position-absolute font-size-sm" data-toggle="view">UNIDAD</div>
-                                                                                        <span className="label label-light-primary  label-inline position-relative" style={{ top: "22px" }} >hola</span>
+                                                                                        <span className="label label-light-primary  label-inline position-relative" style={{ top: "22px" }} >
+                                                                                            {
+                                                                                                concepto.unidad.nombre
+                                                                                            }
+                                                                                        </span>
                                                                                     </div>
                                                                                     <div className="d-flex align-items-center justify-content-center flex-wrap col-2 p-0" data-toggle="view">
                                                                                         <div className="font-weight-bolder position-absolute font-size-sm" data-toggle="view">COSTO</div>
@@ -329,7 +333,11 @@ class PresupuestoForm extends Component {
                                                                                         </div>
                                                                                         <div className="d-flex align-items-center justify-content-center flex-wrap col-2" data-toggle="view">
                                                                                             <div className="font-weight-bolder position-absolute" data-toggle="view">UNIDAD</div>
-                                                                                            <span className="label label-light-primary  label-inline position-relative" style={{ top: "22px" }} >hola</span>
+                                                                                            <span className="label label-light-primary  label-inline position-relative" style={{ top: "22px" }} >
+                                                                                                {
+                                                                                                    concepto.unidad.nombre
+                                                                                                }
+                                                                                            </span>
                                                                                         </div>
                                                                                         <div className="d-flex align-items-center justify-content-center flex-wrap col-2" data-toggle="view">
                                                                                             <div className="font-weight-bolder position-absolute" data-toggle="view">COSTO</div>

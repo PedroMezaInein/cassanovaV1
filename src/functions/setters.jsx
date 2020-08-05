@@ -7,6 +7,15 @@ import { faFileAlt } from '@fortawesome/free-regular-svg-icons';
 import { faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { GOLD } from '../constants';
 
+function compare( a, b ) {
+    if ( a.name < b.name ){
+        return -1;
+    }
+    if ( a.name > b.name ){
+        return 1;
+    }
+    return 0;
+}
 export function setOptions(arreglo, name, value) {
     let aux = []
     arreglo.map((element) => {
@@ -34,6 +43,7 @@ export function setOptions(arreglo, name, value) {
             }
         }
     })
+    aux.sort(compare)
     return aux
 }
 
