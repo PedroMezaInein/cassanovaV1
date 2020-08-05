@@ -92,38 +92,6 @@ class Presupuesto extends Component {
         })
     }
 
-    // async addPresupuestoAxios(){
-    //     waitAlert()
-    //     const { access_token } = this.props.authUser
-    //     const { form } = this.state 
-
-    //     await axios.post(URL_DEV + 'presupuesto/presupuesto',  { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
-    //         (response) => {
-    //             this.handleCloseModal()
-    //             this.getPresupuestoAxios()
-
-    //             swal({
-    //                 title: '¡Felicidades 🥳!',
-    //                 text: response.data.message !== undefined ? response.data.message : 'El presupuesto fue creado con éxito.',
-    //                 icon: 'success',
-    //                 timer: 1500,
-    //                 buttons: false,
-    //             })
-    //         },
-    //         (error) => {
-    //             console.log(error, 'error')
-    //             if(error.response.status === 401){
-    //                 forbiddenAccessAlert()
-    //             }else{
-    //                 errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-    //             }
-    //         }
-    //     ).catch((error) => {
-    //         errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-    //         console.log(error, 'error')
-    //     })
-    // }
-
     handleCloseModal = () => {
         const { modal } = this.state 
         modal.form = false
@@ -160,15 +128,6 @@ class Presupuesto extends Component {
         })
     }
 
-    // onSubmit = e => {
-    //     e.preventDefault()
-    //     const { title } = this.state
-    //     if(title === 'Editar presupuesto')
-    //         this.updatedPresupuestosAxios() 
-    //     else    
-    //         this.addPresupuestoAxios()
-    // }
-
     async getPresupuestoAxios(){
         var table = $('#kt_datatable2_presupuesto')
             .DataTable();
@@ -195,7 +154,6 @@ class Presupuesto extends Component {
         return aux
     }
 
-
     setActions = presupuesto => {
         let aux = []
         aux.push(
@@ -217,18 +175,32 @@ class Presupuesto extends Component {
         });
     }
 
+    openModalEdit = presupuesto => {
+        const { history } = this.props
+        history.push({
+            pathname: '/presupuesto/presupuesto/update',
+            state: { presupuesto: presupuesto }
+
+        });
+    }
+
     render() {
 
         const { modal, title, form, options, formeditado} = this.state
 
         return (
             <Layout active={'presupuesto'}  {...this.props}> 
-                <NewTableServerRender columns={PRESUPUESTO_COLUMNS}
-                    title='Presupuesto' subtitle='Listado de presupuestos' 
+                <NewTableServerRender 
+                    columns={PRESUPUESTO_COLUMNS}
+                    title='Presupuesto' 
+                    subtitle='Listado de presupuestos' 
                     url='/presupuesto/presupuesto/add'
                     mostrar_boton={true}
                     abrir_modal={false}
-                    mostrar_acciones={false} 
+                    mostrar_acciones={true}
+                    actions = {{
+                        'edit': {function: this.openModalEdit},
+                    }}
                     idTable='kt_datatable2_presupuesto'
                     accessToken={this.props.authUser.access_token}
                     setter={this.setPresupuestos}
