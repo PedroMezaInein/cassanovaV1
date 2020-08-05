@@ -255,8 +255,8 @@ class NominaAdminForm extends Component {
                                                         customstyle={{ minWidth: "160px" }}
                                                     />
                                                 </td>
-                                                <td>
-                                                    <div className="font-size-lg font-weight-bolder text-center" style={{ width: "138px" }}>
+                                                <td className="text-center">
+                                                    <div className="font-size-lg font-weight-bolder">
                                                         {
                                                             setMoneyTableForNominas(this.getTotal(key))
                                                         }

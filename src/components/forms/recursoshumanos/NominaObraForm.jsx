@@ -318,8 +318,8 @@ class NominaObraForm extends Component {
                                                         prefix={'$'}
                                                     />
                                                 </td>
-                                                <td>
-                                                    <div id="total" className="font-size-lg font-weight-bolder text-center">
+                                                <td className="text-center">
+                                                    <div id="total" className="font-size-lg font-weight-bolder">
                                                         {
                                                             setMoneyTableForNominas(this.getTotal(key))
                                                         }
