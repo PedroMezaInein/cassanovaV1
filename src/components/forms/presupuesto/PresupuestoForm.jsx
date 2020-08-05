@@ -58,6 +58,38 @@ class PresupuestoForm extends Component {
         }
     }
 
+    onChange = e => {
+        const { value } = e.target
+        const { form, data, checkButton } = this.props
+        data.subpartidas.map( (subpartida) => {
+            subpartida.conceptos.map( (concepto) => {
+                checkButton({ target: { name: concepto.clave, value: value, checked: value } })
+            })
+        })
+    }
+
+    disableButton = () => {
+        const { form } = this.props
+        if(form.partida)
+            return false
+        else
+            return true
+    }
+
+    checkGroupButton = () => {
+        const { form, data } = this.props
+        if(!form.partida)
+            return false
+
+        let aux = true
+        data.subpartidas.map( (subpartida) => {
+            subpartida.conceptos.map( (concepto) => {
+                aux = aux && form.conceptos[concepto.clave]
+            })
+        })
+        return aux
+    }
+
     render() {
         const { options, form, onChange, onSubmit, formeditado, data, checkButton } = this.props
         return (
@@ -72,7 +104,12 @@ class PresupuestoForm extends Component {
                                             <div className="d-flex flex-wrap align-items-center">
                                                 <div className="d-flex align-items-center mx-3 my-2">
                                                     <label data-inbox="group-select" className="checkbox checkbox-single checkbox-primary mr-3">
-                                                        <input type="checkbox" />
+                                                        <input 
+                                                            type="checkbox"
+                                                            onChange = { (e) => { this.onChange(e) }}
+                                                            checked = { this.checkGroupButton() }
+                                                            value = { this.checkGroupButton() } 
+                                                            disabled = { this.disableButton() } />
                                                         <span className="symbol-label"></span>
                                                     </label>
                                                     <div className="d-flex flex-column mr-2 py-2">
