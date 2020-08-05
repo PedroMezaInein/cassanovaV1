@@ -143,7 +143,7 @@ class PresupuestoForm extends Component {
                                                                     {
                                                                         subpartida.conceptos.map((concepto, key) => {
                                                                             return (
-                                                                                <div key={key} className="d-flex align-items-start list-item card-spacer-x pt-4 pb-5" data-inbox="message">
+                                                                                <div key={key} className="d-flex align-items-start list-item card-spacer-x pt-4 pb-5 rounded-0" data-inbox="message">
                                                                                     <div className="d-flex align-items-center col-1">
                                                                                         <div className="d-flex align-items-center" data-inbox="actions">
                                                                                             <label className="checkbox checkbox-single checkbox-primary flex-shrink-0">
