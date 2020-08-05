@@ -66,38 +66,7 @@ class AddPresupuestoForm extends Component {
             } = element;
             return pathname === url + "/" + "add";
         });
-        // switch(action){
-        //     case 'add':
-        //         this.setState({
-        //             ... this.state,
-        //             title: 'Nuevo egreso',
-        //             formeditado:0
-        //         })
-        //         break;
-        //     case 'edit':
-        //         if(state){
-        //             if(state.egreso)
-        //             {
-        //                 const {  } = state
-        //                 const { form, options } = this.state
-
-        //                 this.setState({
-        //                     ... this.state,
-        //                     title: 'Editar egreso',
-        //                     form,
-        //                     options,
-        //                     egreso: egreso,
-        //                     formeditado:1
-        //                 })
-        //             }
-        //             else
-        //                 history.push('/administracion/egresos')
-        //         }else
-        //             history.push('/administracion/egresos')
-        //         break;
-        //     default:
-        //         break;
-        // }
+        
         if (!presupuesto) history.push("/");
         this.getOptionsAxios();
     }
