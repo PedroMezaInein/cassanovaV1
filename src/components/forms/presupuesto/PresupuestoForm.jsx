@@ -70,7 +70,7 @@ class PresupuestoForm extends Component {
                                     <div className="card card-custom card-stretch" id="kt_todo_list">
                                         <div className="card-header align-items-center flex-wrap py-4 border-0 h-auto">
                                             <div className="d-flex flex-wrap align-items-center">
-                                                <div className="d-flex align-items-center mr-1 my-2">
+                                                <div className="d-flex align-items-center mx-3 my-2">
                                                     <label data-inbox="group-select" className="checkbox checkbox-single checkbox-primary mr-3">
                                                         <input type="checkbox" />
                                                         <span className="symbol-label"></span>
@@ -107,8 +107,8 @@ class PresupuestoForm extends Component {
                                                                             return (
                                                                                 <div key={key} className="d-flex align-items-start list-item card-spacer-x pt-4 pb-5" data-inbox="message">
                                                                                     <div className="d-flex align-items-center col-1">
-                                                                                        <div className="d-flex align-items-center mr-3" data-inbox="actions">
-                                                                                            <label className="checkbox checkbox-single checkbox-primary flex-shrink-0 mr-3">
+                                                                                        <div className="d-flex align-items-center" data-inbox="actions">
+                                                                                            <label className="checkbox checkbox-single checkbox-primary flex-shrink-0">
                                                                                                 <input
                                                                                                     type="checkbox"
                                                                                                     onChange={(e) => { checkButton(e) }}
@@ -120,22 +120,22 @@ class PresupuestoForm extends Component {
                                                                                             </label>
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div className="flex-grow-1 mt-1 mr-2 col-2" data-toggle="view">
-                                                                                        <div className="font-weight-bold mr-2">{concepto.clave}</div>
+                                                                                    <div className="flex-grow-1 col-1 pl-0" data-toggle="view">
+                                                                                        <div className="font-weight-bold font-size-sm">{concepto.clave}</div>
                                                                                     </div>
-                                                                                    <div className="flex-grow-1 mt-1 mr-2 col-5" data-toggle="view">
-                                                                                        <div className="font-weight-bold mr-2 font-size-sm text-justify">
+                                                                                    <div className="flex-grow-1 col-6 p-0" data-toggle="view">
+                                                                                        <div className="font-weight-bold font-size-sm text-justify">
                                                                                             {
                                                                                                 concepto.descripcion
                                                                                             }
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div className="d-flex align-items-center justify-content-center flex-wrap col-2" data-toggle="view">
-                                                                                        <div className="font-weight-bolder position-absolute" data-toggle="view">UNIDAD</div>
+                                                                                    <div className="d-flex align-items-center justify-content-center flex-wrap col-2 pr-0" data-toggle="view">
+                                                                                        <div className="font-weight-bolder position-absolute font-size-sm" data-toggle="view">UNIDAD</div>
                                                                                         <span className="label label-light-primary  label-inline position-relative" style={{ top: "22px" }} >hola</span>
                                                                                     </div>
-                                                                                    <div className="d-flex align-items-center justify-content-center flex-wrap col-2" data-toggle="view">
-                                                                                        <div className="font-weight-bolder position-absolute" data-toggle="view">COSTO</div>
+                                                                                    <div className="d-flex align-items-center justify-content-center flex-wrap col-2 p-0" data-toggle="view">
+                                                                                        <div className="font-weight-bolder position-absolute font-size-sm" data-toggle="view">COSTO</div>
                                                                                         <span className="label label-light-primary  label-inline position-relative" style={{ top: "22px" }}>
                                                                                             {
                                                                                                 setMoneyTable(concepto.costo)
