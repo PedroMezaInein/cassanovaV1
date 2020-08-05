@@ -11,7 +11,7 @@ import Moment from 'react-moment'
 import { Small, B } from '../../components/texts' 
 import NumberFormat from 'react-number-format'; 
 import NewTable from '../../components/tables/NewTable'
-import { forbiddenAccessAlert, errorAlert } from '../../functions/alert'
+import { forbiddenAccessAlert, errorAlert, waitAlert } from '../../functions/alert'
 import { setTextTable, setDateTable, setMoneyTable, setArrayTable} from '../../functions/setters'
 
 class Traspasos extends Component{
@@ -563,6 +563,8 @@ class Traspasos extends Component{
     }
 
     async exportTraspasosAxios(){
+
+        waitAlert()
 
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'exportar/traspasos', { responseType:'blob', headers: {Authorization:`Bearer ${access_token}`}}).then(

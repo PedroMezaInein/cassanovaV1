@@ -739,6 +739,8 @@ class egresos extends Component{
 
     async exportEgresosAxios(){
 
+        waitAlert();
+
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'exportar/egresos', { responseType:'blob', headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {

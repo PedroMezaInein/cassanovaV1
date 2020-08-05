@@ -814,6 +814,9 @@ class Ingresos extends Component {
     }
 
     async exportIngresosAxios(){
+
+        waitAlert()
+        
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'exportar/ingresos', { responseType:'blob', headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {

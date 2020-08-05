@@ -1207,6 +1207,8 @@ class Ventas extends Component{
 
     async exportVentasAxios(){
 
+        waitAlert()
+
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'exportar/ventas', { responseType:'blob', headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
