@@ -76,7 +76,6 @@ class Input extends Component {
             if(letterCase === 'Upper')
                 e.target.value = ("" + e.target.value).toUpperCase();
             else{ 
-                console.log('lower case')
                 e.target.value = e.target.value
             }
         }

@@ -408,7 +408,6 @@ class Usuarios extends Component {
     render(){
         const { modal, title, users, user, form, options } = this.state
         const { formulario, deleteForm } = this.props
-        console.log(formulario, 'render formulario')
         return (
             <Layout active = { 'usuarios' }  { ...this.props } >
                 <div className="d-flex align-items-center mb-2 flex-column flex-md-row justify-content-md-between">

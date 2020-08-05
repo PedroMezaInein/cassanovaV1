@@ -35,7 +35,6 @@ class NominaObraSingle extends Component {
         if(state) {
             if(state.nomina) {
                 data.nominaData = state.nomina
-                console.log(state.nomina)
                 this.setState({
                     nomina: state.nomina,
                     nominaData: this.setNominasAdministrativas(state.nomina.nominas_obras),
@@ -80,7 +79,6 @@ class NominaObraSingle extends Component {
 
     
     setSubtitle = nomina => {
-        console.log(nomina, 'nomina')
         let aux = ''
         if(nomina.empresa)
             aux = aux + nomina.empresa.name + ' '

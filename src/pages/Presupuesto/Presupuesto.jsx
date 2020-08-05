@@ -8,6 +8,7 @@ import Layout from '../../components/layout/layout'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { errorAlert, waitAlert, forbiddenAccessAlert} from '../../functions/alert'
 import { renderToString } from 'react-dom/server'
+import { ModalDelete } from '../../components/singles'
 const $ = require('jquery');
 
 class Presupuesto extends Component {
@@ -92,13 +93,61 @@ class Presupuesto extends Component {
         })
     }
 
-    handleCloseModal = () => {
-        const { modal } = this.state 
-        modal.form = false
+    async deletePresupuestoAxios(){
+        const { access_token } = this.props.authUser
+        const { presupuesto } = this.state
+        await axios.delete(URL_DEV + 'presupuestos/' + presupuesto.id, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { modal } = this.state
+
+                modal.delete = false
+
+                this.getPresupuestoAxios()
+                this.setState({
+                    ... this.state,
+                    modal,
+                    presupuesto: '',
+                    
+                })
+                swal({
+                    title: '¡Listo 👋!',
+                    text: response.data.message !== undefined ? response.data.message : 'El egreso fue eliminado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    openModalDelete = presupuesto => {
+        const { modal } = this.state
+        modal.delete = true
         this.setState({
             ... this.state,
-            modal, 
-            form: this.clearForm()
+            modal,
+            presupuesto: presupuesto
+        })
+    }
+
+    handleCloseDelete = () => {
+        const { modal } = this.state
+        modal.delete = false
+        this.setState({
+            ... this.state,
+            modal,
+            presupuesto: ''
         })
     }
 
@@ -163,7 +212,14 @@ class Presupuesto extends Component {
                 iconclass: 'flaticon2-pen',
                 action: 'edit',
                 tooltip: {id:'edit', text:'Editar'},
-            }
+            },
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',                  
+                action: 'delete',
+                tooltip: {id:'delete', text:'Eliminar', type:'error'},
+            },
         )
         return aux
     }
@@ -180,7 +236,6 @@ class Presupuesto extends Component {
         history.push({
             pathname: '/presupuesto/presupuesto/update',
             state: { presupuesto: presupuesto }
-
         });
     }
 
@@ -200,12 +255,19 @@ class Presupuesto extends Component {
                     mostrar_acciones={true}
                     actions = {{
                         'edit': {function: this.openModalEdit},
+                        'delete': {function: this.openModalDelete},
                     }}
                     idTable='kt_datatable2_presupuesto'
                     accessToken={this.props.authUser.access_token}
                     setter={this.setPresupuestos}
                     urlRender={URL_DEV + 'presupuestos'}
                 />
+                <ModalDelete 
+                    title={"¿Estás seguro que deseas eliminar el presupuesto?"} 
+                    show = { modal.delete } 
+                    handleClose = { this.handleCloseDelete } 
+                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.deletePresupuestoAxios() }}
+                    />
             </Layout>
 
             

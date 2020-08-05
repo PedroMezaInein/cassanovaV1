@@ -170,8 +170,6 @@ class Tareas extends Component{
     }
 
     onDragEnd = result => {
-        console.log('result, ', result)
-        
         const { destination, source, draggableId } = result
 
         if(!destination)
@@ -294,7 +292,6 @@ class Tareas extends Component{
                 const { data : { user : user } } = response
                 const { data : { users : users } } = response
                 const { tableros } = response.data
-                console.log(tableros, 'tableros')
                 this.setState({
                     ... this.state,
                     user: user,
@@ -765,7 +762,6 @@ class Tareas extends Component{
                             {
                                 tarea.comentarios.length > 0 &&
                                     tarea.comentarios.map((comentario, key) => {
-                                        console.log(comentario, 'comentario')
                                         return(
                                             <div key={key} className="form-group row form-group-marginless px-3">
                                                 <div className="col-md-12">

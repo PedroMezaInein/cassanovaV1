@@ -71,7 +71,6 @@ class NominaAdminForm extends Component {
                 if (state) {
                     if (state.nomina) {
                         const { nomina } = state
-                        console.log(nomina, 'nomina')
                         const { form, options } = this.state
                         form.periodo = nomina.periodo
                         form.empresa = nomina.empresa ? nomina.empresa.id.toString() : ''
