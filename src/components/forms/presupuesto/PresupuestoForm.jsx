@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-import { Form, Accordion, Card } from 'react-bootstrap'
-import { Input, SelectSearch, Button, Calendar, ToggleButton, SelectSearchSinText } from '../../form-components'
+import { Form} from 'react-bootstrap'
+import { Input, SelectSearch, Button, Calendar, SelectSearchSinText } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { DATE } from '../../../constants'
-import ReactTooltip from "react-tooltip";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import { setMoneyTable } from '../../../functions/setters'

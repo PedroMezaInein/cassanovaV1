@@ -183,7 +183,7 @@ class AddPresupuestoForm extends Component {
                 
                 const { history } = this.props
                 history.push({
-                    pathname: '/presupuesto/presupuesto',
+                    pathname: '/presupuesto/presupuesto/update',
                     state: { presupuesto: presupuesto}
                 });
             },
