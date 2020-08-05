@@ -234,10 +234,10 @@ class ActualizarPresupuestoForm extends Component {
 
                                                             <td className="descripcion text-center">
                                                                 <InputSinText
-                                                                    identificador={"descipcion"}
+                                                                    identificador={"descripcion"}
                                                                     requirevalidation={1}
                                                                     formeditado={formeditado}
-                                                                    name="descipcion"
+                                                                    name="descripcion"
                                                                     rows="3"
                                                                     as="textarea"
                                                                     value={form['conceptos'][key]['descripcion']}
@@ -245,7 +245,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                 />
                                                             </td>
                                                             <td className="text-center">
-                                                                <div className="font-weight-bold font-size-sm">{}</div>
+                                                                <div className="font-weight-bold font-size-sm">{concepto.concepto.unidad.nombre}</div>
                                                             </td>
                                                             <td className="text-center">
                                                                 <InputMoneySinText
