@@ -126,7 +126,7 @@ class NewTableServerRender extends Component {
                     let auxiliar = data[elementClass].split('<!-- -->')
                     if(auxiliar.length > 1){
                         if (auxiliar[1] === '$0.00')
-                            $(row).addClass('verde');
+                            $(row).addClass('rojo');
                         else {
                             let auxiliar2 = auxiliar[1].charAt(0)
                             if (auxiliar2 === '-')
