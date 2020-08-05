@@ -59,11 +59,12 @@ class PresupuestoForm extends Component {
     }
 
     onChange = e => {
-        const { value } = e.target
+        const { checked } = e.target
         const { form, data, checkButton } = this.props
+        
         data.subpartidas.map( (subpartida) => {
             subpartida.conceptos.map( (concepto) => {
-                checkButton({ target: { name: concepto.clave, value: value, checked: value } })
+                checkButton({ target: { name: concepto.clave, value: checked, checked: checked } })
             })
         })
     }
