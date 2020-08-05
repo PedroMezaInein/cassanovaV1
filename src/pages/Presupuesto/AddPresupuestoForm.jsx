@@ -167,15 +167,12 @@ class AddPresupuestoForm extends Component {
     async addPresupuestosAxios() {
         const { access_token } = this.props.authUser
         const { form } = this.state
-        const data = new FormData();
 
-        await axios.post(URL_DEV + 'presupuesto', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'presupuestos', form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.setState({
-                    ... this.state,
-                    modal: false,
-                    form: this.clearForm()
-                })
+                
+                const { presupuesto } = response.data
+
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.',
@@ -183,9 +180,11 @@ class AddPresupuestoForm extends Component {
                     timer: 1500,
                     buttons: false,
                 })
+                
                 const { history } = this.props
                 history.push({
-                    pathname: '/presupuesto/presupuesto'
+                    pathname: '/presupuesto/presupuesto',
+                    state: { presupuesto: presupuesto}
                 });
             },
             (error) => {
@@ -246,7 +245,6 @@ class AddPresupuestoForm extends Component {
 
     onSubmit = e => {
         e.preventDefault()
-        const { title } = this.state
         waitAlert()
         this.addPresupuestosAxios()
     }

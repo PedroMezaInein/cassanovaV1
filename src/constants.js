@@ -1573,7 +1573,7 @@ export const EMPLEADOS_COLUMNS_OBRA = [
 export const PRESUPUESTO_COLUMNS = [
     {
         Header: 'Opciones',
-        accessor: 'opciones',
+        accessor: 'actions',
     },
     {
         Header: 'Proyecto',

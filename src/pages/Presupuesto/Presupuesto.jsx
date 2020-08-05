@@ -3,10 +3,11 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV, PRESUPUESTO_COLUMNS } from '../../constants'
-import { setOptions} from '../../functions/setters'
+import { setOptions, setTextTable, setDateTable} from '../../functions/setters'
 import Layout from '../../components/layout/layout'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { errorAlert, waitAlert, forbiddenAccessAlert} from '../../functions/alert'
+import { renderToString } from 'react-dom/server'
 const $ = require('jquery');
 
 class Presupuesto extends Component {
@@ -174,8 +175,39 @@ class Presupuesto extends Component {
         table.ajax.reload();
     }
 
-    setPresupuestos = () => {
-        return []
+    setPresupuestos = presupuestos => {
+        let aux = []
+        if(presupuestos)
+            presupuestos.map( (presupuesto) => {
+                aux.push(
+                    {
+                        actions: this.setActions(presupuesto),
+                        proyecto: renderToString(setTextTable( presupuesto.proyecto ? presupuesto.proyecto.nombre : '')),
+                        empresa: renderToString(setTextTable( presupuesto.empresa ? presupuesto.empresa.name : '')),
+                        area: renderToString(setTextTable( presupuesto.area ? presupuesto.area.nombre : '')),
+                        fecha: renderToString(setDateTable(presupuesto.fecha)),
+                        tiempo_ejecucion: renderToString(setTextTable(presupuesto.tiempo_ejecucion)),
+                        id: presupuesto.id,
+                        objeto: presupuesto
+                    }
+                )
+            })
+        return aux
+    }
+
+
+    setActions = presupuesto => {
+        let aux = []
+        aux.push(
+            {
+                text: 'Editar',
+                btnclass: 'success',
+                iconclass: 'flaticon2-pen',
+                action: 'edit',
+                tooltip: {id:'edit', text:'Editar'},
+            }
+        )
+        return aux
     }
 
     changePageAdd = () => {
