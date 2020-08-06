@@ -179,6 +179,56 @@ class ActualizarPresupuesto extends Component {
         })
     }
 
+    async addConceptoAxios() {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        await axios.post(URL_DEV + 'conceptos', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { conceptos } = response.data
+                const { data } = this.state
+                data.conceptos = conceptos
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'La concepto fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+                this.setState({
+                    ... this.state,
+                    conceptos: this.setConceptos(conceptos),
+                    modal: false,
+                    title: 'Nuevo concepto',
+                    form: this.clearForm(),
+                    data
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                } else {
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups 😕!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.' + error,
+                icon: 'error'
+            })
+        })
+    }
+
     setOptions = (name, array) => {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
@@ -313,6 +363,7 @@ class ActualizarPresupuesto extends Component {
     onSubmit = e => {
         e.preventDefault()
         waitAlert()
+
         this.updatePresupuestosAxios()
     }
 
@@ -452,6 +503,7 @@ class ActualizarPresupuesto extends Component {
                         checkButtonConceptos={this.checkButtonConceptos}
                         data={data}
                         controlledTab={this.controlledTab}
+                        onSubmit={this.onSubmit}
                     />
                 </Modal>
             </Layout>
