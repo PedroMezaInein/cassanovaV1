@@ -8,6 +8,7 @@ import { setOptions, setMoneyTable, setMoneyTableForNominas } from '../../../fun
 import axios from "axios";
 import swal from "sweetalert";
 import Moment from 'react-moment'
+import ReactTooltip from 'react-tooltip/dist';
 
 
 
@@ -21,7 +22,8 @@ class ActualizarPresupuestoForm extends Component {
         const { form } = this.props
         let aux = parseFloat(0);
         form.conceptos.map( (concepto) => {
-            aux = aux + parseFloat(concepto.importe)
+            if(concepto.active)
+                aux = aux + parseFloat(concepto.importe)
         })
         return aux.toFixed(2)
     }
@@ -42,7 +44,8 @@ class ActualizarPresupuestoForm extends Component {
         console.log(value, 'value')
         if(value)
             form.conceptos.map( (concepto, key) => {
-                onChange(key, e, 'desperdicio')
+                if(concepto.active)
+                    onChange(key, e, 'desperdicio')
             })
         this.setState({
             ... this.state,
@@ -288,7 +291,28 @@ class ActualizarPresupuestoForm extends Component {
                                             presupuesto.conceptos.map((concepto, key) => {
                                                 return (
                                                     <>
-                                                        <tr className = { form.conceptos[key].active ? 'concepto-active' : 'concepto-inactive bg-light-primary' } key = { key }>
+                                                        {
+                                                            concepto.mensaje ?                                                         
+                                                                <ReactTooltip id = { key + '-th' } type = 'warning'>
+                                                                    <div>
+                                                                        {
+                                                                            concepto.user_comentario ?
+                                                                                <b>
+                                                                                    {
+                                                                                        concepto.user_comentario.name
+                                                                                    }
+                                                                                </b>
+                                                                            : ''
+                                                                        }
+                                                                        <br/>
+                                                                        {
+                                                                            concepto.mensaje
+                                                                        }
+                                                                    </div>
+                                                                </ReactTooltip>
+                                                            : ''
+                                                        }
+                                                        <tr data-tip data-for = { key + '-th' } className = { form.conceptos[key].active ? 'concepto-active' : 'concepto-inactive bg-light-primary' } key = { key }>
                                                             <td className="check_desc text-center">
                                                                 <label
                                                                     data-inbox="group-select"

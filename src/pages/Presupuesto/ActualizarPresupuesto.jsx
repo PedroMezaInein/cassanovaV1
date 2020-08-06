@@ -28,6 +28,7 @@ class ActualizarPresupuesto extends Component {
                 active:true,
                 cantidad: 0,
                 importe: 0,
+                id: '',
                 mensajes:{
                     active: false,
                     mensaje: ''
@@ -96,7 +97,9 @@ class ActualizarPresupuesto extends Component {
                 const { presupuesto } = state
                 const { form } = this.state
 
-                let aux = []
+                this.getOnePresupuestoAxios(presupuesto.id);
+
+                /* let aux = []
                 presupuesto.conceptos.map((concepto) => {
                     aux.push({
                         descripcion: concepto.descripcion,
@@ -106,6 +109,7 @@ class ActualizarPresupuesto extends Component {
                         cantidad: concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100)),
                         importe: (concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100))) * concepto.costo,
                         active: concepto.active ? true : false,
+                        id: concepto.id, 
                         mensajes:{
                             active: false,
                             mensaje: ''
@@ -121,7 +125,7 @@ class ActualizarPresupuesto extends Component {
                     presupuesto: presupuesto,
                     form,
                     formeditado: 1
-                })
+                }) */
             }
         }
         if (!presupuesto) history.push("/");
@@ -187,9 +191,105 @@ class ActualizarPresupuesto extends Component {
 
     onSubmit = e => {
         e.preventDefault()
-        const { title } = this.state
         waitAlert()
-        this.addPresupuestosAxios()
+        this.updatePresupuestosAxios()
+    }
+
+    async getOnePresupuestoAxios(id) {
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'presupuestos/' + id, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+
+                const { form } = this.state
+                const { presupuesto } = response.data
+                
+                let aux = []
+                presupuesto.conceptos.map((concepto) => {
+                    aux.push({
+                        descripcion: concepto.descripcion,
+                        costo: concepto.costo,
+                        cantidad_preliminar: concepto.cantidad_preliminar,
+                        desperdicio: concepto.desperdicio,
+                        cantidad: concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100)),
+                        importe: (concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100))) * concepto.costo,
+                        active: concepto.active ? true : false,
+                        id: concepto.id, 
+                        mensajes:{
+                            active: false,
+                            mensaje: ''
+                        }
+                    })
+
+                })
+
+                form.conceptos = aux
+
+                this.setState({
+                    ... this.state,
+                    presupuesto: presupuesto,
+                    form,
+                    formeditado: 1
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async updatePresupuestosAxios() {
+        const { access_token } = this.props.authUser
+        const { form, presupuesto } = this.state
+
+        await axios.put(URL_DEV + 'presupuestos/' + presupuesto.id, form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+
+                const { presupuesto } = response.data
+                const { form } = this.state
+
+                form.conceptos.map( (concepto) => {
+                    concepto.mensajes = {
+                        active: false,
+                        mensaje: ''
+                    }
+                })
+
+                this.setState({
+                    ... this.state,
+                    presupuesto: presupuesto,
+                    form
+                })
+
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     render() {
