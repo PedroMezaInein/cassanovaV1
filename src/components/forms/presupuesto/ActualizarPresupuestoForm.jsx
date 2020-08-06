@@ -53,6 +53,36 @@ class ActualizarPresupuestoForm extends Component {
         })
     }
 
+    getPartidaClave = clave => {
+        let aux = clave.split('.')
+        if(aux.length)
+            return aux[0]
+    }
+    getSubpartidaClave = clave => {
+        let aux = clave.split('.')
+        if(aux.length)
+            return aux[1]
+    }
+
+    getPartida = key => {
+        const { presupuesto } = this.props
+        if(key === 0)
+            return true
+        console.log(presupuesto.conceptos, 'form')    
+        if(presupuesto.conceptos[key].concepto.subpartida.partida.id !== presupuesto.conceptos[key-1].concepto.subpartida.partida.id)
+            return true
+        return false
+    }
+    getSubpartida = key => {
+        const { presupuesto } = this.props
+        if(key === 0)
+            return true
+        console.log(presupuesto.conceptos, 'form')
+        if(presupuesto.conceptos[key].concepto.subpartida.id !== presupuesto.conceptos[key-1].concepto.subpartida.id)
+            return true
+        return false
+    }
+
     render() {
         const { onChange, formeditado, checkButton, form, presupuesto, openModal, onSubmit} = this.props
         const { desperdicio } = this.state
@@ -311,6 +341,56 @@ class ActualizarPresupuestoForm extends Component {
                                                                     </div>
                                                                 </ReactTooltip>
                                                             : ''
+                                                        }
+                                                        {
+                                                            this.getPartida(key)?
+                                                                <tr>
+                                                                    <td colSpan={9}>
+                                                                        <b>
+                                                                        {
+                                                                            this.getPartidaClave(concepto.clave)
+                                                                        }
+                                                                        </b>
+                                                                        &nbsp;
+                                                                        {
+                                                                            concepto.concepto ? 
+                                                                                concepto.concepto.subpartida ?
+                                                                                    concepto.concepto.subpartida.partida ?
+                                                                                        concepto.concepto.subpartida.partida.nombre
+                                                                                    : ''
+                                                                                : ''
+                                                                            : ''
+                                                                        }
+                                                                    </td>
+                                                                </tr>
+                                                            :
+                                                                ''
+                                                        }
+                                                        {
+                                                            this.getSubpartida(key)?
+                                                                <tr>
+                                                                    <td colSpan={9}>
+                                                                        <b>
+                                                                        {
+                                                                            this.getPartidaClave(concepto.clave)
+                                                                        }
+                                                                        .
+                                                                        {
+                                                                            this.getSubpartidaClave(concepto.clave)
+                                                                        }
+                                                                        </b>
+                                                                        &nbsp;
+                                                                        {
+                                                                            concepto.concepto ? 
+                                                                                concepto.concepto.subpartida ?
+                                                                                    concepto.concepto.subpartida.nombre
+                                                                                : ''
+                                                                            : ''
+                                                                        }
+                                                                    </td>
+                                                                </tr>
+                                                            :
+                                                                ''
                                                         }
                                                         <tr data-tip data-for = { key + '-th' } className = { form.conceptos[key].active ? 'concepto-active' : 'concepto-inactive bg-light-primary' } key = { key }>
                                                             <td className="check_desc text-center">
