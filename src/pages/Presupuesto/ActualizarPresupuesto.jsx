@@ -59,7 +59,8 @@ class ActualizarPresupuesto extends Component {
         const { form } = this.state
         let aux = Object.keys(form)
         aux.map((element) => {
-            form[element] = ''
+            if(element !== 'conceptos')
+                form[element] = ''
         })
         return form
     }
@@ -104,7 +105,7 @@ class ActualizarPresupuesto extends Component {
                         desperdicio: concepto.desperdicio,
                         cantidad: concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100)),
                         importe: (concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100))) * concepto.costo,
-                        active:true,
+                        active: concepto.active ? true : false,
                         mensajes:{
                             active: false,
                             mensaje: ''
