@@ -20,7 +20,11 @@ class ActualizarPresupuesto extends Component {
                 desperdicio: '',
                 active:true,
                 cantidad: 0,
-                importe: 0
+                importe: 0,
+                mensajes:{
+                    active: false,
+                    mensaje: ''
+                }
             }]
         }
     };
@@ -51,7 +55,11 @@ class ActualizarPresupuesto extends Component {
                         desperdicio: concepto.desperdicio,
                         cantidad: concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100)),
                         importe: (concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100))) * concepto.costo,
-                        active:true
+                        active:true,
+                        mensajes:{
+                            active: false,
+                            mensaje: ''
+                        }
                     })
 
                 })
@@ -71,7 +79,8 @@ class ActualizarPresupuesto extends Component {
 
     onChange = (key, e, name) => {
         let { value } = e.target
-        const { form} = this.state
+        const { form, presupuesto } = this.state
+
         
         if(name === 'desperdicio'){
             value = value.replace('%', '')
@@ -83,6 +92,13 @@ class ActualizarPresupuesto extends Component {
         importe = importe.toFixed(2)
         form['conceptos'][key]['cantidad'] = cantidad
         form['conceptos'][key]['importe'] = importe
+        if(name !== 'mensajes')
+            if(presupuesto.conceptos[key][name] !== form.conceptos[key][name]){
+                form.conceptos[key].mensajes.active = true
+            }else{
+                form.conceptos[key].mensajes.active = false
+            }
+
         this.setState({
             ...this.state,
             form
@@ -97,10 +113,12 @@ class ActualizarPresupuesto extends Component {
         
         if(!checked){
             let pre = presupuesto.conceptos[key]
+            let aux = { active: false, mensaje: '' }
             this.onChange(key, {target:{value: pre.descripcion}}, 'descripcion')
             this.onChange(key, {target:{value: pre.costo}}, 'costo')
             this.onChange(key, {target:{value: pre.cantidad_preliminar}}, 'cantidad_preliminar')
             this.onChange(key, {target:{value: '$'+pre.desperdicio}}, 'desperdicio')
+            this.onChange(key, {target:{value: aux}}, 'mensajes')
         }
         
         this.setState({
