@@ -10,6 +10,7 @@ import { ActualizarPresupuestoForm, AgregarConcepto } from "../../components/for
 import { Modal } from '../../components/singles'
 class ActualizarPresupuesto extends Component {
     state = {
+        key: 'nuevo',
         formeditado: 0,
         modal: false,
         presupuesto: '',
@@ -33,7 +34,8 @@ class ActualizarPresupuesto extends Component {
                     active: false,
                     mensaje: ''
                 }
-            }]
+            }],
+            conceptosNuevos: []
         },
         options: {
             unidades: [],
@@ -44,8 +46,7 @@ class ActualizarPresupuesto extends Component {
         data: {
             partidas: [],
             subpartidas: [],
-            conceptos: [],
-            conceptosNuevos: []
+            conceptos: []
         },
     };
 
@@ -66,7 +67,7 @@ class ActualizarPresupuesto extends Component {
         const { form } = this.state
         let aux = Object.keys(form)
         aux.map((element) => {
-            if(element !== 'conceptos')
+            if(element !== 'conceptos' && element !== 'conceptosNuevos')
                 form[element] = ''
         })
         return form
@@ -189,7 +190,7 @@ class ActualizarPresupuesto extends Component {
 
     onChangeConceptos = (e) => {
         const { name, value } = e.target;
-        const { data } = this.state
+        const { data, form, presupuesto} = this.state
         switch (name) {
             case 'partida':
                 data.partidas.map((partida) => {
@@ -205,13 +206,34 @@ class ActualizarPresupuesto extends Component {
                         data.conceptos = subpartida.conceptos
                     }
                 })
+                let array=[]
+                data.conceptos.map((concepto)=>{
+                    let aux =false
+                    
+                    presupuesto.conceptos.map((concepto_form) =>{
+                        if(concepto){
+                            console.log(concepto_form)
+                            if(concepto.clave === concepto_form.clave){
+                                aux=true
+                            }
+                        }
+                        
+                    })
+                    if(!aux){
+                        array.push(concepto)
+                    }
+                })
+                array.map((element, key)=>{
+                    form.conceptosNuevos.push(element)
+                    form.conceptosNuevos[key].active=false
+                })
                 break;
             default:
                 break;
         }
-
-        const { form } = this.state;
+        
         form[name] = value;
+        console.log(form,'')
         this.setState({
             ...this.state,
             form,
@@ -219,19 +241,11 @@ class ActualizarPresupuesto extends Component {
         });
     };
 
-    // onChangeConceptos = e => {
-    //     const { form } = this.state
-    //     const { name, value } = e.target
-    //     form[name] = value
-    //     this.setState({
-    //         ... this.state,
-    //         form
-    //     })
-    // }
-    checkButtonConceptos = e => {
+    checkButtonConceptos = (e, key)=> {
         const { name, value, checked } = e.target
         const { form } = this.state
-        form.conceptos[name] = checked
+        form.conceptosNuevos[key].active = checked
+        console.log(form.conceptosNuevos)
         this.setState({
             ... this.state,
             form
@@ -399,6 +413,21 @@ class ActualizarPresupuesto extends Component {
         })
     }
 
+    controlledTab = value => {
+        const { form } = this.state
+        if(value === 'nuevo'){
+            // this.getEmpleadosAxios()
+        }
+        if(value === 'existente'){
+            // this.getEmpleadosObraAxios()
+        }
+        this.setState({
+            ... this.state,
+            key: value,
+            form
+        })
+    }
+
     render() {
         const { form, title, options, formeditado, presupuesto, modal, data } = this.state;
         return (
@@ -422,6 +451,7 @@ class ActualizarPresupuesto extends Component {
                         setOptions={this.setOptions}
                         checkButtonConceptos={this.checkButtonConceptos}
                         data={data}
+                        controlledTab={this.controlledTab}
                     />
                 </Modal>
             </Layout>

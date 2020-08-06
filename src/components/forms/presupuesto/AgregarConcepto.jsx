@@ -172,7 +172,7 @@ class AgregarConcepto extends Component {
                         <div className="table-responsive">
                             <div className="list list-hover min-w-500px" data-inbox="list">
                                 {
-                                    data.conceptos.map((concepto, key) => {
+                                    form.conceptosNuevos.map((concepto, key) => {
                                         return (
                                             <div key={key} className="d-flex align-items-start list-item card-spacer-x pt-4 pb-5 rounded-0" data-inbox="message">
                                                 <div className="d-flex align-items-center col-1">
@@ -180,10 +180,10 @@ class AgregarConcepto extends Component {
                                                         <label className="checkbox checkbox-single checkbox-primary flex-shrink-0">
                                                             <input
                                                                 type="checkbox"
-                                                                onChange={(e) => { checkButtonConceptos(e) }}
+                                                                onChange={(e) => { checkButtonConceptos(e, key) }}
                                                                 name={concepto.clave}
-                                                                checked={form.conceptos[concepto.clave]}
-                                                                value={form.conceptos[concepto.clave]}
+                                                                checked={form.conceptosNuevos.active}
+                                                                value={form.conceptosNuevos.active}
                                                             />
                                                             <span></span>
                                                         </label>
