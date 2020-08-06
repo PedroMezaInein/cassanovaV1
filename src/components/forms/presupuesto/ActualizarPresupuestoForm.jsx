@@ -4,7 +4,7 @@ import { Form, Accordion, Card } from 'react-bootstrap'
 import { SelectSearchSinText, InputMoneySinText, InputNumberSinText, InputSinText } from '../../form-components'
 import { validateAlert, errorAlert, waitAlert, forbiddenAccessAlert } from '../../../functions/alert'
 import { URL_DEV } from '../../../constants'
-import { setOptions } from '../../../functions/setters'
+import { setOptions, setMoneyTable, setMoneyTableForNominas } from '../../../functions/setters'
 import axios from "axios";
 import swal from "sweetalert";
 import Moment from 'react-moment'
@@ -12,9 +12,46 @@ import Moment from 'react-moment'
 
 
 class ActualizarPresupuestoForm extends Component {
-    
+
+    state = {
+        desperdicio: 0
+    }
+
+    getTotalImport = () => {
+        const { form } = this.props
+        let aux = parseFloat(0);
+        form.conceptos.map( (concepto) => {
+            aux = aux + parseFloat(concepto.importe)
+        })
+        return aux.toFixed(2)
+    }
+
+    onChangeMensaje = ( e, key ) => {
+        const { value, name } = e.target
+        const { form, onChange } = this.props
+        let aux = {
+            active: true,
+            mensaje: value
+        }
+        onChange(key, {target:{value: aux}}, 'mensajes')
+    }
+
+    onChangeDesperdicio = e =>{
+        const { value, name } = e.target
+        const { form, onChange } = this.props
+        console.log(value, 'value')
+        form.conceptos.map( (concepto, key) => {
+            onChange(key, e, 'desperdicio')
+        })
+        this.setState({
+            ... this.state,
+            desperdicio: value
+        })
+    }
+
     render() {
         const { onChange, formeditado, checkButton, form, presupuesto, openModal} = this.props
+        const { desperdicio } = this.state
         if (presupuesto)
             return (
                 <>
@@ -212,12 +249,28 @@ class ActualizarPresupuestoForm extends Component {
                                     </th>
                                     <th>
                                         <div className="font-size-sm text-center">% Despercicio</div>
+                                        <div>
+                                            <InputNumberSinText
+                                                identificador = { "desperdicio-global" }
+                                                requirevalidation = { 0 }
+                                                formeditado = { 1 }
+                                                name = " desperdicio "
+                                                value = { desperdicio }
+                                                onChange = { this.onChangeDesperdicio }
+                                                thousandSeparator = { true }
+                                                prefix = { '%' } />
+                                        </div>
                                     </th>
                                     <th>
                                         <div className="font-size-sm text-center">Cantidad</div>
                                     </th>
                                     <th>
                                         <div className="font-size-sm text-center">Importe</div>
+                                        <div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder font-size-sm text-center">
+                                            {
+                                                setMoneyTableForNominas(this.getTotalImport())
+                                            }
+                                        </div>
                                     </th>
                                     </tr>
                                 </thead>
@@ -225,77 +278,105 @@ class ActualizarPresupuestoForm extends Component {
                                     {
                                         presupuesto.conceptos.map((concepto, key) => {
                                             return (
-                                                <tr key={key}>
-                                                    <td className="check_desc text-center">
-                                                        <label
-                                                            data-inbox="group-select"
-                                                            className="checkbox checkbox-single checkbox-primary mr-3">
-                                                            <input
-                                                                name='active'
-                                                                type="checkbox"
-                                                                onChange={(e) => { checkButton(key, e) }}
-                                                                checked={form.conceptos[key].active}
-                                                                value={form.conceptos[key].active} />
-                                                            <span className="symbol-label"></span>
-                                                        </label>
-                                                    </td>
-                                                    <td className="clave text-center">
-                                                        <div className="font-weight-bold font-size-sm">{concepto.concepto.clave}</div>
-                                                    </td>
+                                                <>
+                                                    <tr className = { form.conceptos[key].active ? 'concepto-active' : 'concepto-inactive bg-light-primary' } key = { key }>
+                                                        <td className="check_desc text-center">
+                                                            <label
+                                                                data-inbox="group-select"
+                                                                className="checkbox checkbox-single checkbox-primary mr-3">
+                                                                <input
+                                                                    name='active'
+                                                                    type="checkbox"
+                                                                    onChange={(e) => { checkButton(key, e) }}
+                                                                    checked={form.conceptos[key].active}
+                                                                    value={form.conceptos[key].active} />
+                                                                <span className="symbol-label"></span>
+                                                            </label>
+                                                        </td>
+                                                        <td className="clave text-center">
+                                                            <div className="font-weight-bold font-size-sm">{concepto.concepto.clave}</div>
+                                                        </td>
 
-                                                    <td className="descripcion text-center">
-                                                        <InputSinText
-                                                            identificador={"descipcion"}
-                                                            requirevalidation={1}
-                                                            formeditado={formeditado}
-                                                            name="descipcion"
-                                                            rows="3"
-                                                            as="textarea"
-                                                            value={form['conceptos'][key]['descripcion']}
-                                                            onChange={e => onChange(key, e, 'descripcion')} />
-                                                    </td>
-                                                    <td className="text-center">
-                                                        <div className="font-weight-bold font-size-sm">{concepto.concepto.unidad.nombre}</div>
-                                                    </td>
-                                                    <td className="text-center">
-                                                        <InputMoneySinText identificador={"costo"}
-                                                            requirevalidation={1}
-                                                            formeditado={formeditado}
-                                                            name="costo"
-                                                            value={form['conceptos'][key]['costo']}
-                                                            onChange={e => onChange(key, e, 'costo')}
-                                                            thousandSeparator={true}
-                                                            typeformat="###########" />
-                                                    </td>
-                                                    <td className="text-center">
-                                                        <InputMoneySinText
-                                                            identificador={"cantidad_preliminar"}
-                                                            requirevalidation={1}
-                                                            formeditado={formeditado}
-                                                            name="cantidad_preliminar"
-                                                            value={form['conceptos'][key]['cantidad_preliminar']}
-                                                            onChange={e => onChange(key, e, 'cantidad_preliminar')}
-                                                            thousandSeparator={true}
-                                                            typeformat="###########" />
-                                                    </td>
-                                                    <td className="text-center">
-                                                        <InputNumberSinText
-                                                            identificador={"desperdicio"}
-                                                            requirevalidation={1}
-                                                            formeditado={formeditado}
-                                                            name="desperdicio"
-                                                            value={form['conceptos'][key]['desperdicio']}
-                                                            onChange={e => onChange(key, e, 'desperdicio')}
-                                                            thousandSeparator={true}
-                                                            prefix={'%'} />
-                                                    </td>
-                                                    <td className="text-center">
-                                                        <div className="font-weight-bold font-size-sm">{concepto.cantidad}</div>
-                                                    </td>
-                                                    <td className="text-center">
-                                                        <div className="font-weight-bold font-size-sm">{concepto.importe}</div>
-                                                    </td>
-                                                </tr>
+                                                        <td className="descripcion text-center">
+                                                            <InputSinText
+                                                                identificador={"descipcion"}
+                                                                requirevalidation={1}
+                                                                formeditado={formeditado}
+                                                                name="descipcion"
+                                                                rows="3"
+                                                                as="textarea"
+                                                                value={form['conceptos'][key]['descripcion']}
+                                                                onChange={e => onChange(key, e, 'descripcion')} 
+                                                                disabled = { !form.conceptos[key].active }
+                                                                />
+                                                        </td>
+                                                        <td className="text-center">
+                                                            <div className="font-weight-bold font-size-sm">{concepto.concepto.unidad.nombre}</div>
+                                                        </td>
+                                                        <td className="text-center">
+                                                            <InputMoneySinText identificador={"costo"}
+                                                                requirevalidation={1}
+                                                                formeditado={formeditado}
+                                                                name="costo"
+                                                                value={form['conceptos'][key]['costo']}
+                                                                onChange={e => onChange(key, e, 'costo')}
+                                                                thousandSeparator={true}
+                                                                typeformat="###########" 
+                                                                disabled = { !form.conceptos[key].active } />
+                                                        </td>
+                                                        <td className="text-center">
+                                                            <InputMoneySinText
+                                                                identificador={"cantidad_preliminar"}
+                                                                requirevalidation={1}
+                                                                formeditado={formeditado}
+                                                                name="cantidad_preliminar"
+                                                                value={form['conceptos'][key]['cantidad_preliminar']}
+                                                                onChange={e => onChange(key, e, 'cantidad_preliminar')}
+                                                                thousandSeparator={true}
+                                                                typeformat="###########"
+                                                                disabled = { !form.conceptos[key].active } />
+                                                        </td>
+                                                        <td className="text-center">
+                                                            <InputNumberSinText
+                                                                identificador={"desperdicio" + key}
+                                                                requirevalidation={1}
+                                                                formeditado={formeditado}
+                                                                name="desperdicio"
+                                                                value={form['conceptos'][key]['desperdicio']}
+                                                                onChange={e => onChange(key, e, 'desperdicio')}
+                                                                thousandSeparator={true}
+                                                                prefix={'%'} 
+                                                                disabled = { !form.conceptos[key].active }
+                                                                />
+                                                        </td>
+                                                        <td className="text-center">
+                                                            <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['cantidad']}</div>
+                                                        </td>
+                                                        <td className="text-center">
+                                                            <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['importe']}</div>
+                                                        </td>
+                                                    </tr>
+                                                    {
+                                                        form.conceptos[key].mensajes.active ?
+                                                            <tr >
+                                                                <td className="px-3 mx-2" colSpan = { 9 }>
+                                                                    <InputSinText
+                                                                        identificador = { "mensaje" + key }
+                                                                        requirevalidation = { 1 }
+                                                                        formeditado = { formeditado }
+                                                                        name = "mensaje"
+                                                                        rows = "1"
+                                                                        as = "textarea"
+                                                                        className="form-control form-control-lg form-control-solid"
+                                                                        value = { form.conceptos[key].mensajes.mensaje}
+                                                                        onChange = { (e) => { this.onChangeMensaje(e, key) } }
+                                                                        />
+                                                                </td>
+                                                            </tr>
+                                                        :
+                                                            ''
+                                                    }
+                                                </>
                                             )
                                         })
                                     }

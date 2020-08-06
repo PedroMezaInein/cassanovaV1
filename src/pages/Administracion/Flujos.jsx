@@ -61,7 +61,6 @@ class Flujos extends Component {
         let aux = []
         options[arreglo].find(function (_aux) {
             if (_aux.value.toString() === value.toString()) {
-                console.log(_aux, '_aux')
                 auxArray.push(_aux)
             } else {
                 aux.push(_aux)
