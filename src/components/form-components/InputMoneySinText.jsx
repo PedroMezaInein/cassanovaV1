@@ -66,7 +66,7 @@ class InputMoneySinText extends Component {
 
     }
     render() {
-        const { placeholder, value, prefix, thousandSeparator, customstyle, identificador } = this.props
+        const { placeholder, value, prefix, thousandSeparator, customstyle, identificador, ...props } = this.props
         const { inputMoneyValido } = this.state
 
         return (
@@ -81,6 +81,7 @@ class InputMoneySinText extends Component {
                 onValueChange={(values) => this.onChange(values)}
                 placeholder={placeholder}
                 style={customstyle}
+                { ... props }
             />
         )
     }

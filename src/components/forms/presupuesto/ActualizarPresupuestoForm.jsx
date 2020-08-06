@@ -203,9 +203,6 @@ class ActualizarPresupuestoForm extends Component {
                         </Card.Body>
                     </Card>
                     <Card className="mt-4">
-                        {/* <Card.Header>
-                            <h4 className="text-dark m-0">Actualización</h4>
-                        </Card.Header> */}
                         <Card.Body>
                             <table className="table table-separate table-responsive-sm pt-5">
                                 <thead>
@@ -258,7 +255,7 @@ class ActualizarPresupuestoForm extends Component {
                                         presupuesto.conceptos.map((concepto, key) => {
                                             console.log(concepto)
                                             return (
-                                                <tr key={key}>
+                                                <tr className = { form.conceptos[key].active ? 'concepto-active' : 'concepto-inactive bg-light-primary' } key = { key }>
                                                     <td className="check_desc text-center">
                                                         <label
                                                             data-inbox="group-select"
@@ -285,7 +282,9 @@ class ActualizarPresupuestoForm extends Component {
                                                             rows="3"
                                                             as="textarea"
                                                             value={form['conceptos'][key]['descripcion']}
-                                                            onChange={e => onChange(key, e, 'descripcion')} />
+                                                            onChange={e => onChange(key, e, 'descripcion')} 
+                                                            disabled = { !form.conceptos[key].active }
+                                                            />
                                                     </td>
                                                     <td className="text-center">
                                                         <div className="font-weight-bold font-size-sm">{concepto.concepto.unidad.nombre}</div>
@@ -298,7 +297,8 @@ class ActualizarPresupuestoForm extends Component {
                                                             value={form['conceptos'][key]['costo']}
                                                             onChange={e => onChange(key, e, 'costo')}
                                                             thousandSeparator={true}
-                                                            typeformat="###########" />
+                                                            typeformat="###########" 
+                                                            disabled = { !form.conceptos[key].active } />
                                                     </td>
                                                     <td className="text-center">
                                                         <InputMoneySinText
@@ -309,7 +309,8 @@ class ActualizarPresupuestoForm extends Component {
                                                             value={form['conceptos'][key]['cantidad_preliminar']}
                                                             onChange={e => onChange(key, e, 'cantidad_preliminar')}
                                                             thousandSeparator={true}
-                                                            typeformat="###########" />
+                                                            typeformat="###########"
+                                                            disabled = { !form.conceptos[key].active } />
                                                     </td>
                                                     <td className="text-center">
                                                         <InputNumberSinText
@@ -320,7 +321,9 @@ class ActualizarPresupuestoForm extends Component {
                                                             value={form['conceptos'][key]['desperdicio']}
                                                             onChange={e => onChange(key, e, 'desperdicio')}
                                                             thousandSeparator={true}
-                                                            prefix={'%'} />
+                                                            prefix={'%'} 
+                                                            disabled = { !form.conceptos[key].active }
+                                                            />
                                                     </td>
                                                     <td className="text-center">
                                                         <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['cantidad']}</div>
