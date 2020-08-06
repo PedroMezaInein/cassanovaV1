@@ -6,6 +6,7 @@ import { DATE } from '../../../constants'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import { setMoneyTable } from '../../../functions/setters'
+import {Accordion, Card} from 'react-bootstrap/'
 
 class PresupuestoForm extends Component {
 
@@ -130,6 +131,24 @@ class PresupuestoForm extends Component {
                                             </div>
                                         </div>
                                         <div className="card-body p-0">
+                                        {/* <Accordion defaultActiveKey="0" className="accordion accordion-light accordion-toggle-arrow">
+                                            <Card>
+                                                <Accordion.Toggle as={Card.Header} eventKey="0" className="card-title">
+                                                    Click me!
+                                                </Accordion.Toggle>
+                                                <Accordion.Collapse eventKey="0">
+                                                    <Card.Body>Hello! I'm the body</Card.Body>
+                                                </Accordion.Collapse>
+                                            </Card>
+                                            <Card>
+                                                <Accordion.Toggle as={Card.Header} eventKey="1">
+                                                    Click me!
+                                                </Accordion.Toggle>
+                                                <Accordion.Collapse eventKey="1">
+                                                    <Card.Body>Hello! I'm another body</Card.Body>
+                                                </Accordion.Collapse>
+                                            </Card>
+                                        </Accordion> */}
                                             <div className="table-responsive">
                                                 <div className="list list-hover min-w-500px" data-inbox="list">
                                                     {
