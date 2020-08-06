@@ -325,7 +325,7 @@ class ActualizarPresupuestoForm extends Component {
                                                         <td className="text-center">
                                                             <InputNumberSinText
                                                                 identificador={"desperdicio" + key}
-                                                                requirevalidation={1}
+                                                                requirevalidation={0}
                                                                 formeditado={formeditado}
                                                                 name="desperdicio"
                                                                 value={form['conceptos'][key]['desperdicio']}

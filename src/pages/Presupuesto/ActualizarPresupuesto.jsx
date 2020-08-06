@@ -92,13 +92,20 @@ class ActualizarPresupuesto extends Component {
         importe = importe.toFixed(2)
         form['conceptos'][key]['cantidad'] = cantidad
         form['conceptos'][key]['importe'] = importe
-        if(name !== 'mensajes')
+        if(name !== 'mensajes' && name !== 'desperdicio')
             if(presupuesto.conceptos[key][name] !== form.conceptos[key][name]){
                 form.conceptos[key].mensajes.active = true
             }else{
                 form.conceptos[key].mensajes.active = false
             }
-
+        if(name === 'desperdicio')
+            if(presupuesto.conceptos[key][name].toString() !== form.conceptos[key][name].toString()){
+                form.conceptos[key].mensajes.active = true
+                form.conceptos[key].mensajes.mensaje = ('Actualización del desecho a un '+ value + '%').toUpperCase()
+            }else{
+                form.conceptos[key].mensajes.active = false
+                form.conceptos[key].mensajes.mensaje = ''
+            }
         this.setState({
             ...this.state,
             form
