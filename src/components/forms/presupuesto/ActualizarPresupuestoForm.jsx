@@ -253,7 +253,6 @@ class ActualizarPresupuestoForm extends Component {
                                 <tbody>
                                     {
                                         presupuesto.conceptos.map((concepto, key) => {
-                                            console.log(concepto)
                                             return (
                                                 <tr className = { form.conceptos[key].active ? 'concepto-active' : 'concepto-inactive bg-light-primary' } key = { key }>
                                                     <td className="check_desc text-center">
