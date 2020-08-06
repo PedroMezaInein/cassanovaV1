@@ -256,6 +256,7 @@ class ActualizarPresupuestoForm extends Component {
                                 <tbody>
                                     {
                                         presupuesto.conceptos.map((concepto, key) => {
+                                            console.log(concepto)
                                             return (
                                                 <tr key={key}>
                                                     <td className="check_desc text-center">
@@ -287,7 +288,7 @@ class ActualizarPresupuestoForm extends Component {
                                                             onChange={e => onChange(key, e, 'descripcion')} />
                                                     </td>
                                                     <td className="text-center">
-                                                        <div className="font-weight-bold font-size-sm">{}</div>
+                                                        <div className="font-weight-bold font-size-sm">{concepto.concepto.unidad.nombre}</div>
                                                     </td>
                                                     <td className="text-center">
                                                         <InputMoneySinText identificador={"costo"}
@@ -331,7 +332,6 @@ class ActualizarPresupuestoForm extends Component {
                                             )
                                         })
                                     }
-
                                 </tbody>
                             </table>
                         </Card.Body>
@@ -341,7 +341,6 @@ class ActualizarPresupuestoForm extends Component {
         else
             return (
                 <>
-
                 </>
             )
     }

@@ -195,27 +195,35 @@ a.text-hover-danger2:hover, .text-hover-danger2:hover{
 }
 // Inicio: Tabla actualización de presupuestos
 th.check_desc, th.clave, th.descripcion{
-    @include screen ($xl) {
+    @include screen ($lg) {
+        width: 1px;
+    }
+    @include screen ($xxl) {
         width: 1px;
         padding: 4px;
-        
     }
 }
 
-td.check_desc{
-    @include screen ($xl) {
+td.check_desc.text-center{
+    @include screen ($lg) {
+        padding-right: 0px;
+    }
+    @include screen ($xxl) {
         padding-right: 0px;
     }
 }
 
-td.clave{
-    @include screen ($xl) {
+td.clave.text-center{
+    @include screen ($xxl) {
         min-width: 59px;
     }
 }
 
-td.descripcion{
-    @include screen ($xl) {
+td.descripcion.text-center{
+    @include screen ($lg) {
+        min-width: 500px;
+    }
+    @include screen ($xxl) {
         min-width: 1000px;
     }
 }
