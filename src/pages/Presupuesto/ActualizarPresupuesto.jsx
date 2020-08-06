@@ -11,6 +11,7 @@ import { ActualizarPresupuestoForm } from "../../components/forms";
 class ActualizarPresupuesto extends Component {
     state = {
         formeditado: 0,
+        presupuesto: '',
         form: {
             conceptos: [{
                 descipcion: '',
@@ -59,7 +60,7 @@ class ActualizarPresupuesto extends Component {
 
                 this.setState({
                     ... this.state,
-                    presupuesto,
+                    presupuesto: presupuesto,
                     form,
                     formeditado: 1
                 })
@@ -90,11 +91,17 @@ class ActualizarPresupuesto extends Component {
 
     checkButton = (key, e) => {
         const { name, value, checked } = e.target
-        const { form } = this.state
-
-        console.log(form, 'FORM')
+        const { form, presupuesto } = this.state
 
         form.conceptos[key][name] = checked
+        
+        if(!checked){
+            let pre = presupuesto.conceptos[key]
+            this.onChange(key, {target:{value: pre.descripcion}}, 'descripcion')
+            this.onChange(key, {target:{value: pre.costo}}, 'costo')
+            this.onChange(key, {target:{value: pre.cantidad_preliminar}}, 'cantidad_preliminar')
+            this.onChange(key, {target:{value: '$'+pre.desperdicio}}, 'desperdicio')
+        }
         
         this.setState({
             ... this.state,
