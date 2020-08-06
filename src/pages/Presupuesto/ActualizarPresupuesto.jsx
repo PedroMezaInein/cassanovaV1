@@ -6,21 +6,70 @@ import { URL_DEV } from "../../constants";
 import { setOptions } from "../../functions/setters";
 import { errorAlert, waitAlert, forbiddenAccessAlert } from "../../functions/alert";
 import Layout from "../../components/layout/layout";
-import { ActualizarPresupuestoForm } from "../../components/forms";
-
+import { ActualizarPresupuestoForm, AgregarConcepto } from "../../components/forms";
+import { Modal } from '../../components/singles'
 class ActualizarPresupuesto extends Component {
     state = {
         formeditado: 0,
+        modal: false,
         form: {
+            unidad: '',
+            partida: '',
+            subpartida: '',
+            descripcion: '',
+            costo: '',
+            proveedor: '',
             conceptos: [{
                 descipcion: '',
                 costo: '',
                 cantidad_preliminar: '',
                 desperdicio: '',
-                active:true
+                active: true
             }]
-        }
+        },
+        options: {
+            unidades: [],
+            partidas: [],
+            subpartidas: [],
+            proveedores: [],
+        },
     };
+
+    openModal = () => {
+        const { options } = this.state
+        options.subpartidas = []
+        this.setState({
+            ... this.state,
+            options,
+            modal: true,
+            title: 'Agregar concepto',
+            form: this.clearForm(),
+            formeditado: 0
+        })
+    }
+
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            form[element] = ''
+        })
+        return form
+    }
+
+
+    handleClose = () => {
+        const { modal, options } = this.state
+        options.subpartidas = []
+        this.setState({
+            ... this.state,
+            modal: !modal,
+            options,
+            title: 'Agregar concepto',
+            concepto: '',
+            form: this.clearForm()
+        })
+    }
 
     componentDidMount() {
         const { authUser: { user: { permisos: permisos } } } = this.props;
@@ -66,7 +115,7 @@ class ActualizarPresupuesto extends Component {
 
     onChange = (key, e, name) => {
         const { value } = e.target
-        const { form} = this.state
+        const { form } = this.state
         form['conceptos'][key][name] = value
         this.setState({
             ...this.state,
@@ -77,8 +126,6 @@ class ActualizarPresupuesto extends Component {
     checkButton = (key, e) => {
         const { name, value, checked } = e.target
         const { form } = this.state
-
-        console.log(form, 'FORM')
 
         form.conceptos[key][name] = checked
         
@@ -96,18 +143,27 @@ class ActualizarPresupuesto extends Component {
     }
 
     render() {
-        const { form, title, options, formeditado, presupuesto } = this.state;
+        const { form, title, options, formeditado, presupuesto, modal } = this.state;
         return (
             <Layout active={"presupuesto"} {...this.props}>
                 <ActualizarPresupuestoForm
-                    formeditado = { formeditado }
-                    form = { form }
-                    onChange = { this.onChange }
-                    checkButton = { this.checkButton }
-                    onSubmit = { this.onSubmit }
-                    presupuesto = { presupuesto }
+                    formeditado={formeditado}
+                    form={form}
+                    onChange={this.onChange}
+                    checkButton={this.checkButton}
+                    onSubmit={this.onSubmit}
+                    presupuesto={presupuesto}
+                    openModal={this.openModal}
                     {...this.props}
                 />
+                <Modal size="xl" title={title} show={modal} handleClose={this.handleClose}>
+                    <AgregarConcepto
+                        options={options}
+                        formeditado={formeditado}
+                        form={form}
+                        onChangeConceptos={this.onChangeConceptos}
+                    />
+                </Modal>
             </Layout>
         );
     }

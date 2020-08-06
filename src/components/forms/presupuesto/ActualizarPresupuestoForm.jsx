@@ -9,9 +9,12 @@ import axios from "axios";
 import swal from "sweetalert";
 import Moment from 'react-moment'
 
+
+
 class ActualizarPresupuestoForm extends Component {
+    
     render() {
-        const { onChange, formeditado, checkButton, form, presupuesto } = this.props
+        const { onChange, formeditado, checkButton, form, presupuesto, openModal} = this.props
         if (presupuesto)
             return (
                 <>
@@ -174,13 +177,21 @@ class ActualizarPresupuestoForm extends Component {
                             </div>
                         </Card.Body>
                     </Card>
-                    <Card className="mt-4">
-                        {/* <Card.Header>
-                            <h4 className="text-dark m-0">Actualización</h4>
-                        </Card.Header> */}
-                        <Card.Body>
+                    <Card className="mt-4 card-custom">
+                        <Card.Header>
+                            <div className="card-title">
+                                <h3 className="card-label"> Presupuesto </h3>
+                            </div>
+                            <div className="card-toolbar" >
+                                <button className="btn btn-sm btn-success font-weight-bold" onClick={openModal}>
+                                    Agregar concepto
+                                </button>
+                            </div>                    
+                        </Card.Header>
+                        <Card.Body> 
                             <table className="table table-separate table-responsive-sm pt-5">
                                 <thead>
+                                    <tr>
                                     <th className="check_desc">
                                         <div className="font-size-sm text-center"></div>
                                     </th>
@@ -208,11 +219,11 @@ class ActualizarPresupuestoForm extends Component {
                                     <th>
                                         <div className="font-size-sm text-center">Importe</div>
                                     </th>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                     {
                                         presupuesto.conceptos.map((concepto, key) => {
-                                            console.log(concepto)
                                             return (
                                                 <tr key={key}>
                                                     <td className="check_desc text-center">
