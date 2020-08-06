@@ -17,7 +17,9 @@ class ActualizarPresupuesto extends Component {
                 costo: '',
                 cantidad_preliminar: '',
                 desperdicio: '',
-                active:true
+                active:true,
+                cantidad: 0,
+                importe: 0
             }]
         }
     };
@@ -46,6 +48,8 @@ class ActualizarPresupuesto extends Component {
                         costo: concepto.costo,
                         cantidad_preliminar: concepto.cantidad_preliminar,
                         desperdicio: concepto.desperdicio,
+                        cantidad: concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100)),
+                        importe: (concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100))) * concepto.costo,
                         active:true
                     })
 
@@ -65,9 +69,19 @@ class ActualizarPresupuesto extends Component {
     }
 
     onChange = (key, e, name) => {
-        const { value } = e.target
+        let { value } = e.target
         const { form} = this.state
+        
+        if(name === 'desperdicio'){
+            value = value.replace('%', '')
+        }
         form['conceptos'][key][name] = value
+        let cantidad = form['conceptos'][key]['cantidad_preliminar'] * (1 + (form['conceptos'][key]['desperdicio']/100))
+        cantidad = cantidad.toFixed(2)
+        let importe = cantidad * form['conceptos'][key]['costo']
+        importe = importe.toFixed(2)
+        form['conceptos'][key]['cantidad'] = cantidad
+        form['conceptos'][key]['importe'] = importe
         this.setState({
             ...this.state,
             form

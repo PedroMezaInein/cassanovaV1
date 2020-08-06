@@ -4,14 +4,42 @@ import { Form, Accordion, Card } from 'react-bootstrap'
 import { SelectSearchSinText, InputMoneySinText, InputNumberSinText, InputSinText } from '../../form-components'
 import { validateAlert, errorAlert, waitAlert, forbiddenAccessAlert } from '../../../functions/alert'
 import { URL_DEV } from '../../../constants'
-import { setOptions } from '../../../functions/setters'
+import { setOptions, setMoneyTable, setMoneyTableForNominas } from '../../../functions/setters'
 import axios from "axios";
 import swal from "sweetalert";
 import Moment from 'react-moment'
 
 class ActualizarPresupuestoForm extends Component {
+
+    state = {
+        desperdicio: 0
+    }
+
+    getTotalImport = () => {
+        const { form } = this.props
+        let aux = parseFloat(0);
+        form.conceptos.map( (concepto) => {
+            aux = aux + parseFloat(concepto.importe)
+        })
+        return aux.toFixed(2)
+    }
+
+    onChangeDesperdicio = e =>{
+        const { value, name } = e.target
+        const { form, onChange } = this.props
+        console.log(value, 'value')
+        form.conceptos.map( (concepto, key) => {
+            onChange(key, e, 'desperdicio')
+        })
+        this.setState({
+            ... this.state,
+            desperdicio: value
+        })
+    }
+
     render() {
         const { onChange, formeditado, checkButton, form, presupuesto } = this.props
+        const { desperdicio } = this.state
         if (presupuesto)
             return (
                 <>
@@ -201,12 +229,28 @@ class ActualizarPresupuestoForm extends Component {
                                     </th>
                                     <th>
                                         <div className="font-size-sm text-center">% Despercicio</div>
+                                        <div>
+                                            <InputNumberSinText
+                                                identificador = { "desperdicio-global" }
+                                                requirevalidation = { 0 }
+                                                formeditado = { 1 }
+                                                name = " desperdicio "
+                                                value = { desperdicio }
+                                                onChange = { this.onChangeDesperdicio }
+                                                thousandSeparator = { true }
+                                                prefix = { '%' } />
+                                        </div>
                                     </th>
                                     <th>
                                         <div className="font-size-sm text-center">Cantidad</div>
                                     </th>
                                     <th>
                                         <div className="font-size-sm text-center">Importe</div>
+                                        <div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder font-size-sm text-center">
+                                            {
+                                                setMoneyTableForNominas(this.getTotalImport())
+                                            }
+                                        </div>
                                     </th>
                                 </thead>
                                 <tbody>
@@ -278,10 +322,10 @@ class ActualizarPresupuestoForm extends Component {
                                                             prefix={'%'} />
                                                     </td>
                                                     <td className="text-center">
-                                                        <div className="font-weight-bold font-size-sm">{concepto.cantidad}</div>
+                                                        <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['cantidad']}</div>
                                                     </td>
                                                     <td className="text-center">
-                                                        <div className="font-weight-bold font-size-sm">{concepto.importe}</div>
+                                                        <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['importe']}</div>
                                                     </td>
                                                 </tr>
                                             )
