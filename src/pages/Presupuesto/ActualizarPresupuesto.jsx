@@ -40,6 +40,12 @@ class ActualizarPresupuesto extends Component {
             subpartidas: [],
             proveedores: [],
         },
+        data: {
+            partidas: [],
+            subpartidas: [],
+            conceptos: [],
+            conceptosNuevos: []
+        },
     };
 
     openModal = () => {
@@ -137,11 +143,11 @@ class ActualizarPresupuesto extends Component {
                 const { empresas, proyectos, areas, partidas, proveedores, unidades, conceptos} = response.data
                 const { options, data, form} = this.state 
 
-                // data.partidas = partidas
-                // let aux = {}
-                // conceptos.map((concepto) => {
-                //     aux[concepto.clave] = false
-                // })
+                data.partidas = partidas
+                let aux = {}
+                conceptos.map((concepto) => {
+                    aux[concepto.clave] = false
+                })
                 options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
@@ -177,42 +183,51 @@ class ActualizarPresupuesto extends Component {
         })
     }
 
-    // onChangeConceptos = (e) => {
-    //     const { name, value } = e.target;
-    //     const { data } = this.state
-    //     switch (name) {
-    //         case 'partida':
-    //             data.partidas.map((partida) => {
-    //                 data.conceptos = []
-    //                 if (partida.id.toString() === value) {
-    //                     data.subpartidas = partida.subpartidas
-    //                 }
-    //             })
-    //             break;
-    //         case 'subpartida':
-    //             data.subpartidas.map((subpartida) => {
-    //                 if (subpartida.id.toString() === value) {
-    //                     data.conceptos = subpartida.conceptos
-    //                 }
-    //             })
-    //             break;
-    //         default:
-    //             break;
-    //     }
+    onChangeConceptos = (e) => {
+        const { name, value } = e.target;
+        const { data } = this.state
+        switch (name) {
+            case 'partida':
+                data.partidas.map((partida) => {
+                    data.conceptos = []
+                    if (partida.id.toString() === value) {
+                        data.subpartidas = partida.subpartidas
+                    }
+                })
+                break;
+            case 'subpartida':
+                data.subpartidas.map((subpartida) => {
+                    if (subpartida.id.toString() === value) {
+                        data.conceptos = subpartida.conceptos
+                    }
+                })
+                break;
+            default:
+                break;
+        }
 
-    //     const { form } = this.state;
-    //     form[name] = value;
+        const { form } = this.state;
+        form[name] = value;
+        this.setState({
+            ...this.state,
+            form,
+            data
+        });
+    };
+
+    // onChangeConceptos = e => {
+    //     const { form } = this.state
+    //     const { name, value } = e.target
+    //     form[name] = value
     //     this.setState({
-    //         ...this.state,
-    //         form,
-    //         data
-    //     });
-    // };
-
-    onChangeConceptos = e => {
+    //         ... this.state,
+    //         form
+    //     })
+    // }
+    checkButtonConceptos = e => {
+        const { name, value, checked } = e.target
         const { form } = this.state
-        const { name, value } = e.target
-        form[name] = value
+        form.conceptos[name] = checked
         this.setState({
             ... this.state,
             form
@@ -285,7 +300,7 @@ class ActualizarPresupuesto extends Component {
     }
 
     render() {
-        const { form, title, options, formeditado, presupuesto, modal } = this.state;
+        const { form, title, options, formeditado, presupuesto, modal, data } = this.state;
         return (
             <Layout active={"presupuesto"} {...this.props}>
                 <ActualizarPresupuestoForm
@@ -305,6 +320,8 @@ class ActualizarPresupuesto extends Component {
                         form={form}
                         onChange={this.onChangeConceptos}
                         setOptions={this.setOptions}
+                        checkButtonConceptos={this.checkButtonConceptos}
+                        data={data}
                     />
                 </Modal>
             </Layout>
