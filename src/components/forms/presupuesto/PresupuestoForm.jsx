@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
-import { Form} from 'react-bootstrap'
+import { Form } from 'react-bootstrap'
 import { Input, SelectSearch, Button, Calendar, SelectSearchSinText } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { DATE } from '../../../constants'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import { setMoneyTableSinSmall } from '../../../functions/setters'
-import {Accordion, Card} from 'react-bootstrap/'
 
 class PresupuestoForm extends Component {
 
@@ -61,9 +60,9 @@ class PresupuestoForm extends Component {
     onChange = e => {
         const { checked } = e.target
         const { form, data, checkButton } = this.props
-        
-        data.subpartidas.map( (subpartida) => {
-            subpartida.conceptos.map( (concepto) => {
+
+        data.subpartidas.map((subpartida) => {
+            subpartida.conceptos.map((concepto) => {
                 checkButton({ target: { name: concepto.clave, value: checked, checked: checked } })
             })
         })
@@ -71,7 +70,7 @@ class PresupuestoForm extends Component {
 
     disableButton = () => {
         const { form } = this.props
-        if(form.partida)
+        if (form.partida)
             return false
         else
             return true
@@ -79,12 +78,12 @@ class PresupuestoForm extends Component {
 
     checkGroupButton = () => {
         const { form, data } = this.props
-        if(!form.partida)
+        if (!form.partida)
             return false
 
         let aux = true
-        data.subpartidas.map( (subpartida) => {
-            subpartida.conceptos.map( (concepto) => {
+        data.subpartidas.map((subpartida) => {
+            subpartida.conceptos.map((concepto) => {
                 aux = aux && form.conceptos[concepto.clave]
             })
         })
@@ -97,7 +96,7 @@ class PresupuestoForm extends Component {
             <div className="row">
                 <div className="col-lg-12">
                     <div className="flex-row-fluid ml-lg-8">
-                        <div className="d-flex flex-column flex-grow-1">                            
+                        <div className="d-flex flex-column flex-grow-1">
                             <div className="row">
                                 <div className="col-xl-6">
                                     <div className="card card-custom card-stretch" id="kt_todo_list">
@@ -105,12 +104,12 @@ class PresupuestoForm extends Component {
                                             <div className="d-flex flex-wrap align-items-center">
                                                 <div className="d-flex align-items-center mx-3 my-2">
                                                     <label data-inbox="group-select" className="checkbox checkbox-single checkbox-primary mr-3">
-                                                        <input 
+                                                        <input
                                                             type="checkbox"
-                                                            onChange = { (e) => { this.onChange(e) }}
-                                                            checked = { this.checkGroupButton() }
-                                                            value = { this.checkGroupButton() } 
-                                                            disabled = { this.disableButton() } />
+                                                            onChange={(e) => { this.onChange(e) }}
+                                                            checked={this.checkGroupButton()}
+                                                            value={this.checkGroupButton()}
+                                                            disabled={this.disableButton()} />
                                                         <span className="symbol-label"></span>
                                                     </label>
                                                     <div className="d-flex flex-column mr-2 py-2">
@@ -152,7 +151,7 @@ class PresupuestoForm extends Component {
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        
+
                                                         <div className="list list-hover min-w-500px" data-inbox="list">
                                                             {
                                                                 data.subpartidas.map((subpartida, key) => {
@@ -186,17 +185,17 @@ class PresupuestoForm extends Component {
                                                                                             </div>
                                                                                             <div className="flex-grow-1 col-6 p-0" data-toggle="view">
                                                                                                 <div className="font-size-xs text-justify font-weight-bold">
-                                                                                                    { concepto.descripcion }
+                                                                                                    {concepto.descripcion}
                                                                                                 </div>
                                                                                             </div>
                                                                                             <div className="d-flex align-items-center justify-content-center flex-wrap col-2 pr-0" data-toggle="view">
                                                                                                 <div className="font-size-xs font-weight-bold" data-toggle="view">
-                                                                                                    { concepto.unidad.nombre }
+                                                                                                    {concepto.unidad.nombre}
                                                                                                 </div>
                                                                                             </div>
                                                                                             <div className="d-flex align-items-center justify-content-center flex-wrap col-2 p-0" data-toggle="view">
                                                                                                 <div className="font-size-xs font-weight-bold" data-toggle="view">
-                                                                                                    { setMoneyTableSinSmall(concepto.costo) }
+                                                                                                    {setMoneyTableSinSmall(concepto.costo)}
                                                                                                 </div>
                                                                                             </div>
                                                                                         </div>
@@ -210,7 +209,7 @@ class PresupuestoForm extends Component {
                                                         </div>
                                                     </div>
                                                 </div>
-                                            :''
+                                                : ''
                                         }
                                     </div>
                                 </div>
@@ -313,7 +312,6 @@ class PresupuestoForm extends Component {
                                                     </div>
                                                 </Form>
                                             </div>
-                                            
                                             <div className="table-responsive">
                                                 {
                                                     form.partida ?
@@ -335,9 +333,8 @@ class PresupuestoForm extends Component {
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    :''
+                                                        : ''
                                                 }
-
                                                 <div className="list list-hover min-w-500px" data-inbox="list">
                                                     {
                                                         data.partidas.map((partida, key1) => {
@@ -363,25 +360,25 @@ class PresupuestoForm extends Component {
                                                                                             </div>
                                                                                         </div>
                                                                                         <div className="flex-grow-1 col-1 pl-0" data-toggle="view">
-                                                                                                <div className="font-size-xs font-weight-bold">
-                                                                                                    {concepto.clave}
-                                                                                                </div>
+                                                                                            <div className="font-size-xs font-weight-bold">
+                                                                                                {concepto.clave}
                                                                                             </div>
-                                                                                            <div className="flex-grow-1 col-6 p-0" data-toggle="view">
-                                                                                                <div className="font-size-xs text-justify font-weight-bold">
-                                                                                                    { concepto.descripcion }
-                                                                                                </div>
+                                                                                        </div>
+                                                                                        <div className="flex-grow-1 col-6 p-0" data-toggle="view">
+                                                                                            <div className="font-size-xs text-justify font-weight-bold">
+                                                                                                {concepto.descripcion}
                                                                                             </div>
-                                                                                            <div className="d-flex align-items-center justify-content-center flex-wrap col-2 pr-0" data-toggle="view">
-                                                                                                <div className="font-size-xs font-weight-bold" data-toggle="view">
-                                                                                                    { concepto.unidad.nombre }
-                                                                                                </div>
+                                                                                        </div>
+                                                                                        <div className="d-flex align-items-center justify-content-center flex-wrap col-2 pr-0" data-toggle="view">
+                                                                                            <div className="font-size-xs font-weight-bold" data-toggle="view">
+                                                                                                {concepto.unidad.nombre}
                                                                                             </div>
-                                                                                            <div className="d-flex align-items-center justify-content-center flex-wrap col-2 p-0" data-toggle="view">
-                                                                                                <div className="font-size-xs font-weight-bold" data-toggle="view">
-                                                                                                    { setMoneyTableSinSmall(concepto.costo) }
-                                                                                                </div>
+                                                                                        </div>
+                                                                                        <div className="d-flex align-items-center justify-content-center flex-wrap col-2 p-0" data-toggle="view">
+                                                                                            <div className="font-size-xs font-weight-bold" data-toggle="view">
+                                                                                                {setMoneyTableSinSmall(concepto.costo)}
                                                                                             </div>
+                                                                                        </div>
                                                                                     </div>
                                                                                 )
                                                                             }

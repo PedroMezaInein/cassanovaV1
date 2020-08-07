@@ -5,7 +5,7 @@ import { validateAlert } from '../../../functions/alert'
 import SelectSearchTrue from '../../form-components/SelectSearchTrue'
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
-import { setMoneyTable } from '../../../functions/setters'
+import { setMoneyTableSinSmall } from '../../../functions/setters'
 
 class AgregarConcepto extends Component {
 
@@ -171,6 +171,28 @@ class AgregarConcepto extends Component {
                         <div className="table-responsive">
                             <div className="list list-hover min-w-500px" data-inbox="list">
                                 {
+                                    form.subpartida ?
+                                        <div className="list min-w-500px" data-inbox="list">
+                                            <div className="d-flex align-items-start list-item card-spacer-x pt-4" data-inbox="message">
+                                                <div className="d-flex align-items-center col-1">
+                                                </div>
+                                                <div className="flex-grow-1 col-1 pl-0" data-toggle="view">
+                                                    <div className="font-weight-bold font-size-lg text-center">CLAVE</div>
+                                                </div>
+                                                <div className="flex-grow-1 col-6 p-0" data-toggle="view">
+                                                    <div className="font-weight-bold font-size-lg text-center"> DESCRIPCIÓN</div>
+                                                </div>
+                                                <div className="d-flex align-items-center justify-content-center flex-wrap col-2 pr-0" data-toggle="view">
+                                                    <div className="font-weight-bolder font-size-lg text-center" data-toggle="view">UNIDAD</div>
+                                                </div>
+                                                <div className="d-flex align-items-center justify-content-center flex-wrap col-2 p-0" data-toggle="view">
+                                                    <div className="font-weight-bolder font-size-lg text-center" data-toggle="view">COSTO</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        : ''
+                                }
+                                {
                                     form.conceptosNuevos.map((concepto, key) => {
                                         return (
                                             <div key={key} className="d-flex align-items-start list-item card-spacer-x pt-4 pb-5 rounded-0" data-inbox="message">
@@ -189,30 +211,24 @@ class AgregarConcepto extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="flex-grow-1 col-1 pl-0" data-toggle="view">
-                                                    <div className="font-weight-bold font-size-sm">{concepto.clave}</div>
-                                                </div>
-                                                <div className="flex-grow-1 col-8 p-0" data-toggle="view">
-                                                    <div className="font-weight-bold font-size-sm text-justify">
-                                                        {
-                                                            concepto.descripcion
-                                                        }
+                                                    <div className="font-size-xs font-weight-bold text-center">
+                                                        {concepto.clave}
                                                     </div>
                                                 </div>
-                                                <div className="d-flex align-items-center justify-content-center flex-wrap col-1 pr-0" data-toggle="view">
-                                                    <div className="font-weight-bolder position-absolute font-size-sm" data-toggle="view">UNIDAD</div>
-                                                    <span className="label label-light-primary  label-inline position-relative" style={{ top: "22px" }} >
-                                                        {
-                                                            concepto.unidad.nombre
-                                                        }
-                                                    </span>
+                                                <div className="flex-grow-1 col-6 p-0" data-toggle="view">
+                                                    <div className="font-size-xs text-justify font-weight-bold">
+                                                        {concepto.descripcion}
+                                                    </div>
                                                 </div>
-                                                <div className="d-flex align-items-center justify-content-center flex-wrap col-1 p-0" data-toggle="view">
-                                                    <div className="font-weight-bolder position-absolute font-size-sm" data-toggle="view">COSTO</div>
-                                                    <span className="label label-light-primary  label-inline position-relative" style={{ top: "22px" }}>
-                                                        {
-                                                            setMoneyTable(concepto.costo)
-                                                        }
-                                                    </span>
+                                                <div className="d-flex align-items-center justify-content-center flex-wrap col-2 pr-0" data-toggle="view">
+                                                    <div className="font-size-xs font-weight-bold" data-toggle="view">
+                                                        {concepto.unidad.nombre}
+                                                    </div>
+                                                </div>
+                                                <div className="d-flex align-items-center justify-content-center flex-wrap col-2 p-0" data-toggle="view">
+                                                    <div className="font-size-xs font-weight-bold" data-toggle="view">
+                                                        {setMoneyTableSinSmall(concepto.costo)}
+                                                    </div>
                                                 </div>
                                             </div>
                                         )
