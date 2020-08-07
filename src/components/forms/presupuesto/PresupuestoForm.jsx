@@ -130,89 +130,94 @@ class PresupuestoForm extends Component {
                                                 />
                                             </div>
                                         </div>
-                                        <div className="card-body p-0">
-                                        {/* <Accordion defaultActiveKey="0" className="accordion accordion-light accordion-toggle-arrow">
-                                            <Card>
-                                                <Accordion.Toggle as={Card.Header} eventKey="0" className="card-title">
-                                                    Click me!
-                                                </Accordion.Toggle>
-                                                <Accordion.Collapse eventKey="0">
-                                                    <Card.Body>Hello! I'm the body</Card.Body>
-                                                </Accordion.Collapse>
-                                            </Card>
-                                            <Card>
-                                                <Accordion.Toggle as={Card.Header} eventKey="1">
-                                                    Click me!
-                                                </Accordion.Toggle>
-                                                <Accordion.Collapse eventKey="1">
-                                                    <Card.Body>Hello! I'm another body</Card.Body>
-                                                </Accordion.Collapse>
-                                            </Card>
-                                        </Accordion> */}
-                                            <div className="table-responsive">
-                                                <div className="list list-hover min-w-500px" data-inbox="list">
-                                                    {
-                                                        data.subpartidas.map((subpartida, key) => {
-                                                            return (
-                                                                <>
-                                                                    <div key={key} className="d-flex align-items-center bg-light-primary">
-                                                                        <div className="ml-4 font-weight-bold text-primary font-size-lg mb-1 py-2">{subpartida.nombre}</div>
-                                                                    </div>
-                                                                    {
-                                                                        subpartida.conceptos.map((concepto, key) => {
-                                                                            return (
-                                                                                <div key={key} className="d-flex align-items-start list-item card-spacer-x pt-4 pb-5 rounded-0" data-inbox="message">
-                                                                                    <div className="d-flex align-items-center col-1">
-                                                                                        <div className="d-flex align-items-center" data-inbox="actions">
-                                                                                            <label className="checkbox checkbox-single checkbox-primary flex-shrink-0">
-                                                                                                <input
-                                                                                                    type="checkbox"
-                                                                                                    onChange={(e) => { checkButton(e) }}
-                                                                                                    name={concepto.clave}
-                                                                                                    checked={form.conceptos[concepto.clave]}
-                                                                                                    value={form.conceptos[concepto.clave]}
-                                                                                                />
-                                                                                                <span></span>
-                                                                                            </label>
+                                        {
+                                            form.partida ?
+                                                <div className="card-body p-0">
+                                                    <div className="table-responsive">
+                                                        <div className="list min-w-500px" data-inbox="list">
+                                                            <div className="d-flex align-items-start list-item card-spacer-x  pb-3" data-inbox="message">
+                                                                <div className="d-flex align-items-center col-1">
+                                                                </div>
+                                                                <div className="flex-grow-1 col-1 pl-0" data-toggle="view">
+                                                                    <div className="font-weight-bold font-size-lg text-center">CLAVE</div>
+                                                                </div>
+                                                                <div className="flex-grow-1 col-6 p-0" data-toggle="view">
+                                                                    <div className="font-weight-bold font-size-lg text-center"> DESCRIPCIÓN</div>
+                                                                </div>
+                                                                <div className="d-flex align-items-center justify-content-center flex-wrap col-2 pr-0" data-toggle="view">
+                                                                    <div className="font-weight-bolder font-size-lg text-center" data-toggle="view">UNIDAD</div>
+                                                                </div>
+                                                                <div className="d-flex align-items-center justify-content-center flex-wrap col-2 p-0" data-toggle="view">
+                                                                    <div className="font-weight-bolder font-size-lg text-center" data-toggle="view">COSTO</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div className="list list-hover min-w-500px" data-inbox="list">
+                                                            {
+                                                                data.subpartidas.map((subpartida, key) => {
+                                                                    return (
+                                                                        <>
+                                                                            <div key={key} className="d-flex align-items-center bg-primary-o-20">
+                                                                                <div className="ml-4 font-weight-bolder text-primary font-size-lg mb-1 py-2">{subpartida.nombre}</div>
+                                                                            </div>
+                                                                            {
+                                                                                subpartida.conceptos.map((concepto, key) => {
+                                                                                    return (
+                                                                                        <div key={key} className="d-flex align-items-start list-item card-spacer-x pt-4 pb-5 rounded-0" data-inbox="message">
+                                                                                            <div className="d-flex align-items-center col-1">
+                                                                                                <div className="d-flex align-items-center" data-inbox="actions">
+                                                                                                    <label className="checkbox checkbox-single checkbox-primary flex-shrink-0">
+                                                                                                        <input
+                                                                                                            type="checkbox"
+                                                                                                            onChange={(e) => { checkButton(e) }}
+                                                                                                            name={concepto.clave}
+                                                                                                            checked={form.conceptos[concepto.clave]}
+                                                                                                            value={form.conceptos[concepto.clave]}
+                                                                                                        />
+                                                                                                        <span></span>
+                                                                                                    </label>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div className="flex-grow-1 col-1 pl-0" data-toggle="view">
+                                                                                                <div className="font-weight-bold font-size-xs">{concepto.clave}</div>
+                                                                                            </div>
+                                                                                            <div className="flex-grow-1 col-6 p-0" data-toggle="view">
+                                                                                                <div className="font-weight-bold font-size-xs text-justify">
+                                                                                                    {
+                                                                                                        concepto.descripcion
+                                                                                                    }
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div className="d-flex align-items-center justify-content-center flex-wrap col-2 pr-0" data-toggle="view">
+                                                                                                {/* <div className="font-weight-bolder position-absolute font-size-xs" data-toggle="view">UNIDAD</div> */}
+                                                                                                <span className="label label-light-primary label-inline font-size-xs" style={{ top: "22px" }} >
+                                                                                                    {
+                                                                                                        concepto.unidad.nombre
+                                                                                                    }
+                                                                                                </span>
+                                                                                            </div>
+                                                                                            <div className="d-flex align-items-center justify-content-center flex-wrap col-2 p-0" data-toggle="view">
+                                                                                                {/* <div className="font-weight-bolder position-absolute font-size-xs" data-toggle="view">COSTO</div> */}
+                                                                                                <span className="label label-light-primary  label-inline font-size-xs" style={{ top: "22px" }}>
+                                                                                                    {
+                                                                                                        setMoneyTable(concepto.costo)
+                                                                                                    }
+                                                                                                </span>
+                                                                                            </div>
                                                                                         </div>
-                                                                                    </div>
-                                                                                    <div className="flex-grow-1 col-1 pl-0" data-toggle="view">
-                                                                                        <div className="font-weight-bold font-size-sm">{concepto.clave}</div>
-                                                                                    </div>
-                                                                                    <div className="flex-grow-1 col-6 p-0" data-toggle="view">
-                                                                                        <div className="font-weight-bold font-size-sm text-justify">
-                                                                                            {
-                                                                                                concepto.descripcion
-                                                                                            }
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div className="d-flex align-items-center justify-content-center flex-wrap col-2 pr-0" data-toggle="view">
-                                                                                        <div className="font-weight-bolder position-absolute font-size-sm" data-toggle="view">UNIDAD</div>
-                                                                                        <span className="label label-light-primary  label-inline position-relative" style={{ top: "22px" }} >
-                                                                                            {
-                                                                                                concepto.unidad.nombre
-                                                                                            }
-                                                                                        </span>
-                                                                                    </div>
-                                                                                    <div className="d-flex align-items-center justify-content-center flex-wrap col-2 p-0" data-toggle="view">
-                                                                                        <div className="font-weight-bolder position-absolute font-size-sm" data-toggle="view">COSTO</div>
-                                                                                        <span className="label label-light-primary  label-inline position-relative" style={{ top: "22px" }}>
-                                                                                            {
-                                                                                                setMoneyTable(concepto.costo)
-                                                                                            }
-                                                                                        </span>
-                                                                                    </div>
-                                                                                </div>
-                                                                            )
-                                                                        })
-                                                                    }
-                                                                </>
-                                                            )
-                                                        })
-                                                    }
+                                                                                    )
+                                                                                })
+                                                                            }
+                                                                        </>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
+                                            :''
+                                        }
                                     </div>
                                 </div>
                                 <div className="col-xl-6 pt-4 pt-xl-0">
@@ -314,7 +319,31 @@ class PresupuestoForm extends Component {
                                                     </div>
                                                 </Form>
                                             </div>
+                                            
                                             <div className="table-responsive">
+                                                {
+                                                    form.partida ?
+                                                        <div className="list min-w-500px" data-inbox="list">
+                                                            <div className="d-flex align-items-start list-item card-spacer-x pt-4" data-inbox="message">
+                                                                <div className="d-flex align-items-center col-1">
+                                                                </div>
+                                                                <div className="flex-grow-1 col-1 pl-0" data-toggle="view">
+                                                                    <div className="font-weight-bold font-size-lg text-center">CLAVE</div>
+                                                                </div>
+                                                                <div className="flex-grow-1 col-6 p-0" data-toggle="view">
+                                                                    <div className="font-weight-bold font-size-lg text-center"> DESCRIPCIÓN</div>
+                                                                </div>
+                                                                <div className="d-flex align-items-center justify-content-center flex-wrap col-2 pr-0" data-toggle="view">
+                                                                    <div className="font-weight-bolder font-size-lg text-center" data-toggle="view">UNIDAD</div>
+                                                                </div>
+                                                                <div className="d-flex align-items-center justify-content-center flex-wrap col-2 p-0" data-toggle="view">
+                                                                    <div className="font-weight-bolder font-size-lg text-center" data-toggle="view">COSTO</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    :''
+                                                }
+
                                                 <div className="list list-hover min-w-500px" data-inbox="list">
                                                     {
                                                         data.partidas.map((partida, key1) => {
@@ -326,7 +355,7 @@ class PresupuestoForm extends Component {
                                                                                 return (
                                                                                     <div key={concepto.clave} className="d-flex align-items-start list-item card-spacer-x pt-4 pb-5" data-inbox="message">
                                                                                         <div className="d-flex align-items-center col-1">
-                                                                                            <div className="d-flex align-items-center mr-3" data-inbox="actions">
+                                                                                            <div className="d-flex align-items-center" data-inbox="actions">
                                                                                                 <label className="checkbox checkbox-single checkbox-danger flex-shrink-0 mr-3">
                                                                                                     <input
                                                                                                         type="checkbox"
@@ -339,27 +368,25 @@ class PresupuestoForm extends Component {
                                                                                                 </label>
                                                                                             </div>
                                                                                         </div>
-                                                                                        <div className="flex-grow-1 mt-1 mr-2 col-2" data-toggle="view">
-                                                                                            <div className="font-weight-bold mr-2">{concepto.clave}</div>
+                                                                                        <div className="flex-grow-1 col-1 pl-0" data-toggle="view">
+                                                                                            <div className="font-weight-bold font-size-xs">{concepto.clave}</div>
                                                                                         </div>
-                                                                                        <div className="flex-grow-1 mt-1 mr-2 col-5" data-toggle="view">
-                                                                                            <div className="font-weight-bold mr-2 font-size-sm text-justify">
+                                                                                        <div className="flex-grow-1 col-6 p-0" data-toggle="view">
+                                                                                            <div className="font-weight-bold font-size-xs text-justify">
                                                                                                 {
                                                                                                     concepto.descripcion
                                                                                                 }
                                                                                             </div>
                                                                                         </div>
-                                                                                        <div className="d-flex align-items-center justify-content-center flex-wrap col-2" data-toggle="view">
-                                                                                            <div className="font-weight-bolder position-absolute" data-toggle="view">UNIDAD</div>
-                                                                                            <span className="label label-light-primary  label-inline position-relative" style={{ top: "22px" }} >
+                                                                                        <div className="d-flex align-items-center justify-content-center flex-wrap col-2 pr-0" data-toggle="view">
+                                                                                            <span className="label label-light-primary label-inline font-size-xs" style={{ top: "22px" }} >
                                                                                                 {
                                                                                                     concepto.unidad.nombre
                                                                                                 }
                                                                                             </span>
                                                                                         </div>
-                                                                                        <div className="d-flex align-items-center justify-content-center flex-wrap col-2" data-toggle="view">
-                                                                                            <div className="font-weight-bolder position-absolute" data-toggle="view">COSTO</div>
-                                                                                            <span className="label label-light-primary  label-inline position-relative" style={{ top: "22px" }}>
+                                                                                        <div className="d-flex align-items-center justify-content-center flex-wrap col-2 p-0" data-toggle="view">
+                                                                                            <span className="label label-light-primary label-inline font-size-xs" style={{ top: "22px" }}>
                                                                                                 {
                                                                                                     setMoneyTable(concepto.costo)
                                                                                                 }
