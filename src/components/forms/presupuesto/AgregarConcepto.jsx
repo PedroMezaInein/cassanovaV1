@@ -50,7 +50,7 @@ class AgregarConcepto extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, onSubmit, formeditado, data, checkButtonConceptos, key, onSelect, ...props } = this.props
+        const { title, options, form, onChange, onSubmit, formeditado, data, checkButtonConceptos, activeKey, onSelect, ...props } = this.props
         return (
             <Form id="form-presupuesto"
                 onSubmit={
@@ -60,7 +60,7 @@ class AgregarConcepto extends Component {
                     }
                 }
             >
-                <Tabs defaultActiveKey="nuevo" className="pt-2 nav nav-tabs nav-tabs-line justify-content-start nav-tabs-line-2x" activeKey={key} onSelect = {onSelect}>
+                <Tabs defaultActiveKey="nuevo" className="pt-2 nav nav-tabs nav-tabs-line justify-content-start nav-tabs-line-2x" activeKey={activeKey} onSelect = {onSelect}>
                     <Tab eventKey="nuevo" title="Nuevo concepto">
                         <div className="form-group row form-group-marginless pt-4">
                             <div className="col-md-4">
