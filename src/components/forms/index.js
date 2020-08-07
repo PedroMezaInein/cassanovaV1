@@ -37,6 +37,7 @@ import adjuntosForm from './AdjuntosForm'
 import nominaAdminForm from './recursoshumanos/NominaAdminForm'
 import empleadosForm from './recursoshumanos/EmpleadosForm'
 import agregarConcepto from './presupuesto/AgregarConcepto'
+import ultimoPresupuestoForm from './presupuesto/UltimoPresupuestoForm'
 
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
@@ -77,4 +78,5 @@ export const AdjuntosForm = adjuntosForm
 export const NominaAdminForm = nominaAdminForm
 export const EmpleadosForm = empleadosForm
 export const AgregarConcepto = agregarConcepto
+export const UltimoPresupuestoForm = ultimoPresupuestoForm
 
