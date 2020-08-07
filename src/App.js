@@ -69,6 +69,7 @@ const Areas = Loader( () => import('./pages/Catalogos/Areas') )
 const Partidas = Loader( () => import('./pages/Catalogos/Partidas') )
 const Unidades = Loader( () => import('./pages/Catalogos/Unidades') )
 const TiposContratos = Loader( () => import('./pages/Catalogos/TiposContratos') )
+const Bancos = Loader( () => import('./pages/Catalogos/Bancos') )
 
 const Contabilidad = Loader( () => import('./pages/Reportes/Contabilidad') )
 const AccountSettings = Loader(() => import('./pages/Perfil/AccountSettings') )
@@ -206,6 +207,7 @@ class App extends Component{
                 <Route path = "/catalogos/partidas" exact component ={ Partidas } />
                 <Route path = "/catalogos/unidades" exact component ={ Unidades } />
                 <Route path = "/catalogos/tipos-contratos" exact component ={ TiposContratos } />
+                <Route path = "/catalogos/bancos" exact component ={ Bancos } />
 
                 <Route path = "/reportes/contabilidad" exact component ={ Contabilidad } />
                 <Route path = "/mi-perfil" exact component ={ AccountSettings } />

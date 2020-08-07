@@ -737,6 +737,17 @@ export const UNIDADES_COLUMNS = [
     }
 ]
 
+export const BANCOS_COLUMNS = [
+    {
+        Header: 'OPCIONES',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Banco',
+        accessor: 'banco'
+    }
+]
+
 export const TIPOS_COLUMNS = [
     {
         Header: 'OPCIONES',
