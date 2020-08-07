@@ -14,6 +14,7 @@ import proveedorForm from './administracion/ProveedorForm'
 import areasForm from './catalogos/AreaForm'
 import partidaForm from './catalogos/PartidaForm'
 import unidadForm from './catalogos/UnidadForm'
+import bancoForm from './catalogos/BancoForm'
 import tipoForm from './catalogos/TipoForm'
 import proyectosForm from './proyectos/ProyectosForm'
 import avanceForm from './proyectos/AvanceForm'
@@ -53,6 +54,7 @@ export const ProveedorForm = proveedorForm
 export const AreasForm = areasForm
 export const PartidaForm = partidaForm
 export const UnidadForm = unidadForm
+export const BancoForm = bancoForm
 export const TipoForm = tipoForm
 export const ProyectosForm = proyectosForm
 export const AvanceForm = avanceForm
