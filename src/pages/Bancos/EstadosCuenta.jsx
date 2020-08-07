@@ -301,6 +301,7 @@ class EstadosCuenta extends Component {
                 }
             }
         ).catch((error) => {
+            console.log(error, 'error')
             swal({
                 title: '¡Ups 😕!',
                 text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
@@ -311,7 +312,7 @@ class EstadosCuenta extends Component {
     async deleteEstadoAxios() {
         const { access_token } = this.props.authUser
         const { estado } = this.state
-        await axios.delete(URL_DEV + 'cuentas/' + estado.cuentas[0].id + '/estado/' + estado.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(URL_DEV + 'cuentas/' + estado.cuenta.id + '/estado/' + estado.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { estados } = response.data
                 const { data } = this.state
@@ -356,7 +357,6 @@ class EstadosCuenta extends Component {
                 icon: 'error'
             })
         })
-
     }
     render() {
         const { modal, modalDelete, adjunto, adjuntoName, cuentas, cuenta, estados, fecha, data } = this.state
