@@ -348,7 +348,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                     <td colSpan={9}>
                                                                         <b>
                                                                         {
-                                                                            this.getPartidaClave(concepto.clave)
+                                                                            this.getPartidaClave(concepto.concepto.clave)
                                                                         }
                                                                         </b>
                                                                         &nbsp;
@@ -372,11 +372,11 @@ class ActualizarPresupuestoForm extends Component {
                                                                     <td colSpan={9}>
                                                                         <b>
                                                                         {
-                                                                            this.getPartidaClave(concepto.clave)
+                                                                            this.getPartidaClave(concepto.concepto.clave)
                                                                         }
                                                                         .
                                                                         {
-                                                                            this.getSubpartidaClave(concepto.clave)
+                                                                            this.getSubpartidaClave(concepto.concepto.clave)
                                                                         }
                                                                         </b>
                                                                         &nbsp;
