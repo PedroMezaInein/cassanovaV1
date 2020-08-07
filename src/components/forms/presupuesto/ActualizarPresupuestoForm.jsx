@@ -259,7 +259,7 @@ class ActualizarPresupuestoForm extends Component {
                                 </button>
                             </div>                    
                         </Card.Header>
-                        <Card.Body>
+                        <Card.Body className="pt-2">
                             <Form id="form-presupuesto"
                                     onSubmit={
                                         (e) => {
@@ -271,49 +271,49 @@ class ActualizarPresupuestoForm extends Component {
                                 <table className="table table-separate table-responsive-sm pt-5">
                                     <thead>
                                         <tr>
-                                        <th className="check_desc">
-                                            <div className="font-size-sm text-center"></div>
-                                        </th>
-                                        <th className="clave">
-                                            <div className="font-size-sm text-center">Clave</div>
-                                        </th>
-                                        <th className="descripcion">
-                                            <div className="font-size-sm text-center">Descripción</div>
-                                        </th>
-                                        <th>
-                                            <div className="font-size-sm text-center">Unidad</div>
-                                        </th>
-                                        <th>
-                                            <div className="font-size-sm text-center">Costo</div>
-                                        </th>
-                                        <th>
-                                            <div className="font-size-sm text-center">Cantidad Preliminar</div>
-                                        </th>
-                                        <th>
-                                            <div className="font-size-sm text-center">% Despercicio</div>
-                                            <div>
-                                                <InputNumberSinText
-                                                    identificador = { "desperdicio-global" }
-                                                    requirevalidation = { 0 }
-                                                    formeditado = { 1 }
-                                                    name = " desperdicio "
-                                                    value = { desperdicio }
-                                                    onChange = { this.onChangeDesperdicio }
-                                                    thousandSeparator = { true }
-                                                    prefix = { '%' } />
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div className="font-size-sm text-center">Cantidad</div>
-                                        </th>
-                                        <th>
-                                            <div className="font-size-sm text-center">Importe</div>
-                                            <div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder font-size-sm text-center">
-                                                {
-                                                    setMoneyTableForNominas(this.getTotalImport())
-                                                }
-                                            </div>
-                                        </th>
+                                            <th className="check_desc border-0">
+                                                <div className="font-size-sm text-center"></div>
+                                            </th>
+                                            <th className="clave border-0">
+                                                <div className="font-size-sm text-center">Clave</div>
+                                            </th>
+                                            <th className="descripcion border-0">
+                                                <div className="font-size-sm text-center">Descripción</div>
+                                            </th>
+                                            <th className="border-0">
+                                                <div className="font-size-sm text-center">Unidad</div>
+                                            </th>
+                                            <th className="border-0">
+                                                <div className="font-size-sm text-center">Costo</div>
+                                            </th>
+                                            <th className="border-0">
+                                                <div className="font-size-sm text-center">Cantidad Preliminar</div>
+                                            </th>
+                                            <th className="border-0">
+                                                <div className="font-size-sm text-center">% Despercicio</div>
+                                                <div>
+                                                    <InputNumberSinText
+                                                        identificador = { "desperdicio-global" }
+                                                        requirevalidation = { 0 }
+                                                        formeditado = { 1 }
+                                                        name = " desperdicio "
+                                                        value = { desperdicio }
+                                                        onChange = { this.onChangeDesperdicio }
+                                                        thousandSeparator = { true }
+                                                        prefix = { '%' } />
+                                                </div>
+                                            </th>
+                                            <th className="border-0">
+                                                <div className="font-size-sm text-center">Cantidad</div>
+                                            </th>
+                                            <th className="border-0">
+                                                <div className="font-size-sm text-center">Importe</div>
+                                                <div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder font-size-sm text-center">
+                                                    {
+                                                        setMoneyTableForNominas(this.getTotalImport())
+                                                    }
+                                                </div>
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -345,13 +345,13 @@ class ActualizarPresupuestoForm extends Component {
                                                         {
                                                             this.getPartida(key)?
                                                                 <tr>
-                                                                    <td colSpan={9} className="font-size-lg font-weight-bolder">
-                                                                        <b className="font-size-h6 label label-rounded label-light-primary mr-2 font-weight-bolder">
+                                                                    <td colSpan={9} className="bg-primary-o-20 text-primary font-size-lg font-weight-bolder border-0 ">
+                                                                        <b className="font-weight-boldest text-primary font-size-h6">
                                                                         {
                                                                             this.getPartidaClave(concepto.concepto.clave)
                                                                         }
                                                                         </b>
-                                                                        &nbsp; 
+                                                                        &nbsp;&nbsp; 
                                                                             {
                                                                                 concepto.concepto ? 
                                                                                     concepto.concepto.subpartida ?
