@@ -50,7 +50,7 @@ class AgregarConcepto extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, onSubmit, formeditado, data, checkButtonConceptos, ...props } = this.props
+        const { title, options, form, onChange, onSubmit, formeditado, data, checkButtonConceptos, key, onSelect, ...props } = this.props
         return (
             <Form id="form-presupuesto"
                 onSubmit={
@@ -60,7 +60,7 @@ class AgregarConcepto extends Component {
                     }
                 }
             >
-                <Tabs defaultActiveKey="nuevo" className="pt-2 nav nav-tabs nav-tabs-line justify-content-start nav-tabs-line-2x">
+                <Tabs defaultActiveKey="nuevo" className="pt-2 nav nav-tabs nav-tabs-line justify-content-start nav-tabs-line-2x" activeKey={key} onSelect = {onSelect}>
                     <Tab eventKey="nuevo" title="Nuevo concepto">
                         <div className="form-group row form-group-marginless pt-4">
                             <div className="col-md-4">
@@ -96,7 +96,6 @@ class AgregarConcepto extends Component {
                                     iconclass={" fas fa-weight-hanging"}
                                 />
                             </div>
-
                         </div>
                         <div className="separator separator-dashed mt-1 mb-2"></div>
                         <div className="form-group row form-group-marginless">
@@ -221,9 +220,11 @@ class AgregarConcepto extends Component {
                                 }
                             </div>
                         </div>
+                        <div className="d-flex justify-content-center my-3">
+                            <Button icon='' type="submit" className="text-center mx-auto" text='Agregar' />
+                        </div>
                     </Tab>
                 </Tabs>
-
             </Form>
         )
     }

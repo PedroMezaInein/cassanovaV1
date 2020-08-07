@@ -187,6 +187,8 @@ class ActualizarPresupuesto extends Component {
                 const { conceptos } = response.data
                 const { data } = this.state
                 data.conceptos = conceptos
+
+                // this.getOnePresupuestoAxios(presupuesto.id);
                 swal({
                     title: '¡Felicidades 🥳!',
                     text: response.data.message !== undefined ? response.data.message : 'La concepto fue registrado con éxito.',
@@ -196,7 +198,7 @@ class ActualizarPresupuesto extends Component {
                 })
                 this.setState({
                     ... this.state,
-                    conceptos: this.setConceptos(conceptos),
+                    // conceptos: this.setConceptos(conceptos),
                     modal: false,
                     title: 'Nuevo concepto',
                     form: this.clearForm(),
@@ -262,7 +264,6 @@ class ActualizarPresupuesto extends Component {
                     
                     presupuesto.conceptos.map((concepto_form) =>{
                         if(concepto){
-                            console.log(concepto_form)
                             if(concepto.clave === concepto_form.clave){
                                 aux=true
                             }
@@ -273,6 +274,7 @@ class ActualizarPresupuesto extends Component {
                         array.push(concepto)
                     }
                 })
+                form.conceptosNuevos = []
                 array.map((element, key)=>{
                     form.conceptosNuevos.push(element)
                     form.conceptosNuevos[key].active=false
@@ -283,7 +285,6 @@ class ActualizarPresupuesto extends Component {
         }
         
         form[name] = value;
-        console.log(form,'')
         this.setState({
             ...this.state,
             form,
@@ -295,7 +296,6 @@ class ActualizarPresupuesto extends Component {
         const { name, value, checked } = e.target
         const { form } = this.state
         form.conceptosNuevos[key].active = checked
-        console.log(form.conceptosNuevos)
         this.setState({
             ... this.state,
             form
@@ -363,8 +363,10 @@ class ActualizarPresupuesto extends Component {
     onSubmit = e => {
         e.preventDefault()
         waitAlert()
-
-        this.updatePresupuestosAxios()
+        
+        // this.updatePresupuestosAxios()
+        
+        this.addConceptoAxios()
     }
 
     async getOnePresupuestoAxios(id) {
@@ -480,7 +482,7 @@ class ActualizarPresupuesto extends Component {
     }
 
     render() {
-        const { form, title, options, formeditado, presupuesto, modal, data } = this.state;
+        const { form, title, options, formeditado, presupuesto, modal, data, key } = this.state;
         return (
             <Layout active={"presupuesto"} {...this.props}>
                 <ActualizarPresupuestoForm
@@ -502,7 +504,8 @@ class ActualizarPresupuesto extends Component {
                         setOptions={this.setOptions}
                         checkButtonConceptos={this.checkButtonConceptos}
                         data={data}
-                        controlledTab={this.controlledTab}
+                        onSelect={this.controlledTab}
+                        activeKey={key}
                         onSubmit={this.onSubmit}
                     />
                 </Modal>
