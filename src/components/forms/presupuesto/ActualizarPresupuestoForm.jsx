@@ -345,22 +345,22 @@ class ActualizarPresupuestoForm extends Component {
                                                         {
                                                             this.getPartida(key)?
                                                                 <tr>
-                                                                    <td colSpan={9}>
-                                                                        <b>
+                                                                    <td colSpan={9} className="font-size-lg font-weight-bolder">
+                                                                        <b className="font-size-h6 label label-rounded label-light-primary mr-2 font-weight-bolder">
                                                                         {
                                                                             this.getPartidaClave(concepto.clave)
                                                                         }
                                                                         </b>
-                                                                        &nbsp;
-                                                                        {
-                                                                            concepto.concepto ? 
-                                                                                concepto.concepto.subpartida ?
-                                                                                    concepto.concepto.subpartida.partida ?
-                                                                                        concepto.concepto.subpartida.partida.nombre
+                                                                        &nbsp; 
+                                                                            {
+                                                                                concepto.concepto ? 
+                                                                                    concepto.concepto.subpartida ?
+                                                                                        concepto.concepto.subpartida.partida ?
+                                                                                            concepto.concepto.subpartida.partida.nombre
+                                                                                        : ''
                                                                                     : ''
                                                                                 : ''
-                                                                            : ''
-                                                                        }
+                                                                            } 
                                                                     </td>
                                                                 </tr>
                                                             :
@@ -369,8 +369,8 @@ class ActualizarPresupuestoForm extends Component {
                                                         {
                                                             this.getSubpartida(key)?
                                                                 <tr>
-                                                                    <td colSpan={9}>
-                                                                        <b>
+                                                                    <td colSpan={9} className="font-size-lg font-weight-bolder">
+                                                                        <b  className="font-size-h6 label label-light-primary label-pill label-inline mr-2 font-weight-bolder label-rounded">
                                                                         {
                                                                             this.getPartidaClave(concepto.clave)
                                                                         }
