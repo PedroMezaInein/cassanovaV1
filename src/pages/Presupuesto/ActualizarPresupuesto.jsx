@@ -156,26 +156,45 @@ class ActualizarPresupuesto extends Component {
         const { form } = this.state
         await axios.post(URL_DEV + 'conceptos', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { conceptos } = response.data
-                const { data } = this.state
-                data.conceptos = conceptos
+                const { conceptos, concepto} = response.data
+
+                this.addConceptoToPresupuestoAxios(concepto)
 
                 // this.getOnePresupuestoAxios(presupuesto.id);
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'La concepto fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
-                this.setState({
-                    ... this.state,
-                    // conceptos: this.setConceptos(conceptos),
-                    modal: false,
-                    title: 'Nuevo concepto',
-                    form: this.clearForm(),
-                    data
-                })
+                
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: 'Parece que no has iniciado sesión',
+                        icon: 'warning',
+                        confirmButtonText: 'Inicia sesión'
+                    });
+                } else {
+                    swal({
+                        title: '¡Ups 😕!',
+                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
+                        icon: 'error',
+                    })
+                }
+            }
+        ).catch((error) => {
+            swal({
+                title: '¡Ups 😕!',
+                text: 'Ocurrió un error desconocido catch, intenta de nuevo.' + error,
+                icon: 'error'
+            })
+        })
+    }
+
+    async addConceptoToPresupuestoAxios(concepto) {
+        const { access_token } = this.props.authUser
+        const { form, presupuesto} = this.state
+        await axios.put(URL_DEV + 'presupuestos/'+ presupuesto.id + 'concepto', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                
             },
             (error) => {
                 console.log(error, 'error')
@@ -335,8 +354,8 @@ class ActualizarPresupuesto extends Component {
     onSubmit = e => {
         e.preventDefault()
         waitAlert()
-        
-        // this.updatePresupuestosAxios()
+
+        this.updatePresupuestosAxios()
         
         this.addConceptoAxios()
     }
@@ -439,17 +458,10 @@ class ActualizarPresupuesto extends Component {
     }
 
     controlledTab = value => {
-        const { form } = this.state
-        if(value === 'nuevo'){
-            // this.getEmpleadosAxios()
-        }
-        if(value === 'existente'){
-            // this.getEmpleadosObraAxios()
-        }
         this.setState({
             ... this.state,
-            key: value,
-            form
+            form: this.clearForm(),
+            key: value
         })
     }
 
