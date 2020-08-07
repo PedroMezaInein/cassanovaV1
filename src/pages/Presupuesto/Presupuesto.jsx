@@ -220,6 +220,13 @@ class Presupuesto extends Component {
                 action: 'delete',
                 tooltip: {id:'delete', text:'Eliminar', type:'error'},
             },
+            {
+                text: 'Ver&nbsp;presupuesto',
+                btnclass: 'primary',
+                iconclass: 'flaticon2-paper',                  
+                action: 'finish',
+                tooltip: {id:'finish', text:'Ver presupuesto', type:'error'},
+            },
         )
         return aux
     }
@@ -235,6 +242,14 @@ class Presupuesto extends Component {
         const { history } = this.props
         history.push({
             pathname: '/presupuesto/presupuesto/update',
+            state: { presupuesto: presupuesto }
+        });
+    }
+
+    openUltimo= presupuesto => {
+        const { history } = this.props
+        history.push({
+            pathname: '/presupuesto/presupuesto/finish',
             state: { presupuesto: presupuesto }
         });
     }
@@ -256,6 +271,7 @@ class Presupuesto extends Component {
                     actions = {{
                         'edit': {function: this.openModalEdit},
                         'delete': {function: this.openModalDelete},
+                        'finish': {function: this.openUltimo},
                     }}
                     idTable='kt_datatable2_presupuesto'
                     accessToken={this.props.authUser.access_token}
