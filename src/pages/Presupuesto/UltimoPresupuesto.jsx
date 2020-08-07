@@ -6,9 +6,9 @@ import { URL_DEV } from "../../constants";
 import { setOptions } from "../../functions/setters";
 import { errorAlert, waitAlert, forbiddenAccessAlert } from "../../functions/alert";
 import Layout from "../../components/layout/layout";
-import { ActualizarPresupuestoForm, AgregarConcepto } from "../../components/forms";
+import { UltimoPresupuestoForm} from "../../components/forms";
 import { Modal } from '../../components/singles'
-class ActualizarPresupuesto extends Component {
+class UltimoPresupuesto extends Component {
     state = {
         key: 'nuevo',
         formeditado: 0,
@@ -96,7 +96,7 @@ class ActualizarPresupuesto extends Component {
             const {
                 modulo: { url: url },
             } = element;
-            return pathname === url + "/" + "update";
+            return pathname === url + "/" + "finish";
         });
 
         if (state) {
@@ -497,7 +497,7 @@ class ActualizarPresupuesto extends Component {
         const { form, title, options, formeditado, presupuesto, modal, data, key } = this.state;
         return (
             <Layout active={"presupuesto"} {...this.props}>
-                <ActualizarPresupuestoForm
+                <UltimoPresupuestoForm
                     formeditado={formeditado}
                     form={form}
                     onChange={this.onChange}
@@ -520,4 +520,4 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => ({});
 
-export default connect(mapStateToProps, mapDispatchToProps)(ActualizarPresupuesto);
+export default connect(mapStateToProps, mapDispatchToProps)(UltimoPresupuesto);
