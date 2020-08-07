@@ -158,9 +158,7 @@ class ActualizarPresupuesto extends Component {
             (response) => {
                 const { conceptos, concepto} = response.data
 
-                this.addConceptoToPresupuestoAxios(concepto)
-
-                // this.getOnePresupuestoAxios(presupuesto.id);
+                this.addConceptoToPresupuestoAxios([concepto])
                 
             },
             (error) => {
@@ -189,12 +187,29 @@ class ActualizarPresupuesto extends Component {
         })
     }
 
-    async addConceptoToPresupuestoAxios(concepto) {
+    async addConceptoToPresupuestoAxios(conceptos) {
         const { access_token } = this.props.authUser
         const { form, presupuesto} = this.state
-        await axios.put(URL_DEV + 'presupuestos/'+ presupuesto.id + 'concepto', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        let aux = {
+            conceptos: conceptos
+        }
+        await axios.post(URL_DEV + 'presupuestos/'+ presupuesto.id + '/conceptos', aux, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                const { presupuesto } = response.data
                 
+                this.getOnePresupuestoAxios(presupuesto.id)
+
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+
+                this.setState({
+                    modal: false
+                })
             },
             (error) => {
                 console.log(error, 'error')
@@ -255,7 +270,9 @@ class ActualizarPresupuesto extends Component {
                     
                     presupuesto.conceptos.map((concepto_form) =>{
                         if(concepto){
-                            if(concepto.clave === concepto_form.clave){
+                            console.log(concepto, 'concepto')
+                            console.log(concepto_form, 'concepto_form')
+                            if(concepto.clave === concepto_form.concepto.clave){
                                 aux=true
                             }
                         }
@@ -356,8 +373,22 @@ class ActualizarPresupuesto extends Component {
         waitAlert()
 
         this.updatePresupuestosAxios()
-        
-        this.addConceptoAxios()
+    }
+
+    onSubmitConcept = e => {
+        e.preventDefault()
+        const { key, form } = this.state
+        waitAlert()
+        if(key === 'nuevo')
+            this.addConceptoAxios()
+        else{
+            let aux = []
+            form.conceptosNuevos.map( (concepto) => {
+                if(concepto.active)
+                    aux.push(concepto)
+            })
+            this.addConceptoToPresupuestoAxios(aux)
+        }
     }
 
     async getOnePresupuestoAxios(id) {
@@ -365,11 +396,24 @@ class ActualizarPresupuesto extends Component {
         await axios.get(URL_DEV + 'presupuestos/' + id, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
 
-                const { form } = this.state
+                const { form, data } = this.state
                 const { presupuesto } = response.data
                 
                 let aux = []
                 presupuesto.conceptos.map((concepto) => {
+                    let mensajeAux = {}
+                    console.log(concepto.mensaje, 'mensaje')
+                    if(concepto.mensaje){
+                        mensajeAux= {
+                            active: true,
+                            mensaje: concepto.mensaje
+                        }
+                    }else{
+                        mensajeAux= {
+                            active: false,
+                            mensaje: ''
+                        }
+                    }
                     aux.push({
                         descripcion: concepto.descripcion,
                         costo: concepto.costo,
@@ -379,10 +423,7 @@ class ActualizarPresupuesto extends Component {
                         importe: (concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100))) * concepto.costo,
                         active: concepto.active ? true : false,
                         id: concepto.id, 
-                        mensajes:{
-                            active: false,
-                            mensaje: ''
-                        }
+                        mensajes: mensajeAux
                     })
 
                 })
@@ -419,20 +460,8 @@ class ActualizarPresupuesto extends Component {
             (response) => {
 
                 const { presupuesto } = response.data
-                const { form } = this.state
-
-                form.conceptos.map( (concepto) => {
-                    concepto.mensajes = {
-                        active: false,
-                        mensaje: ''
-                    }
-                })
-
-                this.setState({
-                    ... this.state,
-                    presupuesto: presupuesto,
-                    form
-                })
+                
+                this.getOnePresupuestoAxios(presupuesto.id)
 
                 swal({
                     title: '¡Felicidades 🥳!',
@@ -490,7 +519,7 @@ class ActualizarPresupuesto extends Component {
                         data={data}
                         onSelect={this.controlledTab}
                         activeKey={key}
-                        onSubmit={this.onSubmit}
+                        onSubmit={this.onSubmitConcept}
                     />
                 </Modal>
             </Layout>

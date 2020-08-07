@@ -68,7 +68,6 @@ class ActualizarPresupuestoForm extends Component {
         const { presupuesto } = this.props
         if(key === 0)
             return true
-        console.log(presupuesto.conceptos, 'form')    
         if(presupuesto.conceptos[key].concepto.subpartida.partida.id !== presupuesto.conceptos[key-1].concepto.subpartida.partida.id)
             return true
         return false
@@ -77,7 +76,6 @@ class ActualizarPresupuestoForm extends Component {
         const { presupuesto } = this.props
         if(key === 0)
             return true
-        console.log(presupuesto.conceptos, 'form')
         if(presupuesto.conceptos[key].concepto.subpartida.id !== presupuesto.conceptos[key-1].concepto.subpartida.id)
             return true
         return false
