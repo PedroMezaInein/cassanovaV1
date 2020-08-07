@@ -5,7 +5,7 @@ import { validateAlert } from '../../../functions/alert'
 import { DATE } from '../../../constants'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
-import { setMoneyTable } from '../../../functions/setters'
+import { setMoneyTableSinSmall } from '../../../functions/setters'
 import {Accordion, Card} from 'react-bootstrap/'
 
 class PresupuestoForm extends Component {
@@ -180,30 +180,24 @@ class PresupuestoForm extends Component {
                                                                                                 </div>
                                                                                             </div>
                                                                                             <div className="flex-grow-1 col-1 pl-0" data-toggle="view">
-                                                                                                <div className="font-weight-bold font-size-xs">{concepto.clave}</div>
+                                                                                                <div className="font-size-xs font-weight-bold">
+                                                                                                    {concepto.clave}
+                                                                                                </div>
                                                                                             </div>
                                                                                             <div className="flex-grow-1 col-6 p-0" data-toggle="view">
-                                                                                                <div className="font-weight-bold font-size-xs text-justify">
-                                                                                                    {
-                                                                                                        concepto.descripcion
-                                                                                                    }
+                                                                                                <div className="font-size-xs text-justify font-weight-bold">
+                                                                                                    { concepto.descripcion }
                                                                                                 </div>
                                                                                             </div>
                                                                                             <div className="d-flex align-items-center justify-content-center flex-wrap col-2 pr-0" data-toggle="view">
-                                                                                                {/* <div className="font-weight-bolder position-absolute font-size-xs" data-toggle="view">UNIDAD</div> */}
-                                                                                                <span className="label label-light-primary label-inline font-size-xs" style={{ top: "22px" }} >
-                                                                                                    {
-                                                                                                        concepto.unidad.nombre
-                                                                                                    }
-                                                                                                </span>
+                                                                                                <div className="font-size-xs font-weight-bold" data-toggle="view">
+                                                                                                    { concepto.unidad.nombre }
+                                                                                                </div>
                                                                                             </div>
                                                                                             <div className="d-flex align-items-center justify-content-center flex-wrap col-2 p-0" data-toggle="view">
-                                                                                                {/* <div className="font-weight-bolder position-absolute font-size-xs" data-toggle="view">COSTO</div> */}
-                                                                                                <span className="label label-light-primary  label-inline font-size-xs" style={{ top: "22px" }}>
-                                                                                                    {
-                                                                                                        setMoneyTable(concepto.costo)
-                                                                                                    }
-                                                                                                </span>
+                                                                                                <div className="font-size-xs font-weight-bold" data-toggle="view">
+                                                                                                    { setMoneyTableSinSmall(concepto.costo) }
+                                                                                                </div>
                                                                                             </div>
                                                                                         </div>
                                                                                     )
@@ -369,29 +363,25 @@ class PresupuestoForm extends Component {
                                                                                             </div>
                                                                                         </div>
                                                                                         <div className="flex-grow-1 col-1 pl-0" data-toggle="view">
-                                                                                            <div className="font-weight-bold font-size-xs">{concepto.clave}</div>
-                                                                                        </div>
-                                                                                        <div className="flex-grow-1 col-6 p-0" data-toggle="view">
-                                                                                            <div className="font-weight-bold font-size-xs text-justify">
-                                                                                                {
-                                                                                                    concepto.descripcion
-                                                                                                }
+                                                                                                <div className="font-size-xs font-weight-bold">
+                                                                                                    {concepto.clave}
+                                                                                                </div>
                                                                                             </div>
-                                                                                        </div>
-                                                                                        <div className="d-flex align-items-center justify-content-center flex-wrap col-2 pr-0" data-toggle="view">
-                                                                                            <span className="label label-light-primary label-inline font-size-xs" style={{ top: "22px" }} >
-                                                                                                {
-                                                                                                    concepto.unidad.nombre
-                                                                                                }
-                                                                                            </span>
-                                                                                        </div>
-                                                                                        <div className="d-flex align-items-center justify-content-center flex-wrap col-2 p-0" data-toggle="view">
-                                                                                            <span className="label label-light-primary label-inline font-size-xs" style={{ top: "22px" }}>
-                                                                                                {
-                                                                                                    setMoneyTable(concepto.costo)
-                                                                                                }
-                                                                                            </span>
-                                                                                        </div>
+                                                                                            <div className="flex-grow-1 col-6 p-0" data-toggle="view">
+                                                                                                <div className="font-size-xs text-justify font-weight-bold">
+                                                                                                    { concepto.descripcion }
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div className="d-flex align-items-center justify-content-center flex-wrap col-2 pr-0" data-toggle="view">
+                                                                                                <div className="font-size-xs font-weight-bold" data-toggle="view">
+                                                                                                    { concepto.unidad.nombre }
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div className="d-flex align-items-center justify-content-center flex-wrap col-2 p-0" data-toggle="view">
+                                                                                                <div className="font-size-xs font-weight-bold" data-toggle="view">
+                                                                                                    { setMoneyTableSinSmall(concepto.costo) }
+                                                                                                </div>
+                                                                                            </div>
                                                                                     </div>
                                                                                 )
                                                                             }

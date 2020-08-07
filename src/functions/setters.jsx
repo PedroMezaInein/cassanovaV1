@@ -98,6 +98,15 @@ export function setMoneyTable(value) {
     )
 }
 
+export function setMoneyTableSinSmall(value) {
+    let cantidad = 0
+    cantidad = parseFloat(value).toFixed(2)
+    return (
+        <NumberFormat value={cantidad} displayType={'text'} thousandSeparator={true} prefix={'$'}
+            renderText={cantidad => <div> {cantidad} </div>} />
+    )
+}
+
 export function setMoneyTableForNominas(value) {
     let cantidad = 0
     cantidad = parseFloat(value).toFixed(2)
