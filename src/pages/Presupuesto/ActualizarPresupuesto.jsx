@@ -105,34 +105,6 @@ class ActualizarPresupuesto extends Component {
                 const { form } = this.state
 
                 this.getOnePresupuestoAxios(presupuesto.id);
-
-                /* let aux = []
-                presupuesto.conceptos.map((concepto) => {
-                    aux.push({
-                        descripcion: concepto.descripcion,
-                        costo: concepto.costo,
-                        cantidad_preliminar: concepto.cantidad_preliminar,
-                        desperdicio: concepto.desperdicio,
-                        cantidad: concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100)),
-                        importe: (concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100))) * concepto.costo,
-                        active: concepto.active ? true : false,
-                        id: concepto.id, 
-                        mensajes:{
-                            active: false,
-                            mensaje: ''
-                        }
-                    })
-
-                })
-
-                form.conceptos = aux
-
-                this.setState({
-                    ... this.state,
-                    presupuesto: presupuesto,
-                    form,
-                    formeditado: 1
-                }) */
             }
         }
         if (!presupuesto) history.push("/");

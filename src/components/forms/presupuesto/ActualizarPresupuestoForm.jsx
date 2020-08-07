@@ -348,7 +348,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                     <td colSpan={9} className="font-size-lg font-weight-bolder">
                                                                         <b className="font-size-h6 label label-rounded label-light-primary mr-2 font-weight-bolder">
                                                                         {
-                                                                            this.getPartidaClave(concepto.clave)
+                                                                            this.getPartidaClave(concepto.concepto.clave)
                                                                         }
                                                                         </b>
                                                                         &nbsp; 
@@ -372,11 +372,11 @@ class ActualizarPresupuestoForm extends Component {
                                                                     <td colSpan={9} className="font-size-lg font-weight-bolder">
                                                                         <b  className="font-size-h6 label label-light-primary label-pill label-inline mr-2 font-weight-bolder label-rounded">
                                                                         {
-                                                                            this.getPartidaClave(concepto.clave)
+                                                                            this.getPartidaClave(concepto.concepto.clave)
                                                                         }
                                                                         .
                                                                         {
-                                                                            this.getSubpartidaClave(concepto.clave)
+                                                                            this.getSubpartidaClave(concepto.concepto.clave)
                                                                         }
                                                                         </b>
                                                                         &nbsp;
