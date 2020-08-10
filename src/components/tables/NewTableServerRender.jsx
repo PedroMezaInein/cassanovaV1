@@ -4,7 +4,6 @@ import '../../styles/metronic/_datables.scss';
 import { waitAlert, errorAlert } from '../../functions/alert'
 import swal from 'sweetalert'
 import { objectOf } from 'prop-types';
-import { StickyContainer, Sticky } from 'react-sticky';
 import { Card } from 'react-bootstrap'
 
 const $ = require('jquery');
