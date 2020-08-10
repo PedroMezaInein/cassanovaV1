@@ -1279,6 +1279,7 @@ class Compras extends Component {
                     urlRender={URL_DEV + 'compras'}
                     idTable='kt_datatable2_compras'
                     validateFactura = { true }
+                    tipo_validacion = 'compras'
                 />
 
                 <Modal size="xl" title={title} show={modal} handleClose={this.handleClose} >

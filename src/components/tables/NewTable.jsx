@@ -40,7 +40,7 @@ class NewTable extends Component {
     }
 
     componentDidMount() {
-        const { data, mostrar_acciones, elementClass, totales, validateFactura} = this.props
+        const { data, mostrar_acciones, elementClass, totales, validateFactura, tipo_validacion} = this.props
         global_variable["mostrar_acciones"] = mostrar_acciones;
         var header = this.props.columns;
         var columns = [];
@@ -109,10 +109,35 @@ class NewTable extends Component {
             data: data,
             columns,
             createdRow: function(row, data) {
-                if(validateFactura){
-                    const { objeto } = data
-                    if(objeto.factura && objeto.total === objeto.total_facturas){
-                        $(row).addClass('verde');
+                // if(validateFactura){
+                //     const { objeto } = data
+                //     if(objeto.factura && objeto.total === objeto.total_facturas){
+                //         $(row).addClass('verde');
+                //     }
+                // }
+                if(tipo_validacion){
+                    const { objeto } = data 
+                    switch (tipo_validacion) {
+                        case 'compras':
+                            if (objeto.factura > objeto.monto) {
+                                $(row).addClass('verde');
+                            } else if (objeto.factura === objeto.monto) {
+                                $(row).addClass('blanco');
+                            } else if (objeto.factura < objeto.monto) {
+                                $(row).addClass('rojo');
+                            }
+                            break; 
+                        case 'ventas':
+                            if (objeto.factura > objeto.monto) {
+                                $(row).addClass('rojo');
+                            } else if (objeto.factura === objeto.monto) {
+                                $(row).addClass('blanco');
+                            } else if (objeto.factura < objeto.monto) {
+                                $(row).addClass('verde');
+                            }
+                            break;
+                        default:
+                            break
                     }
                 }
                 if (elementClass) {

@@ -328,7 +328,8 @@ class Ventas extends Component{
                         venta.presupuesto ? {name: 'Presupuesto', url: venta.presupuesto.url} : '',
                     ])),
                     fecha: renderToString(setDateTable(venta.created_at)),
-                    id: venta.id
+                    id: venta.id,
+                    objeto: venta
                 }
             )
         })
@@ -1370,6 +1371,7 @@ class Ventas extends Component{
                     idTable = 'kt_datatable2_ventas'
                     elementClass = 'total'
                     // zeroRed = { true }
+                    tipo_validacion = 'ventas'
                 /> 
 
                 <Modal size="xl" show = {modal} handleClose = { this.handleClose } title = { title } >
