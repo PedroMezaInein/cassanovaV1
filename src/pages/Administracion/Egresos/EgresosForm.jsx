@@ -116,6 +116,17 @@ class EgresosForm extends Component{
                             folio: xml.attributes.Folio ? xml.attributes.Folio : '',
                             serie: xml.attributes.Serie ? xml.attributes.Serie : '',
                         }
+                        let tipoRelacion = ''
+                        if(relacionados){
+                            if(relacionados.length){
+                                relacionados = relacionados[0]
+                                tipoRelacion = relacionados.attributes.TipoRelacion
+                                let uuidRelacionado = xml.getElementsByTagName('cfdi:CfdiRelacionado')[0]
+                                uuidRelacionado = uuidRelacionado.attributes.UUID
+                                obj.tipo_relacion = tipoRelacion
+                                obj.uuid_relacionado = uuidRelacionado
+                            }
+                        }
                         if(obj.numero_certificado === ''){
                             let NoCertificado = text.search('NoCertificado="')
                             if(NoCertificado)
