@@ -4,6 +4,8 @@ import '../../styles/metronic/_datables.scss';
 import { waitAlert, errorAlert } from '../../functions/alert'
 import swal from 'sweetalert'
 import { objectOf } from 'prop-types';
+import { StickyContainer, Sticky } from 'react-sticky';
+import { Card } from 'react-bootstrap'
 
 const $ = require('jquery');
 $.DataTable = require('datatables.net');
@@ -24,7 +26,7 @@ function runAjax(settings, accessToken, request, setter, url) {
         url: url,
         dataType: "json",
         type: "GET",
-        headers: {'Content-Type': 'application/json', Authorization:`Bearer ${accessToken}`},
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
         success: function (response) {
             /* swal.close() */
             deferred.resolve({ data: setter(response.data), draw: response.draw, recordsTotal: response.recordsTotal, recordsFiltered: response.recordsFiltered, elements: response.data });
@@ -73,7 +75,7 @@ class NewTableServerRender extends Component {
                     let cellIndex = $(this)[0].cellIndex
                     cellIndex = header[cellIndex].accessor
                     if (global_variable.mostrar_acciones == false || global_variable.mostrar_acciones && contador != 0) {
-                        $(this).append('<div class="mt-2 separator separator-dashed separator-border-2"></div><div class="mt-2"><input type="text" id='+cellIndex+' class="form-control form-control-sm"/></div>');
+                        $(this).append('<div class="mt-2 separator separator-dashed separator-border-2"></div><div class="mt-2"><input type="text" id=' + cellIndex + ' class="form-control form-control-sm"/></div>');
 
                     }
                     contador++;
@@ -96,9 +98,9 @@ class NewTableServerRender extends Component {
             processing: true,
             serverSide: true,
             ajax: function (request, drawCallback, settings) {
-                runAjax(settings, accessToken, request, setter, urlRender).done(function (response) { 
+                runAjax(settings, accessToken, request, setter, urlRender).done(function (response) {
                     _that.setState({
-                        ... _that.state,
+                        ..._that.state,
                         newElements: response.elements
                     })
                     swal.close()
@@ -106,7 +108,7 @@ class NewTableServerRender extends Component {
                 });
             },
             columns,
-            createdRow: function(row, data) {
+            createdRow: function (row, data) {
                 // if(validateFactura){
                 //     const { objeto } = data 
                 //     let resta = objeto.total - objeto.total_facturas
@@ -116,11 +118,11 @@ class NewTableServerRender extends Component {
                 //         $(row).addClass('blanco');
                 //     }
                 // }
-                if(tipo_validacion){
-                    const { objeto } = data 
+                if (tipo_validacion) {
+                    const { objeto } = data
                     switch (tipo_validacion) {
                         case 'compras':
-                            if(objeto.factura){
+                            if (objeto.factura) {
                                 if (objeto.total_facturas > objeto.monto) {
                                     $(row).addClass('verde');
                                 } else if (objeto.total_facturas === objeto.monto) {
@@ -128,12 +130,12 @@ class NewTableServerRender extends Component {
                                 } else if (objeto.total_facturas < objeto.monto) {
                                     $(row).addClass('rojo');
                                 }
-                            }else{
+                            } else {
                                 $(row).addClass('blanco');
-                            }                            
-                            break; 
+                            }
+                            break;
                         case 'ventas':
-                            if(objeto.factura){
+                            if (objeto.factura) {
                                 if (objeto.total_facturas > objeto.monto) {
                                     $(row).addClass('rojo');
                                 } else if (objeto.total_facturas === objeto.monto) {
@@ -141,9 +143,9 @@ class NewTableServerRender extends Component {
                                 } else if (objeto.total_facturas < objeto.monto) {
                                     $(row).addClass('verde');
                                 }
-                            }else{
+                            } else {
                                 $(row).addClass('blanco');
-                            } 
+                            }
                             break;
                         default:
                             break
@@ -151,7 +153,7 @@ class NewTableServerRender extends Component {
                 }
                 if (elementClass) {
                     let auxiliar = data[elementClass].split('<!-- -->')
-                    if(auxiliar.length > 1){
+                    if (auxiliar.length > 1) {
                         if (auxiliar[1] === '$0.00')
                             $(row).addClass('rojo');
                         else {
@@ -204,14 +206,14 @@ class NewTableServerRender extends Component {
             {
                 'targets': [0],
                 'data': null,
-                'searchable': mostrar_acciones? false : true,
+                'searchable': mostrar_acciones ? false : true,
                 'orderable': false,
                 render: function (data, type, row, meta) {
                     if (global_variable.mostrar_acciones == true) {
                         let aux = ''
                         {
                             data.map((element) => {
-                                aux = aux + 
+                                aux = aux +
                                     `<button name=${element.action}  id = ${row.id} class="ml-2 btn btn-actions-table btn-xs btn-icon btn-text-${element.btnclass} btn-hover-${element.btnclass}" title=${element.text}><i class=${element.iconclass}></i></button>`
                             })
                         }
@@ -239,15 +241,15 @@ class NewTableServerRender extends Component {
         $(this.refs.main).on('click', '.btn-actions-table', function (e) {
             e.preventDefault();
             var id = $(this).attr('id').toString()
-            var name =$(this).attr('name').toString() 
-            let aux = _that.state.newElements.find(function(element, index) { 
-                if(element.id.toString() === id){
-                    return element    
+            var name = $(this).attr('name').toString()
+            let aux = _that.state.newElements.find(function (element, index) {
+                if (element.id.toString() === id) {
+                    return element
                 }
             });
             actions[name].function(aux)
         });
-    
+
     }
 
     componentWillUnmount() {
@@ -270,12 +272,11 @@ class NewTableServerRender extends Component {
     render() {
 
         const { columns, data, title, subtitle, url, mostrar_boton, abrir_modal, exportar_boton } = this.props
-
         return (
             <>
+                <Card className="card-custom">
 
-                <div className="card card-custom">
-                    <div className="card-header flex-wrap border-0 pt-6 pb-0">
+                    <Card.Header className="card_header">
                         <div className="card-title">
                             <h2 className="card-label font-weight-bolder font-size-h2">
                                 {
@@ -288,38 +289,34 @@ class NewTableServerRender extends Component {
                                 </span>
                             </h2>
                         </div>
-                        <div className="card-toolbar">
+                        <div className="card-toolbar card_toolbar">
                             {(exportar_boton == true) ?
                                 <button onClick={() => this.clickHandlerExport()} className="btn btn-primary font-weight-bold mr-2">
                                     <i className="far fa-file-excel"></i> Exportar
-                                </button>
+                                    </button>
                                 :
                                 ""
                             }
                             {
-                                    (mostrar_boton == true) ?
+                                (mostrar_boton == true) ?
                                     (abrir_modal == true) ?
                                         <button onClick={() => this.clickHandler()} className="btn btn-success font-weight-bold mr-2">
                                             <i className="flaticon-add"></i> Agregar
-                                        </button>
+                                            </button>
                                         :
                                         <a href={url} className="btn btn-success font-weight-bold mr-2">
                                             <i className="flaticon-add"></i> Agregar
-                                        </a>
+                                            </a>
                                     :
                                     ""
                             }
-
-
                         </div>
-                    </div>
-                    <div className="separator separator-solid mt-3"></div>
-                    <div className="card-body">
-                        
-                        <table ref={'main'} className="table table-responsive-md table-separate table-head-custom table-checkable display table-hover text-justify" id={this.props.idTable ? this.props.idTable : "kt_datatable2"} />
+                    </Card.Header>
 
-                    </div>
-                </div>
+                    <Card.Body>
+                        <table ref={'main'} className="table table-responsive-md table-separate table-head-custom table-checkable display table-hover text-justify" id={this.props.idTable ? this.props.idTable : "kt_datatable2"} />
+                    </Card.Body>
+                </Card>
             </>
         )
     }
