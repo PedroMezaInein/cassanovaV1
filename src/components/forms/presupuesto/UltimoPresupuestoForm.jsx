@@ -467,8 +467,8 @@ class ActualizarPresupuestoForm extends Component {
                                                             <td className="text-center">
                                                                 <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['cantidad']}</div>
                                                             </td>
-                                                            <td className="clave text-center">
-                                                                <div className="font-weight-bold font-size-sm">Precio</div>
+                                                            <td className="text-center">
+                                                                <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['precio_unitario']}</div>
                                                             </td>
                                                             <td className="text-center">
                                                                 <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['importe']}</div>
