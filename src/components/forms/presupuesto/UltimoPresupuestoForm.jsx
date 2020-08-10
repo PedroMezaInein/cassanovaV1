@@ -22,16 +22,6 @@ class ActualizarPresupuestoForm extends Component {
         return aux.toFixed(2)
     }
 
-    onChangeMensaje = ( e, key ) => {
-        const { value, name } = e.target
-        const { form, onChange } = this.props
-        let aux = {
-            active: true,
-            mensaje: value
-        }
-        onChange(key, {target:{value: aux}}, 'mensajes')
-    }
-
     onChangeDesperdicio = e =>{
         const { value, name } = e.target
         const { form, onChange } = this.props
@@ -474,26 +464,6 @@ class ActualizarPresupuestoForm extends Component {
                                                                 <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['importe']}</div>
                                                             </td>
                                                         </tr>
-                                                        {
-                                                            form.conceptos[key].mensajes.active ?
-                                                                <tr >
-                                                                    <td className="px-3 mx-2" colSpan = { 9 }>
-                                                                        <InputSinText
-                                                                            identificador = { "mensaje" + key }
-                                                                            requirevalidation = { 1 }
-                                                                            formeditado = { formeditado }
-                                                                            name = "mensaje"
-                                                                            rows = "1"
-                                                                            as = "textarea"
-                                                                            className="form-control form-control-lg form-control-solid"
-                                                                            value = { form.conceptos[key].mensajes.mensaje}
-                                                                            onChange = { (e) => { this.onChangeMensaje(e, key) } }
-                                                                            />
-                                                                    </td>
-                                                                </tr>
-                                                            :
-                                                                ''
-                                                        }
                                                     </>
                                                 )
                                             })
@@ -501,7 +471,7 @@ class ActualizarPresupuestoForm extends Component {
                                     </tbody>
                                 </table>
                                 <div className="mt-3 text-center">
-                                    <Button icon='' className="mx-auto" type="submit" text="Enviar" />
+                                    <Button icon='' className="mx-auto" type="submit" text="ENVIAR Y GENERAR PDF" />
                                 </div>
                             </Form>
                         </Card.Body>

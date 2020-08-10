@@ -28,10 +28,6 @@ class UltimoPresupuesto extends Component {
                 cantidad: 0,
                 importe: 0,
                 id: '',
-                mensajes:{
-                    active: false,
-                    mensaje: ''
-                },
                 margen:'',
                 precio_unitario:''
             }],
@@ -271,21 +267,6 @@ class UltimoPresupuesto extends Component {
         form.conceptos[key].precio_unitario = (form.conceptos[key].costo / ( 1 - (form.conceptos[key].margen/100))).toFixed(2)
         form.conceptos[key].importe = (form.conceptos[key].precio_unitario * form.conceptos[key].cantidad ).toFixed(2)
 
-        if(name !== 'mensajes' && name !== 'margen')
-            if(presupuesto.conceptos[key][name] !== form.conceptos[key][name]){
-                form.conceptos[key].mensajes.active = true
-            }else{
-                form.conceptos[key].mensajes.active = false
-            }
-        if(name === 'margen')
-            if(presupuesto.conceptos[key][name].toString() !== form.conceptos[key][name].toString()){
-                form.conceptos[key].mensajes.active = true
-                let aux = value ? value : 0
-                form.conceptos[key].mensajes.mensaje = ('Actualización del margen a un '+ value + '%').toUpperCase()
-            }else{
-                form.conceptos[key].mensajes.active = false
-                form.conceptos[key].mensajes.mensaje = ''
-            }
         this.setState({
             ...this.state,
             form
@@ -305,7 +286,6 @@ class UltimoPresupuesto extends Component {
             this.onChange(key, {target:{value: pre.costo}}, 'costo')
             this.onChange(key, {target:{value: pre.cantidad_preliminar}}, 'cantidad_preliminar')
             this.onChange(key, {target:{value: '$'+pre.desperdicio}}, 'desperdicio')
-            this.onChange(key, {target:{value: aux}}, 'mensajes')
         }
         
         this.setState({
@@ -360,7 +340,6 @@ class UltimoPresupuesto extends Component {
                         importe: importe,
                         active: concepto.active ? true : false,
                         id: concepto.id, 
-                        mensajes: mensajeAux
                     })
 
                 })
