@@ -262,27 +262,26 @@ class UltimoPresupuesto extends Component {
         const { form, presupuesto } = this.state
 
         
-        if(name === 'desperdicio'){
+        if(name === 'margen'){
             value = value.replace('%', '')
         }
-        form['conceptos'][key][name] = value
-        let cantidad = form['conceptos'][key]['cantidad_preliminar'] * (1 + (form['conceptos'][key]['desperdicio']/100))
-        cantidad = cantidad.toFixed(2)
-        let importe = cantidad * form['conceptos'][key]['costo']
-        importe = importe.toFixed(2)
-        form['conceptos'][key]['cantidad'] = cantidad
-        form['conceptos'][key]['importe'] = importe
-        if(name !== 'mensajes' && name !== 'desperdicio')
+
+        form.conceptos[key][name] = value
+
+        form.conceptos[key].precio_unitario = (form.conceptos[key].costo / ( 1 - (form.conceptos[key].margen/100))).toFixed(2)
+        form.conceptos[key].importe = (form.conceptos[key].precio_unitario * form.conceptos[key].cantidad ).toFixed(2)
+
+        if(name !== 'mensajes' && name !== 'margen')
             if(presupuesto.conceptos[key][name] !== form.conceptos[key][name]){
                 form.conceptos[key].mensajes.active = true
             }else{
                 form.conceptos[key].mensajes.active = false
             }
-        if(name === 'desperdicio')
+        if(name === 'margen')
             if(presupuesto.conceptos[key][name].toString() !== form.conceptos[key][name].toString()){
                 form.conceptos[key].mensajes.active = true
                 let aux = value ? value : 0
-                form.conceptos[key].mensajes.mensaje = ('Actualización del desecho a un '+ value + '%').toUpperCase()
+                form.conceptos[key].mensajes.mensaje = ('Actualización del margen a un '+ value + '%').toUpperCase()
             }else{
                 form.conceptos[key].mensajes.active = false
                 form.conceptos[key].mensajes.mensaje = ''
@@ -344,13 +343,21 @@ class UltimoPresupuesto extends Component {
                             mensaje: ''
                         }
                     }
+                    let precio_unitario = concepto.precio_unitario
+                    if(concepto.margen === 0){
+                        precio_unitario = (concepto.costo / ( 1 - ( concepto.margen / 100 ) )).toFixed(2)
+                    }
+                    let importe = concepto.importe
+                    if(precio_unitario !== 0){
+                        importe = (concepto.cantidad * precio_unitario).toFixed(2)
+                    }
                     aux.push({
                         descripcion: concepto.descripcion,
                         costo: concepto.costo,
-                        cantidad_preliminar: concepto.cantidad_preliminar,
-                        desperdicio: concepto.desperdicio,
-                        cantidad: concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100)),
-                        importe: (concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100))) * concepto.costo,
+                        margen: concepto.margen,
+                        cantidad: concepto.cantidad,
+                        precio_unitario: precio_unitario,
+                        importe: importe,
                         active: concepto.active ? true : false,
                         id: concepto.id, 
                         mensajes: mensajeAux
@@ -386,7 +393,7 @@ class UltimoPresupuesto extends Component {
         const { access_token } = this.props.authUser
         const { form, presupuesto } = this.state
 
-        await axios.put(URL_DEV + 'presupuestos/' + presupuesto.id, form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(URL_DEV + 'presupuestos/' + presupuesto.id + '/generar', form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
 
                 const { presupuesto } = response.data
