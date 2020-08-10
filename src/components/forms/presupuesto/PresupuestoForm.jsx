@@ -156,8 +156,8 @@ class PresupuestoForm extends Component {
                                                             {
                                                                 data.subpartidas.map((subpartida, key) => {
                                                                     return (
-                                                                        <>
-                                                                            <div key={key} className="d-flex align-items-center bg-primary-o-20">
+                                                                        <div key = {key}>
+                                                                            <div className="d-flex align-items-center bg-primary-o-20">
                                                                                 <div className="ml-4 font-weight-bolder text-primary font-size-lg mb-1 py-2">{subpartida.nombre}</div>
                                                                             </div>
                                                                             {
@@ -202,7 +202,7 @@ class PresupuestoForm extends Component {
                                                                                     )
                                                                                 })
                                                                             }
-                                                                        </>
+                                                                        </div>
                                                                     )
                                                                 })
                                                             }

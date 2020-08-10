@@ -113,7 +113,7 @@ class ComprasForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, formeditado, ...props } = this.props
+        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, sendFactura, formeditado, ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">

@@ -402,7 +402,6 @@ class ActualizarPresupuesto extends Component {
                 let aux = []
                 presupuesto.conceptos.map((concepto) => {
                     let mensajeAux = {}
-                    console.log(concepto.mensaje, 'mensaje')
                     if(concepto.mensaje){
                         mensajeAux= {
                             active: true,

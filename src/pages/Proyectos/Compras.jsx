@@ -359,11 +359,7 @@ class Compras extends Component {
         let { porcentaje, form } = this.state
         form = this.clearForm()
         form.estatusCompra = compra.estatus_compra.id
-        porcentaje = 0
-        compra.facturas.map((factura) => {
-            porcentaje = porcentaje + factura.total
-        })
-        porcentaje = porcentaje * 100 / (compra.total - compra.comision)
+        porcentaje = compra.total_facturas * 100 / (compra.total - compra.comision)
         porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
         this.setState({
             ... this.state,
@@ -488,6 +484,7 @@ class Compras extends Component {
                         const timbreFiscalDigital = xml.getElementsByTagName('tfd:TimbreFiscalDigital')[0]
                         const concepto = xml.getElementsByTagName('cfdi:Concepto')[0]
                         const conceptos = xml.getElementsByTagName('cfdi:Concepto')
+                        let relacionados = xml.getElementsByTagName('cfdi:CfdiRelacionados')
 
                         let desc = ''
                         conceptos.forEach(element => {
@@ -514,6 +511,19 @@ class Compras extends Component {
                             folio: xml.attributes.Folio ? xml.attributes.Folio : '',
                             serie: xml.attributes.Serie ? xml.attributes.Serie : '',
                         }
+
+                        let tipoRelacion = ''
+                        if(relacionados){
+                            if(relacionados.length){
+                                relacionados = relacionados[0]
+                                tipoRelacion = relacionados.attributes.TipoRelacion
+                                let uuidRelacionado = xml.getElementsByTagName('cfdi:CfdiRelacionado')[0]
+                                uuidRelacionado = uuidRelacionado.attributes.UUID
+                                obj.tipo_relacion = tipoRelacion
+                                obj.uuid_relacionado = uuidRelacionado
+                            }
+                        }
+
                         if (obj.numero_certificado === '') {
                             let NoCertificado = text.search('NoCertificado="')
                             if (NoCertificado)
@@ -1084,11 +1094,7 @@ class Compras extends Component {
                 let { porcentaje, form } = this.state
                 form = this.clearForm()
                 form.estatusCompra = compra.estatus_compra.id
-                porcentaje = 0
-                compra.facturas.map((factura) => {
-                    porcentaje = porcentaje + factura.total
-                })
-                porcentaje = porcentaje * 100 / (compra.total - compra.comision)
+                porcentaje = compra.total_facturas * 100 / (compra.total - compra.comision)
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
                 this.setState({
                     ... this.state,
@@ -1171,11 +1177,7 @@ class Compras extends Component {
                 this.getComprasAxios()
                 const { compra } = response.data
                 let { porcentaje } = this.state
-                porcentaje = 0
-                compra.facturas.map((factura) => {
-                    porcentaje = porcentaje + factura.total
-                })
-                porcentaje = porcentaje * 100 / (compra.total - compra.comision)
+                porcentaje = compra.total_facturas * 100 / (compra.total - compra.comision)
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
                 this.setState({
                     ... this.state,
