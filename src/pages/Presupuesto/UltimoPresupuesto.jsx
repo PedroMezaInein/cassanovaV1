@@ -6,13 +6,11 @@ import { URL_DEV } from "../../constants";
 import { setOptions } from "../../functions/setters";
 import { errorAlert, waitAlert, forbiddenAccessAlert } from "../../functions/alert";
 import Layout from "../../components/layout/layout";
-import { UltimoPresupuestoForm} from "../../components/forms";
+import { UltimoPresupuestoForm } from "../../components/forms";
 
 class UltimoPresupuesto extends Component {
     state = {
-        key: 'nuevo',
         formeditado: 0,
-        modal: false,
         presupuesto: '',
         form: {
             unidad: '',
@@ -25,7 +23,7 @@ class UltimoPresupuesto extends Component {
                 descipcion: '',
                 costo: '',
                 cantidad_preliminar: '',
-                margen: '',
+                desperdicio: '',
                 active:true,
                 cantidad: 0,
                 importe: 0,
@@ -33,9 +31,10 @@ class UltimoPresupuesto extends Component {
                 mensajes:{
                     active: false,
                     mensaje: ''
-                }
+                },
+                margen:'',
+                precio_unitario:''
             }],
-            conceptosNuevos: []
         },
         options: {
             unidades: [],
@@ -49,43 +48,6 @@ class UltimoPresupuesto extends Component {
             conceptos: []
         },
     };
-
-    openModal = () => {
-        const { options } = this.state
-        options.subpartidas = []
-        this.setState({
-            ... this.state,
-            options,
-            modal: true,
-            title: 'Agregar concepto',
-            form: this.clearForm(),
-            formeditado: 0
-        })
-    }
-
-    clearForm = () => {
-        const { form } = this.state
-        let aux = Object.keys(form)
-        aux.map((element) => {
-            if(element !== 'conceptos' && element !== 'conceptosNuevos')
-                form[element] = ''
-        })
-        return form
-    }
-
-
-    handleClose = () => {
-        const { modal, options } = this.state
-        options.subpartidas = []
-        this.setState({
-            ... this.state,
-            modal: !modal,
-            options,
-            title: 'Agregar concepto',
-            concepto: '',
-            form: this.clearForm()
-        })
-    }
 
     componentDidMount() {
         const { authUser: { user: { permisos: permisos } } } = this.props;
@@ -282,11 +244,6 @@ class UltimoPresupuesto extends Component {
                         array.push(concepto)
                     }
                 })
-                form.conceptosNuevos = []
-                array.map((element, key)=>{
-                    form.conceptosNuevos.push(element)
-                    form.conceptosNuevos[key].active=false
-                })
                 break;
             default:
                 break;
@@ -299,39 +256,29 @@ class UltimoPresupuesto extends Component {
             data
         });
     };
-
-    checkButtonConceptos = (e, key)=> {
-        const { name, value, checked } = e.target
-        const { form } = this.state
-        form.conceptosNuevos[key].active = checked
-        this.setState({
-            ... this.state,
-            form
-        })
-    }
     
     onChange = (key, e, name) => {
         let { value } = e.target
         const { form, presupuesto } = this.state
 
         
-        if(name === 'margen'){
+        if(name === 'desperdicio'){
             value = value.replace('%', '')
         }
         form['conceptos'][key][name] = value
-        let cantidad = form['conceptos'][key]['cantidad_preliminar'] * (1 + (form['conceptos'][key]['margen']/100))
+        let cantidad = form['conceptos'][key]['cantidad_preliminar'] * (1 + (form['conceptos'][key]['desperdicio']/100))
         cantidad = cantidad.toFixed(2)
         let importe = cantidad * form['conceptos'][key]['costo']
         importe = importe.toFixed(2)
         form['conceptos'][key]['cantidad'] = cantidad
         form['conceptos'][key]['importe'] = importe
-        if(name !== 'mensajes' && name !== 'margen')
+        if(name !== 'mensajes' && name !== 'desperdicio')
             if(presupuesto.conceptos[key][name] !== form.conceptos[key][name]){
                 form.conceptos[key].mensajes.active = true
             }else{
                 form.conceptos[key].mensajes.active = false
             }
-        if(name === 'margen')
+        if(name === 'desperdicio')
             if(presupuesto.conceptos[key][name].toString() !== form.conceptos[key][name].toString()){
                 form.conceptos[key].mensajes.active = true
                 let aux = value ? value : 0
@@ -358,7 +305,7 @@ class UltimoPresupuesto extends Component {
             this.onChange(key, {target:{value: pre.descripcion}}, 'descripcion')
             this.onChange(key, {target:{value: pre.costo}}, 'costo')
             this.onChange(key, {target:{value: pre.cantidad_preliminar}}, 'cantidad_preliminar')
-            this.onChange(key, {target:{value: '$'+pre.margen}}, 'margen')
+            this.onChange(key, {target:{value: '$'+pre.desperdicio}}, 'desperdicio')
             this.onChange(key, {target:{value: aux}}, 'mensajes')
         }
         
@@ -373,22 +320,6 @@ class UltimoPresupuesto extends Component {
         waitAlert()
 
         this.updatePresupuestosAxios()
-    }
-
-    onSubmitConcept = e => {
-        e.preventDefault()
-        const { key, form } = this.state
-        waitAlert()
-        if(key === 'nuevo')
-            this.addConceptoAxios()
-        else{
-            let aux = []
-            form.conceptosNuevos.map( (concepto) => {
-                if(concepto.active)
-                    aux.push(concepto)
-            })
-            this.addConceptoToPresupuestoAxios(aux)
-        }
     }
 
     async getOnePresupuestoAxios(id) {
@@ -418,9 +349,9 @@ class UltimoPresupuesto extends Component {
                         descripcion: concepto.descripcion,
                         costo: concepto.costo,
                         cantidad_preliminar: concepto.cantidad_preliminar,
-                        margen: concepto.margen,
-                        cantidad: concepto.cantidad_preliminar * ( 1  + (concepto.margen/100)),
-                        importe: (concepto.cantidad_preliminar * ( 1  + (concepto.margen/100))) * concepto.costo,
+                        desperdicio: concepto.desperdicio,
+                        cantidad: concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100)),
+                        importe: (concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100))) * concepto.costo,
                         active: concepto.active ? true : false,
                         id: concepto.id, 
                         mensajes: mensajeAux
@@ -436,6 +367,7 @@ class UltimoPresupuesto extends Component {
                     form,
                     formeditado: 1
                 })
+
             },
             (error) => {
                 console.log(error, 'error')
@@ -485,16 +417,8 @@ class UltimoPresupuesto extends Component {
         })
     }
 
-    controlledTab = value => {
-        this.setState({
-            ... this.state,
-            form: this.clearForm(),
-            key: value
-        })
-    }
-
     render() {
-        const { form, formeditado, presupuesto} = this.state;
+        const { form, title, options, formeditado, presupuesto} = this.state;
         return (
             <Layout active={"presupuesto"} {...this.props}>
                 <UltimoPresupuestoForm
@@ -504,9 +428,8 @@ class UltimoPresupuesto extends Component {
                     checkButton={this.checkButton}
                     onSubmit={this.onSubmit}
                     presupuesto={presupuesto}
-                    openModal={this.openModal}
                     {...this.props}
-                /> 
+                />
             </Layout>
         );
     }
