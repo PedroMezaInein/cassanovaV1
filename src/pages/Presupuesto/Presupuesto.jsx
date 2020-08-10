@@ -9,6 +9,9 @@ import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { errorAlert, waitAlert, forbiddenAccessAlert} from '../../functions/alert'
 import { renderToString } from 'react-dom/server'
 import { ModalDelete } from '../../components/singles'
+import FloatButtons from '../../components/singles/FloatButtons'
+import { save, deleteForm } from '../../redux/reducers/formulario'
+
 const $ = require('jquery');
 
 class Presupuesto extends Component {
@@ -214,18 +217,18 @@ class Presupuesto extends Component {
                 tooltip: {id:'edit', text:'Editar'},
             },
             {
-                text: 'Eliminar',
-                btnclass: 'danger',
-                iconclass: 'flaticon2-rubbish-bin',                  
-                action: 'delete',
-                tooltip: {id:'delete', text:'Eliminar', type:'error'},
-            },
-            {
                 text: 'Ver&nbsp;presupuesto',
                 btnclass: 'primary',
                 iconclass: 'flaticon2-paper',                  
                 action: 'finish',
                 tooltip: {id:'finish', text:'Ver presupuesto', type:'error'},
+            },
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',                  
+                action: 'delete',
+                tooltip: {id:'delete', text:'Eliminar', type:'error'},
             },
         )
         return aux
@@ -254,9 +257,33 @@ class Presupuesto extends Component {
         });
     }
 
+    save = () => {
+        const { form } = this.state
+        const { save } = this.props
+        let auxObject = {}
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            auxObject[element] = form[element]
+        })
+        save({
+            form: auxObject,
+            page: 'usuarios/usuarios'
+        })
+    }
+
+    recover = () => {
+        const { formulario, deleteForm } = this.props
+        this.setState({
+            ... this.state,
+            form: formulario.form
+        })
+        deleteForm()
+    }
+
     render() {
 
         const { modal, title, form, options, formeditado} = this.state
+        const { formulario } = this.props
 
         return (
             <Layout active={'presupuesto'}  {...this.props}> 
@@ -270,13 +297,19 @@ class Presupuesto extends Component {
                     mostrar_acciones={true}
                     actions = {{
                         'edit': {function: this.openModalEdit},
+                        'finish': {function: this.openUltimo},                        
                         'delete': {function: this.openModalDelete},
-                        'finish': {function: this.openUltimo},
                     }}
                     idTable='kt_datatable2_presupuesto'
                     accessToken={this.props.authUser.access_token}
                     setter={this.setPresupuestos}
                     urlRender={URL_DEV + 'presupuestos'}
+                />
+                <FloatButtons 
+                    save={this.save}
+                    recover={this.recover}
+                    formulario={formulario}
+                    url={'presupuesto/presupuesto'}
                 />
                 <ModalDelete 
                     title={"¿Estás seguro que deseas eliminar el presupuesto?"} 
@@ -293,11 +326,14 @@ class Presupuesto extends Component {
 
 const mapStateToProps = state => {
     return {
-        authUser: state.authUser
+        authUser: state.authUser,
+        formulario: state.formulario
     }
 }
 
 const mapDispatchToProps = dispatch => ({
+    save: payload => dispatch(save(payload)),
+    deleteForm: () => dispatch(deleteForm()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Presupuesto);
