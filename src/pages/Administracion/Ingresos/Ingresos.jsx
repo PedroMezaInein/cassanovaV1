@@ -345,7 +345,8 @@ class Ingresos extends Component {
                     total: renderToString(setMoneyTable(ingreso.total)),
                     adjuntos: renderToString(setArrayTable(_aux)),
                     fecha: renderToString(setDateTable(ingreso.created_at)),
-                    id: ingreso.id
+                    id: ingreso.id,
+                    objeto: ingreso
                 }
             )
         })
@@ -989,6 +990,7 @@ class Ingresos extends Component {
                     urlRender = {URL_DEV + 'ingresos'}
                     elementClass = 'total'
                     idTable = 'ingresostable'
+                    tipo_validacion = 'ventas'
                     />
 
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el ingreso?"}show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteIngresoAxios() }}>

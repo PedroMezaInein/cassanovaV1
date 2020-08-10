@@ -90,7 +90,7 @@ class ActualizarPresupuestoForm extends Component {
                     < Card className="card-custom" >
                         <Card.Body className="p-0">
                             <div className="table-responsive">
-                                <div className="list min-w-500px" data-inbox="list">
+                                <div className="list min-w-1000px" data-inbox="list">
                                     <div className=" col-md-12 d-flex justify-content-center align-items-center list-item card-spacer-x py-4" data-inbox="message">
                                         <div className="col-md-2 d-flex align-items-center justify-content-center">
                                             <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
@@ -123,7 +123,7 @@ class ActualizarPresupuestoForm extends Component {
                                                 </div>
                                             </div>
                                             <div className="d-flex flex-column font-weight-bold">
-                                                <div className="text-dark mb-1 font-size-lg">{presupuesto.proyecto.nombre}</div>
+                                                <div className="text-dark mb-1">{presupuesto.proyecto.nombre}</div>
                                                 <span className="text-muted">Proyecto</span>
                                             </div>
                                         </div>
@@ -147,7 +147,7 @@ class ActualizarPresupuestoForm extends Component {
                                                 </div>
                                             </div>
                                             <div className="d-flex flex-column font-weight-bold">
-                                                <div className="text-dark mb-1 font-size-lg">{presupuesto.area.nombre}</div>
+                                                <div className="text-dark mb-1">{presupuesto.area.nombre}</div>
                                                 <span className="text-muted">ÁREA</span>
                                             </div>
                                         </div>
@@ -177,7 +177,7 @@ class ActualizarPresupuestoForm extends Component {
                                                 </div>
                                             </div>
                                             <div className="d-flex flex-column font-weight-bold">
-                                                <div className="text-dark mb-1 font-size-lg">{presupuesto.empresa.name}</div>
+                                                <div className="text-dark mb-1">{presupuesto.empresa.name}</div>
                                                 <span className="text-muted">Empresa</span>
                                             </div>
                                         </div>
@@ -206,7 +206,7 @@ class ActualizarPresupuestoForm extends Component {
                                                 </div>
                                             </div>
                                             <div className="d-flex flex-column font-weight-bold">
-                                                <div className="text-dark mb-1 font-size-lg">{presupuesto.tiempo_ejecucion}</div>
+                                                <div className="text-dark mb-1">{presupuesto.tiempo_ejecucion}</div>
                                                 <span className="text-muted">Tiempo de ejecución</span>
                                             </div>
                                         </div>
@@ -233,7 +233,7 @@ class ActualizarPresupuestoForm extends Component {
                                                 </div>
                                             </div>
                                             <div className="d-flex flex-column font-weight-bold">
-                                                <div className="text-dark mb-1 font-size-lg">
+                                                <div className="text-dark mb-1">
                                                     <Moment format="DD/MM/YYYY">
                                                         {presupuesto.fecha}
                                                     </Moment>
@@ -261,7 +261,7 @@ class ActualizarPresupuestoForm extends Component {
                                                 </div>
                                             </div>
                                             <div className="d-flex flex-column font-weight-bold">
-                                                <div className="text-dark mb-1 font-size-lg">
+                                                <div className="text-dark mb-1">
                                                     No.1
                                                 </div>
                                                 <span className="text-muted">Presupuesto</span>
@@ -292,7 +292,7 @@ class ActualizarPresupuestoForm extends Component {
                                         }
                                     }
                                 >
-                                <table className="table table-separate table-responsive-sm pt-5">
+                                <table className="table table-separate table-responsive-sm">
                                     <thead>
                                         <tr>
                                             <th className="check_desc border-0">

@@ -910,6 +910,7 @@ class egresos extends Component{
                             setter = { this.setEgresos }
                             urlRender = {URL_DEV + 'egresos'}
                             validateFactura = { true }
+                            tipo_validacion = 'compras'
                             />
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el egreso?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteEgresoAxios() }}>
                 </ModalDelete>

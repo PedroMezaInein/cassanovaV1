@@ -44,7 +44,7 @@ class NewTableServerRender extends Component {
     }
 
     componentDidMount() {
-        const { actions, mostrar_acciones, elementClass, accessToken, setter, urlRender, validateFactura } = this.props
+        const { actions, mostrar_acciones, elementClass, accessToken, setter, urlRender, validateFactura, tipo_validacion } = this.props
         global_variable["mostrar_acciones"] = mostrar_acciones;
         var header = this.props.columns;
         var columns = [];
@@ -107,20 +107,39 @@ class NewTableServerRender extends Component {
             },
             columns,
             createdRow: function(row, data) {
-                if(validateFactura){
+                // if(validateFactura){
+                //     const { objeto } = data 
+                //     let resta = objeto.total - objeto.total_facturas
+                //     if(objeto.factura && !( resta < 1 && resta > -1)) {
+                //         $(row).addClass('rojo');
+                //     }else{
+                //         $(row).addClass('blanco');
+                //     }
+                // }
+                if(tipo_validacion){
                     const { objeto } = data 
-                    let resta = objeto.total - objeto.total_facturas
-                    if(objeto.factura && 
-                        !(
-                            resta < 1 && resta > -1
-                        )
-                    )
-                    {
-                        $(row).addClass('rojo');
-                    }else{
-                        $(row).addClass('blanco');
+                    switch (tipo_validacion) {
+                        case 'compras':
+                            if (objeto.factura > objeto.monto) {
+                                $(row).addClass('verde');
+                            } else if (objeto.factura === objeto.monto) {
+                                $(row).addClass('blanco');
+                            } else if (objeto.factura < objeto.monto) {
+                                $(row).addClass('rojo');
+                            }
+                            break; 
+                        case 'ventas':
+                            if (objeto.factura > objeto.monto) {
+                                $(row).addClass('rojo');
+                            } else if (objeto.factura === objeto.monto) {
+                                $(row).addClass('blanco');
+                            } else if (objeto.factura < objeto.monto) {
+                                $(row).addClass('verde');
+                            }
+                            break;
+                        default:
+                            break
                     }
-                    
                 }
                 if (elementClass) {
                     let auxiliar = data[elementClass].split('<!-- -->')
