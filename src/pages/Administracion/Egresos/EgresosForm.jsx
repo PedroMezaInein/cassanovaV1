@@ -96,6 +96,7 @@ class EgresosForm extends Component{
                         const receptor = xml.getElementsByTagName('cfdi:Receptor')[0]
                         const timbreFiscalDigital = xml.getElementsByTagName('tfd:TimbreFiscalDigital')[0]
                         const concepto = xml.getElementsByTagName('cfdi:Concepto')[0]
+                        let relacionados = xml.getElementsByTagName('cfdi:CfdiRelacionados')
                         let obj = {
                             rfc_receptor: receptor.attributes.Rfc ? receptor.attributes.Rfc : '',
                             nombre_receptor: receptor.attributes.Nombre ? receptor.attributes.Nombre : '',
