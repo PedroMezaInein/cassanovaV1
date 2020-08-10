@@ -36,7 +36,7 @@ class ConceptoForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, onSubmit, formeditado, ...props } = this.props
+        const { title, options, form, onChange, onSubmit, formeditado, setOptions, ...props } = this.props
         return (
             <Form id="form-concepto"
                 onSubmit={
