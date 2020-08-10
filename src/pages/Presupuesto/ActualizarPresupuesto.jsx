@@ -415,11 +415,11 @@ class ActualizarPresupuesto extends Component {
                     }
                     aux.push({
                         descripcion: concepto.descripcion,
-                        costo: concepto.costo,
+                        costo: concepto.costo.toFixed(2),
                         cantidad_preliminar: concepto.cantidad_preliminar,
                         desperdicio: concepto.desperdicio,
-                        cantidad: concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100)),
-                        importe: (concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100))) * concepto.costo,
+                        cantidad: (concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100))).toFixed(2),
+                        importe: ((concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100))) * concepto.costo).toFixed(2),
                         active: concepto.active ? true : false,
                         id: concepto.id, 
                         mensajes: mensajeAux
