@@ -308,7 +308,7 @@ class PresupuestoForm extends Component {
                                                         </div>
                                                     </div>
                                                     <div className="d-flex justify-content-center my-3">
-                                                        <Button icon='' type="submit" className="text-center mx-auto" text='Enviar' />
+                                                        <Button icon='' type="submit" className="text-center mx-auto" text='ENVIAR Y CONTINUAR' />
                                                     </div>
                                                 </Form>
                                             </div>
