@@ -120,7 +120,6 @@ class NewTableServerRender extends Component {
                     const { objeto } = data 
                     switch (tipo_validacion) {
                         case 'compras':
-                            console.log(objeto, 'objeto')
                             if(objeto.factura){
                                 if (objeto.total_facturas > objeto.monto) {
                                     $(row).addClass('verde');
@@ -131,17 +130,20 @@ class NewTableServerRender extends Component {
                                 }
                             }else{
                                 $(row).addClass('blanco');
-                            }
-                            
+                            }                            
                             break; 
                         case 'ventas':
-                            if (objeto.factura > objeto.monto) {
-                                $(row).addClass('rojo');
-                            } else if (objeto.factura === objeto.monto) {
+                            if(objeto.factura){
+                                if (objeto.total_facturas > objeto.monto) {
+                                    $(row).addClass('rojo');
+                                } else if (objeto.total_facturas === objeto.monto) {
+                                    $(row).addClass('blanco');
+                                } else if (objeto.total_facturas < objeto.monto) {
+                                    $(row).addClass('verde');
+                                }
+                            }else{
                                 $(row).addClass('blanco');
-                            } else if (objeto.factura < objeto.monto) {
-                                $(row).addClass('verde');
-                            }
+                            } 
                             break;
                         default:
                             break
