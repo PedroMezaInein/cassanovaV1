@@ -7,7 +7,7 @@ import { setOptions } from "../../functions/setters";
 import { errorAlert, waitAlert, forbiddenAccessAlert } from "../../functions/alert";
 import Layout from "../../components/layout/layout";
 import { UltimoPresupuestoForm} from "../../components/forms";
-import { Modal } from '../../components/singles'
+
 class UltimoPresupuesto extends Component {
     state = {
         key: 'nuevo',
@@ -493,7 +493,7 @@ class UltimoPresupuesto extends Component {
     }
 
     render() {
-        const { form, title, options, formeditado, presupuesto, modal, data, key } = this.state;
+        const { form, formeditado, presupuesto} = this.state;
         return (
             <Layout active={"presupuesto"} {...this.props}>
                 <UltimoPresupuestoForm
