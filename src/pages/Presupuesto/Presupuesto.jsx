@@ -144,6 +144,11 @@ class Presupuesto extends Component {
         })
     }
 
+    downloadPDF = presupuesto   => {
+        var win = window.open( presupuesto.pdf.url, '_blank');
+        win.focus();
+    }
+
     handleCloseDelete = () => {
         const { modal } = this.state
         modal.delete = false
@@ -222,7 +227,21 @@ class Presupuesto extends Component {
                 iconclass: 'flaticon2-paper',                  
                 action: 'finish',
                 tooltip: {id:'finish', text:'Ver presupuesto', type:'error'},
-            },
+            }
+        )
+        if(presupuesto.pdf)
+        {
+            aux.push(
+                {
+                    text: 'Descargar&nbsp;presupuesto',
+                    btnclass: 'primary',
+                    iconclass: 'flaticon2-download-1',                  
+                    action: 'download',
+                    tooltip: {id:'download', text:'Decargar presupuesto'},
+                }
+            )
+        }
+        aux.push(
             {
                 text: 'Eliminar',
                 btnclass: 'danger',
@@ -299,6 +318,7 @@ class Presupuesto extends Component {
                         'edit': {function: this.openModalEdit},
                         'finish': {function: this.openUltimo},                        
                         'delete': {function: this.openModalDelete},
+                        'download': { function: this.downloadPDF}
                     }}
                     idTable='kt_datatable2_presupuesto'
                     accessToken={this.props.authUser.access_token}

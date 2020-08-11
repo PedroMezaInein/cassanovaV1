@@ -376,6 +376,10 @@ class UltimoPresupuesto extends Component {
             (response) => {
 
                 const { presupuesto } = response.data
+
+                var win = window.open( presupuesto.pdf.url, '_blank');
+                win.focus();
+
                 
                 this.getOnePresupuestoAxios(presupuesto.id)
 
