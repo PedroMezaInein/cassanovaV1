@@ -47,6 +47,42 @@ class NewTableServerRender extends Component {
     componentDidMount() {
         const { actions, mostrar_acciones, elementClass, accessToken, setter, urlRender, validateFactura, tipo_validacion } = this.props
         global_variable["mostrar_acciones"] = mostrar_acciones;
+
+        $("body").addClass("card-sticky-on")
+                .css("overflow-y","scroll")  
+        
+        let tableWidth = $("#cardTable").width() 
+        $("#cardTableHeader").css("width",tableWidth).css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)").css("z-index",3)
+        let headerHeidht = $("#cardTableHeader").height() 
+        $("#cardBody").css("margin-top",headerHeidht)  
+        $( "#cardTable" ).on('resize',function(){ 
+            console.log("cambio")
+        })
+        $( window ).resize(function() { 
+            console.log("Resize")
+            tableWidth = $("#cardTable").width()
+            $("#cardTableHeader").css("width",tableWidth) 
+        }) 
+        $( window ).on('scroll',function(){ 
+            var pos = $(this).scrollTop(); 
+            if (pos == 0) {
+                $("#cardTableHeader").css("margin-top","0px").css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)")
+            }
+            else
+            { 
+                let pantalla = $(this).width()
+                let limite = pantalla > 992 ? 25 : 58
+                console.log(limite, pos)
+                if(pos<limite)
+                {
+                    $("#cardTableHeader").css("margin-top","-"+pos+"px").css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)")
+                }
+                else{
+                    $("#cardTableHeader").css("margin-top","-"+limite+"px").css("box-shadow", "0px 1px 5px 1px rgba(69, 65, 78, 0.1)")
+                }
+                //
+            }
+        });
         var header = this.props.columns;
         var columns = [];
         var i = 0;
@@ -273,9 +309,9 @@ class NewTableServerRender extends Component {
         const { columns, data, title, subtitle, url, mostrar_boton, abrir_modal, exportar_boton } = this.props
         return (
             <>
-                <Card className="card-custom">
+                <Card  id="cardTable" className="card-custom card-sticky">
 
-                    <Card.Header className="card_header">
+                    <Card.Header id="cardTableHeader" className="card_header ">
                         <div className="card-title">
                             <h2 className="card-label font-weight-bolder font-size-h2">
                                 {
@@ -312,8 +348,8 @@ class NewTableServerRender extends Component {
                         </div>
                     </Card.Header>
 
-                    <Card.Body>
-                        <table ref={'main'} className="table table-responsive-md table-separate table-head-custom table-checkable display table-hover text-justify" id={this.props.idTable ? this.props.idTable : "kt_datatable2"} />
+                    <Card.Body id="cardBody" className="pt-0">
+                        <table ref={'main'} style={{width:"100%"}} className="table table-responsive table-separate table-head-custom table-checkable display table-hover text-justify collapsed dataTable dtr-inline" id={this.props.idTable ? this.props.idTable : "kt_datatable2"} />
                     </Card.Body>
                 </Card>
             </>
