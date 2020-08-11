@@ -198,6 +198,9 @@ class Facturacion extends Component {
                     mostrar_acciones={false}
                     elements={data.facturas}
                     elementClass = 'restante'
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
                 />
 
             </Layout>

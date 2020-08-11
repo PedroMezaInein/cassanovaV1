@@ -890,28 +890,31 @@ class egresos extends Component{
         const { egresos, modalDelete, modalFacturas, modalAdjuntos, adjuntos, facturas, porcentaje, form, data, options } = this.state
         return(
             <Layout active={'administracion'}  { ...this.props}>
-                <NewTableServerRender columns = { EGRESOS_COLUMNS } data = { egresos } 
-                            title = 'Egresos' subtitle = 'Listado de egresos'
-                            url = '/administracion/egresos/add'
-                            mostrar_boton={true}
-                            abrir_modal={false}
-                            mostrar_acciones={true}
-                            actions = {{
-                                'edit': {function: this.changePageEdit},
-                                'delete': {function: this.openModalDelete},
-                                'facturas': {function: this.openModalFacturas},
-                                'adjuntos': { function: this.openModalAdjuntos }
-                            }}
-                            elements = { data.egresos }
-                            idTable = 'egresos'
-                            exportar_boton={true} 
-                            onClickExport={() => this.exportEgresosAxios()}
-                            accessToken = { this.props.authUser.access_token }
-                            setter = { this.setEgresos }
-                            urlRender = {URL_DEV + 'egresos'}
-                            validateFactura = { true }
-                            tipo_validacion = 'compras'
-                            />
+                <NewTableServerRender columns={EGRESOS_COLUMNS} data={egresos}
+                    title='Egresos' subtitle='Listado de egresos'
+                    url='/administracion/egresos/add'
+                    mostrar_boton={true}
+                    abrir_modal={false}
+                    mostrar_acciones={true}
+                    actions={{
+                        'edit': { function: this.changePageEdit },
+                        'delete': { function: this.openModalDelete },
+                        'facturas': { function: this.openModalFacturas },
+                        'adjuntos': { function: this.openModalAdjuntos }
+                    }}
+                    elements={data.egresos}
+                    idTable='egresos'
+                    exportar_boton={true}
+                    onClickExport={() => this.exportEgresosAxios()}
+                    accessToken={this.props.authUser.access_token}
+                    setter={this.setEgresos}
+                    urlRender={URL_DEV + 'egresos'}
+                    validateFactura={true}
+                    tipo_validacion='compras'
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
+                />
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el egreso?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteEgresoAxios() }}>
                 </ModalDelete>
 

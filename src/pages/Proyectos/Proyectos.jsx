@@ -1677,6 +1677,9 @@ class Proyectos extends Component {
                         'avances': { function: this.openModalAvances },
                     }}
                     elements={data.proyectos}
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
                 />
 
                 <Modal size="xl" title = { title } show={modal} handleClose={this.handleClose}>

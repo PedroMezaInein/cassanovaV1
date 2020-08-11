@@ -510,6 +510,9 @@ class Leads extends Component {
                         'delete': { function: this.openModalDelete }
                     }}
                     elements={data.clientes}
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
                 />
 
                 <Modal size="xl" title={typeForm === 'Add' ? 'Registrar nuevo cliente' : 'Editar cliente'} show={modal} handleClose={this.handleCloseModal}>

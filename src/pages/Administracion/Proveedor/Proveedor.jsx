@@ -183,18 +183,21 @@ class Proveedor extends Component{
         return(
             <Layout active={'administracion'}  { ...this.props}>
                 
-                <NewTable columns = { PROVEEDORES_COLUMNS } data = { proveedores } 
-                            title = 'Proveedores' subtitle = 'Listado de proveedores'
-                            mostrar_boton={true}
-                            abrir_modal={false}
-                            url = '/administracion/proveedores/add'  
-                            mostrar_acciones={true} 
-                            actions = {{
-                                'edit': {function: this.changePageEdit},
-                                'delete': {function: this.openModalDelete}
-                            }}
-                            elements = { data.proveedores }
-                            />
+                <NewTable columns={PROVEEDORES_COLUMNS} data={proveedores}
+                    title='Proveedores' subtitle='Listado de proveedores'
+                    mostrar_boton={true}
+                    abrir_modal={false}
+                    url='/administracion/proveedores/add'
+                    mostrar_acciones={true}
+                    actions={{
+                        'edit': { function: this.changePageEdit },
+                        'delete': { function: this.openModalDelete }
+                    }}
+                    elements={data.proveedores}
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
+                />
                 
 
                 <ModalDelete title={"¿Deseas eliminar el proveedor?"}show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteProveedor() }}>

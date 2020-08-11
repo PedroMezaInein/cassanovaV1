@@ -431,20 +431,23 @@ class Empresas extends Component{
         return(
             <Layout active={'usuarios'} { ...this.props}>
 
-                <NewTable  columns={EMPRESA_COLUMNS} data = { empresas } 
-                            title = 'Empresas' subtitle = 'Listado de empresas'
-                            mostrar_boton={true}
-                            abrir_modal={true}
-                            onClick={this.openModal}
-                            mostrar_acciones={true} 
-                            
-                            actions = {{
-                                'edit': {function: this.openModalEditEmpresa},
-                                'delete': {function: this.openModalDeleteEmpresa}
-                            }}
-                            elements = { data.empresas }
-                            idTable = 'kt_datatable_empresas'
-                            />
+                <NewTable columns={EMPRESA_COLUMNS} data={empresas}
+                    title='Empresas' subtitle='Listado de empresas'
+                    mostrar_boton={true}
+                    abrir_modal={true}
+                    onClick={this.openModal}
+                    mostrar_acciones={true}
+
+                    actions={{
+                        'edit': { function: this.openModalEditEmpresa },
+                        'delete': { function: this.openModalDeleteEmpresa }
+                    }}
+                    elements={data.empresas}
+                    idTable='kt_datatable_empresas'
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
+                />
 
                 <Modal size="xl" title = { title } show={modalEdit} handleClose={this.handleEditModal}>
                     <EmpresaForm 

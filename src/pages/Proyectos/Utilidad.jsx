@@ -87,6 +87,9 @@ class Utilidad extends Component {
                     mostrar_acciones = { false }
                     elements = { data.utilidades }
                     idTable = 'kt_datatable_utilidad'
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
                 />
             </Layout>
         )

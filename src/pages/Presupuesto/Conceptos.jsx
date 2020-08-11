@@ -425,6 +425,9 @@ class Conceptos extends Component {
                     }}
                     elements={data.conceptos}
                     idTable='kt_datatable_conceptos'
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
                 />
 
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el concepto?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); this.deleteConceptoAxios() }}>

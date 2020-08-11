@@ -760,20 +760,23 @@ class Leads extends Component {
 
         return (
             <Layout active={'leads'}  {...this.props}>
-                <NewTable columns = { PROSPECTOS_COLUMNS } data = { prospectos } 
-                            title = 'Prospectos' subtitle = 'Listado de prospectos'
-                            mostrar_boton={false}
-                            abrir_modal={false}  
-                            mostrar_acciones={true} 
-                            actions = {{
-                                'edit': {function: this.openEdit},
-                                'delete': {function: this.openSafeDelete},
-                                'contacto': {function: this.activeFormContact},
-                                'historial': {function: this.activeModalHistory},
-                                'convert': {function: this.openConvert}
-                            }}
-                            elements = { data.prospectos }
-                            />
+                <NewTable columns={PROSPECTOS_COLUMNS} data={prospectos}
+                    title='Prospectos' subtitle='Listado de prospectos'
+                    mostrar_boton={false}
+                    abrir_modal={false}
+                    mostrar_acciones={true}
+                    actions={{
+                        'edit': { function: this.openEdit },
+                        'delete': { function: this.openSafeDelete },
+                        'contacto': { function: this.activeFormContact },
+                        'historial': { function: this.activeModalHistory },
+                        'convert': { function: this.openConvert }
+                    }}
+                    elements={data.prospectos}
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
+                />
 
                 <Modal size="xl" title={title} show={modal} handleClose={this.handleCloseModal} >
                     <ProspectoForm

@@ -764,6 +764,9 @@ class NominaObra extends Component {
                     setter = { this.setNominaObra }
                     urlRender = {URL_DEV + 'rh/nomina-obra'}
                     idTable = 'kt_datatable2_nomina_obra'
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
                 />
                 <ModalDelete title={'¿Desea eliminar la nómina?'} show = { modal.delete } handleClose = { this.handleCloseModalDelete } onClick=  { (e) => { e.preventDefault(); waitAlert(); this.deleteNominaObraAxios() }}>
                 </ModalDelete>

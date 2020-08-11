@@ -304,6 +304,9 @@ class Presupuesto extends Component {
                     accessToken={this.props.authUser.access_token}
                     setter={this.setPresupuestos}
                     urlRender={URL_DEV + 'presupuestos'}
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
                 />
                 <FloatButtons 
                     save={this.save}

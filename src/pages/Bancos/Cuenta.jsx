@@ -826,6 +826,10 @@ class Cuentas extends Component {
                             urlRender={URL_DEV + 'cuentas/cuentas'}
                             idTable='cuentas_bancos'
                             elementClass='estatus'
+                            cardTable='cardTable_bancos'
+                            cardTableHeader='cardTableHeader__bancos'
+                            cardBody='cardBody_bancos'
+                            isTab={true}
                         />
                     </Tab>
                     <Tab eventKey="cajas" title="Caja chica">
@@ -847,6 +851,10 @@ class Cuentas extends Component {
                             urlRender={URL_DEV + 'cuentas/cajas'}
                             idTable='cuentas_cajas'
                             elementClass='estatus'
+                            cardTable='cardTable_caja'
+                            cardTableHeader='cardTableHeader_caja'
+                            cardBody='cardBody_caja'
+                            isTab={true}
                         />
                     </Tab>
                 </Tabs>

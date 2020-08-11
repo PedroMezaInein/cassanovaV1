@@ -374,6 +374,9 @@ class EstadosCuenta extends Component {
                     }}
                     elements={data.estados}
                     idTable='kt_datatable_estados_cuenta'
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
                 />
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el estado de cuenta?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteEstadoAxios() }}>
                 </ModalDelete>

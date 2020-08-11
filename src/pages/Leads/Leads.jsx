@@ -686,6 +686,9 @@ class Leads extends Component{
                             'proveedor': {function: this.openModalSafeConvertProveedor},
                         }}
                         elements = { data.leads }
+                        cardTable='cardTable'
+                        cardTableHeader='cardTableHeader'
+                        cardBody='cardBody'
                     />
                 }
                 <Modal size="xl" title = { title } show = { modalAdd } handleClose = { this.handleCloseModal } >

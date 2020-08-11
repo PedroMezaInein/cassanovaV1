@@ -1280,6 +1280,9 @@ class Compras extends Component {
                     idTable='kt_datatable2_compras'
                     validateFactura = { true }
                     tipo_validacion = 'compras'
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
                 />
 
                 <Modal size="xl" title={title} show={modal} handleClose={this.handleClose} >

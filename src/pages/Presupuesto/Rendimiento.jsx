@@ -455,6 +455,9 @@ class Rendimientos extends Component {
                     }}
                     elements={data.rendimientos}
                     idTable = 'kt_datatable_rendimiento'
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
                     
                 />
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el rendimiento?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); this.deleteRendimientoAxios() }}>

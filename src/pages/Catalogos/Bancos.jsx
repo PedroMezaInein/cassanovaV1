@@ -323,6 +323,9 @@ class Bancos extends Component {
                     }}
                     elements={data.bancos}
                     idTable = 'kt_datatable_catalogos'
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
                 />
 
                 <Modal size="xl" show={modal.form} title = {title} handleClose={this.handleClose}>

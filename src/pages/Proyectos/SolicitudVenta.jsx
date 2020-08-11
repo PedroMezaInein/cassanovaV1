@@ -686,7 +686,11 @@ class SolicitudVenta extends Component{
                         'see': {function: this.openModalSingle},
                         'bills': { function: this.openModalAskFactura },
                     }}
-                    elements = { data.solicitudes } />
+                    elements = { data.solicitudes }
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
+                />
                 <Modal size="xl" show = { modal } handleClose = { this.handleClose } title = { title }>
                     <SolicitudVentaForm title = { title } form = { form } options = { options } 
                         setOptions = {this.setOptions}  onChange = { this.onChange } onChangeAdjunto = { this.onChangeAdjunto }

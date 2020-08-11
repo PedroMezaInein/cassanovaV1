@@ -622,6 +622,9 @@ class Traspasos extends Component{
                     idTable = 'kt_datatable_transpasos'
                     exportar_boton={true} 
                     onClickExport={() => this.exportTraspasosAxios()}
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
                 />
 
 

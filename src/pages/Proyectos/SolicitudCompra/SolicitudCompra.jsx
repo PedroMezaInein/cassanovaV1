@@ -260,7 +260,11 @@ class SolicitudCompra extends Component{
                         'delete': {function: this.openModalDelete},
                         'convert': {function: this.changePageConvert}
                     }}
-                    elements = { data.solicitudes } />
+                    elements = { data.solicitudes }
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
+                    />
                 
                 <ModalDelete title={"¿Quieres eliminar la solicitud de compra?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteSolicitudAxios() }}>
                 </ModalDelete>

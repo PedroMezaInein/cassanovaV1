@@ -385,6 +385,9 @@ class Partidas extends Component {
                     }}
                     elements={data.partidas}
                     idTable = 'kt_datatable_partidas'
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
                 />
 
                 <Modal size="xl" show={modal.form} title = {title} handleClose={this.handleClose}>

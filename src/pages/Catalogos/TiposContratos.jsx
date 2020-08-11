@@ -327,6 +327,9 @@ class TiposContratos extends Component {
                     }}
                     elements={data.tipos}
                     idTable = 'kt_datatable_contratos'
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
                 />
 
                 <Modal size="xl" show={modal.form} title = {title} handleClose={this.handleClose}>

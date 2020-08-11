@@ -1383,6 +1383,9 @@ class Ventas extends Component{
                     elementClass = 'total'
                     // zeroRed = { true }
                     tipo_validacion = 'ventas'
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
                 /> 
 
                 <Modal size="xl" show = {modal} handleClose = { this.handleClose } title = { title } >

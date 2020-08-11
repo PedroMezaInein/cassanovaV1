@@ -991,6 +991,9 @@ class Ingresos extends Component {
                     elementClass = 'total'
                     idTable = 'ingresostable'
                     tipo_validacion = 'ventas'
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
                     />
 
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el ingreso?"}show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteIngresoAxios() }}>

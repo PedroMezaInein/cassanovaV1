@@ -757,50 +757,54 @@ class Empleados extends Component {
             <Layout active={'rh'} {...this.props}>
                 <Tabs defaultActiveKey="administrativo" activeKey={key} onSelect = { (value) =>  { this.controlledTab(value)} }>
                     <Tab eventKey="administrativo" title="Administrativo">
-                        <div className="py-2">
-                            <NewTableServerRender
-                                columns = { EMPLEADOS_COLUMNS }
-                                title = 'Empleados administrativos' 
-                                subtitle = 'Listado de empleados'
-                                mostrar_boton = { true }
-                                abrir_modal = { true }
-                                onClick = { this.openModal }
-                                mostrar_acciones = { true }
-                                actions = {
-                                    {
-                                        'edit': {function: this.openModalEdit},
-                                        'delete': {function: this.openModalDelete},
-                                        'adjuntos': { function: this.openModalAdjuntos }
-                                    }
-                                }
-                                accessToken = { this.props.authUser.access_token }
-                                setter = { this.setEmpleado }
-                                urlRender = {URL_DEV + 'rh/empleado/admin' }
-                                idTable = 'empleados_admin_table'
-                            />
-                        </div>
-                    </Tab> 
-                    <Tab eventKey="obra" title="Obra">
-                        <div className="py-2">
-                            <NewTableServerRender
-                                columns={EMPLEADOS_COLUMNS}
-                                title='Empleados de obra' 
-                                subtitle='Listado de empleados'
-                                mostrar_boton = {true}
-                                abrir_modal = {true}
-                                onClick = {this.openModal}
-                                mostrar_acciones = {true}
-                                actions = {{
-                                    'edit': {function: this.openModalEdit},
-                                    'delete': {function: this.openModalDelete},
+                        <NewTableServerRender
+                            columns={EMPLEADOS_COLUMNS}
+                            title='Empleados administrativos'
+                            subtitle='Listado de empleados'
+                            mostrar_boton={true}
+                            abrir_modal={true}
+                            onClick={this.openModal}
+                            mostrar_acciones={true}
+                            actions={
+                                {
+                                    'edit': { function: this.openModalEdit },
+                                    'delete': { function: this.openModalDelete },
                                     'adjuntos': { function: this.openModalAdjuntos }
-                                }}
-                                accessToken = {this.props.authUser.access_token}
-                                setter = {this.setEmpleado}
-                                urlRender = { URL_DEV + 'rh/empleado/obra' }
-                                idTable = 'empleados_obra_table'
-                                />
-                        </div>
+                                }
+                            }
+                            accessToken={this.props.authUser.access_token}
+                            setter={this.setEmpleado}
+                            urlRender={URL_DEV + 'rh/empleado/admin'}
+                            idTable='empleados_admin_table'
+                            cardTable='cardTable_admin'
+                            cardTableHeader='cardTableHeader_admin'
+                            cardBody='cardBody_admin'
+                            isTab={true}
+                        />
+                    </Tab>
+                    <Tab eventKey="obra" title="Obra">
+                        <NewTableServerRender
+                            columns={EMPLEADOS_COLUMNS}
+                            title='Empleados de obra'
+                            subtitle='Listado de empleados'
+                            mostrar_boton={true}
+                            abrir_modal={true}
+                            onClick={this.openModal}
+                            mostrar_acciones={true}
+                            actions={{
+                                'edit': { function: this.openModalEdit },
+                                'delete': { function: this.openModalDelete },
+                                'adjuntos': { function: this.openModalAdjuntos }
+                            }}
+                            accessToken={this.props.authUser.access_token}
+                            setter={this.setEmpleado}
+                            urlRender={URL_DEV + 'rh/empleado/obra'}
+                            idTable='empleados_obra_table'
+                            cardTable='cardTable_obra'
+                            cardTableHeader='cardTableHeader_obra'
+                            cardBody='cardBody_obra'
+                            isTab={true}
+                        />
                     </Tab>
                 </Tabs>
                 <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseModal}>

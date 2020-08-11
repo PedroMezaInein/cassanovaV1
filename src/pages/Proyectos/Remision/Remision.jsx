@@ -251,7 +251,11 @@ class Remisiones extends Component{
                         'delete': {function: this.openModalDelete},
                         'convert': {function: this.changePageConvert}
                     }}
-                    elements = { data.remisiones } />
+                    elements = { data.remisiones }
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
+                />
 
                 <ModalDelete title={"¿Estás seguro que deseas eliminar la remisión?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteRemisionAxios() }}>
                 </ModalDelete>

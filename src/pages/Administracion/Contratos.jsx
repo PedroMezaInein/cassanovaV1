@@ -839,48 +839,52 @@ class Contratos extends Component {
 
                 <Tabs defaultActiveKey="cliente" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
                     <Tab eventKey="cliente" title="Cliente">
-                        <div className="py-2">
-                            <NewTableServerRender
-                                columns={CONTRATOS_CLIENTES_COLUMNS}
-                                title='Contratos de clientes'
-                                subtitle='Listado de contratos de clientes'
-                                mostrar_boton={true}
-                                abrir_modal={true}
-                                mostrar_acciones={true}
-                                onClick={this.openModalCliente}
-                                actions={{
-                                    'edit': { function: this.openModalEditCliente },
-                                    'delete': { function: this.openModalDeleteCliente },
-                                    'adjuntos': { function: this.openModalAdjuntos },
-                                }}
-                                idTable='kt_datatable_cliente'
-                                accessToken={this.props.authUser.access_token}
-                                setter={this.setContratosCliente}
-                                urlRender={URL_DEV + 'contratos/clientes'}
-                            />
-                        </div>
+                        <NewTableServerRender
+                            columns={CONTRATOS_CLIENTES_COLUMNS}
+                            title='Contratos de clientes'
+                            subtitle='Listado de contratos de clientes'
+                            mostrar_boton={true}
+                            abrir_modal={true}
+                            mostrar_acciones={true}
+                            onClick={this.openModalCliente}
+                            actions={{
+                                'edit': { function: this.openModalEditCliente },
+                                'delete': { function: this.openModalDeleteCliente },
+                                'adjuntos': { function: this.openModalAdjuntos },
+                            }}
+                            idTable='kt_datatable_cliente'
+                            accessToken={this.props.authUser.access_token}
+                            setter={this.setContratosCliente}
+                            urlRender={URL_DEV + 'contratos/clientes'}
+                            cardTable='cardTable_cliente'
+                            cardTableHeader='cardTableHeader_cliente'
+                            cardBody='cardBody_cliente'
+                            isTab={true}
+                        />
                     </Tab>
                     <Tab eventKey="proveedor" title="Proveedor">
-                        <div className="py-2">
-                            <NewTableServerRender
-                                columns={CONTRATOS_PROVEEDORES_COLUMNS}
-                                title='Contratos de proveedores'
-                                subtitle='Listado de contratos de proveedores'
-                                mostrar_boton={true}
-                                abrir_modal={true}
-                                mostrar_acciones={true}
-                                onClick={this.openModalProveedor}
-                                actions={{
-                                    'edit': { function: this.openModalEditProveedor },
-                                    'delete': { function: this.openModalDeleteProveedor },
-                                    'adjuntos': { function: this.openModalAdjuntos },
-                                }}
-                                idTable='kt_datatable_proveedor'
-                                accessToken={this.props.authUser.access_token}
-                                setter={this.setContratosProveedor}
-                                urlRender={URL_DEV + 'contratos/proveedores'}
-                            />
-                        </div>
+                        <NewTableServerRender
+                            columns={CONTRATOS_PROVEEDORES_COLUMNS}
+                            title='Contratos de proveedores'
+                            subtitle='Listado de contratos de proveedores'
+                            mostrar_boton={true}
+                            abrir_modal={true}
+                            mostrar_acciones={true}
+                            onClick={this.openModalProveedor}
+                            actions={{
+                                'edit': { function: this.openModalEditProveedor },
+                                'delete': { function: this.openModalDeleteProveedor },
+                                'adjuntos': { function: this.openModalAdjuntos },
+                            }}
+                            idTable='kt_datatable_proveedor'
+                            accessToken={this.props.authUser.access_token}
+                            setter={this.setContratosProveedor}
+                            urlRender={URL_DEV + 'contratos/proveedores'}
+                            cardTable='cardTable_proveedor'
+                            cardTableHeader='cardTableHeader_proveedor'
+                            cardBody='cardBody_proveedor'
+                            isTab={true}
+                        />
                     </Tab>
                 </Tabs>
                 <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseModal}>
