@@ -13,6 +13,8 @@ import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/ale
 import { setTextTable, setListTable} from '../../functions/setters'
 import { Tabs, Tab } from 'react-bootstrap'
 
+const $ = require('jquery');
+
 class Areas extends Component {
 
     state = {
@@ -34,7 +36,8 @@ class Areas extends Component {
         modalDelete: false,
         title: 'Nueva área',
         area: '',
-        tipo: 'compras'
+        tipo: 'compras',
+        key: 'compras'
     }
     
     componentDidMount() {
@@ -467,75 +470,115 @@ class Areas extends Component {
         })
     }
 
+    async getComprasAxios() {
+        $('#kt_datatable_compras').DataTable().ajax.reload();
+    }
+
+    async getVentasAxios() {
+        $('#kt_datatable_ventas').DataTable().ajax.reload();
+    }
+
+    async getEgresosAxios() {
+        $('#kt_datatable_egresos').DataTable().ajax.reload();
+    }
+
+    controlledTab = value => {
+        if (value === 'compras') {
+            // this.getComprasAxios()
+        }
+        if (value === 'ventas') {
+            // this.getVentasAxios()
+
+        }
+        if (value === 'egresos') {
+            // this.getEgresosAxios()
+        }
+        this.setState({
+            ... this.state,
+            key: value
+        })
+    }
+
     render() {
-        const { form, areas, areasVentas, modal, modalDelete, title, data, formeditado, areasEgresos} = this.state
+        const { form, areas, areasVentas, modal, modalDelete, title, data, formeditado, areasEgresos, key} = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
-                <Tabs defaultActiveKey="compras">
-                    <Tab eventKey="compras" title="Compras">
-                        <div className="py-2">
-                            <NewTable columns={AREAS_COLUMNS} data={areas}
-                                title='Áreas' subtitle='Listado de áreas'
-                                mostrar_boton={true}
-                                abrir_modal={true}
-                                mostrar_acciones={true}
-                                onClick={this.openModal}
-                                actions={{
-                                    'edit': { function: this.openModalEdit },
-                                    'delete': { function: this.openModalDelete }
-                                }}
-                                elements={data.areas}
-                                idTable = 'kt_datatable_compras'
-                            />
-                        </div>
+                <Tabs id="tabsAreas" defaultActiveKey="compras" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
+                    <Tab eventKey="compras" title="Compras" >
+                        <NewTable columns={AREAS_COLUMNS} data={areas}
+                            title='Áreas' subtitle='Listado de áreas'
+                            mostrar_boton={true}
+                            abrir_modal={true}
+                            mostrar_acciones={true}
+                            onClick={this.openModal}
+                            actions={{
+                                'edit': { function: this.openModalEdit },
+                                'delete': { function: this.openModalDelete }
+                            }}
+                            elements={data.areas}
+                            idTable='kt_datatable_compras'
+                            cardTable='cardTable_compras'
+                            cardTableHeader='cardTableHeader_compras'
+                            cardBody='cardBody_compras'
+                            isTab={true}                        
+                        />
                     </Tab>
                     <Tab eventKey="ventas" title="Ventas e ingresos">
-                        <div className="py-2">
-                            <NewTable 
-                                columns={AREAS_COLUMNS} 
-                                data={areasVentas}
-                                title='Áreas' 
-                                subtitle='Listado de áreas'
-                                mostrar_boton={true}
-                                abrir_modal={true}
-                                mostrar_acciones={true}
-                                onClick={this.openModalVentas}
-                                actions={{
-                                    'edit': { function: this.openModalEditVentas },
-                                    'delete': { function: this.openModalDelete }
-                                }}
-                                elements={data.areasVentas}
-                                idTable = 'kt_datatable_ventas'
-                            />
-                        </div>
+                        <NewTable
+                            columns={AREAS_COLUMNS}
+                            data={areasVentas}
+                            title='Áreas'
+                            subtitle='Listado de áreas'
+                            mostrar_boton={true}
+                            abrir_modal={true}
+                            mostrar_acciones={true}
+                            onClick={this.openModalVentas}
+                            actions={{
+                                'edit': { function: this.openModalEditVentas },
+                                'delete': { function: this.openModalDelete }
+                            }}
+                            elements={data.areasVentas}
+                            idTable='kt_datatable_ventas'
+                            cardTable='cardTable_ventas'
+                            cardTableHeader='cardTableHeader_ventas'
+                            cardBody='cardBody_ventas'
+                            isTab={true}
+                        />
                     </Tab>
                     <Tab eventKey="egresos" title="Egresos">
-                        <div className="py-2">
-                            <NewTable 
-                                columns={AREAS_COLUMNS} 
-                                data={areasEgresos}
-                                title='Áreas' 
-                                subtitle='Listado de áreas'
-                                mostrar_boton={true}
-                                abrir_modal={true}
-                                mostrar_acciones={true}
-                                onClick={this.openModalEgresos}
-                                actions={{
-                                    'edit': { function: this.openModalEditEgresos },
-                                    'delete': { function: this.openModalDelete }
-                                }}
-                                elements={data.areasEgresos}
-                                idTable = 'kt_datatable_egresos'
-                            />
-                        </div>
+                        <NewTable
+                            columns={AREAS_COLUMNS}
+                            data={areasEgresos}
+                            title='Áreas'
+                            subtitle='Listado de áreas'
+                            mostrar_boton={true}
+                            abrir_modal={true}
+                            mostrar_acciones={true}
+                            onClick={this.openModalEgresos}
+                            actions={{
+                                'edit': { function: this.openModalEditEgresos },
+                                'delete': { function: this.openModalDelete }
+                            }}
+                            elements={data.areasEgresos}
+                            idTable='kt_datatable_egresos'
+                            cardTable='cardTable_egresos'
+                            cardTableHeader='cardTableHeader_egresos'
+                            cardBody='cardBody_egresos'
+                            isTab={true}
+                        />
                     </Tab>
                 </Tabs>
-                
 
                 <Modal size="xl" title={title} show={modal} handleClose={this.handleClose}>
-                    <AreasForm form={form} onChange={this.onChange}
-                        addSubarea={this.addSubarea} deleteSubarea={this.deleteSubarea}
-                        title={title} onSubmit={this.onSubmit} formeditado={formeditado} />
+                    <AreasForm 
+                        form={form} 
+                        onChange={this.onChange}
+                        addSubarea={this.addSubarea} 
+                        deleteSubarea={this.deleteSubarea}
+                        title={title} 
+                        onSubmit={this.onSubmit} 
+                        formeditado={formeditado}
+                    />
                 </Modal>
                 
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el área?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.safeDelete(e)() }}>
