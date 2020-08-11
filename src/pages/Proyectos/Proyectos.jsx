@@ -1910,16 +1910,13 @@ class Proyectos extends Component {
                                 <Tab.Container id="left-tabs-example" activeKey = { subActiveKey ? subActiveKey : defaultactivekey } defaultActiveKey={defaultactivekey}
                                             onSelect = { (select) => { this.updateActiveTabContainer(select) } }>
                                     <Row>
-                                        <Col md={5} className="border-nav">
+                                        <Col md={4} className="navi navi-accent navi-hover navi-bold border-nav">
 											<Nav variant="pills" className="flex-column navi navi-hover navi-active">  
                                                 {   
                                                     showadjuntos.map( (adjunto, key) => {
                                                         return(
                                                             <Nav.Item className="navi-item" key = {key}>
                                                                 <Nav.Link className="navi-link" eventKey = { adjunto.id }>
-                                                                    <span className="navi-icon">
-                                                                        <i className="flaticon2-analytics"></i>
-                                                                    </span>
                                                                     <span className="navi-text">{adjunto.placeholder}</span>
                                                                 </Nav.Link>
                                                             </Nav.Item>
@@ -1928,12 +1925,12 @@ class Proyectos extends Component {
                                                 }
 											</Nav>
 										</Col>
-                                        <Col md={7}>
+                                        <Col md={8} className="align-self-center">
                                             <Tab.Content>
                                                 {   
                                                     showadjuntos.map( (adjunto, key) => {
                                                         return(
-                                                            <Tab.Pane key = {key} eventKey={adjunto.id}>
+                                                            <Tab.Pane key = {key} eventKey={adjunto.id} className="">
                                                                 <>
                                                                     {
                                                                         proyecto ? 

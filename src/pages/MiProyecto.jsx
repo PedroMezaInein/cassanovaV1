@@ -581,7 +581,7 @@ class MiProyecto extends Component{
                                         <Tab.Container id="left-tabs-example" activeKey = { subActiveKey ? subActiveKey : defaultactivekey } defaultActiveKey={defaultactivekey}
                                             onSelect = { (select) => { this.updateActiveTabContainer(select) } }>
                                             <Row>
-                                                <Col md={4}>
+                                                <Col md={3} className="navi navi-accent navi-hover navi-bold">
                                                     <Nav variant="pills" className="flex-column navi navi-hover navi-active">                                                    
                                                         { 
                                                             showadjuntos.map((adjunto, key) => { 
@@ -590,9 +590,6 @@ class MiProyecto extends Component{
                                                                     return( 
                                                                         <Nav.Item className="navi-item" key = {key}>
                                                                             <Nav.Link className="navi-link" eventKey={adjunto.value}>
-                                                                                <span className="navi-icon">
-                                                                                    <i className="flaticon2-analytics"></i>
-                                                                                </span>
                                                                                 <span className="navi-text">{adjunto.name}</span>
                                                                             </Nav.Link>
                                                                         </Nav.Item>
