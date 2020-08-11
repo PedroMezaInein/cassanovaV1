@@ -6,7 +6,7 @@ import { validateAlert } from '../../functions/alert'
 class CuentaForm extends Component {
 
     render() {
-        const { bancos, estatus, tipos, title, form, onChange, onChangeEmpresa, updateEmpresa, empresas, onSubmit, formeditado, tipo, ...props } = this.props
+        const { bancos, estatus, tipos, title, form, onChange, onChangeEmpresa, updateEmpresa, empresas, empresas2, onSubmit, formeditado, tipo, ...props } = this.props
         return (
             <Form id="form-cuenta"
                 onSubmit={
@@ -134,6 +134,19 @@ class CuentaForm extends Component {
                         <Select
                             requirevalidation={0}
                             formeditado={formeditado}
+                            name='empresa_principal'
+                            options={empresas2}
+                            placeholder='SELECCIONA LA EMPRESA PRINCIPAL'
+                            value={form.empresa_principal}
+                            onChange={onChange}
+                            iconclass={"far fa-building"}
+                            messageinc="Incorrecto. Selecciona la empresa."
+                        />
+                    </div>
+                    <div className="col-md-4">
+                        <Select
+                            requirevalidation={0}
+                            formeditado={formeditado}
                             name='empresa'
                             options={empresas}
                             placeholder='SELECCIONA LA(S) EMPRESA(S)'
@@ -145,7 +158,7 @@ class CuentaForm extends Component {
                     </div>
                     {
                         form.empresas.length > 0 ?
-                            <div className="col-md-8 row mx-0 align-items-center image-upload">
+                            <div className="col-md-4 row mx-0 align-items-center image-upload">
                                 {
                                     form.empresas.map((empresa, key) => {
                                         return (
