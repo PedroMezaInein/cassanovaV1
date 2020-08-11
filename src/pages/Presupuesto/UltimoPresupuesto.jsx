@@ -7,6 +7,8 @@ import { setOptions } from "../../functions/setters";
 import { errorAlert, waitAlert, forbiddenAccessAlert } from "../../functions/alert";
 import Layout from "../../components/layout/layout";
 import { UltimoPresupuestoForm } from "../../components/forms";
+import FloatButtons from '../../components/singles/FloatButtons'
+import { save, deleteForm } from '../../redux/reducers/formulario'
 
 class UltimoPresupuesto extends Component {
     state = {
@@ -406,8 +408,34 @@ class UltimoPresupuesto extends Component {
         })
     }
 
+    save = () => {
+        const { form } = this.state
+        const { save } = this.props
+        let auxObject = {}
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            auxObject[element] = form[element]
+        })
+        save({
+            form: auxObject,
+            page: 'presupuesto/presupuesto/finish'
+        })
+    }
+
+    recover = () => {
+        const { formulario, deleteForm } = this.props
+        this.setState({
+            ... this.state,
+            form: formulario.form
+        })
+        deleteForm()
+    }
+    
+
     render() {
         const { form, title, options, formeditado, presupuesto} = this.state;
+        const { formulario } = this.props
+
         return (
             <Layout active={"presupuesto"} {...this.props}>
                 <UltimoPresupuestoForm
@@ -419,17 +447,30 @@ class UltimoPresupuesto extends Component {
                     presupuesto={presupuesto}
                     {...this.props}
                 />
+
+                <FloatButtons 
+                    save={this.save}
+                    recover={this.recover}
+                    formulario={formulario}
+                    descargar={() => this.updatePresupuestosAxios()}
+                    url={'presupuesto/presupuesto/finish'}
+                    exportar={true}
+                />
             </Layout>
         );
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         authUser: state.authUser,
-    };
-};
+        formulario: state.formulario
+    }
+}
 
-const mapDispatchToProps = (dispatch) => ({});
+const mapDispatchToProps = dispatch => ({
+    save: payload => dispatch(save(payload)),
+    deleteForm: () => dispatch(deleteForm()),
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(UltimoPresupuesto);

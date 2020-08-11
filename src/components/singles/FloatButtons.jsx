@@ -4,7 +4,7 @@ import Tooltip from 'react-bootstrap/Tooltip'
 
 class FloatButtons extends Component {
     render() {
-        const { save, recover, formulario, url } = this.props
+        const { save, recover, formulario, url, exportar, descargar} = this.props
 
         return (
             <ul className="sticky-toolbar nav flex-column pl-2 pr-2 pt-3 pb-2 mt-4">
@@ -29,6 +29,19 @@ class FloatButtons extends Component {
 
                         : ''
                 }
+                {
+                    exportar ? 
+                        <OverlayTrigger overlay={<Tooltip>Descargar</Tooltip>}>
+                            <li className="nav-item mb-2" data-placement="left">
+                                <a className="btn btn-sm btn-icon btn-bg-light btn-text-info btn-hover-info" onClick={descargar}>
+                                    <i className="flaticon-download"></i>
+                                </a>
+                            </li>
+                        </OverlayTrigger>
+                    :''
+                    
+                }
+                
             </ul>
         )
     }
