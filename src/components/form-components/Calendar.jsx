@@ -55,6 +55,18 @@ class Calendar extends Component{
                         showMonthDropdown
                         showYearDropdown
                         placeholderText={placeholder} 
+                        popperPlacement="bottom"
+                        popperModifiers={{
+                            flip: {
+                                behavior: ["bottom"]
+                            },
+                            preventOverflow: {
+                                enabled: false
+                            },
+                            hide: {
+                                enabled: false
+                            }
+                        }}
                         customInput={
                         
                         <Form.Control    
