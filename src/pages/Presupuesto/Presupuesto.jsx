@@ -232,7 +232,7 @@ class Presupuesto extends Component {
             aux.push(
                 {
                     text: 'Descargar&nbsp;presupuesto',
-                    btnclass: 'primary',
+                    btnclass: 'info',
                     iconclass: 'flaticon2-download-1',                  
                     action: 'download',
                     tooltip: {id:'download', text:'Decargar presupuesto'},
