@@ -229,3 +229,9 @@ td.descripcion.text-center{
 }
 
 // Fin: Tabla actualización de presupuestos
+
+a#tabsAreas-tab-compras, a#tabsAreas-tab-ventas, a#tabsAreas-tab-egresos{
+    @include down-screen($md){
+        font-size: 11px;
+    }  
+}
