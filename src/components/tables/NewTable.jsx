@@ -40,51 +40,58 @@ class NewTable extends Component {
         });
     }
 
-    componentDidMount() {
-        const { data, mostrar_acciones, elementClass, totales, validateFactura, tipo_validacion, cardTable, cardTableHeader, cardBody, isTab } = this.props
-        global_variable["mostrar_acciones"] = mostrar_acciones;
-
+    reloadHeader(){
+        const {cardTable, cardTableHeader, cardBody, isTab} = this.props
         $("body").addClass("card-sticky-on")
-            .css("overflow-y", "scroll")
-
-        let tableWidth = $("#" + cardTable).width()
-        $("#" + cardTableHeader).css("width", tableWidth).css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)").css("z-index", 3)
-        let headerHeidht = $("#" + cardTableHeader).height()
-        $("#" + cardBody).css("margin-top", headerHeidht)
-        $("#" + cardTable).on('resize', function () {
+                .css("overflow-y","scroll")  
+        
+        let tableWidth = $("#"+cardTable).width() 
+        $("#"+cardTableHeader).css("width",tableWidth).css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)").css("z-index",3)
+        let headerHeidht = $("#"+cardTableHeader).height() 
+        $("#"+cardBody).css("margin-top",headerHeidht)  
+        $("#"+cardTable).on('resize',function(){ 
         })
-        $(window).resize(function () {
-            tableWidth = $("#" + cardTable).width()
-            $("#" + cardTableHeader).css("width", tableWidth)
-        })
-        $(window).on('scroll', function () {
-            var pos = $(this).scrollTop();
+        $( window ).resize(function() { 
+            tableWidth = $("#"+cardTable).width()
+            $("#"+cardTableHeader).css("width",tableWidth) 
+        }) 
+        $( window ).on('scroll',function(){ 
+            var pos = $(this).scrollTop(); 
             if (pos == 0) {
-                $("#" + cardTableHeader).css("margin-top", "0px").css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)")
+                $("#"+cardTableHeader).css("margin-top","0px").css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)")
             }
-            else {
-                if (isTab) {
+            else
+            {   
+                if(isTab){ 
                     let pantalla = $(this).width()
                     let limite = pantalla > 992 ? 68 : 96
-                    if (pos < limite) {
-                        $("#" + cardTableHeader).css("margin-top", "-" + pos + "px").css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)")
+                    if(pos<limite)
+                    {
+                        $("#"+cardTableHeader).css("margin-top","-"+pos+"px").css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)")
                     }
-                    else {
-                        $("#" + cardTableHeader).css("margin-top", "-" + limite + "px").css("box-shadow", "0px 1px 5px 1px rgba(69, 65, 78, 0.1)")
+                    else{
+                        $("#"+cardTableHeader).css("margin-top","-"+limite+"px").css("box-shadow", "0px 1px 5px 1px rgba(69, 65, 78, 0.1)")
                     }
-                } else {
+                }else{
                     let pantalla = $(this).width()
-                    let limite = pantalla > 992 ? 25 : 58
-                    if (pos < limite) {
-                        $("#" + cardTableHeader).css("margin-top", "-" + pos + "px").css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)")
+                    let limite = pantalla > 992 ? 25 : 58 
+                    if(pos<limite)
+                    {
+                        $("#"+cardTableHeader).css("margin-top","-"+pos+"px").css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)")
                     }
-                    else {
-                        $("#" + cardTableHeader).css("margin-top", "-" + limite + "px").css("box-shadow", "0px 1px 5px 1px rgba(69, 65, 78, 0.1)")
+                    else{
+                        $("#"+cardTableHeader).css("margin-top","-"+limite+"px").css("box-shadow", "0px 1px 5px 1px rgba(69, 65, 78, 0.1)")
                     }
                 }
             }
         });
+    }
 
+    componentDidMount() {
+        const { data, mostrar_acciones, elementClass, totales, validateFactura, tipo_validacion, cardTable, cardTableHeader, cardBody, isTab } = this.props
+        global_variable["mostrar_acciones"] = mostrar_acciones;
+
+        this.reloadHeader()
         var header = this.props.columns;
         var columns = [];
         var i = 0;
@@ -122,19 +129,12 @@ class NewTable extends Component {
                         if(total)
                         {
                             $(this).append('<div class="mt-2 text-primary bg-primary-o-40 font-weight-boldest">'+totales[total]+'</div>');
-                        }else{
-                            // $(this).append('<div class="mt-2 text-white  font-weight-boldest">.</div');
                         }
 
                     }
                     contador++;
-
-
-                    //  html+='<th style="'+$(this).attr("style").toString()+'"><input class="form-control form-control-sm form-filter datatable-input" type="text"/></th>';
                 });
 
-                //table.find("thead").append('<tr class="filter">'+html+'</tr>');
-                // Apply the search
                 this.api().columns().every(function () {
                     var that = this;
                     $('input', this.header()).on('keyup change clear', function () {
@@ -152,12 +152,6 @@ class NewTable extends Component {
             data: data,
             columns,
             createdRow: function(row, data) {
-                // if(validateFactura){
-                //     const { objeto } = data
-                //     if(objeto.factura && objeto.total === objeto.total_facturas){
-                //         $(row).addClass('verde');
-                //     }
-                // }
                 if(tipo_validacion){
                     const { objeto } = data 
                     switch (tipo_validacion) {
@@ -201,7 +195,6 @@ class NewTable extends Component {
                     }
                 }
             },
-            // DOM Layout settings
             dom:
                 `<'row'
                 <'col-sm-12'tr>>
@@ -257,7 +250,6 @@ class NewTable extends Component {
                         return (`<div>${data}</div>`)
                     }
                 }
-                /* 'defaultContent': '<button type="button" class="btn btn-primary btn-edit">Edit</button>' */
             }
             ],
             lengthMenu: [[20, 30, 40, 50, -1], [20, 30, 40, 50, "Todos"]],
@@ -272,14 +264,6 @@ class NewTable extends Component {
 
         $(this.refs.main).on('click', '.btn-actions-table', function (e) {
             e.preventDefault();
-            /* var id = $(this).attr('id').toString()
-            var name =$(this).attr('name').toString() 
-            let aux = elements.find(function(element, index) { 
-                if(element.id.toString() === id){
-                    return element    
-                }
-            }); 
-            actions[name].function(aux) */
         });
 
     }
@@ -290,66 +274,28 @@ class NewTable extends Component {
             .DataTable()
             .destroy(true);
     }
+
     shouldComponentUpdate(nextProps) {
+        if(this.props.aux)
+            this.reloadHeader()
         if (nextProps.data !== this.props.data) {
             this.reloadTableData(nextProps)
         }
-
-        const { cardTable, cardTableHeader, cardBody, isTab } = nextProps
-
-        $("body").addClass("card-sticky-on")
-            .css("overflow-y", "scroll")
-
-        let tableWidth = $("#" + cardTable).width()
-        $("#" + cardTableHeader).css("width", tableWidth).css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)").css("z-index", 3)
-        let headerHeidht = $("#" + cardTableHeader).height()
-        $("#" + cardBody).css("margin-top", headerHeidht)
-        $("#" + cardTable).on('resize', function () {
-        })
-        $(window).resize(function () {
-            tableWidth = $("#" + cardTable).width()
-            $("#" + cardTableHeader).css("width", tableWidth)
-        })
-        $(window).on('scroll', function () {
-            var pos = $(this).scrollTop();
-            if (pos == 0) {
-                $("#" + cardTableHeader).css("margin-top", "0px").css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)")
-            }
-            else {
-                if (isTab) {
-                    let pantalla = $(this).width()
-                    let limite = pantalla > 992 ? 68 : 96
-                    if (pos < limite) {
-                        $("#" + cardTableHeader).css("margin-top", "-" + pos + "px").css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)")
-                    }
-                    else {
-                        $("#" + cardTableHeader).css("margin-top", "-" + limite + "px").css("box-shadow", "0px 1px 5px 1px rgba(69, 65, 78, 0.1)")
-                    }
-                } else {
-                    let pantalla = $(this).width()
-                    let limite = pantalla > 992 ? 25 : 58
-                    if (pos < limite) {
-                        $("#" + cardTableHeader).css("margin-top", "-" + pos + "px").css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)")
-                    }
-                    else {
-                        $("#" + cardTableHeader).css("margin-top", "-" + limite + "px").css("box-shadow", "0px 1px 5px 1px rgba(69, 65, 78, 0.1)")
-                    }
-                }
-            }
-        });
         return false;
-
     }
+
     clickHandler = (e) => {
         if (typeof this.props.onClick === 'function') {
             this.props.onClick();
         }
     }
+
     clickHandlerExport = (e) => {
         if (typeof this.props.onClickExport === 'function') {
             this.props.onClickExport();
         }
     }
+
     render() {
 
         const { columns, data, title, subtitle, url, mostrar_boton, abrir_modal, exportar_boton, cardTable, cardTableHeader, cardBody} = this.props
