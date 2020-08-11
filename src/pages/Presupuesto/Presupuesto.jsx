@@ -9,8 +9,6 @@ import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { errorAlert, waitAlert, forbiddenAccessAlert} from '../../functions/alert'
 import { renderToString } from 'react-dom/server'
 import { ModalDelete } from '../../components/singles'
-import FloatButtons from '../../components/singles/FloatButtons'
-import { save, deleteForm } from '../../redux/reducers/formulario'
 
 const $ = require('jquery');
 
@@ -276,33 +274,9 @@ class Presupuesto extends Component {
         });
     }
 
-    save = () => {
-        const { form } = this.state
-        const { save } = this.props
-        let auxObject = {}
-        let aux = Object.keys(form)
-        aux.map((element) => {
-            auxObject[element] = form[element]
-        })
-        save({
-            form: auxObject,
-            page: 'usuarios/usuarios'
-        })
-    }
-
-    recover = () => {
-        const { formulario, deleteForm } = this.props
-        this.setState({
-            ... this.state,
-            form: formulario.form
-        })
-        deleteForm()
-    }
-
     render() {
 
         const { modal, title, form, options, formeditado} = this.state
-        const { formulario } = this.props
 
         return (
             <Layout active={'presupuesto'}  {...this.props}> 
@@ -328,12 +302,6 @@ class Presupuesto extends Component {
                     cardTableHeader='cardTableHeader'
                     cardBody='cardBody'
                 />
-                <FloatButtons 
-                    save={this.save}
-                    recover={this.recover}
-                    formulario={formulario}
-                    url={'presupuesto/presupuesto'}
-                />
                 <ModalDelete 
                     title={"¿Estás seguro que deseas eliminar el presupuesto?"} 
                     show = { modal.delete } 
@@ -350,13 +318,10 @@ class Presupuesto extends Component {
 const mapStateToProps = state => {
     return {
         authUser: state.authUser,
-        formulario: state.formulario
     }
 }
 
 const mapDispatchToProps = dispatch => ({
-    save: payload => dispatch(save(payload)),
-    deleteForm: () => dispatch(deleteForm()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Presupuesto);
