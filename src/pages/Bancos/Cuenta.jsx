@@ -42,6 +42,7 @@ class Cuentas extends Component {
             tipo: '',
             estatus: '',
             empresa: 0,
+            empresa_principal: '',
             empresas: []
         },
         data: {
@@ -183,6 +184,7 @@ class Cuentas extends Component {
             tipo: 0,
             estatus: 0,
             empresa: 0,
+            empresa_principal: 0,
             empresas: []
         }
     }
@@ -404,6 +406,7 @@ class Cuentas extends Component {
             cuenta: null,
             form: this.setEmptyForm(),
             empresas: aux,
+            empresas2: aux,
             formeditado: 0,
             tipo: 'Bancaria'
         })
@@ -434,6 +437,7 @@ class Cuentas extends Component {
         })
 
         let empresaOptionsAux = []
+        let empresaOptionsAux2 = []
 
         empresasOptions.map((option) => {
             let aux = true
@@ -442,6 +446,7 @@ class Cuentas extends Component {
                     aux = false
                 }
             })
+            empresaOptionsAux2.push(option)
             if (aux)
                 empresaOptionsAux.push(option)
         })
@@ -455,7 +460,8 @@ class Cuentas extends Component {
             tipo: cuenta.tipo ? cuenta.tipo.id : 0,
             estatus: cuenta.estatus ? cuenta.estatus.id : 0,
             empresa: 0,
-            empresas: empresaFormAux
+            empresas: empresaFormAux,
+            empresa_principal: cuenta.empresa_principal ? cuenta.empresa_principal.id : 0
         }
 
         this.setState({
@@ -463,6 +469,7 @@ class Cuentas extends Component {
             cuenta: cuenta,
             form: aux,
             empresas: empresaOptionsAux,
+            empresas2: empresaOptionsAux2,
             formeditado: 1,
             tipo: 'Bancaria'
         })
@@ -802,7 +809,7 @@ class Cuentas extends Component {
     }
 
     render() {
-        const { modal, modalDelete, modalEstado, bancos, estatus, tipos, key, form, cuentas, cuenta, empresas, estados, adjunto, adjuntoName, fecha, data, formeditado, tipo, cajas } = this.state
+        const { modal, modalDelete, modalEstado, bancos, estatus, tipos, key, form, cuentas, cuenta, empresas, empresas2, estados, adjunto, adjuntoName, fecha, data, formeditado, tipo, cajas } = this.state
         return (
             <Layout active={'bancos'}  {...this.props}>
 
@@ -867,6 +874,7 @@ class Cuentas extends Component {
                         estatus={estatus}
                         tipos={tipos}
                         empresas={empresas}
+                        empresas2={empresas2}
                         form={form}
                         onChange={this.onChange}
                         onChangeEmpresa={this.onChangeEmpresa}
