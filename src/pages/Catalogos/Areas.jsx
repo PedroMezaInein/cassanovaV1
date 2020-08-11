@@ -37,7 +37,12 @@ class Areas extends Component {
         title: 'Nueva área',
         area: '',
         tipo: 'compras',
-        key: 'compras'
+        key: 'compras',
+        aux: {
+            compras: true,
+            egresos: true,
+            ventas: true
+        },
     }
     
     componentDidMount() {
@@ -483,89 +488,121 @@ class Areas extends Component {
     }
 
     controlledTab = value => {
-        if (value === 'compras') {
-            // this.getComprasAxios()
-        }
-        if (value === 'ventas') {
-            // this.getVentasAxios()
-
-        }
-        if (value === 'egresos') {
-            // this.getEgresosAxios()
+        const { aux } = this.state
+        let auxiliar = ''
+        switch(value){
+            case 'egresos':
+                auxiliar = {
+                    compras: false,
+                    egresos: true,
+                    ventas: false
+                };
+            break;
+            case 'compras':
+                auxiliar = {
+                    compras: true,
+                    egresos: false,
+                    ventas: false
+                };
+            break;
+            case 'ventas':
+                auxiliar = {
+                    compras: false,
+                    egresos: false,
+                    ventas: true
+                };
+            break;
         }
         this.setState({
             ... this.state,
+            aux: auxiliar,
             key: value
         })
     }
 
     render() {
-        const { form, areas, areasVentas, modal, modalDelete, title, data, formeditado, areasEgresos, key} = this.state
+        const { form, areas, areasVentas, modal, modalDelete, title, data, formeditado, areasEgresos, key, aux} = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
                 <Tabs id="tabsAreas" defaultActiveKey="compras" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
                     <Tab eventKey="compras" title="Compras" >
-                        <NewTable columns={AREAS_COLUMNS} data={areas}
-                            title='Áreas' subtitle='Listado de áreas'
-                            mostrar_boton={true}
-                            abrir_modal={true}
-                            mostrar_acciones={true}
-                            onClick={this.openModal}
-                            actions={{
-                                'edit': { function: this.openModalEdit },
-                                'delete': { function: this.openModalDelete }
-                            }}
-                            elements={data.areas}
-                            idTable='kt_datatable_compras'
-                            cardTable='cardTable_compras'
-                            cardTableHeader='cardTableHeader_compras'
-                            cardBody='cardBody_compras'
-                            isTab={true}                        
-                        />
+                        {
+                            key === 'compras' ?
+                                <NewTable columns={AREAS_COLUMNS} data={areas}
+                                    title='Áreas' subtitle='Listado de áreas'
+                                    mostrar_boton={true}
+                                    abrir_modal={true}
+                                    mostrar_acciones={true}
+                                    onClick={this.openModal}
+                                    actions={{
+                                        'edit': { function: this.openModalEdit },
+                                        'delete': { function: this.openModalDelete }
+                                    }}
+                                    elements={data.areas}
+                                    idTable='kt_datatable_compras'
+                                    cardTable='cardTable_compras'
+                                    cardTableHeader='cardTableHeader_compras'
+                                    cardBody='cardBody_compras'
+                                    isTab={true}
+                                    aux={aux.compras}                        
+                                />
+                            : ''
+                        }
                     </Tab>
                     <Tab eventKey="ventas" title="Ventas e ingresos">
-                        <NewTable
-                            columns={AREAS_COLUMNS}
-                            data={areasVentas}
-                            title='Áreas'
-                            subtitle='Listado de áreas'
-                            mostrar_boton={true}
-                            abrir_modal={true}
-                            mostrar_acciones={true}
-                            onClick={this.openModalVentas}
-                            actions={{
-                                'edit': { function: this.openModalEditVentas },
-                                'delete': { function: this.openModalDelete }
-                            }}
-                            elements={data.areasVentas}
-                            idTable='kt_datatable_ventas'
-                            cardTable='cardTable_ventas'
-                            cardTableHeader='cardTableHeader_ventas'
-                            cardBody='cardBody_ventas'
-                            isTab={true}
-                        />
+                        {
+                            key === 'ventas' ?
+                                <NewTable
+                                    columns={AREAS_COLUMNS}
+                                    data={areasVentas}
+                                    title='Áreas'
+                                    subtitle='Listado de áreas'
+                                    mostrar_boton={true}
+                                    abrir_modal={true}
+                                    mostrar_acciones={true}
+                                    onClick={this.openModalVentas}
+                                    actions={{
+                                        'edit': { function: this.openModalEditVentas },
+                                        'delete': { function: this.openModalDelete }
+                                    }}
+                                    elements={data.areasVentas}
+                                    idTable='kt_datatable_ventas'
+                                    cardTable='cardTable_ventas'
+                                    cardTableHeader='cardTableHeader_ventas'
+                                    cardBody='cardBody_ventas'
+                                    isTab={true}
+                                    aux={aux.ventas}
+                                />
+                            : ''
+                        }
                     </Tab>
                     <Tab eventKey="egresos" title="Egresos">
-                        <NewTable
-                            columns={AREAS_COLUMNS}
-                            data={areasEgresos}
-                            title='Áreas'
-                            subtitle='Listado de áreas'
-                            mostrar_boton={true}
-                            abrir_modal={true}
-                            mostrar_acciones={true}
-                            onClick={this.openModalEgresos}
-                            actions={{
-                                'edit': { function: this.openModalEditEgresos },
-                                'delete': { function: this.openModalDelete }
-                            }}
-                            elements={data.areasEgresos}
-                            idTable='kt_datatable_egresos'
-                            cardTable='cardTable_egresos'
-                            cardTableHeader='cardTableHeader_egresos'
-                            cardBody='cardBody_egresos'
-                            isTab={true}
-                        />
+                        {
+                            key === 'egresos' ?
+                                <NewTable
+                                    columns={AREAS_COLUMNS}
+                                    data={areasEgresos}
+                                    title='Áreas'
+                                    subtitle='Listado de áreas'
+                                    mostrar_boton={true}
+                                    abrir_modal={true}
+                                    mostrar_acciones={true}
+                                    onClick={this.openModalEgresos}
+                                    actions={{
+                                        'edit': { function: this.openModalEditEgresos },
+                                        'delete': { function: this.openModalDelete }
+                                    }}
+                                    elements={data.areasEgresos}
+                                    idTable='kt_datatable_egresos'
+                                    cardTable='cardTable_egresos'
+                                    cardTableHeader='cardTableHeader_egresos'
+                                    cardBody='cardBody_egresos'
+                                    isTab={true}
+                                    aux={aux.egresos}
+                                />
+                            : ''
+                        }
+                        
                     </Tab>
                 </Tabs>
 
