@@ -2,13 +2,14 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
-import { URL_DEV, PRESUPUESTO_COLUMNS } from '../../constants'
-import { setOptions, setTextTable, setDateTable} from '../../functions/setters'
+import { URL_DEV, PRESUPUESTO_COLUMNS, ADJUNTOS_PRESUPUESTOS_COLUMNS } from '../../constants'
+import { setOptions, setTextTable, setDateTable, setAdjuntosList} from '../../functions/setters'
 import Layout from '../../components/layout/layout'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { errorAlert, waitAlert, forbiddenAccessAlert} from '../../functions/alert'
 import { renderToString } from 'react-dom/server'
-import { ModalDelete } from '../../components/singles'
+import { ModalDelete, Modal } from '../../components/singles'
+import TableForModals from '../../components/tables/TableForModals'
 
 const $ = require('jquery');
 
@@ -21,6 +22,7 @@ class Presupuesto extends Component {
             delete: false,
             adjuntos: false,
         },
+        presupuesto: '',
         title: 'Nuevo presupuesto',
         form: {
             proyecto: '',
@@ -37,7 +39,11 @@ class Presupuesto extends Component {
             areas: [],
             partidas: [],
             subpartidas: []
-        }
+        },
+        data:{
+            adjuntos: []
+        },
+        adjuntos: []
     }
 
     componentDidMount() {
@@ -143,8 +149,29 @@ class Presupuesto extends Component {
     }
 
     downloadPDF = presupuesto   => {
-        var win = window.open( presupuesto.pdf.url, '_blank');
-        win.focus();
+        const { modal, data } = this.state
+        data.adjuntos = presupuesto.pdfs
+        modal.adjuntos = true
+        this.setState({
+            ... this.state,
+            presupuesto: presupuesto,
+            modal,
+            adjuntos: this.setAdjuntosTable(presupuesto.pdfs),
+            data
+        })
+    }
+
+    handleClose = () => {
+        const { modal, data } = this.state
+        data.adjuntos = []
+        modal.adjuntos = false
+        this.setState({
+            ... this.state,
+            presupuesto: '',
+            modal,
+            adjuntos: [],
+            data
+        })
     }
 
     handleCloseDelete = () => {
@@ -181,6 +208,20 @@ class Presupuesto extends Component {
             ...this.state,
             form
         })
+    }
+
+    setAdjuntosTable = adjuntos => {
+        let aux = []
+        adjuntos.map((adjunto) => {
+            aux.push({
+                url: renderToString(
+                    setAdjuntosList([{ name: adjunto.name, url: adjunto.url }])
+                ),
+                identificador: renderToString(setTextTable(adjunto.pivot.identificador)),
+                id: adjunto.id
+            })
+        })
+        return aux
     }
 
     async getPresupuestoAxios(){
@@ -227,7 +268,7 @@ class Presupuesto extends Component {
                 tooltip: {id:'finish', text:'Ver presupuesto', type:'error'},
             }
         )
-        if(presupuesto.pdf)
+        if(presupuesto.pdfs)
         {
             aux.push(
                 {
@@ -276,7 +317,7 @@ class Presupuesto extends Component {
 
     render() {
 
-        const { modal, title, form, options, formeditado} = this.state
+        const { modal, title, form, options, data, adjuntos, formeditado} = this.state
 
         return (
             <Layout active={'presupuesto'}  {...this.props}> 
@@ -308,6 +349,16 @@ class Presupuesto extends Component {
                     handleClose = { this.handleCloseDelete } 
                     onClick = { (e) => { e.preventDefault(); waitAlert(); this.deletePresupuestoAxios() }}
                     />
+                <Modal show = { modal.adjuntos } handleClose = { this.handleClose } title = "Listado de presupuestos" >
+                    <TableForModals
+                        columns={ADJUNTOS_PRESUPUESTOS_COLUMNS}
+                        data={adjuntos}
+                        hideSelector={true}
+                        mostrar_acciones={false}
+                        dataID='adjuntos'
+                        elements={data.adjuntos}
+                    />
+                </Modal>
             </Layout>
 
             
