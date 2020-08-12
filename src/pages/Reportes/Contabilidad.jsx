@@ -207,12 +207,60 @@ class Contabilidad extends Component {
                         let url = ''
                         if(empresa.venta_url){
                             url = URL_ASSETS + '/storage/' + empresa.venta_url
-                            const blobPromise = fetch(url).then(r => {
+                            const blobPromise = fetch(url, {method: 'GET', mode: 'cors',  cache: 'default'}).then(r => {
                                 if (r.status === 200) return r.blob()
                                 return Promise.reject(new Error(r.statusText))
                             })
                             const name = url.substring(url.lastIndexOf('/'))
                             folder.file(name, blobPromise)
+                            if(empresa.ventas){
+                                empresa.ventas.map( (venta) => {
+                                    if(venta.pagos){
+                                        venta.pagos.map( (pago) => {
+                                            url = pago.url
+                                            const blobPromise = fetch(url).then(r => {
+                                                if (r.status === 200) return r.blob()
+                                                return Promise.reject(new Error(r.statusText))
+                                            })
+                                            const name = url.substring(url.lastIndexOf('/'))
+                                            folder.file(name, blobPromise)
+                                        })
+                                    }
+                                    if(venta.presupuestos){
+                                        venta.presupuestos.map( (presupuesto) => {
+                                            url = presupuesto.url
+                                            const blobPromise = fetch(url).then(r => {
+                                                if (r.status === 200) return r.blob()
+                                                return Promise.reject(new Error(r.statusText))
+                                            })
+                                            const name = url.substring(url.lastIndexOf('/'))
+                                            folder.file(name, blobPromise)
+                                        })
+                                    }
+                                    if(venta.facturas){
+                                        venta.facturas.map( (factura) => {
+                                            if(factura.xml){
+                                                url = factura.xml.url
+                                                const blobPromise = fetch(url).then(r => {
+                                                    if (r.status === 200) return r.blob()
+                                                    return Promise.reject(new Error(r.statusText))
+                                                })
+                                                const name = url.substring(url.lastIndexOf('/'))
+                                                folder.file(name, blobPromise)
+                                            }
+                                            if(factura.pdf){
+                                                url = factura.pdf.url
+                                                const blobPromise = fetch(url).then(r => {
+                                                    if (r.status === 200) return r.blob()
+                                                    return Promise.reject(new Error(r.statusText))
+                                                })
+                                                const name = url.substring(url.lastIndexOf('/'))
+                                                folder.file(name, blobPromise)
+                                            }
+                                        })
+                                    }
+                                })
+                            }
                         }
                         if(empresa.compra_url){
                             url = URL_ASSETS + '/storage/' + empresa.compra_url
