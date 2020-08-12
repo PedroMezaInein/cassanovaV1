@@ -64,6 +64,17 @@ class ActualizarPresupuestoForm extends Component {
             return true
         return false
     }
+    getIdentificador = () => {
+        const { presupuesto } = this.props
+        let identificador = 100
+        presupuesto.pdfs.map( (pdf, key) => {
+            if( pdf.pivot.identificador >  identificador)
+                identificador = pdf.pivot.identificador
+        })
+        identificador++
+        return identificador.toString()
+
+    }
 
     render() {
         const { onChange, formeditado, checkButton, form, presupuesto, onSubmit} = this.props
@@ -248,7 +259,11 @@ class ActualizarPresupuestoForm extends Component {
                                                 <div className="text-dark mb-1">
                                                     No.1
                                                 </div>
-                                                <span className="text-muted">Presupuesto</span>
+                                                <span className="text-muted">
+                                                    {
+                                                        this.getIdentificador()
+                                                    }
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
