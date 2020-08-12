@@ -16,7 +16,7 @@ class EmpresaForm extends Component {
     }
 
     render() {
-        const { form, onChange, img, removeFile, onSubmit, formeditado } = this.props
+        const { form, onChange, img, removefile, onSubmit, formeditado } = this.props
         return (
             <Form id="form-empresa"
                 onSubmit={
@@ -102,7 +102,7 @@ class EmpresaForm extends Component {
                         <div className="p-3 position-relative img-empresa">
                             <img value={img} className='img-empresa' src={img} />
                             <Button className="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow text-muted"
-                                onClick={removeFile} text='' icon={faTimesCircle} />
+                                onClick={removefile} text='' icon={faTimesCircle} />
                         </div>
                     }
                 </div>
