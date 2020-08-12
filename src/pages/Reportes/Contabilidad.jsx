@@ -8,6 +8,8 @@ import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/ale
 import Layout from '../../components/layout/layout'
 import { Card } from 'react-bootstrap'
 import { ContabilidadForm } from '../../components/forms'
+import JSZip from "jszip";
+import { saveAs } from 'file-saver';
 
 class Contabilidad extends Component {
 
@@ -189,13 +191,72 @@ class Contabilidad extends Component {
         const { form } = this.state
         await axios.post(URL_DEV + 'contabilidad', form,  { headers: {Authorization:`Bearer ${access_token}`}, timeout: 60000000 }).then(
             (response) => {
-                swal.close()
-                const url = URL_ASSETS+'/storage/contabilidad.zip'
+                /* swal.close() */
+                
+                /* const url = URL_ASSETS+'/storage/contabilidad.zip'
                 const link = document.createElement('a');
                 link.href = url;
                 link.setAttribute('download', 'data.zip');
                 document.body.appendChild(link);
-                link.click();
+                link.click(); */
+                const { empresas } = response.data
+                if(empresas){
+                    const zip = new JSZip()
+                    empresas.map( (empresa) => {
+                        const folder = zip.folder(empresa.name)
+                        let url = ''
+                        if(empresa.venta_url){
+                            url = URL_ASSETS + '/storage/' + empresa.venta_url
+                            const blobPromise = fetch(url).then(r => {
+                                if (r.status === 200) return r.blob()
+                                return Promise.reject(new Error(r.statusText))
+                            })
+                            const name = url.substring(url.lastIndexOf('/'))
+                            folder.file(name, blobPromise)
+                        }
+                        if(empresa.compra_url){
+                            url = URL_ASSETS + '/storage/' + empresa.compra_url
+                            const blobPromise = fetch(url).then(r => {
+                                if (r.status === 200) return r.blob()
+                                return Promise.reject(new Error(r.statusText))
+                            })
+                            const name = url.substring(url.lastIndexOf('/'))
+                            folder.file(name, blobPromise)
+                        }
+                        if(empresa.egreso_url){
+                            url = URL_ASSETS + '/storage/' + empresa.egreso_url
+                            const blobPromise = fetch(url).then(r => {
+                                if (r.status === 200) return r.blob()
+                                return Promise.reject(new Error(r.statusText))
+                            })
+                            const name = url.substring(url.lastIndexOf('/'))
+                            folder.file(name, blobPromise)
+                        }
+                        if(empresa.ingreso_url){
+                            url = URL_ASSETS + '/storage/' + empresa.ingreso_url
+                            const blobPromise = fetch(url).then(r => {
+                                if (r.status === 200) return r.blob()
+                                return Promise.reject(new Error(r.statusText))
+                            })
+                            const name = url.substring(url.lastIndexOf('/'))
+                            folder.file(name, blobPromise)
+                        }
+                    })
+                    
+                    /* urls.forEach((url)=> {
+                        const blobPromise = fetch(url).then(r => {
+                            if (r.status === 200) return r.blob()
+                            return Promise.reject(new Error(r.statusText))
+                        })
+                        const name = url.substring(url.lastIndexOf('/'))
+                        folder.file(name, blobPromise)
+                    }) */
+
+                    zip.generateAsync({type:"blob"})
+                        .then(blob => saveAs(blob, 'contabilidad.zip'))
+                        .catch(e => console.log(e));
+                }
+                
 
             },
             (error) => {
