@@ -21,6 +21,7 @@ class UltimoPresupuesto extends Component {
             descripcion: '',
             costo: '',
             proveedor: '',
+            tiempo_valido: '',
             conceptos: [{
                 descipcion: '',
                 costo: '',
@@ -430,6 +431,16 @@ class UltimoPresupuesto extends Component {
         })
         deleteForm()
     }
+
+    onChangeInput = e => {
+        const { name, value } = e.target
+        const { form } = this.state
+        form[name] = value
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
     
 
     render() {
@@ -446,6 +457,7 @@ class UltimoPresupuesto extends Component {
                     onSubmit={this.onSubmit}
                     presupuesto={presupuesto}
                     {...this.props}
+                    onChangeInput={this.onChangeInput}
                 />
 
                 <FloatButtons 

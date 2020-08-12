@@ -66,7 +66,7 @@ class ActualizarPresupuestoForm extends Component {
     }
 
     render() {
-        const { onChange, formeditado, checkButton, form, presupuesto, onSubmit} = this.props
+        const { onChange, formeditado, checkButton, form, presupuesto, onSubmit, onChangeInput} = this.props
         const { margen } = this.state
         if (presupuesto)
             return (
@@ -256,22 +256,32 @@ class ActualizarPresupuestoForm extends Component {
                             </div>
                         </Card.Body>
                     </Card>
-                    <Card className="mt-4 card-custom">
-                        <Card.Header>
-                            <div className="card-title">
-                                <h3 className="card-label">Presupuesto</h3>
-                            </div>
-                        </Card.Header>
+                    <Form id="form-presupuesto"
+                        onSubmit={
+                            (e) => {
+                                e.preventDefault();
+                                validateAlert(onSubmit, e, 'form-presupuesto')
+                            }
+                        }
+                    >
+                        <Card className="mt-4 card-custom">
+                            <Card.Header>
+                                <div className="card-title">
+                                    <h3 className="card-label">Presupuesto Preliminar</h3>
+                                </div>
+                                <div className="card-toolbar" >
+                                    <InputSinText
+                                        placeholder='PERÍODO DE VALIDEZ'
+                                        requirevalidation={1}
+                                        formeditado={formeditado}
+                                        name='tiempo_valido'
+                                        value={form.tiempo_valido}
+                                        onChange={onChangeInput}
+                                    />
+                                </div>
+                            </Card.Header>
 
-                        <Card.Body className="pt-2">
-                            <Form id="form-presupuesto"
-                                    onSubmit={
-                                        (e) => {
-                                            e.preventDefault();
-                                            validateAlert(onSubmit, e, 'form-presupuesto')
-                                        }
-                                    }
-                                >
+                            <Card.Body className="pt-2">
                                 <table className="table table-separate table-responsive-sm">
                                     <thead>
                                         <tr>
@@ -294,14 +304,14 @@ class ActualizarPresupuestoForm extends Component {
                                                 <div className="font-size-sm text-center">% Margen</div>
                                                 <div>
                                                     <InputNumberSinText
-                                                        identificador = { "margen-global" }
-                                                        requirevalidation = { 0 }
-                                                        formeditado = { 1 }
-                                                        name = " margen "
-                                                        value = { margen }
-                                                        onChange = { this.onChangeDesperdicio }
-                                                        thousandSeparator = { true }
-                                                        prefix = { '%' } />
+                                                        identificador={"margen-global"}
+                                                        requirevalidation={0}
+                                                        formeditado={1}
+                                                        name=" margen "
+                                                        value={margen}
+                                                        onChange={this.onChangeDesperdicio}
+                                                        thousandSeparator={true}
+                                                        prefix={'%'} />
                                                 </div>
                                             </th>
                                             <th className="border-0">
@@ -326,8 +336,8 @@ class ActualizarPresupuestoForm extends Component {
                                                 return (
                                                     <>
                                                         {
-                                                            concepto.mensaje ?                                                         
-                                                                <ReactTooltip id = { key + '-th' } type = 'warning'>
+                                                            concepto.mensaje ?
+                                                                <ReactTooltip id={key + '-th'} type='warning'>
                                                                     <div>
                                                                         {
                                                                             concepto.user_comentario ?
@@ -336,67 +346,67 @@ class ActualizarPresupuestoForm extends Component {
                                                                                         concepto.user_comentario.name
                                                                                     }
                                                                                 </b>
-                                                                            : ''
+                                                                                : ''
                                                                         }
-                                                                        <br/>
+                                                                        <br />
                                                                         {
                                                                             concepto.mensaje
                                                                         }
                                                                     </div>
                                                                 </ReactTooltip>
-                                                            : ''
+                                                                : ''
                                                         }
                                                         {
-                                                            this.getPartida(key)?
+                                                            this.getPartida(key) ?
                                                                 <tr>
                                                                     <td colSpan={9} className="bg-primary-o-20 text-primary font-size-lg font-weight-bolder border-0 ">
                                                                         <b className="font-weight-boldest text-primary font-size-h6">
-                                                                        {
-                                                                            this.getPartidaClave(concepto.concepto.clave)
-                                                                        }
-                                                                        </b>
-                                                                        &nbsp;&nbsp; 
                                                                             {
-                                                                                concepto.concepto ? 
-                                                                                    concepto.concepto.subpartida ?
-                                                                                        concepto.concepto.subpartida.partida ?
-                                                                                            concepto.concepto.subpartida.partida.nombre
+                                                                                this.getPartidaClave(concepto.concepto.clave)
+                                                                            }
+                                                                        </b>
+                                                                        &nbsp;&nbsp;
+                                                                            {
+                                                                            concepto.concepto ?
+                                                                                concepto.concepto.subpartida ?
+                                                                                    concepto.concepto.subpartida.partida ?
+                                                                                        concepto.concepto.subpartida.partida.nombre
                                                                                         : ''
                                                                                     : ''
                                                                                 : ''
-                                                                            } 
+                                                                        }
                                                                     </td>
                                                                 </tr>
-                                                            :
+                                                                :
                                                                 ''
                                                         }
                                                         {
-                                                            this.getSubpartida(key)?
+                                                            this.getSubpartida(key) ?
                                                                 <tr>
                                                                     <td colSpan={9} className="font-size-lg font-weight-bolder">
-                                                                        <b  className="font-size-h6 label label-light-primary label-pill label-inline mr-2 font-weight-bolder label-rounded">
-                                                                        {
-                                                                            this.getPartidaClave(concepto.concepto.clave)
-                                                                        }
+                                                                        <b className="font-size-h6 label label-light-primary label-pill label-inline mr-2 font-weight-bolder label-rounded">
+                                                                            {
+                                                                                this.getPartidaClave(concepto.concepto.clave)
+                                                                            }
                                                                         .
                                                                         {
-                                                                            this.getSubpartidaClave(concepto.concepto.clave)
-                                                                        }
+                                                                                this.getSubpartidaClave(concepto.concepto.clave)
+                                                                            }
                                                                         </b>
                                                                         &nbsp;
                                                                         {
-                                                                            concepto.concepto ? 
+                                                                            concepto.concepto ?
                                                                                 concepto.concepto.subpartida ?
                                                                                     concepto.concepto.subpartida.nombre
+                                                                                    : ''
                                                                                 : ''
-                                                                            : ''
                                                                         }
                                                                     </td>
                                                                 </tr>
-                                                            :
+                                                                :
                                                                 ''
                                                         }
-                                                        <tr data-tip data-for = { key + '-th' } className = { form.conceptos[key].active ? 'concepto-active' : 'concepto-inactive bg-light-primary' } key = { key }>
+                                                        <tr data-tip data-for={key + '-th'} className={form.conceptos[key].active ? 'concepto-active' : 'concepto-inactive bg-light-primary'} key={key}>
                                                             <td className="check_desc text-center">
                                                                 <label
                                                                     data-inbox="group-select"
@@ -423,9 +433,9 @@ class ActualizarPresupuestoForm extends Component {
                                                                     rows="3"
                                                                     as="textarea"
                                                                     value={form['conceptos'][key]['descripcion']}
-                                                                    onChange={(e) => { onChange(key, e, 'descripcion')} } 
-                                                                    disabled = { !form.conceptos[key].active }
-                                                                    />
+                                                                    onChange={(e) => { onChange(key, e, 'descripcion') }}
+                                                                    disabled={!form.conceptos[key].active}
+                                                                />
                                                             </td>
                                                             <td className="text-center">
                                                                 <div className="font-weight-bold font-size-sm">{concepto.concepto.unidad.nombre}</div>
@@ -438,8 +448,8 @@ class ActualizarPresupuestoForm extends Component {
                                                                     value={form['conceptos'][key]['costo']}
                                                                     onChange={e => onChange(key, e, 'costo')}
                                                                     thousandSeparator={true}
-                                                                    typeformat="###########" 
-                                                                    disabled = { !form.conceptos[key].active } />
+                                                                    typeformat="###########"
+                                                                    disabled={!form.conceptos[key].active} />
                                                             </td>
                                                             <td className="text-center">
                                                                 <InputNumberSinText
@@ -450,9 +460,9 @@ class ActualizarPresupuestoForm extends Component {
                                                                     value={form['conceptos'][key]['margen']}
                                                                     onChange={e => onChange(key, e, 'margen')}
                                                                     thousandSeparator={true}
-                                                                    prefix={'%'} 
-                                                                    disabled = { !form.conceptos[key].active }
-                                                                    />
+                                                                    prefix={'%'}
+                                                                    disabled={!form.conceptos[key].active}
+                                                                />
                                                             </td>
                                                             <td className="text-center">
                                                                 <div className="font-weight-bold font-size-sm">{form['conceptos'][key]['cantidad']}</div>
@@ -473,9 +483,10 @@ class ActualizarPresupuestoForm extends Component {
                                 <div className="mt-3 text-center">
                                     <Button icon='' className="mx-auto" type="submit" text="ENVIAR Y GENERAR PDF" />
                                 </div>
-                            </Form>
-                        </Card.Body>
-                    </Card>
+
+                            </Card.Body>
+                        </Card>
+                    </Form>
                 </>
             )
         else
