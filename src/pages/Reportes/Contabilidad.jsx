@@ -187,7 +187,7 @@ class Contabilidad extends Component {
     async createReporteContabilidad(){
         const { access_token } = this.props.authUser
         const { form } = this.state
-        await axios.post(URL_DEV + 'contabilidad', form,  { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'contabilidad', form,  { headers: {Authorization:`Bearer ${access_token}`}, timeout: 6000000 }).then(
             (response) => {
                 swal.close()
                 const url = URL_ASSETS+'/storage/contabilidad.zip'
