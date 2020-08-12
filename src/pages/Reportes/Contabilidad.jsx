@@ -203,16 +203,16 @@ class Contabilidad extends Component {
                 if(empresas){
                     const zip = new JSZip()
                     empresas.map( (empresa) => {
-                        const folder = zip.folder(empresa.name)
+                        /* const folder = zip.folder(empresa.name) */
                         let url = ''
                         if(empresa.venta_url){
                             url = URL_ASSETS + '/storage/' + empresa.venta_url
-                            const blobPromise = fetch(url, {method: 'GET', mode: 'cors',  cache: 'default'}).then(r => {
+                            const blobPromise = fetch(url, {method: 'GET', headers:{'Access-Control-Allow-Origin': '*'}, cache: 'default'}).then(r => {
                                 if (r.status === 200) return r.blob()
                                 return Promise.reject(new Error(r.statusText))
                             })
                             const name = url.substring(url.lastIndexOf('/'))
-                            folder.file(name, blobPromise)
+                            zip.file('/'+empresa.name+'/'+name, blobPromise)
                             if(empresa.ventas){
                                 empresa.ventas.map( (venta) => {
                                     if(venta.pagos){
@@ -222,8 +222,8 @@ class Contabilidad extends Component {
                                                 if (r.status === 200) return r.blob()
                                                 return Promise.reject(new Error(r.statusText))
                                             })
-                                            const name = url.substring(url.lastIndexOf('/'))
-                                            folder.file(name, blobPromise)
+                                            const name = '/ventas/pagos/'+empresa.name+' V '+venta.id+url.substring(url.lastIndexOf('.'))
+                                            zip.file(empresa.name+'/'+name, blobPromise)
                                         })
                                     }
                                     if(venta.presupuestos){
@@ -233,8 +233,8 @@ class Contabilidad extends Component {
                                                 if (r.status === 200) return r.blob()
                                                 return Promise.reject(new Error(r.statusText))
                                             })
-                                            const name = url.substring(url.lastIndexOf('/'))
-                                            folder.file(name, blobPromise)
+                                            const name = '/ventas/presupuestos/'+empresa.name+' V '+venta.id+url.substring(url.lastIndexOf('.'))
+                                            zip.file(empresa.name+'/'+name, blobPromise)
                                         })
                                     }
                                     if(venta.facturas){
@@ -245,8 +245,8 @@ class Contabilidad extends Component {
                                                     if (r.status === 200) return r.blob()
                                                     return Promise.reject(new Error(r.statusText))
                                                 })
-                                                const name = url.substring(url.lastIndexOf('/'))
-                                                folder.file(name, blobPromise)
+                                                const name = '/ventas/facturas/'+empresa.name+' F '+venta.id+url.substring(url.lastIndexOf('.'))
+                                                zip.file(empresa.name+'/'+name, blobPromise)
                                             }
                                             if(factura.pdf){
                                                 url = factura.pdf.url
@@ -254,8 +254,8 @@ class Contabilidad extends Component {
                                                     if (r.status === 200) return r.blob()
                                                     return Promise.reject(new Error(r.statusText))
                                                 })
-                                                const name = url.substring(url.lastIndexOf('/'))
-                                                folder.file(name, blobPromise)
+                                                const name = '/ventas/facturas/'+empresa.name+' F '+venta.id+url.substring(url.lastIndexOf('.'))
+                                                zip.file(empresa.name+'/'+name, blobPromise)
                                             }
                                         })
                                     }
@@ -269,7 +269,55 @@ class Contabilidad extends Component {
                                 return Promise.reject(new Error(r.statusText))
                             })
                             const name = url.substring(url.lastIndexOf('/'))
-                            folder.file(name, blobPromise)
+                            zip.file('/'+empresa.name+'/'+name, blobPromise)
+                            if(empresa.compras){
+                                empresa.compras.map( (compra) => {
+                                    if(compra.pagos){
+                                        compra.pagos.map( (pago) => {
+                                            url = pago.url
+                                            const blobPromise = fetch(url).then(r => {
+                                                if (r.status === 200) return r.blob()
+                                                return Promise.reject(new Error(r.statusText))
+                                            })
+                                            const name = '/compras/pagos/'+empresa.name+' C '+compra.id+url.substring(url.lastIndexOf('.'))
+                                            zip.file(empresa.name+'/'+name, blobPromise)
+                                        })
+                                    }
+                                    if(compra.presupuestos){
+                                        compra.presupuestos.map( (presupuesto) => {
+                                            url = presupuesto.url
+                                            const blobPromise = fetch(url).then(r => {
+                                                if (r.status === 200) return r.blob()
+                                                return Promise.reject(new Error(r.statusText))
+                                            })
+                                            const name = '/compras/presupuestos/'+empresa.name+' C '+compra.id+url.substring(url.lastIndexOf('.'))
+                                            zip.file(empresa.name+'/'+name, blobPromise)
+                                        })
+                                    }
+                                    if(compra.facturas){
+                                        compra.facturas.map( (factura) => {
+                                            if(factura.xml){
+                                                url = factura.xml.url
+                                                const blobPromise = fetch(url).then(r => {
+                                                    if (r.status === 200) return r.blob()
+                                                    return Promise.reject(new Error(r.statusText))
+                                                })
+                                                const name = '/compras/facturas/'+empresa.name+' F '+compra.id+url.substring(url.lastIndexOf('.'))
+                                                zip.file(empresa.name+'/'+name, blobPromise)
+                                            }
+                                            if(factura.pdf){
+                                                url = factura.pdf.url
+                                                const blobPromise = fetch(url).then(r => {
+                                                    if (r.status === 200) return r.blob()
+                                                    return Promise.reject(new Error(r.statusText))
+                                                })
+                                                const name = '/compras/facturas/'+empresa.name+' F '+compra.id+url.substring(url.lastIndexOf('.'))
+                                                zip.file(empresa.name+'/'+name, blobPromise)
+                                            }
+                                        })
+                                    }
+                                })
+                            }
                         }
                         if(empresa.egreso_url){
                             url = URL_ASSETS + '/storage/' + empresa.egreso_url
@@ -278,7 +326,55 @@ class Contabilidad extends Component {
                                 return Promise.reject(new Error(r.statusText))
                             })
                             const name = url.substring(url.lastIndexOf('/'))
-                            folder.file(name, blobPromise)
+                            zip.file('/'+empresa.name+'/'+name, blobPromise)
+                            if(empresa.egresos){
+                                empresa.egresos.map( (egreso) => {
+                                    if(egreso.pagos){
+                                        egreso.pagos.map( (pago) => {
+                                            url = pago.url
+                                            const blobPromise = fetch(url).then(r => {
+                                                if (r.status === 200) return r.blob()
+                                                return Promise.reject(new Error(r.statusText))
+                                            })
+                                            const name = '/egresos/pagos/'+empresa.name+' E '+egreso.id+url.substring(url.lastIndexOf('.'))
+                                            zip.file(empresa.name+'/'+name, blobPromise)
+                                        })
+                                    }
+                                    if(egreso.presupuestos){
+                                        egreso.presupuestos.map( (presupuesto) => {
+                                            url = presupuesto.url
+                                            const blobPromise = fetch(url).then(r => {
+                                                if (r.status === 200) return r.blob()
+                                                return Promise.reject(new Error(r.statusText))
+                                            })
+                                            const name = '/egresos/presupuestos/'+empresa.name+' E '+egreso.id+url.substring(url.lastIndexOf('.'))
+                                            zip.file(empresa.name+'/'+name, blobPromise)
+                                        })
+                                    }
+                                    if(egreso.facturas){
+                                        egreso.facturas.map( (factura) => {
+                                            if(factura.xml){
+                                                url = factura.xml.url
+                                                const blobPromise = fetch(url).then(r => {
+                                                    if (r.status === 200) return r.blob()
+                                                    return Promise.reject(new Error(r.statusText))
+                                                })
+                                                const name = '/egresos/facturas/'+empresa.name+' F '+egreso.id+url.substring(url.lastIndexOf('.'))
+                                                zip.file(empresa.name+'/'+name, blobPromise)
+                                            }
+                                            if(factura.pdf){
+                                                url = factura.pdf.url
+                                                const blobPromise = fetch(url).then(r => {
+                                                    if (r.status === 200) return r.blob()
+                                                    return Promise.reject(new Error(r.statusText))
+                                                })
+                                                const name = '/egresos/facturas/'+empresa.name+' F '+egreso.id+url.substring(url.lastIndexOf('.'))
+                                                zip.file(empresa.name+'/'+name, blobPromise)
+                                            }
+                                        })
+                                    }
+                                })
+                            }
                         }
                         if(empresa.ingreso_url){
                             url = URL_ASSETS + '/storage/' + empresa.ingreso_url
@@ -287,23 +383,77 @@ class Contabilidad extends Component {
                                 return Promise.reject(new Error(r.statusText))
                             })
                             const name = url.substring(url.lastIndexOf('/'))
-                            folder.file(name, blobPromise)
+                            zip.file('/'+empresa.name+'/'+name, blobPromise)
+                            if(empresa.ingresos){
+                                empresa.ingresos.map( (ingreso) => {
+                                    if(ingreso.pagos){
+                                        ingreso.pagos.map( (pago) => {
+                                            url = pago.url
+                                            const blobPromise = fetch(url).then(r => {
+                                                if (r.status === 200) return r.blob()
+                                                return Promise.reject(new Error(r.statusText))
+                                            })
+                                            const name = '/ingresos/pagos/'+empresa.name+' I '+ingreso.id+url.substring(url.lastIndexOf('.'))
+                                            zip.file(empresa.name+'/'+name, blobPromise)
+                                        })
+                                    }
+                                    if(ingreso.presupuestos){
+                                        ingreso.presupuestos.map( (presupuesto) => {
+                                            url = presupuesto.url
+                                            const blobPromise = fetch(url).then(r => {
+                                                if (r.status === 200) return r.blob()
+                                                return Promise.reject(new Error(r.statusText))
+                                            })
+                                            const name = '/ingresos/presupuestos/'+empresa.name+' I '+ingreso.id+url.substring(url.lastIndexOf('.'))
+                                            zip.file(empresa.name+'/'+name, blobPromise)
+                                        })
+                                    }
+                                    if(ingreso.facturas){
+                                        ingreso.facturas.map( (factura) => {
+                                            if(factura.xml){
+                                                url = factura.xml.url
+                                                const blobPromise = fetch(url).then(r => {
+                                                    if (r.status === 200) return r.blob()
+                                                    return Promise.reject(new Error(r.statusText))
+                                                })
+                                                const name = '/ingresos/facturas/'+empresa.name+' F '+ingreso.id+url.substring(url.lastIndexOf('.'))
+                                                zip.file(empresa.name+'/'+name, blobPromise)
+                                            }
+                                            if(factura.pdf){
+                                                url = factura.pdf.url
+                                                const blobPromise = fetch(url).then(r => {
+                                                    if (r.status === 200) return r.blob()
+                                                    return Promise.reject(new Error(r.statusText))
+                                                })
+                                                const name = '/ingresos/facturas/'+empresa.name+' F '+ingreso.id+url.substring(url.lastIndexOf('.'))
+                                                zip.file(empresa.name+'/'+name, blobPromise)
+                                            }
+                                        })
+                                    }
+                                })
+                            }
+                        }
+                        if(empresa.estados_de_cuenta){
+                            console.log(empresa.cuenta, 'cuenta')
+                            empresa.cuenta.map( (cuenta) => {
+                                cuenta.estados.map( (estado) => {
+                                    url = estado.url
+                                    const blobPromise = fetch(url).then(r => {
+                                        if (r.status === 200) return r.blob()
+                                        return Promise.reject(new Error(r.statusText))
+                                    })
+                                    const name = '/estados-cuentas/'+empresa.name+' EC '+estado.id+url.substring(url.lastIndexOf('.'))
+                                    zip.file(empresa.name+'/'+name, blobPromise)
+                                })
+                            })
                         }
                     })
-                    
-                    /* urls.forEach((url)=> {
-                        const blobPromise = fetch(url).then(r => {
-                            if (r.status === 200) return r.blob()
-                            return Promise.reject(new Error(r.statusText))
-                        })
-                        const name = url.substring(url.lastIndexOf('/'))
-                        folder.file(name, blobPromise)
-                    }) */
-
                     zip.generateAsync({type:"blob"})
-                        .then(blob => saveAs(blob, 'contabilidad.zip'))
+                        .then((blob) => {saveAs(blob, 'contabilidad.zip'); swal.close()})
                         .catch(e => console.log(e));
+                    
                 }
+                
                 
 
             },
