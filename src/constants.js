@@ -1634,3 +1634,26 @@ export const USUARIOS = [
         accessor: 'email',
     }
 ]
+
+export const PRECIO_M2_DISEÑOS_COLUMNS = [
+    {
+        Header: 'OPCIONES',
+        accessor: 'actions',
+    },
+    {
+        Header: 'M2',
+        accessor: 'm2',
+    },
+    {
+        Header: 'Esquema 1',
+        accessor: 'esquema1',
+    },
+    {
+        Header: 'Esquema 2',
+        accessor: 'esquema2',
+    },
+    {
+        Header: 'Esquema 2',
+        accessor: 'esquema2',
+    }
+]

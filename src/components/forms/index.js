@@ -38,6 +38,7 @@ import nominaAdminForm from './recursoshumanos/NominaAdminForm'
 import empleadosForm from './recursoshumanos/EmpleadosForm'
 import agregarConcepto from './presupuesto/AgregarConcepto'
 import ultimoPresupuestoForm from './presupuesto/UltimoPresupuestoForm'
+import precioDiseñoForm from './catalogos/PrecioDiseñoForm'
 
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
@@ -79,4 +80,4 @@ export const NominaAdminForm = nominaAdminForm
 export const EmpleadosForm = empleadosForm
 export const AgregarConcepto = agregarConcepto
 export const UltimoPresupuestoForm = ultimoPresupuestoForm
-
+export const PrecioDiseñoForm = precioDiseñoForm
