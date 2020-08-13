@@ -9,6 +9,8 @@ import Layout from "../../components/layout/layout";
 import { UltimoPresupuestoForm } from "../../components/forms";
 import FloatButtons from '../../components/singles/FloatButtons'
 import { save, deleteForm } from '../../redux/reducers/formulario'
+import { Modal } from '../../components/singles'
+const $ = require('jquery');
 
 class UltimoPresupuesto extends Component {
     state = {
@@ -34,6 +36,8 @@ class UltimoPresupuesto extends Component {
                 margen:'',
                 precio_unitario:''
             }],
+            fecha_creacion: new Date,
+            fecha_aceptacion: '',
         },
         options: {
             unidades: [],
@@ -442,8 +446,6 @@ class UltimoPresupuesto extends Component {
             form
         })
     }
-    
-
     render() {
         const { form, title, options, formeditado, presupuesto} = this.state;
         const { formulario } = this.props

@@ -1,15 +1,38 @@
 import React, { Component } from 'react'
 import { Form, Card } from 'react-bootstrap'
-import { InputMoneySinText, InputNumberSinText, InputSinText, Button } from '../../form-components'
+import { InputMoneySinText, InputNumberSinText, InputSinText, Button, Calendar } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { setMoneyTableForNominas } from '../../../functions/setters'
 import Moment from 'react-moment'
 import ReactTooltip from 'react-tooltip/dist';
+import { DATE } from '../../../constants'
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Tooltip from 'react-bootstrap/Tooltip'
 
 class ActualizarPresupuestoForm extends Component {
     
     state = {
         margen: 0
+    }
+
+    mostrarFormulario() {
+        var ele = document.getElementById("fechas");
+        if (ele.style.display == "block") {
+            ele.style.display = "none";
+        }
+        else {
+            ele.style.display = "block";
+        }
+    } 
+
+    handleChangeDateCreacion = date => {
+        const { onChange } = this.props
+        onChange({ target: { value: date, name: 'fecha_creacion' } })
+    }
+
+    handleChangeDateAceptado = date => {
+        const { onChange } = this.props
+        onChange({ target: { value: date, name: 'fecha_aceptacion' } })
     }
 
     getTotalImport = () => {
@@ -77,7 +100,7 @@ class ActualizarPresupuestoForm extends Component {
     }
 
     render() {
-        const { onChange, formeditado, checkButton, form, presupuesto, onSubmit, onChangeInput} = this.props
+        const { onChange, formeditado, checkButton, form, presupuesto, onSubmit, onChangeInput, openModal} = this.props
         const { margen } = this.state
         if (presupuesto)
             return (
@@ -297,6 +320,43 @@ class ActualizarPresupuestoForm extends Component {
                             </Card.Header>
 
                             <Card.Body className="pt-2">
+                                <div className="d-flex justify-content-end">
+                                    <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Mostrar fechas</Tooltip>}>
+                                        <a class="btn btn-icon btn-light-primary" onClick={() => { this.mostrarFormulario() }}>
+                                            <i class="flaticon2-calendar-9"></i>
+                                        </a>
+                                    </OverlayTrigger>
+                                </div>
+
+                                <div id="fechas" style={{display:" none"}}>
+                                    <div className="form-group row form-group-marginless m-0 mb-3">
+                                        <div className="col-md-5">
+                                            <Calendar
+                                                formeditado={formeditado}
+                                                onChangeCalendar={this.handleChangeDateCreacion}
+                                                placeholder="FECHA DE CREACIÓN"
+                                                name="fecha_creacion"
+                                                value={form.fecha_creacion}
+                                                patterns={DATE}
+                                            />
+                                        </div>
+                                        <div className="col-md-5">
+                                            <Calendar
+                                                requirevalidation={0}
+                                                formeditado={formeditado}
+                                                onChangeCalendar={this.handleChangeDateAceptado}
+                                                placeholder="FECHA DE ACEPTACIÓN"
+                                                name="fecha_aceptacion"
+                                                value={form.fecha_aceptacion}
+                                                patterns={DATE}
+                                            />
+                                        </div>
+                                        <div className="col-md-2 align-self-end d-flex justify-content-center pb-1">
+                                            <Button icon='' type="submit" className="text-center mx-auto" text='Enviar' />
+                                        </div>
+                                        
+                                    </div>
+                                </div>
                                 <table className="table table-separate table-responsive-sm">
                                     <thead>
                                         <tr>
