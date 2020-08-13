@@ -9,8 +9,6 @@ import Layout from "../../components/layout/layout";
 import { UltimoPresupuestoForm } from "../../components/forms";
 import FloatButtons from '../../components/singles/FloatButtons'
 import { save, deleteForm } from '../../redux/reducers/formulario'
-import { Modal } from '../../components/singles'
-const $ = require('jquery');
 
 class UltimoPresupuesto extends Component {
     state = {
