@@ -240,7 +240,7 @@ class Remisiones extends Component{
             <Layout active={'proyectos'}  { ...this.props}>
 
                 <NewTable columns = { REMISION_COLUMNS } data = {remisiones} 
-                    title = 'Remisiones' subtitle = 'Listado de demisiones'
+                    title = 'Remisiones' subtitle = 'Listado de remisiones'
                     mostrar_boton={true}
                     abrir_modal={false}                    
                     url = '/proyectos/remision/add'
