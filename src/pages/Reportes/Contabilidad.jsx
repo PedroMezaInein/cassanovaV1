@@ -216,7 +216,7 @@ class Contabilidad extends Component {
                                                 if (r.status === 200) return r.blob()
                                                 return Promise.reject(new Error(r.statusText))
                                             })
-                                            const name = 'ventas/pagos/'+empresa.name+' V '+venta.id+url.substring(url.lastIndexOf('.'))
+                                            const name = 'ventas/pagos/'+empresa.name+' V '+pago.id+' '+venta.id+url.substring(url.lastIndexOf('.'))
                                             empresaFolder.file(name, blobPromise)
                                         })
                                     }
@@ -227,7 +227,7 @@ class Contabilidad extends Component {
                                                 if (r.status === 200) return r.blob()
                                                 return Promise.reject(new Error(r.statusText))
                                             })
-                                            const name = 'ventas/presupuestos/'+empresa.name+' V '+venta.id+url.substring(url.lastIndexOf('.'))
+                                            const name = 'ventas/presupuestos/'+empresa.name+' V '+presupuesto.id+' '+venta.id+url.substring(url.lastIndexOf('.'))
                                             empresaFolder.file(name, blobPromise)
                                         })
                                     }
@@ -273,7 +273,7 @@ class Contabilidad extends Component {
                                                 if (r.status === 200) return r.blob()
                                                 return Promise.reject(new Error(r.statusText))
                                             })
-                                            const name = 'compras/pagos/'+empresa.name+' C '+compra.id+url.substring(url.lastIndexOf('.'))
+                                            const name = 'compras/pagos/'+empresa.name+' C '+pago.id+' '+compra.id+url.substring(url.lastIndexOf('.'))
                                             empresaFolder.file(name, blobPromise)
                                         })
                                     }
@@ -284,7 +284,7 @@ class Contabilidad extends Component {
                                                 if (r.status === 200) return r.blob()
                                                 return Promise.reject(new Error(r.statusText))
                                             })
-                                            const name = 'compras/presupuestos/'+empresa.name+' C '+compra.id+url.substring(url.lastIndexOf('.'))
+                                            const name = 'compras/presupuestos/'+empresa.name+' C '+presupuesto.id+' '+compra.id+url.substring(url.lastIndexOf('.'))
                                             empresaFolder.file(name, blobPromise)
                                         })
                                     }
@@ -330,7 +330,7 @@ class Contabilidad extends Component {
                                                 if (r.status === 200) return r.blob()
                                                 return Promise.reject(new Error(r.statusText))
                                             })
-                                            const name = 'egresos/pagos/'+empresa.name+' E '+egreso.id+url.substring(url.lastIndexOf('.'))
+                                            const name = 'egresos/pagos/'+empresa.name+' E '+pago.id+' '+egreso.id+url.substring(url.lastIndexOf('.'))
                                             empresaFolder.file(name, blobPromise)
                                         })
                                     }
@@ -341,7 +341,7 @@ class Contabilidad extends Component {
                                                 if (r.status === 200) return r.blob()
                                                 return Promise.reject(new Error(r.statusText))
                                             })
-                                            const name = 'egresos/presupuestos/'+empresa.name+' E '+egreso.id+url.substring(url.lastIndexOf('.'))
+                                            const name = 'egresos/presupuestos/'+empresa.name+' E '+presupuesto.id+' '+egreso.id+url.substring(url.lastIndexOf('.'))
                                             empresaFolder.file(name, blobPromise)
                                         })
                                     }
@@ -387,7 +387,7 @@ class Contabilidad extends Component {
                                                 if (r.status === 200) return r.blob()
                                                 return Promise.reject(new Error(r.statusText))
                                             })
-                                            const name = 'ingresos/pagos/'+empresa.name+' I '+ingreso.id+url.substring(url.lastIndexOf('.'))
+                                            const name = 'ingresos/pagos/'+empresa.name+' I '+pago.id+' '+ingreso.id+url.substring(url.lastIndexOf('.'))
                                             empresaFolder.file(name, blobPromise)
                                         })
                                     }
@@ -398,7 +398,7 @@ class Contabilidad extends Component {
                                                 if (r.status === 200) return r.blob()
                                                 return Promise.reject(new Error(r.statusText))
                                             })
-                                            const name = 'ingresos/presupuestos/'+empresa.name+' I '+ingreso.id+url.substring(url.lastIndexOf('.'))
+                                            const name = 'ingresos/presupuestos/'+empresa.name+' I '+presupuesto.id+' '+ingreso.id+url.substring(url.lastIndexOf('.'))
                                             empresaFolder.file(name, blobPromise)
                                         })
                                     }
