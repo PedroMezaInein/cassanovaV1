@@ -44,13 +44,14 @@ class RegisterUserForm extends Component {
     }
 
     render() {
-        const { options, form, onChange, deleteOption, onChangeOptions, ...props} = this.props
+        const { options, form, onChange, deleteOption, onChangeOptions, formeditado, ...props} = this.props
         return (
             <Form {... props} >
-                <div className="form-group row form-group-marginless pt-4">
+                <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Input
                             onChange={onChange}
+                            formeditado={formeditado}
                             requirevalidation={1}
                             name="name"
                             type="text"
@@ -64,6 +65,7 @@ class RegisterUserForm extends Component {
                         <Input
                             onChange={onChange}
                             requirevalidation={1}
+                            formeditado={formeditado}
                             name="email"
                             type="email"
                             value={form.email}
@@ -76,6 +78,7 @@ class RegisterUserForm extends Component {
                     <div className="col-md-4">
                         <Select
                             requirevalidation={1}
+                            formeditado={formeditado}
                             onChange={onChange}
                             name="tipo"
                             value={form.tipo}
@@ -97,6 +100,7 @@ class RegisterUserForm extends Component {
                                     value={form.departamento}
                                     onChange={this.updateDepartamento}
                                     iconclass={"fas fa-layer-group"}
+                                    formeditado={formeditado}
 
                                 />
                             </div>
