@@ -263,7 +263,6 @@ class Contabilidad extends Component {
                                 return Promise.reject(new Error(r.statusText))
                             })
                             const name = (url.substring(url.lastIndexOf('/'))).replace('/', '')
-                            console.log(name, 'name')
                             empresaFolder.file(name, blobPromise)
                             if(empresa.compras){
                                 empresa.compras.map( (compra) => {
@@ -429,7 +428,6 @@ class Contabilidad extends Component {
                             }
                         }
                         if(empresa.estados_de_cuenta){
-                            console.log(empresa.cuenta, 'cuenta')
                             empresa.cuenta.map( (cuenta) => {
                                 cuenta.estados.map( (estado) => {
                                     url = estado.url
