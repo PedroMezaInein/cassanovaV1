@@ -18,8 +18,11 @@ const Login = Loader(() => import('./pages/Login') )
 const Home = Loader(() => import('./pages/Home') )
 
 const Tareas = Loader(() => import('./pages/Usuarios/Tareas') )
-const Empresas = Loader(() => import('./pages/Usuarios/Empresas') )
-const Usuarios = Loader(() => import('./pages/Usuarios/Usuarios') )
+const Empresas = Loader(() => import('./pages/Usuarios/Empresas/Empresas') )
+const EmpresasForm = Loader(() => import('./pages/Usuarios/Empresas/EmpresasForm') )
+
+const Usuarios = Loader(() => import('./pages/Usuarios/Usuarios/Usuarios') )
+const UsuariosForm = Loader(() => import('./pages/Usuarios/Usuarios/UsuariosForm') )
 
 const Normas = Loader(() => import('./pages/Normas') )
 
@@ -159,8 +162,10 @@ class App extends Component{
                 <Route path = "/mi-proyecto" exact component = { MiProyecto } />
 
                 <Route path = "/usuarios/usuarios" exact component = { Usuarios } />
+                <Route path = "/usuarios/usuarios/:action" exact component ={ UsuariosForm } />
                 <Route path = "/usuarios/tareas" exact component = { Tareas } />
                 <Route path = "/usuarios/empresas" exact component ={ Empresas } />
+                <Route path = "/usuarios/empresas/:action" exact component ={ EmpresasForm } />
 
                 <Route path = "/presupuesto/conceptos" exact component ={ Conceptos } />
                 <Route path = "/presupuesto/rendimiento" exact component ={ Rendimiento } />

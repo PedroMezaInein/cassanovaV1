@@ -51,7 +51,7 @@ class RegisterUserForm extends Component {
                     <div className="col-md-4">
                         <Input
                             onChange={onChange}
-                            required
+                            requirevalidation={1}
                             name="name"
                             type="text"
                             value={form.name}
@@ -63,7 +63,7 @@ class RegisterUserForm extends Component {
                     <div className="col-md-4">
                         <Input
                             onChange={onChange}
-                            required
+                            requirevalidation={1}
                             name="email"
                             type="email"
                             value={form.email}
@@ -75,6 +75,7 @@ class RegisterUserForm extends Component {
                     </div>
                     <div className="col-md-4">
                         <Select
+                            requirevalidation={1}
                             onChange={onChange}
                             name="tipo"
                             value={form.tipo}
