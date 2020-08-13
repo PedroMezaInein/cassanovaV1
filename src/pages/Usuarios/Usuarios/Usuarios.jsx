@@ -68,33 +68,40 @@ class Usuarios extends Component {
         this.getOptionsAxios();
     }
 
-    openModal = () => {
-        const { modal} = this.state
-        modal.form = true
-        this.setState({
-            ... this.state,
-            modal,
-            form: this.clearForm(),
-            title: 'Registrar nuevo usuario',
-            formeditado:0
-        })
-    }
+    // openModal = () => {
+    //     const { modal} = this.state
+    //     modal.form = true
+    //     this.setState({
+    //         ... this.state,
+    //         modal,
+    //         form: this.clearForm(),
+    //         title: 'Registrar nuevo usuario',
+    //         formeditado:0
+    //     })
+    // }
 
-    openModalEdit = user => {
-        const { modal, options, form } = this.state
-        modal.form = true
-        form.name = user.name
-        form.email = user.email
-        form.tipo = user.tipo
-        this.setState({
-            ... this.state,
-            modal,
-            title: 'Editar usuario',                      
-            form,            
-            options,
-            user: user,  
-            formeditado:1,
-        })
+    // openModalEdit = user => {
+    //     const { modal, options, form } = this.state
+    //     modal.form = true
+    //     form.name = user.name
+    //     form.email = user.email
+    //     form.tipo = user.tipo
+    //     this.setState({
+    //         ... this.state,
+    //         modal,
+    //         title: 'Editar usuario',                      
+    //         form,            
+    //         options,
+    //         user: user,  
+    //         formeditado:1,
+    //     })
+    // }
+    changePageEdit = user => {
+        const { history } = this.props
+        history.push({
+            pathname: '/usuarios/usuarios/edit',
+            state: { user: user}
+        });
     }
 
     openModalDelete = (user) => {
@@ -170,7 +177,6 @@ class Usuarios extends Component {
 
                 const { modal, key} = this.state
                 modal.form = false
-                console.log(key,'key')
                 if(key === 'administrador'){
                     this.getAdministradorAxios()
                 }
@@ -367,7 +373,6 @@ class Usuarios extends Component {
     }
 
     setUsers = users => {
-        console.log(users)
         let aux = []
         if (users)
             users.map((user) => {
@@ -376,6 +381,7 @@ class Usuarios extends Component {
                         actions: this.setActions(user),
                         name: renderToString(setTextTable(user.name)),
                         email: renderToString(setTextTable(user.email)),
+                        // proyecto: renderToString(setTextTable( presupuesto.proyecto ? presupuesto.proyecto.nombre : '')),
                         id: user.id
                     }
                 )
@@ -383,7 +389,7 @@ class Usuarios extends Component {
         return aux
     }
 
-    setActions= users => {
+    setActions= () => {
         let aux = []
             aux.push(
                 {
@@ -396,7 +402,7 @@ class Usuarios extends Component {
                 {
                     text: 'Permisos',
                     btnclass: 'primary',
-                    iconclass: 'flaticon2-calendar-9',
+                    iconclass: 'flaticon2-accept',
                     action: 'permisos',
                     tooltip: { id: 'permisos', text: 'Permisos' }
                 },
@@ -443,7 +449,6 @@ class Usuarios extends Component {
                 aux.push(_aux)
             }
         })
-        /* options[arreglo] = aux */
         form[arreglo] = auxArray
         this.setState({
             ... this.state,
@@ -521,8 +526,8 @@ class Usuarios extends Component {
     }
 
     render(){
-        const { modal, title, users, user, form, options, key, data,usuarios } = this.state
-        const { formulario, deleteForm } = this.props
+        const { modal, title, user, form, options, key, formeditado} = this.state
+        const { formulario } = this.props
         return (
             <Layout active = { 'usuarios' }  { ...this.props } >
                 <Tabs defaultActiveKey="administrador" activeKey={key} onSelect = { (value) =>  { this.controlledTab(value)} }>
@@ -532,12 +537,12 @@ class Usuarios extends Component {
                             title='Administradores'
                             subtitle='Listado de administradores'
                             mostrar_boton={true}
-                            abrir_modal={true}
-                            onClick={this.openModal}
+                            abrir_modal={false}
+                            url = '/usuarios/usuarios/add'
                             mostrar_acciones={true}
                             actions={
                                 {
-                                    'edit': { function:this.openModalEdit},
+                                    'edit': { function:this.changePageEdit},
                                     'delete': { function: this.openModalDelete },
                                     'permisos': { function: this.openModalPermisos}
                                 }
@@ -558,11 +563,11 @@ class Usuarios extends Component {
                             title='Empleados'
                             subtitle='Listado de empleados'
                             mostrar_boton={true}
-                            abrir_modal={true}
-                            onClick={this.openModal}
+                            abrir_modal={false}
+                            url = '/usuarios/usuarios/add'
                             mostrar_acciones={true}
                             actions={{
-                                'edit': { function:this.openModalEdit},
+                                'edit': { function:this.changePageEdit},
                                 'delete': { function: this.openModalDelete },
                                 'permisos': { function: this.openModalPermisos}
                             }}
@@ -582,11 +587,12 @@ class Usuarios extends Component {
                             title='Clientes'
                             subtitle='Listado de clientes'
                             mostrar_boton={true}
-                            abrir_modal={true}
+                            abrir_modal={false}
+                            url = '/usuarios/usuarios/add'
                             onClick={this.openModal}
                             mostrar_acciones={true}
                             actions={{
-                                'edit': { function:this.openModalEdit},
+                                'edit': { function:this.changePageEdit},
                                 'delete': { function: this.openModalDelete },
                                 'permisos': { function: this.openModalPermisos}
                             }}
@@ -606,7 +612,7 @@ class Usuarios extends Component {
                     show = { modal.form } 
                     handleClose = { this.handleClose } >
                     <div className="position-relative">
-                        <div /* className="position-absolute" */>
+                        <div>
                             <FloatButtons save = { this.save } recover =  { this.recover } formulario = { formulario } url = { 'usuarios/usuarios' } />
                         </div>
                         <RegisterUserForm 

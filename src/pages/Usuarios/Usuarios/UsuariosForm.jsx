@@ -6,8 +6,8 @@ import { URL_DEV } from '../../../constants'
 import { Title, Subtitle, P, Small, B } from '../../../components/texts'
 import { Button } from '../../../components/form-components'
 import { faUserPlus, faUserEdit, faUserSlash, faKey } from '@fortawesome/free-solid-svg-icons'
-import { Card, Modal, ModalDelete } from '../../../components/singles'
-import { RegisterUserForm, PermisosForm, ClienteUserForm } from '../../../components/forms'
+import { Modal, ModalDelete } from '../../../components/singles'
+import { RegisterUserForm } from '../../../components/forms'
 import swal from 'sweetalert'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
 import { forbiddenAccessAlert, errorAlert, waitAlert } from '../../../functions/alert'
@@ -19,6 +19,7 @@ import FloatButtons from '../../../components/singles/FloatButtons'
 import { setTextTable } from '../../../functions/setters'
 import { renderToString } from 'react-dom/server'
 import { Tabs, Tab } from 'react-bootstrap' 
+import { Card } from 'react-bootstrap'
 
 const $ = require('jquery');
 
@@ -51,78 +52,58 @@ class UsuariosForm extends Component {
             proyectos: [],
             departamentos: [],
             users:[],
-        }
+        },
+        formeditado: 0,
     }
 
-    componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
-        const { history } = this.props
-        const usuarios = permisos.find(function (element, index) {
+    componentDidMount(){
+        const { authUser: { user : { permisos : permisos } } } = this.props
+        const { history : { location: { pathname: pathname } } } = this.props
+        const { match : { params: { action: action } } } = this.props
+        const { history, location: { state: state} } = this.props
+        const usuarios = permisos.find(function(element, index) {
             const { modulo: { url: url } } = element
-            return pathname === url
+            return pathname === url + '/' + action
         });
+        switch(action){
+            case 'add':
+                this.setState({
+                    ... this.state,
+                    title: 'Registrar nuevo usuario',
+                    formeditado:0
+                })
+                break;
+            case 'edit':
+                if(state){
+                    if(state.user)
+                    {
+                        const { form, options } = this.state
+                        const { user } = state
+                        
+                        form.name = user.name
+                        form.email = user.email
+                        form.tipo = user.tipo
+
+                        this.setState({
+                            ... this.state,
+                            form,
+                            options,
+                            user: user,
+                            title: 'Editar usuario',
+                            formeditado:1
+                        })
+                    }
+                    else
+                        history.push('/usuarios/usuarios')
+                }else
+                    history.push('/usuarios/usuarios')
+                break;
+            default:
+                break;
+        }
         if (!usuarios)
             history.push('/')
         this.getOptionsAxios();
-    }
-
-    openModal = () => {
-        const { modal} = this.state
-        modal.form = true
-        this.setState({
-            ... this.state,
-            modal,
-            form: this.clearForm(),
-            title: 'Registrar nuevo usuario',
-            formeditado:0
-        })
-    }
-
-    openModalEdit = user => {
-        const { modal, options, form } = this.state
-        modal.form = true
-        form.name = user.name
-        form.email = user.email
-        form.tipo = user.tipo
-        this.setState({
-            ... this.state,
-            modal,
-            title: 'Editar usuario',                      
-            form,            
-            options,
-            user: user,  
-            formeditado:1,
-        })
-    }
-
-    openModalDelete = (user) => {
-        const { modal } = this.state
-        modal.delete = true
-        this.setState({
-            ... this.state,
-            modal,
-            user: user
-        })
-    }
-
-    openModalPermisos = user => {
-        const { modal } = this.state
-        modal.permisos = true
-        this.setState({
-            ... this.state,
-            modal,
-            user: user
-        })
-    }
-
-    setOptions = (name, array) => {
-        const { options } = this.state
-        options[name] = setOptions(array, 'nombre', 'id')
-        this.setState({
-            ... this.state,
-            options
-        })
     }
 
     async getOptionsAxios() {
@@ -196,6 +177,10 @@ class UsuariosForm extends Component {
                     buttons: false,
                     timer: 1500
                 })
+                const { history } = this.props
+                    history.push({
+                    pathname: '/usuarios/usuarios'
+                });
             },
             (error) => {
                 console.log(error, 'error')
@@ -251,6 +236,10 @@ class UsuariosForm extends Component {
                     timer: 1500
                 })
 
+                const { history } = this.props
+                    history.push({
+                    pathname: '/usuarios/usuarios'
+                });
             },
             (error) => {
                 console.log(error, 'error')
@@ -266,88 +255,6 @@ class UsuariosForm extends Component {
         })
     }
 
-    async deleteUserAxios() {
-        const { access_token } = this.props.authUser
-        const { user } = this.state
-        await axios.delete(URL_DEV + 'user/' + user.id, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
-            (response) => {
-                
-                const { users } = response.data
-                const { modal, key } = this.state
-
-                if(key === 'administrador'){
-                    this.getAdministradorAxios()
-                }
-                if(key === 'empleados'){
-                    this.getEmpleadosAxios()
-                }
-                if(key === 'clientes'){
-                    this.getClientesAxios()
-                }
-
-                modal.delete = false
-                
-                this.setState({
-                    ... this.state,
-                    users: users,
-                    modal,
-                    form: this.clearForm(),
-                    user: ''
-                })
-                
-                swal({
-                    title: '¡Listo 👋!',
-                    text: response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito al usuario.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-
-    handleClose = () => {
-        const { modal } = this.state
-        modal.form = false
-        this.setState({
-            ... this.state,
-            form: this.clearForm(),
-            modal,
-            user: ''
-        })
-    }
-
-    handleCloseDelete = () => {
-        const { modal } = this.state
-        modal.delete = false
-        this.setState({
-            ... this.state,
-            modal,
-            user: ''
-        })
-    }
-
-    handleCloseModalPermisos = () => {
-        const { modal } = this.state
-        modal.permisos = false
-        this.setState({
-            ... this.state,
-            modal,
-            user: ''
-        })
-    }
     
     clearForm = () => {
         const { form } = this.state
@@ -369,51 +276,6 @@ class UsuariosForm extends Component {
         return form;
     }
 
-    setUsers = users => {
-        console.log(users)
-        let aux = []
-        if (users)
-            users.map((user) => {
-                aux.push(
-                    {
-                        actions: this.setActions(user),
-                        name: renderToString(setTextTable(user.name)),
-                        email: renderToString(setTextTable(user.email)),
-                        id: user.id
-                    }
-                )
-            })
-        return aux
-    }
-
-    setActions= users => {
-        let aux = []
-            aux.push(
-                {
-                    text: 'Editar',
-                    btnclass: 'success',
-                    iconclass: 'flaticon2-pen',
-                    action: 'edit',
-                    tooltip: {id:'edit', text:'Editar'},
-                },
-                {
-                    text: 'Permisos',
-                    btnclass: 'primary',
-                    iconclass: 'flaticon2-calendar-9',
-                    action: 'permisos',
-                    tooltip: { id: 'permisos', text: 'Permisos' }
-                },
-                {
-                    text: 'Eliminar',
-                    btnclass: 'danger',
-                    iconclass: 'flaticon2-rubbish-bin',                  
-                    action: 'delete',
-                    tooltip: {id:'delete', text:'Eliminar', type:'error'},
-                }       
-        ) 
-        return aux 
-    }
-
     onChange = (e) => {
         const { name, value } = e.target
         const { form } = this.state
@@ -432,6 +294,15 @@ class UsuariosForm extends Component {
             this.updateUserAxios()
         else
             this.addUserAxios()
+    }
+
+    setOptions = (name, array) => {
+        const {options} = this.state
+        options[name] = setOptions(array, 'nombre', 'id')
+        this.setState({
+            ... this.state,
+            options
+        })
     }
 
     onChangeOptions = (e, arreglo) => {
@@ -527,114 +398,28 @@ class UsuariosForm extends Component {
     }
 
     render(){
-        const { modal, title, users, user, form, options, key, data,usuarios } = this.state
+        const { modal, title, users, user, form, options, key, data,usuarios, formeditado} = this.state
         const { formulario, deleteForm } = this.props
         return (
             <Layout active = { 'usuarios' }  { ...this.props } >
-                <Tabs defaultActiveKey="administrador" activeKey={key} onSelect = { (value) =>  { this.controlledTab(value)} }>
-                    <Tab eventKey="administrador" title="Administrador">
-                        <NewTableServerRender
-                            columns={USUARIOS}
-                            title='Administradores'
-                            subtitle='Listado de administradores'
-                            mostrar_boton={true}
-                            abrir_modal={true}
-                            onClick={this.openModal}
-                            mostrar_acciones={true}
-                            actions={
-                                {
-                                    'edit': { function:this.openModalEdit},
-                                    'delete': { function: this.openModalDelete },
-                                    'permisos': { function: this.openModalPermisos}
-                                }
-                            }
-                            accessToken={this.props.authUser.access_token}
-                            setter={this.setUsers}
-                            urlRender={URL_DEV + 'user/users/admin'}
-                            idTable='admin_table'
-                            cardTable='cardTable_admin'
-                            cardTableHeader='cardTableHeader_admin'
-                            cardBody='cardBody_admin'
-                            isTab={true}
-                        />
-                    </Tab>
-                    <Tab eventKey="empleados" title="Empleados">
-                        <NewTableServerRender
-                            columns={USUARIOS}
-                            title='Empleados'
-                            subtitle='Listado de empleados'
-                            mostrar_boton={true}
-                            abrir_modal={true}
-                            onClick={this.openModal}
-                            mostrar_acciones={true}
-                            actions={{
-                                'edit': { function:this.openModalEdit},
-                                'delete': { function: this.openModalDelete },
-                                'permisos': { function: this.openModalPermisos}
-                            }}
-                            accessToken={this.props.authUser.access_token}
-                            setter={this.setUsers}
-                            urlRender={URL_DEV + 'user/users/empleados'}
-                            idTable='empleados_table'
-                            cardTable='cardTable_empleados'
-                            cardTableHeader='cardTableHeader_empleados'
-                            cardBody='cardBody_empleados'
-                            isTab={true}
-                        />
-                    </Tab>
-                    <Tab eventKey="clientes" title="Clientes">
-                        <NewTableServerRender
-                            columns={USUARIOS}
-                            title='Clientes'
-                            subtitle='Listado de clientes'
-                            mostrar_boton={true}
-                            abrir_modal={true}
-                            onClick={this.openModal}
-                            mostrar_acciones={true}
-                            actions={{
-                                'edit': { function:this.openModalEdit},
-                                'delete': { function: this.openModalDelete },
-                                'permisos': { function: this.openModalPermisos}
-                            }}
-                            accessToken={this.props.authUser.access_token}
-                            setter={this.setUsers}
-                            urlRender={URL_DEV + 'user/users/clientes'}
-                            idTable='clientes_table'
-                            cardTable='cardTable_clientes'
-                            cardTableHeader='cardTableHeader_clientes'
-                            cardBody='cardBody_clientes'
-                            isTab={true}
-                        />
-                    </Tab>
-                </Tabs>
-
-                <Modal size="xl" title = { title } 
-                    show = { modal.form } 
-                    handleClose = { this.handleClose } >
-                    <div className="position-relative">
-                        <div /* className="position-absolute" */>
-                            <FloatButtons save = { this.save } recover =  { this.recover } formulario = { formulario } url = { 'usuarios/usuarios' } />
+                <Card className="card-custom">
+                    <Card.Header>
+                        <div className="card-title">
+                            <h3 className="card-label">{title}</h3>
                         </div>
-                        <RegisterUserForm 
-                            className = 'px-3' form = { form } options = { options }
-                            onSubmit = { this.onSubmit } onChange = { this.onChange }
+                    </Card.Header>
+                    <Card.Body>
+                        <RegisterUserForm
+                            form={form}
+                            options = { options }
+                            formeditado={formeditado}   
+                            onSubmit = { this.onSubmit } 
+                            onChange = { this.onChange }
                             onChangeOptions =  { this.onChangeOptions }
                             deleteOption = { this.deleteOption }
-                            />
-                    </div>
-                </Modal>
-                <ModalDelete 
-                    title = { user === null ? "¿Estás seguro que deseas eliminar a " : "¿Estás seguro que deseas eliminar a " + user.name + " ?"} 
-                    show = { modal.delete } handleClose = { this.handleCloseDelete } 
-                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteUserAxios() }}>
-                </ModalDelete>
-
-                <Modal size = "lg" title = "Permisos de usuario" 
-                    show = { modal.permisos } 
-                    handleClose = { this.handleCloseModalPermisos } >
-                    <PermisosForm {... this.props} handleClose={this.handleCloseModalPermisos} user = {user.id} />
-                </Modal>
-
+                        />
+                    </Card.Body>
+                </Card>
             </Layout>
         )
     }
