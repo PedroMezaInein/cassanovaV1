@@ -88,7 +88,7 @@ class NewTable extends Component {
     }
 
     componentDidMount() {
-        const { data, mostrar_acciones, elementClass, totales, validateFactura, tipo_validacion, cardTable, cardTableHeader, cardBody, isTab } = this.props
+        const { data, mostrar_acciones, elementClass, totales, validateFactura, tipo_validacion, cardTable, cardTableHeader, cardBody, isTab, elements, actions } = this.props
         global_variable["mostrar_acciones"] = mostrar_acciones;
 
         this.reloadHeader()
@@ -264,6 +264,16 @@ class NewTable extends Component {
 
         $(this.refs.main).on('click', '.btn-actions-table', function (e) {
             e.preventDefault();
+            var id = $(this).attr('id').toString()
+            var name = $(this).attr('name').toString()
+            let aux = ''
+            elements.find(function (element, index) {
+                if (element.id.toString() === id) {
+                    aux = element
+                }
+            });
+            if (aux !== '')
+                actions[name].function(aux)
         });
 
     }
