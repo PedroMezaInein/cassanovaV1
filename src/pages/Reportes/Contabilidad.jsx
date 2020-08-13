@@ -239,7 +239,7 @@ class Contabilidad extends Component {
                                                     if (r.status === 200) return r.blob()
                                                     return Promise.reject(new Error(r.statusText))
                                                 })
-                                                const name = 'ventas/facturas/'+empresa.name+' F '+venta.id+url.substring(url.lastIndexOf('.'))
+                                                const name = 'ventas/facturas/'+empresa.name+' F '+factura.id+' '+venta.id+url.substring(url.lastIndexOf('.'))
                                                 empresaFolder.file(name, blobPromise)
                                             }
                                             if(factura.pdf){
@@ -248,7 +248,7 @@ class Contabilidad extends Component {
                                                     if (r.status === 200) return r.blob()
                                                     return Promise.reject(new Error(r.statusText))
                                                 })
-                                                const name = 'ventas/facturas/'+empresa.name+' F '+venta.id+url.substring(url.lastIndexOf('.'))
+                                                const name = 'ventas/facturas/'+empresa.name+' F '+factura.id+' '+venta.id+url.substring(url.lastIndexOf('.'))
                                                 empresaFolder.file(name, blobPromise)
                                             }
                                         })
@@ -297,7 +297,7 @@ class Contabilidad extends Component {
                                                     if (r.status === 200) return r.blob()
                                                     return Promise.reject(new Error(r.statusText))
                                                 })
-                                                const name = 'compras/facturas/'+empresa.name+' F '+compra.id+url.substring(url.lastIndexOf('.'))
+                                                const name = 'compras/facturas/'+empresa.name+' F '+factura.id+' '+compra.id+url.substring(url.lastIndexOf('.'))
                                                 empresaFolder.file(name, blobPromise)
                                             }
                                             if(factura.pdf){
@@ -306,7 +306,7 @@ class Contabilidad extends Component {
                                                     if (r.status === 200) return r.blob()
                                                     return Promise.reject(new Error(r.statusText))
                                                 })
-                                                const name = 'compras/facturas/'+empresa.name+' F '+compra.id+url.substring(url.lastIndexOf('.'))
+                                                const name = 'compras/facturas/'+empresa.name+' F '+factura.id+' '+compra.id+url.substring(url.lastIndexOf('.'))
                                                 empresaFolder.file(name, blobPromise)
                                             }
                                         })
@@ -354,7 +354,7 @@ class Contabilidad extends Component {
                                                     if (r.status === 200) return r.blob()
                                                     return Promise.reject(new Error(r.statusText))
                                                 })
-                                                const name = 'egresos/facturas/'+empresa.name+' F '+egreso.id+url.substring(url.lastIndexOf('.'))
+                                                const name = 'egresos/facturas/'+empresa.name+' F '+factura.id+' '+egreso.id+url.substring(url.lastIndexOf('.'))
                                                 empresaFolder.file(name, blobPromise)
                                             }
                                             if(factura.pdf){
@@ -363,7 +363,7 @@ class Contabilidad extends Component {
                                                     if (r.status === 200) return r.blob()
                                                     return Promise.reject(new Error(r.statusText))
                                                 })
-                                                const name = 'egresos/facturas/'+empresa.name+' F '+egreso.id+url.substring(url.lastIndexOf('.'))
+                                                const name = 'egresos/facturas/'+empresa.name+' F '+factura.id+' '+egreso.id+url.substring(url.lastIndexOf('.'))
                                                 empresaFolder.file(name, blobPromise)
                                             }
                                         })
@@ -411,7 +411,7 @@ class Contabilidad extends Component {
                                                     if (r.status === 200) return r.blob()
                                                     return Promise.reject(new Error(r.statusText))
                                                 })
-                                                const name = 'ingresos/facturas/'+empresa.name+' F '+ingreso.id+url.substring(url.lastIndexOf('.'))
+                                                const name = 'ingresos/facturas/'+empresa.name+' F '+factura.id+' '+ingreso.id+url.substring(url.lastIndexOf('.'))
                                                 empresaFolder.file(name, blobPromise)
                                             }
                                             if(factura.pdf){
@@ -420,7 +420,7 @@ class Contabilidad extends Component {
                                                     if (r.status === 200) return r.blob()
                                                     return Promise.reject(new Error(r.statusText))
                                                 })
-                                                const name = 'ingresos/facturas/'+empresa.name+' F '+ingreso.id+url.substring(url.lastIndexOf('.'))
+                                                const name = 'ingresos/facturas/'+empresa.name+' F '+factura.id+' '+ingreso.id+url.substring(url.lastIndexOf('.'))
                                                 empresaFolder.file(name, blobPromise)
                                             }
                                         })
