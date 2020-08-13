@@ -191,7 +191,7 @@ class NewTableServerRender extends Component {
                         ..._that.state,
                         newElements: response.elements
                     })
-                    swal.close()
+                    /* swal.close() */
                     drawCallback(response);
                 });
             },

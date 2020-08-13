@@ -71,6 +71,8 @@ const Partidas = Loader( () => import('./pages/Catalogos/Partidas') )
 const Unidades = Loader( () => import('./pages/Catalogos/Unidades') )
 const TiposContratos = Loader( () => import('./pages/Catalogos/TiposContratos') )
 const Bancos = Loader( () => import('./pages/Catalogos/Bancos') )
+const PrecioDiseño = Loader( () => import('./pages/Catalogos/PrecioDiseño/PrecioDiseño') )
+const PrecioDiseñoForm = Loader( () => import('./pages/Catalogos/PrecioDiseño/PrecioDiseñoForm') )
 
 const Contabilidad = Loader( () => import('./pages/Reportes/Contabilidad') )
 const AccountSettings = Loader(() => import('./pages/Perfil/AccountSettings') )
@@ -210,6 +212,8 @@ class App extends Component{
                 <Route path = "/catalogos/unidades" exact component ={ Unidades } />
                 <Route path = "/catalogos/tipos-contratos" exact component ={ TiposContratos } />
                 <Route path = "/catalogos/bancos" exact component ={ Bancos } />
+                <Route path = "/catalogos/precio-diseno" exact component ={ PrecioDiseño } />
+                <Route path = "/catalogos/precio-diseno/:action" exact component ={ PrecioDiseñoForm } />
 
                 <Route path = "/reportes/contabilidad" exact component ={ Contabilidad } />
                 <Route path = "/mi-perfil" exact component ={ AccountSettings } />
