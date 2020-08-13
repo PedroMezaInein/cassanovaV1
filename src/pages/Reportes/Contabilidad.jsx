@@ -472,6 +472,7 @@ class Contabilidad extends Component {
                     <Card.Body>
                         <ContabilidadForm form = { form } options = { options } onChangeEmpresa = { this.onChangeEmpresa } 
                             updateEmpresa = { this.updateEmpresa } onChange = { this.onChange } onSubmit = { this.onSubmit }/>
+                            
                     </Card.Body>
                 </Card>
             </Layout>
