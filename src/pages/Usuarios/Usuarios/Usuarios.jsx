@@ -13,10 +13,10 @@ import { setOptions, setSelectOptions } from '../../../functions/setters'
 import { forbiddenAccessAlert, errorAlert, waitAlert } from '../../../functions/alert'
 import modal from '../../../components/singles/Modal'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { USUARIOS } from '../../../constants'
+import { USUARIOS, CLIENTES } from '../../../constants'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
 import FloatButtons from '../../../components/singles/FloatButtons'
-import { setTextTable } from '../../../functions/setters'
+import { setTextTable,setListTable } from '../../../functions/setters'
 import { renderToString } from 'react-dom/server'
 import { Tabs, Tab } from 'react-bootstrap' 
 
@@ -372,19 +372,36 @@ class Usuarios extends Component {
         return form;
     }
 
-    setUsers = users => {
+    setUsers = users => { 
         let aux = []
         if (users)
-            users.map((user) => {
-                aux.push(
-                    {
-                        actions: this.setActions(user),
-                        name: renderToString(setTextTable(user.name)),
-                        email: renderToString(setTextTable(user.email)),
-                        // proyecto: renderToString(setTextTable( presupuesto.proyecto ? presupuesto.proyecto.nombre : '')),
-                        id: user.id
-                    }
-                )
+            users.map((user) => { 
+                if((user.tipo===1||user.tipo===2)){
+                    aux.push(
+                        {
+                            actions: this.setActions(user),
+                            name: renderToString(setTextTable(user.name)),
+                            email: renderToString(setTextTable(user.email)),
+                            id: user.id,
+                            departamento: renderToString(  user.departamentos.length === 0?"Sin definir":setListTable(user.departamentos, "nombre"))
+                            
+                        }
+                    )
+                }
+                else
+                {
+                    aux.push(
+                        {
+                            actions: this.setActions(user),
+                            name: renderToString(setTextTable(user.name)),
+                            email: renderToString(setTextTable(user.email)),
+                            id: user.id,
+                            proyecto: renderToString( user.proyectos.length === 0?"Sin definir":setListTable(user.proyectos, "nombre"))
+                            
+                        }
+                    )
+                }
+                
             })
         return aux
     }
@@ -583,7 +600,7 @@ class Usuarios extends Component {
                     </Tab>
                     <Tab eventKey="clientes" title="Clientes">
                         <NewTableServerRender
-                            columns={USUARIOS}
+                            columns={CLIENTES}
                             title='Clientes'
                             subtitle='Listado de clientes'
                             mostrar_boton={true}
