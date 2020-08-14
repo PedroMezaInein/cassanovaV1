@@ -129,17 +129,17 @@ export function setListTable(arreglo, nombre) {
     return (
         <ul>
             {
-                arreglo.map((element, key) => {
+                arreglo.map((element,  key ) => { 
                     return (
-                        <>
+                        <div  key={key}>
                             <li key={key}>
-                                <Small>
+                                <Small >
                                     {
                                         element[nombre]
                                     }
                                 </Small>
                             </li>
-                        </>
+                        </div>
                     )
                 })
             }
