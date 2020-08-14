@@ -65,7 +65,6 @@ class UltimoPresupuesto extends Component {
         if (state) {
             if (state.presupuesto) {
                 const { presupuesto } = state
-                const { form } = this.state
 
                 this.getOnePresupuestoAxios(presupuesto.id);
             }
@@ -81,7 +80,7 @@ class UltimoPresupuesto extends Component {
             (response) => {
                 swal.close() 
                 const { empresas, proyectos, areas, partidas, proveedores, unidades, conceptos} = response.data
-                const { options, data, form} = this.state 
+                const { options, data} = this.state 
 
                 data.partidas = partidas
                 let aux = {}
@@ -119,7 +118,7 @@ class UltimoPresupuesto extends Component {
         const { form } = this.state
         await axios.post(URL_DEV + 'conceptos', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { conceptos, concepto} = response.data
+                const { concepto} = response.data
 
                 this.addConceptoToPresupuestoAxios([concepto])
                 
@@ -152,7 +151,7 @@ class UltimoPresupuesto extends Component {
 
     async addConceptoToPresupuestoAxios(conceptos) {
         const { access_token } = this.props.authUser
-        const { form, presupuesto} = this.state
+        const { presupuesto} = this.state
         let aux = {
             conceptos: conceptos
         }
@@ -260,7 +259,7 @@ class UltimoPresupuesto extends Component {
     
     onChange = (key, e, name) => {
         let { value } = e.target
-        const { form, presupuesto } = this.state
+        const { form } = this.state
 
         
         if(name === 'margen'){
@@ -279,7 +278,7 @@ class UltimoPresupuesto extends Component {
     }
 
     checkButton = (key, e) => {
-        const { name, value, checked } = e.target
+        const { name, checked } = e.target
         const { form, presupuesto } = this.state
 
         form.conceptos[key][name] = checked
@@ -311,7 +310,7 @@ class UltimoPresupuesto extends Component {
         await axios.get(URL_DEV + 'presupuestos/' + id, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
 
-                const { form, data } = this.state
+                const { form } = this.state
                 const { presupuesto } = response.data
                 
                 let aux = []
@@ -445,7 +444,7 @@ class UltimoPresupuesto extends Component {
         })
     }
     render() {
-        const { form, title, options, formeditado, presupuesto} = this.state;
+        const { form, formeditado, presupuesto} = this.state;
         const { formulario } = this.props
 
         return (

@@ -5,8 +5,7 @@ import swal from 'sweetalert'
 import Layout from '../../../components/layout/layout' 
 import { Modal, ModalDelete} from '../../../components/singles' 
 import { NOMINA_ADMIN_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS} from '../../../constants'
-import NewTable from '../../../components/tables/NewTable' 
-import { NominaAdminForm, AdjuntosForm} from '../../../components/forms'
+import { AdjuntosForm} from '../../../components/forms'
 import { setOptions, setDateTable, setMoneyTable, setTextTable, setAdjuntosList } from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert, deleteAlert} from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
@@ -80,48 +79,6 @@ class NominaAdmin extends Component {
             state: { nomina: nomina }
         });
     }
-
-    /* openModalEdit = nomina => {
-        const { modal, form } = this.state
-        modal.form = true
-
-        form.periodo = nomina.periodo
-        form.empresa = nomina.empresa ? nomina.empresa.id.toString() : ''
-        form.fechaInicio = new Date(nomina.fecha_inicio)
-        form.fechaFin = nomina.fecha_fin ? new Date(nomina.fecha_fin) : ''
-
-        let aux = []
-        nomina.nominas_administrativas.map( (nom, key) => {
-            aux.push(
-                {
-                    usuario: nom.empleado ? nom.empleado.id.toString() : '',
-                    nominImss: nom.nomina_imss,
-                    restanteNomina: nom.restante_nomina,
-                    extras:nom.extras
-                }
-            )
-        })
-
-        if(aux.length){
-            form.nominasAdmin = aux
-        }else{
-            form.nominasAdmin = [{
-                usuario: '',
-                nominImss: '',
-                restanteNomina: '',
-                extras: ''
-            }]
-        }
-
-        this.setState({
-            ... this.state,
-            modal,
-            title: 'Editar nómina administrativa',
-            nomina: nomina,
-            form,
-            formeditado:1
-        })
-    } */
 
     openModalDelete = nomina => {
         const { modal } = this.state
@@ -286,7 +243,6 @@ class NominaAdmin extends Component {
                 const { nomina } = response.data
                 const { data, key } = this.state
                 data.adjuntos = nomina.adjuntos
-                //AQUI
                 this.getNominasAxios()
 
                 this.setState({
@@ -444,7 +400,7 @@ class NominaAdmin extends Component {
         return aux
     }
 
-    setActions = nomina => {
+    setActions = () => {
         let aux = []
         aux.push(
             {
@@ -518,7 +474,7 @@ class NominaAdmin extends Component {
     }
     
     render() {
-        const { modal, options, title, form, formeditado, adjuntos, data } = this.state
+        const { modal, form, adjuntos, data } = this.state
 
         return (
             <Layout active={'rh'} {...this.props}>
