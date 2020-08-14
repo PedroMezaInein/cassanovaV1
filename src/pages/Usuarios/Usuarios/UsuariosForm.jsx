@@ -84,7 +84,14 @@ class UsuariosForm extends Component {
                         form.email = user.email
                         form.tipo = user.tipo
                         if((user.tipo===1||user.tipo===2)){
-                            form.departamentos = user.departamentos
+                            let aux = []
+                            user.departamentos.map( (depto) => {
+                                aux.push({
+                                    value: depto.id.toString(),
+                                    name: depto.nombre
+                                })
+                            })
+                            form.departamentos = aux
                             this.setState({
                                 ... this.state,
                                 form,
@@ -96,7 +103,14 @@ class UsuariosForm extends Component {
                         }
                         else    
                         {  
-                            form.proyectos = user.proyectos
+                            let aux = []
+                            user.proyectos.map( (proyecto) => {
+                                aux.push({
+                                    value: proyecto.id.toString(),
+                                    name: proyecto.nombre
+                                })
+                            })
+                            form.proyectos = aux
                             this.setState({
                                 ... this.state,
                                 form,
