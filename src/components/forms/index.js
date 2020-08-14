@@ -39,6 +39,7 @@ import empleadosForm from './recursoshumanos/EmpleadosForm'
 import agregarConcepto from './presupuesto/AgregarConcepto'
 import ultimoPresupuestoForm from './presupuesto/UltimoPresupuestoForm'
 import precioDiseñoForm from './catalogos/PrecioDiseñoForm'
+import presupuestoDiseñoForm from './presupuesto/PresupuestoDiseñoForm'
 
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
@@ -81,3 +82,4 @@ export const EmpleadosForm = empleadosForm
 export const AgregarConcepto = agregarConcepto
 export const UltimoPresupuestoForm = ultimoPresupuestoForm
 export const PrecioDiseñoForm = precioDiseñoForm
+export const PresupuestoDiseñoForm = presupuestoDiseñoForm
