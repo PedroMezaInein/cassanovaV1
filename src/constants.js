@@ -1677,7 +1677,7 @@ export const PRECIO_M2_DISEÑOS_COLUMNS = [
         accessor: 'esquema2',
     },
     {
-        Header: 'Esquema 2',
-        accessor: 'esquema2',
+        Header: 'Esquema 3',
+        accessor: 'esquema3',
     }
 ]
