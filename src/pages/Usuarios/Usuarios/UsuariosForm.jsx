@@ -83,15 +83,29 @@ class UsuariosForm extends Component {
                         form.name = user.name
                         form.email = user.email
                         form.tipo = user.tipo
-
-                        this.setState({
-                            ... this.state,
-                            form,
-                            options,
-                            user: user,
-                            title: 'Editar usuario',
-                            formeditado:1
-                        })
+                        if((user.tipo===1||user.tipo===2)){
+                            form.departamentos = user.departamentos
+                            this.setState({
+                                ... this.state,
+                                form,
+                                options,
+                                user: user,
+                                title: 'Editar usuario',
+                                formeditado:1
+                            })
+                        }
+                        else    
+                        {  
+                            form.proyectos = user.proyectos
+                            this.setState({
+                                ... this.state,
+                                form,
+                                options,
+                                user: user,
+                                title: 'Editar usuario',
+                                formeditado:1
+                            })
+                        }
                     }
                     else
                         history.push('/usuarios/usuarios')
@@ -399,7 +413,7 @@ class UsuariosForm extends Component {
 
     render(){
         const { modal, title, users, user, form, options, key, data,usuarios, formeditado} = this.state
-        const { formulario, deleteForm } = this.props
+        const { formulario, deleteForm } = this.props 
         return (
             <Layout active = { 'usuarios' }  { ...this.props } >
                 <Card className="card-custom">
