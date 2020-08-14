@@ -372,36 +372,32 @@ class Usuarios extends Component {
         return form;
     }
 
-    setUsers = users => { 
+    setUsers = users => {
         let aux = []
         if (users)
-            users.map((user) => { 
-                if((user.tipo===1||user.tipo===2)){
+            users.map((user) => {
+                if ((user.tipo === 1 || user.tipo === 2)) {
                     aux.push(
                         {
                             actions: this.setActions(user),
                             name: renderToString(setTextTable(user.name)),
                             email: renderToString(setTextTable(user.email)),
-                            id: user.id,
-                            departamento: renderToString(  user.departamentos.length === 0?"Sin definir":setListTable(user.departamentos, "nombre"))
-                            
+                            departamento: renderToString(user.departamentos.length === 0 ? setTextTable("Sin definir"): setListTable(user.departamentos, "nombre")),
+                            id: user.id
                         }
                     )
                 }
-                else
-                {
+                else {
                     aux.push(
                         {
                             actions: this.setActions(user),
                             name: renderToString(setTextTable(user.name)),
                             email: renderToString(setTextTable(user.email)),
-                            id: user.id,
-                            proyecto: renderToString( user.proyectos.length === 0?"Sin definir":setListTable(user.proyectos, "nombre"))
-                            
+                            proyecto: renderToString(user.proyectos.length === 0 ? setTextTable("Sin definir") : setListTable(user.proyectos, "nombre")),                            
+                            id: user.id
                         }
                     )
                 }
-                
             })
         return aux
     }
