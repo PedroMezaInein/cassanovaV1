@@ -36,7 +36,9 @@ const Cuentas = Loader(() => import('./pages/Bancos/Cuenta') )
 const EstadosCuenta = Loader(() => import('./pages/Bancos/EstadosCuenta') )
 const Traspasos = Loader(() => import('./pages/Bancos/Traspasos') )
 
-const Conceptos = Loader(() => import('./pages/Presupuesto/Conceptos') )
+const Conceptos = Loader(() => import('./pages/Presupuesto/Conceptos/Conceptos') )
+const ConceptosForm = Loader(() => import('./pages/Presupuesto/Conceptos/ConceptosForm') )
+
 const Rendimiento = Loader(() => import('./pages/Presupuesto/Rendimiento') )
 const Presupuesto = Loader(() => import('./pages/Presupuesto/Presupuesto') )
 const AddPresupuestoForm = Loader(() => import('./pages/Presupuesto/AddPresupuestoForm') )
@@ -170,6 +172,8 @@ class App extends Component{
                 <Route path = "/usuarios/empresas/:action" exact component ={ EmpresasForm } />
 
                 <Route path = "/presupuesto/conceptos" exact component ={ Conceptos } />
+                <Route path = "/presupuesto/conceptos/:action" exact component ={ ConceptosForm } />
+
                 <Route path = "/presupuesto/rendimiento" exact component ={ Rendimiento } />
                 <Route path = "/presupuesto/presupuesto" exact component ={ Presupuesto } />
                 <Route path = "/presupuesto/presupuesto/add" exact component ={ AddPresupuestoForm } />
