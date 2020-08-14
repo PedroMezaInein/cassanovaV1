@@ -242,7 +242,7 @@ class Remisiones extends Component{
                 <NewTable columns = { REMISION_COLUMNS } data = {remisiones} 
                     title = 'Remisiones' subtitle = 'Listado de remisiones'
                     mostrar_boton={true}
-                    abrir_modal={false}                    
+                    abrir_modal={false}
                     url = '/proyectos/remision/add'
                     mostrar_acciones={true}
 

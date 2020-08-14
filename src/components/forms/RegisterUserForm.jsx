@@ -10,11 +10,13 @@ class RegisterUserForm extends Component {
     }
 
     updateDepartamento = value => {
-        const { onChange, onChangeOptions, options, form } = this.props
+        const { onChange, onChangeOptions, options, form } = this.props 
         options.departamentos.map((departamento) => {
+            
+            console.log(departamento.value," vs ",value)
             if (departamento.value === value) {
                 let aux = false;
-                form.departamentos.map((departamento) => {
+                form.departamentos.map((departamento) => { 
                     if (departamento.value === value)
                         aux = true
                 })
@@ -44,13 +46,15 @@ class RegisterUserForm extends Component {
     }
 
     render() {
-        const { options, form, onChange, deleteOption, onChangeOptions, ...props} = this.props
+        const { options, form, onChange, deleteOption, onChangeOptions, formeditado, ...props} = this.props
+        console.log(form)
         return (
             <Form {... props} >
-                <div className="form-group row form-group-marginless pt-4">
+                <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Input
                             onChange={onChange}
+                            formeditado={formeditado}
                             requirevalidation={1}
                             name="name"
                             type="text"
@@ -64,6 +68,7 @@ class RegisterUserForm extends Component {
                         <Input
                             onChange={onChange}
                             requirevalidation={1}
+                            formeditado={formeditado}
                             name="email"
                             type="email"
                             value={form.email}
@@ -76,6 +81,7 @@ class RegisterUserForm extends Component {
                     <div className="col-md-4">
                         <Select
                             requirevalidation={1}
+                            formeditado={formeditado}
                             onChange={onChange}
                             name="tipo"
                             value={form.tipo}
@@ -97,6 +103,7 @@ class RegisterUserForm extends Component {
                                     value={form.departamento}
                                     onChange={this.updateDepartamento}
                                     iconclass={"fas fa-layer-group"}
+                                    formeditado={formeditado}
 
                                 />
                             </div>
@@ -117,7 +124,7 @@ class RegisterUserForm extends Component {
                                                                     onClick={(e) => { e.preventDefault(); deleteOption(departamento, 'departamentos') }}
                                                                 >
                                                                 </div>
-                                                                <div><span className="tagify__tag-text p-1 white-space">{departamento.name}</span></div>
+                                                                <div><span className="tagify__tag-text p-1 white-space">{departamento.nombre}</span></div>
                                                             </div>
                                                         </div>
                                                     )
@@ -146,34 +153,38 @@ class RegisterUserForm extends Component {
                             </div>
                             <div className="col-md-8">
                                 {
-                                    form.proyectos.length > 0 ?
-                                        <div className="col-md-12 row mx-0 align-items-center image-upload">
-                                            {
-                                                form.proyectos.map((proyecto, key) => {
-                                                    return (
-                                                        <div key={key} className="tagify form-control p-1 col-md-3 px-2 d-flex justify-content-center align-items-center" tabIndex="-1" style={{ borderWidth: "0px" }}>
-                                                            <div className="tagify__tag tagify__tag--primary tagify--noAnim">
-                                                                <div
-                                                                    title="Borrar archivo"
-                                                                    className="tagify__tag__removeBtn"
-                                                                    role="button"
-                                                                    aria-label="remove tag"
-                                                                    onClick={(e) => { e.preventDefault(); deleteOption(proyecto, 'proyectos') }}
-                                                                >
+                                        form.proyectos.length > 0 ?
+                                            <div className="col-md-12 row mx-0 align-items-center image-upload">
+                                                {
+                                                    form.proyectos.map((proyecto, key) => {
+                                                        console.log(proyecto)
+                                                        return (
+                                                            <div key={key} className="tagify form-control p-1 col-md-3 px-2 d-flex justify-content-center align-items-center" tabIndex="-1" style={{ borderWidth: "0px" }}>
+                                                                <div className="tagify__tag tagify__tag--primary tagify--noAnim">
+                                                                    <div
+                                                                        title="Borrar archivo"
+                                                                        className="tagify__tag__removeBtn"
+                                                                        role="button"
+                                                                        aria-label="remove tag"
+                                                                        onClick={(e) => { e.preventDefault(); deleteOption(proyecto, 'proyectos') }}
+                                                                    >
+                                                                    </div>
+                                                                    <div><span className="tagify__tag-text p-1 white-space">{proyecto.nombre}</span></div>
                                                                 </div>
-                                                                <div><span className="tagify__tag-text p-1 white-space">{proyecto.name}</span></div>
                                                             </div>
-                                                        </div>
-                                                    )
-                                                })
-                                            }
-                                        </div>
-                                        : ''
+                                                        )
+                                                    })
+                                                }
+                                            </div>
+                                            : ''
                                 }
                             </div>
                         </div>
                         : ''
                 }
+                
+
+
                 <div className="mt-3 text-center">
                     <Button icon='' className="mx-auto" type="submit" text="Enviar" />
                 </div>
