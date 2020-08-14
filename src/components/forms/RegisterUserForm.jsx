@@ -124,7 +124,7 @@ class RegisterUserForm extends Component {
                                                                     onClick={(e) => { e.preventDefault(); deleteOption(departamento, 'departamentos') }}
                                                                 >
                                                                 </div>
-                                                                <div><span className="tagify__tag-text p-1 white-space">{departamento.nombre}</span></div>
+                                                                <div><span className="tagify__tag-text p-1 white-space">{departamento.name}</span></div>
                                                             </div>
                                                         </div>
                                                     )
@@ -169,7 +169,7 @@ class RegisterUserForm extends Component {
                                                                         onClick={(e) => { e.preventDefault(); deleteOption(proyecto, 'proyectos') }}
                                                                     >
                                                                     </div>
-                                                                    <div><span className="tagify__tag-text p-1 white-space">{proyecto.nombre}</span></div>
+                                                                    <div><span className="tagify__tag-text p-1 white-space">{proyecto.name}</span></div>
                                                                 </div>
                                                             </div>
                                                         )
