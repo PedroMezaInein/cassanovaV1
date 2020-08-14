@@ -240,3 +240,17 @@ a#tabsAreas-tab-compras, a#tabsAreas-tab-ventas, a#tabsAreas-tab-egresos{
         font-size: 11px;
     }  
 }
+
+//TABLA - PRESUPUESTO DISEÑO
+
+td.dia, th.dia {
+    width: 20px;
+}
+td.dia, th.dia{
+    @include down-screen($md){
+        width: 100px;
+    }
+}
+td.concepto{
+    text-align: justify;
+}

@@ -12,6 +12,8 @@ class AreaForm extends Component {
     render() {
         const { title, form, onChange, addSubarea, deleteSubarea, onSubmit, formeditado, ...props } = this.props
         return (
+            
+            // fab fa-uikit   fas fa-camera-retro   fas fa-cubes   
             <Form id="form-precio"
                 onSubmit={
                     (e) => {
@@ -35,9 +37,10 @@ class AreaForm extends Component {
                             value = { form.m2 }
                             type = "text"
                             placeholder = "M2"
-                            iconclass = {"far fa-envelope"}
+                            iconclass={"fas fa-ruler-combined"}
                             thousandSeparator={true}
-                            messageinc = "Incorrecto. Ingresa los M2."/>
+                            messageinc = "Incorrecto. Ingresa los M2."
+                        />
                     </div>
                     <div className="col-md-4">
                         <InputMoney
@@ -48,7 +51,7 @@ class AreaForm extends Component {
                             value = { form.precio_m2 }
                             type = "text"
                             placeholder = "Precio por M2"
-                            iconclass = {"far fa-envelope"}
+                            iconclass = {"fas fa-dollar-sign"}
                             prefix="$"
                             thousandSeparator={true}
                             messageinc = "Incorrecto. Ingresa el precio por m2."/>
@@ -62,7 +65,7 @@ class AreaForm extends Component {
                             value = { form.esquema_1 }
                             type = "text"
                             placeholder = "Esquema 1"
-                            iconclass = {"far fa-envelope"}
+                            iconclass = {"fas fa-camera-retro"}
                             prefix="$"
                             thousandSeparator={true}
                             messageinc = "Incorrecto. Ingresa el esquema 1."/>
@@ -80,7 +83,7 @@ class AreaForm extends Component {
                             type = "text"
                             placeholder = "Incremento esquema 2"
                             /* prefix={'%'} */
-                            iconclass = {"far fa-envelope"}
+                            iconclass = {"far fa-plus-square"}
                             messageinc = "Incorrecto. Ingresa el incremento al esquema 2."/>
                     </div>
                     <div className="col-md-3">
@@ -93,7 +96,7 @@ class AreaForm extends Component {
                             type = "text"
                             placeholder = "Esquema 2"
                             prefix={'$'}
-                            iconclass = {"far fa-envelope"}
+                            iconclass = {"fas fa-cubes"}
                             thousandSeparator={true}
                             messageinc = "Incorrecto. Ingresa el esquema 2."/>
                     </div>
@@ -107,7 +110,7 @@ class AreaForm extends Component {
                             type = "text"
                             placeholder = "Incremento esquema 3"
                             /* prefix={'%'} */
-                            iconclass = {"far fa-envelope"}
+                            iconclass = {"far fa-plus-square"}
                             messageinc = "Incorrecto. Ingresa el incremento al esquema 3."/>
                     </div>
                     <div className="col-md-3">
@@ -120,7 +123,7 @@ class AreaForm extends Component {
                             type = "text"
                             placeholder = "Esquema 3"
                             prefix={'$'}
-                            iconclass = {"far fa-envelope"}
+                            iconclass = {"flaticon2-laptop"}
                             thousandSeparator={true}
                             messageinc = "Incorrecto. Ingresa el esquema 3."/>
                     </div>

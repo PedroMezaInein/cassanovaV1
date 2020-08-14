@@ -1681,3 +1681,26 @@ export const PRECIO_M2_DISEÑOS_COLUMNS = [
         accessor: 'esquema3',
     }
 ]
+
+export const PRESUPUESTO_DISEÑO_COLUMNS = [
+    {
+        Header: 'Opciones',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Proyecto',
+        accessor: 'proyecto'
+    },
+    {
+        Header: 'Empresa',
+        accessor: 'empresa',
+    },
+    {
+        Header: 'Área',
+        accessor: 'area'
+    },
+    {
+        Header: 'Fecha',
+        accessor: 'fecha',
+    }    
+]
