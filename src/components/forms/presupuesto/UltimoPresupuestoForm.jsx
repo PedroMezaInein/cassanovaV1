@@ -31,8 +31,8 @@ class ActualizarPresupuestoForm extends Component {
     }
 
     handleChangeDateAceptado = date => {
-        const { onChange } = this.props
-        onChange({ target: { value: date, name: 'fecha_aceptacion' } })
+        const { onChangeInput } = this.props
+        onChangeInput({ target: { value: date, name: 'fecha_aceptacion' } })
     }
 
     getTotalImport = () => {
@@ -100,7 +100,7 @@ class ActualizarPresupuestoForm extends Component {
     }
 
     render() {
-        const { onChange, formeditado, checkButton, form, presupuesto, onSubmit, onChangeInput, openModal} = this.props
+        const { aceptarPresupuesto, onChange, formeditado, checkButton, form, presupuesto, onSubmit, onChangeInput, openModal} = this.props
         const { margen } = this.state
         if (presupuesto)
             return (
@@ -352,7 +352,7 @@ class ActualizarPresupuestoForm extends Component {
                                             />
                                         </div>
                                         <div className="col-md-2 align-self-end d-flex justify-content-center pb-1">
-                                            <Button icon='' type="submit" className="text-center mx-auto" text='Enviar' />
+                                            <Button icon='' onClick = { aceptarPresupuesto } className="text-center mx-auto" text='Enviar' />
                                         </div>
                                         
                                     </div>
