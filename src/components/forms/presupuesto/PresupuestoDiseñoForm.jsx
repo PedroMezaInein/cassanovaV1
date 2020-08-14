@@ -138,8 +138,8 @@ class PresupuestoDiseñoForm extends Component {
                             <div id="wizard-2-content" className="pb-3" data-wizard-type="step-content">
                                 <h5 className="mb-4 font-weight-bold text-dark">INGRESA LOS TIEMPOS</h5>
                                 <div className="form-group row form-group-marginless">
-                                    <div class="table-responsive-lg col-md-6">
-                                        <table class="table">
+                                    <div className="table-responsive-lg col-md-6">
+                                        <table className="table">
                                             <thead >
                                                 <tr>
                                                     <th className="dia">DÍA</th>
@@ -259,50 +259,50 @@ class PresupuestoDiseñoForm extends Component {
                                                 <tr className="text-center">
                                                     <th scope="row">SEMANA 1</th>
                                                     <td>
-                                                        <label class="checkbox checkbox-single">
-                                                            <input type="checkbox" value="" class="checkable" />
+                                                        <label className="checkbox checkbox-single">
+                                                            <input type="checkbox" value="" className="checkable" />
                                                             <span></span>
                                                         </label>
                                                     </td>
 
                                                     <td>
-                                                        <label class="checkbox checkbox-single">
-                                                            <input type="checkbox" value="" class="checkable" />
+                                                        <label className="checkbox checkbox-single">
+                                                            <input type="checkbox" value="" className="checkable" />
                                                             <span></span>
                                                         </label>
                                                     </td>
 
                                                     <td>
-                                                        <label class="checkbox checkbox-single">
-                                                            <input type="checkbox" value="" class="checkable" />
+                                                        <label className="checkbox checkbox-single">
+                                                            <input type="checkbox" value="" className="checkable" />
                                                             <span></span>
                                                         </label>
                                                     </td>
 
                                                     <td>
-                                                        <label class="checkbox checkbox-single">
-                                                            <input type="checkbox" value="" class="checkable" />
+                                                        <label className="checkbox checkbox-single">
+                                                            <input type="checkbox" value="" className="checkable" />
                                                             <span></span>
                                                         </label>
                                                     </td>
 
                                                     <td>
-                                                        <label class="checkbox checkbox-single">
-                                                            <input type="checkbox" value="" class="checkable" />
+                                                        <label className="checkbox checkbox-single">
+                                                            <input type="checkbox" value="" className="checkable" />
                                                             <span></span>
                                                         </label>
                                                     </td>
 
                                                     <td>
-                                                        <label class="checkbox checkbox-single">
-                                                            <input type="checkbox" value="" class="checkable" />
+                                                        <label className="checkbox checkbox-single">
+                                                            <input type="checkbox" value="" className="checkable" />
                                                             <span></span>
                                                         </label>
                                                     </td>
 
                                                     <td>
-                                                        <label class="checkbox checkbox-single">
-                                                            <input type="checkbox" value="" class="checkable" />
+                                                        <label className="checkbox checkbox-single">
+                                                            <input type="checkbox" value="" className="checkable" />
                                                             <span></span>
                                                         </label>
                                                     </td>
