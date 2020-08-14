@@ -113,7 +113,6 @@ class PresupuestoDiseñoForm extends Component {
                 swal.close()
                 const { esquemas, empresas, precios} = response.data
                 const { options, data } = this.state
-                console.log(options)
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['esquemas'] = setOptions(esquemas, 'nombre', 'id')
                 options['precios'] = setOptions(precios, 'm2', 'id')
