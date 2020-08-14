@@ -71,7 +71,7 @@ class EmpresaForm extends Component {
                     </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
-                <div className="form-group row form-group-marginless">
+                {/* <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <div className="uppy">
                             <div className="uppy-wrapper">
@@ -105,7 +105,7 @@ class EmpresaForm extends Component {
                                 onClick={removefile} text='' icon={faTimesCircle} />
                         </div>
                     }
-                </div>
+                </div> */}
 
                 <div className="mt-3 text-center">
                     <Button icon='' className="mx-auto" type="submit" text="Enviar" />

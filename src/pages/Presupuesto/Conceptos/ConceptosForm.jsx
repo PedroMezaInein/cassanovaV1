@@ -1,0 +1,268 @@
+import React, { Component } from 'react'
+import { renderToString } from 'react-dom/server'
+import { connect } from 'react-redux'
+import axios from 'axios'
+import swal from 'sweetalert'
+import { URL_DEV, CONCEPTOS_COLUMNS } from '../../../constants'
+import { setOptions, setTextTable, setMoneyTable } from '../../../functions/setters'
+import Layout from '../../../components/layout/layout'
+import { Modal, ModalDelete } from '../../../components/singles'
+import { ConceptoForm } from '../../../components/forms'
+import NewTable from '../../../components/tables/NewTable'
+import { errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
+import { Card } from 'react-bootstrap'
+
+class Conceptos extends Component {
+
+    state = {
+        modal: false,
+        modalDelete: false,
+        title: 'Nuevo concepto',
+        options: {
+            unidades: [],
+            partidas: [],
+            subpartidas: [],
+            proveedores: [],
+        },
+        data: {
+            conceptos: []
+        },
+        formeditado: 0,
+        form: {
+            unidad: '',
+            partida: '',
+            subpartida: '',
+            descripcion: '',
+            costo: '',
+            proveedor: '',
+        },
+        conceptos: [],
+        concepto: ''
+    }
+    componentDidMount() {
+        const { authUser: { user : { permisos : permisos } } } = this.props
+        const { history : { location: { pathname: pathname } } } = this.props
+        const { match : { params: { action: action } } } = this.props
+        const { history, location: { state: state} } = this.props
+        const remisiones = permisos.find(function(element, index) {
+            const { modulo: { url: url } } = element
+            return pathname === url + '/' + action
+        });
+        switch(action){
+            case 'add':
+                this.setState({
+                    ... this.state,
+                    title: 'Nuevo concepto',
+                    formeditado:0
+                })
+                break;
+            case 'edit':
+                if(state){
+                    if(state.concepto)
+                    {
+                        const { form, options } = this.state
+                        const { concepto } = state
+
+                        form.descripcion = concepto.descripcion
+                        form.costo = concepto.costo
+
+                        form.unidad = concepto.unidad.id.toString()
+
+                        if (concepto.subpartida) {
+                            if (concepto.subpartida.partida) {
+                                form.partida = concepto.subpartida.partida.id.toString()
+                                options['subarea'] = setOptions(concepto.subpartida.partida.subpartidas, 'nombre', 'id')
+                                form.subpartida = concepto.subpartida.id.toString()
+                                options['subpartidas'] = setOptions(concepto.subpartida.partida.subpartidas, 'nombre', 'id')
+                            }
+                        }
+                        if (concepto.proveedor)
+                            form.proveedor = concepto.proveedor.id.toString()
+
+                        this.setState({
+                            ... this.state,
+                            title: 'Editar concepto',
+                            form,
+                            concepto: concepto,
+                            options,
+                            formeditado: 1
+                        })
+                    }
+                    else
+                        history.push('/presupuesto/conceptos')
+                }else
+                    history.push('/presupuesto/conceptos')
+                break;
+            default:
+                break;
+        }
+        if(!remisiones)
+            history.push('/')
+        this.getOptionsAxios()
+    }
+
+    setOptions = (name, array) => {
+        const { options } = this.state
+        options[name] = setOptions(array, 'nombre', 'id')
+        this.setState({
+            ... this.state,
+            options
+        })
+    }
+
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            form[element] = ''
+        })
+        return form
+    }
+
+    onSubmit = e => {
+        e.preventDefault()
+        const { title } = this.state
+        swal({
+            title: '¡Un momento!',
+            text: 'La información está siendo procesada.',
+            buttons: false
+        })
+        if (title === 'Editar concepto')
+            this.editConceptoAxios()
+        else
+            this.addConceptoAxios()
+    }
+
+    onChange = e => {
+        const { form } = this.state
+        const { name, value } = e.target
+        form[name] = value
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
+    async getOptionsAxios() {
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'conceptos/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { unidades, partidas, proveedores } = response.data
+                const { options, data } = this.state
+                options['unidades'] = setOptions(unidades, 'nombre', 'id')
+                options['partidas'] = setOptions(partidas, 'nombre', 'id')
+                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
+                this.setState({
+                    ... this.state,
+                    options
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async addConceptoAxios() {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        await axios.post(URL_DEV + 'conceptos', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'La concepto fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+
+                const { history } = this.props
+                history.push({pathname: '/presupuesto/conceptos'})
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async editConceptoAxios() {
+        const { access_token } = this.props.authUser
+        const { form, concepto } = this.state
+        await axios.put(URL_DEV + 'conceptos/' + concepto.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'La concepto fue editado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+
+                const { history } = this.props
+                history.push({pathname: '/presupuesto/conceptos'})
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    render() {
+
+        const { modal, title, form, options, formeditado } = this.state
+
+        return (
+            <Layout active={'presupuesto'}  {...this.props}>
+                <Card className="pt-0">
+                    <Card.Body className="pt-0">
+                        <ConceptoForm
+                            form={form}
+                            options={options}
+                            setOptions={this.setOptions}
+                            onChange={this.onChange}
+                            onSubmit={this.onSubmit}
+                            formeditado={formeditado}
+                        />
+                    </Card.Body>
+                </Card>
+            </Layout>
+        )
+    }
+}
+
+const mapStateToProps = state => {
+    return {
+        authUser: state.authUser
+    }
+}
+
+const mapDispatchToProps = dispatch => ({
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Conceptos);

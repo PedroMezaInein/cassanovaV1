@@ -11,7 +11,7 @@ import { EMPRESA_COLUMNS, DARK_BLUE } from '../../../constants'
 import { setTextTable } from '../../../functions/setters'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Nav, Tab, Col, Row, Card } from 'react-bootstrap'
-import { waitAlert } from '../../../functions/alert'
+import { waitAlert, forbiddenAccessAlert, errorAlert } from '../../../functions/alert'
 
 class Empresas extends Component {
 
@@ -37,13 +37,13 @@ class Empresas extends Component {
         showadjuntos: [
             {
                 placeholder: 'Logo de la empresa',
-                id: 'logo_de_la_empresa',
+                id: 'logos',
                 value: '',
                 files: []
             },
             {
                 placeholder: 'Footer',
-                id: 'footer',
+                id: 'footers',
                 value: '',
                 files: []
             }
@@ -116,7 +116,7 @@ class Empresas extends Component {
                 name: renderToString(setTextTable(empresa.name)),
                 razonSocial: renderToString(setTextTable(empresa.razon_social)),
                 rfc: renderToString(setTextTable(empresa.rfc)),
-                logo: renderToString(empresa.logo !== null ? <img className="img-empresa" src={empresa.logo} alt={empresa.name} /> : 'No hay logo'),
+                logo: renderToString(empresa.logos.length !== 0 ? <img className="img-empresa" src={empresa.logos[empresa.logos.length - 1].url } alt={empresa.name} /> : 'No hay logo'),
                 id: empresa.id
             }
         })
@@ -393,6 +393,112 @@ class Empresas extends Component {
         })
     }
 
+    onChangeAdjuntoGrupo = (e) => {
+        const { form, showadjuntos } = this.state
+        const { files, value, name } = e.target
+        let adjunto = 0
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        for(let i = 0; i < showadjuntos.length; i++){
+            if(showadjuntos[i].id === name){
+                adjunto = i;
+            }
+        }
+
+        showadjuntos[adjunto].value = value
+        showadjuntos[adjunto].files = aux
+        
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
+    handleChangeImages = (files, item) => {
+        this.onChangeAdjuntoGrupo({ target: { name: item, value: files, files: files } })
+        swal({
+            title: '¿Confirmas el envio de adjuntos?',
+            buttons: {
+                cancel: {
+                    text: "Cancelar",
+                    value: null,
+                    visible: true,
+                    className: "button__red btn-primary cancel",
+                    closeModal: true,
+                },
+                confirm: {
+                    text: "Aceptar",
+                    value: true,
+                    visible: true,
+                    className: "button__green btn-primary",
+                    closeModal: true
+                }
+            }
+        }).then((result) => {
+            if (result) {
+                waitAlert()
+                this.addAdjuntoAxios(item)
+            }
+        })
+    }
+
+    async addAdjuntoAxios(name) {
+        const { access_token } = this.props.authUser
+        const { form, empresa, showadjuntos } = this.state
+        const data = new FormData();
+        data.append('tipo', name)
+        let adjunto = 0
+        for(let i = 0; i < showadjuntos.length; i++){
+            if(showadjuntos[i].id === name){
+                adjunto = i;
+            }
+        }
+        showadjuntos[adjunto].files.map( (file) => {
+            data.append(`files_name_${showadjuntos[adjunto].id}[]`, file.name)
+            data.append(`files_${showadjuntos[adjunto].id}[]`, file.file)
+        })
+
+        await axios.post(URL_DEV + 'empresa/' + empresa.id + '/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+
+                const { empresas, empresa } = response.data
+
+                this.setEmpresas(empresas)
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'Agregaste con éxito la empresa.',
+                    icon: 'success',
+                    buttons: false,
+                    timer: 1500,
+                })
+
+                this.setState({
+                    empresa: empresa
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     handleChange = (e) => {
         e.preventDefault();
         const { name, value } = e.target
@@ -454,35 +560,6 @@ class Empresas extends Component {
             modalAdjuntos: !modalAdjuntos,
             form: this.clearForm(),
             empresa: '',
-        })
-    }
-
-    handleChangeAdjuntos = (files, item) => {
-
-        // this.onChangeAdjuntoGrupo({ target: { name: item, value: files, files: files } })
-        swal({
-            title: '¿Confirmas el envio de adjuntos?',
-            buttons: {
-                cancel: {
-                    text: "Cancelar",
-                    value: null,
-                    visible: true,
-                    className: "button__red btn-primary cancel",
-                    closeModal: true,
-                },
-                confirm: {
-                    text: "Aceptar",
-                    value: true,
-                    visible: true,
-                    className: "button__green btn-primary",
-                    closeModal: true
-                }
-            }
-        }).then((result) => {
-            if (result) {
-                waitAlert()
-                this.addProyectoAdjuntoAxios(item)
-            }
         })
     }
 
@@ -581,28 +658,11 @@ class Empresas extends Component {
                                                         return (
                                                             <Tab.Pane key={key} eventKey={adjunto.id}>
                                                                 <>
-                                                                    <ItemSlider items={[]} handleChange={this.handleChange}
-                                                                        item={adjunto.id} deleteFile={this.deleteFile} />
                                                                     {
                                                                         empresa ?
                                                                             empresa[adjunto.id] ?
-                                                                                empresa[adjunto.id].length ?
-                                                                                    <div className="mt-2 d-flex justify-content-center">
-                                                                                        <span className='btn btn-hover btn-text-success'
-                                                                                        // onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.id]) }}
-                                                                                        >
-                                                                                            <i className="fas fa-file-archive"></i> Descargar ZIP
-                                                                                        </span>
-                                                                                    </div>
-                                                                                    : ''
-                                                                                : ''
-                                                                            : ''
-                                                                    }
-                                                                    {
-                                                                        empresa ?
-                                                                            empresa[adjunto.id] ?
-                                                                                <ItemSlider items={[]} handleChange={this.handleChange}
-                                                                                    item={adjunto.id} deleteFile={this.deleteFile} />
+                                                                                <ItemSlider multiple = { false } items={ empresa[adjunto.id] } handleChange={this.handleChangeImages}
+                                                                                    item={adjunto.id} />
                                                                                 : ''
                                                                             : ''
                                                                     }

@@ -90,7 +90,8 @@ class ItemSlider extends Component {
     }
 
     render() {
-        const { items, deleteFile, handleChange } = this.props
+        const { items, deleteFile, handleChange, multiple } = this.props
+        console.log( multiple, '-multiple-')
         const { active } = this.state
         return (
             <>
@@ -116,7 +117,7 @@ class ItemSlider extends Component {
                         {
                             items.length === active && handleChange ?
                                 <div className="rounded w-100 d-flex justify-content-center align-items-center">
-                                    <DropZone handleChange={this.handleChange} >
+                                    <DropZone multiple = { multiple === true || multiple === false ? multiple : true} handleChange={this.handleChange} >
                                         <div className="dropzone-msg dz-message needsclick">
                                             <div className="row d-flex justify-content-center align-items-center">
                                                 <span className=" col-md-12 pb-3 svg-icon svg-icon-primary svg-icon svg-icon-5x">
@@ -145,7 +146,7 @@ class ItemSlider extends Component {
                                                     </div>
                                                     :
                                                     this.isImage(items[active].name) ?
-                                                        <img className="p-2 rounded pdfview" src={items[active].url} style={{ width: "100", height: "100" }} />
+                                                        <img className="p-2 rounded pdfview-img" src={items[active].url} style={{ width: "100", height: "100" }} />
                                                         :
                                                         <div id="descarga" className="btn btn-hover p-2 rounded pdfview d-flex align-items-center justify-content-center mx-auto" onClick={() => { this.downloadFile(items[active]) }}>
                                                             <div>

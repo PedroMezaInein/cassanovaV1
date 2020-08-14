@@ -10,19 +10,23 @@ class DropZone extends Component{
     }
 
     render(){
-        const { children, handleChange, ...props } = this.props
+        const { children, handleChange, multiple, ...props } = this.props
+        
         return(
             <Dropzone { ... props} 
                 onDrop={this.handleDrop}
                 >
-                {({ getRootProps, getInputProps }) => (
-                    <div {...getRootProps({ className: "dropzone dropzone-default dropzone-primary dz-clickable col-md-10" })}>
-                        <input {...getInputProps()} />
+                {({ getRootProps, getInputProps }) => {
+                    let aux = getInputProps()
+                    aux.multiple = multiple;
+                    console.log(multiple)
+                    return (<div {...getRootProps({ className: "dropzone dropzone-default dropzone-primary dz-clickable col-md-10" })}>
+                        <input {...aux} />
                         {
                             children
                         }
-                    </div>
-                )}
+                    </div>)
+                }}
             </Dropzone>
         )
     }
