@@ -1212,10 +1212,26 @@ class Compras extends Component {
 
     async exportComprasAxios() {
 
+        let headers = []
+        let documento = ''
+        COMPRAS_COLUMNS.map( ( columna, key ) => {
+            if(columna !== 'actions' && columna !== 'adjuntos'){
+                documento = document.getElementById(columna.accessor)
+                if(documento){
+                    if(documento.value){
+                        headers.push({
+                            name: columna.accessor,
+                            value: documento.value
+                        })
+                    }
+                }
+            }
+        })
+
         waitAlert()
 
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'exportar/compras', { responseType: 'blob', headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'exportar/compras', { columnas: headers }, { responseType: 'blob', headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
 
                 const url = window.URL.createObjectURL(new Blob([response.data]));
