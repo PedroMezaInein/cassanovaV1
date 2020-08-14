@@ -116,7 +116,7 @@ class Empresas extends Component {
                 name: renderToString(setTextTable(empresa.name)),
                 razonSocial: renderToString(setTextTable(empresa.razon_social)),
                 rfc: renderToString(setTextTable(empresa.rfc)),
-                logo: renderToString(empresa.logo !== null ? <img className="img-empresa" src={empresa.logo} alt={empresa.name} /> : 'No hay logo'),
+                logo: renderToString(empresa.logos.length !== 0 ? <img className="img-empresa" src={empresa.logos[empresa.logos.length - 1].url } alt={empresa.name} /> : 'No hay logo'),
                 id: empresa.id
             }
         })
