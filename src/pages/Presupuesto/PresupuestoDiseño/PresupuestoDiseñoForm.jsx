@@ -19,14 +19,28 @@ class PresupuestoDiseñoForm extends Component {
         },
         title: 'Presupuesto de diseño',
         form: {
-            periodo: '',
             empresas: '',
-            fechaInicio: new Date(),
-            fechaFin: new Date()
+            m2: '',
+            esquema: '',
+            fecha: new Date(),
+            tiempo_ejecucion_diseno: '',
+            concepto1: '',
+            concepto2: '',
+            concepto3: '',
+            concepto4: '',
+            concepto5: '',
+            concepto6: '',
+            concepto7: '',
+            precio_inferior_construccion: '',
+            precio_superior_construccion: '',
+            tiempo_ejecucion_construccion: '',
+            precio_inferior_mobiliario: '',
+            precio_superior_mobiliario: '',
         },
         options: {
-            usuarios: [],
-            empresas: []
+            empresas: [],
+            precios:[],
+            esquemas:[]
         }
     }
 
@@ -94,14 +108,15 @@ class PresupuestoDiseñoForm extends Component {
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'presupuesto/presupuesto-diseño/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'presupuestos-diseño/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                const { usuarios, empresas } = response.data
+                const { esquemas, empresas, precios} = response.data
                 const { options, data } = this.state
-                data.usuarios = usuarios
-                options['usuarios'] = setOptions(usuarios, 'nombre', 'id')
+                console.log(options)
                 options['empresas'] = setOptions(empresas, 'name', 'id')
+                options['esquemas'] = setOptions(esquemas, 'nombre', 'id')
+                options['precios'] = setOptions(precios, 'm2', 'id')
 
                 this.setState({
                     ... this.state,

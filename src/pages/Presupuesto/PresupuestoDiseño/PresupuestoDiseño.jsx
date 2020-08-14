@@ -27,8 +27,9 @@ class PresupuestoDiseño extends Component {
             fechaFin: new Date(),
         },
         options: {
-            usuarios: [],
-            empresas:[]
+            empresas: [],
+            precios:[],
+            esquemas:[]
         }
     }
 
@@ -72,17 +73,19 @@ class PresupuestoDiseño extends Component {
         })
     }
 
-    async getOptionsAxios(){
+    async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'presupuesto/presupuesto-diseño/options', { responseType:'json', headers: {Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'presupuestos-diseño/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                const { usuarios, empresas } = response.data
+                const { esquemas, empresas, precios} = response.data
                 const { options, data } = this.state
-                data.usuarios = usuarios
-                options['usuarios'] = setOptions( usuarios, 'nombre', 'id')
+                console.log(options)
                 options['empresas'] = setOptions(empresas, 'name', 'id')
+                options['esquemas'] = setOptions(esquemas, 'nombre', 'id')
+                options['precios'] = setOptions(precios, 'm2', 'id')
+
                 this.setState({
                     ... this.state,
                     options,
@@ -91,9 +94,9 @@ class PresupuestoDiseño extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -102,7 +105,7 @@ class PresupuestoDiseño extends Component {
             console.log(error, 'error')
         })
     }
-
+    
     async deletePresupuestoAdminAxios(){
         waitAlert()
         const { access_token } = this.props.authUser

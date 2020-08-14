@@ -24,7 +24,7 @@ class PresupuestoDiseñoForm extends Component {
 
     updateEsquema = value => {
         const { onChange } = this.props
-        onChange({ target: { value: value, name: 'esquema' } })
+        onChange({ target: { value: value, name: 'esquemas' } })
     }
 
     render() {
@@ -43,7 +43,7 @@ class PresupuestoDiseñoForm extends Component {
                         <div id="wizard-2" className="wizard-step" data-wizard-type="step" onClick={() => { openWizard2() }}>
                             <div className="wizard-label pt-0">
                                 <h3 className="wizard-title">
-                                    <span>2.</span> Fase 1: Diseño</h3>
+                                    <span>2.</span> Fase 1: Diseño (Tiempos)</h3>
                                 <div className="wizard-bar"></div>
                             </div>
                         </div>
@@ -82,42 +82,24 @@ class PresupuestoDiseñoForm extends Component {
                                         />
                                     </div>
                                     <div className="col-md-4">
-                                        {/* <SelectSearch
+                                        <SelectSearch
                                             formeditado={formeditado}
-                                            options={options.m2}
+                                            options={options.precios}
                                             placeholder="SELECCIONA LOS M2"
                                             name="m2"
                                             value={form.m2}
                                             onChange={this.updateM2}
                                             iconclass={"fas fa-ruler-combined"}
-                                        /> */}
-                                        <SelectSearch
-                                            formeditado={formeditado}
-                                            options={""}
-                                            placeholder="SELECCIONA LOS M2"
-                                            name=""
-                                            value={""}
-                                            onChange={""}
-                                            iconclass={"fas fa-ruler-combined"}
                                         />
                                     </div>
                                     <div className="col-md-4">
-                                        {/* <SelectSearch
+                                        <SelectSearch
                                             formeditado={formeditado}
-                                            options={options.esquema}
+                                            options={options.esquemas}
                                             placeholder="ESQUEMA"
                                             name="esquema"
                                             value={form.esquema}
                                             onChange={this.updateEsquema}
-                                            iconclass={"flaticon2-sheet"}
-                                        /> */}
-                                        <SelectSearch
-                                            formeditado={formeditado}
-                                            options={""}
-                                            placeholder="ESQUEMA"
-                                            name=""
-                                            value={""}
-                                            onChange={""}
                                             iconclass={"flaticon2-sheet"}
                                         />
                                     </div>
@@ -154,7 +136,7 @@ class PresupuestoDiseñoForm extends Component {
                                 </div>
                             </div>
                             <div id="wizard-2-content" className="pb-3" data-wizard-type="step-content">
-                                <h5 className="mb-4 font-weight-bold text-dark">INGRESA LOS DATOS DEL </h5>
+                                <h5 className="mb-4 font-weight-bold text-dark">INGRESA LOS TIEMPOS</h5>
                                 <div className="form-group row form-group-marginless">
                                     <div class="table-responsive-lg col-md-6">
                                         <table class="table">
@@ -171,8 +153,8 @@ class PresupuestoDiseñoForm extends Component {
                                                             placeholder='DÍA'
                                                             requirevalidation={0}
                                                             formeditado={formeditado}
-                                                            name=''
-                                                            value={''}
+                                                            name='concepto1'
+                                                            value={form.concepto1}
                                                             onChange={''}
                                                         />
                                                     </td>
@@ -184,8 +166,8 @@ class PresupuestoDiseñoForm extends Component {
                                                             placeholder='DÍA'
                                                             requirevalidation={0}
                                                             formeditado={formeditado}
-                                                            name=''
-                                                            value={''}
+                                                            name='concepto2'
+                                                            value={form.concepto2}
                                                             onChange={''}
                                                         />
                                                     </td>
@@ -197,8 +179,8 @@ class PresupuestoDiseñoForm extends Component {
                                                             placeholder='DÍA'
                                                             requirevalidation={0}
                                                             formeditado={formeditado}
-                                                            name=''
-                                                            value={''}
+                                                            name='concepto3'
+                                                            value={form.concepto3}
                                                             onChange={''}
                                                         />
                                                     </td>
@@ -210,8 +192,8 @@ class PresupuestoDiseñoForm extends Component {
                                                             placeholder='DÍA'
                                                             requirevalidation={0}
                                                             formeditado={formeditado}
-                                                            name=''
-                                                            value={''}
+                                                            name='concepto4'
+                                                            value={form.concepto4}
                                                             onChange={''}
                                                         />
                                                     </td>
@@ -223,8 +205,8 @@ class PresupuestoDiseñoForm extends Component {
                                                             placeholder='DÍA'
                                                             requirevalidation={0}
                                                             formeditado={formeditado}
-                                                            name=''
-                                                            value={''}
+                                                            name='concepto5'
+                                                            value={form.concepto5}
                                                             onChange={''}
                                                         />
                                                     </td>
@@ -236,8 +218,8 @@ class PresupuestoDiseñoForm extends Component {
                                                             placeholder='DÍA'
                                                             requirevalidation={0}
                                                             formeditado={formeditado}
-                                                            name=''
-                                                            value={''}
+                                                            name='concepto6'
+                                                            value={form.concepto6}
                                                             onChange={''}
                                                         />
                                                     </td>
@@ -249,8 +231,8 @@ class PresupuestoDiseñoForm extends Component {
                                                             placeholder='DÍA'
                                                             requirevalidation={0}
                                                             formeditado={formeditado}
-                                                            name=''
-                                                            value={''}
+                                                            name='concepto7'
+                                                            value={form.concepto7}
                                                             onChange={''}
                                                         />
                                                     </td>
@@ -342,51 +324,67 @@ class PresupuestoDiseñoForm extends Component {
                                 <h5 className="mb-4 font-weight-bold text-dark">Selecciona el tipo de pago, impuesto y estatus</h5>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
-                                        {/* <SelectSearch
+                                        <Input
+                                            requirevalidation={0}
                                             formeditado={formeditado}
-                                            options={options.partida}
-                                            placeholder="Partida"
-                                            name="partida"
-                                            value={form.partida}
-                                            onChange={this.updatePartida}
-                                            iconclass={"flaticon2-sheet"}
-                                        /> */}
-                                        <SelectSearch
-                                            formeditado={formeditado}
-                                            options={""}
-                                            placeholder="Partida"
-                                            name=""
-                                            value={""}
-                                            onChange={""}
-                                            iconclass={"flaticon2-sheet"}
+                                            placeholder="PRECIO PARAMÉTRICO DE CONSTRUCCIÓN INFERIOR"
+                                            value={form.precio_inferior_construccion}
+                                            name="precio_inferior_construccion"
+                                            onChange={onChange}
+                                            messageinc="Incorrecto. Ingresa el precio paramétrico de construcción inferior."
+                                            iconclass = {"fas fa-dollar-sign"}
                                         />
                                     </div>
                                     <div className="col-md-4">
                                         <Input
                                             requirevalidation={0}
                                             formeditado={formeditado}
-                                            placeholder="COSTO INFERIOR"
-                                            value={form.costo_inferior}
-                                            name="costo_inferior"
+                                            placeholder="PRECIO PARAMÉTRICO DE CONSTRUCCIÓN SUPERIOR"
+                                            value={form.precio_superior_construccion}
+                                            name="precio_superior"
                                             onChange={onChange}
-                                            messageinc="Incorrecto. Ingresa el costo inferior."
+                                            messageinc="Incorrecto. Ingresa el precio paramétrico de construcción superior."
+                                            iconclass = {"fas fa-dollar-sign"}
                                         />
                                     </div>
                                     <div className="col-md-4">
                                         <Input
                                             requirevalidation={0}
                                             formeditado={formeditado}
-                                            placeholder="COSTO SUPERIOR"
-                                            value={form.costo_superior}
-                                            name="costo_superior"
+                                            placeholder="TIEMPO DE EJECUCIÓN"
+                                            value={form.tiempo_ejecucion_construccion}
+                                            name="tiempo_ejecucion_construccion"
                                             onChange={onChange}
-                                            messageinc="Incorrecto. Ingresa el costo superior."
+                                            iconclass={"flaticon-calendar-with-a-clock-time-tools"}
                                         />
                                     </div>
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
-                                    
+                                    <div className="col-md-4">
+                                        <Input
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
+                                            placeholder="PRECIO PARAMÉTRICO DE MOBILIARIO INFERIOR"
+                                            value={form.precio_inferior_mobiliario}
+                                            name="precio_inferior_mobiliario"
+                                            onChange={onChange}
+                                            messageinc="Incorrecto. Ingresa el precio paramétrico de mobiliario inferior."
+                                            iconclass = {"fas fa-dollar-sign"}
+                                        />
+                                    </div>
+                                    <div className="col-md-4">
+                                        <Input
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
+                                            placeholder="PRECIO PARAMÉTRICO DE MOBILIARIO SUPERIOR"
+                                            value={form.precio_superior_mobiliario}
+                                            name="precio_superior_mobiliario"
+                                            onChange={onChange}
+                                            messageinc="Incorrecto. Ingresa el precio paramétrico de mobiliario superior."
+                                            iconclass = {"fas fa-dollar-sign"}
+                                        />
+                                    </div>
                                 </div>
                                 
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
