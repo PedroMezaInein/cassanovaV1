@@ -302,8 +302,52 @@ class UltimoPresupuesto extends Component {
     onSubmit = e => {
         e.preventDefault()
         waitAlert()
-
         this.updatePresupuestosAxios()
+    }
+
+    aceptarPresupuesto = e => {
+        e.preventDefault()
+        waitAlert()
+        this.aceptarPresupuestoAxios()
+    }
+
+    async aceptarPresupuestoAxios(){
+        const { access_token } = this.props.authUser
+        const { form, presupuesto } = this.state
+
+        await axios.put(URL_DEV + 'presupuestos/' + presupuesto.id + '/aceptar', form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+
+                const { presupuesto } = response.data
+                
+                this.getOnePresupuestoAxios(presupuesto.id)
+
+                const { history } = this.props
+                history.push({
+                    pathname: '/presupuesto/presupuesto'
+                });
+
+                swal({
+                    title: '¡Felicidades 🥳!',
+                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
+                    icon: 'success',
+                    timer: 1500,
+                    buttons: false
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     async getOnePresupuestoAxios(id) {
@@ -383,9 +427,14 @@ class UltimoPresupuesto extends Component {
                 const { presupuesto } = response.data
 
                 if(presupuesto.pdfs){
-                    var win = window.open( presupuesto.pdfs[presupuesto.pdfs.length -1 ].url, '_blank');
+                    var win = window.open( presupuesto.pdfs[0].url, '_blank');
                     win.focus();    
                 }
+
+                const { history } = this.props
+                history.push({
+                    pathname: '/presupuesto/presupuesto'
+                });
                 
                 this.getOnePresupuestoAxios(presupuesto.id)
 
@@ -459,6 +508,7 @@ class UltimoPresupuesto extends Component {
                     presupuesto={presupuesto}
                     {...this.props}
                     onChangeInput={this.onChangeInput}
+                    aceptarPresupuesto = { this.aceptarPresupuesto }
                 />
 
                 <FloatButtons 
