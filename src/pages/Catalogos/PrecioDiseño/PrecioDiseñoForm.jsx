@@ -87,9 +87,9 @@ class PrecioDiseñoForm extends Component{
         form[name] = value
         
         if(name !== 'esquema_1' && name !== 'esquema_2' && name !== 'esquema_3'){
-            form.esquema_1 = form.m2 * form.precio_m2
-            form.esquema_2 = form.esquema_1 * ( 1 + (form.incremento_esquema_2 / 100))
-            form.esquema_3 = form.esquema_1 * ( 1 + (form.incremento_esquema_3 / 100))
+            form.esquema_1 = Math.ceil(form.m2 * form.precio_m2)
+            form.esquema_2 = Math.ceil(form.esquema_1 * ( 1 + (form.incremento_esquema_2 / 100)))
+            form.esquema_3 = Math.ceil(form.esquema_1 * ( 1 + (form.incremento_esquema_3 / 100)))
         }
 
         this.setState({
