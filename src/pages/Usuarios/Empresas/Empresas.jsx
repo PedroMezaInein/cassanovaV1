@@ -467,28 +467,23 @@ class Empresas extends Component {
             data.append(`files_${showadjuntos[adjunto].id}[]`, file.file)
         })
 
-        await axios.post(URL_DEV + 'empresas/' + empresa.id + '/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'empresa/' + empresa.id + '/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
 
-                /* const { proyecto, proyectos } = response.data
-                const { data } = this.state
-                data.proyectos = proyectos
+                const { empresas, empresa } = response.data
 
+                this.setEmpresas(empresas)
                 swal({
                     title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.',
+                    text: response.data.message !== undefined ? response.data.message : 'Agregaste con éxito la empresa.',
                     icon: 'success',
+                    buttons: false,
                     timer: 1500,
-                    buttons: false
                 })
 
                 this.setState({
-                    ... this.state,
-                    proyecto: proyecto,
-                    proyectos: this.setProyectos(proyectos),
-                    adjuntos: this.setAdjuntosSlider(proyecto),
-                    data
-                }) */
+                    empresa: empresa
+                })
             },
             (error) => {
                 console.log(error, 'error')
@@ -667,7 +662,7 @@ class Empresas extends Component {
                                                                         empresa ?
                                                                             empresa[adjunto.id] ?
                                                                                 <ItemSlider multiple = { false } items={ empresa[adjunto.id] } handleChange={this.handleChangeImages}
-                                                                                    item={adjunto.id} deleteFile={this.deleteFile} />
+                                                                                    item={adjunto.id} />
                                                                                 : ''
                                                                             : ''
                                                                     }
