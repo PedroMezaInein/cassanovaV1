@@ -990,6 +990,7 @@ class Ingresos extends Component {
                     urlRender = {URL_DEV + 'ingresos'}
                     elementClass = 'total'
                     idTable = 'ingresostable'
+                    validateFactura={true}
                     tipo_validacion = 'ventas'
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'

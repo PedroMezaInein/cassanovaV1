@@ -1382,6 +1382,7 @@ class Ventas extends Component{
                     idTable = 'kt_datatable2_ventas'
                     elementClass = 'total'
                     // zeroRed = { true }
+                    validateFactura={true}
                     tipo_validacion = 'ventas'
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'
