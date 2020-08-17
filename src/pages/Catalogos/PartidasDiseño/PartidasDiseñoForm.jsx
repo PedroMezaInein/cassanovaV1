@@ -208,11 +208,10 @@ class PartidasDiseñoForm extends Component {
     }
 
     onSubmit = e => {
-        const { form, key } = this.state
         e.preventDefault();
         waitAlert()
         const { title } = this.state
-        if (title === 'Editar usuario')
+        if (title === 'Editar partida')
             this.updatePartidaDiseñoAxios()
         else
             this.addPartidaDiseñoAxios()
