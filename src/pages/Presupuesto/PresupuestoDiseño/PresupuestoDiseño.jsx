@@ -20,17 +20,6 @@ class PresupuestoDiseño extends Component {
             delete: false,
         },
         title: 'Nuevo presupuesto de diseño',
-        form:{
-            periodo : '',
-            empresas: '',
-            fechaInicio: new Date(),
-            fechaFin: new Date(),
-        },
-        options: {
-            empresas: [],
-            precios:[],
-            esquemas:[]
-        }
     }
 
     componentDidMount() { 
@@ -43,7 +32,6 @@ class PresupuestoDiseño extends Component {
         });
         if (!presupuesto)
             history.push('/')
-            this.getOptionsAxios()
     }
 
     changeEditPage = presupuesto => {
@@ -61,47 +49,6 @@ class PresupuestoDiseño extends Component {
             ... this.state,
             modal,
             presupuesto: presupuesto
-        })
-    }
-
-    setOptions = (name, array) => {
-        const { options } = this.state
-        options[name] = setOptions(array, 'nombre', 'id')
-        this.setState({
-            ... this.state,
-            options
-        })
-    }
-
-    async getOptionsAxios() {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'presupuestos-diseño/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                swal.close()
-                const { esquemas, empresas, precios} = response.data
-                const { options, data } = this.state
-                options['empresas'] = setOptions(empresas, 'name', 'id')
-                options['esquemas'] = setOptions(esquemas, 'nombre', 'id')
-                options['precios'] = setOptions(precios, 'm2', 'id')
-
-                this.setState({
-                    ... this.state,
-                    options,
-                    data
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
         })
     }
 
@@ -219,7 +166,7 @@ class PresupuestoDiseño extends Component {
             .DataTable();
         table.ajax.reload();
     }
-    
+
     render() {
         const { modal } = this.state
 
