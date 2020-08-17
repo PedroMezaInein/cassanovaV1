@@ -8,6 +8,8 @@ import { setOptions} from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert } from '../../../functions/alert'
 import { PresupuestoDiseñoForm as PresupuestoDiseñoFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
+import { Footer } from 'rsuite'
+import { fr } from 'date-fns/esm/locale'
 
 const $ = require('jquery');
 
@@ -21,21 +23,63 @@ class PresupuestoDiseñoForm extends Component {
         form: {
             empresas: '',
             m2: '',
-            esquema: '',
+            esquema: 'esquema_1',
             fecha: new Date(),
             tiempo_ejecucion_diseno: '',
-            concepto1: '',
-            concepto2: '',
-            concepto3: '',
-            concepto4: '',
-            concepto5: '',
-            concepto6: '',
-            concepto7: '',
+            conceptos: [
+                {
+                    value: '',
+                    text: 'REUNIÓN DE AMBOS EQUIPOS',
+                    name: 'concepto1'
+                },
+                {
+                    value: '',
+                    text: 'DESARROLLO DEL MATERIAL PARA LA PRIMERA REVISIÓN PRESENCIAL',
+                    name: 'concepto2'
+                },
+                {
+                    value: '',
+                    text: 'JUNTA PRESENCIAL PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO',
+                    name: 'concepto3'
+                },
+                {
+                    value: '',
+                    text: 'DESARROLLO DEL PROYECTO',
+                    name: 'concepto4'
+                },
+                {
+                    value: '',
+                    text: 'JUNTA PRESENCIAL PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO',
+                    name: 'concepto5'
+                },
+                {
+                    value: '',
+                    text: 'DESARROLLO DEL PROYECTO EJECUTIVO',
+                    name: 'concepto6'
+                },
+                {
+                    value: '',
+                    text: 'ENTREGA FINAL DEL PROYECTO EN DIGITAL',
+                    name: 'concepto7'
+                },
+            ],
             precio_inferior_construccion: '',
             precio_superior_construccion: '',
             tiempo_ejecucion_construccion: '',
             precio_inferior_mobiliario: '',
             precio_superior_mobiliario: '',
+            semanas:[
+                {
+                    lunes: false,
+                    martes: false,
+                    miercoles: false,
+                    jueves: false,
+                    viernes: false,
+                    sabado: false,
+                    domingo: false
+                }
+            ]
+            
         },
         options: {
             empresas: [],
@@ -208,27 +252,127 @@ class PresupuestoDiseñoForm extends Component {
         })
     }
 
-    clearForm = () => {
+    checkButtonSemanas = (e, key, dia) => {
         const { form } = this.state
-        let aux = Object.keys(form)
-        aux.map((element) => {
-            switch (element) {
-                case 'fechaInicio':
-                case 'fechaFin':
-                    form[element] = new Date()
-                    break;
-                default:
-                    form[element] = ''
-                    break;
+        const { name, value, checked } = e.target
+        form.semanas[key][dia] = checked
+        let count = 0;
+        let aux = Object.keys(
+            {
+                lunes: false,
+                martes: false,
+                miercoles: false,
+                jueves: false,
+                viernes: false,
+                sabado: false,
+                domingo: false
             }
+        )
+        form.semanas.map( (semana) => {
+            console.log(semana, 'semana')
+            aux.map( (element) => {
+                console.log(element, 'element')
+                if(semana[element])
+                    count ++;
+            }) 
         })
-        return form;
+        form.tiempo_ejecucion_diseno = count
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
+    onChangeConceptos = (e, key) => {
+        const { name, value } = e.target
+        const { form } = this.state
+        form.conceptos[key].value = value
+        this.setState({
+            ... this.state,
+            form
+        })
     }
 
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
+        if( name === 'esquemas' ){
+            form.conceptos.map( (concepto) => {
+                if( concepto.name === 'concepto3'){
+                    if(value === 'esquema_1')
+                        concepto.text = 'JUNTA PRESENCIAL PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO'
+                    if(value === 'esquema_2')
+                        concepto.text = 'JUNTA PRESENCIAL PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO Y MODELO 3D'
+                    if(value === 'esquema_3')
+                        concepto.text = 'JUNTA PRESENCIAL PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO, MODELO 3D Y RENDERS'
+                }
+                if( concepto.name === 'concepto5'){
+                    if(value === 'esquema_1')
+                        concepto.text = 'JUNTA PRESENCIAL PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO'
+                    if(value === 'esquema_2')
+                        concepto.text = 'JUNTA PRESENCIAL PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO Y MODELO 3D'
+                    if(value === 'esquema_3')
+                        concepto.text = 'JUNTA PRESENCIAL PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO, MODELO 3D Y RENDERS'
+                }
+            })
+        }
+        if(name === 'tiempo_ejecucion_diseno'){
+            let modulo = parseFloat(value) % 6
+            let aux = Object.keys(
+                {
+                    lunes: false,
+                    martes: false,
+                    miercoles: false,
+                    jueves: false,
+                    viernes: false,
+                    sabado: false,
+                    domingo: false
+                }
+            )
+            form.semanas = [];
+            for(let i = 0; i < Math.floor(parseFloat(value)/6); i++ ){
+                form.semanas.push({
+                    lunes: true,
+                    martes: true,
+                    miercoles: true,
+                    jueves: true,
+                    viernes: true,
+                    sabado: true,
+                    domingo: false
+                })
+            }
+            form.semanas.push({
+                lunes: false,
+                martes: false,
+                miercoles: false,
+                jueves: false,
+                viernes: false,
+                sabado: false,
+                domingo: false
+            })
+            aux.map( ( element, key ) => {
+                
+                if(key < modulo){
+                    form.semanas[ form.semanas.length -1 ][element] = true
+                }else{
+                    form.semanas[ form.semanas.length -1 ][element] = false
+                }
+
+            })
+            if(modulo > 2){
+                form.semanas.push({
+                    lunes: false,
+                    martes: false,
+                    miercoles: false,
+                    jueves: false,
+                    viernes: false,
+                    sabado: false,
+                    domingo: false
+                })
+            }
+            
+        }
         this.setState({
             ...this.state,
             form
@@ -264,6 +408,8 @@ class PresupuestoDiseñoForm extends Component {
                             form={form}
                             onChange={this.onChange}
                             onSubmit={this.onSubmit}
+                            onChangeConceptos = { this.onChangeConceptos }
+                            checkButtonSemanas = { this.checkButtonSemanas }
                         />
                     </Card.Body>
                 </Card>

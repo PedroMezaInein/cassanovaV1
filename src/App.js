@@ -183,8 +183,6 @@ class App extends Component{
                 <Route path = "/presupuesto/presupuesto/add" exact component ={ AddPresupuestoForm } />
                 <Route path = "/presupuesto/presupuesto/update" exact component ={ ActualizarPresupuesto } />  
                 <Route path = "/presupuesto/presupuesto/finish" exact component ={ UltimoPresupuesto } />
-                <Route path = "/presupuesto/presupuesto/update" exact component ={ ActualizarPresupuesto } />  
-                <Route path = "/presupuesto/presupuesto/finish" exact component ={ UltimoPresupuesto } />
 
                 <Route path = "/presupuesto/presupuesto-diseño" exact component ={ PresupuestoDiseño } />  
                 <Route path = "/presupuesto/presupuesto-diseño/:action" exact component ={ PresupuestoDiseñoForm } />            
