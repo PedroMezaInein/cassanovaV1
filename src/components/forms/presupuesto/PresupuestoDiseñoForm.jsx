@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { RFC, DATE } from '../../../constants'
-import { SelectSearch, Button, Input, Calendar, InputSinText, FileInput } from '../../form-components'
+import { SelectSearch, Button, Input, Calendar, InputSinText, InputNumber } from '../../form-components'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
 
@@ -26,6 +26,18 @@ class PresupuestoDiseñoForm extends Component {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'esquemas' } })
     }
+
+    // handleChangeCheckbox = e => {
+    //     const { name, value, checked } = e.target
+    //     const { form, onChangeCheckboxes } = this.props
+    //     let aux = form['servicios']
+    //     aux.find(function (_aux, index) {
+    //         if (_aux.id.toString() === name.toString()) {
+    //             _aux.checked = checked
+    //         }
+    //     });
+    //     onChangeCheckboxes(aux)
+    // }
 
     render() {
         const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, checkButtonSemanas, formeditado, ...props } = this.props
@@ -117,10 +129,10 @@ class PresupuestoDiseñoForm extends Component {
                                         />
                                     </div>
                                     <div className="col-md-4">
-                                        <Input
+                                        <InputNumber
                                             requirevalidation={0}
                                             formeditado={formeditado}
-                                            placeholder="TIEMPO DE EJECUCIÓN"
+                                            placeholder="TIEMPO DE EJECUCIÓN (DÍAS)"
                                             value={form.tiempo_ejecucion_diseno}
                                             name="tiempo_ejecucion_diseno"
                                             onChange={onChange}
@@ -384,6 +396,19 @@ class PresupuestoDiseñoForm extends Component {
                                             messageinc="Incorrecto. Ingresa el precio paramétrico de mobiliario superior."
                                             iconclass = {"fas fa-dollar-sign"}
                                         />
+                                    </div>
+                                </div>
+                                <div className="form-group row form-group-marginless">
+                                    <div className="col-md-12">
+                                        {/* <OptionsCheckbox
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
+                                            placeholder="SELECCIONA LOS SERVICIOS"
+                                            options={form.servicios}
+                                            name="servicios"
+                                            value={form.servicios}
+                                            onChange={this.handleChangeCheckbox}
+                                        /> */}
                                     </div>
                                 </div>
                                 
