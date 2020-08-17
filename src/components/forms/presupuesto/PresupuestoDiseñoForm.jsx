@@ -27,20 +27,8 @@ class PresupuestoDiseñoForm extends Component {
         onChange({ target: { value: value, name: 'esquemas' } })
     }
 
-    // handleChangeCheckbox = e => {
-    //     const { name, value, checked } = e.target
-    //     const { form, onChangeCheckboxes } = this.props
-    //     let aux = form['servicios']
-    //     aux.find(function (_aux, index) {
-    //         if (_aux.id.toString() === name.toString()) {
-    //             _aux.checked = checked
-    //         }
-    //     });
-    //     onChangeCheckboxes(aux)
-    // }
-
     render() {
-        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, checkButtonSemanas, formeditado, ...props } = this.props
+        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, checkButtonSemanas, formeditado, onChangeConceptos, ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -159,97 +147,29 @@ class PresupuestoDiseñoForm extends Component {
                                                 </tr>
                                             </thead>
                                             <tbody className="text-justify">
-                                                <tr>
-                                                    <td className="dia" >
-                                                        <InputSinText
-                                                            placeholder='DÍA'
-                                                            requirevalidation={0}
-                                                            formeditado={formeditado}
-                                                            name='concepto1'
-                                                            value={form.concepto1}
-                                                            onChange={''}
-                                                        />
-                                                    </td>
-                                                    <td>Reunión de ambos equipos</td>
-                                                </tr>
-                                                <tr>
-                                                    <td className="dia" >
-                                                        <InputSinText
-                                                            placeholder='DÍA'
-                                                            requirevalidation={0}
-                                                            formeditado={formeditado}
-                                                            name='concepto2'
-                                                            value={form.concepto2}
-                                                            onChange={''}
-                                                        />
-                                                    </td>
-                                                    <td>Desarrollo del material para la primera revisión presencial</td>
-                                                </tr>
-                                                <tr>
-                                                    <td className="dia" >
-                                                        <InputSinText
-                                                            placeholder='DÍA'
-                                                            requirevalidation={0}
-                                                            formeditado={formeditado}
-                                                            name='concepto3'
-                                                            value={form.concepto3}
-                                                            onChange={''}
-                                                        />
-                                                    </td>
-                                                    <td>Junta presencial para primera revisión de la propuesta de diseño y modelo 3D</td>
-                                                </tr>
-                                                <tr>
-                                                    <td className="dia" >
-                                                        <InputSinText
-                                                            placeholder='DÍA'
-                                                            requirevalidation={0}
-                                                            formeditado={formeditado}
-                                                            name='concepto4'
-                                                            value={form.concepto4}
-                                                            onChange={''}
-                                                        />
-                                                    </td>
-                                                    <td>Desarrollo del proyecto</td>
-                                                </tr>
-                                                <tr>
-                                                    <td className="dia" >
-                                                        <InputSinText
-                                                            placeholder='DÍA'
-                                                            requirevalidation={0}
-                                                            formeditado={formeditado}
-                                                            name='concepto5'
-                                                            value={form.concepto5}
-                                                            onChange={''}
-                                                        />
-                                                    </td>
-                                                    <td>Junta presencial para segunda revisión de la propuesta de diseño y modelo 3D</td>
-                                                </tr>
-                                                <tr>
-                                                    <td className="dia" >
-                                                        <InputSinText
-                                                            placeholder='DÍA'
-                                                            requirevalidation={0}
-                                                            formeditado={formeditado}
-                                                            name='concepto6'
-                                                            value={form.concepto6}
-                                                            onChange={''}
-                                                        />
-                                                    </td>
-                                                    <td>Desarrollo del proyecto ejecutivo</td>
-                                                </tr>
-                                                <tr>
-                                                    <td className="dia" >
-                                                        <InputSinText
-                                                            placeholder='DÍA'
-                                                            requirevalidation={0}
-                                                            formeditado={formeditado}
-                                                            name='concepto7'
-                                                            value={form.concepto7}
-                                                            onChange={''}
-                                                        />
-                                                    </td>
-                                                    <td>Entrega final del proyecto en digital</td>
-                                                </tr>
+                                                {
+                                                    form.conceptos.map( (concepto, key) => {
+                                                        return(
+                                                            <tr>
+                                                                <td className="dia" >
+                                                                    <InputSinText
+                                                                        placeholder='DÍA'
+                                                                        requirevalidation={0}
+                                                                        formeditado={formeditado}
+                                                                        name='concepto1'
+                                                                        value={concepto.value}
+                                                                        onChange={ ( e ) => { onChangeConceptos(e, key) } }
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    {
+                                                                        concepto.text
+                                                                    }
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    })
+                                                }
                                             </tbody>
                                         </table>
                                     </div>
