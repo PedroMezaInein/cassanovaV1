@@ -9,7 +9,7 @@ class Input extends Component{
             <div>
                 <Form.Label className="font-weight-bolder">{placeholder}</Form.Label>
 
-                <Form.Group id="formGridCheckbox"> 
+                <Form.Group> 
                         <div className="checkbox-list pt-2">
                         {
                             

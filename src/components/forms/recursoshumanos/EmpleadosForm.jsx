@@ -238,7 +238,7 @@ class EmpleadosForm extends Component {
                             </div>
                             <div id="wizard-2-content" className="pb-3" data-wizard-type="step-content">
                                 <h5 className="mb-4 font-weight-bold text-dark">Ingresa la información bancaria</h5>
-                                <div className="form-group row form-group-marginless">
+                                <div className="form-group row form-group-marginless mb-0">
                                     <div className="col-md-4">
                                         <RadioGroup
                                             name={'tipo_empleado'}
@@ -291,6 +291,7 @@ class EmpleadosForm extends Component {
                                         />
                                     </div>
                                 </div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <Calendar
@@ -373,7 +374,7 @@ class EmpleadosForm extends Component {
                             </div>
                             <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
                                 <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos de las prestaciones</h5>
-                                <div className="form-group row form-group-marginless">
+                                <div className="form-group row form-group-marginless mb-0">
                                     <div className="col-md-4">
                                         <RadioGroup
                                             name={'estatus_imss'}
@@ -419,6 +420,7 @@ class EmpleadosForm extends Component {
                                         />
                                     </div>
                                 </div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless"> 
                                     <div className="col-md-4">
                                         <InputNumber
@@ -457,6 +459,7 @@ class EmpleadosForm extends Component {
                                     }
                                     
                                 </div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless"> 
                                     <div className="col-md-4">
                                         <InputNumber
