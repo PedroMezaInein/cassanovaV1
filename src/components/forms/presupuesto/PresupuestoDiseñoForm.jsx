@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { RFC, DATE } from '../../../constants'
-import { SelectSearch, Button, Input, Calendar, InputSinText, FileInput } from '../../form-components'
+import { SelectSearch, Button, Input, Calendar, InputSinText, InputNumber } from '../../form-components'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
 
@@ -129,10 +129,10 @@ class PresupuestoDiseñoForm extends Component {
                                         />
                                     </div>
                                     <div className="col-md-4">
-                                        <Input
+                                        <InputNumber
                                             requirevalidation={0}
                                             formeditado={formeditado}
-                                            placeholder="TIEMPO DE EJECUCIÓN"
+                                            placeholder="TIEMPO DE EJECUCIÓN (DÍAS)"
                                             value={form.tiempo_ejecucion_diseno}
                                             name="tiempo_ejecucion_diseno"
                                             onChange={onChange}
