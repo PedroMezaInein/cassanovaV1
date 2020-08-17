@@ -1,35 +1,33 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 
-class RadioGroup extends Component{
-    constructor(props){
-        super(props)
-    }
-
-    render(){
+class RadioGroup extends Component {
+    render() {
         const { options, placeholder, name, onChange, value } = this.props
-        return(
+        return (
             <div>
-                <Form.Label className="mt-2 mb-1 label-form">
-                        {placeholder}
-                </Form.Label>
-                <Form.Group className="radio-group d-flex mb-0">
-                    
-                    {
-                        options.map((option, key) => {
-                            return(
-                                <Form.Check 
-                                    key={key}
-                                    type={'radio'}
-                                    label={option.label}
-                                    name={name}
-                                    value={option.value}
-                                    onChange={onChange}
-                                    checked={ value === option.value }
-                                    />
-                            )
-                        })
-                    }
+                <Form.Label className="col-form-label">{placeholder}</Form.Label>
+
+                <Form.Group>
+                    <div className="radio-inline">
+                        {
+                            options.map((option, key) => {
+                                return (
+                                    <label className="radio radio-outline radio-outline-2x radio-primary" key={key}>
+                                        <input
+                                            type='radio'
+                                            name={name}
+                                            value={option.value}
+                                            onChange={onChange}
+                                            checked={value === option.value}
+                                        />
+                                        {option.label}
+                                        <span></span>
+                                    </label>
+                                )
+                            })
+                        }
+                    </div>
                 </Form.Group>
             </div>
         )
