@@ -21,7 +21,7 @@ class PresupuestoDiseñoForm extends Component {
         },
         title: 'Presupuesto de diseño',
         form: {
-            empresas: '',
+            empresa: '',
             m2: '',
             esquema: 'esquema_1',
             fecha: new Date(),
@@ -184,8 +184,9 @@ class PresupuestoDiseñoForm extends Component {
     async addPresupuestoAdminAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
+        const { form } = this.state
 
-        await axios.post(URL_DEV + 'presupuesto/presupuesto-diseño', { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'presupuestos-diseño', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
 
                 const { history } = this.props
@@ -198,9 +199,9 @@ class PresupuestoDiseñoForm extends Component {
                     buttons: false,
                 })
 
-                history.push({
+                /* history.push({
                     pathname: '/presupuesto/presupuesto-diseño'
-                });
+                }); */
 
             },
             (error) => {

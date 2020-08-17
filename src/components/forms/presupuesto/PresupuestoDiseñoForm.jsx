@@ -24,7 +24,7 @@ class PresupuestoDiseñoForm extends Component {
 
     updateEsquema = value => {
         const { onChange } = this.props
-        onChange({ target: { value: value, name: 'esquemas' } })
+        onChange({ target: { value: value, name: 'esquema' } })
     }
 
     render() {
@@ -273,7 +273,7 @@ class PresupuestoDiseñoForm extends Component {
                                             formeditado={formeditado}
                                             placeholder="PRECIO PARAMÉTRICO DE CONSTRUCCIÓN SUPERIOR"
                                             value={form.precio_superior_construccion}
-                                            name="precio_superior"
+                                            name="precio_superior_construccion"
                                             onChange={onChange}
                                             messageinc="Incorrecto. Ingresa el precio paramétrico de construcción superior."
                                             iconclass = {"fas fa-dollar-sign"}
