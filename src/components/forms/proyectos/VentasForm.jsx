@@ -153,7 +153,7 @@ class VentasForm extends Component {
                         >
                             <div id="wizard-1-content" className="pb-3" data-wizard-type="step-content" data-wizard-state="current">
                                 <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos de la factura</h5>
-                                <div className="form-group row form-group-marginless">
+                                <div className="form-group row form-group-marginless mb-0">
                                     <div className="col-md-4">
                                         <RadioGroup
                                             name='factura'

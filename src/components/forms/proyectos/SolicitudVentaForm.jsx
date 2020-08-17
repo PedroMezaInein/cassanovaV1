@@ -217,7 +217,7 @@ class SolicitudVentaForm extends Component {
                             </div>
                             <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
                                 <h5 className="mb-4 font-weight-bold text-dark">Selecciona el presupuesto</h5>
-                                <div className="form-group row form-group-marginless">
+                                <div className="form-group row form-group-marginless mb-0">
                                     <div className="col-md-6">
                                         <FileInput
                                             requirevalidation={0}
