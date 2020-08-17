@@ -127,6 +127,16 @@ class PresupuestoDiseñoForm extends Component {
                                             iconclass={"flaticon-calendar-with-a-clock-time-tools"}
                                         />
                                     </div>
+                                    <div className="col-md-4">
+                                        <InputNumber
+                                            requirevalidation={0}
+                                            placeholder="Total"
+                                            value={form.total}
+                                            iconclass={"fas fa-dollar-sign"}
+                                            thousandSeparator = { true }
+                                            disabled = { true }
+                                        />
+                                    </div>
                                 </div> 
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2"></div>
@@ -256,7 +266,7 @@ class PresupuestoDiseñoForm extends Component {
                                 <h5 className="mb-4 font-weight-bold text-dark">Selecciona el tipo de pago, impuesto y estatus</h5>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
-                                        <Input
+                                        <InputNumber
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             placeholder="PRECIO PARAMÉTRICO DE CONSTRUCCIÓN INFERIOR"
@@ -265,10 +275,11 @@ class PresupuestoDiseñoForm extends Component {
                                             onChange={onChange}
                                             messageinc="Incorrecto. Ingresa el precio paramétrico de construcción inferior."
                                             iconclass = {"fas fa-dollar-sign"}
+                                            thousandSeparator={true}
                                         />
                                     </div>
                                     <div className="col-md-4">
-                                        <Input
+                                        <InputNumber
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             placeholder="PRECIO PARAMÉTRICO DE CONSTRUCCIÓN SUPERIOR"
@@ -277,6 +288,7 @@ class PresupuestoDiseñoForm extends Component {
                                             onChange={onChange}
                                             messageinc="Incorrecto. Ingresa el precio paramétrico de construcción superior."
                                             iconclass = {"fas fa-dollar-sign"}
+                                            thousandSeparator={true}
                                         />
                                     </div>
                                     <div className="col-md-4">
@@ -294,7 +306,7 @@ class PresupuestoDiseñoForm extends Component {
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
-                                        <Input
+                                        <InputNumber
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             placeholder="PRECIO PARAMÉTRICO DE MOBILIARIO INFERIOR"
@@ -303,10 +315,11 @@ class PresupuestoDiseñoForm extends Component {
                                             onChange={onChange}
                                             messageinc="Incorrecto. Ingresa el precio paramétrico de mobiliario inferior."
                                             iconclass = {"fas fa-dollar-sign"}
+                                            thousandSeparator={true}
                                         />
                                     </div>
                                     <div className="col-md-4">
-                                        <Input
+                                        <InputNumber
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             placeholder="PRECIO PARAMÉTRICO DE MOBILIARIO SUPERIOR"
@@ -315,6 +328,7 @@ class PresupuestoDiseñoForm extends Component {
                                             onChange={onChange}
                                             messageinc="Incorrecto. Ingresa el precio paramétrico de mobiliario superior."
                                             iconclass = {"fas fa-dollar-sign"}
+                                            thousandSeparator={true}
                                         />
                                     </div>
                                 </div>

@@ -17,7 +17,7 @@ class PresupuestoDiseñoForm extends Component {
     state = {
         formeditado: 0,
         data: {
-            usuarios: []
+            precios: []
         },
         title: 'Presupuesto de diseño',
         form: {
@@ -157,6 +157,7 @@ class PresupuestoDiseñoForm extends Component {
                 swal.close()
                 const { esquemas, empresas, precios} = response.data
                 const { options, data } = this.state
+                data.precios = precios
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['esquemas'] = setOptions(esquemas, 'nombre', 'id')
                 options['precios'] = setOptions(precios, 'm2', 'id')
@@ -298,7 +299,7 @@ class PresupuestoDiseñoForm extends Component {
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
-        if( name === 'esquemas' ){
+        if( name === 'esquema' ){
             form.conceptos.map( (concepto) => {
                 if( concepto.name === 'concepto3'){
                     if(value === 'esquema_1')
