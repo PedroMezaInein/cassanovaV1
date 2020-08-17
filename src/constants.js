@@ -726,6 +726,17 @@ export const PARTIDAS_COLUMNS = [
     }
 ]
 
+export const PARTIDAS_DISEÑO_COLUMNS = [
+    {
+        Header: 'OPCIONES',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Partida',
+        accessor: 'partida'
+    }
+]
+
 export const UNIDADES_COLUMNS = [
     {
         Header: 'OPCIONES',
