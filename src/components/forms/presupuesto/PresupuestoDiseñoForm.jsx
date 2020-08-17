@@ -28,7 +28,7 @@ class PresupuestoDiseñoForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, formeditado, ...props } = this.props
+        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, checkButtonSemanas, formeditado, ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -256,57 +256,57 @@ class PresupuestoDiseñoForm extends Component {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr className="text-center">
-                                                    <th scope="row">SEMANA 1</th>
-                                                    <td>
-                                                        <label className="checkbox checkbox-single">
-                                                            <input type="checkbox" value="" className="checkable" />
-                                                            <span></span>
-                                                        </label>
-                                                    </td>
-
-                                                    <td>
-                                                        <label className="checkbox checkbox-single">
-                                                            <input type="checkbox" value="" className="checkable" />
-                                                            <span></span>
-                                                        </label>
-                                                    </td>
-
-                                                    <td>
-                                                        <label className="checkbox checkbox-single">
-                                                            <input type="checkbox" value="" className="checkable" />
-                                                            <span></span>
-                                                        </label>
-                                                    </td>
-
-                                                    <td>
-                                                        <label className="checkbox checkbox-single">
-                                                            <input type="checkbox" value="" className="checkable" />
-                                                            <span></span>
-                                                        </label>
-                                                    </td>
-
-                                                    <td>
-                                                        <label className="checkbox checkbox-single">
-                                                            <input type="checkbox" value="" className="checkable" />
-                                                            <span></span>
-                                                        </label>
-                                                    </td>
-
-                                                    <td>
-                                                        <label className="checkbox checkbox-single">
-                                                            <input type="checkbox" value="" className="checkable" />
-                                                            <span></span>
-                                                        </label>
-                                                    </td>
-
-                                                    <td>
-                                                        <label className="checkbox checkbox-single">
-                                                            <input type="checkbox" value="" className="checkable" />
-                                                            <span></span>
-                                                        </label>
-                                                    </td>
-                                                </tr>
+                                                {
+                                                    form.semanas.map( (semana, key) => {
+                                                        return(
+                                                        <tr className="text-center">
+                                                            <th scope="row">SEMANA {key + 1}</th>
+                                                            <td>
+                                                                <label className="checkbox checkbox-single">
+                                                                    <input onChange = { (e) => { checkButtonSemanas(e, key, 'lunes')} } type="checkbox" value={ semana.lunes } checked = { semana.lunes } className="checkable" />
+                                                                    <span></span>
+                                                                </label>
+                                                            </td>
+                                                            <td>
+                                                                <label className="checkbox checkbox-single">
+                                                                    <input onChange = { (e) => { checkButtonSemanas(e, key, 'martes')} } type="checkbox" value={ semana.martes } checked = { semana.martes } className="checkable" />
+                                                                    <span></span>
+                                                                </label>
+                                                            </td>
+                                                            <td>
+                                                                <label className="checkbox checkbox-single">
+                                                                    <input onChange = { (e) => { checkButtonSemanas(e, key, 'miercoles')} } type="checkbox" value={ semana.miercoles } checked = { semana.miercoles } className="checkable" />
+                                                                    <span></span>
+                                                                </label>
+                                                            </td>
+                                                            <td>
+                                                                <label className="checkbox checkbox-single">
+                                                                    <input onChange = { (e) => { checkButtonSemanas(e, key, 'jueves')} } type="checkbox" value={ semana.jueves } checked = { semana.jueves } className="checkable" />
+                                                                    <span></span>
+                                                                </label>
+                                                            </td>
+                                                            <td>
+                                                                <label className="checkbox checkbox-single">
+                                                                    <input onChange = { (e) => { checkButtonSemanas(e, key, 'viernes')} } type="checkbox" value={ semana.viernes } checked = { semana.viernes } className="checkable" />
+                                                                    <span></span>
+                                                                </label>
+                                                            </td>
+                                                            <td>
+                                                                <label className="checkbox checkbox-single">
+                                                                    <input onChange = { (e) => { checkButtonSemanas(e, key, 'sabado')} } type="checkbox" value={ semana.sabado } checked = { semana.sabado } className="checkable" />
+                                                                    <span></span>
+                                                                </label>
+                                                            </td>
+                                                            <td>
+                                                                <label className="checkbox checkbox-single">
+                                                                    <input onChange = { (e) => { checkButtonSemanas(e, key, 'domingo')} } type="checkbox" value={ semana.domingo } checked = { semana.domingo } className="checkable" />
+                                                                    <span></span>
+                                                                </label>
+                                                            </td>
+                                                        </tr>
+                                                        )
+                                                    })
+                                                }
                                             </tbody>
                                         </table>
                                     </div>

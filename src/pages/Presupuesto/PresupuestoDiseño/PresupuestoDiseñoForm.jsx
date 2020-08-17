@@ -36,6 +36,18 @@ class PresupuestoDiseñoForm extends Component {
             tiempo_ejecucion_construccion: '',
             precio_inferior_mobiliario: '',
             precio_superior_mobiliario: '',
+            semanas:[
+                {
+                    lunes: false,
+                    martes: false,
+                    miercoles: false,
+                    jueves: false,
+                    viernes: false,
+                    sabado: false,
+                    domingo: false
+                }
+            ]
+            
         },
         options: {
             empresas: [],
@@ -225,10 +237,97 @@ class PresupuestoDiseñoForm extends Component {
         return form;
     }
 
+    checkButtonSemanas = (e, key, dia) => {
+        const { form } = this.state
+        const { name, value, checked } = e.target
+        form.semanas[key][dia] = checked
+        let count = 0;
+        let aux = Object.keys(
+            {
+                lunes: false,
+                martes: false,
+                miercoles: false,
+                jueves: false,
+                viernes: false,
+                sabado: false,
+                domingo: false
+            }
+        )
+        form.semanas.map( (semana) => {
+            console.log(semana, 'semana')
+            aux.map( (element) => {
+                console.log(element, 'element')
+                if(semana[element])
+                    count ++;
+            }) 
+        })
+        form.tiempo_ejecucion_diseno = count
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
+        if(name === 'tiempo_ejecucion_diseno'){
+            let modulo = parseFloat(value) % 6
+            let aux = Object.keys(
+                {
+                    lunes: false,
+                    martes: false,
+                    miercoles: false,
+                    jueves: false,
+                    viernes: false,
+                    sabado: false,
+                    domingo: false
+                }
+            )
+            form.semanas = [];
+            for(let i = 0; i < Math.floor(parseFloat(value)/6); i++ ){
+                form.semanas.push({
+                    lunes: true,
+                    martes: true,
+                    miercoles: true,
+                    jueves: true,
+                    viernes: true,
+                    sabado: true,
+                    domingo: false
+                })
+            }
+            form.semanas.push({
+                lunes: false,
+                martes: false,
+                miercoles: false,
+                jueves: false,
+                viernes: false,
+                sabado: false,
+                domingo: false
+            })
+            aux.map( ( element, key ) => {
+                
+                if(key < modulo){
+                    form.semanas[ form.semanas.length -1 ][element] = true
+                }else{
+                    form.semanas[ form.semanas.length -1 ][element] = false
+                }
+
+            })
+            if(modulo > 2){
+                form.semanas.push({
+                    lunes: false,
+                    martes: false,
+                    miercoles: false,
+                    jueves: false,
+                    viernes: false,
+                    sabado: false,
+                    domingo: false
+                })
+            }
+            
+        }
         this.setState({
             ...this.state,
             form
@@ -264,6 +363,7 @@ class PresupuestoDiseñoForm extends Component {
                             form={form}
                             onChange={this.onChange}
                             onSubmit={this.onSubmit}
+                            checkButtonSemanas = { this.checkButtonSemanas }
                         />
                     </Card.Body>
                 </Card>
