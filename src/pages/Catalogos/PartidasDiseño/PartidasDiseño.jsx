@@ -33,6 +33,7 @@ class PartidasDiseño extends Component {
         title: 'Nueva partida',
         form: {
             partida: '',
+            empresa: 'inein',
         },
         data:{
             partidas:[],
@@ -131,6 +132,8 @@ class PartidasDiseño extends Component {
         let aux = Object.keys(form)
         aux.map((element) => {
             switch (element) {
+                case 'empresa':
+                    form[element] = 'inein'
                 default:
                     form[element] = ''
                     break;

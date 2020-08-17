@@ -21,7 +21,7 @@ class PartidasDiseñoForm extends Component {
         title: 'Nueva partida',
         form: {
             nombre: '',
-            empresa:''
+            empresa:'inein'
         },
         data:{
             partidas:[],
@@ -54,6 +54,7 @@ class PartidasDiseñoForm extends Component {
                         const { partida } = state
                         
                         form.nombre = partida.nombre
+                        form.empresa = partida.empresa
 
                         this.setState({
                             ... this.state,
@@ -74,7 +75,6 @@ class PartidasDiseñoForm extends Component {
         if (!partida)
             history.push('/')
     }
-
 
     async addPartidaDiseñoAxios() {
         const { access_token } = this.props.authUser
@@ -186,6 +186,8 @@ class PartidasDiseñoForm extends Component {
         let aux = Object.keys(form)
         aux.map((element) => {
             switch (element) {
+                case 'empresa':
+                    form[element] = 'inein'
                 default:
                     form[element] = ''
                     break;

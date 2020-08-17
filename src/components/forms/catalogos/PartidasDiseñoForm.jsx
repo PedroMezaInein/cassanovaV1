@@ -23,7 +23,7 @@ class PartidasDiseñoForm extends Component {
                 }
                 {...props}
             >
-                <div className="form-group row form-group-marginless">
+                <div className="form-group row form-group-marginless mb-0">
                     <div className="col-md-2">
                         <RadioGroup
                             name='empresa'
@@ -40,7 +40,7 @@ class PartidasDiseñoForm extends Component {
                                     }
                                 ]
                             }
-                            placeholder='Empresa'
+                            placeholder='SELECCIONA LA EMPRESA'
                             value={form.empresa} 
                             formeditado={formeditado}
                         />
