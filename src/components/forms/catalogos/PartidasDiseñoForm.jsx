@@ -45,7 +45,7 @@ class PartidasDiseñoForm extends Component {
                             formeditado={formeditado}
                         />
                     </div>
-                    <div className="col-md-5">
+                    <div className="col-md-10">
                         <Input
                             requirevalidation={1}
                             formeditado={formeditado}
