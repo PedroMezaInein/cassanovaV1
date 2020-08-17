@@ -4,10 +4,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import swal from 'sweetalert'
-import { setOptions, setSelectOptions } from '../../../functions/setters'
 import { forbiddenAccessAlert, errorAlert, waitAlert } from '../../../functions/alert'
-import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { USUARIOS } from '../../../constants'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
 import { Card } from 'react-bootstrap'
 import { PartidasDiseñoForm as PartidasDiseñoFormulario } from '../../../components/forms'
@@ -182,12 +179,16 @@ class PartidasDiseñoForm extends Component {
 
     
     clearForm = () => {
-        const { form } = this.state
+        const { form, key } = this.state
         let aux = Object.keys(form)
         aux.map((element) => {
             switch (element) {
                 case 'empresa':
+                    if(key === 'inein')
                     form[element] = 'inein'
+                    else
+                    form[element] = 'im'
+                    break;
                 default:
                     form[element] = ''
                     break;
@@ -207,14 +208,14 @@ class PartidasDiseñoForm extends Component {
     }
 
     onSubmit = e => {
-        const { form, key} = this.state
+        const { form, key } = this.state
         e.preventDefault();
         waitAlert()
         const { title } = this.state
-        if(title === 'Editar usuario')
-                this.updatePartidaDiseñoAxios()
+        if (title === 'Editar usuario')
+            this.updatePartidaDiseñoAxios()
         else
-                this.addPartidaDiseñoAxios()
+            this.addPartidaDiseñoAxios()
     }
 
     async getIneinAxios() {
@@ -229,11 +230,10 @@ class PartidasDiseñoForm extends Component {
         const { form } = this.state
         if(value === 'inein'){
             this.getIneinAxios()
-            // form.tipo_empleado = 1
         }
         if(value === 'im'){
             this.getImAxios()
-            // form.tipo_empleado = 2
+            form.empresa = 'im'
         }
         this.setState({
             ... this.state,
@@ -266,7 +266,7 @@ class PartidasDiseñoForm extends Component {
     }
 
     render(){
-        const { title, partidas, partida, form, key, data,usuarios, formeditado} = this.state
+        const { title, form, formeditado} = this.state
         const { formulario, deleteForm } = this.props 
         return (
             <Layout active = { 'catalogos' }  { ...this.props } >

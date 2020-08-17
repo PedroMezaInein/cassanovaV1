@@ -3,19 +3,13 @@ import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
-import { Title, Subtitle, P, Small, B } from '../../../components/texts'
-import { Button } from '../../../components/form-components'
-import { Card, Modal, ModalDelete } from '../../../components/singles'
-import { RegisterUserForm, PermisosForm, ClienteUserForm } from '../../../components/forms'
+import { ModalDelete } from '../../../components/singles'
 import swal from 'sweetalert'
-import { setOptions, setSelectOptions } from '../../../functions/setters'
 import { forbiddenAccessAlert, errorAlert, waitAlert } from '../../../functions/alert'
-import modal from '../../../components/singles/Modal'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { USUARIOS, PARTIDAS_DISEÑO_COLUMNS } from '../../../constants'
+import { PARTIDAS_DISEÑO_COLUMNS } from '../../../constants'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
-import FloatButtons from '../../../components/singles/FloatButtons'
-import { setTextTable,setListTable } from '../../../functions/setters'
+import { setTextTable } from '../../../functions/setters'
 import { renderToString } from 'react-dom/server'
 import { Tabs, Tab } from 'react-bootstrap' 
 
@@ -128,12 +122,16 @@ class PartidasDiseño extends Component {
     }
     
     clearForm = () => {
-        const { form } = this.state
+        const { form, key} = this.state
         let aux = Object.keys(form)
         aux.map((element) => {
             switch (element) {
-                case 'empresa':
-                    form[element] = 'inein'
+                    case 'empresa':
+                        if(key === 'inein')
+                        form[element] = 'inein'
+                        else
+                        form[element] = 'im'
+                        break;
                 default:
                     form[element] = ''
                     break;
@@ -186,21 +184,14 @@ class PartidasDiseño extends Component {
     }
 
     onSubmit = e => {
-        const { form, key} = this.state
+        const { form, key } = this.state
         e.preventDefault();
         waitAlert()
         const { title } = this.state
-        if(title === 'Editar usuario'){
-            if(key === 'inein'){
-                form.empresa = key
-                this.updatePartidaDiseñoAxios()
-            }    
-        }else{
-            if(key === 'im'){
-                this.addPartidaDiseñoAxios()
-                form.empresa = key
-            }
-        }
+        if (title === 'Editar usuario')
+            this.updatePartidaDiseñoAxios()
+        else
+            this.addPartidaDiseñoAxios()
     }
 
     async getIneinAxios() {
@@ -215,9 +206,11 @@ class PartidasDiseño extends Component {
         const { form } = this.state
         if(value === 'inein'){
             this.getIneinAxios()
+            // form.empresa = 'inein'
         }
         if(value === 'im'){
             this.getImAxios()
+            form.empresa = 'im'
         }
         this.setState({
             ... this.state,
@@ -228,10 +221,9 @@ class PartidasDiseño extends Component {
 
 
     render(){
-        const { modal, title, partida, form, key, formeditado} = this.state
-        const { formulario } = this.props
+        const { modal, key} = this.state
         return (
-            <Layout active = { 'usuarios' }  { ...this.props } >
+            <Layout active = { 'catalogos' }  { ...this.props } >
                 <Tabs defaultActiveKey="inein" activeKey={key} onSelect = { (value) =>  { this.controlledTab(value)} }>
                     <Tab eventKey="inein" title="INEIN">
                         <NewTableServerRender
