@@ -27,6 +27,18 @@ class PresupuestoDiseñoForm extends Component {
         onChange({ target: { value: value, name: 'esquemas' } })
     }
 
+    // handleChangeCheckbox = e => {
+    //     const { name, value, checked } = e.target
+    //     const { form, onChangeCheckboxes } = this.props
+    //     let aux = form['servicios']
+    //     aux.find(function (_aux, index) {
+    //         if (_aux.id.toString() === name.toString()) {
+    //             _aux.checked = checked
+    //         }
+    //     });
+    //     onChangeCheckboxes(aux)
+    // }
+
     render() {
         const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, formeditado, ...props } = this.props
         return (
@@ -384,6 +396,19 @@ class PresupuestoDiseñoForm extends Component {
                                             messageinc="Incorrecto. Ingresa el precio paramétrico de mobiliario superior."
                                             iconclass = {"fas fa-dollar-sign"}
                                         />
+                                    </div>
+                                </div>
+                                <div className="form-group row form-group-marginless">
+                                    <div className="col-md-12">
+                                        {/* <OptionsCheckbox
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
+                                            placeholder="SELECCIONA LOS SERVICIOS"
+                                            options={form.servicios}
+                                            name="servicios"
+                                            value={form.servicios}
+                                            onChange={this.handleChangeCheckbox}
+                                        /> */}
                                     </div>
                                 </div>
                                 
