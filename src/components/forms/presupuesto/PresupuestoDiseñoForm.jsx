@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { RFC, DATE } from '../../../constants'
-import { SelectSearch, Button, Input, Calendar, InputSinText, InputNumber } from '../../form-components'
+import { SelectSearch, Button, Input, Calendar, InputSinText, InputNumber, OptionsCheckbox} from '../../form-components'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
 
@@ -26,6 +26,19 @@ class PresupuestoDiseñoForm extends Component {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'esquemas' } })
     }
+
+    // LEADS
+    // handleChangeCheckbox = e => {
+    //     const { name, value, checked } = e.target
+    //     const { form, onChangeCheckboxes } = this.props
+    //     let aux = form['servicios']
+    //     aux.find(function (_aux, index) {
+    //         if (_aux.id.toString() === name.toString()) {
+    //             _aux.checked = checked
+    //         }
+    //     });
+    //     onChangeCheckboxes(aux)
+    // }
 
     render() {
         const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, checkButtonSemanas, formeditado, onChangeConceptos, ...props } = this.props
@@ -320,10 +333,21 @@ class PresupuestoDiseñoForm extends Component {
                                 </div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-12">
-                                        {/* <OptionsCheckbox
+                                        <OptionsCheckbox
                                             requirevalidation={0}
                                             formeditado={formeditado}
-                                            placeholder="SELECCIONA LOS SERVICIOS"
+                                            placeholder="SELECCIONA LAS PARTIDAS"
+                                            options={options.partidasInein}
+                                            name="partidasInein"
+                                            value={form.partidasInein}
+                                            onChange={this.handleChangeCheckbox}
+                                        />
+
+                                        {/* Leads
+                                        <OptionsCheckbox
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
+                                            placeholder="SELECCIONA LOS SERIVICIOS DE INTERÉS"
                                             options={form.servicios}
                                             name="servicios"
                                             value={form.servicios}

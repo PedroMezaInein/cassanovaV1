@@ -78,13 +78,16 @@ class PresupuestoDiseñoForm extends Component {
                     sabado: false,
                     domingo: false
                 }
-            ]
-            
+            ],
+            partidasInein:[], //Yo lo agregré
+            partidasIm:[] //Yo lo agregré
         },
         options: {
             empresas: [],
             precios:[],
-            esquemas:[]
+            esquemas:[],
+            partidasInein:[], //Yo lo agregré
+            partidasIm:[] //Yo lo agregré
         }
     }
 
@@ -155,11 +158,13 @@ class PresupuestoDiseñoForm extends Component {
         await axios.get(URL_DEV + 'presupuestos-diseño/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                const { esquemas, empresas, precios} = response.data
+                const { esquemas, empresas, precios, partidasInein, partidasIm} = response.data
                 const { options, data } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['esquemas'] = setOptions(esquemas, 'nombre', 'id')
                 options['precios'] = setOptions(precios, 'm2', 'id')
+                options['partidasInein'] = setOptions(partidasInein, 'nombre', 'id')
+                options['partidasIm'] = setOptions(partidasIm, 'nombre', 'id')
 
                 this.setState({
                     ... this.state,
@@ -388,6 +393,16 @@ class PresupuestoDiseñoForm extends Component {
             this.addPresupuestoAdminAxios()
     }
 
+    // LEADS
+    // handleChangeCheckbox = (array) => {
+    //     const { form }  = this.state
+    //     form['servicios'] = array
+    //     this.setState({
+    //         ... this.state,
+    //         form: form
+    //     })
+    // }
+
     render() {
         const { options, title, form, formeditado } = this.state
 
@@ -410,6 +425,7 @@ class PresupuestoDiseñoForm extends Component {
                             onSubmit={this.onSubmit}
                             onChangeConceptos = { this.onChangeConceptos }
                             checkButtonSemanas = { this.checkButtonSemanas }
+                            onChangeCheckboxes = { this.handleChangeCheckbox } // LEADS
                         />
                     </Card.Body>
                 </Card>
