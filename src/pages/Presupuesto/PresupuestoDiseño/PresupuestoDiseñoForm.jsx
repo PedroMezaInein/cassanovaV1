@@ -115,7 +115,7 @@ class PresupuestoDiseñoForm extends Component {
                 if (state) {
                     if (state.presupuesto) {
                         const { presupuesto } = state
-                        const { form, options } = this.state
+                        const { form, options, data } = this.state
                         
                         form.empresa = presupuesto.empresa ? presupuesto.empresa.id.toString() : ''
                         form.m2 = presupuesto.precio ? presupuesto.precio.id.toString() : ''
@@ -203,8 +203,20 @@ class PresupuestoDiseñoForm extends Component {
                             form.total = presupuesto.precio[presupuesto.esquema]
                         }
                         if(presupuesto.empresa){
-                            if(presupuesto.empresa.name === 'INEIN')
+                            if(presupuesto.empresa.name === 'INEIN'){
                                 form.tipo_partida = 'partidasInein'
+                                presupuesto.partidas_inein.map( (partida_inein, key) => {
+                                    console.log(form.partidasInein, 'partidasInein')
+                                    console.log(form, 'form')
+                                    /* form.partidasInein.map( ( element ) => {
+                                        console.log(element, 'element')
+                                        if(element.id === partida_inein.id){
+                                            
+                                            element.checked = true
+                                        }
+                                    }) */
+                                })
+                            }
                             if(presupuesto.empresa.name === 'INFRAESTRUCTURA MÉDICA')
                                 form.tipo_partida = 'partidasIm'
                         }
@@ -249,12 +261,7 @@ class PresupuestoDiseñoForm extends Component {
         partidas.map((partida, key) => {
             checkBoxPartida.push({ checked: false, text: partida.nombre, id: partida.id })
         })
-        form[nombrePartida] = checkBoxPartida
-        this.setState({
-            ... this.state,
-            form,
-            partidas: checkBoxPartida,
-        })
+        return checkBoxPartida
     }
 
     async getOptionsAxios() {
@@ -264,19 +271,49 @@ class PresupuestoDiseñoForm extends Component {
             (response) => {
                 swal.close()
                 const { esquemas, empresas, precios, partidasInein, partidasIm } = response.data
-                const { options, data } = this.state
+                const { options, data, form, presupuesto } = this.state
                 data.precios = precios
                 data.empresas = empresas
+                data.partidasInein = partidasInein
+                data.partidasIm = partidasIm
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['esquemas'] = setOptions(esquemas, 'nombre', 'id')
                 options['precios'] = setOptions(precios, 'm2', 'id')
-                options['partidasInein'] = this.setPartidas(partidasInein, 'partidasInein')
-                options['partidasIm'] = this.setPartidas(partidasIm, 'partidasIm')
-
+                /* options['partidasInein'] = this.setPartidas(partidasInein, 'partidasInein')
+                options['partidasIm'] = this.setPartidas(partidasIm, 'partidasIm') */
+                form.partidasInein = this.setPartidas(partidasInein, 'partidasInein')
+                form.partidasIm = this.setPartidas(partidasIm, 'partidasIm')
+                if(presupuesto){
+                    if(presupuesto.empresa){
+                        if(presupuesto.empresa.name === 'INEIN'){
+                            form.tipo_partida = 'partidasInein'
+                            presupuesto.partidas_inein.map( (partida_inein, key) => {
+                                if(partida_inein.partida)
+                                    form.partidasInein.map( ( element ) => {
+                                        if(element.id === partida_inein.partida.id){
+                                            element.checked = true
+                                        }
+                                    })
+                            })
+                        }
+                        if(presupuesto.empresa.name === 'INFRAESTRUCTURA MÉDICA'){
+                            form.tipo_partida = 'partidasIm'
+                            presupuesto.partidas_im.map( (partida_im, key) => {
+                                if(partida_im.partida)
+                                    form.partidasIm.map( ( element ) => {
+                                        if(element.id === partida_im.partida.id){
+                                            element.checked = true
+                                        }
+                                    })
+                            })
+                        }
+                    }
+                }
                 this.setState({
                     ... this.state,
                     options,
-                    data
+                    data,
+                    form
                 })
             },
             (error) => {
@@ -311,9 +348,9 @@ class PresupuestoDiseñoForm extends Component {
                     buttons: false,
                 })
 
-                /* history.push({
+                history.push({
                     pathname: '/presupuesto/presupuesto-diseño'
-                }); */
+                });
 
             },
             (error) => {
@@ -347,9 +384,9 @@ class PresupuestoDiseñoForm extends Component {
                     buttons: false,
                 })
 
-                /* history.push({
+                history.push({
                     pathname: '/presupuesto/presupuesto-diseño'
-                }); */
+                });
             },
             (error) => {
                 console.log(error, 'error')
@@ -406,7 +443,7 @@ class PresupuestoDiseñoForm extends Component {
 
     onChange = e => {
         const { name, value } = e.target
-        const { form, data } = this.state
+        const { form, data, presupuesto } = this.state
         form[name] = value
         if (name === 'esquema') {
             form.conceptos.map((concepto) => {
@@ -495,11 +532,12 @@ class PresupuestoDiseñoForm extends Component {
 
         if (name === "empresa") {
             data.empresas.map( (empresa) => {
-                if(empresa.id.toString() === value && empresa.name === 'INEIN')
+                if(empresa.id.toString() === value && empresa.name === 'INEIN'){
                     form.tipo_partida = 'partidasInein'
-                if(empresa.id.toString() === value && empresa.name === 'INFRAESTRUCTURA MÉDICA')
+                }
+                if(empresa.id.toString() === value && empresa.name === 'INFRAESTRUCTURA MÉDICA'){
                     form.tipo_partida = 'partidasIm'
-
+                }
             }) 
 
         }

@@ -57,7 +57,7 @@ class PresupuestoDiseño extends Component {
         const { access_token } = this.props.authUser
         const { form, presupuesto} = this.state
         
-        await axios.delete(URL_DEV + '/presupuesto/presupuesto-diseño' + presupuesto.id, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(URL_DEV + 'presupuestos-diseño/' + presupuesto.id, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { modal } = this.state
                 const { presupuesto } = response.data
@@ -69,7 +69,6 @@ class PresupuestoDiseño extends Component {
                     ... this.state,
                     modal,
                     presupuesto: '',
-                    form: this.clearForm()
                 })
 
                 swal({
