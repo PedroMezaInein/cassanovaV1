@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { RFC, DATE } from '../../../constants'
-import { SelectSearch, Button, Input, Calendar, InputSinText, InputNumber, OptionsCheckbox} from '../../form-components'
+import { SelectSearch, Button, Input, Calendar, InputSinText, InputNumber, OptionsCheckbox } from '../../form-components'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
 
@@ -27,21 +27,20 @@ class PresupuestoDiseñoForm extends Component {
         onChange({ target: { value: value, name: 'esquema' } })
     }
 
-    // LEADS
-    // handleChangeCheckbox = e => {
-    //     const { name, value, checked } = e.target
-    //     const { form, onChangeCheckboxes } = this.props
-    //     let aux = form['servicios']
-    //     aux.find(function (_aux, index) {
-    //         if (_aux.id.toString() === name.toString()) {
-    //             _aux.checked = checked
-    //         }
-    //     });
-    //     onChangeCheckboxes(aux)
-    // }
+    handleChangeCheckbox = e => {
+        const { name, value, checked } = e.target
+        const { form, onChangeCheckboxes } = this.props
+        let aux = form[form.tipo_partida]
+        aux.find(function (_aux, index) {
+            if (_aux.id.toString() === name.toString()) {
+                _aux.checked = checked
+            }
+        });
+        onChangeCheckboxes(aux)
+    }
 
     render() {
-        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, checkButtonSemanas, formeditado, onChangeConceptos, ...props } = this.props
+        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, onChangeCheckboxes, checkButtonSemanas, formeditado, onChangeConceptos, ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -146,11 +145,11 @@ class PresupuestoDiseñoForm extends Component {
                                             placeholder="Total"
                                             value={form.total}
                                             iconclass={"fas fa-dollar-sign"}
-                                            thousandSeparator = { true }
-                                            disabled = { true }
+                                            thousandSeparator={true}
+                                            disabled={true}
                                         />
                                     </div>
-                                </div> 
+                                </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2"></div>
                                     <div>
@@ -171,9 +170,9 @@ class PresupuestoDiseñoForm extends Component {
                                             </thead>
                                             <tbody className="text-justify">
                                                 {
-                                                    form.conceptos.map( (concepto, key) => {
-                                                        return(
-                                                            <tr>
+                                                    form.conceptos.map((concepto, key) => {
+                                                        return (
+                                                            <tr key={key}>
                                                                 <td className="dia" >
                                                                     <InputSinText
                                                                         placeholder='DÍA'
@@ -181,7 +180,7 @@ class PresupuestoDiseñoForm extends Component {
                                                                         formeditado={formeditado}
                                                                         name='concepto1'
                                                                         value={concepto.value}
-                                                                        onChange={ ( e ) => { onChangeConceptos(e, key) } }
+                                                                        onChange={(e) => { onChangeConceptos(e, key) }}
                                                                     />
                                                                 </td>
                                                                 <td>
@@ -212,53 +211,53 @@ class PresupuestoDiseñoForm extends Component {
                                             </thead>
                                             <tbody>
                                                 {
-                                                    form.semanas.map( (semana, key) => {
-                                                        return(
-                                                        <tr className="text-center">
-                                                            <th scope="row">SEMANA {key + 1}</th>
-                                                            <td>
-                                                                <label className="checkbox checkbox-single">
-                                                                    <input onChange = { (e) => { checkButtonSemanas(e, key, 'lunes')} } type="checkbox" value={ semana.lunes } checked = { semana.lunes } className="checkable" />
-                                                                    <span></span>
-                                                                </label>
-                                                            </td>
-                                                            <td>
-                                                                <label className="checkbox checkbox-single">
-                                                                    <input onChange = { (e) => { checkButtonSemanas(e, key, 'martes')} } type="checkbox" value={ semana.martes } checked = { semana.martes } className="checkable" />
-                                                                    <span></span>
-                                                                </label>
-                                                            </td>
-                                                            <td>
-                                                                <label className="checkbox checkbox-single">
-                                                                    <input onChange = { (e) => { checkButtonSemanas(e, key, 'miercoles')} } type="checkbox" value={ semana.miercoles } checked = { semana.miercoles } className="checkable" />
-                                                                    <span></span>
-                                                                </label>
-                                                            </td>
-                                                            <td>
-                                                                <label className="checkbox checkbox-single">
-                                                                    <input onChange = { (e) => { checkButtonSemanas(e, key, 'jueves')} } type="checkbox" value={ semana.jueves } checked = { semana.jueves } className="checkable" />
-                                                                    <span></span>
-                                                                </label>
-                                                            </td>
-                                                            <td>
-                                                                <label className="checkbox checkbox-single">
-                                                                    <input onChange = { (e) => { checkButtonSemanas(e, key, 'viernes')} } type="checkbox" value={ semana.viernes } checked = { semana.viernes } className="checkable" />
-                                                                    <span></span>
-                                                                </label>
-                                                            </td>
-                                                            <td>
-                                                                <label className="checkbox checkbox-single">
-                                                                    <input onChange = { (e) => { checkButtonSemanas(e, key, 'sabado')} } type="checkbox" value={ semana.sabado } checked = { semana.sabado } className="checkable" />
-                                                                    <span></span>
-                                                                </label>
-                                                            </td>
-                                                            <td>
-                                                                <label className="checkbox checkbox-single">
-                                                                    <input onChange = { (e) => { checkButtonSemanas(e, key, 'domingo')} } type="checkbox" value={ semana.domingo } checked = { semana.domingo } className="checkable" />
-                                                                    <span></span>
-                                                                </label>
-                                                            </td>
-                                                        </tr>
+                                                    form.semanas.map((semana, key) => {
+                                                        return (
+                                                            <tr className="text-center" key={key}>
+                                                                <th scope="row">SEMANA {key + 1}</th>
+                                                                <td>
+                                                                    <label className="checkbox checkbox-single">
+                                                                        <input onChange={(e) => { checkButtonSemanas(e, key, 'lunes') }} type="checkbox" value={semana.lunes} checked={semana.lunes} className="checkable" />
+                                                                        <span></span>
+                                                                    </label>
+                                                                </td>
+                                                                <td>
+                                                                    <label className="checkbox checkbox-single">
+                                                                        <input onChange={(e) => { checkButtonSemanas(e, key, 'martes') }} type="checkbox" value={semana.martes} checked={semana.martes} className="checkable" />
+                                                                        <span></span>
+                                                                    </label>
+                                                                </td>
+                                                                <td>
+                                                                    <label className="checkbox checkbox-single">
+                                                                        <input onChange={(e) => { checkButtonSemanas(e, key, 'miercoles') }} type="checkbox" value={semana.miercoles} checked={semana.miercoles} className="checkable" />
+                                                                        <span></span>
+                                                                    </label>
+                                                                </td>
+                                                                <td>
+                                                                    <label className="checkbox checkbox-single">
+                                                                        <input onChange={(e) => { checkButtonSemanas(e, key, 'jueves') }} type="checkbox" value={semana.jueves} checked={semana.jueves} className="checkable" />
+                                                                        <span></span>
+                                                                    </label>
+                                                                </td>
+                                                                <td>
+                                                                    <label className="checkbox checkbox-single">
+                                                                        <input onChange={(e) => { checkButtonSemanas(e, key, 'viernes') }} type="checkbox" value={semana.viernes} checked={semana.viernes} className="checkable" />
+                                                                        <span></span>
+                                                                    </label>
+                                                                </td>
+                                                                <td>
+                                                                    <label className="checkbox checkbox-single">
+                                                                        <input onChange={(e) => { checkButtonSemanas(e, key, 'sabado') }} type="checkbox" value={semana.sabado} checked={semana.sabado} className="checkable" />
+                                                                        <span></span>
+                                                                    </label>
+                                                                </td>
+                                                                <td>
+                                                                    <label className="checkbox checkbox-single">
+                                                                        <input onChange={(e) => { checkButtonSemanas(e, key, 'domingo') }} type="checkbox" value={semana.domingo} checked={semana.domingo} className="checkable" />
+                                                                        <span></span>
+                                                                    </label>
+                                                                </td>
+                                                            </tr>
                                                         )
                                                     })
                                                 }
@@ -287,7 +286,7 @@ class PresupuestoDiseñoForm extends Component {
                                             name="precio_inferior_construccion"
                                             onChange={onChange}
                                             messageinc="Incorrecto. Ingresa el precio paramétrico de construcción inferior."
-                                            iconclass = {"fas fa-dollar-sign"}
+                                            iconclass={"fas fa-dollar-sign"}
                                             thousandSeparator={true}
                                         />
                                     </div>
@@ -300,7 +299,7 @@ class PresupuestoDiseñoForm extends Component {
                                             name="precio_superior_construccion"
                                             onChange={onChange}
                                             messageinc="Incorrecto. Ingresa el precio paramétrico de construcción superior."
-                                            iconclass = {"fas fa-dollar-sign"}
+                                            iconclass={"fas fa-dollar-sign"}
                                             thousandSeparator={true}
                                         />
                                     </div>
@@ -327,7 +326,7 @@ class PresupuestoDiseñoForm extends Component {
                                             name="precio_inferior_mobiliario"
                                             onChange={onChange}
                                             messageinc="Incorrecto. Ingresa el precio paramétrico de mobiliario inferior."
-                                            iconclass = {"fas fa-dollar-sign"}
+                                            iconclass={"fas fa-dollar-sign"}
                                             thousandSeparator={true}
                                         />
                                     </div>
@@ -340,7 +339,7 @@ class PresupuestoDiseñoForm extends Component {
                                             name="precio_superior_mobiliario"
                                             onChange={onChange}
                                             messageinc="Incorrecto. Ingresa el precio paramétrico de mobiliario superior."
-                                            iconclass = {"fas fa-dollar-sign"}
+                                            iconclass={"fas fa-dollar-sign"}
                                             thousandSeparator={true}
                                         />
                                     </div>
@@ -350,26 +349,17 @@ class PresupuestoDiseñoForm extends Component {
                                         <OptionsCheckbox
                                             requirevalidation={0}
                                             formeditado={formeditado}
-                                            placeholder="SELECCIONA LAS PARTIDAS"
-                                            options={options.partidasInein}
-                                            name="partidasInein"
-                                            value={form.partidasInein}
+                                            placeholder="SELECCIONA LOS SERIVICIOS DE INTERÉS"
+                                            options={form.tipo_partida === "partidasInein" ? form.partidasInein : form.partidasIm}
+                                            name={form.tipo_partida}
+                                            value={form.tipo_partida === "partidasInein" ? form.partidasInein : form.partidasIm}
                                             onChange={this.handleChangeCheckbox}
                                         />
 
-                                        {/* Leads
-                                        <OptionsCheckbox
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            placeholder="SELECCIONA LOS SERIVICIOS DE INTERÉS"
-                                            options={form.servicios}
-                                            name="servicios"
-                                            value={form.servicios}
-                                            onChange={this.handleChangeCheckbox}
-                                        /> */}
+
                                     </div>
                                 </div>
-                                
+
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>

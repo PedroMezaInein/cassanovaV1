@@ -4,7 +4,7 @@ import axios from 'axios'
 import swal from 'sweetalert'
 import Layout from '../../../components/layout/layout'
 import { URL_DEV } from '../../../constants'
-import { setOptions} from '../../../functions/setters'
+import { setOptions } from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert } from '../../../functions/alert'
 import { PresupuestoDiseñoForm as PresupuestoDiseñoFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
@@ -23,6 +23,7 @@ class PresupuestoDiseñoForm extends Component {
         form: {
             empresa: '',
             m2: '',
+            tipo_partida: '',
             esquema: 'esquema_1',
             fecha: new Date(),
             tiempo_ejecucion_diseno: '',
@@ -68,7 +69,7 @@ class PresupuestoDiseñoForm extends Component {
             tiempo_ejecucion_construccion: '',
             precio_inferior_mobiliario: '',
             precio_superior_mobiliario: '',
-            semanas:[
+            semanas: [
                 {
                     lunes: false,
                     martes: false,
@@ -79,15 +80,15 @@ class PresupuestoDiseñoForm extends Component {
                     domingo: false
                 }
             ],
-            partidasInein:[], //Yo lo agregré
-            partidasIm:[] //Yo lo agregré
+            partidasInein: [], //Yo lo agregré
+            partidasIm: [] //Yo lo agregré
         },
         options: {
             empresas: [],
-            precios:[],
-            esquemas:[],
-            partidasInein:[], //Yo lo agregré
-            partidasIm:[] //Yo lo agregré
+            precios: [],
+            esquemas: [],
+            partidasInein: [], //Yo lo agregré
+            partidasIm: [] //Yo lo agregré
         }
     }
 
@@ -152,20 +153,35 @@ class PresupuestoDiseñoForm extends Component {
         })
     }
 
+    setPartidas = (partidas, nombrePartida) => {
+        let checkBoxPartida = []
+        const { form } = this.state
+
+        partidas.map((partida, key) => {
+            checkBoxPartida.push({ checked: false, text: partida.nombre, id: partida.id })
+        })
+        form[nombrePartida] = checkBoxPartida
+        this.setState({
+            ... this.state,
+            form,
+            partidas: checkBoxPartida,
+        })
+    }
+
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'presupuestos-diseño/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                const { esquemas, empresas, precios, partidasInein, partidasIm} = response.data
+                const { esquemas, empresas, precios, partidasInein, partidasIm } = response.data
                 const { options, data } = this.state
                 data.precios = precios
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['esquemas'] = setOptions(esquemas, 'nombre', 'id')
                 options['precios'] = setOptions(precios, 'm2', 'id')
-                options['partidasInein'] = setOptions(partidasInein, 'nombre', 'id')
-                options['partidasIm'] = setOptions(partidasIm, 'nombre', 'id')
+                options['partidasInein'] = this.setPartidas(partidasInein, 'partidasInein')
+                options['partidasIm'] = this.setPartidas(partidasIm, 'partidasIm')
 
                 this.setState({
                     ... this.state,
@@ -275,13 +291,11 @@ class PresupuestoDiseñoForm extends Component {
                 domingo: false
             }
         )
-        form.semanas.map( (semana) => {
-            console.log(semana, 'semana')
-            aux.map( (element) => {
-                console.log(element, 'element')
-                if(semana[element])
-                    count ++;
-            }) 
+        form.semanas.map((semana) => {
+            aux.map((element) => {
+                if (semana[element])
+                    count++;
+            })
         })
         form.tiempo_ejecucion_diseno = count
         this.setState({
@@ -304,27 +318,27 @@ class PresupuestoDiseñoForm extends Component {
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
-        if( name === 'esquema' ){
-            form.conceptos.map( (concepto) => {
-                if( concepto.name === 'concepto3'){
-                    if(value === 'esquema_1')
+        if (name === 'esquema') {
+            form.conceptos.map((concepto) => {
+                if (concepto.name === 'concepto3') {
+                    if (value === 'esquema_1')
                         concepto.text = 'JUNTA PRESENCIAL PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO'
-                    if(value === 'esquema_2')
+                    if (value === 'esquema_2')
                         concepto.text = 'JUNTA PRESENCIAL PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO Y MODELO 3D'
-                    if(value === 'esquema_3')
+                    if (value === 'esquema_3')
                         concepto.text = 'JUNTA PRESENCIAL PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO, MODELO 3D Y RENDERS'
                 }
-                if( concepto.name === 'concepto5'){
-                    if(value === 'esquema_1')
+                if (concepto.name === 'concepto5') {
+                    if (value === 'esquema_1')
                         concepto.text = 'JUNTA PRESENCIAL PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO'
-                    if(value === 'esquema_2')
+                    if (value === 'esquema_2')
                         concepto.text = 'JUNTA PRESENCIAL PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO Y MODELO 3D'
-                    if(value === 'esquema_3')
+                    if (value === 'esquema_3')
                         concepto.text = 'JUNTA PRESENCIAL PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO, MODELO 3D Y RENDERS'
                 }
             })
         }
-        if(name === 'tiempo_ejecucion_diseno'){
+        if (name === 'tiempo_ejecucion_diseno') {
             let modulo = parseFloat(value) % 6
             let aux = Object.keys(
                 {
@@ -338,7 +352,7 @@ class PresupuestoDiseñoForm extends Component {
                 }
             )
             form.semanas = [];
-            for(let i = 0; i < Math.floor(parseFloat(value)/6); i++ ){
+            for (let i = 0; i < Math.floor(parseFloat(value) / 6); i++) {
                 form.semanas.push({
                     lunes: true,
                     martes: true,
@@ -358,16 +372,16 @@ class PresupuestoDiseñoForm extends Component {
                 sabado: false,
                 domingo: false
             })
-            aux.map( ( element, key ) => {
-                
-                if(key < modulo){
-                    form.semanas[ form.semanas.length -1 ][element] = true
-                }else{
-                    form.semanas[ form.semanas.length -1 ][element] = false
+            aux.map((element, key) => {
+
+                if (key < modulo) {
+                    form.semanas[form.semanas.length - 1][element] = true
+                } else {
+                    form.semanas[form.semanas.length - 1][element] = false
                 }
 
             })
-            if(modulo > 2){
+            if (modulo > 2) {
                 form.semanas.push({
                     lunes: false,
                     martes: false,
@@ -378,7 +392,18 @@ class PresupuestoDiseñoForm extends Component {
                     domingo: false
                 })
             }
-            
+
+        }
+
+        if (name === "empresa") {
+            if (value === "1") {
+                form.tipo_partida = "partidasInein"
+            }
+
+            if (value === "4") {
+                form.tipo_partida = "partidasIm"
+            }
+
         }
         this.setState({
             ...this.state,
@@ -395,15 +420,14 @@ class PresupuestoDiseñoForm extends Component {
             this.addPresupuestoAdminAxios()
     }
 
-    // LEADS
-    // handleChangeCheckbox = (array) => {
-    //     const { form }  = this.state
-    //     form['servicios'] = array
-    //     this.setState({
-    //         ... this.state,
-    //         form: form
-    //     })
-    // }
+    handleChangeCheckbox = (array) => {
+        const { form } = this.state
+        form[form.tipo_partida] = array
+        this.setState({
+            ... this.state,
+            form: form
+        })
+    }
 
     render() {
         const { options, title, form, formeditado } = this.state
@@ -425,9 +449,9 @@ class PresupuestoDiseñoForm extends Component {
                             form={form}
                             onChange={this.onChange}
                             onSubmit={this.onSubmit}
-                            onChangeConceptos = { this.onChangeConceptos }
-                            checkButtonSemanas = { this.checkButtonSemanas }
-                            onChangeCheckboxes = { this.handleChangeCheckbox } // LEADS
+                            onChangeConceptos={this.onChangeConceptos}
+                            checkButtonSemanas={this.checkButtonSemanas}
+                            onChangeCheckboxes={this.handleChangeCheckbox}
                         />
                     </Card.Body>
                 </Card>
