@@ -171,7 +171,7 @@ class PresupuestoDiseño extends Component {
         const { modal } = this.state
 
         return (
-            <Layout active={'rh'} {...this.props}>
+            <Layout active={'presupuesto'} {...this.props}>
                 <NewTableServerRender   
                     columns = { PRESUPUESTO_DISEÑO_COLUMNS }
                     title = 'Presupuesto de diseño' subtitle = 'Listado de presupuestos'

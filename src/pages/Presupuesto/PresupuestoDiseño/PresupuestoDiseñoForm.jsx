@@ -569,7 +569,7 @@ class PresupuestoDiseñoForm extends Component {
         const { options, title, form, formeditado } = this.state
 
         return (
-            <Layout active={'rh'} {...this.props}>
+            <Layout active={'presupuesto'} {...this.props}>
                 <Card className="card-custom">
                     <Card.Header>
                         <div className="card-title">

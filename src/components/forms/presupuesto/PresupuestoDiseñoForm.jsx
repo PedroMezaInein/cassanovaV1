@@ -349,7 +349,7 @@ class PresupuestoDiseñoForm extends Component {
                                         <OptionsCheckbox
                                             requirevalidation={0}
                                             formeditado={formeditado}
-                                            placeholder="SELECCIONA LOS SERIVICIOS DE INTERÉS"
+                                            placeholder="SELECCIONA LAS PARTIDAS"
                                             options={form.tipo_partida === "partidasInein" ? form.partidasInein : form.partidasIm}
                                             name={form.tipo_partida}
                                             value={form.tipo_partida === "partidasInein" ? form.partidasInein : form.partidasIm}
