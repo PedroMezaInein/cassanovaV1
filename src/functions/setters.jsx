@@ -36,7 +36,11 @@ export function setOptions(arreglo, name, value) {
                     if (element.hasOwnProperty('subpartidas')) {
                         aux.push({ name: element[name], value: element[value].toString(), subpartidas: element['subpartidas'] })
                     } else {
-                        aux.push({ name: element[name], value: element[value].toString() })
+                        if (name==="m2") {
+                            aux.push({ name: ""+element[name], value: element[value].toString() })
+                        } else {
+                            aux.push({ name: element[name], value: element[value].toString() })
+                        }
                     }
 
                 }
