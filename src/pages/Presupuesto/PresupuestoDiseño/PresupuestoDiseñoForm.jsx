@@ -335,7 +335,7 @@ class PresupuestoDiseñoForm extends Component {
         const { access_token } = this.props.authUser
         const { form, presupuesto } = this.state
 
-        await axios.put(URL_DEV + 'presupuesto/presupuesto-diseño/' + presupuesto.id, form, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(URL_DEV + 'presupuestos-diseño/' + presupuesto.id, form, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { history } = this.props
 
@@ -347,9 +347,9 @@ class PresupuestoDiseñoForm extends Component {
                     buttons: false,
                 })
 
-                history.push({
+                /* history.push({
                     pathname: '/presupuesto/presupuesto-diseño'
-                });
+                }); */
             },
             (error) => {
                 console.log(error, 'error')
