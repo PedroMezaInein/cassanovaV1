@@ -5,10 +5,6 @@ import { EMAIL } from '../../constants'
 
 class RegisterUserForm extends Component {
 
-    constructor(props) {
-        super(props)
-    }
-
     updateDepartamento = value => {
         const { onChange, onChangeOptions, options, form } = this.props
         options.departamentos.map((departamento) => {
