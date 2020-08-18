@@ -17,7 +17,8 @@ class PresupuestoDiseñoForm extends Component {
     state = {
         formeditado: 0,
         data: {
-            precios: []
+            precios: [],
+            empresas: []
         },
         title: 'Presupuesto de diseño',
         form: {
@@ -115,10 +116,98 @@ class PresupuestoDiseñoForm extends Component {
                     if (state.presupuesto) {
                         const { presupuesto } = state
                         const { form, options } = this.state
-                        form.periodo = presupuesto.periodo
+                        
                         form.empresa = presupuesto.empresa ? presupuesto.empresa.id.toString() : ''
-                        form.fechaInicio = new Date(presupuesto.fecha_inicio)
-                        form.fechaFin = presupuesto.fecha_fin ? new Date(presupuesto.fecha_fin) : ''
+                        form.m2 = presupuesto.precio ? presupuesto.precio.id.toString() : ''
+                        form.esquema = presupuesto.esquema
+                        form.fecha = new Date(presupuesto.fecha)
+                        form.tiempo_ejecucion_diseno = presupuesto.tiempo_ejecucion_diseno
+                        let aux = []
+                        presupuesto.semanas.map( (semana, key) => {
+                            aux.push({
+                                lunes: semana.lunes,
+                                martes: semana.martes,
+                                miercoles: semana.miercoles,
+                                jueves: semana.jueves,
+                                viernes: semana.viernes,
+                                sabado: semana.sabado,
+                                domingo: semana.domingo
+                            })
+                        })
+                        if(aux.length === 0){
+                            aux.push({
+                                lunes: false,
+                                martes: false,
+                                miercoles: false,
+                                jueves: false,
+                                viernes: false,
+                                sabado: false,
+                                domingo: false
+                            })
+                        }
+                        form.semanas = aux
+                        aux = []
+                        presupuesto.conceptos.map( (concepto, key) => {
+                            aux.push({
+                                name: 'concepto'+(key+1),
+                                value: concepto.dias,
+                                text: concepto.texto
+                            })
+                        })
+                        if(aux.length === 0){
+                            aux = [
+                                {
+                                    value: '',
+                                    text: 'REUNIÓN DE AMBOS EQUIPOS',
+                                    name: 'concepto1'
+                                },
+                                {
+                                    value: '',
+                                    text: 'DESARROLLO DEL MATERIAL PARA LA PRIMERA REVISIÓN PRESENCIAL',
+                                    name: 'concepto2'
+                                },
+                                {
+                                    value: '',
+                                    text: 'JUNTA PRESENCIAL PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO',
+                                    name: 'concepto3'
+                                },
+                                {
+                                    value: '',
+                                    text: 'DESARROLLO DEL PROYECTO',
+                                    name: 'concepto4'
+                                },
+                                {
+                                    value: '',
+                                    text: 'JUNTA PRESENCIAL PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO',
+                                    name: 'concepto5'
+                                },
+                                {
+                                    value: '',
+                                    text: 'DESARROLLO DEL PROYECTO EJECUTIVO',
+                                    name: 'concepto6'
+                                },
+                                {
+                                    value: '',
+                                    text: 'ENTREGA FINAL DEL PROYECTO EN DIGITAL',
+                                    name: 'concepto7'
+                                },
+                            ]
+                        }
+                        form.conceptos = aux
+                        form.precio_inferior_construccion = presupuesto.precio_inferior_construccion
+                        form.precio_superior_construccion = presupuesto.precio_superior_construccion
+                        form.precio_inferior_mobiliario = presupuesto.precio_inferior_mobiliario
+                        form.precio_superior_mobiliario = presupuesto.precio_superior_mobiliario
+                        form.tiempo_ejecucion_construccion = presupuesto.tiempo_ejecucion_construccion
+                        if(presupuesto.precio){
+                            form.total = presupuesto.precio[presupuesto.esquema]
+                        }
+                        if(presupuesto.empresa){
+                            if(presupuesto.empresa.name === 'INEIN')
+                                form.tipo_partida = 'partidasInein'
+                            if(presupuesto.empresa.name === 'INFRAESTRUCTURA MÉDICA')
+                                form.tipo_partida = 'partidasIm'
+                        }
 
                         this.setState({
                             ... this.state,
@@ -177,6 +266,7 @@ class PresupuestoDiseñoForm extends Component {
                 const { esquemas, empresas, precios, partidasInein, partidasIm } = response.data
                 const { options, data } = this.state
                 data.precios = precios
+                data.empresas = empresas
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['esquemas'] = setOptions(esquemas, 'nombre', 'id')
                 options['precios'] = setOptions(precios, 'm2', 'id')
@@ -316,7 +406,7 @@ class PresupuestoDiseñoForm extends Component {
 
     onChange = e => {
         const { name, value } = e.target
-        const { form } = this.state
+        const { form, data } = this.state
         form[name] = value
         if (name === 'esquema') {
             form.conceptos.map((concepto) => {
@@ -395,14 +485,22 @@ class PresupuestoDiseñoForm extends Component {
 
         }
 
-        if (name === "empresa") {
-            if (value === "1") {
-                form.tipo_partida = "partidasInein"
-            }
+        if( name === 'esquema' || name === 'm2' ){
+            data.precios.map( (precio) => {
+                if(precio.id.toString() === form.m2)
+                    if(form.esquema)
+                        form.total = precio[form.esquema]
+            })
+        }
 
-            if (value === "4") {
-                form.tipo_partida = "partidasIm"
-            }
+        if (name === "empresa") {
+            data.empresas.map( (empresa) => {
+                if(empresa.id.toString() === value && empresa.name === 'INEIN')
+                    form.tipo_partida = 'partidasInein'
+                if(empresa.id.toString() === value && empresa.name === 'INFRAESTRUCTURA MÉDICA')
+                    form.tipo_partida = 'partidasIm'
+
+            }) 
 
         }
         this.setState({

@@ -1699,19 +1699,23 @@ export const PRESUPUESTO_DISEÑO_COLUMNS = [
         accessor: 'actions',
     },
     {
-        Header: 'Proyecto',
-        accessor: 'proyecto'
-    },
-    {
         Header: 'Empresa',
         accessor: 'empresa',
     },
     {
-        Header: 'Área',
-        accessor: 'area'
+        Header: 'Fecha',
+        accessor: 'fecha'
     },
     {
-        Header: 'Fecha',
-        accessor: 'fecha',
-    }    
+        Header: 'M2',
+        accessor: 'm2',
+    },
+    {
+        Header: 'Esquema',
+        accessor: 'esquema',
+    },
+    {
+        Header: 'Total',
+        accessor: 'total',
+    }
 ]

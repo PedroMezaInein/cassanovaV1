@@ -5,7 +5,7 @@ import swal from 'sweetalert'
 import Layout from '../../../components/layout/layout' 
 import { ModalDelete} from '../../../components/singles' 
 import { PRESUPUESTO_DISEÑO_COLUMNS, URL_DEV} from '../../../constants'
-import { setOptions, setDateTable, setTextTable } from '../../../functions/setters'
+import { setOptions, setDateTable, setTextTable, setMoneyTable } from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert} from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { renderToString } from 'react-dom/server'
@@ -129,10 +129,11 @@ class PresupuestoDiseño extends Component {
                 aux.push(
                     {
                         actions: this.setActions(presupuesto),
-                        proyecto: renderToString(setTextTable( presupuesto.proyecto ? presupuesto.proyecto.nombre : '')),
                         empresa: renderToString(setTextTable( presupuesto.empresa ? presupuesto.empresa.name : '')),
-                        area: renderToString(setTextTable( presupuesto.area ? presupuesto.area.nombre : '')),
                         fecha: renderToString(setDateTable(presupuesto.fecha)),
+                        m2: renderToString(setTextTable(presupuesto.precio ? presupuesto.precio.m2 : '')),
+                        esquema: renderToString(setTextTable(presupuesto.esquema ? presupuesto.esquema.replace('_', ' ') : '')),
+                        total: renderToString(setMoneyTable(presupuesto.total)),
                         id: presupuesto.id,
                     }
                 )
@@ -185,7 +186,7 @@ class PresupuestoDiseño extends Component {
                     }}
                     accessToken = { this.props.authUser.access_token }
                     setter = { this.setPresupuestos }
-                    urlRender = {URL_DEV + 'rh/nomina-administrativa'} /// Falta cambiar aqui
+                    urlRender = {URL_DEV + 'presupuestos-diseño'} /// Falta cambiar aqui
                     idTable = 'kt_datatable2_presupuesto_diseño'
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'
