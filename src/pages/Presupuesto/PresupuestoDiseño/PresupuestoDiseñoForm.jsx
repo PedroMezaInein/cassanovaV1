@@ -202,7 +202,7 @@ class PresupuestoDiseñoForm extends Component {
                         form.precio_superior_mobiliario = presupuesto.precio_superior_mobiliario
                         form.tiempo_ejecucion_construccion = presupuesto.tiempo_ejecucion_construccion
                         if(presupuesto.precio){
-                            form.total = presupuesto.precio[presupuesto.esquema]
+                            form.total = presupuesto.precio[presupuesto.esquema] * (1 - (presupuesto.descuento/100))
                         }
                         if(presupuesto.empresa){
                             if(presupuesto.empresa.name === 'INEIN'){
@@ -386,9 +386,9 @@ class PresupuestoDiseñoForm extends Component {
                     buttons: false,
                 })
 
-                history.push({
+                /* history.push({
                     pathname: '/presupuesto/presupuesto-diseño'
-                });
+                }); */
             },
             (error) => {
                 console.log(error, 'error')
@@ -524,11 +524,14 @@ class PresupuestoDiseñoForm extends Component {
 
         }
 
-        if( name === 'esquema' || name === 'm2' ){
+        if( name === 'esquema' || name === 'm2' || name === 'descuento'){
             data.precios.map( (precio) => {
                 if(precio.id.toString() === form.m2)
                     if(form.esquema)
-                        form.total = precio[form.esquema]
+                        if(form.descuento){
+                            form.total = precio[form.esquema] * (1 -  (form.descuento/100))
+                        }else
+                            form.total = precio[form.esquema]
             })
         }
 

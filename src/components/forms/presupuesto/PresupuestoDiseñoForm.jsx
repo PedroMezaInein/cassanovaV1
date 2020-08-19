@@ -141,16 +141,6 @@ class PresupuestoDiseñoForm extends Component {
                                         />
                                     </div>
                                     <div className="col-md-3">
-                                        <InputNumber
-                                            requirevalidation={0}
-                                            placeholder="Total"
-                                            value={form.total}
-                                            iconclass={"fas fa-dollar-sign"}
-                                            thousandSeparator={true}
-                                            disabled={true}
-                                        />
-                                    </div>
-                                    <div className="col-md-3">
                                         <InputMoney
                                             requirevalidation={0}
                                             type="text"
@@ -163,6 +153,16 @@ class PresupuestoDiseñoForm extends Component {
                                             messageinc="Incorrecto. Ingresa el porcentaje."
                                             formeditado={formeditado}                                            
                                             name="descuento"
+                                        />
+                                    </div>
+                                    <div className="col-md-3">
+                                        <InputNumber
+                                            requirevalidation={0}
+                                            placeholder="Total"
+                                            value={form.total}
+                                            iconclass={"fas fa-dollar-sign"}
+                                            thousandSeparator={true}
+                                            disabled={true}
                                         />
                                     </div>
                                 </div>
