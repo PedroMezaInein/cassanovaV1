@@ -27,7 +27,7 @@ class EmpresaForm extends Component {
                 }
                 {... this.props}
             >
-                <div className="form-group row form-group-marginless">
+                <div className="form-group row form-group-marginless pb-4">
                     <div className="col-md-4">
                         <Input
                             requirevalidation={1}
@@ -70,45 +70,10 @@ class EmpresaForm extends Component {
                         />
                     </div>
                 </div>
-                <div className="separator separator-dashed mt-1 mb-2"></div>
-                {/* <div className="form-group row form-group-marginless">
-                    <div className="col-md-4">
-                        <div className="uppy">
-                            <div className="uppy-wrapper">
-                                <div className="uppy-Root uppy-FileInput-container mb-3">
-                                    <InputImage
-                                        onChange={onChange}
-                                        name="logo"
-                                        type="file"
-                                        value={form.logo}
-                                        id="logo"
-                                        placeholder="LOGO DE LA EMPRESA"
-                                    />
-                                </div>
-                            </div>
-                            <label htmlFor="logo">
-                                <FontAwesomeIcon icon={faCamera} />
-                            </label>
-                        </div>
+                <div class="card-footer py-2">
+                    <div class="col-form-label text-center">
+                        <Button icon='' className="mx-auto" type="submit" text="Enviar" />
                     </div>
-                    {
-                        (img === '') && (form.file !== '' && form.file !== undefined && form.file !== null) &&
-                        <div className="p-3 position-relative">
-                            <img className='img-empresa' src={form.file} />
-                        </div>
-                    }
-                    {
-                        form.logo &&
-                        <div className="p-3 position-relative img-empresa">
-                            <img value={img} className='img-empresa' src={img} />
-                            <Button className="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow text-muted"
-                                onClick={removefile} text='' icon={faTimesCircle} />
-                        </div>
-                    }
-                </div> */}
-
-                <div className="mt-3 text-center">
-                    <Button icon='' className="mx-auto" type="submit" text="Enviar" />
                 </div>
             </Form>
         )
