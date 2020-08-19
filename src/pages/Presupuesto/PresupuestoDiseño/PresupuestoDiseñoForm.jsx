@@ -28,6 +28,7 @@ class PresupuestoDiseñoForm extends Component {
             esquema: 'esquema_1',
             fecha: new Date(),
             tiempo_ejecucion_diseno: '',
+            descuento: 0.0,
             conceptos: [
                 {
                     value: '',
@@ -81,15 +82,15 @@ class PresupuestoDiseñoForm extends Component {
                     domingo: false
                 }
             ],
-            partidasInein: [], //Yo lo agregré
-            partidasIm: [] //Yo lo agregré
+            partidasInein: [],
+            partidasIm: []
         },
         options: {
             empresas: [],
             precios: [],
             esquemas: [],
-            partidasInein: [], //Yo lo agregré
-            partidasIm: [] //Yo lo agregré
+            // partidasInein: [],
+            // partidasIm: []
         }
     }
 
@@ -122,6 +123,7 @@ class PresupuestoDiseñoForm extends Component {
                         form.esquema = presupuesto.esquema
                         form.fecha = new Date(presupuesto.fecha)
                         form.tiempo_ejecucion_diseno = presupuesto.tiempo_ejecucion_diseno
+                        form.descuento = presupuesto.descuento
                         let aux = []
                         presupuesto.semanas.map( (semana, key) => {
                             aux.push({

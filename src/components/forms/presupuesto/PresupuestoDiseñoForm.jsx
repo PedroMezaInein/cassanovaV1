@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { RFC, DATE } from '../../../constants'
-import { SelectSearch, Button, Input, Calendar, InputSinText, InputNumber, OptionsCheckbox } from '../../form-components'
+import { SelectSearch, Button, Input, Calendar, InputSinText, InputNumber, OptionsCheckbox, InputMoney} from '../../form-components'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
 
@@ -118,8 +118,9 @@ class PresupuestoDiseñoForm extends Component {
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
-                                    <div className="col-md-4">
+                                    <div className="col-md-3">
                                         <Calendar
+                                            requirevalidation={1}
                                             formeditado={formeditado}
                                             onChangeCalendar={this.handleChangeDate}
                                             placeholder="FECHA"
@@ -128,9 +129,9 @@ class PresupuestoDiseñoForm extends Component {
                                             patterns={DATE}
                                         />
                                     </div>
-                                    <div className="col-md-4">
+                                    <div className="col-md-3">
                                         <InputNumber
-                                            requirevalidation={0}
+                                            requirevalidation={1}
                                             formeditado={formeditado}
                                             placeholder="TIEMPO DE EJECUCIÓN (DÍAS)"
                                             value={form.tiempo_ejecucion_diseno}
@@ -139,7 +140,7 @@ class PresupuestoDiseñoForm extends Component {
                                             iconclass={"flaticon-calendar-with-a-clock-time-tools"}
                                         />
                                     </div>
-                                    <div className="col-md-4">
+                                    <div className="col-md-3">
                                         <InputNumber
                                             requirevalidation={0}
                                             placeholder="Total"
@@ -147,6 +148,21 @@ class PresupuestoDiseñoForm extends Component {
                                             iconclass={"fas fa-dollar-sign"}
                                             thousandSeparator={true}
                                             disabled={true}
+                                        />
+                                    </div>
+                                    <div className="col-md-3">
+                                        <InputMoney
+                                            requirevalidation={0}
+                                            type="text"
+                                            placeholder="DESCUENTO"
+                                            value={form.descuento}
+                                            iconclass={"fas fa-percentage"}
+                                            thousandSeparator={true}
+                                            onChange={onChange}
+                                            prefix={'%'}
+                                            messageinc="Incorrecto. Ingresa el porcentaje."
+                                            formeditado={formeditado}                                            
+                                            name="descuento"
                                         />
                                     </div>
                                 </div>
