@@ -19,7 +19,6 @@ class DropZone extends Component{
                 {({ getRootProps, getInputProps }) => {
                     let aux = getInputProps()
                     aux.multiple = multiple;
-                    console.log(multiple)
                     return (<div {...getRootProps({ className: "dropzone dropzone-default dropzone-primary dz-clickable col-md-10" })}>
                         <input {...aux} />
                         {
