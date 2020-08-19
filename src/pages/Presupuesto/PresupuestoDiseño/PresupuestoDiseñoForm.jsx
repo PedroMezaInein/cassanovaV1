@@ -386,9 +386,9 @@ class PresupuestoDiseñoForm extends Component {
                     buttons: false,
                 })
 
-                /* history.push({
+                history.push({
                     pathname: '/presupuesto/presupuesto-diseño'
-                }); */
+                });
             },
             (error) => {
                 console.log(error, 'error')
