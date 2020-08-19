@@ -39,7 +39,13 @@ class EmpresasForm extends Component {
                 id: 'footer',
                 value: '',
                 files: []
-            }
+            },
+            {
+                placeholder: 'Isotipo',
+                id: 'isotipo',
+                value: '',
+                files: []
+            },
         ],
         adjuntos: [],
         defaultactivekey:"",

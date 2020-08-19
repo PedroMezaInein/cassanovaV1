@@ -46,7 +46,13 @@ class Empresas extends Component {
                 id: 'footers',
                 value: '',
                 files: []
-            }
+            },
+            {
+                placeholder: 'Isotipo',
+                id: 'isotipo',
+                value: '',
+                files: []
+            },
         ],
         adjuntos: [],
         defaultactivekey:"",
