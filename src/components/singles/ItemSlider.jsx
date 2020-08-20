@@ -91,7 +91,6 @@ class ItemSlider extends Component {
 
     render() {
         const { items, deleteFile, handleChange, multiple } = this.props
-        console.log( multiple, '-multiple-')
         const { active } = this.state
         return (
             <>

@@ -232,8 +232,6 @@ class UltimoPresupuesto extends Component {
                     
                     presupuesto.conceptos.map((concepto_form) =>{
                         if(concepto){
-                            console.log(concepto, 'concepto')
-                            console.log(concepto_form, 'concepto_form')
                             if(concepto.clave === concepto_form.concepto.clave){
                                 aux=true
                             }

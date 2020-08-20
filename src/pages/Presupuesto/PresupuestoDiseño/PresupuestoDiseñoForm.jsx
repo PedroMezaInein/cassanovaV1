@@ -208,8 +208,6 @@ class PresupuestoDiseñoForm extends Component {
                             if(presupuesto.empresa.name === 'INEIN'){
                                 form.tipo_partida = 'partidasInein'
                                 presupuesto.partidas_inein.map( (partida_inein, key) => {
-                                    console.log(form.partidasInein, 'partidasInein')
-                                    console.log(form, 'form')
                                     /* form.partidasInein.map( ( element ) => {
                                         console.log(element, 'element')
                                         if(element.id === partida_inein.id){

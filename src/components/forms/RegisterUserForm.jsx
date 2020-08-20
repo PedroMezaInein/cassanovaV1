@@ -8,8 +8,6 @@ class RegisterUserForm extends Component {
     updateDepartamento = value => {
         const { onChange, onChangeOptions, options, form } = this.props
         options.departamentos.map((departamento) => {
-
-            console.log(departamento.value, " vs ", value)
             if (departamento.value === value) {
                 let aux = false;
                 form.departamentos.map((departamento) => {
@@ -43,7 +41,6 @@ class RegisterUserForm extends Component {
 
     render() {
         const { options, form, onChange, deleteOption, onChangeOptions, formeditado, ...props } = this.props
-        console.log(form)
         return (
             <Form {...props} >
                 <div className="form-group row form-group-marginless">
@@ -153,7 +150,6 @@ class RegisterUserForm extends Component {
                                         <div className="col-md-12 row mx-0 align-items-center image-upload">
                                             {
                                                 form.proyectos.map((proyecto, key) => {
-                                                    console.log(proyecto)
                                                     return (
                                                         <div key={key} className="tagify form-control p-1 col-md-3 px-2 d-flex justify-content-center align-items-center" tabIndex="-1" style={{ borderWidth: "0px" }}>
                                                             <div className="tagify__tag tagify__tag--primary tagify--noAnim">
