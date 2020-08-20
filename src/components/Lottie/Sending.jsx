@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import * as animationData from '../assets/animate/paperplane.json'
+import * as animationData from '../../assets/animate/plane.json'
 import Lottie from 'react-lottie';
 
-class Loading extends Component{
+class Sending extends Component{
     render(){
         const defaultOptions = {
             loop: true,
@@ -13,10 +13,10 @@ class Loading extends Component{
             }
         };
         return(
-            <div className="">
+            <div className="mx-auto">
                 <Lottie options={defaultOptions}
-                    height={400}
-                    width={400}
+                    height={200}
+                    width={200}
                     isStopped={false}
                     isPaused={false}/>
             </div>
@@ -24,4 +24,4 @@ class Loading extends Component{
     }
 }
 
-export default Loading
+export default Sending

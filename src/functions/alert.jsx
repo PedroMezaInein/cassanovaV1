@@ -1,10 +1,28 @@
 import swal from 'sweetalert'
+import { renderToString } from 'react-dom/server'
+import { Sending } from '../components/Lottie/'
+import ReactDOM from 'react-dom';
+import React, { Component } from 'react'
 
-export function waitAlert() {
+let wrapper = document.createElement('div');
+ReactDOM.render(<Sending />, wrapper);
+let el = wrapper.firstChild;
+
+class Alert extends Component{
+    render(){
+        return(
+            <div className="">
+            </div>
+        )
+    }
+}
+
+export async function waitAlert() {
     swal({
         title: '¡Un momento!',
         text: 'La información está siendo procesada.',
-        buttons: false
+        buttons: false,
+        content: el
     })
 }
 
