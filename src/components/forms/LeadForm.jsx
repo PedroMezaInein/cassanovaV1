@@ -4,6 +4,7 @@ import { Button, Input, Calendar, Select, OptionsCheckbox } from '../form-compon
 import { DATE, TEL, EMAIL } from '../../constants'
 import { validateAlert } from '../../functions/alert'
 import InputPhone from '../form-components/InputPhone'
+import RadioGroup from '../form-components/RadioGroup'
 
 class LeadForm extends Component {
 
@@ -80,7 +81,7 @@ class LeadForm extends Component {
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <Select
                             requirevalidation={1}
                             formeditado={formeditado}
@@ -93,7 +94,7 @@ class LeadForm extends Component {
                             messageinc="Incorrecto. Selecciona la empresa para el lead."
                         />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <Select
                             requirevalidation={1}
                             formeditado={formeditado}
@@ -106,7 +107,7 @@ class LeadForm extends Component {
                             messageinc="Incorrecto. Selecciona el origen para el lead."
                         />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <Calendar
                             required
                             formeditado={formeditado}
@@ -115,6 +116,27 @@ class LeadForm extends Component {
                             name="fecha"
                             value={form.fecha}
                             patterns={DATE}
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <RadioGroup
+                            placeholder = 'Tipo de lead'
+                            formeditado = { formeditado }
+                            name = 'tipo_lead'
+                            onChange = { onChange }
+                            options = {
+                                [
+                                    {
+                                        label: 'Potencial',
+                                        value: 'potencial'
+                                    },
+                                    {
+                                        label: 'Basura',
+                                        value: 'basura'
+                                    }
+                                ]
+                            }
+                            value = { form.tipo_lead }
                         />
                     </div>
                 </div>
