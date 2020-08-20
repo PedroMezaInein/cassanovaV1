@@ -254,12 +254,12 @@ class PresupuestoDiseñoForm extends Component {
         })
     }
 
-    setPartidas = (partidas, nombrePartida) => {
+    setPartidas = (partidas, nombrePartida, value) => {
         let checkBoxPartida = []
         const { form } = this.state
 
         partidas.map((partida, key) => {
-            checkBoxPartida.push({ checked: false, text: partida.nombre, id: partida.id })
+            checkBoxPartida.push({ checked: value, text: partida.nombre, id: partida.id })
         })
         return checkBoxPartida
     }
@@ -281,9 +281,11 @@ class PresupuestoDiseñoForm extends Component {
                 options['precios'] = setOptions(precios, 'm2', 'id')
                 /* options['partidasInein'] = this.setPartidas(partidasInein, 'partidasInein')
                 options['partidasIm'] = this.setPartidas(partidasIm, 'partidasIm') */
-                form.partidasInein = this.setPartidas(partidasInein, 'partidasInein')
-                form.partidasIm = this.setPartidas(partidasIm, 'partidasIm')
+                form.partidasInein = this.setPartidas(partidasInein, 'partidasInein', true)
+                form.partidasIm = this.setPartidas(partidasIm, 'partidasIm', true)
                 if(presupuesto){
+                    form.partidasInein = this.setPartidas(partidasInein, 'partidasInein', false)
+                    form.partidasIm = this.setPartidas(partidasIm, 'partidasIm', false)
                     if(presupuesto.empresa){
                         if(presupuesto.empresa.name === 'INEIN'){
                             form.tipo_partida = 'partidasInein'
