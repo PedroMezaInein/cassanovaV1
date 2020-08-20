@@ -29,14 +29,14 @@ class EmpresasForm extends Component {
         formAction: '',
         showadjuntos: [
             {
-                placeholder: 'Logo de la empresa',
-                id: 'logo_de_la_empresa',
+                placeholder: 'Logo de la empresa negro',
+                id: 'logo_negro',
                 value: '',
                 files: []
             },
             {
-                placeholder: 'Footer',
-                id: 'footer',
+                placeholder: 'Logo de la empresa blanco',
+                id: 'logo_blanco',
                 value: '',
                 files: []
             },
@@ -46,6 +46,12 @@ class EmpresasForm extends Component {
                 value: '',
                 files: []
             },
+            {
+                placeholder: 'Letras',
+                id: 'letra',
+                value: '',
+                files: []
+            }
         ],
         adjuntos: [],
         defaultactivekey:"",

@@ -36,14 +36,14 @@ class Empresas extends Component {
         formAction: '',
         showadjuntos: [
             {
-                placeholder: 'Logo de la empresa',
-                id: 'logos',
+                placeholder: 'Logo de la empresa negro',
+                id: 'logo_negro',
                 value: '',
                 files: []
             },
             {
-                placeholder: 'Footer',
-                id: 'footers',
+                placeholder: 'Logo de la empresa blanco',
+                id: 'logo_blanco',
                 value: '',
                 files: []
             },
@@ -53,6 +53,12 @@ class Empresas extends Component {
                 value: '',
                 files: []
             },
+            {
+                placeholder: 'Letras',
+                id: 'letra',
+                value: '',
+                files: []
+            }
         ],
         adjuntos: [],
         defaultactivekey:"",
