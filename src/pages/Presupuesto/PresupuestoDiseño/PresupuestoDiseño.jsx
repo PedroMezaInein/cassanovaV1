@@ -3,12 +3,13 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import Layout from '../../../components/layout/layout' 
-import { ModalDelete} from '../../../components/singles' 
-import { PRESUPUESTO_DISEÑO_COLUMNS, URL_DEV} from '../../../constants'
-import { setDateTable, setTextTable, setMoneyTable } from '../../../functions/setters'
+import { ModalDelete, Modal } from '../../../components/singles' 
+import { PRESUPUESTO_DISEÑO_COLUMNS, URL_DEV, ADJUNTOS_PRESUPUESTOS_COLUMNS} from '../../../constants'
+import { setDateTable, setTextTable, setMoneyTable, setAdjuntosList } from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert} from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { renderToString } from 'react-dom/server'
+import TableForModals from '../../../components/tables/TableForModals'
 
 const $ = require('jquery');
 
@@ -18,6 +19,10 @@ class PresupuestoDiseño extends Component {
         modal:{
             form: false,
             delete: false,
+            adjuntos: false,
+        },
+        data:{
+            adjuntos: []
         },
         title: 'Nuevo presupuesto de diseño',
     }
@@ -50,6 +55,33 @@ class PresupuestoDiseño extends Component {
             modal,
             presupuesto: presupuesto
         })
+    }
+
+    downloadPDF = presupuesto   => {
+        const { modal, data } = this.state
+        data.adjuntos = presupuesto.pdfs
+        modal.adjuntos = true
+        this.setState({
+            ... this.state,
+            presupuesto: presupuesto,
+            modal,
+            adjuntos: this.setAdjuntosTable(presupuesto.pdfs),
+            data
+        })
+    }
+
+    setAdjuntosTable = adjuntos => {
+        let aux = []
+        adjuntos.map((adjunto) => {
+            aux.push({
+                url: renderToString(
+                    setAdjuntosList([{ name: adjunto.name, url: adjunto.url }])
+                ),
+                identificador: renderToString(setTextTable(adjunto.pivot.identificador)),
+                id: adjunto.id
+            })
+        })
+        return aux
     }
 
     async deletePresupuestoAdminAxios(){
@@ -104,6 +136,19 @@ class PresupuestoDiseño extends Component {
         })
     }
 
+    handleClose = () => {
+        const { modal, data } = this.state
+        data.adjuntos = []
+        modal.adjuntos = false
+        this.setState({
+            ... this.state,
+            presupuesto: '',
+            modal,
+            adjuntos: [],
+            data
+        })
+    }
+
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -140,7 +185,7 @@ class PresupuestoDiseño extends Component {
         return aux
     }
 
-    setActions = () => {
+    setActions = presupuesto => {
         let aux = []
         aux.push(
             {
@@ -149,7 +194,21 @@ class PresupuestoDiseño extends Component {
                 iconclass: 'flaticon2-pen',
                 action: 'edit',
                 tooltip: { id: 'edit', text: 'Editar' }
-            },
+            }
+        )
+        if(presupuesto.pdfs)
+        {
+            aux.push(
+                {
+                    text: 'Descargar&nbsp;presupuesto',
+                    btnclass: 'info',
+                    iconclass: 'flaticon2-download-1',                  
+                    action: 'download',
+                    tooltip: {id:'download', text:'Decargar presupuesto'},
+                }
+            )
+        }
+        aux.push(
             {
                 text: 'Eliminar',
                 btnclass: 'danger',
@@ -168,7 +227,7 @@ class PresupuestoDiseño extends Component {
     }
 
     render() {
-        const { modal } = this.state
+        const { modal, data, adjuntos } = this.state
 
         return (
             <Layout active={'presupuesto'} {...this.props}>
@@ -181,7 +240,8 @@ class PresupuestoDiseño extends Component {
                     mostrar_acciones={true} 
                     actions={{
                         'edit': { function: this.changeEditPage },
-                        'delete': {function: this.openModalDelete}
+                        'delete': {function: this.openModalDelete},
+                        'download': { function: this.downloadPDF}
                     }}
                     accessToken = { this.props.authUser.access_token }
                     setter = { this.setPresupuestos }
@@ -191,7 +251,21 @@ class PresupuestoDiseño extends Component {
                     cardTableHeader='cardTableHeader'
                     cardBody='cardBody'
                 />
-                <ModalDelete title={'¿Desea eliminar el presupuesto?'} show = { modal.delete } handleClose = { this.handleCloseModalDelete } onClick=  { (e) => { e.preventDefault(); waitAlert(); this.deletePresupuestoAdminAxios() }} />
+                <ModalDelete 
+                    title = '¿Desea eliminar el presupuesto?' 
+                    show = { modal.delete } 
+                    handleClose = { this.handleCloseModalDelete } 
+                    onClick=  { (e) => { e.preventDefault(); waitAlert(); this.deletePresupuestoAdminAxios() }} />
+                <Modal show = { modal.adjuntos } handleClose = { this.handleClose } title = "Listado de presupuestos" >
+                    <TableForModals
+                        columns={ADJUNTOS_PRESUPUESTOS_COLUMNS}
+                        data={adjuntos}
+                        hideSelector={true}
+                        mostrar_acciones={false}
+                        dataID='adjuntos'
+                        elements={data.adjuntos}
+                    />
+                </Modal>
             </Layout>
         )
     }

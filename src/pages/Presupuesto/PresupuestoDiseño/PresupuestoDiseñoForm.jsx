@@ -330,13 +330,26 @@ class PresupuestoDiseñoForm extends Component {
         })
     }
 
-    async addPresupuestoAdminAxios() {
+    async addPresupuestoDiseñoAxios(pdf) {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form } = this.state
 
+        form.pdf = pdf
+
         await axios.post(URL_DEV + 'presupuestos-diseño', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+
+                const { presupuesto } = response.data
+
+                if(pdf)
+                    if(presupuesto.pdfs){
+                        const url =  presupuesto.pdfs[0].url
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute('target', '_blank');
+                        link.click();
+                    }
 
                 const { history } = this.props
 
@@ -367,14 +380,27 @@ class PresupuestoDiseñoForm extends Component {
         })
     }
 
-    async updatePresupuestoAdminAxios() {
+    async updatePresupuestoDiseñoAxios(pdf) {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form, presupuesto } = this.state
 
+        form.pdf = pdf
+
         await axios.put(URL_DEV + 'presupuestos-diseño/' + presupuesto.id, form, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                console.log(response, 'response')
+                const { presupuesto } = response.data
                 const { history } = this.props
+                
+                if(pdf)
+                    if(presupuesto.pdfs){
+                        const url =  presupuesto.pdfs[0].url
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute('target', '_blank');
+                        link.click();
+                    }
 
                 swal({
                     title: '¡Felicidades 🥳!',
@@ -554,9 +580,18 @@ class PresupuestoDiseñoForm extends Component {
         e.preventDefault()
         const { title } = this.state
         if (title === 'Editar presupuesto de diseño')
-            this.updatePresupuestoAdminAxios()
+            this.updatePresupuestoDiseñoAxios(false)
         else
-            this.addPresupuestoAdminAxios()
+            this.addPresupuestoDiseñoAxios(false)
+    }
+
+    submitPDF = e => {
+        e.preventDefault()
+        const { title } = this.state
+        if (title === 'Editar presupuesto de diseño')
+            this.updatePresupuestoDiseñoAxios(true)
+        else
+            this.addPresupuestoDiseñoAxios(true)
     }
 
     handleChangeCheckbox = (array) => {
@@ -588,6 +623,7 @@ class PresupuestoDiseñoForm extends Component {
                             form={form}
                             onChange={this.onChange}
                             onSubmit={this.onSubmit}
+                            submitPDF = { this.submitPDF }
                             onChangeConceptos={this.onChangeConceptos}
                             checkButtonSemanas={this.checkButtonSemanas}
                             onChangeCheckboxes={this.handleChangeCheckbox}
