@@ -36,26 +36,26 @@ class Empresas extends Component {
         formAction: '',
         showadjuntos: [
             {
-                placeholder: 'Logo de la empresa negro',
-                id: 'logo_negro',
+                placeholder: 'Logo de la empresa',
+                id: 'logos',
                 value: '',
                 files: []
             },
             {
                 placeholder: 'Logo de la empresa blanco',
-                id: 'logo_blanco',
+                id: 'logos_blanco',
                 value: '',
                 files: []
             },
             {
                 placeholder: 'Isotipo',
-                id: 'isotipo',
+                id: 'isotipos',
                 value: '',
                 files: []
             },
             {
                 placeholder: 'Letras',
-                id: 'letra',
+                id: 'letras',
                 value: '',
                 files: []
             }
