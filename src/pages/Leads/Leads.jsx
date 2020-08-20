@@ -37,7 +37,8 @@ class Leads extends Component{
             fecha: new Date(),
             empresa: 0,
             origen: 0,
-            servicios: []
+            servicios: [],
+            tipo_lead: 'potencial',
         },
         data:{
             leads: []
@@ -45,9 +46,6 @@ class Leads extends Component{
         formeditado:0,
         leadId : '',
         convertir: ''
-    }
-    constructor(props){
-        super(props)
     }
 
     setLeads = leads => {
@@ -254,6 +252,7 @@ class Leads extends Component{
         
         form['empresa'] = lead.empresa_id
         form['origen'] = lead.tipo_id
+        form['tipo_lead'] = lead.tipo_lead
 
         let _servicios = []
         let servicios = form['servicios']
@@ -337,8 +336,8 @@ class Leads extends Component{
                 email: '',
                 comentario: '',
                 fecha: new Date(),
-                empresa: '',
-                origen: '',
+                empresa: 0,
+                origen: 0,
                 servicios: this.state.servicios
             },
             title: '',
@@ -493,8 +492,9 @@ class Leads extends Component{
                         email: '',
                         comentario: '',
                         fecha: new Date(),
-                        empresa: '',
-                        origen: '',
+                        empresa: 0,
+                        origen: 0,
+                        tipo_lead: 'potencial',
                         servicios: this.state.servicios
                     },
                     modalAdd: false
@@ -553,8 +553,9 @@ class Leads extends Component{
                         email: '',
                         comentario: '',
                         fecha: new Date(),
-                        empresa: '',
-                        origen: '',
+                        empresa: 0,
+                        origen: 0,
+                        tipo_lead: 'potencial',
                         servicios: this.state.servicios
                     },
                     modalAdd: false
