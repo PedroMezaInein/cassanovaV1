@@ -1,12 +1,17 @@
 import swal from 'sweetalert'
 import { renderToString } from 'react-dom/server'
 import { Sending } from '../components/Lottie/'
+import { Done } from '../components/Lottie/'
 import ReactDOM from 'react-dom';
 import React, { Component } from 'react'
 
-let wrapper = document.createElement('div');
-ReactDOM.render(<Sending />, wrapper);
-let el = wrapper.firstChild;
+let wrapperSending = document.createElement('div');
+ReactDOM.render(<Sending />, wrapperSending);
+let sending = wrapperSending.firstChild;
+
+let wrapperDone = document.createElement('div');
+ReactDOM.render(<Done />, wrapperDone);
+let done = wrapperDone.firstChild;
 
 class Alert extends Component{
     render(){
@@ -22,7 +27,17 @@ export async function waitAlert() {
         title: '¡Un momento!',
         text: 'La información está siendo procesada.',
         buttons: false,
-        content: el
+        content: sending
+    })
+}
+
+export async function doneAlert(texto) {
+    swal({
+        title: '¡Felicidades 🥳!',
+        text: texto,
+        buttons: false,
+        timer: 1500,
+        content: done
     })
 }
 

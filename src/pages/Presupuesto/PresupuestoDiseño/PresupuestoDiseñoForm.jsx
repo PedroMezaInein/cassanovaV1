@@ -5,7 +5,7 @@ import swal from 'sweetalert'
 import Layout from '../../../components/layout/layout'
 import { URL_DEV } from '../../../constants'
 import { setOptions } from '../../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import { PresupuestoDiseñoForm as PresupuestoDiseñoFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
 import { Footer } from 'rsuite'
@@ -357,13 +357,7 @@ class PresupuestoDiseñoForm extends Component {
 
                 const { history } = this.props
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'La presupuesto fue modificado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false,
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La presupuesto fue eliminada con éxito.',)
 
                 history.push({
                     pathname: '/presupuesto/presupuesto-diseño'
@@ -397,22 +391,16 @@ class PresupuestoDiseñoForm extends Component {
                 const { presupuesto } = response.data
                 const { history } = this.props
                 
-                if(pdf)
+                /* if(pdf)
                     if(presupuesto.pdfs){
                         const url =  presupuesto.pdfs[0].url
                         const link = document.createElement('a');
                         link.href = url;
                         link.setAttribute('target', '_blank');
                         link.click();
-                    }
+                    } */
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'La presupuesto fue modificado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false,
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La presupuesto fue eliminada con éxito.',)
 
                 history.push({
                     pathname: '/presupuesto/presupuesto-diseño'
