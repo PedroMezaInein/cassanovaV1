@@ -83,7 +83,8 @@ class PresupuestoDiseñoForm extends Component {
                 }
             ],
             partidasInein: [],
-            partidasIm: []
+            partidasIm: [],
+            proyecto: ''
         },
         options: {
             empresas: [],
@@ -121,6 +122,7 @@ class PresupuestoDiseñoForm extends Component {
                         form.empresa = presupuesto.empresa ? presupuesto.empresa.id.toString() : ''
                         form.m2 = presupuesto.precio ? presupuesto.precio.id.toString() : ''
                         form.esquema = presupuesto.esquema
+                        form.proyecto = presupuesto.proyecto
                         form.fecha = new Date(presupuesto.fecha)
                         form.tiempo_ejecucion_diseno = presupuesto.tiempo_ejecucion_diseno
                         form.descuento = presupuesto.descuento

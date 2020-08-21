@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { RFC, DATE } from '../../../constants'
-import { SelectSearch, Button, Input, Calendar, InputSinText, InputNumber, OptionsCheckbox, InputMoney} from '../../form-components'
+import { SelectSearch, Button, Input, Calendar, InputSinText, InputNumber, OptionsCheckbox, InputMoney, SelectSearchTrue} from '../../form-components'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
 
@@ -118,7 +118,7 @@ class PresupuestoDiseñoForm extends Component {
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
-                                    <div className="col-md-3">
+                                    <div className="col-md-4">
                                         <Calendar
                                             requirevalidation={1}
                                             formeditado={formeditado}
@@ -129,7 +129,7 @@ class PresupuestoDiseñoForm extends Component {
                                             patterns={DATE}
                                         />
                                     </div>
-                                    <div className="col-md-3">
+                                    <div className="col-md-4">
                                         <InputNumber
                                             requirevalidation={1}
                                             formeditado={formeditado}
@@ -140,7 +140,7 @@ class PresupuestoDiseñoForm extends Component {
                                             iconclass={"flaticon-calendar-with-a-clock-time-tools"}
                                         />
                                     </div>
-                                    <div className="col-md-3">
+                                    <div className="col-md-4">
                                         <InputMoney
                                             requirevalidation={0}
                                             type="text"
@@ -155,7 +155,10 @@ class PresupuestoDiseñoForm extends Component {
                                             name="descuento"
                                         />
                                     </div>
-                                    <div className="col-md-3">
+                                </div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="form-group row form-group-marginless">
+                                    <div className="col-md-4">
                                         <InputNumber
                                             requirevalidation={0}
                                             placeholder="Total"
@@ -163,6 +166,17 @@ class PresupuestoDiseñoForm extends Component {
                                             iconclass={"fas fa-dollar-sign"}
                                             thousandSeparator={true}
                                             disabled={true}
+                                        />
+                                    </div>
+                                    <div className="col-md-4">
+                                        <Input
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
+                                            placeholder="NOMBRE DEL PROYECTO"
+                                            value={form.proyecto}
+                                            name="proyecto"
+                                            onChange={onChange}
+                                            iconclass={"far fa-folder-open"}
                                         />
                                     </div>
                                 </div>
