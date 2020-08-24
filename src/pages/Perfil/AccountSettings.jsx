@@ -4,7 +4,7 @@ import { Card } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../constants'
-import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
+import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../functions/alert'
 
 import { ChangePasswordForm } from '../../components/forms'
 import swal from 'sweetalert';
@@ -35,13 +35,8 @@ class AccountSettings extends Component {
         await axios.post(URL_DEV + 'user/users/change-password', form,  { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
 				const { history } = this.props
-				swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'La contraseña fue actualizada con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+
+				doneAlert(response.data.message !== undefined ? response.data.message : 'La contraseña fue actualizada con éxito.')
 				setTimeout(() => {
 					swal.close()
 					history.push({

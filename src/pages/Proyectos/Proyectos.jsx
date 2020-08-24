@@ -15,7 +15,7 @@ import { Accordion , Card} from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { setOptions, setTextTable, setDateTable, setArrayTable} from '../../functions/setters'
 import NewTable from '../../components/tables/NewTable'
-import { errorAlert, waitAlert, forbiddenAccessAlert} from '../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert} from '../../functions/alert'
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import ItemSlider from '../../components/singles/ItemSlider'
 import {Nav, Tab, Col, Row} from 'react-bootstrap'
@@ -1193,13 +1193,9 @@ class Proyectos extends Component {
                 const { proyectos } = response.data
                 const { data } = this.state
                 data.proyectos = proyectos
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El proyecto fue eliminado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue eliminado con éxito.')
+                
                 this.setState({
                     ...this.state,
                     proyectos: this.setProyectos(proyectos),
@@ -1231,13 +1227,7 @@ class Proyectos extends Component {
                 const { data } = this.state
                 data.proyectos = proyectos
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
 
                 this.setState({
                     ... this.state,
@@ -1311,13 +1301,9 @@ class Proyectos extends Component {
                 const { options, data } = this.state
                 data.proyectos = proyectos
                 options['clientes'] = []
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
+                
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
@@ -1382,13 +1368,8 @@ class Proyectos extends Component {
                 const { proyecto, proyectos, avance } = response.data
                 const { data } = this.state
                 data.proyectos = proyectos
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
 
                 var win = window.open( avance.pdf, '_blank');
                 win.focus();
@@ -1442,13 +1423,7 @@ class Proyectos extends Component {
                 const { data } = this.state
                 data.proyectos = proyectos
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
 
                 this.setState({
                     ... this.state,
@@ -1514,13 +1489,9 @@ class Proyectos extends Component {
                 const { options, data } = this.state
                 options['clientes'] = []
                 data.proyectos = proyectos
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El proyecto fue editado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue editado con éxito.')
+
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
@@ -1622,13 +1593,8 @@ class Proyectos extends Component {
         const { proyecto } = this.state
         await axios.get(URL_DEV + 'proyectos/' + proyecto.id + '/avances/' + avance , { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El proyecto fue editado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue editado con éxito.')
             },
             (error) => {
                 console.log(error, 'error')

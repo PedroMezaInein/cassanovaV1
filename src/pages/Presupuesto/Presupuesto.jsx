@@ -6,7 +6,7 @@ import { URL_DEV, PRESUPUESTO_COLUMNS, ADJUNTOS_PRESUPUESTOS_COLUMNS } from '../
 import { setOptions, setTextTable, setDateTable, setAdjuntosList} from '../../functions/setters'
 import Layout from '../../components/layout/layout'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
-import { errorAlert, waitAlert, forbiddenAccessAlert} from '../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert} from '../../functions/alert'
 import { renderToString } from 'react-dom/server'
 import { ModalDelete, Modal } from '../../components/singles'
 import TableForModals from '../../components/tables/TableForModals'
@@ -116,13 +116,9 @@ class Presupuesto extends Component {
                     presupuesto: '',
                     
                 })
-                swal({
-                    title: '¡Listo 👋!',
-                    text: response.data.message !== undefined ? response.data.message : 'El egreso fue eliminado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue eliminado con éxito.')
+                
             },
             (error) => {
                 console.log(error, 'error')

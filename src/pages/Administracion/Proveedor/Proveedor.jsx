@@ -5,7 +5,7 @@ import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV, PROVEEDORES_COLUMNS } from '../../../constants'
 import { setTextTable, setDateTable, setMoneyTable, setArrayTable} from '../../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { ModalDelete } from '../../../components/singles'
 import NewTable from '../../../components/tables/NewTable'
@@ -154,13 +154,9 @@ class Proveedor extends Component{
                     modalDelete: false,
                     proveedor: ''
                 })
-                swal({
-                    title: '¡Listo 👋!',
-                    text: response.data.message !== undefined ? response.data.message : 'El provedor fue eliminado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El provedor fue eliminado con éxito.')
+                
             },
             (error) => {
                 console.log(error, 'error')

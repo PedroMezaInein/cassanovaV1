@@ -9,6 +9,7 @@ import Layout from '../../components/layout/layout'
 import { Modal, ModalDelete } from '../../components/singles'
 import { RendimientoForm } from '../../components/forms'
 import NewTable from '../../components/tables/NewTable'
+import { doneAlert } from '../../functions/alert'
 
 class Rendimientos extends Component {
 
@@ -298,13 +299,9 @@ class Rendimientos extends Component {
         await axios.post(URL_DEV + 'rendimientos', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { rendimientos } = response.data
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'La rendimiento fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La rendimiento fue registrado con éxito.')
+
                 this.setState({
                     ... this.state,
                     rendimientos: this.setRendimientos(rendimientos),
@@ -345,13 +342,9 @@ class Rendimientos extends Component {
         await axios.put(URL_DEV + 'rendimientos/' + rendimiento.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { rendimientos } = response.data
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'La rendimiento fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La rendimiento fue registrado con éxito.')
+
                 this.setState({
                     ... this.state,
                     rendimientos: this.setRendimientos(rendimientos),
@@ -392,13 +385,9 @@ class Rendimientos extends Component {
         await axios.delete(URL_DEV + 'rendimientos/' + rendimiento.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { rendimientos } = response.data
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'La rendimiento fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La rendimiento fue registrado con éxito.')
+                
                 this.setState({
                     ... this.state,
                     rendimientos: this.setRendimientos(rendimientos),

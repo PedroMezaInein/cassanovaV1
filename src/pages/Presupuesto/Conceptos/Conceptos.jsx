@@ -9,7 +9,7 @@ import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { ConceptoForm } from '../../../components/forms'
 import NewTable from '../../../components/tables/NewTable'
-import { forbiddenAccessAlert, errorAlert } from '../../../functions/alert'
+import { forbiddenAccessAlert, errorAlert, doneAlert } from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 
 const $ = require('jquery');
@@ -109,13 +109,8 @@ class Conceptos extends Component {
 
                 this.getConceptosTable()
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'La concepto fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La concepto fue registrado con éxito.')
+                
                 this.setState({
                     ... this.state,
                     modalDelete: false

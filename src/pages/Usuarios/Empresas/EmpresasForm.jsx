@@ -6,7 +6,7 @@ import { URL_DEV } from '../../../constants'
 import { EmpresaForm } from '../../../components/forms'
 import swal from 'sweetalert'
 import { Card } from 'react-bootstrap'
-import { waitAlert } from '../../../functions/alert'
+import { waitAlert, doneAlert } from '../../../functions/alert'
 
 class EmpresasForm extends Component {
 
@@ -133,13 +133,9 @@ class EmpresasForm extends Component {
         await axios.post(URL_DEV + 'empresa/' + empresa, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
                 const { data: { empresas: empresas } } = response
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Actualizaste con éxito la empresa.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Actualizaste con éxito la empresa.')
+
                 const { history } = this.props
                     history.push({
                     pathname: '/usuarios/empresas'
@@ -184,13 +180,9 @@ class EmpresasForm extends Component {
         await axios.post(URL_DEV + 'empresa', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
                 const { data: { empresas: empresas } } = response
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Agregaste con éxito la empresa.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Agregaste con éxito la empresa.')
+                
                 const { history } = this.props
                     history.push({
                     pathname: '/usuarios/empresas'

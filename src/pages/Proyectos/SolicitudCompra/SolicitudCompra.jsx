@@ -5,7 +5,7 @@ import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV, SOLICITUD_COMPRA_COLUMNS } from '../../../constants'
 import { setTextTable, setDateTable, setMoneyTable, setArrayTable} from '../../../functions/setters'
-import { errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
+import { errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { Button } from '../../../components/form-components'
@@ -211,13 +211,9 @@ class SolicitudCompra extends Component{
                 const { solicitudes } = response.data
                 const { data } = this.state
                 data.solicitudes = solicitudes 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'La solicitud fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud fue registrado con éxito.')
+                
                 this.setState({
                     ... this.state,
                     modalDelete: false,

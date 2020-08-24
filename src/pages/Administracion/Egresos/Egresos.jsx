@@ -595,13 +595,9 @@ class egresos extends Component{
                     egreso: '',
                     
                 })
-                swal({
-                    title: '¡Listo 👋!',
-                    text: response.data.message !== undefined ? response.data.message : 'El egreso fue eliminado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue eliminado con éxito.')
+                
             },
             (error) => {
                 console.log(error, 'error')

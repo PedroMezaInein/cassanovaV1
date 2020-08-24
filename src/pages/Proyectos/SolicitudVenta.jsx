@@ -5,7 +5,7 @@ import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV, SOLICITUD_VENTA_COLUMNS } from '../../constants'
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable} from '../../functions/setters'
-import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
+import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Button } from '../../components/form-components'
 import { Modal, ModalDelete } from '../../components/singles'
@@ -402,13 +402,8 @@ class SolicitudVenta extends Component{
                     form: this.clearForm(),
                     modalAskFactura: false
                 })
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
 
             },
             (error) => {
@@ -532,13 +527,9 @@ class SolicitudVenta extends Component{
                 const { solicitudes } = response.data
                 const { data } = this.state
                 data.solicitudes = solicitudes
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false,
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
+                
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
@@ -596,13 +587,9 @@ class SolicitudVenta extends Component{
                 const { solicitudes } = response.data
                 const { data } = this.state
                 data.solicitudes = solicitudes
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false,
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
+
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
@@ -635,13 +622,9 @@ class SolicitudVenta extends Component{
                 const { solicitudes } = response.data
                 const { data } = this.state
                 data.solicitudes = solicitudes 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'La solicitud fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud fue registrado con éxito.')
+                
                 this.setState({
                     ... this.state,
                     modalDelete: false,

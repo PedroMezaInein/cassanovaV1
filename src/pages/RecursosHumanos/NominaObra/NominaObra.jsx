@@ -9,7 +9,7 @@ import { NOMINA_OBRA_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS} from '../../../constant
 import NewTableServerRender from '../../../components/tables/NewTableServerRender' 
 import { NominaObraForm, AdjuntosForm} from '../../../components/forms'
 import { setOptions, setDateTable, setMoneyTable, setTextTable, setAdjuntosList} from '../../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, deleteAlert} from '../../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, deleteAlert, doneAlert} from '../../../functions/alert'
 import TableForModals from '../../../components/tables/TableForModals'
 import { format } from 'date-fns'
 
@@ -294,13 +294,8 @@ class NominaObra extends Component {
                 this.handleCloseModal()
                 this.getNominasAxios()
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'La nomina fue modificado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false,
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La nomina fue modificado con éxito.')
+
             },
             (error) => {
                 console.log(error, 'error')
@@ -336,13 +331,8 @@ class NominaObra extends Component {
                     form: this.clearForm()
                 })
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'La nomina fue modificado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false,
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La nomina fue modificado con éxito.')
+
             },
             (error) => {
                 console.log(error, 'error')
@@ -378,13 +368,8 @@ class NominaObra extends Component {
                     form: this.clearForm()
                 })
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'La nomina fue eliminada con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false,
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La nomina fue eliminada con éxito.')
+
             },
             (error) => {
                 console.log(error, 'error')
@@ -436,13 +421,7 @@ class NominaObra extends Component {
                     data
                 })
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
 
             },
             (error) => {

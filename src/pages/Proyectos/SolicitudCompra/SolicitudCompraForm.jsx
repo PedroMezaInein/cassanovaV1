@@ -4,7 +4,7 @@ import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV} from '../../../constants'
 import { setOptions, setSelectOptions} from '../../../functions/setters'
-import { errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
+import { errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { SolicitudCompraForm as SolicitudCompraFormulario } from '../../../components/forms'
 import { Card, Accordion } from 'react-bootstrap'
@@ -315,13 +315,9 @@ class SolicitudCompraForm extends Component{
 
         await axios.post(URL_DEV + 'solicitud-compra', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => { 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false,
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
+
                 const { history } = this.props
                     history.push({
                     pathname: '/proyectos/solicitud-compra'
@@ -371,13 +367,9 @@ class SolicitudCompraForm extends Component{
         
         await axios.post(URL_DEV + 'solicitud-compra/update/' + solicitud.id, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false,
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
+                
                 const { history } = this.props
                     history.push({
                     pathname: '/proyectos/solicitud-compra'

@@ -4,7 +4,7 @@ import axios from "axios";
 import swal from "sweetalert";
 import { URL_DEV } from "../../constants";
 import { setOptions } from "../../functions/setters";
-import { errorAlert, waitAlert, forbiddenAccessAlert } from "../../functions/alert";
+import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from "../../functions/alert";
 import Layout from "../../components/layout/layout";
 import { UltimoPresupuestoForm } from "../../components/forms";
 import FloatButtons from '../../components/singles/FloatButtons'
@@ -161,13 +161,7 @@ class UltimoPresupuesto extends Component {
                 
                 this.getOnePresupuestoAxios(presupuesto.id)
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
 
                 this.setState({
                     modal: false
@@ -319,19 +313,12 @@ class UltimoPresupuesto extends Component {
                 
                 this.getOnePresupuestoAxios(presupuesto.id)
 
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+
                 const { history } = this.props
                 history.push({
                     pathname: '/presupuesto/presupuesto'
                 });
-
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
-
             },
             (error) => {
                 console.log(error, 'error')
@@ -435,13 +422,7 @@ class UltimoPresupuesto extends Component {
                 
                 this.getOnePresupuestoAxios(presupuesto.id)
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
 
             },
             (error) => {

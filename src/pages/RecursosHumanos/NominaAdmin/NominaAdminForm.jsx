@@ -9,7 +9,7 @@ import { NOMINA_OBRA_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS } from '../../../constan
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { AdjuntosForm } from '../../../components/forms'
 import { setOptions, setDateTable, setMoneyTable, setTextTable, setAdjuntosList } from '../../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, deleteAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, deleteAlert, doneAlert } from '../../../functions/alert'
 import TableForModals from '../../../components/tables/TableForModals'
 import { NominaAdminForm as NominaAdminFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
@@ -203,13 +203,7 @@ class NominaAdminForm extends Component {
 
                 const { history } = this.props
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'La nomina fue modificado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false,
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La nomina fue modificado con éxito.')
 
                 history.push({
                     pathname: '/rh/nomina-admin'
@@ -239,13 +233,7 @@ class NominaAdminForm extends Component {
             (response) => {
                 const { history } = this.props
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'La nomina fue modificado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false,
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La nomina fue modificado con éxito.')
 
                 history.push({
                     pathname: '/rh/nomina-admin'

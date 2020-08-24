@@ -4,7 +4,7 @@ import axios from "axios";
 import swal from "sweetalert";
 import { URL_DEV } from "../../constants";
 import { setOptions } from "../../functions/setters";
-import { errorAlert, waitAlert, forbiddenAccessAlert } from "../../functions/alert";
+import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from "../../functions/alert";
 import Layout from "../../components/layout/layout";
 import { ActualizarPresupuestoForm, AgregarConcepto } from "../../components/forms";
 import { Modal } from '../../components/singles'
@@ -202,13 +202,7 @@ class ActualizarPresupuesto extends Component {
                 
                 this.getOnePresupuestoAxios(presupuesto.id)
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
 
                 this.setState({
                     modal: false
@@ -463,13 +457,7 @@ class ActualizarPresupuesto extends Component {
                 
                 this.getOnePresupuestoAxios(presupuesto.id)
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
 
             },
             (error) => {

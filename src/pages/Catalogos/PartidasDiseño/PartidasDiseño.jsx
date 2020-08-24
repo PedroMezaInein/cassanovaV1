@@ -5,7 +5,7 @@ import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { ModalDelete } from '../../../components/singles'
 import swal from 'sweetalert'
-import { forbiddenAccessAlert, errorAlert, waitAlert } from '../../../functions/alert'
+import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert } from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { PARTIDAS_DISEÑO_COLUMNS } from '../../../constants'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
@@ -88,14 +88,9 @@ class PartidasDiseño extends Component {
                     form: this.clearForm(),
                     partida: ''
                 })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito al usuario.')
                 
-                swal({
-                    title: '¡Listo 👋!',
-                    text: response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito al usuario.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
             },
             (error) => {
                 console.log(error, 'error')

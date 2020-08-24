@@ -7,7 +7,7 @@ import { Modal, ModalDelete} from '../../../components/singles'
 import { NOMINA_ADMIN_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS} from '../../../constants'
 import { AdjuntosForm} from '../../../components/forms'
 import { setOptions, setDateTable, setMoneyTable, setTextTable, setAdjuntosList } from '../../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, deleteAlert} from '../../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, deleteAlert, doneAlert} from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { renderToString } from 'react-dom/server'
 import TableForModals from '../../../components/tables/TableForModals'
@@ -196,13 +196,8 @@ class NominaAdmin extends Component {
                     form: this.clearForm()
                 })
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'La nomina fue eliminada con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false,
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La nomina fue eliminada con éxito.')
+                
             },
             (error) => {
                 console.log(error, 'error')
@@ -253,14 +248,8 @@ class NominaAdmin extends Component {
                     data
                 })
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
-
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+                
             },
             (error) => {
                 console.log(error, 'error')

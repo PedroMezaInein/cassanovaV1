@@ -9,7 +9,7 @@ import { EMPLEADOS_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS} from '../../constants'
 import NewTableServerRender from '../../components/tables/NewTableServerRender' 
 import { EmpleadosForm, AdjuntosForm } from '../../components/forms'
 import { setOptions, setTextTable, setArrayTable, setAdjuntosList, setDateTable} from '../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, deleteAlert } from '../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, deleteAlert, doneAlert } from '../../functions/alert'
 import { Tabs, Tab } from 'react-bootstrap' 
 import TableForModals from '../../components/tables/TableForModals'
 
@@ -302,13 +302,9 @@ class Empleados extends Component {
                     modal,
                     form: this.clearForm()
                 })
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El empleado fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false,
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El empleado fue registrado con éxito.')
+                
             },
             (error) => {
                 console.log(error, 'error')
@@ -349,14 +345,7 @@ class Empleados extends Component {
                     form: this.clearForm()
                 })
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El empleado fue modificado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false,
-                })
-
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El empleado fue modificado con éxito.')
                 
             },
             (error) => {
@@ -397,13 +386,8 @@ class Empleados extends Component {
                     form: this.clearForm()
                 })
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El empleado fue eliminado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false,
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El empleado fue eliminado con éxito.')
+                
             },
             (error) => {
                 console.log(error, 'error')
@@ -459,13 +443,7 @@ class Empleados extends Component {
                     data
                 })
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
 
             },
             (error) => {
@@ -496,6 +474,8 @@ class Empleados extends Component {
                 if(key === 'obra'){
                     this.getEmpleadosObraAxios()
                 }
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
 
                 this.setState({
                     ... this.state,

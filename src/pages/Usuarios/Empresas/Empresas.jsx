@@ -11,7 +11,7 @@ import { EMPRESA_COLUMNS, DARK_BLUE } from '../../../constants'
 import { setTextTable } from '../../../functions/setters'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Nav, Tab, Col, Row, Card } from 'react-bootstrap'
-import { waitAlert, forbiddenAccessAlert, errorAlert } from '../../../functions/alert'
+import { waitAlert, forbiddenAccessAlert, errorAlert, doneAlert } from '../../../functions/alert'
 
 class Empresas extends Component {
 
@@ -273,13 +273,8 @@ class Empresas extends Component {
             (response) => {
                 const { data: { empresas: empresas } } = response
                 this.setEmpresas(empresas)
-                swal({
-                    title: '¡Listo 👋!',
-                    text: response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito la empresa.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito la empresa.')
             },
             (error) => {
                 console.log(error, 'error')
@@ -321,13 +316,9 @@ class Empresas extends Component {
             (response) => {
                 const { data: { empresas: empresas } } = response
                 this.setEmpresas(empresas)
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Actualizaste con éxito la empresa.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Actualizaste con éxito la empresa.')
+
             },
             (error) => {
                 console.log(error, 'error')
@@ -369,13 +360,9 @@ class Empresas extends Component {
             (response) => {
                 const { data: { empresas: empresas } } = response
                 this.setEmpresas(empresas)
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Agregaste con éxito la empresa.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Agregaste con éxito la empresa.')
+
             },
             (error) => {
                 console.log(error, 'error')
@@ -485,13 +472,8 @@ class Empresas extends Component {
                 const { empresas, empresa } = response.data
 
                 this.setEmpresas(empresas)
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Agregaste con éxito la empresa.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500,
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Agregaste con éxito la empresa.')
 
                 this.setState({
                     empresa: empresa

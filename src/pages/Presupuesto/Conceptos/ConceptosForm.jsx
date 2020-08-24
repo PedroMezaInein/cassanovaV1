@@ -9,7 +9,7 @@ import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { ConceptoForm } from '../../../components/forms'
 import NewTable from '../../../components/tables/NewTable'
-import { errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
+import { errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import { Card } from 'react-bootstrap'
 
 class Conceptos extends Component {
@@ -177,13 +177,7 @@ class Conceptos extends Component {
         await axios.post(URL_DEV + 'conceptos', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'La concepto fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La concepto fue registrado con éxito.')
 
                 const { history } = this.props
                 history.push({pathname: '/presupuesto/conceptos'})
@@ -208,13 +202,8 @@ class Conceptos extends Component {
         const { form, concepto } = this.state
         await axios.put(URL_DEV + 'conceptos/' + concepto.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'La concepto fue editado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La concepto fue editado con éxito.')
 
                 const { history } = this.props
                 history.push({pathname: '/presupuesto/conceptos'})

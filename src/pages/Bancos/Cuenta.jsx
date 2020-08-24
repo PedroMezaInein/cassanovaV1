@@ -716,12 +716,9 @@ class Cuentas extends Component {
                     modalDelete: false,
                     cuenta: null,
                 })
-                swal({
-                    title: '¡Listo 👋!',
-                    text: response.data.message !== undefined ? response.data.message : 'Cuenta eliminada con éxito.',
-                    icon: 'success',
-                    timer: 1500
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Cuenta eliminada con éxito.')
+
             },
             (error) => {
                 console.log(error, 'error')
@@ -758,12 +755,8 @@ class Cuentas extends Component {
                     data
                 })
                 this.setEstados(cuenta.estados)
-                swal({
-                    title: '¡Listo 👋!',
-                    text: response.data.message !== undefined ? response.data.message : 'Estado de cuenta eliminado con éxito.',
-                    icon: 'success',
-                    timer: 1500
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Estado de cuenta eliminado con éxito.')
             },
             (error) => {
                 console.log(error, 'error')

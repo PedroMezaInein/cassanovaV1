@@ -10,7 +10,7 @@ import { Card, Modal, ModalDelete } from '../../../components/singles'
 import { RegisterUserForm, PermisosForm, ClienteUserForm } from '../../../components/forms'
 import swal from 'sweetalert'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
-import { forbiddenAccessAlert, errorAlert, waitAlert } from '../../../functions/alert'
+import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert } from '../../../functions/alert'
 import modal from '../../../components/singles/Modal'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { USUARIOS, CLIENTES } from '../../../constants'
@@ -194,13 +194,8 @@ class Usuarios extends Component {
                     
                 })
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Agregaste con éxito al usuario.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Agregaste con éxito al usuario.')
+
             },
             (error) => {
                 console.log(error, 'error')
@@ -247,13 +242,7 @@ class Usuarios extends Component {
                     user: ''
                 })
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Actualizaste con éxito al usuario.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Actualizaste con éxito al usuario.')
 
             },
             (error) => {
@@ -297,14 +286,9 @@ class Usuarios extends Component {
                     form: this.clearForm(),
                     user: ''
                 })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito al usuario.')
                 
-                swal({
-                    title: '¡Listo 👋!',
-                    text: response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito al usuario.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
             },
             (error) => {
                 console.log(error, 'error')
