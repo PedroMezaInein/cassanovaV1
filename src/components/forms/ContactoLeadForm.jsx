@@ -11,7 +11,7 @@ class ContactoLeadForm extends Component {
     updateTipoContacto = value => {
         const { onChangeContacto } = this.props
         onChangeContacto({ target: { name: 'tipoContacto', value: value } })
-        if (value.value === 'New') {
+        if (value === 'New') {
             this.setState({
                 newTipoContacto: true
             })
@@ -28,7 +28,7 @@ class ContactoLeadForm extends Component {
     }
 
     render() {
-        const { tiposContactos, formContacto, onChangeContacto, formeditado } = this.props
+        const { options, formContacto, onChangeContacto, formeditado } = this.props
         const { newTipoContacto } = this.state
         return (
             <div className="">
@@ -61,7 +61,7 @@ class ContactoLeadForm extends Component {
                         <SelectSearch
                             formeditado={formeditado}
                             requirevalidation={0}
-                            options={tiposContactos}
+                            options={options.tiposContactos}
                             placeholder="SELECCIONA EL MEDIO DE CONTACTO"
                             name="tipoContacto"
                             value={formContacto.tipoContacto}

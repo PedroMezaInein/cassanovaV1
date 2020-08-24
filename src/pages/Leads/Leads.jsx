@@ -396,8 +396,8 @@ class Leads extends Component{
             });
         }else{
             history.push({
-                pathname: '/leads/prospectos',
-                state: { lead: lead.id}
+                pathname: '/leads/prospectos/convert',
+                state: { lead: lead}
             });
         }
         

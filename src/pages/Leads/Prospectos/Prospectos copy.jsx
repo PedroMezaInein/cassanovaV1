@@ -1,21 +1,22 @@
 import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
-import Layout from '../../components/layout/layout'
+import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import { faPhone, faEnvelope, faEye} from '@fortawesome/free-solid-svg-icons'
-import { Button } from '../../components/form-components'
-import { Modal, Card, ModalDelete} from '../../components/singles'
-import { ProspectoForm, ContactoLeadForm } from '../../components/forms'
+import { Button } from '../../../components/form-components'
+import { Modal, Card, ModalDelete} from '../../../components/singles'
+import { ProspectoForm, ContactoLeadForm } from '../../../components/forms'
 import axios from 'axios'
-import { URL_DEV, PROSPECTOS_COLUMNS, CONTACTO_COLUMNS, EMPTY_PROSPECTO, EMPTY_CONTACTO, EMPTY_CLIENTE } from '../../constants'
+import { URL_DEV, PROSPECTOS_COLUMNS, CONTACTO_COLUMNS, EMPTY_PROSPECTO, EMPTY_CONTACTO, EMPTY_CLIENTE } from '../../../constants'
 import swal from 'sweetalert'
-import { P, Small} from '../../components/texts'
+import { P, Small} from '../../../components/texts'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Accordion, Form } from 'react-bootstrap'
 import Moment from 'react-moment'
-import { setOptions, setTextTable, setDateTable, setArrayTable, setContactoTable } from '../../functions/setters'
-import NewTable from '../../components/tables/NewTable'
-import TableForModals from '../../components/tables/TableForModals'
+import { setOptions, setTextTable, setDateTable, setArrayTable, setContactoTable } from '../../../functions/setters'
+import NewTable from '../../../components/tables/NewTable'
+import TableForModals from '../../../components/tables/TableForModals'
+import { doneAlert, errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
 
 class Leads extends Component {
 
@@ -481,29 +482,15 @@ class Leads extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error',
-
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',
-
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -526,39 +513,21 @@ class Leads extends Component {
                     modal: false,
                     title: '',
                 })
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Convertiste con éxisto el lead.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Convertiste con éxisto el lead.')
+                
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error',
-
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',
-
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -574,39 +543,21 @@ class Leads extends Component {
                     title: '',
                     prospecto: ''
                 })
-                swal({
-                    title: '¡Listo 👋!',
-                    text: response.data.message !== undefined ? response.data.message : 'Eliminaste el lead con éxito.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste el lead con éxito.')
+
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error',
-
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',
-
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -629,39 +580,20 @@ class Leads extends Component {
                     clientes: setOptions(clientes, 'nombre', 'id'),
                     title: '',
                 })
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Editaste el prospecto con éxito.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste el prospecto con éxito.')
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error',
-
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',
-
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -679,39 +611,20 @@ class Leads extends Component {
                     modalContactForm: false,
                     prospecto: '',
                 })
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Convertiste con éxisto el lead.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Convertiste con éxisto el lead.')
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error',
-
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',
-
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -727,29 +640,15 @@ class Leads extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error',
-
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',
-
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -910,7 +809,7 @@ class Leads extends Component {
                 </Modal>
                 <Modal size="xl" title={"Agregar un nuevo contacto"} show={modalContactForm} handleClose={this.handleCloseFormContact}>
                     <Form className="mx-3" onSubmit={this.submitContactForm}>
-                        <ContactoLeadForm tiposContactos={tiposContactos} formContacto={formContacto} onChangeContacto={this.onChangeContacto} />
+                        <ContactoLeadForm options={options} formContacto={formContacto} onChangeContacto={this.onChangeContacto} />
                         <div className="mt-3 text-center">
                             <Button icon='' className="mx-auto" type="submit" text="Enviar" />
                         </div>

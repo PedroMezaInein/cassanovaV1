@@ -122,7 +122,7 @@ class ProspectoForm extends Component {
     }
 
     render() {
-        const { title, form, formCliente, children, vendedores, estatusProspectos, clientes, tipoProyecto, estatusContratacion, tiposContactos, onChange, onChangeCliente, onChangeContacto, formContacto, onSubmit, formeditado, ...props } = this.props
+        const { title, form, formCliente, children, vendedores, estatusProspectos, clientes, tipoProyecto, estatusContratacion, tiposContactos, onChange, onChangeCliente, onChangeContacto, formContacto, onSubmit, formeditado, options,  ...props } = this.props
         const { newClient, newEstatusProspectos, newTipoProyecto, newEstatusContratacion, municipio, estado, colonias } = this.state
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
@@ -167,30 +167,24 @@ class ProspectoForm extends Component {
                                 <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos de generales</h5>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
-                                        {
-                                            clientes &&
-                                            <SelectSearch
-                                                formeditado={formeditado}
-                                                options={clientes}
-                                                placeholder="SELECCIONA EL CLIENTE"
-                                                onChange={this.updateCliente}
-                                                name="cliente"
-                                                value={form.cliente}
+                                        <SelectSearch
+                                            formeditado={formeditado}
+                                            options={options.clientes}
+                                            placeholder="SELECCIONA EL CLIENTE"
+                                            onChange={this.updateCliente}
+                                            name="cliente"
+                                            value={form.cliente}
                                             />
-                                        }
                                     </div>
                                     <div className="col-md-4">
-                                        {
-                                            vendedores &&
-                                            <SelectSearch
-                                                formeditado={formeditado}
-                                                options={vendedores}
-                                                placeholder="SELECCIONA AL VENDEDOR"
-                                                name="vendedor"
-                                                value={form.vendedor}
-                                                onChange={this.updateVendedor}
+                                        <SelectSearch
+                                            formeditado = { formeditado }
+                                            options = { options.vendedores }
+                                            placeholder="SELECCIONA AL VENDEDOR"
+                                            name = "vendedor"
+                                            value = { form.vendedor }
+                                            onChange = { this.updateVendedor }
                                             />
-                                        }
                                     </div>
 
                                     <div className="col-md-4">
@@ -210,58 +204,52 @@ class ProspectoForm extends Component {
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
-                                        {
-                                            estatusProspectos &&
-                                            <SelectSearch
-                                                formeditado={formeditado}
-                                                options={estatusProspectos}
-                                                placeholder="SELECCIONA EL ESTATUS DEL PROSPECTO"
-                                                onChange={this.updateEstatusProspectos}
-                                                name="estatusProspecto"
-                                                value={form.estatusProspecto}
+                                        <SelectSearch
+                                            formeditado = { formeditado }
+                                            options = { options.estatusProspectos }
+                                            placeholder = "SELECCIONA EL ESTATUS DEL PROSPECTO"
+                                            onChange = { this.updateEstatusProspectos }
+                                            name = "estatusProspecto"
+                                            value = { form.estatusProspecto }
                                             />
-                                        }
                                     </div>
                                     {
                                         newEstatusProspectos &&
-                                        <div className="col-md-4">
-                                            <Input
-                                                formeditado={formeditado}
-                                                requirevalidation={1}
-                                                name="newEstatusProspecto"
-                                                type="text"
-                                                placeholder="NUEVO ESTATUS PROSPECTO"
-                                                onChange={onChange}
-                                                value={form.newEstatusProspectos}
-                                            />
-                                        </div>
+                                            <div className="col-md-4">
+                                                <Input
+                                                    formeditado={formeditado}
+                                                    requirevalidation={1}
+                                                    name="newEstatusProspecto"
+                                                    type="text"
+                                                    placeholder="NUEVO ESTATUS PROSPECTO"
+                                                    onChange={onChange}
+                                                    value={form.newEstatusProspectos}
+                                                />
+                                            </div>
                                     }
                                     <div className="col-md-4">
-                                        {
-                                            tipoProyecto &&
-                                            <SelectSearch
-                                                formeditado={formeditado}
-                                                options={tipoProyecto}
-                                                placeholder="SELECCIONA EL TIPO DE PROYECTO"
-                                                onChange={this.updateTipoProyecto}
-                                                name="tipoProyecto"
-                                                value={form.tipoProyecto}
+                                        <SelectSearch
+                                            formeditado = { formeditado }
+                                            options = { options.tipoProyectos }
+                                            placeholder = "SELECCIONA EL TIPO DE PROYECTO"
+                                            onChange = { this.updateTipoProyecto }
+                                            name = "tipoProyecto"
+                                            value = { form.tipoProyecto }
                                             />
-                                        }
                                     </div>
                                     {
                                         newTipoProyecto &&
-                                        <div className="col-md-4">
-                                            <Input
-                                                formeditado={formeditado}
-                                                requirevalidation={1}
-                                                name="newTipoProyecto"
-                                                onChange={onChange}
-                                                value={form.newTipoProyecto}
-                                                type="text"
-                                                placeholder="NUEVO TIPO DE PROYECTO"
-                                            />
-                                        </div>
+                                            <div className="col-md-4">
+                                                <Input
+                                                    formeditado={formeditado}
+                                                    requirevalidation={1}
+                                                    name="newTipoProyecto"
+                                                    onChange={onChange}
+                                                    value={form.newTipoProyecto}
+                                                    type="text"
+                                                    placeholder="NUEVO TIPO DE PROYECTO"
+                                                />
+                                            </div>
                                     }
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
@@ -316,26 +304,33 @@ class ProspectoForm extends Component {
                                 </div>
                             </div>
                             <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
-                                <h5 className="mb-4 font-weight-bold text-dark">Información del contacto</h5>
                                 {
-                                    newClient &&
-                                    <ClienteForm
-                                        onChange={onChangeCliente}
-                                        title='Información del cliente'
-                                        form={formCliente}
-                                        changeCP={this.changeCP}
-                                        estado={estado}
-                                        municipio={municipio}
-                                        colonias={colonias}
-                                        updateColonia={this.updateColonia}
-                                    />
+                                    newClient ? 
+                                        <h5 className="mb-4 font-weight-bold text-dark">Información del nuevo cliente</h5>
+                                    : ''
                                 }
+                                {
+                                    newClient ?
+                                        <ClienteForm
+                                            onChange={onChangeCliente}
+                                            title='Información del cliente'
+                                            form={formCliente}
+                                            changeCP={this.changeCP}
+                                            estado={estado}
+                                            municipio={municipio}
+                                            colonias={colonias}
+                                            updateColonia={this.updateColonia}
+                                        />
+                                    : ''
+                                }
+                                <h5 className="mb-4 font-weight-bold text-dark">Información del contacto</h5>
+
                                 {
                                     title !== 'Editar prospecto' &&
                                     <>
                                         <div className="">
                                             <ContactoLeadForm
-                                                tiposContactos={tiposContactos}
+                                                options = { options }
                                                 formContacto={formContacto}
                                                 onChangeContacto={onChangeContacto}
                                             />
