@@ -191,17 +191,18 @@ class PresupuestoDiseño extends Component {
             }
         )
         if(presupuesto.pdfs)
-        {
-            aux.push(
+            if(presupuesto.pdfs.length)
                 {
-                    text: 'Descargar&nbsp;presupuesto',
-                    btnclass: 'info',
-                    iconclass: 'flaticon2-download-1',                  
-                    action: 'download',
-                    tooltip: {id:'download', text:'Decargar presupuesto'},
+                    aux.push(
+                        {
+                            text: 'Descargar&nbsp;presupuesto',
+                            btnclass: 'info',
+                            iconclass: 'flaticon2-download-1',                  
+                            action: 'download',
+                            tooltip: {id:'download', text:'Decargar presupuesto'},
+                        }
+                    )
                 }
-            )
-        }
         aux.push(
             {
                 text: 'Eliminar',
