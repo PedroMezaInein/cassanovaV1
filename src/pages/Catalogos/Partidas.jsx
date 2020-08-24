@@ -5,7 +5,7 @@ import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV, PARTIDAS_COLUMNS} from '../../constants'
 import { setTextTable, setArrayTable } from '../../functions/setters'
-import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
+import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Modal, ModalDelete } from '../../components/singles'
 import { PartidaForm } from '../../components/forms'
@@ -259,13 +259,9 @@ class Partidas extends Component {
                 const { data, modal } = this.state
                 modal.form = false
                 data.partidas = partidas
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Creaste con éxito una nueva área.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito una nueva área.')
+
                 this.setState({
                     ... this.state,
                     modal,
@@ -297,13 +293,9 @@ class Partidas extends Component {
                 const { partidas } = response.data
                 data.partidas = partidas
                 modal.form = false
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Editaste con éxito el área.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el área.')
+
                 this.setState({
                     ... this.state,
                     modal,
@@ -335,13 +327,9 @@ class Partidas extends Component {
                 const { partidas } = response.data
                 data.partidas = partidas
                 modal.delete = false
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito el área.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
+                
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito el área.')
+                
                 this.setState({
                     ... this.state,
                     modal,

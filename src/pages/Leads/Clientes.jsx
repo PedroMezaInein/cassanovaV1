@@ -13,7 +13,7 @@ import { ClienteForm } from '../../components/forms'
 import { Modal } from '../../components/singles'
 import NewTable from '../../components/tables/NewTable'
 import { setTextTable, setDateTable } from '../../functions/setters'
-import { validateAlert } from '../../functions/alert'
+import { validateAlert, doneAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
 
 class Leads extends Component {
 
@@ -268,29 +268,15 @@ class Leads extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error',
-
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',
-
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -303,13 +289,9 @@ class Leads extends Component {
                 const { data } = this.state
                 data.clientes = clientes
                 this.setClientes(clientes)
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Creaste con éxito un nuevo cliente.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito un nuevo cliente.')
+
                 this.setState({
                     ... this.state,
                     modal: false,
@@ -320,29 +302,15 @@ class Leads extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error',
-
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',
-
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -355,13 +323,9 @@ class Leads extends Component {
                 const { data } = this.state
                 data.clientes = clientes
                 this.setClientes(clientes)
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Editaste con éxito al cliente.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
+                
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito al cliente.')
+
                 this.setState({
                     ... this.state,
                     modal: false,
@@ -372,29 +336,15 @@ class Leads extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error',
-
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',
-
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -407,13 +357,8 @@ class Leads extends Component {
                 const { data } = this.state
                 data.clientes = clientes
                 this.setClientes(clientes)
-                swal({
-                    title: '¡Listo 👋!',
-                    text: response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito al cliente.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito al cliente.')
                 this.setState({
                     ... this.state,
                     modalDelete: false,
@@ -424,29 +369,15 @@ class Leads extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error',
-
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error',
-
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 

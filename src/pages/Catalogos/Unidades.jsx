@@ -5,7 +5,7 @@ import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV, UNIDADES_COLUMNS,} from '../../constants'
 import { setTextTable} from '../../functions/setters'
-import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
+import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Modal, ModalDelete } from '../../components/singles'
 import { UnidadForm } from '../../components/forms'
@@ -201,13 +201,9 @@ class Unidades extends Component {
                 const { data, modal } = this.state
                 modal.form = false
                 data.unidades = unidades
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Creaste con éxito una nueva área.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito una nueva área.')
+                
                 this.setState({
                     ... this.state,
                     modal,
@@ -239,13 +235,9 @@ class Unidades extends Component {
                 const { unidades } = response.data
                 data.unidades = unidades
                 modal.form = false
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Editaste con éxito el área.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
+                
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el área.')
+                
                 this.setState({
                     ... this.state,
                     modal,
@@ -277,13 +269,9 @@ class Unidades extends Component {
                 const { unidades } = response.data
                 data.unidades = unidades
                 modal.delete = false
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito el área.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito el área.')
+                
                 this.setState({
                     ... this.state,
                     modal,

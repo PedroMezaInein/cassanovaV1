@@ -36,7 +36,7 @@ export async function doneAlert(texto) {
         title: '¡Felicidades 🥳!',
         text: texto,
         buttons: false,
-        timer: 1500,
+        timer: 2500,
         content: done
     })
 }

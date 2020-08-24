@@ -9,7 +9,7 @@ import { Modal, ModalDelete } from '../../../components/singles'
 import axios from 'axios'
 import swal from 'sweetalert'
 import NewTable from '../../../components/tables/NewTable'
-import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
+import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import { setTextTable, setListTable, setMoneyTable} from '../../../functions/setters'
 import { Tabs, Tab } from 'react-bootstrap'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
@@ -120,14 +120,8 @@ class PrecioDiseño extends Component {
                 const { modal } = this.state
 
                 this.getPreciosAxios()
-                
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El contrato fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El contrato fue registrado con éxito.')
 
                 modal.delete = false
 

@@ -15,7 +15,7 @@ import { Form, Tabs, Tab } from 'react-bootstrap'
 import Calendar from '../../components/form-components/Calendar'
 import TableForModals from '../../components/tables/TableForModals'
 import { setTextTable, setDateTable, setListTable, setMoneyTable, setArrayTable } from '../../functions/setters'
-import { errorAlert, forbiddenAccessAlert, waitAlert } from '../../functions/alert'
+import { errorAlert, forbiddenAccessAlert, waitAlert, doneAlert } from '../../functions/alert'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 
 const $ = require('jquery');
@@ -598,12 +598,9 @@ class Cuentas extends Component {
                     modal: false,
                     form: this.setEmptyForm()
                 })
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Cuenta agregada con éxito.',
-                    icon: 'success',
-                    timer: 1500
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Cuenta agregada con éxito.')
+                
             },
             (error) => {
                 console.log(error, 'error')
@@ -683,13 +680,8 @@ class Cuentas extends Component {
                     form: this.setEmptyForm(),
                     cuenta: null
                 })
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Cuenta editada con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Cuenta editada con éxito.')
             },
             (error) => {
                 console.log(error, 'error')

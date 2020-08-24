@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import swal from 'sweetalert'
-import { forbiddenAccessAlert, errorAlert, waitAlert } from '../../../functions/alert'
+import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert } from '../../../functions/alert'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
 import { Card } from 'react-bootstrap'
 import { PartidasDiseñoForm as PartidasDiseñoFormulario } from '../../../components/forms'
@@ -99,13 +99,8 @@ class PartidasDiseñoForm extends Component {
                     partidas: partidas                 
                 })
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Agregaste con éxito al usuario.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Agregaste con éxito al usuario.')
+
                 const { history } = this.props
                     history.push({
                     pathname: '/catalogos/partidas-diseño'
@@ -150,14 +145,8 @@ class PartidasDiseñoForm extends Component {
                     partida: ''
                 })
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Actualizaste con éxito al usuario.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
-
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Actualizaste con éxito al usuario.')
+                
                 const { history } = this.props
                     history.push({
                     pathname: '/catalogos/partidas-diseño'

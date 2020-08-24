@@ -4,7 +4,7 @@ import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV } from '../../../constants'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert, doneAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout' 
 import { EgresosForm as EgresosFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
@@ -445,13 +445,9 @@ class EgresosForm extends Component{
                     modal: false,
                     form: this.clearForm()
                 })
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false,
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
+                
                 const { history } = this.props
                     history.push({
                     pathname: '/administracion/egresos'
@@ -507,13 +503,9 @@ class EgresosForm extends Component{
                     modal: false,
                     form: this.clearForm()
                 })
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false,
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
+                
                 const { history } = this.props
                     history.push({
                     pathname: '/administracion/egresos'
@@ -567,14 +559,8 @@ class EgresosForm extends Component{
                     data,
                     options
                 })
-                
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
 
             },
             (error) => {

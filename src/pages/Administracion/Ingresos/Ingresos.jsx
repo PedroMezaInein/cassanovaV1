@@ -5,7 +5,7 @@ import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV, INGRESOS_COLUMNS, ADJUNTOS_COLUMNS } from '../../../constants'
 import { setOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList, setSelectOptions } from '../../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert, deleteAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert, deleteAlert, doneAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { Button, FileInput } from '../../../components/form-components'
@@ -667,13 +667,7 @@ class Ingresos extends Component {
                     porcentaje
                 })
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
 
             },
             (error) => {
@@ -713,13 +707,7 @@ class Ingresos extends Component {
                     porcentaje
                 })
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
 
             },
             (error) => {
@@ -747,13 +735,8 @@ class Ingresos extends Component {
                     form: this.clearForm(),
                     modalAskFactura: false
                 })
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
 
             },
             (error) => {
@@ -804,13 +787,7 @@ class Ingresos extends Component {
                     options
                 })
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
             },
             (error) => {
                 console.log(error, 'error')
@@ -841,13 +818,7 @@ class Ingresos extends Component {
                 document.body.appendChild(link);
                 link.click();
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
 
             },
             (error) => {
@@ -899,14 +870,8 @@ class Ingresos extends Component {
                     modal: false,
                     data
                 })
-                
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
 
             },
             (error) => {
@@ -939,14 +904,8 @@ class Ingresos extends Component {
                     adjuntos: this.setAdjuntosTable(ingreso),
                     data
                 })
-                
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
 
             },
             (error) => {

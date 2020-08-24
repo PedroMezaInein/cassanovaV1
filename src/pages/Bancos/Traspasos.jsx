@@ -11,7 +11,7 @@ import Moment from 'react-moment'
 import { Small, B } from '../../components/texts' 
 import NumberFormat from 'react-number-format'; 
 import NewTable from '../../components/tables/NewTable'
-import { forbiddenAccessAlert, errorAlert, waitAlert } from '../../functions/alert'
+import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert } from '../../functions/alert'
 import { setTextTable, setDateTable, setMoneyTable, setArrayTable} from '../../functions/setters'
 
 class Traspasos extends Component{
@@ -363,28 +363,14 @@ class Traspasos extends Component{
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
+                    forbiddenAccessAlert()
                 }else{
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
-                        icon: 'error',
-                    })
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            console.log(error, 'error catch')
-            console.log(error, 'error catch')
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error'
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -418,32 +404,20 @@ class Traspasos extends Component{
                     traspaso: '',
                     data
                 })
-                swal.close()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+
             },
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
+                    forbiddenAccessAlert()
                 }else{
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
-                        icon: 'error',
-                    })
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            console.log(error, 'error catch')
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error'
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -468,38 +442,20 @@ class Traspasos extends Component{
                     traspaso: '',
                     data
                 })
-                swal({
-                    title: '¡Listo 👋!',
-                    text: response.data.message !== undefined ? response.data.message : 'Eliminaste el traspaso con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+
             },
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
+                    forbiddenAccessAlert()
                 }else{
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
-                        icon: 'error',
-                    })
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            console.log(error, 'error catch')
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error'
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -533,32 +489,20 @@ class Traspasos extends Component{
                     traspaso: '',
                     data
                 })
-                swal.close()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+
             },
             (error) => {
                 console.log(error, 'error')
                 if(error.response.status === 401){
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
+                    forbiddenAccessAlert()
                 }else{
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
-                        icon: 'error',
-                    })
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            console.log(error, 'error catch')
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error'
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -577,13 +521,7 @@ class Traspasos extends Component{
                 document.body.appendChild(link);
                 link.click();
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
 
             },
             (error) => {

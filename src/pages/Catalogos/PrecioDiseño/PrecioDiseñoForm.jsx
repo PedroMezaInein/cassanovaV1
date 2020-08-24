@@ -4,7 +4,7 @@ import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV} from '../../../constants'
 import { setOptions} from '../../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { PrecioDiseñoForm as PrecioDiseñoFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
@@ -112,13 +112,9 @@ class PrecioDiseñoForm extends Component{
         const { form } = this.state
         await axios.post(URL_DEV + 'precios-diseño', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false,
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
+
                 const { history } = this.props
                     history.push({
                     pathname: '/catalogos/precio-diseno'
@@ -143,13 +139,9 @@ class PrecioDiseñoForm extends Component{
         const { form, precio } = this.state
         await axios.put(URL_DEV + 'precios-diseño/'+precio.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false,
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
+                
                 const { history } = this.props
                     history.push({
                     pathname: '/catalogos/precio-diseno'

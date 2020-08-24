@@ -11,7 +11,7 @@ import { Small, B } from '../../components/texts'
 import { Form } from 'react-bootstrap'
 import NewTable from '../../components/tables/NewTable'
 import { renderToString } from 'react-dom/server'
-import { waitAlert} from '../../functions/alert'
+import { waitAlert, doneAlert} from '../../functions/alert'
 import { setTextTable, setDateTable, setArrayTable} from '../../functions/setters'
 
 class EstadosCuenta extends Component {
@@ -275,13 +275,7 @@ class EstadosCuenta extends Component {
                     modal: false,
                     data
                 })
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Estado de cuenta agregado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Estado de cuenta agregado con éxito.')
             },
             (error) => {
                 console.log(error, 'error')

@@ -5,6 +5,7 @@ import { ToggleButton, Button } from '../form-components'
 import { Accordion, Card } from 'react-bootstrap' 
 import Form from 'react-bootstrap/Form'
 import swal from 'sweetalert'
+import { doneAlert } from '../../functions/alert'
 class PermisosForm extends Component {
 
     state = {
@@ -175,13 +176,7 @@ class PermisosForm extends Component {
                 const { data: { modulos: grupos } } = response
                 this.setGrupos(grupos);
                 handleClose();
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Actualizaste los permisos.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Actualizaste los permisos.',)
             },
             (error) => {
                 console.log(error, 'error')

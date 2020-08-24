@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import { renderToString } from 'react-dom/server'
-import { waitAlert, errorAlert, forbiddenAccessAlert, validateAlert } from '../../functions/alert'
+import { waitAlert, errorAlert, forbiddenAccessAlert, validateAlert, doneAlert } from '../../functions/alert'
 import { setOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable } from '../../functions/setters'
 import Layout from '../../components/layout/layout'
 import { Tabs, Tab, Form } from 'react-bootstrap'
@@ -594,13 +594,7 @@ class Contratos extends Component {
                     this.getCajasAxios()
                 }
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El contrato fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El contrato fue registrado con éxito.')
 
                 modal.form = false
 
@@ -649,13 +643,7 @@ class Contratos extends Component {
                 if(key === 'proveedor') {
                     this.getCajasAxios()
                 }
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El contrato fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El contrato fue registrado con éxito.')
 
                 data.adjuntos = contrato.adjuntos
 
@@ -695,13 +683,7 @@ class Contratos extends Component {
                     this.getCajasAxios()
                 }
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El contrato fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El contrato fue registrado con éxito.')
 
                 modal.form = false
 
@@ -737,13 +719,7 @@ class Contratos extends Component {
                     this.getCajasAxios()
                 }
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El contrato fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El contrato fue registrado con éxito.')
 
                 modal.delete = false
 
@@ -781,13 +757,7 @@ class Contratos extends Component {
                     this.getCajasAxios()
                 }
 
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'El contrato fue registrado con éxito.',
-                    icon: 'success',
-                    timer: 1500,
-                    buttons: false
-                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El contrato fue registrado con éxito.')
 
                 this.setState({
                     ... this.state,

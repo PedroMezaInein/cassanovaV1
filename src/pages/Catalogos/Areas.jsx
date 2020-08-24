@@ -9,7 +9,7 @@ import { Modal, ModalDelete } from '../../components/singles'
 import axios from 'axios'
 import swal from 'sweetalert'
 import NewTable from '../../components/tables/NewTable'
-import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
+import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../functions/alert'
 import { setTextTable, setListTable} from '../../functions/setters'
 import { Tabs, Tab } from 'react-bootstrap'
 
@@ -357,13 +357,9 @@ class Areas extends Component {
                 data.areas = areas
                 data.areasVentas = areasVentas
                 data.areasEgresos = areasEgresos
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Creaste con éxito una nueva área.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito una nueva área.')
+                
                 this.setState({
                     ... this.state,
                     modal: false,
@@ -399,13 +395,9 @@ class Areas extends Component {
                 data.areas = areas
                 data.areasVentas = areasVentas
                 data.areasEgresos = areasEgresos
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Editaste con éxito el área.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el área.')
+                
                 this.setState({
                     ... this.state,
                     modal: false,
@@ -442,13 +434,9 @@ class Areas extends Component {
                 data.areas = areas
                 data.areasVentas = areasVentas
                 data.areasEgresos = areasEgresos
-                swal({
-                    title: '¡Felicidades 🥳!',
-                    text: response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito el área.',
-                    icon: 'success',
-                    buttons: false,
-                    timer: 1500
-                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito el área.')
+                
                 this.setState({
                     ... this.state,
                     modalDelete: false,
