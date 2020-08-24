@@ -11,7 +11,7 @@ import { Small, B } from '../../components/texts'
 import { Form } from 'react-bootstrap'
 import NewTable from '../../components/tables/NewTable'
 import { renderToString } from 'react-dom/server'
-import { waitAlert, doneAlert} from '../../functions/alert'
+import { waitAlert, doneAlert, errorAlert, forbiddenAccessAlert} from '../../functions/alert'
 import { setTextTable, setDateTable, setArrayTable} from '../../functions/setters'
 
 class EstadosCuenta extends Component {
@@ -161,11 +161,7 @@ class EstadosCuenta extends Component {
         e.preventDefault();
         const { adjunto } = this.state
         if (adjunto) {
-            swal({
-                title: '¡Un momento!',
-                text: 'Se está enviando tu estado de cuenta.',
-                buttons: false
-            })
+            waitAlert()
             this.addEstadoAxios()
         }
     }
@@ -229,27 +225,15 @@ class EstadosCuenta extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error',
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error'
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
     async addEstadoAxios() {
@@ -279,28 +263,15 @@ class EstadosCuenta extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error',
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error'
-            })
         })
     }
     async deleteEstadoAxios() {
@@ -322,28 +293,15 @@ class EstadosCuenta extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: 'Parece que no has iniciado sesión',
-                        icon: 'warning',
-                        confirmButtonText: 'Inicia sesión'
-                    });
-                } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error',
-                    })
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
         ).catch((error) => {
-            console.log(error)
-            swal({
-                title: '¡Ups 😕!',
-                text: 'Ocurrió un error desconocido catch, intenta de nuevo.',
-                icon: 'error'
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
     render() {

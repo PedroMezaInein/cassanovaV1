@@ -4,7 +4,7 @@ import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV} from '../../../constants'
 import { setOptions, setSelectOptions} from '../../../functions/setters'
-import { errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
+import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { SolicitudCompraForm as SolicitudCompraFormulario } from '../../../components/forms'
 import { Card, Accordion } from 'react-bootstrap'
@@ -171,11 +171,7 @@ class SolicitudCompraForm extends Component{
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
-        swal({
-            title: '¡Un momento!',
-            text: 'La información está siendo procesada.',
-            buttons: false
-        })
+        waitAlert()
         if(title === 'Editar solicitud de compra')
             this.editSolicitudCompraAxios()
         else

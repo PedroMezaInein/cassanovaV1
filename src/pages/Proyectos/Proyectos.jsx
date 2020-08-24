@@ -936,11 +936,7 @@ class Proyectos extends Component {
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
-        swal({
-            title: '¡Un momento!',
-            text: 'La información está siendo procesada.',
-            buttons: false
-        })
+        waitAlert()
         if (title === 'Editar proyecto')
             this.editProyectoAxios()
         else

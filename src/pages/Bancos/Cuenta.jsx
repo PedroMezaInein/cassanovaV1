@@ -130,11 +130,7 @@ class Cuentas extends Component {
         e.preventDefault()
         const { adjunto } = this.state
         if (adjunto) {
-            swal({
-                title: '¡Un momento!',
-                text: 'Se está enviando tu estado de cuenta.',
-                buttons: false
-            })
+            waitAlert()
             this.addEstadoAxios()
         }
     }

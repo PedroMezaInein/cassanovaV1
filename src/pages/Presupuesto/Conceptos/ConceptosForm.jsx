@@ -9,7 +9,7 @@ import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { ConceptoForm } from '../../../components/forms'
 import NewTable from '../../../components/tables/NewTable'
-import { errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
+import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert } from '../../../functions/alert'
 import { Card } from 'react-bootstrap'
 
 class Conceptos extends Component {
@@ -122,11 +122,7 @@ class Conceptos extends Component {
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
-        swal({
-            title: '¡Un momento!',
-            text: 'La información está siendo procesada.',
-            buttons: false
-        })
+        waitAlert()
         if (title === 'Editar concepto')
             this.editConceptoAxios()
         else

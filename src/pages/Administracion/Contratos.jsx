@@ -507,11 +507,7 @@ class Contratos extends Component {
             ... this.state,
             form
         })
-        swal({
-            title: '¡Un momento!',
-            text: 'La información está siendo procesada.',
-            buttons: false
-        })
+        waitAlert()
         let aux = title.split(' ');
         if (aux.length) {
             if (aux[0] === 'Editar') {
