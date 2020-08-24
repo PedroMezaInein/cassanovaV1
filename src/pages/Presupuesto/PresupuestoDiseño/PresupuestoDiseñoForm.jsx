@@ -126,6 +126,7 @@ class PresupuestoDiseñoForm extends Component {
                         form.fecha = new Date(presupuesto.fecha)
                         form.tiempo_ejecucion_diseno = presupuesto.tiempo_ejecucion_diseno
                         form.descuento = presupuesto.descuento
+                        form.proyecto = presupuesto.nombre_proyecto
                         let aux = []
                         presupuesto.semanas.map( (semana, key) => {
                             aux.push({
@@ -391,14 +392,14 @@ class PresupuestoDiseñoForm extends Component {
                 const { presupuesto } = response.data
                 const { history } = this.props
                 
-                /* if(pdf)
+                if(pdf)
                     if(presupuesto.pdfs){
                         const url =  presupuesto.pdfs[0].url
                         const link = document.createElement('a');
                         link.href = url;
                         link.setAttribute('target', '_blank');
                         link.click();
-                    } */
+                    }
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La presupuesto fue eliminada con éxito.',)
 
