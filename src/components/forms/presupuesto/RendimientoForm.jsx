@@ -7,12 +7,12 @@ class RendimientoForm extends Component {
 
     updateUnidades = value => {
         const { onChange } = this.props
-        onChange({ target: { value: value.value, name: 'unidad' } })
+        onChange({ target: { value: value, name: 'unidad' } })
     }
 
     updateProveedor = value => {
         const { onChange } = this.props
-        onChange({ target: { value: value.value, name: 'proveedor' } })
+        onChange({ target: { value: value, name: 'proveedor' } })
     }
 
     render() {

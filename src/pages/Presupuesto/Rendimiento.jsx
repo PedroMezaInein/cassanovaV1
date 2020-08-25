@@ -67,16 +67,23 @@ class Rendimientos extends Component {
     openModalEdit = (rendimiento) => {
         const { form } = this.state
 
-        form.manoObra = rendimiento.manoObra
-        form.herramienta = rendimiento.herramienta
+        if(rendimiento.unidad)
+            form.unidad = rendimiento.unidad.id.toString()
+        if(rendimiento.proveedor)
+            form.proveedor = rendimiento.proveedor.id.toString()
+        
         form.materiales = rendimiento.materiales
-
         form.descripcion = rendimiento.descripcion
-        form.clave = rendimiento.clave
         form.costo = rendimiento.costo
+        form.rendimiento = rendimiento.rendimiento
 
-        form.categoria = rendimiento.categoria.id.toString()
-        form.unidad = rendimiento.unidad.id.toString()
+        if(rendimiento.adjunto)
+        if(rendimiento.adjunto){
+            form.adjunto.files = [{
+                name: rendimiento.adjunto.name,
+                url: rendimiento.adjunto.url
+            }]
+        }
 
         this.setState({
             ... this.state,
@@ -272,15 +279,19 @@ class Rendimientos extends Component {
         aux.map((element) => {
             switch (element) {
                 case 'adjunto':
-                    if (form.adjunto.files.length > 0)
-                        break;
                     break;
                 default:
                     data.append(element, form[element])
                     break
             }
         })
-        await axios.post(URL_DEV + 'rendimientos', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        if(form.adjunto.value !== '') {
+            for (var i = 0; i < form.adjunto.files.length; i++) {
+                data.append(`files_name_adjuntos[]`, form.adjunto.files[i].name)
+                data.append(`files_adjuntos[]`, form.adjunto.files[i].file)
+            }
+        }
+        await axios.post(URL_DEV + 'rendimientos', data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { rendimientos } = response.data
 
@@ -311,7 +322,24 @@ class Rendimientos extends Component {
     async editRendimientoAxios() {
         const { access_token } = this.props.authUser
         const { form, rendimiento } = this.state
-        await axios.put(URL_DEV + 'rendimientos/' + rendimiento.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const data = new FormData();
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                case 'adjunto':
+                    break;
+                default:
+                    data.append(element, form[element])
+                    break
+            }
+        })
+        if(form.adjunto.value !== '') {
+            for (var i = 0; i < form.adjunto.files.length; i++) {
+                data.append(`files_name_adjuntos[]`, form.adjunto.files[i].name)
+                data.append(`files_adjuntos[]`, form.adjunto.files[i].file)
+            }
+        }
+        await axios.post(URL_DEV + 'rendimientos/update/' + rendimiento.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { rendimientos } = response.data
 
