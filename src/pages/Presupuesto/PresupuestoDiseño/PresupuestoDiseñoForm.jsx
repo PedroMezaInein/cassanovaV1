@@ -340,11 +340,13 @@ class PresupuestoDiseñoForm extends Component {
 
                 if(pdf)
                     if(presupuesto.pdfs){
-                        const url =  presupuesto.pdfs[0].url
+                        /* const url =  presupuesto.pdfs[0].url
                         const link = document.createElement('a');
                         link.href = url;
                         link.setAttribute('target', '_blank');
-                        link.click();
+                        link.click(); */
+                        var win = window.open( presupuesto.pdfs[0].url, '_blank');
+                        win.focus();
                     }
 
                 const { history } = this.props
@@ -384,11 +386,13 @@ class PresupuestoDiseñoForm extends Component {
                 
                 if(pdf)
                     if(presupuesto.pdfs){
-                        const url =  presupuesto.pdfs[0].url
+                        var win = window.open( presupuesto.pdfs[0].url, '_blank');
+                        win.focus();
+                        /* const url =  presupuesto.pdfs[0].url
                         const link = document.createElement('a');
                         link.href = url;
                         link.setAttribute('target', '_blank');
-                        link.click();
+                        link.click(); */
                     }
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La presupuesto fue eliminada con éxito.',)

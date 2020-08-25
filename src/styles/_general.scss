@@ -257,7 +257,6 @@ td.concepto{
     text-align: justify;
 }
 
-
 #container {
     visibility: hidden;
 }
@@ -273,4 +272,8 @@ td.concepto{
 
 .tooltip-inner2 {
     font-size: 0.9rem!important;
+}
+.w-0{
+    width: 0;
+    height: 0;
 }
