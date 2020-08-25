@@ -684,10 +684,7 @@ class Compras extends Component {
     }
 
     async getComprasAxios() {
-        var table = $('#kt_datatable2_compras')
-            .DataTable();
-
-        table.ajax.reload();
+        var table = $('#kt_datatable2_compras').DataTable().ajax.reload();
     }
 
 

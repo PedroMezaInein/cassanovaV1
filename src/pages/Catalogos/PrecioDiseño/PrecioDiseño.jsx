@@ -106,10 +106,7 @@ class PrecioDiseño extends Component {
     }
 
     async getPreciosAxios() {
-        var table = $('#kt_datatable_precio')
-            .DataTable();
-
-        table.ajax.reload();
+        var table = $('#kt_datatable_precio').DataTable().ajax.reload();
     }
 
     async deletePrecioAxios() {

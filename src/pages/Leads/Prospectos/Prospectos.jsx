@@ -318,8 +318,7 @@ class Leads extends Component {
     }
 
     async getProspectoAxios(){
-        var table = $('#kt_datatable_prospectos').DataTable();
-        table.ajax.reload();
+        var table = $('#kt_datatable_prospectos').DataTable().ajax.reload();
     }
 
     async deleteProspectoAxios() {

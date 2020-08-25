@@ -717,9 +717,7 @@ class NominaObra extends Component {
     }
 
     async getNominasAxios(){
-        var table = $('#kt_datatable2_nomina_obra')
-            .DataTable();
-        table.ajax.reload();
+        var table = $('#kt_datatable2_nomina_obra').DataTable().ajax.reload();
     }
     
     render() {

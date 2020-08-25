@@ -221,9 +221,7 @@ class Presupuesto extends Component {
     }
 
     async getPresupuestoAxios(){
-        var table = $('#kt_datatable2_presupuesto')
-            .DataTable();
-        table.ajax.reload();
+        var table = $('#kt_datatable2_presupuesto').DataTable().ajax.reload();
     }
 
     setPresupuestos = presupuestos => {

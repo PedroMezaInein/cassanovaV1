@@ -737,10 +737,7 @@ class Ventas extends Component{
     }
 
     async getVentasAxios(){
-        var table = $('#kt_datatable2_ventas')
-                    .DataTable();
-
-                table.ajax.reload();
+        var table = $('#kt_datatable2_ventas').DataTable().ajax.reload();
     }
     
     async addVentaAxios(){

@@ -457,9 +457,7 @@ class NominaAdmin extends Component {
     }
 
     async getNominasAxios(){
-        var table = $('#kt_datatable2_nomina_admin')
-            .DataTable();
-        table.ajax.reload();
+        var table = $('#kt_datatable2_nomina_admin').DataTable().ajax.reload();
     }
     
     render() {

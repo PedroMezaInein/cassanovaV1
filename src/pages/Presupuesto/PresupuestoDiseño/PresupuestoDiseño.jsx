@@ -216,9 +216,7 @@ class PresupuestoDiseño extends Component {
     }
 
     async getPresupuestoAxios(){
-        var table = $('#kt_datatable2_presupuesto_diseño')
-            .DataTable();
-        table.ajax.reload();
+        var table = $('#kt_datatable2_presupuesto_diseño').DataTable().ajax.reload();
     }
 
     render() {

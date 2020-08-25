@@ -539,10 +539,7 @@ class Ingresos extends Component {
     }
 
     async getIngresosAxios(){
-        var table = $('#ingresostable')
-                    .DataTable();
-
-                table.ajax.reload();
+        var table = $('#ingresostable').DataTable().ajax.reload();
     }
 
     async getOptionsAxios() {
