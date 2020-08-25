@@ -65,7 +65,7 @@ class InputNumberSinText extends Component {
     }
 
     render() {
-        const { error, onChange, placeholder, iconclass, messageinc, identificador, typeformat, ...props } = this.props
+        const { error, onChange, placeholder, iconclass, messageinc, identificador, typeformat,customstyle, ...props } = this.props
         const { inputValido } = this.state
         return (
             <div > 
@@ -76,6 +76,7 @@ class InputNumberSinText extends Component {
                         onChange={(e) => { e.preventDefault(); this.validarInput(e); onChange(e) }}
                         {...props}
                         format={typeformat} 
+                        style={customstyle}
                     />  
             </div>
         )

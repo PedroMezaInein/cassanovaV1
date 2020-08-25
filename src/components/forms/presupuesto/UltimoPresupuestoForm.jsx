@@ -385,7 +385,9 @@ class ActualizarPresupuestoForm extends Component {
                                                         value={margen}
                                                         onChange={this.onChangeDesperdicio}
                                                         thousandSeparator={true}
-                                                        prefix={'%'} />
+                                                        prefix={'%'} 
+                                                        customstyle={{borderColor: "#e5eaee"}}
+                                                    />
                                                 </div>
                                             </th>
                                             <th className="border-0">
@@ -411,7 +413,7 @@ class ActualizarPresupuestoForm extends Component {
                                                     <>
                                                         {
                                                             concepto.mensaje ?
-                                                                <ReactTooltip id={key + '-th'} type='warning'>
+                                                                <ReactTooltip id={key + '-th'} type='light' class="popover tooltip-inner2">
                                                                     <div>
                                                                         {
                                                                             concepto.user_comentario ?
@@ -509,6 +511,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                     value={form['conceptos'][key]['descripcion']}
                                                                     onChange={(e) => { onChange(key, e, 'descripcion') }}
                                                                     disabled={!form.conceptos[key].active}
+                                                                    customstyle={{borderColor: "#e5eaee"}}
                                                                 />
                                                             </td>
                                                             <td className="text-center">
@@ -523,7 +526,9 @@ class ActualizarPresupuestoForm extends Component {
                                                                     onChange={e => onChange(key, e, 'costo')}
                                                                     thousandSeparator={true}
                                                                     typeformat="###########"
-                                                                    disabled={!form.conceptos[key].active} />
+                                                                    disabled={!form.conceptos[key].active} 
+                                                                    customstyle={{borderColor: "#e5eaee"}}
+                                                                />
                                                             </td>
                                                             <td className="text-center">
                                                                 <InputNumberSinText
@@ -536,6 +541,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                     thousandSeparator={true}
                                                                     prefix={'%'}
                                                                     disabled={!form.conceptos[key].active}
+                                                                    customstyle={{borderColor: "#e5eaee"}}
                                                                 />
                                                             </td>
                                                             <td className="text-center">

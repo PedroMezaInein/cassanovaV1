@@ -72,7 +72,9 @@ $l-black-gold: #423b28;
 
     /* height: calc(100vh  ); 
 }*/
-
+.symbol.symbol-light-success2 .symbol-label{
+    background-color: #d1e3d7;  
+}
 body{
     text-transform: uppercase;
 }
@@ -253,4 +255,22 @@ td.dia, th.dia{
 }
 td.concepto{
     text-align: justify;
+}
+
+
+#container {
+    visibility: hidden;
+}
+
+#loader {
+    color: #008cff;
+    height: 40px;
+    left: 45%;
+    position: absolute;
+    top: 45%;
+    width: 30%;
+}
+
+.tooltip-inner2 {
+    font-size: 0.9rem!important;
 }

@@ -79,7 +79,7 @@ class InputSinText extends Component {
     }
 
     render() {
-        const { error, onChange, placeholder, iconclass, messageinc, letterCase, ...props } = this.props
+        const { error, onChange, placeholder, iconclass, messageinc, letterCase, customstyle, ...props } = this.props
         const { inputValido } = this.state
 
         const toInputUppercase = e => {
@@ -97,6 +97,7 @@ class InputSinText extends Component {
                 onChange={(e) => { e.preventDefault(); this.validarInput(e); onChange(e) }}
                 onInput={toInputUppercase}
                 {...props}
+                style={customstyle}
             />
         )
     }
