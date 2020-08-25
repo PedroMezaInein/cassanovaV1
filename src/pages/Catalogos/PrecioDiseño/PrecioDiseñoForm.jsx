@@ -59,7 +59,7 @@ class PrecioDiseñoForm extends Component{
                         form.incremento_esquema_2 = precio.incremento_esquema_2
                         form.esquema_2 = precio.esquema_2
                         form.incremento_esquema_3= precio.incremento_esquema_3
-                        form.esquema_2 = precio.esquema_3
+                        form.esquema_3 = precio.esquema_3
                         
                         this.setState({
                             ... this.state,
