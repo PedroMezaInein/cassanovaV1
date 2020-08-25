@@ -17,14 +17,6 @@ class ActualizarPresupuestoForm extends Component {
     }
 
     mostrarFormulario() {
-       /*  var ele = document.getElementById("fechas");
-        if (ele.style.display == "block") {
-            ele.style.display = "none";
-        }
-        else {
-            ele.style.display = "block";
-        } */
-
         const { showFechas } = this.state
         this.setState({
             ... this.state,
@@ -329,7 +321,7 @@ class ActualizarPresupuestoForm extends Component {
                                 <div className="d-flex justify-content-end">
                                 <div className={this.state.showFechas ? 'w-100 formulario-escondido' : 'w-0 overflow-hidden formulario-escondido'}>
                                     <div className="form-group row form-group-marginless m-0 mb-3">
-                                        <div className="col-md-5">
+                                        {/* <div className="col-md-5">
                                             <Calendar
                                                 formeditado={formeditado}
                                                 onChangeCalendar={this.handleChangeDateCreacion}
@@ -338,8 +330,8 @@ class ActualizarPresupuestoForm extends Component {
                                                 value={form.fecha_creacion}
                                                 patterns={DATE}
                                             />
-                                        </div>
-                                        <div className="col-md-5">
+                                        </div> */}
+                                        <div className="col-md-2">
                                             <Calendar
                                                 requirevalidation={0}
                                                 formeditado={formeditado}
