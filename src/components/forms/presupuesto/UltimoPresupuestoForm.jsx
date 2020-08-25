@@ -12,17 +12,24 @@ import Tooltip from 'react-bootstrap/Tooltip'
 class ActualizarPresupuestoForm extends Component {
     
     state = {
-        margen: 0
+        margen: 0,
+        showFechas:false
     }
 
     mostrarFormulario() {
-        var ele = document.getElementById("fechas");
+       /*  var ele = document.getElementById("fechas");
         if (ele.style.display == "block") {
             ele.style.display = "none";
         }
         else {
             ele.style.display = "block";
-        }
+        } */
+
+        const { showFechas } = this.state
+        this.setState({
+            ... this.state,
+            showFechas: !showFechas
+        })
     } 
 
     handleChangeDateCreacion = date => {
@@ -320,14 +327,7 @@ class ActualizarPresupuestoForm extends Component {
 
                             <Card.Body className="pt-2">
                                 <div className="d-flex justify-content-end">
-                                    <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Mostrar fechas</Tooltip>}>
-                                        <a class="btn btn-icon btn-light-primary" onClick={() => { this.mostrarFormulario() }}>
-                                            <i class="flaticon2-calendar-9"></i>
-                                        </a>
-                                    </OverlayTrigger>
-                                </div>
-
-                                <div id="fechas" style={{display:" none"}}>
+                                <div className={this.state.showFechas ? 'w-100 formulario-escondido' : 'w-0 overflow-hidden formulario-escondido'}>
                                     <div className="form-group row form-group-marginless m-0 mb-3">
                                         <div className="col-md-5">
                                             <Calendar
@@ -356,6 +356,16 @@ class ActualizarPresupuestoForm extends Component {
                                         
                                     </div>
                                 </div>
+                                    <div className="d-flex align-items-center">
+                                    <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Mostrar fechas</Tooltip>}>
+                                        <a class="btn btn-icon btn-light-primary" onClick={() => { this.mostrarFormulario() }}>
+                                            <i class="flaticon2-calendar-9"></i>
+                                        </a>
+                                    </OverlayTrigger>
+                                    </div>
+                                </div>
+
+                                
                                 <table className="table table-separate table-responsive-sm">
                                     <thead>
                                         <tr>
