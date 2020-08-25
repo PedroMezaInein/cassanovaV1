@@ -214,7 +214,6 @@ class ProspectosForm extends Component {
     }
 
     async getLeadAxios(id) {
-        console.log(id, 'id')
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'lead/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {

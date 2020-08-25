@@ -210,15 +210,6 @@ class PresupuestoDiseñoForm extends Component {
                         if(presupuesto.empresa){
                             if(presupuesto.empresa.name === 'INEIN'){
                                 form.tipo_partida = 'partidasInein'
-                                presupuesto.partidas_inein.map( (partida_inein, key) => {
-                                    /* form.partidasInein.map( ( element ) => {
-                                        console.log(element, 'element')
-                                        if(element.id === partida_inein.id){
-                                            
-                                            element.checked = true
-                                        }
-                                    }) */
-                                })
                             }
                             if(presupuesto.empresa.name === 'INFRAESTRUCTURA MÉDICA')
                                 form.tipo_partida = 'partidasIm'
@@ -388,7 +379,6 @@ class PresupuestoDiseñoForm extends Component {
 
         await axios.put(URL_DEV + 'presupuestos-diseño/' + presupuesto.id, form, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                console.log(response, 'response')
                 const { presupuesto } = response.data
                 const { history } = this.props
                 
