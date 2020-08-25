@@ -67,9 +67,9 @@ class Rendimientos extends Component {
                 {
                     actions: this.setActions(rendimiento),
                     materiales: renderToString(setTextTable(rendimiento.materiales)),
-                    unidad: renderToString(setTextTable(rendimiento.unidad.nombre)),
+                    unidad: renderToString(setTextTable(rendimiento.unidad ? rendimiento.unidad.nombre : '')),
                     costo: renderToString(setMoneyTable(rendimiento.costo)),
-                    proveedor: renderToString(setTextTable(rendimiento.proveedor.nombre)),
+                    proveedor: renderToString(setTextTable(rendimiento.proveedor ? rendimiento.proveedor.razon_social : '')),
                     rendimiento: renderToString(setTextTable(rendimiento.rendimiento)),
                     descripcion: renderToString(setTextTable(rendimiento.descripcion)),
                     id: rendimiento.id
