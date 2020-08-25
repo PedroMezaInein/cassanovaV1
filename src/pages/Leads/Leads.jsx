@@ -62,6 +62,7 @@ class Leads extends Component{
                 empresa: renderToString(setTextTable(lead.empresa ? lead.empresa.name : '')),
                 origen: renderToString(setTextTable(lead.origen ? lead.origen.origen : '')),
                 fecha: renderToString(setDateTable(lead.created_at)),
+                tipo_lead: renderToString(setTextTable(lead.tipo_lead ? lead.tipo_lead : 'Sin definir')),
                 id: lead.id
             }
         })
@@ -600,16 +601,17 @@ class Leads extends Component{
         return(
             <Layout active={'leads'}  { ...this.props}>
                 { 
-                    <NewTable columns = { LEADS_COLUMNS } data = { leads } 
-                        title = 'Leads' subtitle = 'Listado de leads'
+                    <NewTable 
+                        columns = { LEADS_COLUMNS } 
+                        data = { leads } 
+                        title = 'Leads' 
+                        subtitle = 'Listado de leads'
                         mostrar_boton={true}
                         abrir_modal={true} 
                         onClick={this.openModal}
                         mostrar_acciones={true} 
-                        
                         exportar_boton={true} 
                         onClickExport={this.exportToCSV}
-                        
                         actions = {{
                             'edit': {function: this.openModalEditLead},
                             'delete': {function: this.openModalSafeDelete},

@@ -175,9 +175,13 @@ export const LEADS_COLUMNS = [
         accessor: 'origen',
     },
     {
+        Header: 'Tipo de lead',
+        accessor: 'tipo_lead',
+    },
+    {
         Header: 'Fecha',
         accessor: 'fecha',
-    },
+    }
 ]
 
 export const PROSPECTOS_COLUMNS = [                
