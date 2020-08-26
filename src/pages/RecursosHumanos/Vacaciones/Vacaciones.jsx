@@ -6,6 +6,7 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
 import esLocale from '@fullcalendar/core/locales/es';
+import { Card } from 'react-bootstrap'
 
 class Vacaciones extends Component {
 
@@ -22,16 +23,25 @@ class Vacaciones extends Component {
         const { events } = this.state
         return (
             <Layout active='rh'  {...this.props}>
-                <FullCalendar
-                    locale = { esLocale }
-                    plugins = {[ dayGridPlugin, interactionPlugin ]}
-                    initialView = "dayGridMonth"
-                    weekends = { true }
-                    events = { events }
-                    dateClick = { this.handleDateClick }
-                    eventContent = { renderEventContent }
-                    firstDay = { 1 }
-                    />
+                <Card className="card-custom"> 
+                    <Card.Header>
+                        <div className="card-title">
+                            <h3 className="card-label">Vacaciones</h3>
+                        </div>
+                    </Card.Header>
+                    <Card.Body>
+                        <FullCalendar
+                            locale = { esLocale }
+                            plugins = {[ dayGridPlugin, interactionPlugin ]}
+                            initialView = "dayGridMonth"
+                            weekends = { true }
+                            events = { events }
+                            dateClick = { this.handleDateClick }
+                            eventContent = { renderEventContent }
+                            firstDay = { 1 }
+                            />
+                    </Card.Body>
+				</Card>
             </Layout>
         );
     }
@@ -45,7 +55,7 @@ function renderEventContent(eventInfo) {
             <span>{eventInfo.event.title}</span>
         </div>
     )
-  }
+}
 const mapStateToProps = state => {
     return {
         authUser: state.authUser
