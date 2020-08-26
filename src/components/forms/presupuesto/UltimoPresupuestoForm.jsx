@@ -442,7 +442,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                         <b className="font-weight-boldest text-primary font-size-h6">
                                                                             {
                                                                                 this.getPartidaClave(concepto.concepto.clave)
-                                                                            }
+                                                                            }.
                                                                         </b>
                                                                         &nbsp;&nbsp;
                                                                             {
