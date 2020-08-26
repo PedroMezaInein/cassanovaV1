@@ -30,7 +30,7 @@ export default function NavUser() {
 					<div className="navi-link">
 						<div className="symbol symbol-40 bg-light mr-3">
 							<div className="symbol-label">
-								<span class="svg-icon svg-icon-md svg-icon-warning">
+								<span class="svg-icon svg-icon-md svg-icon-info">
 									<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 										<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
 											<rect x="0" y="0" width="24" height="24"/>
@@ -42,7 +42,7 @@ export default function NavUser() {
 							</div>
 						</div>
 						<div className="navi-text">
-							<div className="font-weight-bold text-dark text-hover-warning">Calendario</div>
+							<div className="font-weight-bold text-dark text-hover-info">Calendario</div>
 							<div className="text-muted">Eventos programados</div>
 						</div>
 					</div>
