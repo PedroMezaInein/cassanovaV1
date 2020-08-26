@@ -99,7 +99,7 @@ const NominaAdminForm = Loader(() => import('./pages/RecursosHumanos/NominaAdmin
 const NominaAdminSingle = Loader(() => import('./pages/RecursosHumanos/NominaAdmin/NominaAdminSingle') )
 const Empleados = Loader(() => import('./pages/RecursosHumanos/Empleados') )
 
-
+const Vacaciones = Loader(() => import('./pages/RecursosHumanos/Vacaciones/Vacaciones') )
 
 class App extends Component{
     async componentDidMount(){
@@ -253,6 +253,7 @@ class App extends Component{
                 <Route path = "/rh/nomina-admin/:action" exact component ={ NominaAdminForm } />
                 <Route path = "/rh/nomina-admin/single/:id" exact component ={ NominaAdminSingle } />
                 <Route path = "/rh/empleados" exact component ={ Empleados } />
+                <Route path = "/rh/vacaciones" exact component ={ Vacaciones } />
 
             </>
         )
