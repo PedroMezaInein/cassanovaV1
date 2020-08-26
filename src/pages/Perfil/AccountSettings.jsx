@@ -65,12 +65,11 @@ class AccountSettings extends Component {
 			<>   
 				<Layout { ...this.props}>
 					<Card className="card-custom"> 
-						<Card.Header className="card-header py-3">
-							<Card.Title className="align-items-start flex-column">
-								<h3 className="card-label font-weight-bolder text-dark">Cambio de contraseña</h3>
-								<span className="text-muted font-weight-bold font-size-sm mt-1">Cambia la contraseña de tu cuenta</span>
-							</Card.Title> 
-						</Card.Header> 
+						<Card.Header>
+                        <div className="card-title">
+                            <h3 className="card-label">Cambio de contraseña</h3>
+                        </div>
+                    </Card.Header>
 						<Card.Body> 
 							<ChangePasswordForm form = { form } onChange = { this.onChange } onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.changePasswordAxios()} } />
 						</Card.Body>
