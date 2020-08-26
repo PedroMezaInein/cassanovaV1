@@ -26,30 +26,28 @@ export default function NavUser() {
 						</div>
 					</div>
 				</a>
-				{/* <a href="#" className="navi-item">
+				<a href="/mi-calendario" className="navi-item">
 					<div className="navi-link">
 						<div className="symbol symbol-40 bg-light mr-3">
 							<div className="symbol-label">
-								<span className="svg-icon svg-icon-md svg-icon-warning">
+								<span class="svg-icon svg-icon-md svg-icon-warning">
 									<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-										<g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-											<rect x="0" y="0" width="24" height="24" />
-											<rect fill="#000000" opacity="0.3" x="12" y="4" width="3" height="13" rx="1.5" />
-											<rect fill="#000000" opacity="0.3" x="7" y="9" width="3" height="8" rx="1.5" />
-											<path d="M5,19 L20,19 C20.5522847,19 21,19.4477153 21,20 C21,20.5522847 20.5522847,21 20,21 L4,21 C3.44771525,21 3,20.5522847 3,20 L3,4 C3,3.44771525 3.44771525,3 4,3 C4.55228475,3 5,3.44771525 5,4 L5,19 Z" fill="#000000" fillRule="nonzero" />
-											<rect fill="#000000" opacity="0.3" x="17" y="11" width="3" height="6" rx="1.5" />
+										<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+											<rect x="0" y="0" width="24" height="24"/>
+											<path d="M4.875,20.75 C4.63541667,20.75 4.39583333,20.6541667 4.20416667,20.4625 L2.2875,18.5458333 C1.90416667,18.1625 1.90416667,17.5875 2.2875,17.2041667 C2.67083333,16.8208333 3.29375,16.8208333 3.62916667,17.2041667 L4.875,18.45 L8.0375,15.2875 C8.42083333,14.9041667 8.99583333,14.9041667 9.37916667,15.2875 C9.7625,15.6708333 9.7625,16.2458333 9.37916667,16.6291667 L5.54583333,20.4625 C5.35416667,20.6541667 5.11458333,20.75 4.875,20.75 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"/>
+											<path d="M2,11.8650466 L2,6 C2,4.34314575 3.34314575,3 5,3 L19,3 C20.6568542,3 22,4.34314575 22,6 L22,15 C22,15.0032706 21.9999948,15.0065399 21.9999843,15.009808 L22.0249378,15 L22.0249378,19.5857864 C22.0249378,20.1380712 21.5772226,20.5857864 21.0249378,20.5857864 C20.7597213,20.5857864 20.5053674,20.4804296 20.317831,20.2928932 L18.0249378,18 L12.9835977,18 C12.7263047,14.0909841 9.47412135,11 5.5,11 C4.23590829,11 3.04485894,11.3127315 2,11.8650466 Z M6,7 C5.44771525,7 5,7.44771525 5,8 C5,8.55228475 5.44771525,9 6,9 L15,9 C15.5522847,9 16,8.55228475 16,8 C16,7.44771525 15.5522847,7 15,7 L6,7 Z" fill="#000000"/>
 										</g>
 									</svg>
 								</span>
 							</div>
 						</div>
 						<div className="navi-text">
-							<div className="font-weight-bold">Mensajes</div>
-							<div className="text-muted">Bandeja de entrada y tareas</div>
+							<div className="font-weight-bold text-dark text-hover-warning">Calendario</div>
+							<div className="text-muted">Eventos programados</div>
 						</div>
 					</div>
 				</a>
-				<a href="#" className="navi-item">
+				{/* <a href="#" className="navi-item">
 					<div className="navi-link">
 						<div className="symbol symbol-40 bg-light mr-3">
 							<div className="symbol-label">

@@ -89,6 +89,7 @@ const PartidasDiseñoForm = Loader( () => import('./pages/Catalogos/PartidasDise
 
 const Contabilidad = Loader( () => import('./pages/Reportes/Contabilidad') )
 const AccountSettings = Loader(() => import('./pages/Perfil/AccountSettings') )
+const Calendario = Loader(() => import('./pages/Perfil/Calendario') )
 
 const NominaObra = Loader(() => import('./pages/RecursosHumanos/NominaObra/NominaObra') )
 const NominaObraForm = Loader(() => import('./pages/RecursosHumanos/NominaObra/NominaObraForm') )
@@ -244,6 +245,7 @@ class App extends Component{
 
                 <Route path = "/reportes/contabilidad" exact component ={ Contabilidad } />
                 <Route path = "/mi-perfil" exact component ={ AccountSettings } />
+                <Route path = "/mi-calendario" exact component ={ Calendario } />
 
                 <Route path = "/rh/nomina-obras" exact component ={ NominaObra } />  
                 <Route path = "/rh/nomina-obras/:action" exact component ={ NominaObraForm } />
