@@ -84,10 +84,10 @@ class Calendario extends Component {
                         <div className="card-title">
                             <h3 className="card-label">Calendario</h3>
                         </div>
-                        <div class="card-toolbar">
+                        <div className="card-toolbar">
                         <OverlayTrigger overlay={<Tooltip>Solicitar vacaciones</Tooltip>}>
-                            <a class="btn btn-light-primary font-weight-bold px-2" onClick={this.openModal}>
-                                <i class="fas fa-umbrella-beach"></i>
+                            <a className="btn btn-light-primary font-weight-bold px-2" onClick={this.openModal}>
+                                <i className="fas fa-umbrella-beach"></i>
                             </a>
                         </OverlayTrigger>
                         </div>
@@ -120,7 +120,7 @@ class Calendario extends Component {
 function renderEventContent(eventInfo) {
     console.log(eventInfo)
     return (
-        <div class="event">
+        <div className="event">
             <i className={eventInfo.event._def.extendedProps.iconClass+" kt-font-boldest"}></i> 
             <span>{eventInfo.event.title}</span>
         </div>
