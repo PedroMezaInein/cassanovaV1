@@ -39,6 +39,11 @@ class RegisterUserForm extends Component {
         onChange({ target: { value: value, name: 'proyecto' } })
     }
 
+    updateEmpleado = value => {
+        const { onChange } = this.props
+        onChange({ target: { value: value, name: 'empleado' } })
+    }
+
     render() {
         const { options, form, onChange, deleteOption, onChangeOptions, formeditado, ...props } = this.props
         return (
@@ -100,7 +105,7 @@ class RegisterUserForm extends Component {
 
                                 />
                             </div>
-                            <div className="col-md-8">
+                            <div className="col-md-4">
                                 {
                                     form.departamentos.length > 0 ?
                                         <div className="col-md-12 row mx-0 align-items-center image-upload">
@@ -126,6 +131,17 @@ class RegisterUserForm extends Component {
                                         </div>
                                         : ''
                                 }
+                            </div>
+                            <div className="col-md-4">
+                                <SelectSearchTrue
+                                    options={options.empleados}
+                                    placeholder="SELECCIONA EL EMPLEADO"
+                                    name="empleado"
+                                    value={form.empleado}
+                                    onChange={this.updateEmpleado}
+                                    iconclass={"fas fa-layer-group"}
+                                    formeditado={formeditado}
+                                />
                             </div>
                         </div>
                         : ''

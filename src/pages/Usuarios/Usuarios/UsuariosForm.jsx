@@ -41,12 +41,14 @@ class UsuariosForm extends Component {
             departamentos: [],
             departamento: '',
             proyectos: [],
-            proyecto: ''
+            proyecto: '',
+            empleado: ''
         },
         options:{
             tipos: [],
             proyectos: [],
-            departamentos: []
+            departamentos: [],
+            empleados: []
         },
         data:{
             proyectos: [],
@@ -92,6 +94,9 @@ class UsuariosForm extends Component {
                                 })
                             })
                             form.departamentos = aux
+                            if(user.empleado){
+                                form.empleado = user.empleado.id.toString()
+                            }
                             this.setState({
                                 ... this.state,
                                 form,
@@ -140,12 +145,13 @@ class UsuariosForm extends Component {
         await axios.get(URL_DEV + 'user/users/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close() 
-                const { tipos, departamentos, proyectos } = response.data
+                const { tipos, departamentos, proyectos, empleados } = response.data
                 const { options } = this.state
 
                 options['departamentos'] = setOptions(departamentos, 'nombre', 'id')
                 options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
                 options['tipos'] = setSelectOptions(tipos,'tipo' )
+                options['empleados'] = setOptions(empleados, 'nombre', 'id')
                 
                 this.setState({
                     ... this.state,
