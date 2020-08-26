@@ -9,9 +9,10 @@ import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClic
 import esLocale from '@fullcalendar/core/locales/es';
 import { forbiddenAccessAlert, errorAlert } from '../../../functions/alert';
 import { URL_DEV } from '../../../constants';
+import { Card } from 'react-bootstrap' 
 
-
-import { Card } from 'react-bootstrap'
+// import bootstrapPlugin from '@fullcalendar/bootstrap'
+const $ = require('jquery');
 
 class Vacaciones extends Component {
 
@@ -25,8 +26,16 @@ class Vacaciones extends Component {
             }
         ]
     }
-
+    
     componentDidMount(){
+        // if(document.body.classList.contains('fc'))
+        // {           
+            // document.body.classList.remove('fc-media-screen');   
+            // document.body.classList.remove('fc-direction-ltr'); 
+            // document.body.classList.remove('fc-theme-standard');   
+            // document.body.classList.add('fc-ltr');
+            // document.body.classList.add('fc-unthemed');
+        // }
         const { authUser: { user : { permisos : permisos } } } = this.props
         const { history : { location: { pathname: pathname } } } = this.props
         const { match : { params: { action: action } } } = this.props
@@ -35,7 +44,9 @@ class Vacaciones extends Component {
             const { modulo: { url: url } } = element
             return pathname === url
         });
+
         this.getVacaciones()
+        
     }
 
     handleDateClick = (arg) => { // bind with an arrow function
@@ -60,7 +71,7 @@ class Vacaciones extends Component {
                             title: empleado.nombre,
                             start: Number(Number(año) + Number(x))+'-'+mes+'-'+dia,
                             end: Number(Number(año) + Number(x))+'-'+mes+'-'+dia,
-                            iconClass: 'fas fa-birthday-cake',
+                            iconClass: 'fas fa-birthday-cake icon-md',
                             containerClass: 'cumpleaños'
                         })
                     }
@@ -74,6 +85,8 @@ class Vacaciones extends Component {
                         containerClass: 'vacaciones'
                     })
                 })
+
+                
 
                 this.setState({
                     ... this.state,
@@ -108,13 +121,22 @@ class Vacaciones extends Component {
                     <Card.Body>
                         <FullCalendar
                             locale = { esLocale }
-                            plugins = {[ dayGridPlugin, interactionPlugin ]}
+                            plugins = {[ dayGridPlugin, interactionPlugin, 
+                                            // bootstrapPlugin 
+                                        ]}
                             initialView = "dayGridMonth"
                             weekends = { true }
                             events = { events }
                             dateClick = { this.handleDateClick }
                             eventContent = { renderEventContent }
                             firstDay = { 1 }
+                            headerToolbar=  {{
+                                left: 'prev,next today',
+                                center: 'title',
+                                right: 'dayGridMonth' 
+                                
+                            }}
+                            themeSystem ='bootstrap'
                             />
                     </Card.Body>
 				</Card>
@@ -130,6 +152,7 @@ function renderEventContent(eventInfo) {
             <i className={eventInfo.event._def.extendedProps.iconClass+" kt-font-boldest mr-3"}></i> 
             <span>{eventInfo.event.title}</span>
         </div>
+        
     )
 }
 const mapStateToProps = state => {
