@@ -1,12 +1,8 @@
 import React, { Component } from 'react'
-import { connect } from "react-redux";
-import { Form, Accordion, Card } from 'react-bootstrap'
-import { SelectSearchSinText, InputMoneySinText, InputNumberSinText, InputSinText, Button } from '../../form-components'
-import { validateAlert, errorAlert, waitAlert, forbiddenAccessAlert } from '../../../functions/alert'
-import { URL_DEV } from '../../../constants'
-import { setOptions, setMoneyTable, setMoneyTableForNominas } from '../../../functions/setters'
-import axios from "axios";
-import swal from "sweetalert";
+import { Form, Card } from 'react-bootstrap'
+import { InputMoneySinText, InputNumberSinText, InputSinText, Button } from '../../form-components'
+import { validateAlert } from '../../../functions/alert'
+import { setMoneyTableForNominas } from '../../../functions/setters'
 import Moment from 'react-moment'
 import ReactTooltip from 'react-tooltip/dist';
 class ActualizarPresupuestoForm extends Component {
@@ -75,6 +71,17 @@ class ActualizarPresupuestoForm extends Component {
         if(presupuesto.conceptos[key].concepto.subpartida.id !== presupuesto.conceptos[key-1].concepto.subpartida.id)
             return true
         return false
+    }
+
+    getIdentificador = () => {
+        const { presupuesto } = this.props
+        let identificador = 100
+        presupuesto.pdfs.map( (pdf, key) => {
+            if( pdf.pivot.identificador >  identificador)
+                identificador = pdf.pivot.identificador
+        })
+        identificador++
+        return identificador.toString()
     }
 
     render() {
@@ -257,10 +264,14 @@ class ActualizarPresupuestoForm extends Component {
                                                 </div>
                                             </div>
                                             <div className="d-flex flex-column font-weight-bold">
-                                                <div className="text-dark mb-1">
-                                                    No.1
+                                            <div className="text-dark mb-1">
+                                                    No. {
+                                                        this.getIdentificador()
+                                                    }
                                                 </div>
-                                                <span className="text-muted">Presupuesto</span>
+                                                <span className="text-muted">                                                    
+                                                    PRESUPUESTO
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -294,24 +305,24 @@ class ActualizarPresupuestoForm extends Component {
                                             <th className="check_desc border-0">
                                                 <div className="font-size-sm text-center"></div>
                                             </th>
-                                            <th className="clave border-0">
+                                            <th className="clave border-0 center_content">
                                                 <div className="font-size-sm text-center">Clave</div>
                                             </th>
-                                            <th className="descripcion border-0">
+                                            <th className="descripcion border-0 center_content">
                                                 <div className="font-size-sm text-center">Descripción</div>
                                             </th>
-                                            <th className="border-0">
+                                            <th className="border-0 center_content">
                                                 <div className="font-size-sm text-center">Unidad</div>
                                             </th>
-                                            <th className="border-0">
+                                            <th className="border-0 center_content">
                                                 <div className="font-size-sm text-center">Costo</div>
                                             </th>
-                                            <th className="border-0">
+                                            <th className="border-0 center_content">
                                                 <div className="font-size-sm text-center">Cantidad Preliminar</div>
                                             </th>
                                             <th className="border-0">
                                                 <div className="font-size-sm text-center">% Despercicio</div>
-                                                <div>
+                                                <div className="d-flex justify-content-center">
                                                     <InputNumberSinText
                                                         identificador = { "desperdicio-global" }
                                                         requirevalidation = { 0 }
@@ -325,10 +336,10 @@ class ActualizarPresupuestoForm extends Component {
                                                     />
                                                 </div>
                                             </th>
-                                            <th className="border-0">
+                                            <th className="border-0 center_content">
                                                 <div className="font-size-sm text-center">Cantidad</div>
                                             </th>
-                                            <th className="border-0">
+                                            <th className="border-0 center_content">
                                                 <div className="font-size-sm text-center">Importe</div>
                                                 <div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder font-size-sm text-center">
                                                     {
@@ -343,11 +354,11 @@ class ActualizarPresupuestoForm extends Component {
                                             presupuesto.conceptos.map((concepto, key) => {
                                                 return (
                                                     <>
-                                                        {
+                                                        {/* {
                                                             concepto.mensaje ?
                                                                 <tr>
                                                                     <td>
-                                                                        <ReactTooltip id={key + '-th'} type='light' class="popover tooltip-inner2"  >
+                                                                        <ReactTooltip id={key + '-th'} type='light' className="popover tooltip-inner2"  >
                                                                             <div>
                                                                                 {
                                                                                     concepto.user_comentario ?
@@ -369,7 +380,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                 : ''
 
                                                                 
-                                                        }
+                                                        } */}
                                                         {
                                                             this.getPartida(key)?
                                                                 <tr>

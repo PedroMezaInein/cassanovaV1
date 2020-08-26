@@ -278,12 +278,12 @@ class ActualizarPresupuestoForm extends Component {
                                             </div>
                                             <div className="d-flex flex-column font-weight-bold">
                                                 <div className="text-dark mb-1">
-                                                    No.1
-                                                </div>
-                                                <span className="text-muted">
-                                                    {
+                                                    No. {
                                                         this.getIdentificador()
                                                     }
+                                                </div>
+                                                <span className="text-muted">                                                    
+                                                    PRESUPUESTO
                                                 </span>
                                             </div>
                                         </div>
@@ -318,9 +318,16 @@ class ActualizarPresupuestoForm extends Component {
                             </Card.Header>
 
                             <Card.Body className="pt-2">
-                                <div className="d-flex justify-content-end">
+                                <div className="d-flex justify-content-start">
+                                <div className="d-flex align-items-center">
+                                    <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Mostrar fechas</Tooltip>}>
+                                        <a className="btn btn-icon btn-light-primary" onClick={() => { this.mostrarFormulario() }}>
+                                            <i className="flaticon2-calendar-9"></i>
+                                        </a>
+                                    </OverlayTrigger>
+                                </div>
                                 <div className={this.state.showFechas ? 'w-100 formulario-escondido' : 'w-0 overflow-hidden formulario-escondido'}>
-                                    <div className="form-group row form-group-marginless m-0 mb-3">
+                                    <div className="form-group row form-group-marginless m-0 mb-3 d-flex justify-content-end">
                                         {/* <div className="col-md-5">
                                             <Calendar
                                                 formeditado={formeditado}
@@ -331,9 +338,9 @@ class ActualizarPresupuestoForm extends Component {
                                                 patterns={DATE}
                                             />
                                         </div> */}
-                                        <div className="col-md-2">
+                                        <div className="col-md-2 pr-0">
                                             <Calendar
-                                                requirevalidation={0}
+                                                // requirevalidation={0}
                                                 formeditado={formeditado}
                                                 onChangeCalendar={this.handleChangeDateAceptado}
                                                 placeholder="FECHA DE ACEPTACIÓN"
@@ -342,19 +349,13 @@ class ActualizarPresupuestoForm extends Component {
                                                 patterns={DATE}
                                             />
                                         </div>
-                                        <div className="col-md-2 align-self-end d-flex justify-content-center pb-1">
+                                        <div className="px-3 align-self-end d-flex justify-content-center pb-1">
                                             <Button icon='' onClick = { aceptarPresupuesto } className="text-center mx-auto" text='Enviar' />
                                         </div>
                                         
                                     </div>
                                 </div>
-                                    <div className="d-flex align-items-center">
-                                    <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Mostrar fechas</Tooltip>}>
-                                        <a class="btn btn-icon btn-light-primary" onClick={() => { this.mostrarFormulario() }}>
-                                            <i class="flaticon2-calendar-9"></i>
-                                        </a>
-                                    </OverlayTrigger>
-                                    </div>
+                                    
                                 </div>
 
                                 
@@ -364,21 +365,21 @@ class ActualizarPresupuestoForm extends Component {
                                             <th className="check_desc border-0">
                                                 <div className="font-size-sm text-center"></div>
                                             </th>
-                                            <th className="clave border-0">
+                                            <th className="clave border-0 center_content">
                                                 <div className="font-size-sm text-center">Clave</div>
                                             </th>
-                                            <th className="descripcion border-0">
+                                            <th className="descripcion border-0 center_content">
                                                 <div className="font-size-sm text-center">Descripción</div>
                                             </th>
-                                            <th className="border-0">
+                                            <th className="border-0 center_content">
                                                 <div className="font-size-sm text-center">Unidad</div>
                                             </th>
-                                            <th className="border-0">
+                                            <th className="border-0 center_content">
                                                 <div className="font-size-sm text-center">Costo</div>
                                             </th>
-                                            <th className="border-0">
+                                            <th className="border-0 center_content">
                                                 <div className="font-size-sm text-center">% Margen</div>
-                                                <div>
+                                                <div className="d-flex justify-content-center">
                                                     <InputNumberSinText
                                                         identificador={"margen-global"}
                                                         requirevalidation={0}
@@ -388,17 +389,17 @@ class ActualizarPresupuestoForm extends Component {
                                                         onChange={this.onChangeDesperdicio}
                                                         thousandSeparator={true}
                                                         prefix={'%'} 
-                                                        customstyle={{borderColor: "#e5eaee"}}
+                                                        customstyle={{borderColor: "#e5eaee", width: "57px"}}
                                                     />
                                                 </div>
                                             </th>
-                                            <th className="border-0">
+                                            <th className="border-0 center_content">
                                                 <div className="font-size-sm text-center">Cantidad</div>
                                             </th>
-                                            <th className="border-0">
+                                            <th className="border-0 center_content">
                                                 <div className="font-size-sm text-center">Precio Unitario</div>
                                             </th>
-                                            <th className="border-0">
+                                            <th className="border-0 center_content">
                                                 <div className="font-size-sm text-center">Importe</div>
                                                 <div className="p-0 my-0 text-primary bg-primary-o-40 font-weight-bolder font-size-sm text-center">
                                                     {
@@ -413,9 +414,9 @@ class ActualizarPresupuestoForm extends Component {
                                             presupuesto.conceptos.map((concepto, key) => {
                                                 return (
                                                     <>
-                                                        {
+                                                        {/* {
                                                             concepto.mensaje ?
-                                                                <ReactTooltip id={key + '-th'} type='light' class="popover tooltip-inner2">
+                                                                <ReactTooltip id={key + '-th'} type='light' className="popover tooltip-inner2">
                                                                     <div>
                                                                         {
                                                                             concepto.user_comentario ?
@@ -433,7 +434,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                     </div>
                                                                 </ReactTooltip>
                                                                 : ''
-                                                        }
+                                                        } */}
                                                         {
                                                             this.getPartida(key) ?
                                                                 <tr>
@@ -530,6 +531,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                     typeformat="###########"
                                                                     disabled={!form.conceptos[key].active} 
                                                                     customstyle={{borderColor: "#e5eaee"}}
+                                                                    prefix={"$"}
                                                                 />
                                                             </td>
                                                             <td className="text-center">
@@ -543,7 +545,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                     thousandSeparator={true}
                                                                     prefix={'%'}
                                                                     disabled={!form.conceptos[key].active}
-                                                                    customstyle={{borderColor: "#e5eaee"}}
+                                                                    customstyle={{borderColor: "#e5eaee", width: "57px"}}
                                                                 />
                                                             </td>
                                                             <td className="text-center">

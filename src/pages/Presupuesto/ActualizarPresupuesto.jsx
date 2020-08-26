@@ -306,7 +306,7 @@ class ActualizarPresupuesto extends Component {
             if(presupuesto.conceptos[key][name].toString() !== form.conceptos[key][name].toString()){
                 form.conceptos[key].mensajes.active = true
                 let aux = value ? value : 0
-                form.conceptos[key].mensajes.mensaje = ('Actualización del desecho a un '+ value + '%').toUpperCase()
+                form.conceptos[key].mensajes.mensaje = ('Actualización del desperdicio a un '+ value + '%').toUpperCase()
             }else{
                 form.conceptos[key].mensajes.active = false
                 form.conceptos[key].mensajes.mensaje = ''
