@@ -11,11 +11,16 @@ import { forbiddenAccessAlert, errorAlert } from '../../../functions/alert';
 import { URL_DEV } from '../../../constants';
 
 
-import { Card } from 'react-bootstrap'
+import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { setTextTable, setDateTable } from '../../../functions/setters';
+import { Button } from '../../../components/form-components';
+import { faTrashAlt, faCalendarCheck } from '@fortawesome/free-solid-svg-icons';
+import { Modal } from '../../../components/singles'
 
 class Vacaciones extends Component {
 
     state = {
+        modal: false,
         events: [
             {
                 title: 'Evento 1',
@@ -23,7 +28,8 @@ class Vacaciones extends Component {
                 end: '2020-08-05',
                 iconClass: 'fas fa-user-tie'
             }
-        ]
+        ],
+        espera: []
     }
 
     componentDidMount(){
@@ -43,11 +49,25 @@ class Vacaciones extends Component {
         alert(arg.dateStr)
     }
 
+    openModal = () => {
+        this.setState({
+            ... this.state,
+            modal: true
+        })
+    }
+
+    handleClose = () => {
+        this.setState({
+            ... this.state,
+            modal: false
+        })
+    }
+
     async getVacaciones() {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'vacaciones', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'vacaciones/vacaciones', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empleados, vacaciones } = response.data
+                const { empleados, vacaciones, vacaciones_espera } = response.data
                 let aux = []
                 let mes = ''
                 let dia = ''
@@ -77,7 +97,8 @@ class Vacaciones extends Component {
 
                 this.setState({
                     ... this.state,
-                    events: aux
+                    events: aux,
+                    espera: vacaciones_espera
                 })
 
             },
@@ -96,13 +117,20 @@ class Vacaciones extends Component {
     }
 
     render() {
-        const { events } = this.state
+        const { events, espera, modal } = this.state
         return (
             <Layout active='rh'  {...this.props}>
                 <Card className="card-custom"> 
                     <Card.Header>
                         <div className="card-title">
                             <h3 className="card-label">Vacaciones</h3>
+                        </div>
+                        <div className="card-toolbar">
+                            <OverlayTrigger overlay={<Tooltip>Mostrar solicitudes</Tooltip>}>
+                                <a className="btn btn-light-primary font-weight-bold px-2" onClick={this.openModal}>
+                                    <i className="fas fa-umbrella-beach"></i>
+                                </a>
+                            </OverlayTrigger>
                         </div>
                     </Card.Header>
                     <Card.Body>
@@ -118,6 +146,56 @@ class Vacaciones extends Component {
                             />
                     </Card.Body>
 				</Card>
+                <Modal title = "Solicitudes de vacaciones" show = { modal } handleClose = { this.handleClose } >
+                    {
+                        espera.map( ( empleado, key) => {
+                            return(
+                                <Card className="card-custom" key = { key } >
+                                    <Card.Header>
+                                        <div className="card-title">
+                                            { empleado.nombre }
+                                        </div>
+                                    </Card.Header>
+                                    <Card.Body>
+                                        {
+                                            empleado.vacaciones.map( (vacacion, key) => {
+                                                return(
+                                                    <div className="row mx-0">
+                                                        <div className="col-md-4">
+                                                            <div className="d-flex align-items-center h-100">
+                                                                {
+                                                                    setDateTable(vacacion.fecha_inicio)
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <div className="d-flex align-items-center h-100">
+                                                                {
+                                                                    setDateTable(vacacion.fecha_fin)
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <Button icon={faCalendarCheck} 
+                                                                pulse={"pulse-ring"} 
+                                                                className={"btn btn-icon btn-light-primary pulse pulse-primary mr-2 ml-auto"}
+                                                                onClick = { (e) =>  { e.preventDefault(); alert('Aceptar vacaciones')} }/>
+                                                            <Button icon={faTrashAlt} 
+                                                                pulse={"pulse-ring"} 
+                                                                className={"btn btn-icon btn-light-danger pulse pulse-danger"}
+                                                                onClick = { (e) =>  { e.preventDefault(); alert('Rechazar vacaciones')} }/>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                        
+                                    </Card.Body>
+                                </Card>
+                            )
+                        })
+                    }
+                </Modal>
             </Layout>
         );
     }
