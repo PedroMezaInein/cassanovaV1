@@ -136,7 +136,7 @@ class TareaForm extends Component {
 
                         </div>
                     </div>
-                    {/* <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Tooltip!</Tooltip>}>
+                    {/* <OverlayTrigger overlay={<Tooltip>Tooltip!</Tooltip>}>
                     <span className="d-inline-block">
                         <Button disabled style={{ pointerEvents: 'none' }}>
                         Disabled button
@@ -145,7 +145,7 @@ class TareaForm extends Component {
                     </OverlayTrigger> */}
 
                     {
-                        /* <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Terminar</Tooltip>}>
+                        /* <OverlayTrigger overlay={<Tooltip>Terminar</Tooltip>}>
                                 <span className="d-inline-block"> 
                                     <Button style={{ pointerEvents: 'none' }} icon = {faCalendarCheck} pulse={"pulse-ring"} className={"btn btn-icon btn-light-primary pulse pulse-primary mr-2"} onClick = { () => this.onClickEnd() } />
                                 </span>

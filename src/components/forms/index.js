@@ -32,6 +32,7 @@ import contabilidadForm from './reportes/ContabilidadForm'
 import flujosForm from './administracion/FlujosForm'
 import clienteUserForm from './usuarios/ClienteUserForm'
 import changePasswordForm from './perfil/ChangePasswordForm'
+import solicitarVacacionesForm from './perfil/SolicitarVacacionesForm'
 import nominaObraForm from './recursoshumanos/NominaObraForm'
 import adjuntosForm from './AdjuntosForm'
 import nominaAdminForm from './recursoshumanos/NominaAdminForm'
@@ -76,6 +77,7 @@ export const ContabilidadForm = contabilidadForm
 export const FlujosForm = flujosForm
 export const ClienteUserForm = clienteUserForm
 export const ChangePasswordForm = changePasswordForm
+export const SolicitarVacacionesForm = solicitarVacacionesForm
 export const NominaObraForm = nominaObraForm
 export const AdjuntosForm = adjuntosForm
 export const NominaAdminForm = nominaAdminForm
