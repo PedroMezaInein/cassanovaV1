@@ -9,5 +9,15 @@
     background-color: #388E3C;
 }
 .cumpleaños{
-    background-color: $blue-plataforma;
+    color: #2171c1;
+    background-color: #E1F0FF;
+    border-color: #E1F0FF!important;
+    i{
+        color: #2171c1;
+    } 
+}
+#calendar {
+    float: right;
+    width: 900px;
+    color:red;
 }

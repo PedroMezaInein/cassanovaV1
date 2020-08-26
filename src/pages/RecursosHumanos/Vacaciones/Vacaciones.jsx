@@ -9,15 +9,14 @@ import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClic
 import esLocale from '@fullcalendar/core/locales/es';
 import { forbiddenAccessAlert, errorAlert } from '../../../functions/alert';
 import { URL_DEV } from '../../../constants';
-import { Card } from 'react-bootstrap' 
-// import bootstrapPlugin from '@fullcalendar/bootstrap'
-const $ = require('jquery');
+import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { setTextTable, setDateTable } from '../../../functions/setters';
 import { Button } from '../../../components/form-components';
 import { faTrashAlt, faCalendarCheck } from '@fortawesome/free-solid-svg-icons';
 import { Modal } from '../../../components/singles'
-
+import { Calendar } from '@fullcalendar/core';
+import googleCalendarPlugin from '@fullcalendar/google-calendar';
 class Vacaciones extends Component {
 
     state = {
@@ -150,7 +149,7 @@ class Vacaciones extends Component {
                         <FullCalendar
                             locale = { esLocale }
                             plugins = {[ dayGridPlugin, interactionPlugin, 
-                                            // bootstrapPlugin 
+                                            bootstrapPlugin 
                                         ]}
                             initialView = "dayGridMonth"
                             weekends = { true }
