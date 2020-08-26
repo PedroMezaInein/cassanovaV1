@@ -320,7 +320,7 @@ class ActualizarPresupuestoForm extends Component {
                             <Card.Body className="pt-2">
                                 <div className="d-flex justify-content-start">
                                 <div className="d-flex align-items-center">
-                                    <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Mostrar fechas</Tooltip>}>
+                                    <OverlayTrigger overlay={<Tooltip>Mostrar fechas</Tooltip>}>
                                         <a className="btn btn-icon btn-light-primary" onClick={() => { this.mostrarFormulario() }}>
                                             <i className="flaticon2-calendar-9"></i>
                                         </a>

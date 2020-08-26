@@ -222,7 +222,7 @@ class PresupuestoForm extends Component {
                                                     <a className="text-dark text-hover-primary font-weight-bold font-size-h4 mr-3"> CONCEPTOS SELECCIONADOS</a>
                                                 </div>
                                                 <div className="d-flex py-2">
-                                                    <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Formulario</Tooltip>}>
+                                                    <OverlayTrigger overlay={<Tooltip>Formulario</Tooltip>}>
                                                         <button type="button" className="btn btn-light-primary font-weight-bold mr-2" onClick={() => { this.mostrarFormulario() }}>Siguiente</button>
                                                     </OverlayTrigger>
                                                 </div>
