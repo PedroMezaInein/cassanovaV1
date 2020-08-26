@@ -1,22 +1,98 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Layout from '../../../components/layout/layout';
+import axios from 'axios';
 
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
 import esLocale from '@fullcalendar/core/locales/es';
+import { forbiddenAccessAlert, errorAlert } from '../../../functions/alert';
+import { URL_DEV } from '../../../constants';
+
+
 import { Card } from 'react-bootstrap'
 
 class Vacaciones extends Component {
 
     state = {
-        events: []
+        events: [
+            {
+                title: 'Evento 1',
+                start: '2020-08-05',
+                end: '2020-08-05',
+                iconClass: 'fas fa-user-tie'
+            }
+        ]
+    }
+
+    componentDidMount(){
+        const { authUser: { user : { permisos : permisos } } } = this.props
+        const { history : { location: { pathname: pathname } } } = this.props
+        const { match : { params: { action: action } } } = this.props
+        const { history, location: { state: state} } = this.props
+        const remisiones = permisos.find(function(element, index) {
+            const { modulo: { url: url } } = element
+            return pathname === url
+        });
+        this.getVacaciones()
     }
 
     handleDateClick = (arg) => { // bind with an arrow function
         console.log(arg)
         alert(arg.dateStr)
+    }
+
+    async getVacaciones() {
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'vacaciones', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empleados, vacaciones } = response.data
+                let aux = []
+                let mes = ''
+                let dia = ''
+                let año = new Date().getFullYear();
+                empleados.map( (empleado, key) => {
+                    mes = empleado.rfc.substr(6,2);
+                    dia = empleado.rfc.substr(8,2);
+                    for(let x = -5; x <= 5; x++){
+                        aux.push({
+                            title: empleado.nombre,
+                            start: Number(Number(año) + Number(x))+'-'+mes+'-'+dia,
+                            end: Number(Number(año) + Number(x))+'-'+mes+'-'+dia,
+                            iconClass: 'fas fa-birthday-cake',
+                            containerClass: 'cumpleaños'
+                        })
+                    }
+                })
+                vacaciones.map( (vacacion) => {
+                    aux.push({
+                        title: vacacion.empleado.nombre,
+                        start: vacacion.fecha_inicio,
+                        end: vacacion.fecha_fin,
+                        iconClass: 'fas fa-umbrella-beach',
+                        containerClass: 'vacaciones'
+                    })
+                })
+
+                this.setState({
+                    ... this.state,
+                    events: aux
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     render() {
@@ -50,8 +126,8 @@ class Vacaciones extends Component {
 function renderEventContent(eventInfo) {
     console.log(eventInfo)
     return (
-        <div class="event">
-            <i className={eventInfo.event._def.extendedProps.iconClass+" kt-font-boldest"}></i> 
+        <div className={eventInfo.event._def.extendedProps.containerClass + ' evento'}>
+            <i className={eventInfo.event._def.extendedProps.iconClass+" kt-font-boldest mr-3"}></i> 
             <span>{eventInfo.event.title}</span>
         </div>
     )

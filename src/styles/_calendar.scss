@@ -1,7 +1,13 @@
-.event{
+.evento{
     padding: 0.2rem 1rem;
-    background-color: $blue-plataforma;
+    border: 0px;
     i{
-        color: red
+        color: white
     }
+}
+.vacaciones{
+    background-color: #388E3C;
+}
+.cumpleaños{
+    background-color: $blue-plataforma;
 }
