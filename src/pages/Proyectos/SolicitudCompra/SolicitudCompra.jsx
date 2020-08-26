@@ -271,7 +271,7 @@ class SolicitudCompra extends Component{
                             solicitud.convertido ? '' :
                                 <div className="col-md-12 mb-3 d-flex justify-content-end">
                                     <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.changePageConvert(solicitud)} } text='' icon={faSync} color="transparent" 
-                                        tooltip={{id:'convertir', text:'Comprar', type:'success'}} />
+                                        tooltip={{id:'convertir', text:'COMPRAR', type:'success'}} />
                                 </div>
                         }
                         

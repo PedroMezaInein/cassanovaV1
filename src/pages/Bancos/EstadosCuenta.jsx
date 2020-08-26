@@ -392,7 +392,7 @@ class EstadosCuenta extends Component {
 
                         <div className="row mx-0">
                             <div className="col-md-12 text-center mt-3">
-                                <Button icon='' className="mx-auto" type="submit" text="Enviar" />
+                                <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
                             </div>
                         </div>
                     </Form>

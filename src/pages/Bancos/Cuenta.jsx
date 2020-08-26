@@ -866,8 +866,8 @@ class Cuentas extends Component {
                 </Modal>
                 <Modal size="xl" title={cuenta === null ? "¿Estás seguro que deseas eliminar la cuenta " : "¿Estás seguro que deseas eliminar la cuenta " + cuenta.nombre + " ?"} show={modalDelete} handleClose={this.handleDeleteModal} >
                     <div className="d-flex justify-content-center mt-3">
-                        <Button icon='' onClick={this.handleDeleteModal} text="Cancelar" className={"btn btn-light-primary font-weight-bolder mr-3"} />
-                        <Button icon='' onClick={(e) => { this.safeDelete(e)() }} text="Continuar" className={"btn btn-danger font-weight-bold mr-2"} />
+                        <Button icon='' onClick={this.handleDeleteModal} text="CANCELAR" className={"btn btn-light-primary font-weight-bolder mr-3"} />
+                        <Button icon='' onClick={(e) => { this.safeDelete(e)() }} text="CONTINUAR" className={"btn btn-danger font-weight-bold mr-2"} />
                     </div>
                 </Modal>
                 <Modal size="xl" title={cuenta === null ? "Estados de cuenta para" : "Estados de cuenta para " + cuenta.nombre} show={modalEstado} handleClose={this.handleEstadoClose} >
@@ -926,7 +926,7 @@ class Cuentas extends Component {
                                 {
                                     adjuntoName &&
                                     <div className="d-flex align-items-center justify-content-center">
-                                        <Button className="ml-4" type="submit" text="Enviar" />
+                                        <Button className="ml-4" type="submit" text="ENVIAR" />
                                     </div>
                                 }
                             </div>

@@ -60,7 +60,7 @@ class ChangePasswordFrom extends Component {
 				{
 					form.oldPassword && form.newPassword && form.newPassword2 && form.newPassword === form.newPassword2 ?
 						<div className="mt-3 text-center">
-							<Button icon='' className="mx-auto" type="submit" text="Enviar" />
+							<Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
 						</div>
 						: ''
 				}

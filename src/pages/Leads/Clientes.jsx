@@ -467,14 +467,14 @@ class Leads extends Component {
                             />
                         </div>
                         <div className="mt-3 text-center">
-                            <Button icon='' className="mx-auto" type="submit" text="Enviar" />
+                            <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
                         </div>
                     </Form>
                 </Modal>
                 <Modal size="xl" title= {cliente === null ? "¿Estás seguro que deseas eliminar a ": "¿Estás seguro que deseas eliminar a "+cliente.empresa +" ?"} show={modalDelete} handleClose={this.handleDeleteModal} >
                     <div className="d-flex justify-content-center mt-3">
-                        <Button icon='' onClick={this.handleDeleteModal} text="Cancelar" className={"btn btn-light-primary font-weight-bolder mr-3"}/>
-                        <Button icon='' onClick={(e) => { this.safeDelete(e)(cliente.id) }} text="Continuar" className={"btn btn-danger font-weight-bold mr-2"} />
+                        <Button icon='' onClick={this.handleDeleteModal} text="CANCELAR" className={"btn btn-light-primary font-weight-bolder mr-3"}/>
+                        <Button icon='' onClick={(e) => { this.safeDelete(e)(cliente.id) }} text="CONTINUAR" className={"btn btn-danger font-weight-bold mr-2"} />
                     </div>
                 </Modal>
             </Layout>

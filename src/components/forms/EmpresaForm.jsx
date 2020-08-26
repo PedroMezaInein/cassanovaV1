@@ -70,9 +70,11 @@ class EmpresaForm extends Component {
                         />
                     </div>
                 </div>
-                <div className="card-footer py-2">
-                    <div class="col-form-label text-center">
-                        <Button icon='' className="mx-auto" type="submit" text="Enviar" />
+                <div className="card-footer py-3 pr-1">
+                    <div className="row">
+                        <div className="col-lg-12 text-right pr-0 pb-0">
+                            <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" />
+                        </div>
                     </div>
                 </div>
             </Form>

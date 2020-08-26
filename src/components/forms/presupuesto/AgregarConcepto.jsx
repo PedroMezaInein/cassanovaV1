@@ -140,7 +140,7 @@ class AgregarConcepto extends Component {
                             </div>
                         </div>
                         <div className="d-flex justify-content-center my-3">
-                            <Button icon='' type="submit" className="text-center mx-auto" text='Agregar' />
+                            <Button icon='' type="submit" className="text-center mx-auto" text='AGREGAR' />
                         </div>
                     </Tab>
                     <Tab eventKey="existente" title="Concepto existente">
@@ -237,7 +237,7 @@ class AgregarConcepto extends Component {
                             </div>
                         </div>
                         <div className="d-flex justify-content-center my-3">
-                            <Button icon='' type="submit" className="text-center mx-auto" text='Agregar' />
+                            <Button icon='' type="submit" className="text-center mx-auto" text='AGREGAR' />
                         </div>
                     </Tab>
                 </Tabs>

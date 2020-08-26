@@ -913,7 +913,7 @@ class egresos extends Component{
                             </div>
                         </div>
                         <div className="col-md-12 px-2 align-items-center d-flex">
-                            <Button icon='' className="mx-auto" type="submit" text="Enviar" />
+                            <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
                         </div>
                     </Form>
                     <FacturaTable deleteFactura = { this.deleteFactura } facturas = { facturas } />

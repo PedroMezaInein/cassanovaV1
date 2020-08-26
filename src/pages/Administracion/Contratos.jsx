@@ -894,7 +894,7 @@ class Contratos extends Component {
                             </div>
                         </div>
                         <div className="mt-3 text-center">
-                            <Button icon='' className="mx-auto" type="submit" text="Enviar" />
+                            <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
                         </div>
                     </Form>
                     <div className="separator separator-dashed mt-1 mb-2"></div>

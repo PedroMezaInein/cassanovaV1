@@ -47,13 +47,8 @@ class ConceptoForm extends Component {
                 }
 
                 {...props}>
-                <Subtitle className="text-center" color="gold">
-                    {
-                        title
-                    }
-                </Subtitle>
-                <div className="form-group row form-group-marginless mt-5">
-                    <div className="col-md-6">
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-4">
                         <SelectSearch
                             requirevalidation={1}
                             formeditado={formeditado}
@@ -65,22 +60,6 @@ class ConceptoForm extends Component {
                             iconclass={"far fa-folder-open"}
                         />
                     </div>
-                    <div className="col-md-6">
-                        <FileInput
-                            requirevalidation={0}
-                            formeditado={formeditado}
-                            onChangeAdjunto={onChangeAdjunto}
-                            placeholder={form.adjuntos.adjunto.placeholder}
-                            value={form.adjuntos.adjunto.value}
-                            name='adjunto' id='adjunto'
-                            accept="image/*, application/pdf"
-                            files={form.adjuntos.adjunto.files}
-                            deleteAdjunto={clearFiles} multiple
-                        />
-                    </div>
-                </div>
-                <div className="separator separator-dashed mt-1 mb-2"></div>
-                <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Calendar
                             onChangeCalendar={this.handleChangeDate}
@@ -102,7 +81,9 @@ class ConceptoForm extends Component {
                             iconclass={"far fa-window-maximize"}
                         />
                     </div>
-
+                </div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
                     {
                         form.area ?
                             <div className="col-md-4">
@@ -119,6 +100,19 @@ class ConceptoForm extends Component {
                             </div>
                             : ''
                     }
+                    <div className="col-md-8">
+                        <FileInput
+                            requirevalidation={0}
+                            formeditado={formeditado}
+                            onChangeAdjunto={onChangeAdjunto}
+                            placeholder={form.adjuntos.adjunto.placeholder}
+                            value={form.adjuntos.adjunto.value}
+                            name='adjunto' id='adjunto'
+                            accept="image/*, application/pdf"
+                            files={form.adjuntos.adjunto.files}
+                            deleteAdjunto={clearFiles} multiple
+                        />
+                    </div>
                 </div>
 
                 <div className="separator separator-dashed mt-1 mb-2"></div>
@@ -138,8 +132,12 @@ class ConceptoForm extends Component {
                     </div>
                 </div>
 
-                <div className="d-flex justify-content-center my-3">
-                    <Button icon='' type="submit" className="text-center mx-auto" text='Enviar' />
+                <div className="card-footer py-3 pr-1">
+                    <div className="row">
+                        <div className="col-lg-12 text-right pr-0 pb-0">
+                            <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" />
+                        </div>
+                    </div>
                 </div>
 
             </Form>

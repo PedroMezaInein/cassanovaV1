@@ -468,11 +468,21 @@ class Contabilidad extends Component {
         const { form, options } = this.state
         return (
             <Layout active={'reportes'}  {...this.props}>
-                <Card className="m-2 p-2 m-md-4 p-md-4">
+                <Card className="card-custom">
+                    <Card.Header>
+                        <div className="card-title">
+                            <h3 className="card-label">Reporte</h3>
+                        </div>
+                    </Card.Header>
                     <Card.Body>
-                        <ContabilidadForm form = { form } options = { options } onChangeEmpresa = { this.onChangeEmpresa } 
-                            updateEmpresa = { this.updateEmpresa } onChange = { this.onChange } onSubmit = { this.onSubmit }/>
-                            
+                        <ContabilidadForm 
+                            form = { form } 
+                            options = { options } 
+                            onChangeEmpresa = { this.onChangeEmpresa } 
+                            updateEmpresa = { this.updateEmpresa } 
+                            onChange = { this.onChange } 
+                            onSubmit = { this.onSubmit }
+                        />                            
                     </Card.Body>
                 </Card>
             </Layout>

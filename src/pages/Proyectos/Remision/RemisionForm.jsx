@@ -308,10 +308,13 @@ class RemisionForm extends Component{
         const { form, title, options } = this.state
 
         return(
-            <Layout active={'proyectos'}  { ...this.props}>
-
-                
-                <Card className="m-2 p-2 m-md-4 p-md-4">
+            <Layout active={'proyectos'}  { ...this.props}>                
+                <Card className="card-custom">
+                    <Card.Header>
+                        <div className="card-title">
+                            <h3 className="card-label">{title}</h3>
+                        </div>
+                    </Card.Header>
                     <Card.Body>
                         <RemisionFormulario 
                             title = { title } 
@@ -322,11 +325,9 @@ class RemisionForm extends Component{
                             onSubmit = {this.onSubmit}
                             onChangeAdjunto = { this.onChangeAdjunto }
                             clearFiles = { this.clearFiles }
-                            /> 
-
+                            />
                     </Card.Body>    
                 </Card>
-
             </Layout>
         )
     }

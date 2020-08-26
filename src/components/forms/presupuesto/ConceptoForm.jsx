@@ -47,7 +47,7 @@ class ConceptoForm extends Component {
                 }
                 {...props}
             >
-                <div className="form-group row form-group-marginless pt-4">
+                <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <SelectSearch
                             formeditado={formeditado}
@@ -125,9 +125,13 @@ class ConceptoForm extends Component {
                         />
                     </div>
                 </div>
-            <div className="d-flex justify-content-center my-3">
-                <Button icon='' type="submit" className="text-center mx-auto" text='Enviar' />
-            </div>
+                <div className="card-footer py-3 pr-1">
+                    <div className="row">
+                        <div className="col-lg-12 text-right pr-0 pb-0">
+                            <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" />
+                        </div>
+                    </div>
+                </div>
             </Form >
         )
     }

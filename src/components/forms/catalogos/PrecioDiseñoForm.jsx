@@ -22,12 +22,7 @@ class AreaForm extends Component {
                     }
                 }
                 {...props}>
-                <Subtitle className="text-center" color="gold">
-                    {
-                        title
-                    }
-                </Subtitle>
-                <div className="form-group row form-group-marginless pt-4">
+                <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <InputNumber
                             requirevalidation = { 1 }
@@ -129,8 +124,12 @@ class AreaForm extends Component {
                     </div>
                 </div>
 
-                <div className="mt-3 text-center">
-                    <Button icon='' className="mx-auto" type="submit" text="Enviar" />
+                <div className="card-footer py-3 pr-1">
+                    <div className="row">
+                        <div className="col-lg-12 text-right pr-0 pb-0">
+                            <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" />
+                        </div>
+                    </div>
                 </div>
 
             </Form>
