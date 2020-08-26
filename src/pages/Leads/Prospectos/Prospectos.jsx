@@ -453,7 +453,7 @@ class Leads extends Component {
                             formContacto = { formContacto } 
                             onChangeContacto = { this.onChangeContacto } />
                             <div className="mt-3 text-center">
-                                <Button icon='' className="mx-auto" type="submit" text="Enviar" />
+                                <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
                             </div>
                     </Form>
                 </Modal> 
@@ -470,8 +470,8 @@ class Leads extends Component {
                     handleClose = { this.handleCloseConvertModal }
                     title = "¿Estás seguro que deseas convertir el prospecto en un proyecto?">
                     <div className="d-flex justify-content-center mt-3">
-                        <Button icon='' onClick={this.handleCloseConvertModal} text="Cancelar" className="mr-3" className={"btn btn-light-primary font-weight-bolder mr-3"} />
-                        <Button icon='' onClick={(e) => { this.safeConvert(e)(prospecto) }} text="Continuar" className={"btn btn-success font-weight-bold mr-2"}/>
+                        <Button icon='' onClick={this.handleCloseConvertModal} text="CANCELAR" className="mr-3" className={"btn btn-light-primary font-weight-bolder mr-3"} />
+                        <Button icon='' onClick={(e) => { this.safeConvert(e)(prospecto) }} text="CONTINUAR" className={"btn btn-success font-weight-bold mr-2"}/>
                     </div>
                 </Modal>
             </Layout>

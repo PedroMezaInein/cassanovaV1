@@ -166,16 +166,23 @@ class PrecioDiseñoForm extends Component{
         const { form, title } = this.state
 
         return(
-            <Layout active={'catalogos'}  { ...this.props}>
-                
-                <Card className="m-2 p-2 m-md-4 p-md-4">
+            <Layout active={'catalogos'}  { ...this.props}>                
+                <Card className="card-custom">
+                    <Card.Header>
+                        <div className="card-title">
+                            <h3 className="card-label">{title}</h3>
+                        </div>
+                    </Card.Header>
                     <Card.Body>
-
-                        <PrecioDiseñoFormulario onChange = { this.onChange } formeditado = { 0 }  form = { form } title = { title } onSubmit = { this.onSubmit } />
-                        
+                        <PrecioDiseñoFormulario 
+                            onChange = { this.onChange } 
+                            formeditado = { 0 }  
+                            form = { form } 
+                            title = { title } 
+                            onSubmit = { this.onSubmit } 
+                        />                        
                     </Card.Body>    
                 </Card>
-
             </Layout>
         )
     }

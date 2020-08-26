@@ -339,7 +339,7 @@ class NominaObraForm extends Component {
                     <Card.Footer>
                         <div className="row">
                             <div className="col-lg-12 text-right">
-                                <Button text='Enviar' type='submit' className="btn btn-primary mr-2" />
+                                <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" />
                             </div>
                         </div>
                     </Card.Footer>

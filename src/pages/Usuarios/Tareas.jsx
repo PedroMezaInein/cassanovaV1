@@ -633,7 +633,7 @@ class Tareas extends Component{
                     </div>   
                     <div className="form-group row form-group-marginless px-3">
                         <div className="col-md-1">
-                            <Button text="Enviar" className={"btn btn-light-primary font-weight-bolder mr-3"} onClick = { this.addComentario }/> 
+                            <Button text="ENVIAR" className={"btn btn-light-primary font-weight-bolder mr-3"} onClick = { this.addComentario }/> 
                         </div>  
                         <div className="col-md-10">  
                             <div className="image-upload"> 

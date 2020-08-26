@@ -641,14 +641,14 @@ class Leads extends Component{
                 </Modal>
                 <Modal size="xl" title= {leadId === null ? "¿Estás seguro que deseas eliminar el lead": "¿Estás seguro que deseas eliminar el lead "+leadId.nombre +"?"} show={modalDelete} handleClose={this.handleCloseDeleteModal}>
                     <div className="d-flex justify-content-center mt-3">
-                        <Button icon='' onClick={this.handleCloseDeleteModal} text="Cancelar" className={"btn btn-light-primary font-weight-bolder mr-3"}/>
-                        <Button icon='' onClick={(e) => { this.safeDeleteLead(e)(leadId.id) }} text="Continuar" className={"btn btn-danger font-weight-bold mr-2"}/>
+                        <Button icon='' onClick={this.handleCloseDeleteModal} text="CANCELAR" className={"btn btn-light-primary font-weight-bolder mr-3"}/>
+                        <Button icon='' onClick={(e) => { this.safeDeleteLead(e)(leadId.id) }} text="CONTINUAR" className={"btn btn-danger font-weight-bold mr-2"}/>
                     </div>
                 </Modal>
                 <Modal size="xl" title= {leadId === null ? "¿Estás seguro que deseas convertir el lead": "¿Estás seguro que deseas convertir el lead "+leadId.nombre +" en un "+convertir+"?"} show={modalConvert} handleClose={this.handleCloseConvertModal}>
                     <div className="d-flex justify-content-center mt-3">
-                        <Button icon='' onClick={this.handleCloseConvertModal} text="Cancelar" className={"btn btn-light-primary font-weight-bolder mr-3"}/>
-                        <Button icon='' onClick={(e) => { this.safeConvertLead(e)(leadId) }} text="Continuar" className={"btn btn-success font-weight-bold mr-2"}/>
+                        <Button icon='' onClick={this.handleCloseConvertModal} text="CANCELAR" className={"btn btn-light-primary font-weight-bolder mr-3"}/>
+                        <Button icon='' onClick={(e) => { this.safeConvertLead(e)(leadId) }} text="CONTINUAR" className={"btn btn-success font-weight-bold mr-2"}/>
                     </div>
                 </Modal>
             </Layout>

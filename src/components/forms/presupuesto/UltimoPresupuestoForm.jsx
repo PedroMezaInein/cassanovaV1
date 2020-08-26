@@ -350,7 +350,7 @@ class ActualizarPresupuestoForm extends Component {
                                             />
                                         </div>
                                         <div className="px-3 align-self-end d-flex justify-content-center pb-1">
-                                            <Button icon='' onClick = { aceptarPresupuesto } className="text-center mx-auto" text='Enviar' />
+                                            <Button icon='' onClick = { aceptarPresupuesto } className="text-center mx-auto" text='ENVIAR' />
                                         </div>
                                         
                                     </div>

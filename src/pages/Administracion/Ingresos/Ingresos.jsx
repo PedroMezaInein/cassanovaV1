@@ -989,7 +989,7 @@ class Ingresos extends Component {
                                     />
                             </div>
                             <div className="col-md-12 px-2 align-items-center d-flex">
-                                <Button icon='' className="mx-auto" type="submit" text="Enviar" />
+                                <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
                             </div>
                         </div>
                     </Form>

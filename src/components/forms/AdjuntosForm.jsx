@@ -75,13 +75,13 @@ class AdjuntosForm extends Component{
                             ?
                                 form.adjuntos.presupuesto.files.length || form.adjuntos.pago.files.length ?
                                     <div className="mt-3 text-center">
-                                        <Button icon='' className="mx-auto" type="submit" text="Enviar" />
+                                        <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
                                     </div>
                                 : ''
                             :
                                 this.activateButton() ?
                                     <div className="mt-3 text-center">
-                                        <Button icon='' className="mx-auto" type="submit" text="Enviar" />
+                                        <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
                                     </div>
                                 : ''
                     }

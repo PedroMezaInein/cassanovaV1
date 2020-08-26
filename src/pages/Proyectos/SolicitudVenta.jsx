@@ -673,7 +673,7 @@ class SolicitudVenta extends Component{
                         {
                             solicitud.convertido ? '' :
                                 <Button icon = {faSync} pulse={"pulse-ring"} className={"btn btn-icon btn-light-primary pulse pulse-primary"} onClick={(e) => {e.preventDefault(); this.changePageConvert(solicitud)} } 
-                                        tooltip={{id:'convertir', text:'Comprar', type:'info'}}/>
+                                        tooltip={{id:'convertir', text:'COMPRAR', type:'info'}}/>
                         }
                         
                     </SolicitudVentaCard>

@@ -174,7 +174,7 @@ export default class FacturaForm extends Component {
                 </div>
 
                 <div className="d-flex justify-content-center my-3">
-                    <Button icon='' type="submit" className="text-center mx-auto" text='Enviar' />
+                    <Button icon='' type="submit" className="text-center mx-auto" text='ENVIAR' />
                 </div>
 
             </Form>

@@ -273,8 +273,13 @@ class RendimientoForm extends Component {
         const { data, formeditado, form, options, title} = this.state
         return (
             <Layout active={'presupuesto'}  { ...this.props}>
-                <Card className="pt-0">
-                    <Card.Body className="pt-0">
+                <Card className="card-custom">
+                    <Card.Header>
+                        <div className="card-title">
+                            <h3 className="card-label">{title}</h3>
+                        </div>
+                    </Card.Header>
+                    <Card.Body>
                         <RendimientoFormulario 
                             formeditado={formeditado}
                             title = { title } 

@@ -31,7 +31,7 @@ class UnidadForm extends Component {
                     </div>
                 </div>
                 <div className="mt-3 text-center">
-                    <Button icon='' className="mx-auto" type="submit" text="Enviar" />
+                    <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
                 </div>
             </Form>
         )

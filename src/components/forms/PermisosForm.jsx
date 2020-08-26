@@ -240,7 +240,7 @@ class PermisosForm extends Component {
                     }
                 </Accordion>
                 <div className="d-flex justify-content-center my-3">
-                    <Button icon='' type="submit" text='Confirmar' className={"btn btn-light-primary font-weight-bolder mr-3"} />
+                    <Button icon='' type="submit" text='CONFIRMAR' className={"btn btn-light-primary font-weight-bolder mr-3"} />
                 </div>
             </form>
         )
