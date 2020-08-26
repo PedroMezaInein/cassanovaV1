@@ -135,7 +135,7 @@ class Calendario extends Component {
                     }
                 })
                 vacaciones.map( (vacacion) => {
-                    if(vacacion.estatus === 'Aceptado')
+                    if(vacacion.estatus === 'Aceptadas')
                         aux.push({
                             title: vacacion.empleado.nombre,
                             start: vacacion.fecha_inicio,
