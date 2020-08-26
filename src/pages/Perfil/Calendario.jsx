@@ -1,88 +1,133 @@
-import React, { Component } from 'react'; 
-import Layout from '../../components/layout/layout'
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import Layout from '../../components/layout/layout';
+
+import FullCalendar from '@fullcalendar/react'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
+import esLocale from '@fullcalendar/core/locales/es';
 import { Card } from 'react-bootstrap'
-import { connect } from 'react-redux'
-import axios from 'axios'
-import { URL_DEV } from '../../constants'
-import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../functions/alert'
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Tooltip from 'react-bootstrap/Tooltip'
+import { Modal } from '../../components/singles'
+import { SolicitarVacacionesForm } from "../../components/forms";
+class Calendario extends Component {
 
-import { CalendarioForm } from '../../components/forms'
-import swal from 'sweetalert';
+    state = {
+        events: [],
+        formeditado: 0,
+        modal: false,
+        form: {
+            fechaInicio: new Date(),
+            fechaFin: new Date(),
+        }
+    };
 
-class AccountSettings extends Component {
+    handleDateClick = (arg) => { // bind with an arrow function
+        console.log(arg)
+        alert(arg.dateStr)
+    }
+    openModal = () => {
+        this.setState({
+            ... this.state,
+            modal: true,
+            title: 'Solicitar vacaciones',
+            form: this.clearForm(),
+            formeditado: 0
+        })
+    }
 
-	state = {
-		form:{
-			oldPassword: '',
-			newPassword: '',
-			newPassword2: '',
-		}
-	}
-	
-	onChange = e => {
+    clearForm = () => {
         const { form } = this.state
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                case 'fechaInicio':
+                case 'fechaFin':
+                    form[element] = new Date()
+                    break;
+                default:
+                    form[element] = ''
+                    break;
+            }
+        })
+        return form;
+    }
+    handleClose = () => {
+        const { modal, options } = this.state
+        this.setState({
+            ... this.state,
+            modal: !modal,
+            options,
+            title: 'Solicitar vacaciones',
+            concepto: '',
+            form: this.clearForm()
+        })
+    }
+
+    onChange = e => {
         const { name, value } = e.target
+        const { form } = this.state
         form[name] = value
         this.setState({
             ... this.state,
             form
         })
-	}
+    }
 
-	async changePasswordAxios() {
-		const { access_token } = this.props.authUser
-		const { form } = this.state
-        await axios.post(URL_DEV + 'user/users/change-password', form,  { headers: {Authorization:`Bearer ${access_token}`}}).then(
-            (response) => {
-				const { history } = this.props
-
-				doneAlert(response.data.message !== undefined ? response.data.message : 'La contraseña fue actualizada con éxito.')
-				setTimeout(() => {
-					swal.close()
-					history.push({
-						pathname: '/login'
-					});
-				}, 1500);
-				
-            },
-            (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-	}
-
-	render(){		
-		const { form } = this.state
-		return (
-			<>   
-				<Layout { ...this.props}>
-					<Card className="card-custom"> 
-						<Card.Header className="card-header py-3">
-							<Card.Title className="align-items-start flex-column">
-								<h3 className="card-label font-weight-bolder text-dark">Calendario</h3>
-								<span className="text-muted font-weight-bold font-size-sm mt-1">Eventos programados</span>
-							</Card.Title> 
-						</Card.Header> 
-						<Card.Body> 
-							<CalendarioForm form = { form } onChange = { this.onChange } onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.changePasswordAxios()} } />
-						</Card.Body>
-					</Card>
-				</Layout>
-			</>
-		)
-	}
+    render() {
+        const { events, form, title, formeditado, modal, key} = this.state
+        return (
+            <Layout active='rh'  {...this.props}>
+                <Card className="card-custom"> 
+                    <Card.Header>
+                        <div className="card-title">
+                            <h3 className="card-label">Calendario</h3>
+                        </div>
+                        <div class="card-toolbar">
+                        <OverlayTrigger overlay={<Tooltip>Solicitar vacaciones</Tooltip>}>
+                            <a class="btn btn-light-primary font-weight-bold px-2" onClick={this.openModal}>
+                                <i class="fas fa-umbrella-beach"></i>
+                            </a>
+                        </OverlayTrigger>
+                        </div>
+                    </Card.Header>
+                    <Modal title={title} show={modal} handleClose={this.handleClose}>
+                        <SolicitarVacacionesForm
+                            formeditado={formeditado}
+                            form={form}
+                            onChange={this.onChange}
+                        />
+                    </Modal>
+                    <Card.Body>
+                        <FullCalendar
+                            locale = { esLocale }
+                            plugins = {[ dayGridPlugin, interactionPlugin ]}
+                            initialView = "dayGridMonth"
+                            weekends = { true }
+                            events = { events }
+                            dateClick = { this.handleDateClick }
+                            eventContent = { renderEventContent }
+                            firstDay = { 1 }
+                            />
+                    </Card.Body>
+				</Card>
+            </Layout>
+        );
+    }
 }
 
+function renderEventContent(eventInfo) {
+    console.log(eventInfo)
+    return (
+        <div class="event">
+            <i className={eventInfo.event._def.extendedProps.iconClass+" kt-font-boldest"}></i> 
+            <span>{eventInfo.event.title}</span>
+        </div>
+    )
+}
 const mapStateToProps = state => {
-    return{
+    return {
         authUser: state.authUser
     }
 }
@@ -90,4 +135,4 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(AccountSettings);
+export default connect(mapStateToProps, mapDispatchToProps)(Calendario)
