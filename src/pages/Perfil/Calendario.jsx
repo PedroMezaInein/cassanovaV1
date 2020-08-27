@@ -7,24 +7,26 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
 import esLocale from '@fullcalendar/core/locales/es';
-import { Card } from 'react-bootstrap'
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
-import Tooltip from 'react-bootstrap/Tooltip'
+import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { Modal } from '../../components/singles'
-import { SolicitarVacacionesForm } from "../../components/forms";
+import { SolicitarVacacionesForm, EstatusForm} from "../../components/forms";
 import { errorAlert, forbiddenAccessAlert, waitAlert, doneAlert } from '../../functions/alert';
 import { URL_DEV } from '../../constants';
 import bootstrapPlugin from '@fullcalendar/bootstrap'
+import DropdownButton from 'react-bootstrap/DropdownButton'
+import Dropdown from 'react-bootstrap/Dropdown'
 class Calendario extends Component {
 
     state = {
         events: [],
         formeditado: 0,
         modal: false,
+        modal_status:false,
         form: {
             fechaInicio: new Date(),
             fechaFin: new Date(),
-        }
+        },
+        estatus: []
     };
 
     componentDidMount(){
@@ -48,6 +50,15 @@ class Calendario extends Component {
             ... this.state,
             modal: true,
             title: 'Solicitar vacaciones',
+            form: this.clearForm(),
+            formeditado: 0
+        })
+    }
+    openModalEstatus = () => {
+        this.setState({
+            ... this.state,
+            modal_status: true,
+            title: 'Estatus de vacaciones',
             form: this.clearForm(),
             formeditado: 0
         })
@@ -76,7 +87,15 @@ class Calendario extends Component {
             modal: !modal,
             options,
             title: 'Solicitar vacaciones',
-            concepto: '',
+            form: this.clearForm()
+        })
+    }
+    handleCloseEstatus = () => {
+        const { modal_status } = this.state
+        this.setState({
+            ... this.state,
+            modal_status: !modal_status,
+            title: 'Estatus de vacaciones',
             form: this.clearForm()
         })
     }
@@ -116,7 +135,7 @@ class Calendario extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'vacaciones', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empleados, vacaciones } = response.data
+                const { empleados, vacaciones, user_vacaciones} = response.data
                 let aux = []
                 let mes = ''
                 let dia = ''
@@ -147,7 +166,8 @@ class Calendario extends Component {
 
                 this.setState({
                     ... this.state,
-                    events: aux
+                    events: aux,
+                    estatus:user_vacaciones
                 })
 
             },
@@ -166,7 +186,7 @@ class Calendario extends Component {
     }
 
     render() {
-        const { events, form, title, formeditado, modal, key} = this.state
+        const { events, form, title, formeditado, modal, key, modal_status, estatus} = this.state
         return (
             <Layout active='rh'  {...this.props}>
                 <Card className="card-custom"> 
@@ -175,11 +195,16 @@ class Calendario extends Component {
                             <h3 className="card-label">Calendario</h3>
                         </div>
                         <div className="card-toolbar">
-                        <OverlayTrigger overlay={<Tooltip>Solicitar vacaciones</Tooltip>}>
-                            <a className="btn btn-light-primary font-weight-bold px-2" onClick={this.openModal}>
-                                <i className="fas fa-umbrella-beach"></i>
-                            </a>
-                        </OverlayTrigger>
+                        <DropdownButton
+                            title={
+                                <i className="ki ki-bold-more-ver p-0"></i>
+                            }
+                            id={`dropdown-button-drop-left`}
+                            drop={'left'}
+                            >
+                            <Dropdown.Item onClick={this.openModal}>Solicitar vacaciones</Dropdown.Item>
+                            <Dropdown.Item onClick={this.openModalEstatus}>Estatus de vacaciones</Dropdown.Item>
+                        </DropdownButton>
                         </div>
                     </Card.Header>
                     <Modal title={title} show={modal} handleClose={this.handleClose}>
@@ -188,6 +213,14 @@ class Calendario extends Component {
                             form={form}
                             onChange={this.onChange}
                             onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.askVacationAxios()}}
+                        />
+                    </Modal>
+                    <Modal title={title} show={modal_status} handleClose={this.handleCloseEstatus}>
+                        <EstatusForm
+                            formeditado={formeditado}
+                            form={form}
+                            onChange={this.onChange}
+                            estatus={estatus}
                         />
                     </Modal>
                     <Card.Body>
@@ -210,12 +243,13 @@ class Calendario extends Component {
 }
 
 function renderEventContent(eventInfo) {
-    console.log(eventInfo)
     return (
-        <div className={eventInfo.event._def.extendedProps.containerClass + ' evento'}>
-            <i className={eventInfo.event._def.extendedProps.iconClass+" kt-font-boldest mr-3"}></i> 
-            <span>{eventInfo.event.title}</span>
-        </div>
+        <OverlayTrigger overlay={<Tooltip>{eventInfo.event.title}</Tooltip>}>
+            <div className={eventInfo.event._def.extendedProps.containerClass + ' evento'}>
+                <i className={eventInfo.event._def.extendedProps.iconClass + " kt-font-boldest mr-3"}></i>
+                <span>{eventInfo.event.title}</span>
+            </div>
+        </OverlayTrigger>
     )
 }
 const mapStateToProps = state => {
