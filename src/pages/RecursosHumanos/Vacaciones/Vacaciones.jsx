@@ -16,13 +16,14 @@ import { Button } from '../../../components/form-components';
 import { faTrashAlt, faCalendarCheck } from '@fortawesome/free-solid-svg-icons';
 import { Modal } from '../../../components/singles'
 import { Calendar } from '@fullcalendar/core';
-import googleCalendarPlugin from '@fullcalendar/google-calendar';
+// import googleCalendarPlugin from '@fullcalendar/google-calendar';
 class Vacaciones extends Component {
 
     state = {
         modal: false,
         events: [
             {
+                shortName:"Evento 1",
                 title: 'Evento 1',
                 start: '2020-08-05',
                 end: '2020-08-05',
@@ -83,11 +84,14 @@ class Vacaciones extends Component {
                 let dia = ''
                 let año = new Date().getFullYear();
                 empleados.map( (empleado, key) => {
+                    
+                    console.log(empleado)
                     mes = empleado.rfc.substr(6,2);
                     dia = empleado.rfc.substr(8,2);
                     for(let x = -5; x <= 5; x++){
                         aux.push({
                             title: empleado.nombre,
+                            shortName: empleado.nombre.split(" ")[0],
                             start: Number(Number(año) + Number(x))+'-'+mes+'-'+dia,
                             end: Number(Number(año) + Number(x))+'-'+mes+'-'+dia,
                             iconClass: 'fas fa-birthday-cake icon-md',
@@ -97,6 +101,7 @@ class Vacaciones extends Component {
                 })
                 vacaciones.map( (vacacion) => {
                     aux.push({
+                        shortName:"Vacaciones",
                         title: vacacion.empleado.nombre,
                         start: vacacion.fecha_inicio,
                         end: vacacion.fecha_fin,
@@ -146,7 +151,8 @@ class Vacaciones extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <FullCalendar
+                        <FullCalendar 
+                            className={"prueba"}
                             locale = { esLocale }
                             plugins = {[ dayGridPlugin, interactionPlugin, 
                                             bootstrapPlugin 
@@ -225,10 +231,13 @@ class Vacaciones extends Component {
 function renderEventContent(eventInfo) {
     console.log(eventInfo)
     return (
-        <div className={eventInfo.event._def.extendedProps.containerClass + ' evento'}>
+        <OverlayTrigger overlay={<Tooltip>{eventInfo.event.title}</Tooltip>}>
+            <div className={eventInfo.event._def.extendedProps.containerClass + ' evento'}>
             <i className={eventInfo.event._def.extendedProps.iconClass+" kt-font-boldest mr-3"}></i> 
-            <span>{eventInfo.event.title}</span>
-        </div>
+            <span>{eventInfo.event._def.extendedProps.shortName}</span>
+        </div>       
+        </OverlayTrigger>
+        
         
     )
 }

@@ -8,10 +8,15 @@
 .vacaciones{
     background-color: #388E3C;
 }
+a.fc-daygrid-event.fc-daygrid-block-event.fc-h-event.fc-event.fc-event-start.fc-event-end.fc-event-past{
+    border-color:white;
+}
+a.fc-daygrid-event.fc-daygrid-block-event.fc-h-event.fc-event.fc-event-start.fc-event-end.fc-event-future{
+    border-color:white;
+}
 .cumpleaños{
     color: #2171c1;
-    background-color: #E1F0FF;
-    border-color: #E1F0FF!important;
+    background-color: #E1F0FF; 
     i{
         color: #2171c1;
     } 
