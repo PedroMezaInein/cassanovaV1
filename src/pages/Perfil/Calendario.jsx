@@ -43,7 +43,7 @@ class Calendario extends Component {
             const { modulo: { url: url } } = element
             return pathname === url
         });
-        this.getVacaciones()
+        this.getVacacionesAxios()
     }
 
     handleDateClick = (arg) => { // bind with an arrow function
@@ -178,15 +178,91 @@ class Calendario extends Component {
             return contador
     }
 
+    getVacaciones(empleado, vacaciones_totales){
+        let contador =  []
+        let fecha_inicio_empleado = ''
+        if(empleado){
+
+            fecha_inicio_empleado = new Date(empleado.fecha_inicio)
+            fecha_inicio_empleado.setDate(fecha_inicio_empleado.getDate() + 1)
+            
+            let mes = fecha_inicio_empleado.getMonth() + 1
+            
+            if(mes.toString().length === 1){
+                mes = '0'+mes
+            }
+            
+            let dia = fecha_inicio_empleado.getDate()
+            let now = new Date();
+            now.setDate(now.getDate() + 366)
+            let año = now.getFullYear();
+
+            let fecha_fin = new Date(mes+'/'+dia+'/'+año)
+            let fecha_inicio = new Date(mes+'/'+dia+'/'+(año-1))
+
+            if(fecha_fin < fecha_inicio_empleado){
+                fecha_fin = new Date(mes+'/'+dia+'/'+(año+1))
+                fecha_inicio = new Date(mes+'/'+dia+'/'+año)
+            }
+
+            vacaciones_totales.map( (vacacion, key) => {
+                if(vacacion.estatus !== 'Aceptadas'){
+                    let vacacion_fecha_inicio = new Date(vacacion.fecha_inicio)
+                    let vacacion_fecha_fin = new Date(vacacion.fecha_fin)
+                    if(vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin && vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin)
+                        contador.push(vacacion)
+                }
+            })
+
+            return contador
+        }
+        else
+            return contador
+    }
+
     async askVacationAxios(){
         const { access_token } = this.props.authUser
         const { form } = this.state
         await axios.post(URL_DEV + 'vacaciones', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                const { empleados, vacaciones, empleado, user_vacaciones } = response.data
+                let aux = []
+                let mes = ''
+                let dia = ''
+                let año = new Date().getFullYear();
+                empleados.map( (empleado, key) => {
+                    mes = empleado.rfc.substr(6,2);
+                    dia = empleado.rfc.substr(8,2);
+                    for(let x = -5; x <= 5; x++){
+                        aux.push({
+                            title: empleado.nombre,
+                            start: Number(Number(año) + Number(x))+'-'+mes+'-'+dia,
+                            end: Number(Number(año) + Number(x))+'-'+mes+'-'+dia,
+                            iconClass: 'fas fa-birthday-cake',
+                            containerClass: 'cumpleaños'
+                        })
+                    }
+                })
+                vacaciones.map( (vacacion) => {
+                    if(vacacion.estatus === 'Aceptadas')
+                        aux.push({
+                            title: vacacion.empleado.nombre,
+                            start: vacacion.fecha_inicio,
+                            end: vacacion.fecha_fin,
+                            iconClass: 'fas fa-umbrella-beach',
+                            containerClass: 'vacaciones'
+                        })
+                })
+
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Vacaciones solicitadas con éxito.')
                 this.setState({
                     ... this.state,
-                    modal: false
+                    modal: false,
+                    events: aux,
+                    empleado: empleado,
+                    vacaciones_totales: user_vacaciones,
+                    disponibles: this.getDiasDisponibles(empleado, user_vacaciones),
+                    estatus:this.getVacaciones(empleado, user_vacaciones)
                 })
             },
             (error) => {
@@ -203,7 +279,7 @@ class Calendario extends Component {
         })
     }
 
-    async getVacaciones() {
+    async getVacacionesAxios() {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'vacaciones', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -242,7 +318,7 @@ class Calendario extends Component {
                     empleado: empleado,
                     vacaciones_totales: user_vacaciones,
                     disponibles: this.getDiasDisponibles(empleado, user_vacaciones),
-                    estatus:user_vacaciones
+                    estatus:this.getVacaciones(empleado, user_vacaciones)
                 })
 
             },
