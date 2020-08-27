@@ -8,7 +8,10 @@ import { DATE } from '../../../constants'
 class SolicitarVacacionesForm extends Component {
 
     handleChangeDateInicio = date => {
-        const { onChange } = this.props
+        const { onChange, form } = this.props
+        if(date > form.fechaFin){
+            onChange({ target: { value: date, name: 'fechaFin' } })    
+        }
         onChange({ target: { value: date, name: 'fechaInicio' } })
     }
     handleChangeDateFin = date => {

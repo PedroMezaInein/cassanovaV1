@@ -11,16 +11,21 @@ import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { Modal } from '../../components/singles'
 import { SolicitarVacacionesForm, EstatusForm} from "../../components/forms";
 import { errorAlert, forbiddenAccessAlert, waitAlert, doneAlert } from '../../functions/alert';
+import { countDaysWithoutWeekend } from '../../functions/functions';
 import { URL_DEV } from '../../constants';
 import bootstrapPlugin from '@fullcalendar/bootstrap'
+import { string } from 'prop-types';
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
 class Calendario extends Component {
 
     state = {
+        disponibles: 1,
         events: [],
         formeditado: 0,
         modal: false,
+        empleado: '',
+        vacaciones_totales: '',
         modal_status:false,
         form: {
             fechaInicio: new Date(),
@@ -38,7 +43,7 @@ class Calendario extends Component {
             const { modulo: { url: url } } = element
             return pathname === url
         });
-        this.getVacaciones()
+        this.getVacacionesAxios()
     }
 
     handleDateClick = (arg) => { // bind with an arrow function
@@ -110,15 +115,154 @@ class Calendario extends Component {
         })
     }
 
+    getDiasDisponibles = (empleado, vacaciones_totales) => {
+        /* const { empleado, vacaciones_totales } = this.state */
+        /* console.log(empleado, 'empleado') */
+        let contador =  0
+        let fecha_inicio_empleado = ''
+        if(empleado){
+
+            fecha_inicio_empleado = new Date(empleado.fecha_inicio)
+            fecha_inicio_empleado.setDate(fecha_inicio_empleado.getDate() + 1)
+            
+            let mes = fecha_inicio_empleado.getMonth() + 1
+            
+            if(mes.toString().length === 1){
+                mes = '0'+mes
+            }
+            
+            let dia = fecha_inicio_empleado.getDate()
+            let now = new Date();
+            now.setDate(now.getDate() + 366)
+            let año = now.getFullYear();
+
+            let fecha_fin = new Date(mes+'/'+dia+'/'+año)
+            let fecha_inicio = new Date(mes+'/'+dia+'/'+(año-1))
+
+            if(fecha_fin < fecha_inicio_empleado){
+                fecha_fin = new Date(mes+'/'+dia+'/'+(año+1))
+                fecha_inicio = new Date(mes+'/'+dia+'/'+año)
+            }
+
+            vacaciones_totales.map( (vacacion, key) => {
+                if(vacacion.estatus !== 'Rechazadas'){
+                    let vacacion_fecha_inicio = new Date(vacacion.fecha_inicio)
+                    let vacacion_fecha_fin = new Date(vacacion.fecha_fin)
+                    if(vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin && vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin)
+                        contador = contador + countDaysWithoutWeekend(vacacion_fecha_inicio, vacacion_fecha_fin)
+                    if(vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin && !(vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin))
+                    {
+                        while(vacacion_fecha_inicio.getTime() >= vacacion_fecha_fin.getTime()){
+                            if(vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin)
+                                if(vacacion_fecha_inicio.getDay() !== 6 && vacacion_fecha_inicio.getDay() !== 0)
+                                    contador ++
+                            vacacion_fecha_inicio.setDate(vacacion_fecha_inicio.getDate() + 1);
+                        }
+                    }
+                    if(!(vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin) && (vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin))
+                    {
+                        while(vacacion_fecha_inicio.getTime() < vacacion_fecha_fin.getTime()){
+                            if(vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin){
+                                if(vacacion_fecha_fin.getDay() !== 6 && vacacion_fecha_fin.getDay() !== 0)
+                                    contador ++
+                            }
+                            vacacion_fecha_fin.setDate(vacacion_fecha_fin.getDate() - 1);
+                        }
+                    }
+                }
+            })
+
+            return empleado.vacaciones_disponibles - contador
+        }
+        else
+            return contador
+    }
+
+    getVacaciones(empleado, vacaciones_totales){
+        let contador =  []
+        let fecha_inicio_empleado = ''
+        if(empleado){
+
+            fecha_inicio_empleado = new Date(empleado.fecha_inicio)
+            fecha_inicio_empleado.setDate(fecha_inicio_empleado.getDate() + 1)
+            
+            let mes = fecha_inicio_empleado.getMonth() + 1
+            
+            if(mes.toString().length === 1){
+                mes = '0'+mes
+            }
+            
+            let dia = fecha_inicio_empleado.getDate()
+            let now = new Date();
+            now.setDate(now.getDate() + 366)
+            let año = now.getFullYear();
+
+            let fecha_fin = new Date(mes+'/'+dia+'/'+año)
+            let fecha_inicio = new Date(mes+'/'+dia+'/'+(año-1))
+
+            if(fecha_fin < fecha_inicio_empleado){
+                fecha_fin = new Date(mes+'/'+dia+'/'+(año+1))
+                fecha_inicio = new Date(mes+'/'+dia+'/'+año)
+            }
+
+            vacaciones_totales.map( (vacacion, key) => {
+                if(vacacion.estatus !== 'Aceptadas'){
+                    let vacacion_fecha_inicio = new Date(vacacion.fecha_inicio)
+                    let vacacion_fecha_fin = new Date(vacacion.fecha_fin)
+                    if(vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin && vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin)
+                        contador.push(vacacion)
+                }
+            })
+
+            return contador
+        }
+        else
+            return contador
+    }
+
     async askVacationAxios(){
         const { access_token } = this.props.authUser
         const { form } = this.state
         await axios.post(URL_DEV + 'vacaciones', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                const { empleados, vacaciones, empleado, user_vacaciones } = response.data
+                let aux = []
+                let mes = ''
+                let dia = ''
+                let año = new Date().getFullYear();
+                empleados.map( (empleado, key) => {
+                    mes = empleado.rfc.substr(6,2);
+                    dia = empleado.rfc.substr(8,2);
+                    for(let x = -5; x <= 5; x++){
+                        aux.push({
+                            title: empleado.nombre,
+                            start: Number(Number(año) + Number(x))+'-'+mes+'-'+dia,
+                            end: Number(Number(año) + Number(x))+'-'+mes+'-'+dia,
+                            iconClass: 'fas fa-birthday-cake',
+                            containerClass: 'cumpleaños'
+                        })
+                    }
+                })
+                vacaciones.map( (vacacion) => {
+                    if(vacacion.estatus === 'Aceptadas')
+                        aux.push({
+                            title: vacacion.empleado.nombre,
+                            start: vacacion.fecha_inicio,
+                            end: vacacion.fecha_fin,
+                            iconClass: 'fas fa-umbrella-beach',
+                            containerClass: 'vacaciones'
+                        })
+                })
+
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Vacaciones solicitadas con éxito.')
                 this.setState({
                     ... this.state,
-                    modal: false
+                    modal: false,
+                    events: aux,
+                    empleado: empleado,
+                    vacaciones_totales: user_vacaciones,
+                    disponibles: this.getDiasDisponibles(empleado, user_vacaciones),
+                    estatus:this.getVacaciones(empleado, user_vacaciones)
                 })
             },
             (error) => {
@@ -135,11 +279,11 @@ class Calendario extends Component {
         })
     }
 
-    async getVacaciones() {
+    async getVacacionesAxios() {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'vacaciones', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empleados, vacaciones, user_vacaciones} = response.data
+                const { empleados, vacaciones, empleado, user_vacaciones } = response.data
                 let aux = []
                 let mes = ''
                 let dia = ''
@@ -171,7 +315,10 @@ class Calendario extends Component {
                 this.setState({
                     ... this.state,
                     events: aux,
-                    estatus:user_vacaciones
+                    empleado: empleado,
+                    vacaciones_totales: user_vacaciones,
+                    disponibles: this.getDiasDisponibles(empleado, user_vacaciones),
+                    estatus:this.getVacaciones(empleado, user_vacaciones)
                 })
 
             },
@@ -190,7 +337,7 @@ class Calendario extends Component {
     }
 
     render() {
-        const { events, form, title, formeditado, modal, key, modal_status, estatus} = this.state
+        const { events, form, title, formeditado, modal, key, modal_status, estatus, disponibles} = this.state
         return (
             <Layout active='rh'  {...this.props}>
                 <Card className="card-custom"> 
@@ -228,6 +375,9 @@ class Calendario extends Component {
                         />
                     </Modal>
                     <Card.Body>
+                        <div className="mx-0 py-2">
+                            <b>Vacaciones disponibles: </b>{ disponibles }
+                        </div>
                         <FullCalendar
                             locale = { esLocale }
                             plugins = {[ dayGridPlugin, interactionPlugin, bootstrapPlugin]}
