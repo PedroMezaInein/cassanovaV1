@@ -7,7 +7,7 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
 import esLocale from '@fullcalendar/core/locales/es';
-import { forbiddenAccessAlert, errorAlert, createAlert } from '../../../functions/alert';
+import { forbiddenAccessAlert, errorAlert, createAlert, doneAlert, waitAlert } from '../../../functions/alert';
 import { URL_DEV } from '../../../constants';
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
@@ -119,6 +119,7 @@ class Vacaciones extends Component {
     }
 
     async editVacacionesAxios(vacacion, estatus){
+        waitAlert()
         const { access_token } = this.props.authUser
         await axios.put(URL_DEV + 'vacaciones/'+vacacion.id, {estatus: estatus}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -152,10 +153,18 @@ class Vacaciones extends Component {
                     })
                 })
 
+                if(estatus === 'Aceptadas'){
+                    doneAlert('Vacaciones aceptadas con éxito')
+                }
+                if(estatus === 'Rechazadas'){
+                    doneAlert('Vacaciones rechazadas con éxito')
+                }
+
                 this.setState({
                     ... this.state,
                     events: aux,
-                    espera: vacaciones_espera
+                    espera: vacaciones_espera,
+                    modal: false,
                 })
 
             },
@@ -182,13 +191,18 @@ class Vacaciones extends Component {
                         <div className="card-title">
                             <h3 className="card-label">Vacaciones</h3>
                         </div>
-                        <div className="card-toolbar">
-                            <OverlayTrigger overlay={<Tooltip>Mostrar solicitudes</Tooltip>}>
-                                <a className="btn btn-light-primary font-weight-bold px-2" onClick={this.openModal}>
-                                    <i className="fas fa-umbrella-beach"></i>
-                                </a>
-                            </OverlayTrigger>
-                        </div>
+                        {
+                            espera.length ?
+                                <div className="card-toolbar">
+                                    <OverlayTrigger overlay={<Tooltip>Mostrar solicitudes</Tooltip>}>
+                                        <a className="btn btn-light-primary font-weight-bold px-2" onClick={this.openModal}>
+                                            <i className="fas fa-umbrella-beach"></i>
+                                        </a>
+                                    </OverlayTrigger>
+                                </div>
+                            : ''
+                        }
+                        
                     </Card.Header>
                     <Card.Body>
                         <FullCalendar
