@@ -12,8 +12,6 @@ import { URL_DEV } from '../../../constants';
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { setDateTableLG } from '../../../functions/setters';
-import { Button } from '../../../components/form-components';
-import { faWindowClose, faCheckSquare } from '@fortawesome/free-solid-svg-icons';
 import { Modal } from '../../../components/singles'
 class Vacaciones extends Component {
 
