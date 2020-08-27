@@ -85,14 +85,14 @@ export function createAlert(title, text, action) {
                 text: "Cancelar",
                 value: null,
                 visible: true,
-                className: "button__green btn-primary cancel",
+                className: "btn btn-light-danger",
                 closeModal: true,
             },
             confirm: {
                 text: "Aceptar",
                 value: true,
                 visible: true,
-                className: "button__red btn-primary",
+                className: "btn btn-light-primary",
                 closeModal: true
             }
         }

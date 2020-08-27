@@ -7,7 +7,7 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
 import esLocale from '@fullcalendar/core/locales/es';
-import { forbiddenAccessAlert, errorAlert } from '../../../functions/alert';
+import { forbiddenAccessAlert, errorAlert, createAlert } from '../../../functions/alert';
 import { URL_DEV } from '../../../constants';
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
@@ -55,9 +55,8 @@ class Vacaciones extends Component {
         
     }
 
-    handleDateClick = (arg) => { // bind with an arrow function
+    handleDateClick = (arg) => {
         console.log(arg)
-        alert(arg.dateStr)
     }
 
     openModal = () => {
@@ -84,8 +83,6 @@ class Vacaciones extends Component {
                 let dia = ''
                 let año = new Date().getFullYear();
                 empleados.map( (empleado, key) => {
-                    
-                    console.log(empleado)
                     mes = empleado.rfc.substr(6,2);
                     dia = empleado.rfc.substr(8,2);
                     for(let x = -5; x <= 5; x++){
@@ -111,6 +108,61 @@ class Vacaciones extends Component {
                 })
 
                 
+
+                this.setState({
+                    ... this.state,
+                    events: aux,
+                    espera: vacaciones_espera
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async editVacacionesAxios(vacacion, estatus){
+        const { access_token } = this.props.authUser
+        await axios.put(URL_DEV + 'vacaciones/'+vacacion.id, {estatus: estatus}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empleados, vacaciones, vacaciones_espera } = response.data
+                let aux = []
+                let mes = ''
+                let dia = ''
+                let año = new Date().getFullYear();
+                empleados.map( (empleado, key) => {
+                    mes = empleado.rfc.substr(6,2);
+                    dia = empleado.rfc.substr(8,2);
+                    for(let x = -5; x <= 5; x++){
+                        aux.push({
+                            title: empleado.nombre,
+                            shortName: empleado.nombre.split(" ")[0],
+                            start: Number(Number(año) + Number(x))+'-'+mes+'-'+dia,
+                            end: Number(Number(año) + Number(x))+'-'+mes+'-'+dia,
+                            iconClass: 'fas fa-birthday-cake icon-md',
+                            containerClass: 'cumpleaños'
+                        })
+                    }
+                })
+                vacaciones.map( (vacacion) => {
+                    aux.push({
+                        shortName:"Vacaciones",
+                        title: vacacion.empleado.nombre,
+                        start: vacacion.fecha_inicio,
+                        end: vacacion.fecha_fin,
+                        iconClass: 'fas fa-umbrella-beach',
+                        containerClass: 'vacaciones'
+                    })
+                })
 
                 this.setState({
                     ... this.state,
@@ -187,7 +239,7 @@ class Vacaciones extends Component {
                                         {
                                             empleado.vacaciones.map( (vacacion, key) => {
                                                 return(
-                                                    <div className="row mx-0">
+                                                    <div className="row mx-0" key = { key } >
                                                         <div className="col-md-4">
                                                             <div className="d-flex align-items-center h-100">
                                                                 {
@@ -206,11 +258,21 @@ class Vacaciones extends Component {
                                                             <Button icon={faCalendarCheck} 
                                                                 pulse={"pulse-ring"} 
                                                                 className={"btn btn-icon btn-light-primary pulse pulse-primary mr-2 ml-auto"}
-                                                                onClick = { (e) =>  { e.preventDefault(); alert('Aceptar vacaciones')} }/>
+                                                                onClick = { (e) =>  { 
+                                                                    e.preventDefault(); 
+                                                                    createAlert('¿Estás seguro que deseas aceptar las vacaciones?', '', 
+                                                                    () => this.editVacacionesAxios(vacacion, 'Aceptadas'))
+                                                                } 
+                                                            }/>
                                                             <Button icon={faTrashAlt} 
                                                                 pulse={"pulse-ring"} 
                                                                 className={"btn btn-icon btn-light-danger pulse pulse-danger"}
-                                                                onClick = { (e) =>  { e.preventDefault(); alert('Rechazar vacaciones')} }/>
+                                                                onClick = { (e) =>  { 
+                                                                        e.preventDefault(); 
+                                                                        createAlert('¿Estás seguro que deseas rechazar las vacaciones?', '',
+                                                                        () => this.editVacacionesAxios(vacacion, 'Rechazadas'))
+                                                                    } 
+                                                                }/>
                                                         </div>
                                                     </div>
                                                 )
@@ -229,7 +291,6 @@ class Vacaciones extends Component {
 }
 
 function renderEventContent(eventInfo) {
-    console.log(eventInfo)
     return (
         <OverlayTrigger overlay={<Tooltip>{eventInfo.event.title}</Tooltip>}>
             <div className={eventInfo.event._def.extendedProps.containerClass + ' evento'}>
