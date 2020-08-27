@@ -282,3 +282,30 @@ td.concepto{
     margin-left: auto;
     margin-right: auto;
 }
+
+//Inicio: Dropdown para: CALENDARIO
+#dropdown-button-drop-left{
+    color: #3699FF;
+    background-color: #E1F0FF;
+    border-color: transparent;
+    height: calc(1.35em + 1.1rem + 2px);
+    width: calc(1.35em + 1.1rem + 2px);
+    justify-content: center;
+    display: inline-flex;
+    i{
+        color: #2171c1;
+    }
+}
+.btn.btn-primary:hover:not(.btn-text), .btn.btn-primary:focus:not(.btn-text), .btn.btn-primary.focus:not(.btn-text) {
+    color: #FFFFFF!important;
+    background-color: #2171c1!important;
+    border-color: transparent;
+    i{
+        color: #E1F0FF!important;
+    }
+    
+}
+.dropdown-toggle.nav-link:after, .dropdown-toggle.btn:after{
+    display:none!important;
+}
+//Final: Dropdown para: CALENDARIO para: CALENDARIO
