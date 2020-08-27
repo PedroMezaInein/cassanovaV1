@@ -13,14 +13,19 @@ import Tooltip from 'react-bootstrap/Tooltip'
 import { Modal } from '../../components/singles'
 import { SolicitarVacacionesForm } from "../../components/forms";
 import { errorAlert, forbiddenAccessAlert, waitAlert, doneAlert } from '../../functions/alert';
+import { countDaysWithoutWeekend } from '../../functions/functions';
 import { URL_DEV } from '../../constants';
 import bootstrapPlugin from '@fullcalendar/bootstrap'
+import { string } from 'prop-types';
 class Calendario extends Component {
 
     state = {
+        disponibles: 1,
         events: [],
         formeditado: 0,
         modal: false,
+        empleado: '',
+        vacaciones_totales: '',
         form: {
             fechaInicio: new Date(),
             fechaFin: new Date(),
@@ -91,6 +96,69 @@ class Calendario extends Component {
         })
     }
 
+    getDiasDisponibles = (empleado, vacaciones_totales) => {
+        /* const { empleado, vacaciones_totales } = this.state */
+        /* console.log(empleado, 'empleado') */
+        let contador =  0
+        let fecha_inicio_empleado = ''
+        if(empleado){
+
+            fecha_inicio_empleado = new Date(empleado.fecha_inicio)
+            fecha_inicio_empleado.setDate(fecha_inicio_empleado.getDate() + 1)
+            
+            let mes = fecha_inicio_empleado.getMonth() + 1
+            
+            if(mes.toString().length === 1){
+                mes = '0'+mes
+            }
+            
+            let dia = fecha_inicio_empleado.getDate()
+            let now = new Date();
+            now.setDate(now.getDate() + 366)
+            let año = now.getFullYear();
+
+            let fecha_fin = new Date(mes+'/'+dia+'/'+año)
+            let fecha_inicio = new Date(mes+'/'+dia+'/'+(año-1))
+
+            if(fecha_fin < fecha_inicio_empleado){
+                fecha_fin = new Date(mes+'/'+dia+'/'+(año+1))
+                fecha_inicio = new Date(mes+'/'+dia+'/'+año)
+            }
+
+            vacaciones_totales.map( (vacacion, key) => {
+                if(vacacion.estatus !== 'Rechazadas'){
+                    let vacacion_fecha_inicio = new Date(vacacion.fecha_inicio)
+                    let vacacion_fecha_fin = new Date(vacacion.fecha_fin)
+                    if(vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin && vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin)
+                        contador = contador + countDaysWithoutWeekend(vacacion_fecha_inicio, vacacion_fecha_fin)
+                    if(vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin && !(vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin))
+                    {
+                        while(vacacion_fecha_inicio.getTime() >= vacacion_fecha_fin.getTime()){
+                            if(vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin)
+                                if(vacacion_fecha_inicio.getDay() !== 6 && vacacion_fecha_inicio.getDay() !== 0)
+                                    contador ++
+                            vacacion_fecha_inicio.setDate(vacacion_fecha_inicio.getDate() + 1);
+                        }
+                    }
+                    if(!(vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin) && (vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin))
+                    {
+                        while(vacacion_fecha_inicio.getTime() < vacacion_fecha_fin.getTime()){
+                            if(vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin){
+                                if(vacacion_fecha_fin.getDay() !== 6 && vacacion_fecha_fin.getDay() !== 0)
+                                    contador ++
+                            }
+                            vacacion_fecha_fin.setDate(vacacion_fecha_fin.getDate() - 1);
+                        }
+                    }
+                }
+            })
+
+            return empleado.vacaciones_disponibles - contador
+        }
+        else
+            return contador
+    }
+
     async askVacationAxios(){
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -120,7 +188,7 @@ class Calendario extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'vacaciones', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empleados, vacaciones } = response.data
+                const { empleados, vacaciones, empleado, user_vacaciones } = response.data
                 let aux = []
                 let mes = ''
                 let dia = ''
@@ -151,7 +219,10 @@ class Calendario extends Component {
 
                 this.setState({
                     ... this.state,
-                    events: aux
+                    events: aux,
+                    empleado: empleado,
+                    vacaciones_totales: user_vacaciones,
+                    disponibles: this.getDiasDisponibles(empleado, user_vacaciones)
                 })
 
             },
@@ -170,7 +241,7 @@ class Calendario extends Component {
     }
 
     render() {
-        const { events, form, title, formeditado, modal, key} = this.state
+        const { events, form, title, formeditado, modal, key, disponibles } = this.state
         return (
             <Layout active='rh'  {...this.props}>
                 <Card className="card-custom"> 
@@ -195,6 +266,9 @@ class Calendario extends Component {
                         />
                     </Modal>
                     <Card.Body>
+                        <div className="mx-0 py-2">
+                            <b>Vacaciones disponibles: </b>{ disponibles }
+                        </div>
                         <FullCalendar
                             locale = { esLocale }
                             plugins = {[ dayGridPlugin, interactionPlugin, bootstrapPlugin]}
@@ -214,7 +288,6 @@ class Calendario extends Component {
 }
 
 function renderEventContent(eventInfo) {
-    console.log(eventInfo)
     return (
         <div className={eventInfo.event._def.extendedProps.containerClass + ' evento'}>
             <i className={eventInfo.event._def.extendedProps.iconClass+" kt-font-boldest mr-3"}></i> 
