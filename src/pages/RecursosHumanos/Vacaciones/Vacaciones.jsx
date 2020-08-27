@@ -167,7 +167,8 @@ class Vacaciones extends Component {
                 this.setState({
                     ... this.state,
                     events: aux,
-                    espera: vacaciones_espera
+                    espera: vacaciones_espera,
+                    modal: false,
                 })
 
             },
@@ -194,13 +195,18 @@ class Vacaciones extends Component {
                         <div className="card-title">
                             <h3 className="card-label">Vacaciones</h3>
                         </div>
-                        <div className="card-toolbar">
-                            <OverlayTrigger overlay={<Tooltip>Mostrar solicitudes</Tooltip>}>
-                                <a className="btn btn-light-primary font-weight-bold px-2" onClick={this.openModal}>
-                                    <i className="fas fa-umbrella-beach"></i>
-                                </a>
-                            </OverlayTrigger>
-                        </div>
+                        {
+                            espera.length ?
+                                <div className="card-toolbar">
+                                    <OverlayTrigger overlay={<Tooltip>Mostrar solicitudes</Tooltip>}>
+                                        <a className="btn btn-light-primary font-weight-bold px-2" onClick={this.openModal}>
+                                            <i className="fas fa-umbrella-beach"></i>
+                                        </a>
+                                    </OverlayTrigger>
+                                </div>
+                            : ''
+                        }
+                        
                     </Card.Header>
                     <Card.Body>
                         <FullCalendar 
@@ -239,7 +245,7 @@ class Vacaciones extends Component {
                                         {
                                             empleado.vacaciones.map( (vacacion, key) => {
                                                 return(
-                                                    <div className="row mx-0" key = { key } >
+                                                    <div className="row py-1 mx-0" key = { key } >
                                                         <div className="col-md-4">
                                                             <div className="d-flex align-items-center h-100">
                                                                 {

@@ -97,6 +97,10 @@ class Calendario extends Component {
         await axios.post(URL_DEV + 'vacaciones', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Vacaciones solicitadas con éxito.')
+                this.setState({
+                    ... this.state,
+                    modal: false
+                })
             },
             (error) => {
                 console.log(error, 'error')
