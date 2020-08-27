@@ -6,27 +6,30 @@ import swal from 'sweetalert'
 import { URL_DEV, URL_ASSETS } from '../constants'
 
 import { forbiddenAccessAlert, errorAlert, waitAlert } from '../functions/alert'
-import { SelectSearch } from '../components/form-components'
+import { SelectSearch, SelectSearchSinText, Input } from '../components/form-components'
 import { setOptions } from '../functions/setters'
-import { Card, Nav, Tab, Col, Row} from 'react-bootstrap'
+import { Card, Nav, Tab, Col, Row } from 'react-bootstrap'
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import { Button } from '../components/form-components'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import ItemSlider from '../components/singles/ItemSlider'
 import Moment from 'react-moment'
 import { Small } from '../components/texts'
+import { Form } from 'react-bootstrap'
+// import { validateAlert } from '../../../functions/alert'
+import { MiProyectoForm } from '../components/forms'
 
 function CustomToggle({ children, eventKey, icon = faPlus, iconColor = 'transparent' }) {
 
     let variable = false
-    
+
     const handleClick = useAccordionToggle(eventKey, (e) => {
-        if(variable){
+        if (variable) {
             variable = false
-        }else{
+        } else {
             variable = true
         }
-    },);
+    });
 
     return (
         <div className="">
@@ -34,19 +37,20 @@ function CustomToggle({ children, eventKey, icon = faPlus, iconColor = 'transpar
                 <div>
                     {children}
                 </div>
-                <Button name = { eventKey } className = " small-button " color = { iconColor } icon = { icon } text = '' onClick = { handleClick } />
+                <Button name={eventKey} className=" small-button " color={iconColor} icon={icon} text='' onClick={handleClick} />
             </div>
         </div>
-        
+
     );
 }
-class MiProyecto extends Component{
-    
+class MiProyecto extends Component {
+
     state = {
         proyecto: '',
-        primeravista:true,
-        defaultactivekey:"",
-        showadjuntos:[
+        formeditado: 0,
+        primeravista: true,
+        defaultactivekey: "",
+        showadjuntos: [
             {
                 name: 'Fotografías levantamiento',
                 value: 'fotografias_levantamiento'
@@ -92,20 +96,20 @@ class MiProyecto extends Component{
                 value: 'carta_oferta'
             }
         ],
-        data:{
+        data: {
             proyectos: []
         },
-        form:{
+        form: {
             proyecto: ''
         },
-        options:{
+        options: {
             proyectos: []
         },
-        adjuntos:[
+        adjuntos: [
             {
                 name: 'Inicio y planeación',
                 value: 'inicio_y_planeacion',
-                adjuntos:[
+                adjuntos: [
                     {
                         name: 'Fotografías levantamiento',
                         value: 'fotografias_levantamiento'
@@ -155,7 +159,7 @@ class MiProyecto extends Component{
             {
                 name: 'Ejecución de obra',
                 value: 'ejecucion_de_obra',
-                adjuntos:[
+                adjuntos: [
                     {
                         name: 'Datos de cliente',
                         value: 'datos_de_cliente'
@@ -167,7 +171,7 @@ class MiProyecto extends Component{
                     {
                         name: 'Contrato proveedores y contratistas',
                         value: 'contrato_proveedores_y_contratistas'
-                    }, 
+                    },
                     {
                         name: 'Reporte fotográfico de avance de obra',
                         value: 'reporte_fotografico_de_avance_de_obra'
@@ -179,7 +183,7 @@ class MiProyecto extends Component{
                     {
                         name: 'Programa de obra',
                         value: 'programa_de_obra'
-                    }, 
+                    },
                     {
                         name: 'Sketch Up aprobados',
                         value: 'sketch_up_aprobados'
@@ -187,10 +191,10 @@ class MiProyecto extends Component{
                     {
                         name: 'Renders aprobados',
                         value: 'renders_aprobados'
-                    }, 
+                    },
                     {
                         name: 'Estimaciones y cierre',
-                        value:'estimaciones_y_cierre'
+                        value: 'estimaciones_y_cierre'
                     },
                     {
                         name: 'Fianzas y seguros',
@@ -205,7 +209,7 @@ class MiProyecto extends Component{
             {
                 name: 'Entrega',
                 value: 'entrega',
-                adjuntos:[
+                adjuntos: [
                     {
                         name: 'Catálogo de conceptos ASBUILT',
                         value: 'catalogo_de_conceptos_asbuilt'
@@ -255,7 +259,7 @@ class MiProyecto extends Component{
             {
                 name: 'Mantenimiento',
                 value: 'mantenimiento',
-                adjuntos:[
+                adjuntos: [
                     {
                         name: 'Fallas y reparaciones por vicios ocultos',
                         value: 'fallas_y_reparaciones_por_vicios_ocultos'
@@ -273,34 +277,32 @@ class MiProyecto extends Component{
         ]
     }
 
-    seleccionaradj (adjuntos){  
-        const {proyecto} = this.state;  
+    seleccionaradj(adjuntos) {
+        const { proyecto } = this.state;
         let newdefaultactivekey = "";
-        for(var i=0;i<adjuntos.length;i++)
-        { 
-            var adjunto = adjuntos[i]; 
-            if(proyecto[adjunto.value].length)
-            {
-                newdefaultactivekey=adjunto.value   
+        for (var i = 0; i < adjuntos.length; i++) {
+            var adjunto = adjuntos[i];
+            if (proyecto[adjunto.value].length) {
+                newdefaultactivekey = adjunto.value
                 break;
-            } 
-        } 
+            }
+        }
         this.setState({
             ... this.state,
-            primeravista:false,
-            defaultactivekey:newdefaultactivekey,
-            subActiveKey:newdefaultactivekey,
-            showadjuntos:adjuntos
+            primeravista: false,
+            defaultactivekey: newdefaultactivekey,
+            subActiveKey: newdefaultactivekey,
+            showadjuntos: adjuntos
         })
     }
-    componentDidMount(){
+    componentDidMount() {
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props
-        const proyecto = permisos.find(function(element, index) {
+        const proyecto = permisos.find(function (element, index) {
             return element.modulo.url === pathname
         });
-        if(!proyecto)
+        if (!proyecto)
             history.push('/')
         this.getMiProyectoAxios()
     }
@@ -313,39 +315,38 @@ class MiProyecto extends Component{
     }
 
     updateProyecto = value => {
-        const { data, form,adjuntos } = this.state
-        let newdefaultactivekey="";
+        const { data, form, adjuntos } = this.state
+        let newdefaultactivekey = "";
         form.proyecto = value
-        data.proyectos.map( (proyecto) => {
-            
-            if(proyecto.id.toString() === value.toString()){ 
+        data.proyectos.map((proyecto) => {
+
+            if (proyecto.id.toString() === value.toString()) {
                 for (var i = 0; i < adjuntos.length; i++) {
                     var grupo = adjuntos[i];
-                    let aux = false 
+                    let aux = false
                     grupo.adjuntos.forEach(element => {
-                        if(proyecto[element.value].length)
-                        aux = true
+                        if (proyecto[element.value].length)
+                            aux = true
                     });
-                    if(aux) 
-                    { 
-                        newdefaultactivekey=grupo.adjuntos[0].value;
+                    if (aux) {
+                        newdefaultactivekey = grupo.adjuntos[0].value;
                         break;
                     }
-                } 
+                }
                 this.setState({
                     ... this.state,
                     form,
-                    defaultactivekey:newdefaultactivekey,
+                    defaultactivekey: newdefaultactivekey,
                     proyecto: proyecto
                 })
             }
-        } )
-        
-        
-        
+        })
+
+
+
     }
 
-    async getMiProyectoAxios(){
+    async getMiProyectoAxios() {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'proyectos/mi-proyecto', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -354,7 +355,7 @@ class MiProyecto extends Component{
                 let { proyecto } = this.state
                 options.proyectos = setOptions(proyectos, 'nombre', 'id')
                 data.proyectos = proyectos
-                if(proyectos.length === 1){
+                if (proyectos.length === 1) {
                     proyecto = proyectos[0]
                 }
                 this.setState({
@@ -366,9 +367,9 @@ class MiProyecto extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -386,18 +387,18 @@ class MiProyecto extends Component{
         await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/adjuntos/zip', aux, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                const url =  URL_ASSETS+'/storage/adjuntos.zip'
+                const url = URL_ASSETS + '/storage/adjuntos.zip'
                 const link = document.createElement('a');
                 link.href = url;
-                link.setAttribute('download', proyecto.nombre+'.zip');
+                link.setAttribute('download', proyecto.nombre + '.zip');
                 document.body.appendChild(link);
                 link.click();
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -406,189 +407,209 @@ class MiProyecto extends Component{
             console.log(error, 'error')
         })
     }
+    onChange = e => {
+        const { name, value } = e.target
+        const { form } = this.state
+        form[name] = value
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
 
-    render(){
-        const { options, proyecto, form, adjuntos, showadjuntos, primeravista, defaultactivekey, subActiveKey} = this.state
-        return(
-            <Layout { ...this.props}>
-                <div className="content pt-0 d-flex flex-column flex-column-fluid" id="kt_content" style ={ { paddingBottom:"11px" } }>
-                    <div className="d-flex flex-row-fluid bgi-size-cover bgi-position-center min-h-350px mb-4 d-flex justify-content-center align-items-center" style ={ { backgroundImage: "url('/proyecto.jpg')", margin:"-25px" } }>
+    render() {
+        const { options, proyecto, form, adjuntos, showadjuntos, primeravista, defaultactivekey, subActiveKey, formeditado } = this.state
+        return (
+            <Layout {...this.props}>
+                {/* <MiProyectoForm
+                    options={options}
+                    proyecto={proyecto}
+                    form={form}
+                    adjuntos={adjuntos}
+                    showadjuntos={showadjuntos}
+                    primeravista={primeravista}
+                    defaultactivekey={defaultactivekey}
+                    subActiveKey={subActiveKey}
+                    onChange = { this.updateProyecto }
+                /> */}
+                <div className="content pt-0 d-flex flex-column flex-column-fluid" style={{ paddingBottom: "11px" }}>
+                    <div className="d-flex flex-row-fluid bgi-size-cover bgi-position-center min-h-350px mb-4 d-flex justify-content-center align-items-center" style={{ backgroundImage: "url('/proyecto.jpg')", margin: "-25px" }}>
                         <div className="container">
                             <div className="d-flex align-items-stretch text-center flex-column py-40">
-                                
+
                                 <div className="form-group row form-group-marginless d-flex justify-content-center align-items-center">
                                     <div className="col-md-5">
-                                        <SelectSearch  
-                                            options = { options.proyectos }
-                                            placeholder = "Seleccione un proyecto"
-                                            name = "proyecto"
-                                            value = { form.proyecto }
-                                            onChange = { this.updateProyecto }
-                                            requirevalidation = { 1 } 
-                                            /> 
+                                        <SelectSearchSinText
+                                            options={options.proyectos}
+                                            placeholder="Seleccione un proyecto"
+                                            name="proyecto"
+                                            value={form.proyecto}
+                                            onChange={this.updateProyecto}
+                                            requirevalidation={1}
+                                        />
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div className="col-md-12">
-							<div className="row">
-								<div className="col-lg-4 mb-3">
-									<div className="card card-custom wave wave-animate-slow wave-primary mb-8 mb-lg-0">
-										<div className="card-body">
-											<div className="d-flex align-items-center ">
-												<div className="mr-6">
-													<span className="svg-icon svg-icon-primary svg-icon-4x">
-														<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                        <div className="row">
+                            <div className="col-lg-4 mb-3">
+                                <div className="card card-custom wave wave-animate-slow wave-primary mb-8 mb-lg-0">
+                                    <div className="card-body">
+                                        <div className="d-flex align-items-center ">
+                                            <div className="mr-6">
+                                                <span className="svg-icon svg-icon-primary svg-icon-4x">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                                         <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                                                            <rect x="0" y="0" width="24" height="24"/>
-                                                            <circle fill="#000000" opacity="0.3" cx="12" cy="9" r="8"/>
-                                                            <path d="M14.5297296,11 L9.46184488,11 L11.9758349,17.4645458 L14.5297296,11 Z M10.5679953,19.3624463 L6.53815512,9 L17.4702704,9 L13.3744964,19.3674279 L11.9759405,18.814912 L10.5679953,19.3624463 Z" fill="#000000" fillRule="nonzero" opacity="0.3"/>
-                                                            <path d="M10,22 L14,22 L14,22 C14,23.1045695 13.1045695,24 12,24 L12,24 C10.8954305,24 10,23.1045695 10,22 Z" fill="#000000" opacity="0.3"/>
-                                                            <path d="M9,20 C8.44771525,20 8,19.5522847 8,19 C8,18.4477153 8.44771525,18 9,18 C8.44771525,18 8,17.5522847 8,17 C8,16.4477153 8.44771525,16 9,16 L15,16 C15.5522847,16 16,16.4477153 16,17 C16,17.5522847 15.5522847,18 15,18 C15.5522847,18 16,18.4477153 16,19 C16,19.5522847 15.5522847,20 15,20 C15.5522847,20 16,20.4477153 16,21 C16,21.5522847 15.5522847,22 15,22 L9,22 C8.44771525,22 8,21.5522847 8,21 C8,20.4477153 8.44771525,20 9,20 Z" fill="#000000"/>
+                                                            <rect x="0" y="0" width="24" height="24" />
+                                                            <circle fill="#000000" opacity="0.3" cx="12" cy="9" r="8" />
+                                                            <path d="M14.5297296,11 L9.46184488,11 L11.9758349,17.4645458 L14.5297296,11 Z M10.5679953,19.3624463 L6.53815512,9 L17.4702704,9 L13.3744964,19.3674279 L11.9759405,18.814912 L10.5679953,19.3624463 Z" fill="#000000" fillRule="nonzero" opacity="0.3" />
+                                                            <path d="M10,22 L14,22 L14,22 C14,23.1045695 13.1045695,24 12,24 L12,24 C10.8954305,24 10,23.1045695 10,22 Z" fill="#000000" opacity="0.3" />
+                                                            <path d="M9,20 C8.44771525,20 8,19.5522847 8,19 C8,18.4477153 8.44771525,18 9,18 C8.44771525,18 8,17.5522847 8,17 C8,16.4477153 8.44771525,16 9,16 L15,16 C15.5522847,16 16,16.4477153 16,17 C16,17.5522847 15.5522847,18 15,18 C15.5522847,18 16,18.4477153 16,19 C16,19.5522847 15.5522847,20 15,20 C15.5522847,20 16,20.4477153 16,21 C16,21.5522847 15.5522847,22 15,22 L9,22 C8.44771525,22 8,21.5522847 8,21 C8,20.4477153 8.44771525,20 9,20 Z" fill="#000000" />
                                                         </g>
-														</svg>
-													</span>
-												</div>
-												<div className="d-flex flex-column">
-													<a className="text-dark text-hover-primary font-weight-bold font-size-h4 mb-3 pl-2">PROYECTO</a>
-													<div className="text-dark-75">{proyecto.nombre}</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div className="col-lg-4 mb-3">
-									<div className="card card-custom wave wave-animate-slow wave-danger mb-8 mb-lg-0">
-										<div className="card-body">
-											<div className="d-flex align-items-center">
-												<div className="mr-6">
-													<span className="svg-icon svg-icon-danger svg-icon-4x">
-														<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                            <div className="d-flex flex-column">
+                                                <a className="text-dark text-hover-primary font-weight-bold font-size-h4 mb-3 pl-2">PROYECTO</a>
+                                                <div className="text-dark-75">{proyecto.nombre}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-lg-4 mb-3">
+                                <div className="card card-custom wave wave-animate-slow wave-danger mb-8 mb-lg-0">
+                                    <div className="card-body">
+                                        <div className="d-flex align-items-center">
+                                            <div className="mr-6">
+                                                <span className="svg-icon svg-icon-danger svg-icon-4x">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                                         <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                                                            <rect x="0" y="0" width="24" height="24"/>
-                                                            <circle fill="#000000" opacity="0.3" cx="12" cy="12" r="9"/>
-                                                            <path d="M11.7357634,20.9961946 C6.88740052,20.8563914 3,16.8821712 3,12 C3,11.9168367 3.00112797,11.8339369 3.00336944,11.751315 C3.66233009,11.8143341 4.85636818,11.9573854 4.91262842,12.4204038 C4.9904938,13.0609191 4.91262842,13.8615942 5.45804656,14.101772 C6.00346469,14.3419498 6.15931561,13.1409372 6.6267482,13.4612567 C7.09418079,13.7815761 8.34086797,14.0899175 8.34086797,14.6562185 C8.34086797,15.222396 8.10715168,16.1034596 8.34086797,16.2636193 C8.57458427,16.423779 9.5089688,17.54465 9.50920913,17.7048097 C9.50956962,17.8649694 9.83857487,18.6793513 9.74040201,18.9906563 C9.65905192,19.2487394 9.24857641,20.0501554 8.85059781,20.4145589 C9.75315358,20.7620621 10.7235846,20.9657742 11.7357634,20.9960544 L11.7357634,20.9961946 Z M8.28272988,3.80112099 C9.4158415,3.28656421 10.6744554,3 12,3 C15.5114513,3 18.5532143,5.01097452 20.0364482,7.94408274 C20.069657,8.72412177 20.0638332,9.39135321 20.2361262,9.6327358 C21.1131932,10.8600506 18.0995147,11.7043158 18.5573343,13.5605384 C18.7589671,14.3794892 16.5527814,14.1196773 16.0139722,14.886394 C15.4748026,15.6527403 14.1574598,15.137809 13.8520064,14.9904917 C13.546553,14.8431744 12.3766497,15.3341497 12.4789081,14.4995164 C12.5805657,13.664636 13.2922889,13.6156126 14.0555619,13.2719546 C14.8184743,12.928667 15.9189236,11.7871741 15.3781918,11.6380045 C12.8323064,10.9362407 11.963771,8.47852395 11.963771,8.47852395 C11.8110443,8.44901109 11.8493762,6.74109366 11.1883616,6.69207022 C10.5267462,6.64279981 10.170464,6.88841096 9.20435656,6.69207022 C8.23764828,6.49572949 8.44144409,5.85743687 8.2887174,4.48255778 C8.25453994,4.17415686 8.25619136,3.95717082 8.28272988,3.80112099 Z M20.9991771,11.8770357 C20.9997251,11.9179585 21,11.9589471 21,12 C21,16.9406923 17.0188468,20.9515364 12.0895088,20.9995641 C16.970233,20.9503326 20.9337111,16.888438 20.9991771,11.8770357 Z" fill="#000000" opacity="0.3"/>
+                                                            <rect x="0" y="0" width="24" height="24" />
+                                                            <circle fill="#000000" opacity="0.3" cx="12" cy="12" r="9" />
+                                                            <path d="M11.7357634,20.9961946 C6.88740052,20.8563914 3,16.8821712 3,12 C3,11.9168367 3.00112797,11.8339369 3.00336944,11.751315 C3.66233009,11.8143341 4.85636818,11.9573854 4.91262842,12.4204038 C4.9904938,13.0609191 4.91262842,13.8615942 5.45804656,14.101772 C6.00346469,14.3419498 6.15931561,13.1409372 6.6267482,13.4612567 C7.09418079,13.7815761 8.34086797,14.0899175 8.34086797,14.6562185 C8.34086797,15.222396 8.10715168,16.1034596 8.34086797,16.2636193 C8.57458427,16.423779 9.5089688,17.54465 9.50920913,17.7048097 C9.50956962,17.8649694 9.83857487,18.6793513 9.74040201,18.9906563 C9.65905192,19.2487394 9.24857641,20.0501554 8.85059781,20.4145589 C9.75315358,20.7620621 10.7235846,20.9657742 11.7357634,20.9960544 L11.7357634,20.9961946 Z M8.28272988,3.80112099 C9.4158415,3.28656421 10.6744554,3 12,3 C15.5114513,3 18.5532143,5.01097452 20.0364482,7.94408274 C20.069657,8.72412177 20.0638332,9.39135321 20.2361262,9.6327358 C21.1131932,10.8600506 18.0995147,11.7043158 18.5573343,13.5605384 C18.7589671,14.3794892 16.5527814,14.1196773 16.0139722,14.886394 C15.4748026,15.6527403 14.1574598,15.137809 13.8520064,14.9904917 C13.546553,14.8431744 12.3766497,15.3341497 12.4789081,14.4995164 C12.5805657,13.664636 13.2922889,13.6156126 14.0555619,13.2719546 C14.8184743,12.928667 15.9189236,11.7871741 15.3781918,11.6380045 C12.8323064,10.9362407 11.963771,8.47852395 11.963771,8.47852395 C11.8110443,8.44901109 11.8493762,6.74109366 11.1883616,6.69207022 C10.5267462,6.64279981 10.170464,6.88841096 9.20435656,6.69207022 C8.23764828,6.49572949 8.44144409,5.85743687 8.2887174,4.48255778 C8.25453994,4.17415686 8.25619136,3.95717082 8.28272988,3.80112099 Z M20.9991771,11.8770357 C20.9997251,11.9179585 21,11.9589471 21,12 C21,16.9406923 17.0188468,20.9515364 12.0895088,20.9995641 C16.970233,20.9503326 20.9337111,16.888438 20.9991771,11.8770357 Z" fill="#000000" opacity="0.3" />
                                                         </g>
-														</svg>
-													</span>
-												</div>
-												<div className="d-flex flex-column">
-													<a className="text-dark text-hover-danger font-weight-bold font-size-h4 mb-3 pl-2">Dirección</a>
-													<div className="text-dark-75 text-justify">
-                                                        {
-                                                            proyecto ? 
-                                                                <div> 
-                                                                    <Small className="mr-1 mb-0" >
-                                                                        {proyecto.calle}, colonia
-                                                                    </Small>
-                                                                    <Small className="mr-1 mb-0">
-                                                                        {proyecto.colonia},
-                                                                    </Small>
-                                                                    <Small className="mr-1 mb-0">
-                                                                        {proyecto.municipio},
-                                                                    </Small>
-                                                                    <Small className="mr-1 mb-0">
-                                                                        {proyecto.estado}. CP:
-                                                                    </Small>
-                                                                    <Small className="mr-1 mb-0">
-                                                                        {proyecto.cp}
-                                                                    </Small>
-                                                                </div>
-                                                            :""
-                                                        }
-                                                    </div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div className="col-lg-4 mb-3">
-									<div className="card card-custom wave wave-animate-slow wave-info mb-8 mb-lg-0">
-										<div className="card-body">
-											<div className="d-flex align-items-center">
-												<div className="mr-6">
-													<span className="svg-icon svg-icon-info svg-icon-4x">
-														<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                                        <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                                                            <rect x="0" y="0" width="24" height="24"/>
-                                                            <path d="M12,22 C7.02943725,22 3,17.9705627 3,13 C3,8.02943725 7.02943725,4 12,4 C16.9705627,4 21,8.02943725 21,13 C21,17.9705627 16.9705627,22 12,22 Z" fill="#000000" opacity="0.3"/>
-                                                            <path d="M11.9630156,7.5 L12.0475062,7.5 C12.3043819,7.5 12.5194647,7.69464724 12.5450248,7.95024814 L13,12.5 L16.2480695,14.3560397 C16.403857,14.4450611 16.5,14.6107328 16.5,14.7901613 L16.5,15 C16.5,15.2109164 16.3290185,15.3818979 16.1181021,15.3818979 C16.0841582,15.3818979 16.0503659,15.3773725 16.0176181,15.3684413 L11.3986612,14.1087258 C11.1672824,14.0456225 11.0132986,13.8271186 11.0316926,13.5879956 L11.4644883,7.96165175 C11.4845267,7.70115317 11.7017474,7.5 11.9630156,7.5 Z" fill="#000000"/>
-                                                        </g>
-														</svg>
-													</span>
-												</div>
-												<div className="d-flex flex-column">
-													<a className="text-dark text-hover-info font-weight-bold font-size-h4 mb-3 pl-2">PERIODO</a>
-													<div className="text-dark-75">
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                            <div className="d-flex flex-column">
+                                                <a className="text-dark text-hover-danger font-weight-bold font-size-h4 mb-3 pl-2">Dirección</a>
+                                                <div className="text-dark-75 text-justify">
                                                     {
-                                                        proyecto ? 
+                                                        proyecto ?
+                                                            <div>
+                                                                <Small className="mr-1 mb-0" >
+                                                                    {proyecto.calle}, colonia
+                                                                    </Small>
+                                                                <Small className="mr-1 mb-0">
+                                                                    {proyecto.colonia},
+                                                                    </Small>
+                                                                <Small className="mr-1 mb-0">
+                                                                    {proyecto.municipio},
+                                                                    </Small>
+                                                                <Small className="mr-1 mb-0">
+                                                                    {proyecto.estado}. CP:
+                                                                    </Small>
+                                                                <Small className="mr-1 mb-0">
+                                                                    {proyecto.cp}
+                                                                </Small>
+                                                            </div>
+                                                            : ""
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-lg-4 mb-3">
+                                <div className="card card-custom wave wave-animate-slow wave-info mb-8 mb-lg-0">
+                                    <div className="card-body">
+                                        <div className="d-flex align-items-center">
+                                            <div className="mr-6">
+                                                <span className="svg-icon svg-icon-info svg-icon-4x">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                                        <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+                                                            <rect x="0" y="0" width="24" height="24" />
+                                                            <path d="M12,22 C7.02943725,22 3,17.9705627 3,13 C3,8.02943725 7.02943725,4 12,4 C16.9705627,4 21,8.02943725 21,13 C21,17.9705627 16.9705627,22 12,22 Z" fill="#000000" opacity="0.3" />
+                                                            <path d="M11.9630156,7.5 L12.0475062,7.5 C12.3043819,7.5 12.5194647,7.69464724 12.5450248,7.95024814 L13,12.5 L16.2480695,14.3560397 C16.403857,14.4450611 16.5,14.6107328 16.5,14.7901613 L16.5,15 C16.5,15.2109164 16.3290185,15.3818979 16.1181021,15.3818979 C16.0841582,15.3818979 16.0503659,15.3773725 16.0176181,15.3684413 L11.3986612,14.1087258 C11.1672824,14.0456225 11.0132986,13.8271186 11.0316926,13.5879956 L11.4644883,7.96165175 C11.4845267,7.70115317 11.7017474,7.5 11.9630156,7.5 Z" fill="#000000" />
+                                                        </g>
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                            <div className="d-flex flex-column">
+                                                <a className="text-dark text-hover-info font-weight-bold font-size-h4 mb-3 pl-2">PERIODO</a>
+                                                <div className="text-dark-75">
+                                                    {
+                                                        proyecto ?
                                                             <div>
                                                                 <Moment format="DD/MM/YYYY">
-                                                                        {proyecto.fecha_inicio}
+                                                                    {proyecto.fecha_inicio}
                                                                 </Moment>
                                                                 {" - "}
                                                                 <Moment format="DD/MM/YYYY">
-                                                                        {proyecto.fecha_fin}
+                                                                    {proyecto.fecha_fin}
                                                                 </Moment>
                                                             </div>
-                                                        :""
+                                                            : ""
                                                     }
-                                                    </div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 {
-                    proyecto ? 
-                        <div className="col-md-12 mb-4">                                 
-                                <Card className="card-custom gutter-b">
-                                    <Card.Header>
-                                        <Card.Title> 
-                                            <h3 className="text-dark">Adjuntos del proyecto</h3>
-                                        </Card.Title>
-                                        <div className="card-toolbar">
-                                            <Nav as="ul" className="nav nav-bold nav-pills">
-                                                {
-                                                    adjuntos.map((grupo, key) => { 
-                                                        let aux = false 
-                                                        grupo.adjuntos.forEach(element => {
-                                                            if(proyecto[element.value].length)
-                                                            aux = true
-                                                        });
-                                                        if(aux) 
-                                                        {
-                                                            return(
-                                                                <div key = {key}>
-                                                                    <Nav.Item as="li">
-                                                                        <Nav.Link data-toggle="tab" className={primeravista&&key==0?"active":""} eventKey={grupo.value} onClick = { () => { this.seleccionaradj(grupo.adjuntos) } }>{grupo.name}</Nav.Link>
-                                                                    </Nav.Item>
-                                                                </div>
-                                                            )
-                                                        }
-                                                    })
-                                                }
-                                            </Nav>
+                    proyecto ?
+                        <div className="col-md-12 mb-4">
+                            <Card className="card-custom gutter-b">
+                                <Card.Header>
+                                    <Card.Title>
+                                        <div className="card-title">
+                                            <h3 className="card-label">Adjuntos del proyecto</h3>
                                         </div>
-                                    </Card.Header>
-                                    
-                                    <Card.Body>
-                                        <>
-                                        <Tab.Container id="left-tabs-example" activeKey = { subActiveKey ? subActiveKey : defaultactivekey } defaultActiveKey={defaultactivekey}
-                                            onSelect = { (select) => { this.updateActiveTabContainer(select) } }>
+                                    </Card.Title>
+                                    <div className="card-toolbar">
+                                        <Nav as="ul" className="nav nav-bold nav-pills">
+                                            {
+                                                adjuntos.map((grupo, key) => {
+                                                    let aux = false
+                                                    grupo.adjuntos.forEach(element => {
+                                                        if (proyecto[element.value].length)
+                                                            aux = true
+                                                    });
+                                                    if (aux) {
+                                                        return (
+                                                            <div key={key}>
+                                                                <Nav.Item as="li">
+                                                                    <Nav.Link data-toggle="tab" className={primeravista && key === 0 ? "active" : ""} eventKey={grupo.value} onClick={() => { this.seleccionaradj(grupo.adjuntos) }}>{grupo.name}</Nav.Link>
+                                                                </Nav.Item>
+                                                            </div>
+                                                        )
+                                                    }
+                                                })
+                                            }
+                                        </Nav>
+                                    </div>
+                                </Card.Header>
+
+                                <Card.Body>
+                                    <>
+                                        <Tab.Container activeKey={subActiveKey ? subActiveKey : defaultactivekey} defaultActiveKey={defaultactivekey}
+                                            onSelect={(select) => { this.updateActiveTabContainer(select) }}>
                                             <Row>
                                                 <Col md={3} className="navi navi-accent navi-hover navi-bold">
-                                                    <Nav variant="pills" className="flex-column navi navi-hover navi-active">                                                    
-                                                        { 
-                                                            showadjuntos.map((adjunto, key) => { 
-                                                                if(proyecto[adjunto.value].length)
-                                                                {  
-                                                                    return( 
-                                                                        <Nav.Item className="navi-item" key = {key}>
+                                                    <Nav variant="pills" className="flex-column navi navi-hover navi-active">
+                                                        {
+                                                            showadjuntos.map((adjunto, key) => {
+                                                                if (proyecto[adjunto.value].length) {
+                                                                    return (
+                                                                        <Nav.Item className="navi-item" key={key}>
                                                                             <Nav.Link className="navi-link" eventKey={adjunto.value}>
                                                                                 <span className="navi-text">{adjunto.name}</span>
                                                                             </Nav.Link>
@@ -597,85 +618,322 @@ class MiProyecto extends Component{
                                                                 }
                                                             })
                                                         }
-													</Nav>
-												</Col>
+                                                    </Nav>
+                                                </Col>
                                                 <Col md={8}>
                                                     <Tab.Content>
-                                                    { 
-                                                        showadjuntos.map((adjunto, key) => {  
-                                                            if(proyecto[adjunto.value].length)
-                                                            {  
-                                                                return(
-                                                                    <Tab.Pane key = {key} eventKey={adjunto.value}>
-                                                                        {
-                                                                            proyecto ? 
-                                                                                proyecto[adjunto.value].length ?
-                                                                                    <div className="mt-2 d-flex justify-content-center">
-                                                                                        <span className = 'btn btn-hover btn-text-success' onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.value]) }}>
-                                                                                            <i className="fas fa-file-archive"></i> Descargar ZIP
+                                                        {
+                                                            showadjuntos.map((adjunto, key) => {
+                                                                if (proyecto[adjunto.value].length) {
+                                                                    return (
+                                                                        <Tab.Pane key={key} eventKey={adjunto.value}>
+                                                                            {
+                                                                                proyecto ?
+                                                                                    proyecto[adjunto.value].length ?
+                                                                                        <div className="mt-2 d-flex justify-content-center">
+                                                                                            <span className='btn btn-hover btn-text-success' onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.value]) }}>
+                                                                                                <i className="fas fa-file-archive"></i> Descargar ZIP
                                                                                         </span>
-                                                                                    </div>
-                                                                                : ''
-                                                                            : ''
-                                                                        }   
-                                                                        {
-                                                                            proyecto ? 
-                                                                                <ItemSlider items = { proyecto[adjunto.value] } item = {adjunto.value} />
-                                                                            : ''
-                                                                        }
-                                                                    </Tab.Pane>  
-                                                                )
-                                                            }
-                                                        })
-                                                    } 
+                                                                                        </div>
+                                                                                        : ''
+                                                                                    : ''
+                                                                            }
+                                                                            {
+                                                                                proyecto ?
+                                                                                    <ItemSlider items={proyecto[adjunto.value]} item={adjunto.value} />
+                                                                                    : ''
+                                                                            }
+                                                                        </Tab.Pane>
+                                                                    )
+                                                                }
+                                                            })
+                                                        }
                                                     </Tab.Content>
                                                 </Col>
                                             </Row>
-                                        </Tab.Container>                     
-                                        </>
-                                    </Card.Body>
-                                </Card>
-                            
+                                        </Tab.Container>
+                                    </>
+                                </Card.Body>
+                            </Card>
+
                         </div>
-                    : ''
+                        : ''
                 }
-                {
-                    proyecto ? 
-                        <div className="col-md-12 mb-4" >
-                        <Card className="card-custom gutter-b">
-                            <Card.Header>
-                                <Card.Title> 
-                                    <h3 className="text-dark">Avances por semana</h3>
-                                </Card.Title>
-                            </Card.Header>
-                            <Card.Body>
+                
+                <Tab.Container defaultActiveKey="first">
+                    <div class="card card-custom">
+                        <div class="card-header card-header-tabs-line">
+                            <div class="card-toolbar">
+                                <Nav variant="pills" class="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-tabs-bold nav-tabs-line-3x">
+                                    <Nav.Item class="nav-item">
+                                        <Nav.Link eventKey="first">
+                                            <span class="nav-icon mr-2">
+                                                <span class="svg-icon mr-3">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                            <rect x="0" y="0" width="24" height="24"></rect>
+                                                            <path d="M4.875,20.75 C4.63541667,20.75 4.39583333,20.6541667 4.20416667,20.4625 L2.2875,18.5458333 C1.90416667,18.1625 1.90416667,17.5875 2.2875,17.2041667 C2.67083333,16.8208333 3.29375,16.8208333 3.62916667,17.2041667 L4.875,18.45 L8.0375,15.2875 C8.42083333,14.9041667 8.99583333,14.9041667 9.37916667,15.2875 C9.7625,15.6708333 9.7625,16.2458333 9.37916667,16.6291667 L5.54583333,20.4625 C5.35416667,20.6541667 5.11458333,20.75 4.875,20.75 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"></path>
+                                                            <path d="M2,11.8650466 L2,6 C2,4.34314575 3.34314575,3 5,3 L19,3 C20.6568542,3 22,4.34314575 22,6 L22,15 C22,15.0032706 21.9999948,15.0065399 21.9999843,15.009808 L22.0249378,15 L22.0249378,19.5857864 C22.0249378,20.1380712 21.5772226,20.5857864 21.0249378,20.5857864 C20.7597213,20.5857864 20.5053674,20.4804296 20.317831,20.2928932 L18.0249378,18 L12.9835977,18 C12.7263047,14.0909841 9.47412135,11 5.5,11 C4.23590829,11 3.04485894,11.3127315 2,11.8650466 Z M6,7 C5.44771525,7 5,7.44771525 5,8 C5,8.55228475 5.44771525,9 6,9 L15,9 C15.5522847,9 16,8.55228475 16,8 C16,7.44771525 15.5522847,7 15,7 L6,7 Z" fill="#000000"></path>
+                                                        </g>
+                                                    </svg>
+                                                </span>
+                                            </span>
+                                            <span class="nav-text font-weight-bold">ADJUNTOS DEL PROYECTO</span>
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                    <Nav.Item class="nav-item">
+                                        <Nav.Link eventKey="second">
+                                            <span class="nav-icon mr-2">
+                                                <span class="svg-icon mr-3">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                            <rect x="0" y="0" width="24" height="24"></rect>
+                                                            <path d="M11,20 L11,17 C11,16.4477153 11.4477153,16 12,16 C12.5522847,16 13,16.4477153 13,17 L13,20 L15.5,20 C15.7761424,20 16,20.2238576 16,20.5 C16,20.7761424 15.7761424,21 15.5,21 L8.5,21 C8.22385763,21 8,20.7761424 8,20.5 C8,20.2238576 8.22385763,20 8.5,20 L11,20 Z" fill="#000000" opacity="0.3"></path>
+                                                            <path d="M3,5 L21,5 C21.5522847,5 22,5.44771525 22,6 L22,16 C22,16.5522847 21.5522847,17 21,17 L3,17 C2.44771525,17 2,16.5522847 2,16 L2,6 C2,5.44771525 2.44771525,5 3,5 Z M4.5,8 C4.22385763,8 4,8.22385763 4,8.5 C4,8.77614237 4.22385763,9 4.5,9 L13.5,9 C13.7761424,9 14,8.77614237 14,8.5 C14,8.22385763 13.7761424,8 13.5,8 L4.5,8 Z M4.5,10 C4.22385763,10 4,10.2238576 4,10.5 C4,10.7761424 4.22385763,11 4.5,11 L7.5,11 C7.77614237,11 8,10.7761424 8,10.5 C8,10.2238576 7.77614237,10 7.5,10 L4.5,10 Z" fill="#000000"></path>
+                                                        </g>
+                                                    </svg>
+                                                </span>
+                                            </span>
+                                            <span class="nav-text font-weight-bold">AVANCES POR SEMANA</span>
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                    <Nav.Item class="nav-item">
+                                        <Nav.Link eventKey="third">
+                                            <span class="nav-icon mr-2">
+                                                <span class="svg-icon mr-3">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                            <rect x="0" y="0" width="24" height="24"></rect>
+                                                            <path d="M13,18.9450712 L13,20 L14,20 C15.1045695,20 16,20.8954305 16,22 L8,22 C8,20.8954305 8.8954305,20 10,20 L11,20 L11,18.9448245 C9.02872877,18.7261967 7.20827378,17.866394 5.79372555,16.5182701 L4.73856106,17.6741866 C4.36621808,18.0820826 3.73370941,18.110904 3.32581341,17.7385611 C2.9179174,17.3662181 2.88909597,16.7337094 3.26143894,16.3258134 L5.04940685,14.367122 C5.46150313,13.9156769 6.17860937,13.9363085 6.56406875,14.4106998 C7.88623094,16.037907 9.86320756,17 12,17 C15.8659932,17 19,13.8659932 19,10 C19,7.73468744 17.9175842,5.65198725 16.1214335,4.34123851 C15.6753081,4.01567657 15.5775721,3.39010038 15.903134,2.94397499 C16.228696,2.49784959 16.8542722,2.4001136 17.3003976,2.72567554 C19.6071362,4.40902808 21,7.08906798 21,10 C21,14.6325537 17.4999505,18.4476269 13,18.9450712 Z" fill="#000000" fill-rule="nonzero"></path>
+                                                            <circle fill="#000000" opacity="0.3" cx="12" cy="10" r="6"></circle>
+                                                        </g>
+                                                    </svg>
+                                                </span>
+                                            </span>
+                                            <span class="nav-text font-weight-bold">LEVANTAMIENTO DE TIKETS</span>
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                </Nav>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <Tab.Content>
+                                <Tab.Pane eventKey="first" class="tab-pane fade">
+                                    {
+                                        proyecto ?
+                                            <div className="col-md-12 mb-4">
+                                                <Card className="card-custom gutter-b">
+                                                    <Card.Header>
+                                                        <Card.Title>
+                                                            <div className="card-title">
+                                                                <h3 className="card-label">Adjuntos del proyecto</h3>
+                                                            </div>
+                                                        </Card.Title>
+                                                        <div className="card-toolbar">
+                                                            <Nav as="ul" className="nav nav-bold nav-pills">
+                                                                {
+                                                                    adjuntos.map((grupo, key) => {
+                                                                        let aux = false
+                                                                        grupo.adjuntos.forEach(element => {
+                                                                            if (proyecto[element.value].length)
+                                                                                aux = true
+                                                                        });
+                                                                        if (aux) {
+                                                                            return (
+                                                                                <div key={key}>
+                                                                                    <Nav.Item as="li">
+                                                                                        <Nav.Link data-toggle="tab" className={primeravista && key === 0 ? "active" : ""} eventKey={grupo.value} onClick={() => { this.seleccionaradj(grupo.adjuntos) }}>{grupo.name}</Nav.Link>
+                                                                                    </Nav.Item>
+                                                                                </div>
+                                                                            )
+                                                                        }
+                                                                    })
+                                                                }
+                                                            </Nav>
+                                                        </div>
+                                                    </Card.Header>
+
+                                                    <Card.Body>
+                                                        <>
+                                                        <Tab.Container activeKey={subActiveKey ? subActiveKey : defaultactivekey} defaultActiveKey={defaultactivekey}
+                                                            onSelect={(select) => { this.updateActiveTabContainer(select) }}>
+                                                            <Row>
+                                                                <Col md={3} className="navi navi-accent navi-hover navi-bold">
+                                                                    <Nav variant="pills" className="flex-column navi navi-hover navi-active">
+                                                                        {
+                                                                            showadjuntos.map((adjunto, key) => {
+                                                                                if (proyecto[adjunto.value].length) {
+                                                                                    return (
+                                                                                        <Nav.Item className="navi-item" key={key}>
+                                                                                            <Nav.Link className="navi-link" eventKey={adjunto.value}>
+                                                                                                <span className="navi-text">{adjunto.name}</span>
+                                                                                            </Nav.Link>
+                                                                                        </Nav.Item>
+                                                                                    )
+                                                                                }
+                                                                            })
+                                                                        }
+                                                                    </Nav>
+                                                                </Col>
+                                                                <Col md={8}>
+                                                                    <Tab.Content>
+                                                                        {
+                                                                            showadjuntos.map((adjunto, key) => {
+                                                                                if (proyecto[adjunto.value].length) {
+                                                                                    return (
+                                                                                        <Tab.Pane key={key} eventKey={adjunto.value}>
+                                                                                            {
+                                                                                                proyecto ?
+                                                                                                    proyecto[adjunto.value].length ?
+                                                                                                        <div className="mt-2 d-flex justify-content-center">
+                                                                                                            <span className='btn btn-hover btn-text-success' onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.value]) }}>
+                                                                                                                <i className="fas fa-file-archive"></i> Descargar ZIP
+                                                                                                        </span>
+                                                                                                        </div>
+                                                                                                        : ''
+                                                                                                    : ''
+                                                                                            }
+                                                                                            {
+                                                                                                proyecto ?
+                                                                                                    <ItemSlider items={proyecto[adjunto.value]} item={adjunto.value} />
+                                                                                                    : ''
+                                                                                            }
+                                                                                        </Tab.Pane>
+                                                                                    )
+                                                                                }
+                                                                            })
+                                                                        }
+                                                                    </Tab.Content>
+                                                                </Col>
+                                                            </Row>
+                                                        </Tab.Container>
+                                                        </>
+                                                    </Card.Body>
+                                                </Card>
+                                            </div>
+                                        : ''
+                                    }
+                                </Tab.Pane>
+                                <Tab.Pane eventKey="second" class="tab-pane fade">
                                 {
-                                    proyecto.avances.length ?
-                                        <>
-                                            <div className="row mx-0">
-                                                {
-                                                    proyecto.avances.map( (avance, key) => {
-                                                        return(
-                                                            <div key = {key} className="col-md-2 text-center">
-                                                                <div className="d-flex flex-column align-items-center">
-                                                                <a href = { avance.pdf } className="text-dark-75 font-weight-bold mt-15 font-size-lg text-hover-danger2 pb-3">
-                                                                    <img alt="" className="max-h-50px pb-2" src="/pdf.svg"/>{avance.semana}
-                                                                </a>
+                                    proyecto ?
+                                        <div className="col-md-12 mb-4" >
+                                            <Card className="card-custom">
+                                                <Card.Header>
+                                                    <Card.Title>
+                                                        <div className="card-title">
+                                                            <h3 className="card-label">Avances por semana</h3>
+                                                        </div>
+                                                    </Card.Title>
+                                                </Card.Header>
+                                                <Card.Body>
+                                                    {
+                                                        proyecto.avances.length ?
+                                                            <>
+                                                                <div className="row mx-0">
+                                                                    {
+                                                                        proyecto.avances.map((avance, key) => {
+                                                                            return (
+                                                                                <div key={key} className="col-md-2 text-center">
+                                                                                    <div className="d-flex flex-column align-items-center">
+                                                                                        <a href={avance.pdf} className="text-dark-75 font-weight-bold mt-15 font-size-lg text-hover-danger2 pb-3">
+                                                                                            <img alt="" className="max-h-50px pb-2" src="/pdf.svg" />{avance.semana}
+                                                                                        </a>
+                                                                                    </div>
+                                                                                </div>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                </div>
+
+                                                            </>
+                                                            : ''
+                                                    }
+                                                </Card.Body>
+                                            </Card>
+                                        </div>
+                                        : ''
+                                }
+                                </Tab.Pane>
+                                <Tab.Pane eventKey="third" class="tab-pane fade">
+                                    {
+                                        proyecto ?
+                                            <div className="col-md-12 mb-4" >
+                                                <Card className="card-custom">
+                                                    <Card.Header>
+                                                        <div className="card-title">
+                                                            <h3 className="card-label">Levantamiento de tickets</h3>
+                                                        </div>
+                                                    </Card.Header>
+                                                    <Card.Body>
+                                                        <Form id="form-miproyecto"
+                                                        // onSubmit={
+                                                        //     (e) => {
+                                                        //         e.preventDefault();
+                                                        //         validateAlert(onSubmit, e, 'form-concepto')
+                                                        //     }
+                                                        // }
+                                                        // {...props}
+                                                        >
+                                                        <div className="form-group row form-group-marginless">
+                                                            <div className="col-md-4">
+                                                                {/* <SelectSearch
+                                                            formeditado={formeditado}
+                                                            options={options.partidas}
+                                                            placeholder="SELECCIONA LA PARTIDA"
+                                                            name="partida"
+                                                            value={form.partida}
+                                                            onChange={this.updatePartida}
+                                                            iconclass={" fas fa-book"}
+                                                        /> */}
+                                                            </div>
+                                                            <div className="col-md-4">
+                                                                {/* <SelectSearch
+                                                            formeditado={formeditado}
+                                                            options={options.subpartidas}
+                                                            placeholder="SELECCIONA LA SUBPARTIDA"
+                                                            name="subpartida"
+                                                            value={form.subpartida}
+                                                            onChange={this.updateSubpartida}
+                                                            iconclass={" fas fa-book"}
+                                                        /> */}
+                                                            </div>
+                                                        </div>
+                                                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                                                        <div className="form-group row form-group-marginless">
+                                                            <div className="col-md-12">
+                                                                <Input
+                                                                    requirevalidation={1}
+                                                                    formeditado={formeditado}
+                                                                    as="textarea"
+                                                                    placeholder="DESCRIPCIÓN"
+                                                                    rows="2"
+                                                                    value={form.descripcion}
+                                                                    name="descripcion"
+                                                                    onChange={this.onChange}
+                                                                    messageinc="Incorrecto. Ingresa una descripción."
+                                                                    style={{ paddingLeft: "10px" }}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <div className="card-footer py-3 pr-1">
+                                                            <div className="row">
+                                                                <div className="col-lg-12 text-right pr-0 pb-0">
+                                                                    <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" />
                                                                 </div>
                                                             </div>
-                                                        )
-                                                    })
-                                                }
-                                            </div>
-                                            
-                                        </>
+                                                        </div>
+                                                    </Form >
+                                                </Card.Body>
+                                            </Card>
+                                        </div>
                                     : ''
                                 }
-                            </Card.Body>
-                        </Card>
+                                </Tab.Pane>
+                            </Tab.Content>
                         </div>
-                    : ''
-                }
+                    </div>
+                </Tab.Container>
             </Layout>
         )
     }
@@ -683,11 +941,11 @@ class MiProyecto extends Component{
 
 const mapStateToProps = state => {
     return {
-        authUser: state.authUser
+                        authUser: state.authUser
     }
 }
 
 const mapDispatchToProps = dispatch => ({
-})
+                    })
 
 export default connect(mapStateToProps, mapDispatchToProps)(MiProyecto);

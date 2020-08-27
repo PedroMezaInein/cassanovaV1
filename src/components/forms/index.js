@@ -43,6 +43,8 @@ import ultimoPresupuestoForm from './presupuesto/UltimoPresupuestoForm'
 import precioDiseñoForm from './catalogos/PrecioDiseñoForm'
 import presupuestoDiseñoForm from './presupuesto/PresupuestoDiseñoForm'
 import partidasDiseñoForm from './catalogos/PartidasDiseñoForm'
+import miProyectoForm from './miproyecto/MiProyectoForm'
+
 
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
@@ -89,3 +91,5 @@ export const UltimoPresupuestoForm = ultimoPresupuestoForm
 export const PrecioDiseñoForm = precioDiseñoForm
 export const PresupuestoDiseñoForm = presupuestoDiseñoForm
 export const PartidasDiseñoForm = partidasDiseñoForm
+export const MiProyectoForm = miProyectoForm
+
