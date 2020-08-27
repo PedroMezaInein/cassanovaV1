@@ -92,6 +92,28 @@ export function setDateTable(date) {
         </Small>
     )
 }
+export function setDateTableLG(date) {
+    let seconds = new Date(date);
+    seconds = seconds.getTime() / 1000;
+    return (
+        <>
+            <span className="d-none">
+                {
+                    seconds
+                }
+            </span>
+            <span className="d-none">
+                <Moment format="YYYY/MM/DD">
+                    {date}
+                </Moment>
+            </span>
+
+            <Moment format="DD/MM/YYYY">
+                {date}
+            </Moment>
+        </>
+    )
+}
 
 export function setMoneyTable(value) {
     let cantidad = 0

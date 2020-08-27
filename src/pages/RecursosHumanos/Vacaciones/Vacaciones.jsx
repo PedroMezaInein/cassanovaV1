@@ -11,19 +11,15 @@ import { forbiddenAccessAlert, errorAlert, createAlert } from '../../../function
 import { URL_DEV } from '../../../constants';
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { setTextTable, setDateTable } from '../../../functions/setters';
-import { Button } from '../../../components/form-components';
-import { faTrashAlt, faCalendarCheck } from '@fortawesome/free-solid-svg-icons';
+import { setDateTableLG } from '../../../functions/setters';
 import { Modal } from '../../../components/singles'
-import { Calendar } from '@fullcalendar/core';
-// import googleCalendarPlugin from '@fullcalendar/google-calendar';
 class Vacaciones extends Component {
 
     state = {
         modal: false,
         events: [
             {
-                shortName:"Evento 1",
+                shortName: "Evento 1",
                 title: 'Evento 1',
                 start: '2020-08-05',
                 end: '2020-08-05',
@@ -32,27 +28,19 @@ class Vacaciones extends Component {
         ],
         espera: []
     }
-    
-    componentDidMount(){
-        // if(document.body.classList.contains('fc'))
-        // {           
-            // document.body.classList.remove('fc-media-screen');   
-            // document.body.classList.remove('fc-direction-ltr'); 
-            // document.body.classList.remove('fc-theme-standard');   
-            // document.body.classList.add('fc-ltr');
-            // document.body.classList.add('fc-unthemed');
-        // }
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
-        const { match : { params: { action: action } } } = this.props
-        const { history, location: { state: state} } = this.props
-        const remisiones = permisos.find(function(element, index) {
+
+    componentDidMount() {
+        const { authUser: { user: { permisos: permisos } } } = this.props
+        const { history: { location: { pathname: pathname } } } = this.props
+        const { match: { params: { action: action } } } = this.props
+        const { history, location: { state: state } } = this.props
+        const remisiones = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
             return pathname === url
         });
 
         this.getVacaciones()
-        
+
     }
 
     handleDateClick = (arg) => {
@@ -88,26 +76,26 @@ class Vacaciones extends Component {
                     for(let x = -5; x <= 5; x++){
                         aux.push({
                             title: empleado.nombre,
-                            shortName: empleado.nombre.split(" ")[0],
-                            start: Number(Number(año) + Number(x))+'-'+mes+'-'+dia,
-                            end: Number(Number(año) + Number(x))+'-'+mes+'-'+dia,
+                            // shortName: empleado.nombre.split(" ")[0],
+                            start: Number(Number(año) + Number(x)) + '-' + mes + '-' + dia,
+                            end: Number(Number(año) + Number(x)) + '-' + mes + '-' + dia,
                             iconClass: 'fas fa-birthday-cake icon-md',
                             containerClass: 'cumpleaños'
                         })
                     }
                 })
-                vacaciones.map( (vacacion) => {
+                vacaciones.map((vacacion) => {
                     aux.push({
-                        shortName:"Vacaciones",
+                        shortName: "Vacaciones",
                         title: vacacion.empleado.nombre,
                         start: vacacion.fecha_inicio,
                         end: vacacion.fecha_fin,
-                        iconClass: 'fas fa-umbrella-beach',
+                        iconClass: 'fas fa-umbrella-beach icon-md',
                         containerClass: 'vacaciones'
                     })
                 })
 
-                
+
 
                 this.setState({
                     ... this.state,
@@ -118,9 +106,9 @@ class Vacaciones extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -190,7 +178,7 @@ class Vacaciones extends Component {
         const { events, espera, modal } = this.state
         return (
             <Layout active='rh'  {...this.props}>
-                <Card className="card-custom"> 
+                <Card className="card-custom">
                     <Card.Header>
                         <div className="card-title">
                             <h3 className="card-label">Vacaciones</h3>
@@ -209,84 +197,96 @@ class Vacaciones extends Component {
                         
                     </Card.Header>
                     <Card.Body>
-                        <FullCalendar 
+                        <FullCalendar
                             className={"prueba"}
-                            locale = { esLocale }
-                            plugins = {[ dayGridPlugin, interactionPlugin, 
-                                            bootstrapPlugin 
-                                        ]}
-                            initialView = "dayGridMonth"
-                            weekends = { true }
-                            events = { events }
-                            dateClick = { this.handleDateClick }
-                            eventContent = { renderEventContent }
-                            firstDay = { 1 }
-                            headerToolbar=  {{
-                                left: 'prev,next today',
-                                center: 'title',
-                                right: 'dayGridMonth' 
-                                
-                            }}
-                            themeSystem ='bootstrap'
-                            />
+                            locale={esLocale}
+                            plugins={[dayGridPlugin, interactionPlugin,
+                                bootstrapPlugin
+                            ]}
+                            initialView="dayGridMonth"
+                            weekends={true}
+                            events={events}
+                            dateClick={this.handleDateClick}
+                            eventContent={renderEventContent}
+                            firstDay={1}
+                            // headerToolbar=  {{
+                            //     left: 'prev,next today',
+                            //     center: 'title',
+                            //     right: 'dayGridMonth' 
+
+                            // }}
+                            themeSystem='bootstrap'
+                        />
                     </Card.Body>
-				</Card>
-                <Modal title = "Solicitudes de vacaciones" show = { modal } handleClose = { this.handleClose } >
+                </Card>
+                <Modal size="lg" title="Solicitudes de vacaciones" show={modal} handleClose={this.handleClose} >
                     {
-                        espera.map( ( empleado, key) => {
-                            return(
-                                <Card className="card-custom" key = { key } >
-                                    <Card.Header>
-                                        <div className="card-title">
-                                            { empleado.nombre }
-                                        </div>
-                                    </Card.Header>
-                                    <Card.Body>
-                                        {
-                                            empleado.vacaciones.map( (vacacion, key) => {
-                                                return(
-                                                    <div className="row py-1 mx-0" key = { key } >
-                                                        <div className="col-md-4">
-                                                            <div className="d-flex align-items-center h-100">
-                                                                {
-                                                                    setDateTable(vacacion.fecha_inicio)
-                                                                }
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-md-4">
-                                                            <div className="d-flex align-items-center h-100">
-                                                                {
-                                                                    setDateTable(vacacion.fecha_fin)
-                                                                }
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-md-4">
-                                                            <Button icon={faCalendarCheck} 
-                                                                pulse={"pulse-ring"} 
-                                                                className={"btn btn-icon btn-light-primary pulse pulse-primary mr-2 ml-auto"}
-                                                                onClick = { (e) =>  { 
-                                                                    e.preventDefault(); 
-                                                                    createAlert('¿Estás seguro que deseas aceptar las vacaciones?', '', 
-                                                                    () => this.editVacacionesAxios(vacacion, 'Aceptadas'))
-                                                                } 
-                                                            }/>
-                                                            <Button icon={faTrashAlt} 
-                                                                pulse={"pulse-ring"} 
-                                                                className={"btn btn-icon btn-light-danger pulse pulse-danger"}
-                                                                onClick = { (e) =>  { 
+                        espera.map((empleado, key) => {
+                            return (
+                                <div class="tab-content mt-4" key={key}>
+                                    <div class="table-responsive">
+                                        <table class="table table-head-custom table-head-bg table-borderless table-vertical-center">
+                                            <thead>
+                                                <tr class="text-left">
+                                                    <th style={{ minWidth: "160px" }} class="pl-7">
+                                                        <span class="text-dark-75">Empleado</span>
+                                                    </th>
+                                                    <th style={{ minWidth: "100px" }}>
+                                                        <span class="text-dark-75">Fecha de inicio</span>
+                                                    </th>
+                                                    <th style={{ minWidth: "100px" }}>
+                                                        <span class="text-dark-75">Fecha final</span>
+                                                    </th>
+                                                    <th style={{ minWidth: "100px" }}>
+                                                        <span class="text-dark-75">Estatus</span>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            {
+                                                empleado.vacaciones.map((vacacion, key) => {
+                                                    return (
+                                                        <tbody key={key}>
+                                                            <tr>
+                                                                <td class="pl-0 py-8">
+                                                                    <div class="d-flex align-items-center">
+                                                                        <div>
+                                                                            <div href="#" class="mb-1 font-size-lg">{empleado.nombre}</div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <span class="font-size-lg">{setDateTableLG(vacacion.fecha_inicio)}</span>
+                                                                </td>
+                                                                <td>
+                                                                    <span class="font-size-lg">{setDateTableLG(vacacion.fecha_fin)}</span>
+                                                                </td>
+                                                                <td class="pr-0">
+                                                                    <a className="btn btn-icon btn-light-success success2 btn-sm mr-2 ml-auto" onClick = { (e) =>  { 
                                                                         e.preventDefault(); 
-                                                                        createAlert('¿Estás seguro que deseas rechazar las vacaciones?', '',
+                                                                        createAlert('¿Estás seguro que deseas aceptar las vacaciones?', '', 
+                                                                        () => this.editVacacionesAxios(vacacion, 'Aceptadas'))
+                                                                    }}  
+                                                                    >
+                                                                        <i className="flaticon2-check-mark icon-sm"></i>
+                                                                    </a>
+                                                                
+                                                                    <a className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger"onClick = { (e) =>  { 
+                                                                        e.preventDefault(); 
+                                                                        createAlert('¿Estás seguro que deseas rechazar las vacaciones?', '', 
                                                                         () => this.editVacacionesAxios(vacacion, 'Rechazadas'))
-                                                                    } 
-                                                                }/>
-                                                        </div>
-                                                    </div>
-                                                )
-                                            })
-                                        }
-                                        
-                                    </Card.Body>
-                                </Card>
+                                                                    }}
+                                                                    >
+                                                                        <i className="flaticon2-cross icon-sm"></i>
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    )
+                                                })
+                                            }
+                                        </table>
+                                    </div>
+                                </div>
                             )
                         })
                     }
@@ -300,12 +300,12 @@ function renderEventContent(eventInfo) {
     return (
         <OverlayTrigger overlay={<Tooltip>{eventInfo.event.title}</Tooltip>}>
             <div className={eventInfo.event._def.extendedProps.containerClass + ' evento'}>
-            <i className={eventInfo.event._def.extendedProps.iconClass+" kt-font-boldest mr-3"}></i> 
-            <span>{eventInfo.event._def.extendedProps.shortName}</span>
-        </div>       
+                <i className={eventInfo.event._def.extendedProps.iconClass + " kt-font-boldest mr-3"}></i>
+                <span>{eventInfo.event.title}</span>
+            </div>
         </OverlayTrigger>
-        
-        
+
+
     )
 }
 const mapStateToProps = state => {

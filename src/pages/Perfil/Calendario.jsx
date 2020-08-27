@@ -14,7 +14,7 @@ import { Modal } from '../../components/singles'
 import { SolicitarVacacionesForm } from "../../components/forms";
 import { errorAlert, forbiddenAccessAlert, waitAlert, doneAlert } from '../../functions/alert';
 import { URL_DEV } from '../../constants';
-
+import bootstrapPlugin from '@fullcalendar/bootstrap'
 class Calendario extends Component {
 
     state = {
@@ -197,13 +197,14 @@ class Calendario extends Component {
                     <Card.Body>
                         <FullCalendar
                             locale = { esLocale }
-                            plugins = {[ dayGridPlugin, interactionPlugin ]}
+                            plugins = {[ dayGridPlugin, interactionPlugin, bootstrapPlugin]}
                             initialView = "dayGridMonth"
                             weekends = { true }
                             events = { events }
                             dateClick = { this.handleDateClick }
                             eventContent = { renderEventContent }
                             firstDay = { 1 }
+                            themeSystem='bootstrap'
                             />
                     </Card.Body>
 				</Card>
