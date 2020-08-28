@@ -4,45 +4,17 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV, URL_ASSETS } from '../constants'
-
 import { forbiddenAccessAlert, errorAlert, waitAlert } from '../functions/alert'
 import { SelectSearch, SelectSearchSinText, Input } from '../components/form-components'
 import { setOptions } from '../functions/setters'
 import { Card, Nav, Tab, Col, Row } from 'react-bootstrap'
-import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import { Button } from '../components/form-components'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import ItemSlider from '../components/singles/ItemSlider'
 import Moment from 'react-moment'
 import { Small } from '../components/texts'
 import { Form } from 'react-bootstrap'
 // import { validateAlert } from '../../../functions/alert'
 import { MiProyectoForm } from '../components/forms'
-
-function CustomToggle({ children, eventKey, icon = faPlus, iconColor = 'transparent' }) {
-
-    let variable = false
-
-    const handleClick = useAccordionToggle(eventKey, (e) => {
-        if (variable) {
-            variable = false
-        } else {
-            variable = true
-        }
-    });
-
-    return (
-        <div className="">
-            <div className="d-flex justify-content-between">
-                <div>
-                    {children}
-                </div>
-                <Button name={eventKey} className=" small-button " color={iconColor} icon={icon} text='' onClick={handleClick} />
-            </div>
-        </div>
-
-    );
-}
 class MiProyecto extends Component {
 
     state = {
@@ -100,7 +72,11 @@ class MiProyecto extends Component {
             proyectos: []
         },
         form: {
-            proyecto: ''
+            proyecto: '',
+            tipo_trabajo:'',
+            partida:'',
+            descripcion:'',
+            nombre:''
         },
         options: {
             proyectos: []
@@ -564,269 +540,156 @@ class MiProyecto extends Component {
                         </div>
                     </div>
                 </div>
-                {
-                    proyecto ?
-                        <div className="col-md-12 mb-4">
-                            <Card className="card-custom gutter-b">
-                                <Card.Header>
-                                    <Card.Title>
-                                        <div className="card-title">
-                                            <h3 className="card-label">Adjuntos del proyecto</h3>
-                                        </div>
-                                    </Card.Title>
-                                    <div className="card-toolbar">
-                                        <Nav as="ul" className="nav nav-bold nav-pills">
-                                            {
-                                                adjuntos.map((grupo, key) => {
-                                                    let aux = false
-                                                    grupo.adjuntos.forEach(element => {
-                                                        if (proyecto[element.value].length)
-                                                            aux = true
-                                                    });
-                                                    if (aux) {
-                                                        return (
-                                                            <div key={key}>
-                                                                <Nav.Item as="li">
-                                                                    <Nav.Link data-toggle="tab" className={primeravista && key === 0 ? "active" : ""} eventKey={grupo.value} onClick={() => { this.seleccionaradj(grupo.adjuntos) }}>{grupo.name}</Nav.Link>
-                                                                </Nav.Item>
-                                                            </div>
-                                                        )
-                                                    }
-                                                })
-                                            }
-                                        </Nav>
-                                    </div>
-                                </Card.Header>
-
-                                <Card.Body>
-                                    <>
-                                        <Tab.Container activeKey={subActiveKey ? subActiveKey : defaultactivekey} defaultActiveKey={defaultactivekey}
-                                            onSelect={(select) => { this.updateActiveTabContainer(select) }}>
-                                            <Row>
-                                                <Col md={3} className="navi navi-accent navi-hover navi-bold">
-                                                    <Nav variant="pills" className="flex-column navi navi-hover navi-active">
+                {proyecto ?
+                    <Tab.Container defaultActiveKey="first">
+                        <Card className="card-custom">
+                            <Card.Header className="card-header-tabs-line"> 
+                                    <Nav className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-tabs-bold nav-tabs-line-3x">
+                                        {
+                                            proyecto.adjuntos.length ?
+                                                <Nav.Item className="nav-item">
+                                                    <Nav.Link eventKey="first">
+                                                        <span className="nav-icon mr-2">
+                                                            <span className="svg-icon mr-3">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                                                    <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+                                                                        <rect x="0" y="0" width="24" height="24"></rect>
+                                                                        <path d="M4.875,20.75 C4.63541667,20.75 4.39583333,20.6541667 4.20416667,20.4625 L2.2875,18.5458333 C1.90416667,18.1625 1.90416667,17.5875 2.2875,17.2041667 C2.67083333,16.8208333 3.29375,16.8208333 3.62916667,17.2041667 L4.875,18.45 L8.0375,15.2875 C8.42083333,14.9041667 8.99583333,14.9041667 9.37916667,15.2875 C9.7625,15.6708333 9.7625,16.2458333 9.37916667,16.6291667 L5.54583333,20.4625 C5.35416667,20.6541667 5.11458333,20.75 4.875,20.75 Z" fill="#000000" fillRule="nonzero" opacity="0.3"></path>
+                                                                        <path d="M2,11.8650466 L2,6 C2,4.34314575 3.34314575,3 5,3 L19,3 C20.6568542,3 22,4.34314575 22,6 L22,15 C22,15.0032706 21.9999948,15.0065399 21.9999843,15.009808 L22.0249378,15 L22.0249378,19.5857864 C22.0249378,20.1380712 21.5772226,20.5857864 21.0249378,20.5857864 C20.7597213,20.5857864 20.5053674,20.4804296 20.317831,20.2928932 L18.0249378,18 L12.9835977,18 C12.7263047,14.0909841 9.47412135,11 5.5,11 C4.23590829,11 3.04485894,11.3127315 2,11.8650466 Z M6,7 C5.44771525,7 5,7.44771525 5,8 C5,8.55228475 5.44771525,9 6,9 L15,9 C15.5522847,9 16,8.55228475 16,8 C16,7.44771525 15.5522847,7 15,7 L6,7 Z" fill="#000000"></path>
+                                                                    </g>
+                                                                </svg>
+                                                            </span>
+                                                        </span>
+                                                        <span className="nav-text font-weight-bold">ADJUNTOS DEL PROYECTO</span>
+                                                    </Nav.Link>
+                                                </Nav.Item>
+                                                : ''
+                                        }
+                                        {proyecto ?
+                                            proyecto.avances.length ?
+                                                <Nav.Item className="nav-item">
+                                                    <Nav.Link eventKey="second">
+                                                        <span className="nav-icon mr-2">
+                                                            <span className="svg-icon mr-3">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                                                    <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+                                                                        <rect x="0" y="0" width="24" height="24"></rect>
+                                                                        <path d="M11,20 L11,17 C11,16.4477153 11.4477153,16 12,16 C12.5522847,16 13,16.4477153 13,17 L13,20 L15.5,20 C15.7761424,20 16,20.2238576 16,20.5 C16,20.7761424 15.7761424,21 15.5,21 L8.5,21 C8.22385763,21 8,20.7761424 8,20.5 C8,20.2238576 8.22385763,20 8.5,20 L11,20 Z" fill="#000000" opacity="0.3"></path>
+                                                                        <path d="M3,5 L21,5 C21.5522847,5 22,5.44771525 22,6 L22,16 C22,16.5522847 21.5522847,17 21,17 L3,17 C2.44771525,17 2,16.5522847 2,16 L2,6 C2,5.44771525 2.44771525,5 3,5 Z M4.5,8 C4.22385763,8 4,8.22385763 4,8.5 C4,8.77614237 4.22385763,9 4.5,9 L13.5,9 C13.7761424,9 14,8.77614237 14,8.5 C14,8.22385763 13.7761424,8 13.5,8 L4.5,8 Z M4.5,10 C4.22385763,10 4,10.2238576 4,10.5 C4,10.7761424 4.22385763,11 4.5,11 L7.5,11 C7.77614237,11 8,10.7761424 8,10.5 C8,10.2238576 7.77614237,10 7.5,10 L4.5,10 Z" fill="#000000"></path>
+                                                                    </g>
+                                                                </svg>
+                                                            </span>
+                                                        </span>
+                                                        <span className="nav-text font-weight-bold">AVANCES POR SEMANA</span>
+                                                    </Nav.Link>
+                                                </Nav.Item>
+                                                : '' : ''
+                                        }
+                                        <Nav.Item className="nav-item">
+                                            <Nav.Link eventKey="third">
+                                                <span className="nav-icon mr-2">
+                                                    <span className="svg-icon mr-3">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                                            <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+                                                                <rect x="0" y="0" width="24" height="24"></rect>
+                                                                <path d="M13,18.9450712 L13,20 L14,20 C15.1045695,20 16,20.8954305 16,22 L8,22 C8,20.8954305 8.8954305,20 10,20 L11,20 L11,18.9448245 C9.02872877,18.7261967 7.20827378,17.866394 5.79372555,16.5182701 L4.73856106,17.6741866 C4.36621808,18.0820826 3.73370941,18.110904 3.32581341,17.7385611 C2.9179174,17.3662181 2.88909597,16.7337094 3.26143894,16.3258134 L5.04940685,14.367122 C5.46150313,13.9156769 6.17860937,13.9363085 6.56406875,14.4106998 C7.88623094,16.037907 9.86320756,17 12,17 C15.8659932,17 19,13.8659932 19,10 C19,7.73468744 17.9175842,5.65198725 16.1214335,4.34123851 C15.6753081,4.01567657 15.5775721,3.39010038 15.903134,2.94397499 C16.228696,2.49784959 16.8542722,2.4001136 17.3003976,2.72567554 C19.6071362,4.40902808 21,7.08906798 21,10 C21,14.6325537 17.4999505,18.4476269 13,18.9450712 Z" fill="#000000" fillRule="nonzero"></path>
+                                                                <circle fill="#000000" opacity="0.3" cx="12" cy="10" r="6"></circle>
+                                                            </g>
+                                                        </svg>
+                                                    </span>
+                                                </span>
+                                                <span className="nav-text font-weight-bold">LEVANTAMIENTO DE TIKETS</span>
+                                            </Nav.Link>
+                                        </Nav.Item>
+                                    </Nav> 
+                            </Card.Header>
+                            <Card.Body>
+                                <Tab.Content>
+                                    <Tab.Pane eventKey="first" className="tab-pane fade">
+                                        {
+                                            proyecto ?
+                                                <div className="col-md-12 mb-4">
+                                                    <Nav as="ul" className="nav nav-tabs nav-tabs-line justify-content-end nav-bold border-0">
                                                         {
-                                                            showadjuntos.map((adjunto, key) => {
-                                                                if (proyecto[adjunto.value].length) {
+                                                            adjuntos.map((grupo, key) => {
+                                                                let aux = false
+                                                                grupo.adjuntos.forEach(element => {
+                                                                    if (proyecto[element.value].length)
+                                                                        aux = true
+                                                                });
+                                                                if (aux) {
                                                                     return (
-                                                                        <Nav.Item className="navi-item" key={key}>
-                                                                            <Nav.Link className="navi-link" eventKey={adjunto.value}>
-                                                                                <span className="navi-text">{adjunto.name}</span>
-                                                                            </Nav.Link>
-                                                                        </Nav.Item>
+                                                                        <div key={key}>
+                                                                            <Nav.Item as="li" className="mr-2">
+                                                                                <Nav.Link data-toggle="tab" className={primeravista && key === 0 ? "active" : ""} eventKey={grupo.value} onClick={() => { this.seleccionaradj(grupo.adjuntos) }}>{grupo.name}</Nav.Link>
+                                                                            </Nav.Item>
+                                                                        </div>
                                                                     )
                                                                 }
                                                             })
                                                         }
                                                     </Nav>
-                                                </Col>
-                                                <Col md={8}>
-                                                    <Tab.Content>
-                                                        {
-                                                            showadjuntos.map((adjunto, key) => {
-                                                                if (proyecto[adjunto.value].length) {
-                                                                    return (
-                                                                        <Tab.Pane key={key} eventKey={adjunto.value}>
-                                                                            {
-                                                                                proyecto ?
-                                                                                    proyecto[adjunto.value].length ?
-                                                                                        <div className="mt-2 d-flex justify-content-center">
-                                                                                            <span className='btn btn-hover btn-text-success' onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.value]) }}>
-                                                                                                <i className="fas fa-file-archive"></i> Descargar ZIP
-                                                                                        </span>
-                                                                                        </div>
-                                                                                        : ''
-                                                                                    : ''
-                                                                            }
-                                                                            {
-                                                                                proyecto ?
-                                                                                    <ItemSlider items={proyecto[adjunto.value]} item={adjunto.value} />
-                                                                                    : ''
-                                                                            }
-                                                                        </Tab.Pane>
-                                                                    )
-                                                                }
-                                                            })
-                                                        }
-                                                    </Tab.Content>
-                                                </Col>
-                                            </Row>
-                                        </Tab.Container>
-                                    </>
-                                </Card.Body>
-                            </Card>
 
-                        </div>
-                        : ''
-                }
-                
-                <Tab.Container defaultActiveKey="first">
-                    <div class="card card-custom">
-                        <div class="card-header card-header-tabs-line">
-                            <div class="card-toolbar">
-                                <Nav variant="pills" class="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-tabs-bold nav-tabs-line-3x">
-                                    <Nav.Item class="nav-item">
-                                        <Nav.Link eventKey="first">
-                                            <span class="nav-icon mr-2">
-                                                <span class="svg-icon mr-3">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                                            <rect x="0" y="0" width="24" height="24"></rect>
-                                                            <path d="M4.875,20.75 C4.63541667,20.75 4.39583333,20.6541667 4.20416667,20.4625 L2.2875,18.5458333 C1.90416667,18.1625 1.90416667,17.5875 2.2875,17.2041667 C2.67083333,16.8208333 3.29375,16.8208333 3.62916667,17.2041667 L4.875,18.45 L8.0375,15.2875 C8.42083333,14.9041667 8.99583333,14.9041667 9.37916667,15.2875 C9.7625,15.6708333 9.7625,16.2458333 9.37916667,16.6291667 L5.54583333,20.4625 C5.35416667,20.6541667 5.11458333,20.75 4.875,20.75 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"></path>
-                                                            <path d="M2,11.8650466 L2,6 C2,4.34314575 3.34314575,3 5,3 L19,3 C20.6568542,3 22,4.34314575 22,6 L22,15 C22,15.0032706 21.9999948,15.0065399 21.9999843,15.009808 L22.0249378,15 L22.0249378,19.5857864 C22.0249378,20.1380712 21.5772226,20.5857864 21.0249378,20.5857864 C20.7597213,20.5857864 20.5053674,20.4804296 20.317831,20.2928932 L18.0249378,18 L12.9835977,18 C12.7263047,14.0909841 9.47412135,11 5.5,11 C4.23590829,11 3.04485894,11.3127315 2,11.8650466 Z M6,7 C5.44771525,7 5,7.44771525 5,8 C5,8.55228475 5.44771525,9 6,9 L15,9 C15.5522847,9 16,8.55228475 16,8 C16,7.44771525 15.5522847,7 15,7 L6,7 Z" fill="#000000"></path>
-                                                        </g>
-                                                    </svg>
-                                                </span>
-                                            </span>
-                                            <span class="nav-text font-weight-bold">ADJUNTOS DEL PROYECTO</span>
-                                        </Nav.Link>
-                                    </Nav.Item>
-                                    <Nav.Item class="nav-item">
-                                        <Nav.Link eventKey="second">
-                                            <span class="nav-icon mr-2">
-                                                <span class="svg-icon mr-3">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                                            <rect x="0" y="0" width="24" height="24"></rect>
-                                                            <path d="M11,20 L11,17 C11,16.4477153 11.4477153,16 12,16 C12.5522847,16 13,16.4477153 13,17 L13,20 L15.5,20 C15.7761424,20 16,20.2238576 16,20.5 C16,20.7761424 15.7761424,21 15.5,21 L8.5,21 C8.22385763,21 8,20.7761424 8,20.5 C8,20.2238576 8.22385763,20 8.5,20 L11,20 Z" fill="#000000" opacity="0.3"></path>
-                                                            <path d="M3,5 L21,5 C21.5522847,5 22,5.44771525 22,6 L22,16 C22,16.5522847 21.5522847,17 21,17 L3,17 C2.44771525,17 2,16.5522847 2,16 L2,6 C2,5.44771525 2.44771525,5 3,5 Z M4.5,8 C4.22385763,8 4,8.22385763 4,8.5 C4,8.77614237 4.22385763,9 4.5,9 L13.5,9 C13.7761424,9 14,8.77614237 14,8.5 C14,8.22385763 13.7761424,8 13.5,8 L4.5,8 Z M4.5,10 C4.22385763,10 4,10.2238576 4,10.5 C4,10.7761424 4.22385763,11 4.5,11 L7.5,11 C7.77614237,11 8,10.7761424 8,10.5 C8,10.2238576 7.77614237,10 7.5,10 L4.5,10 Z" fill="#000000"></path>
-                                                        </g>
-                                                    </svg>
-                                                </span>
-                                            </span>
-                                            <span class="nav-text font-weight-bold">AVANCES POR SEMANA</span>
-                                        </Nav.Link>
-                                    </Nav.Item>
-                                    <Nav.Item class="nav-item">
-                                        <Nav.Link eventKey="third">
-                                            <span class="nav-icon mr-2">
-                                                <span class="svg-icon mr-3">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                                            <rect x="0" y="0" width="24" height="24"></rect>
-                                                            <path d="M13,18.9450712 L13,20 L14,20 C15.1045695,20 16,20.8954305 16,22 L8,22 C8,20.8954305 8.8954305,20 10,20 L11,20 L11,18.9448245 C9.02872877,18.7261967 7.20827378,17.866394 5.79372555,16.5182701 L4.73856106,17.6741866 C4.36621808,18.0820826 3.73370941,18.110904 3.32581341,17.7385611 C2.9179174,17.3662181 2.88909597,16.7337094 3.26143894,16.3258134 L5.04940685,14.367122 C5.46150313,13.9156769 6.17860937,13.9363085 6.56406875,14.4106998 C7.88623094,16.037907 9.86320756,17 12,17 C15.8659932,17 19,13.8659932 19,10 C19,7.73468744 17.9175842,5.65198725 16.1214335,4.34123851 C15.6753081,4.01567657 15.5775721,3.39010038 15.903134,2.94397499 C16.228696,2.49784959 16.8542722,2.4001136 17.3003976,2.72567554 C19.6071362,4.40902808 21,7.08906798 21,10 C21,14.6325537 17.4999505,18.4476269 13,18.9450712 Z" fill="#000000" fill-rule="nonzero"></path>
-                                                            <circle fill="#000000" opacity="0.3" cx="12" cy="10" r="6"></circle>
-                                                        </g>
-                                                    </svg>
-                                                </span>
-                                            </span>
-                                            <span class="nav-text font-weight-bold">LEVANTAMIENTO DE TIKETS</span>
-                                        </Nav.Link>
-                                    </Nav.Item>
-                                </Nav>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <Tab.Content>
-                                <Tab.Pane eventKey="first" class="tab-pane fade">
-                                    {
-                                        proyecto ?
-                                            <div className="col-md-12 mb-4">
-                                                <Card className="card-custom gutter-b">
-                                                    <Card.Header>
-                                                        <Card.Title>
-                                                            <div className="card-title">
-                                                                <h3 className="card-label">Adjuntos del proyecto</h3>
-                                                            </div>
-                                                        </Card.Title>
-                                                        <div className="card-toolbar">
-                                                            <Nav as="ul" className="nav nav-bold nav-pills">
-                                                                {
-                                                                    adjuntos.map((grupo, key) => {
-                                                                        let aux = false
-                                                                        grupo.adjuntos.forEach(element => {
-                                                                            if (proyecto[element.value].length)
-                                                                                aux = true
-                                                                        });
-                                                                        if (aux) {
-                                                                            return (
-                                                                                <div key={key}>
-                                                                                    <Nav.Item as="li">
-                                                                                        <Nav.Link data-toggle="tab" className={primeravista && key === 0 ? "active" : ""} eventKey={grupo.value} onClick={() => { this.seleccionaradj(grupo.adjuntos) }}>{grupo.name}</Nav.Link>
+                                                    <Tab.Container activeKey={subActiveKey ? subActiveKey : defaultactivekey} defaultActiveKey={defaultactivekey}
+                                                        onSelect={(select) => { this.updateActiveTabContainer(select) }}>
+                                                        <Row className="mt-4">
+                                                            <Col md={3} className="navi navi-accent navi-hover navi-bold">
+                                                                <Nav variant="pills" className="flex-column navi navi-hover navi-active">
+                                                                    {
+                                                                        showadjuntos.map((adjunto, key) => {
+                                                                            if (proyecto[adjunto.value].length) {
+                                                                                return (
+                                                                                    <Nav.Item className="navi-item" key={key}>
+                                                                                        <Nav.Link className="navi-link" eventKey={adjunto.value}>
+                                                                                            <span className="navi-text">{adjunto.name}</span>
+                                                                                        </Nav.Link>
                                                                                     </Nav.Item>
-                                                                                </div>
-                                                                            )
-                                                                        }
-                                                                    })
-                                                                }
-                                                            </Nav>
-                                                        </div>
-                                                    </Card.Header>
+                                                                                )
+                                                                            }
+                                                                        })
+                                                                    }
+                                                                </Nav>
+                                                            </Col>
 
-                                                    <Card.Body>
-                                                        <>
-                                                        <Tab.Container activeKey={subActiveKey ? subActiveKey : defaultactivekey} defaultActiveKey={defaultactivekey}
-                                                            onSelect={(select) => { this.updateActiveTabContainer(select) }}>
-                                                            <Row>
-                                                                <Col md={3} className="navi navi-accent navi-hover navi-bold">
-                                                                    <Nav variant="pills" className="flex-column navi navi-hover navi-active">
-                                                                        {
-                                                                            showadjuntos.map((adjunto, key) => {
-                                                                                if (proyecto[adjunto.value].length) {
-                                                                                    return (
-                                                                                        <Nav.Item className="navi-item" key={key}>
-                                                                                            <Nav.Link className="navi-link" eventKey={adjunto.value}>
-                                                                                                <span className="navi-text">{adjunto.name}</span>
-                                                                                            </Nav.Link>
-                                                                                        </Nav.Item>
-                                                                                    )
-                                                                                }
-                                                                            })
-                                                                        }
-                                                                    </Nav>
-                                                                </Col>
-                                                                <Col md={8}>
-                                                                    <Tab.Content>
-                                                                        {
-                                                                            showadjuntos.map((adjunto, key) => {
-                                                                                if (proyecto[adjunto.value].length) {
-                                                                                    return (
-                                                                                        <Tab.Pane key={key} eventKey={adjunto.value}>
-                                                                                            {
-                                                                                                proyecto ?
-                                                                                                    proyecto[adjunto.value].length ?
-                                                                                                        <div className="mt-2 d-flex justify-content-center">
-                                                                                                            <span className='btn btn-hover btn-text-success' onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.value]) }}>
-                                                                                                                <i className="fas fa-file-archive"></i> Descargar ZIP
+                                                            <Col md={8}>
+                                                                <Tab.Content>
+                                                                    {
+                                                                        showadjuntos.map((adjunto, key) => {
+                                                                            if (proyecto[adjunto.value].length) {
+                                                                                return (
+                                                                                    <Tab.Pane key={key} eventKey={adjunto.value}>
+                                                                                        {
+                                                                                            proyecto ?
+                                                                                                proyecto[adjunto.value].length ?
+                                                                                                    <div className="mt-2 d-flex justify-content-center">
+                                                                                                        <span className='btn btn-hover btn-text-success' onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.value]) }}>
+                                                                                                            <i className="fas fa-file-archive"></i> Descargar ZIP
                                                                                                         </span>
-                                                                                                        </div>
-                                                                                                        : ''
+                                                                                                    </div>
                                                                                                     : ''
-                                                                                            }
-                                                                                            {
-                                                                                                proyecto ?
-                                                                                                    <ItemSlider items={proyecto[adjunto.value]} item={adjunto.value} />
-                                                                                                    : ''
-                                                                                            }
-                                                                                        </Tab.Pane>
-                                                                                    )
-                                                                                }
-                                                                            })
-                                                                        }
-                                                                    </Tab.Content>
-                                                                </Col>
-                                                            </Row>
-                                                        </Tab.Container>
-                                                        </>
-                                                    </Card.Body>
-                                                </Card>
-                                            </div>
-                                        : ''
-                                    }
-                                </Tab.Pane>
-                                <Tab.Pane eventKey="second" class="tab-pane fade">
-                                {
-                                    proyecto ?
-                                        <div className="col-md-12 mb-4" >
-                                            <Card className="card-custom">
-                                                <Card.Header>
-                                                    <Card.Title>
-                                                        <div className="card-title">
-                                                            <h3 className="card-label">Avances por semana</h3>
-                                                        </div>
-                                                    </Card.Title>
-                                                </Card.Header>
-                                                <Card.Body>
+                                                                                                : ''
+                                                                                        }
+                                                                                        {
+                                                                                            proyecto ?
+                                                                                                <ItemSlider items={proyecto[adjunto.value]} item={adjunto.value} />
+                                                                                                : ''
+                                                                                        }
+                                                                                    </Tab.Pane>
+                                                                                )
+                                                                            }
+                                                                        })
+                                                                    }
+                                                                </Tab.Content>
+                                                            </Col>
+                                                        </Row>
+                                                    </Tab.Container>
+                                                </div> : ''
+                                        }
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="second" className="tab-pane fade">
+                                        {
+                                            proyecto ?
+                                                <div className="col-md-12 mb-4" >
                                                     {
                                                         proyecto.avances.length ?
                                                             <>
@@ -849,54 +712,62 @@ class MiProyecto extends Component {
                                                             </>
                                                             : ''
                                                     }
-                                                </Card.Body>
-                                            </Card>
-                                        </div>
-                                        : ''
-                                }
-                                </Tab.Pane>
-                                <Tab.Pane eventKey="third" class="tab-pane fade">
-                                    {
-                                        proyecto ?
-                                            <div className="col-md-12 mb-4" >
-                                                <Card className="card-custom">
-                                                    <Card.Header>
-                                                        <div className="card-title">
-                                                            <h3 className="card-label">Levantamiento de tickets</h3>
-                                                        </div>
-                                                    </Card.Header>
-                                                    <Card.Body>
-                                                        <Form id="form-miproyecto"
-                                                        // onSubmit={
-                                                        //     (e) => {
-                                                        //         e.preventDefault();
-                                                        //         validateAlert(onSubmit, e, 'form-concepto')
-                                                        //     }
-                                                        // }
-                                                        // {...props}
-                                                        >
+                                                </div>
+                                                : ''
+                                        }
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="third" className="tab-pane fade">
+                                        {
+                                            proyecto ?
+                                                <div className="col-md-12 mb-4" >
+                                                    <Form id="form-miproyecto"
+                                                    // onSubmit={
+                                                    //     (e) => {
+                                                    //         e.preventDefault();
+                                                    //         validateAlert(onSubmit, e, 'form-concepto')
+                                                    //     }
+                                                    // }
+                                                    // {...props}
+                                                    >
                                                         <div className="form-group row form-group-marginless">
                                                             <div className="col-md-4">
-                                                                {/* <SelectSearch
-                                                            formeditado={formeditado}
-                                                            options={options.partidas}
-                                                            placeholder="SELECCIONA LA PARTIDA"
-                                                            name="partida"
-                                                            value={form.partida}
-                                                            onChange={this.updatePartida}
-                                                            iconclass={" fas fa-book"}
-                                                        /> */}
+                                                                {/* 
+                                                                    <SelectSearch
+                                                                        formeditado={formeditado}
+                                                                        options={options.tipo_trabajo}
+                                                                        placeholder="SELECCIONA EL TIPO DE TRABAJO"
+                                                                        name="tipo_trabajo"
+                                                                        value={form.tipo_trabajo}
+                                                                        onChange={this.updateTrabajo}
+                                                                        iconclass={"fas fa-book"}
+                                                                    /> */
+                                                                }
                                                             </div>
                                                             <div className="col-md-4">
-                                                                {/* <SelectSearch
-                                                            formeditado={formeditado}
-                                                            options={options.subpartidas}
-                                                            placeholder="SELECCIONA LA SUBPARTIDA"
-                                                            name="subpartida"
-                                                            value={form.subpartida}
-                                                            onChange={this.updateSubpartida}
-                                                            iconclass={" fas fa-book"}
-                                                        /> */}
+                                                                {/* 
+                                                                    <SelectSearch
+                                                                        formeditado={formeditado}
+                                                                        options={options.partidas}
+                                                                        placeholder="SELECCIONA LA PARTIDA"
+                                                                        name="partida"
+                                                                        value={form.partida}
+                                                                        onChange={this.updatePartida}
+                                                                        iconclass={" fas fa-book"}
+                                                                    /> */
+                                                                }
+                                                            </div>
+                                                            <div className="col-md-4">
+                                                                <Input
+                                                                    onChange={this.onChange}
+                                                                    requirevalidation={1}
+                                                                    formeditado={formeditado}
+                                                                    name="nombre"
+                                                                    type="text"
+                                                                    value={form.nombre}
+                                                                    placeholder="NOMBRE DE QUIEN REPORTA"
+                                                                    iconclass={"fas fa-user"}
+                                                                    messageinc="Incorrecto. Ingresa el nombre de quien reporta."
+                                                                />
                                                             </div>
                                                         </div>
                                                         <div className="separator separator-dashed mt-1 mb-2"></div>
@@ -906,7 +777,7 @@ class MiProyecto extends Component {
                                                                     requirevalidation={1}
                                                                     formeditado={formeditado}
                                                                     as="textarea"
-                                                                    placeholder="DESCRIPCIÓN"
+                                                                    placeholder="DESCRIPCIÓN DEL PROBLEMA"
                                                                     rows="2"
                                                                     value={form.descripcion}
                                                                     name="descripcion"
@@ -919,21 +790,21 @@ class MiProyecto extends Component {
                                                         <div className="card-footer py-3 pr-1">
                                                             <div className="row">
                                                                 <div className="col-lg-12 text-right pr-0 pb-0">
-                                                                    <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" />
+                                                                    <Button text='SOLICITAR' type='submit' className="btn btn-primary mr-2" />
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </Form >
-                                                </Card.Body>
-                                            </Card>
-                                        </div>
-                                    : ''
-                                }
-                                </Tab.Pane>
-                            </Tab.Content>
-                        </div>
-                    </div>
-                </Tab.Container>
+                                                </div>
+                                                : ''
+                                        }
+                                    </Tab.Pane>
+                                </Tab.Content>
+                            </Card.Body>
+                        </Card>
+                    </Tab.Container>
+                    : ''
+                }
             </Layout>
         )
     }
@@ -941,11 +812,11 @@ class MiProyecto extends Component {
 
 const mapStateToProps = state => {
     return {
-                        authUser: state.authUser
+        authUser: state.authUser
     }
 }
 
 const mapDispatchToProps = dispatch => ({
-                    })
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(MiProyecto);
