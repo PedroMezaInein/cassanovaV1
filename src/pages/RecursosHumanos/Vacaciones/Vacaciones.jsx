@@ -231,22 +231,22 @@ class Vacaciones extends Component {
                     {
                         espera.map((empleado, key) => {
                             return (
-                                <div class="tab-content mt-4" key={key}>
-                                    <div class="table-responsive">
-                                        <table class="table table-head-custom table-head-bg table-borderless table-vertical-center">
+                                <div className="tab-content mt-4" key={key}>
+                                    <div className="table-responsive">
+                                        <table className="table table-head-custom table-head-bg table-borderless table-vertical-center">
                                             <thead>
-                                                <tr class="text-left">
-                                                    <th style={{ minWidth: "160px" }} class="pl-7">
-                                                        <span class="text-dark-75">Empleado</span>
+                                                <tr className="text-left">
+                                                    <th style={{ minWidth: "160px" }} className="pl-7">
+                                                        <span className="text-dark-75">Empleado</span>
                                                     </th>
                                                     <th style={{ minWidth: "100px" }}>
-                                                        <span class="text-dark-75">Fecha de inicio</span>
+                                                        <span className="text-dark-75">Fecha de inicio</span>
                                                     </th>
                                                     <th style={{ minWidth: "100px" }}>
-                                                        <span class="text-dark-75">Fecha final</span>
+                                                        <span className="text-dark-75">Fecha final</span>
                                                     </th>
                                                     <th style={{ minWidth: "100px" }}>
-                                                        <span class="text-dark-75">Estatus</span>
+                                                        <span className="text-dark-75">Estatus</span>
                                                     </th>
                                                 </tr>
                                             </thead>
@@ -255,20 +255,20 @@ class Vacaciones extends Component {
                                                     return (
                                                         <tbody key={key}>
                                                             <tr>
-                                                                <td class="pl-0 py-8">
-                                                                    <div class="d-flex align-items-center">
+                                                                <td className="pl-0 py-8">
+                                                                    <div className="d-flex align-items-center">
                                                                         <div>
-                                                                            <div href="#" class="mb-1 font-size-lg">{empleado.nombre}</div>
+                                                                            <div className="mb-1 font-size-lg">{empleado.nombre}</div>
                                                                         </div>
                                                                     </div>
                                                                 </td>
                                                                 <td>
-                                                                    <span class="font-size-lg">{setDateTableLG(vacacion.fecha_inicio)}</span>
+                                                                    <span className="font-size-lg">{setDateTableLG(vacacion.fecha_inicio)}</span>
                                                                 </td>
                                                                 <td>
-                                                                    <span class="font-size-lg">{setDateTableLG(vacacion.fecha_fin)}</span>
+                                                                    <span className="font-size-lg">{setDateTableLG(vacacion.fecha_fin)}</span>
                                                                 </td>
-                                                                <td class="pr-0">
+                                                                <td className="pr-0">
                                                                     <a className="btn btn-icon btn-light-success success2 btn-sm mr-2 ml-auto" onClick = { (e) =>  { 
                                                                         e.preventDefault(); 
                                                                         createAlert('¿Estás seguro que deseas aceptar las vacaciones?', '', 
