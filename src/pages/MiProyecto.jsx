@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV, URL_ASSETS } from '../constants'
-import { forbiddenAccessAlert, errorAlert, waitAlert } from '../functions/alert'
+import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert} from '../functions/alert'
 import { SelectSearch, SelectSearchSinText, Input } from '../components/form-components'
 import { setOptions } from '../functions/setters'
 import { Card, Nav, Tab, Col, Row, NavDropdown } from 'react-bootstrap'
@@ -13,7 +13,7 @@ import ItemSlider from '../components/singles/ItemSlider'
 import Moment from 'react-moment'
 import { Small } from '../components/texts'
 import { Form } from 'react-bootstrap'
-// import { validateAlert } from '../../../functions/alert'
+import { validateAlert } from '../functions/alert'
 class MiProyecto extends Component {
 
     state = {
@@ -284,6 +284,15 @@ class MiProyecto extends Component {
         this.getMiProyectoAxios()
     }
 
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            form[element] = ''
+        })
+        return form
+    }
+
     updateActiveTabContainer = active => {
         this.setState({
             ... this.state,
@@ -312,15 +321,12 @@ class MiProyecto extends Component {
                 }
                 this.setState({
                     ... this.state,
-                    form,
                     defaultactivekey: newdefaultactivekey,
-                    proyecto: proyecto
+                    proyecto: proyecto,
+                    form: this.clearForm()
                 })
             }
         })
-
-
-
     }
 
     async getMiProyectoAxios() {
@@ -342,7 +348,8 @@ class MiProyecto extends Component {
                     ... this.state,
                     data,
                     options,
-                    proyecto
+                    proyecto,
+                    form: this.clearForm()
                 })
             },
             (error) => {
@@ -394,6 +401,50 @@ class MiProyecto extends Component {
         this.setState({
             ... this.state,
             form
+        })
+    }
+
+    updateTrabajo = value => {
+        this.onChange({ target: { value: value, name: 'tipo_trabajo' } })
+    }
+
+    updatePartida = value => {
+        this.onChange({ target: { value: value, name: 'partida' } })
+    }
+    onSubmit = (e) => {
+        e.preventDefault()
+        waitAlert()
+        this.addTicketAxios();
+    }
+
+    async addTicketAxios() {
+        const { access_token } = this.props.authUser
+        const { form, proyecto} = this.state
+        form.proyecto=proyecto.id
+        await axios.post(URL_DEV + 'proyectos/mi-proyecto/tickets', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ticket fue solicitado con éxito.')
+
+                const { history } = this.props
+                history.push({pathname: '/mi-proyecto'})
+
+                this.setState({
+                    ... this.state,
+                    form: this.clearForm()
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -545,7 +596,7 @@ class MiProyecto extends Component {
                                                     <span className="nav-icon">
                                                         <span className="svg-icon mr-3">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                                <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                                                                     <rect x="0" y="0" width="24" height="24"/>
                                                                     <path d="M12.4644661,14.5355339 L9.46446609,14.5355339 C8.91218134,14.5355339 8.46446609,14.9832492 8.46446609,15.5355339 C8.46446609,16.0878187 8.91218134,16.5355339 9.46446609,16.5355339 L12.4644661,16.5355339 L12.4644661,17.5355339 C12.4644661,18.6401034 11.5690356,19.5355339 10.4644661,19.5355339 L6.46446609,19.5355339 C5.35989659,19.5355339 4.46446609,18.6401034 4.46446609,17.5355339 L4.46446609,13.5355339 C4.46446609,12.4309644 5.35989659,11.5355339 6.46446609,11.5355339 L10.4644661,11.5355339 C11.5690356,11.5355339 12.4644661,12.4309644 12.4644661,13.5355339 L12.4644661,14.5355339 Z" fill="#000000" opacity="0.3" transform="translate(8.464466, 15.535534) rotate(-45.000000) translate(-8.464466, -15.535534) "/>
                                                                     <path d="M11.5355339,9.46446609 L14.5355339,9.46446609 C15.0878187,9.46446609 15.5355339,9.01675084 15.5355339,8.46446609 C15.5355339,7.91218134 15.0878187,7.46446609 14.5355339,7.46446609 L11.5355339,7.46446609 L11.5355339,6.46446609 C11.5355339,5.35989659 12.4309644,4.46446609 13.5355339,4.46446609 L17.5355339,4.46446609 C18.6401034,4.46446609 19.5355339,5.35989659 19.5355339,6.46446609 L19.5355339,10.4644661 C19.5355339,11.5690356 18.6401034,12.4644661 17.5355339,12.4644661 L13.5355339,12.4644661 C12.4309644,12.4644661 11.5355339,11.5690356 11.5355339,10.4644661 L11.5355339,9.46446609 Z" fill="#000000" transform="translate(15.535534, 8.464466) rotate(-45.000000) translate(-15.535534, -8.464466) "/>
@@ -565,7 +616,7 @@ class MiProyecto extends Component {
                                                     <span className="nav-icon">
                                                         <span className="svg-icon mr-3">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                                <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                                                                     <rect x="0" y="0" width="24" height="24"/>
                                                                     <path d="M8,3 L8,3.5 C8,4.32842712 8.67157288,5 9.5,5 L14.5,5 C15.3284271,5 16,4.32842712 16,3.5 L16,3 L18,3 C19.1045695,3 20,3.8954305 20,5 L20,21 C20,22.1045695 19.1045695,23 18,23 L6,23 C4.8954305,23 4,22.1045695 4,21 L4,5 C4,3.8954305 4.8954305,3 6,3 L8,3 Z" fill="#000000" opacity="0.3"/>
                                                                     <path d="M10.875,15.75 C10.6354167,15.75 10.3958333,15.6541667 10.2041667,15.4625 L8.2875,13.5458333 C7.90416667,13.1625 7.90416667,12.5875 8.2875,12.2041667 C8.67083333,11.8208333 9.29375,11.8208333 9.62916667,12.2041667 L10.875,13.45 L14.0375,10.2875 C14.4208333,9.90416667 14.9958333,9.90416667 15.3791667,10.2875 C15.7625,10.6708333 15.7625,11.2458333 15.3791667,11.6291667 L11.5458333,15.4625 C11.3541667,15.6541667 11.1145833,15.75 10.875,15.75 Z" fill="#000000"/>
@@ -584,9 +635,9 @@ class MiProyecto extends Component {
                                             <span className="nav-icon">
                                                 <span className="svg-icon mr-3">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                        <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                                                             <polygon points="0 0 24 0 24 24 0 24"/>
-                                                            <path d="M5.85714286,2 L13.7364114,2 C14.0910962,2 14.4343066,2.12568431 14.7051108,2.35473959 L19.4686994,6.3839416 C19.8056532,6.66894833 20,7.08787823 20,7.52920201 L20,20.0833333 C20,21.8738751 19.9795521,22 18.1428571,22 L5.85714286,22 C4.02044787,22 4,21.8738751 4,20.0833333 L4,3.91666667 C4,2.12612489 4.02044787,2 5.85714286,2 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"/>
+                                                            <path d="M5.85714286,2 L13.7364114,2 C14.0910962,2 14.4343066,2.12568431 14.7051108,2.35473959 L19.4686994,6.3839416 C19.8056532,6.66894833 20,7.08787823 20,7.52920201 L20,20.0833333 C20,21.8738751 19.9795521,22 18.1428571,22 L5.85714286,22 C4.02044787,22 4,21.8738751 4,20.0833333 L4,3.91666667 C4,2.12612489 4.02044787,2 5.85714286,2 Z" fill="#000000" fillRule="nonzero" opacity="0.3"/>
                                                             <rect fill="#000000" x="6" y="11" width="9" height="2" rx="1"/>
                                                             <rect fill="#000000" x="6" y="15" width="5" height="2" rx="1"/>
                                                         </g>
@@ -718,12 +769,12 @@ class MiProyecto extends Component {
                                             proyecto ?
                                                 <div className="col-md-12 mb-4" >
                                                     <Form id="form-miproyecto"
-                                                    // onSubmit={
-                                                    //     (e) => {
-                                                    //         e.preventDefault();
-                                                    //         validateAlert(onSubmit, e, 'form-miproyecto')
-                                                    //     }
-                                                    // }
+                                                    onSubmit={
+                                                        (e) => {
+                                                            e.preventDefault();
+                                                            validateAlert(this.onSubmit, e, 'form-miproyecto')
+                                                        }
+                                                    }
                                                     >
                                                         <div className="form-group row form-group-marginless">
                                                             <div className="col-md-6">
@@ -789,7 +840,7 @@ class MiProyecto extends Component {
                                                                     <span className="text-dark-75">Fecha de inicio</span>
                                                                 </th>
                                                                 <th style={{ minWidth: "100px" }}>
-                                                                    <span className="text-dark-75">Fecha final</span>
+                                                                    <span className="text-dark-75">Descripción</span>
                                                                 </th>
                                                                 <th style={{ minWidth: "100px" }}>
                                                                     <span className="text-dark-75">Estatus</span>
