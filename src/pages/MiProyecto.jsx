@@ -14,7 +14,6 @@ import Moment from 'react-moment'
 import { Small } from '../components/texts'
 import { Form } from 'react-bootstrap'
 // import { validateAlert } from '../../../functions/alert'
-import { MiProyectoForm } from '../components/forms'
 class MiProyecto extends Component {
 
     state = {
@@ -397,17 +396,6 @@ class MiProyecto extends Component {
         const { options, proyecto, form, adjuntos, showadjuntos, primeravista, defaultactivekey, subActiveKey, formeditado } = this.state
         return (
             <Layout {...this.props}>
-                {/* <MiProyectoForm
-                    options={options}
-                    proyecto={proyecto}
-                    form={form}
-                    adjuntos={adjuntos}
-                    showadjuntos={showadjuntos}
-                    primeravista={primeravista}
-                    defaultactivekey={defaultactivekey}
-                    subActiveKey={subActiveKey}
-                    onChange = { this.updateProyecto }
-                /> */}
                 <div className="content pt-0 d-flex flex-column flex-column-fluid" style={{ paddingBottom: "11px" }}>
                     <div className="d-flex flex-row-fluid bgi-size-cover bgi-position-center min-h-350px mb-4 d-flex justify-content-center align-items-center" style={{ backgroundImage: "url('/proyecto.jpg')", margin: "-25px" }}>
                         <div className="container">
