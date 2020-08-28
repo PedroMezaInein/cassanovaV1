@@ -7,7 +7,7 @@ import { URL_DEV, URL_ASSETS } from '../constants'
 import { forbiddenAccessAlert, errorAlert, waitAlert } from '../functions/alert'
 import { SelectSearch, SelectSearchSinText, Input } from '../components/form-components'
 import { setOptions } from '../functions/setters'
-import { Card, Nav, Tab, Col, Row } from 'react-bootstrap'
+import { Card, Nav, Tab, Col, Row, NavDropdown } from 'react-bootstrap'
 import { Button } from '../components/form-components'
 import ItemSlider from '../components/singles/ItemSlider'
 import Moment from 'react-moment'
@@ -72,13 +72,15 @@ class MiProyecto extends Component {
         },
         form: {
             proyecto: '',
-            tipo_trabajo:'',
-            partida:'',
-            descripcion:'',
-            nombre:''
+            tipo_trabajo: '',
+            partida: '',
+            descripcion: '',
+            nombre: ''
         },
         options: {
-            proyectos: []
+            proyectos: [],
+            partidas: [],
+            tiposTrabajo: [],
         },
         adjuntos: [
             {
@@ -325,10 +327,13 @@ class MiProyecto extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'proyectos/mi-proyecto', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { proyectos } = response.data
+                const { proyectos, partidas, tiposTrabajo } = response.data
                 const { data, options } = this.state
                 let { proyecto } = this.state
                 options.proyectos = setOptions(proyectos, 'nombre', 'id')
+                options.partidas = setOptions(partidas, 'nombre', 'id')
+                options.tiposTrabajo = setOptions(tiposTrabajo, 'tipo', 'id')
+
                 data.proyectos = proyectos
                 if (proyectos.length === 1) {
                     proyecto = proyectos[0]
@@ -531,65 +536,69 @@ class MiProyecto extends Component {
                 {proyecto ?
                     <Tab.Container defaultActiveKey="first">
                         <Card className="card-custom">
-                            <Card.Header className="card-header-tabs-line"> 
-                                    <Nav className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-tabs-bold nav-tabs-line-3x">
-                                        {
-                                            proyecto.adjuntos.length ?
-                                                <Nav.Item className="nav-item">
-                                                    <Nav.Link eventKey="first">
-                                                        <span className="nav-icon mr-2">
-                                                            <span className="svg-icon mr-3">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                                                    <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                                                                        <rect x="0" y="0" width="24" height="24"></rect>
-                                                                        <path d="M4.875,20.75 C4.63541667,20.75 4.39583333,20.6541667 4.20416667,20.4625 L2.2875,18.5458333 C1.90416667,18.1625 1.90416667,17.5875 2.2875,17.2041667 C2.67083333,16.8208333 3.29375,16.8208333 3.62916667,17.2041667 L4.875,18.45 L8.0375,15.2875 C8.42083333,14.9041667 8.99583333,14.9041667 9.37916667,15.2875 C9.7625,15.6708333 9.7625,16.2458333 9.37916667,16.6291667 L5.54583333,20.4625 C5.35416667,20.6541667 5.11458333,20.75 4.875,20.75 Z" fill="#000000" fillRule="nonzero" opacity="0.3"></path>
-                                                                        <path d="M2,11.8650466 L2,6 C2,4.34314575 3.34314575,3 5,3 L19,3 C20.6568542,3 22,4.34314575 22,6 L22,15 C22,15.0032706 21.9999948,15.0065399 21.9999843,15.009808 L22.0249378,15 L22.0249378,19.5857864 C22.0249378,20.1380712 21.5772226,20.5857864 21.0249378,20.5857864 C20.7597213,20.5857864 20.5053674,20.4804296 20.317831,20.2928932 L18.0249378,18 L12.9835977,18 C12.7263047,14.0909841 9.47412135,11 5.5,11 C4.23590829,11 3.04485894,11.3127315 2,11.8650466 Z M6,7 C5.44771525,7 5,7.44771525 5,8 C5,8.55228475 5.44771525,9 6,9 L15,9 C15.5522847,9 16,8.55228475 16,8 C16,7.44771525 15.5522847,7 15,7 L6,7 Z" fill="#000000"></path>
-                                                                    </g>
-                                                                </svg>
-                                                            </span>
+                            <Card.Header className="card-header-tabs-line">
+                                <Nav className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-tabs-bold nav-tabs-line-3x">
+                                    {
+                                        proyecto.adjuntos.length ?
+                                            <Nav.Item className="nav-item">
+                                                <Nav.Link eventKey="first">
+                                                    <span className="nav-icon">
+                                                        <span className="svg-icon mr-3">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                                    <rect x="0" y="0" width="24" height="24"/>
+                                                                    <path d="M12.4644661,14.5355339 L9.46446609,14.5355339 C8.91218134,14.5355339 8.46446609,14.9832492 8.46446609,15.5355339 C8.46446609,16.0878187 8.91218134,16.5355339 9.46446609,16.5355339 L12.4644661,16.5355339 L12.4644661,17.5355339 C12.4644661,18.6401034 11.5690356,19.5355339 10.4644661,19.5355339 L6.46446609,19.5355339 C5.35989659,19.5355339 4.46446609,18.6401034 4.46446609,17.5355339 L4.46446609,13.5355339 C4.46446609,12.4309644 5.35989659,11.5355339 6.46446609,11.5355339 L10.4644661,11.5355339 C11.5690356,11.5355339 12.4644661,12.4309644 12.4644661,13.5355339 L12.4644661,14.5355339 Z" fill="#000000" opacity="0.3" transform="translate(8.464466, 15.535534) rotate(-45.000000) translate(-8.464466, -15.535534) "/>
+                                                                    <path d="M11.5355339,9.46446609 L14.5355339,9.46446609 C15.0878187,9.46446609 15.5355339,9.01675084 15.5355339,8.46446609 C15.5355339,7.91218134 15.0878187,7.46446609 14.5355339,7.46446609 L11.5355339,7.46446609 L11.5355339,6.46446609 C11.5355339,5.35989659 12.4309644,4.46446609 13.5355339,4.46446609 L17.5355339,4.46446609 C18.6401034,4.46446609 19.5355339,5.35989659 19.5355339,6.46446609 L19.5355339,10.4644661 C19.5355339,11.5690356 18.6401034,12.4644661 17.5355339,12.4644661 L13.5355339,12.4644661 C12.4309644,12.4644661 11.5355339,11.5690356 11.5355339,10.4644661 L11.5355339,9.46446609 Z" fill="#000000" transform="translate(15.535534, 8.464466) rotate(-45.000000) translate(-15.535534, -8.464466) "/>
+                                                                </g>
+                                                            </svg>
                                                         </span>
-                                                        <span className="nav-text font-weight-bold">ADJUNTOS DEL PROYECTO</span>
-                                                    </Nav.Link>
-                                                </Nav.Item>
-                                                : ''
-                                        }
-                                        {proyecto ?
-                                            proyecto.avances.length ?
-                                                <Nav.Item className="nav-item">
-                                                    <Nav.Link eventKey="second">
-                                                        <span className="nav-icon mr-2">
-                                                            <span className="svg-icon mr-3">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                                                    <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                                                                        <rect x="0" y="0" width="24" height="24"></rect>
-                                                                        <path d="M11,20 L11,17 C11,16.4477153 11.4477153,16 12,16 C12.5522847,16 13,16.4477153 13,17 L13,20 L15.5,20 C15.7761424,20 16,20.2238576 16,20.5 C16,20.7761424 15.7761424,21 15.5,21 L8.5,21 C8.22385763,21 8,20.7761424 8,20.5 C8,20.2238576 8.22385763,20 8.5,20 L11,20 Z" fill="#000000" opacity="0.3"></path>
-                                                                        <path d="M3,5 L21,5 C21.5522847,5 22,5.44771525 22,6 L22,16 C22,16.5522847 21.5522847,17 21,17 L3,17 C2.44771525,17 2,16.5522847 2,16 L2,6 C2,5.44771525 2.44771525,5 3,5 Z M4.5,8 C4.22385763,8 4,8.22385763 4,8.5 C4,8.77614237 4.22385763,9 4.5,9 L13.5,9 C13.7761424,9 14,8.77614237 14,8.5 C14,8.22385763 13.7761424,8 13.5,8 L4.5,8 Z M4.5,10 C4.22385763,10 4,10.2238576 4,10.5 C4,10.7761424 4.22385763,11 4.5,11 L7.5,11 C7.77614237,11 8,10.7761424 8,10.5 C8,10.2238576 7.77614237,10 7.5,10 L4.5,10 Z" fill="#000000"></path>
-                                                                    </g>
-                                                                </svg>
-                                                            </span>
-                                                        </span>
-                                                        <span className="nav-text font-weight-bold">AVANCES POR SEMANA</span>
-                                                    </Nav.Link>
-                                                </Nav.Item>
-                                                : '' : ''
-                                        }
-                                        <Nav.Item className="nav-item">
-                                            <Nav.Link eventKey="third">
-                                                <span className="nav-icon mr-2">
-                                                    <span className="svg-icon mr-3">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                                            <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                                                                <rect x="0" y="0" width="24" height="24"></rect>
-                                                                <path d="M13,18.9450712 L13,20 L14,20 C15.1045695,20 16,20.8954305 16,22 L8,22 C8,20.8954305 8.8954305,20 10,20 L11,20 L11,18.9448245 C9.02872877,18.7261967 7.20827378,17.866394 5.79372555,16.5182701 L4.73856106,17.6741866 C4.36621808,18.0820826 3.73370941,18.110904 3.32581341,17.7385611 C2.9179174,17.3662181 2.88909597,16.7337094 3.26143894,16.3258134 L5.04940685,14.367122 C5.46150313,13.9156769 6.17860937,13.9363085 6.56406875,14.4106998 C7.88623094,16.037907 9.86320756,17 12,17 C15.8659932,17 19,13.8659932 19,10 C19,7.73468744 17.9175842,5.65198725 16.1214335,4.34123851 C15.6753081,4.01567657 15.5775721,3.39010038 15.903134,2.94397499 C16.228696,2.49784959 16.8542722,2.4001136 17.3003976,2.72567554 C19.6071362,4.40902808 21,7.08906798 21,10 C21,14.6325537 17.4999505,18.4476269 13,18.9450712 Z" fill="#000000" fillRule="nonzero"></path>
-                                                                <circle fill="#000000" opacity="0.3" cx="12" cy="10" r="6"></circle>
-                                                            </g>
-                                                        </svg>
                                                     </span>
+                                                    <span className="nav-text font-weight-bold">ADJUNTOS DEL PROYECTO</span>
+                                                </Nav.Link>
+                                            </Nav.Item>
+                                            : ''
+                                    }
+                                    {proyecto ?
+                                        proyecto.avances.length ?
+                                            <Nav.Item className="nav-item">
+                                                <Nav.Link eventKey="second">
+                                                    <span className="nav-icon">
+                                                        <span className="svg-icon mr-3">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                                    <rect x="0" y="0" width="24" height="24"/>
+                                                                    <path d="M8,3 L8,3.5 C8,4.32842712 8.67157288,5 9.5,5 L14.5,5 C15.3284271,5 16,4.32842712 16,3.5 L16,3 L18,3 C19.1045695,3 20,3.8954305 20,5 L20,21 C20,22.1045695 19.1045695,23 18,23 L6,23 C4.8954305,23 4,22.1045695 4,21 L4,5 C4,3.8954305 4.8954305,3 6,3 L8,3 Z" fill="#000000" opacity="0.3"/>
+                                                                    <path d="M10.875,15.75 C10.6354167,15.75 10.3958333,15.6541667 10.2041667,15.4625 L8.2875,13.5458333 C7.90416667,13.1625 7.90416667,12.5875 8.2875,12.2041667 C8.67083333,11.8208333 9.29375,11.8208333 9.62916667,12.2041667 L10.875,13.45 L14.0375,10.2875 C14.4208333,9.90416667 14.9958333,9.90416667 15.3791667,10.2875 C15.7625,10.6708333 15.7625,11.2458333 15.3791667,11.6291667 L11.5458333,15.4625 C11.3541667,15.6541667 11.1145833,15.75 10.875,15.75 Z" fill="#000000"/>
+                                                                    <path d="M11,2 C11,1.44771525 11.4477153,1 12,1 C12.5522847,1 13,1.44771525 13,2 L14.5,2 C14.7761424,2 15,2.22385763 15,2.5 L15,3.5 C15,3.77614237 14.7761424,4 14.5,4 L9.5,4 C9.22385763,4 9,3.77614237 9,3.5 L9,2.5 C9,2.22385763 9.22385763,2 9.5,2 L11,2 Z" fill="#000000"/>
+                                                                </g>
+                                                            </svg>
+                                                        </span>
+                                                    </span>
+                                                    <span className="nav-text font-weight-bold">AVANCES POR SEMANA</span>
+                                                </Nav.Link>
+                                            </Nav.Item>
+                                            : '' : ''
+                                    }
+                                    <NavDropdown title={
+                                        <>
+                                            <span className="nav-icon">
+                                                <span className="svg-icon mr-3">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                            <polygon points="0 0 24 0 24 24 0 24"/>
+                                                            <path d="M5.85714286,2 L13.7364114,2 C14.0910962,2 14.4343066,2.12568431 14.7051108,2.35473959 L19.4686994,6.3839416 C19.8056532,6.66894833 20,7.08787823 20,7.52920201 L20,20.0833333 C20,21.8738751 19.9795521,22 18.1428571,22 L5.85714286,22 C4.02044787,22 4,21.8738751 4,20.0833333 L4,3.91666667 C4,2.12612489 4.02044787,2 5.85714286,2 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"/>
+                                                            <rect fill="#000000" x="6" y="11" width="9" height="2" rx="1"/>
+                                                            <rect fill="#000000" x="6" y="15" width="5" height="2" rx="1"/>
+                                                        </g>
+                                                    </svg>
                                                 </span>
-                                                <span className="nav-text font-weight-bold">LEVANTAMIENTO DE TIKETS</span>
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                    </Nav> 
+                                            </span>
+                                            <span className="nav-text font-weight-bold">TICKETS</span>
+                                        </>}>
+                                        <NavDropdown.Item eventKey="third">LEVANTAMIENTO DE TICKETS</NavDropdown.Item>
+                                        <NavDropdown.Item eventKey="fourth">ESTATUS DE TICKETS</NavDropdown.Item>
+                                    </NavDropdown>
+                                </Nav>
                             </Card.Header>
                             <Card.Body>
                                 <Tab.Content>
@@ -597,7 +606,7 @@ class MiProyecto extends Component {
                                         {
                                             proyecto ?
                                                 <div className="col-md-12 mb-4">
-                                                    <Nav as="ul" className="nav nav-tabs nav-tabs-line justify-content-end nav-bold border-0">
+                                                    <Nav as="ul" className="nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100">
                                                         {
                                                             adjuntos.map((grupo, key) => {
                                                                 let aux = false
@@ -609,7 +618,7 @@ class MiProyecto extends Component {
                                                                     return (
                                                                         <div key={key}>
                                                                             <Nav.Item as="li" className="mr-2">
-                                                                                <Nav.Link data-toggle="tab" className={primeravista && key === 0 ? "active" : ""} eventKey={grupo.value} onClick={() => { this.seleccionaradj(grupo.adjuntos) }}>{grupo.name}</Nav.Link>
+                                                                                <Nav.Link data-toggle="tab" className={primeravista && key === 0 ? "active rounded-0" : " rounded-0"} eventKey={grupo.value} onClick={() => { this.seleccionaradj(grupo.adjuntos) }}>{grupo.name}</Nav.Link>
                                                                             </Nav.Item>
                                                                         </div>
                                                                     )
@@ -620,7 +629,7 @@ class MiProyecto extends Component {
 
                                                     <Tab.Container activeKey={subActiveKey ? subActiveKey : defaultactivekey} defaultActiveKey={defaultactivekey}
                                                         onSelect={(select) => { this.updateActiveTabContainer(select) }}>
-                                                        <Row className="mt-4">
+                                                        <Row className="mt-5 mx-0">
                                                             <Col md={3} className="navi navi-accent navi-hover navi-bold">
                                                                 <Nav variant="pills" className="flex-column navi navi-hover navi-active">
                                                                     {
@@ -639,7 +648,7 @@ class MiProyecto extends Component {
                                                                 </Nav>
                                                             </Col>
 
-                                                            <Col md={8}>
+                                                            <Col md={9}>
                                                                 <Tab.Content>
                                                                     {
                                                                         showadjuntos.map((adjunto, key) => {
@@ -712,49 +721,31 @@ class MiProyecto extends Component {
                                                     // onSubmit={
                                                     //     (e) => {
                                                     //         e.preventDefault();
-                                                    //         validateAlert(onSubmit, e, 'form-concepto')
+                                                    //         validateAlert(onSubmit, e, 'form-miproyecto')
                                                     //     }
                                                     // }
-                                                    // {...props}
                                                     >
                                                         <div className="form-group row form-group-marginless">
-                                                            <div className="col-md-4">
-                                                                {/* 
-                                                                    <SelectSearch
-                                                                        formeditado={formeditado}
-                                                                        options={options.tipo_trabajo}
-                                                                        placeholder="SELECCIONA EL TIPO DE TRABAJO"
-                                                                        name="tipo_trabajo"
-                                                                        value={form.tipo_trabajo}
-                                                                        onChange={this.updateTrabajo}
-                                                                        iconclass={"fas fa-book"}
-                                                                    /> */
-                                                                }
-                                                            </div>
-                                                            <div className="col-md-4">
-                                                                {/* 
-                                                                    <SelectSearch
-                                                                        formeditado={formeditado}
-                                                                        options={options.partidas}
-                                                                        placeholder="SELECCIONA LA PARTIDA"
-                                                                        name="partida"
-                                                                        value={form.partida}
-                                                                        onChange={this.updatePartida}
-                                                                        iconclass={" fas fa-book"}
-                                                                    /> */
-                                                                }
-                                                            </div>
-                                                            <div className="col-md-4">
-                                                                <Input
-                                                                    onChange={this.onChange}
-                                                                    requirevalidation={1}
+                                                            <div className="col-md-6">
+                                                                <SelectSearch
                                                                     formeditado={formeditado}
-                                                                    name="nombre"
-                                                                    type="text"
-                                                                    value={form.nombre}
-                                                                    placeholder="NOMBRE DE QUIEN REPORTA"
-                                                                    iconclass={"fas fa-user"}
-                                                                    messageinc="Incorrecto. Ingresa el nombre de quien reporta."
+                                                                    options={options.tiposTrabajo}
+                                                                    placeholder="SELECCIONA EL TIPO DE TRABAJO"
+                                                                    name="tipo_trabajo"
+                                                                    value={form.tipo_trabajo}
+                                                                    onChange={this.updateTrabajo}
+                                                                    iconclass={"fas fa-book"}
+                                                                />
+                                                            </div>
+                                                            <div className="col-md-6">
+                                                                <SelectSearch
+                                                                    formeditado={formeditado}
+                                                                    options={options.partidas}
+                                                                    placeholder="SELECCIONA LA PARTIDA"
+                                                                    name="partida"
+                                                                    value={form.partida}
+                                                                    onChange={this.updatePartida}
+                                                                    iconclass={" fas fa-book"}
                                                                 />
                                                             </div>
                                                         </div>
@@ -783,6 +774,43 @@ class MiProyecto extends Component {
                                                             </div>
                                                         </div>
                                                     </Form >
+                                                </div>
+                                                : ''
+                                        }
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="fourth" className="tab-pane fade">
+                                        {
+                                            proyecto ?
+                                                <div className="table-responsive mt-4">
+                                                    <table className="table table-head-custom table-head-bg table-borderless table-vertical-center">
+                                                        <thead>
+                                                            <tr className="text-center">
+                                                                <th style={{ minWidth: "100px" }}>
+                                                                    <span className="text-dark-75">Fecha de inicio</span>
+                                                                </th>
+                                                                <th style={{ minWidth: "100px" }}>
+                                                                    <span className="text-dark-75">Fecha final</span>
+                                                                </th>
+                                                                <th style={{ minWidth: "100px" }}>
+                                                                    <span className="text-dark-75">Estatus</span>
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr className="text-center">
+                                                                <td>
+                                                                    <span className="font-size-lg">Fecha</span>
+                                                                </td>
+                                                                <td>
+                                                                    <span className="font-size-lg">fecha</span>
+                                                                </td>
+                                                                <td className="pr-0">
+                                                                    <span className="label label-lg label-light-primary label-inline font-weight-bold">Aceptadas</span>
+
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
                                                 </div>
                                                 : ''
                                         }
