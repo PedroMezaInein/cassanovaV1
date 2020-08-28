@@ -9,7 +9,7 @@ import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { ConceptoForm } from '../../../components/forms'
 import NewTable from '../../../components/tables/NewTable'
-import { forbiddenAccessAlert, errorAlert, doneAlert } from '../../../functions/alert'
+import { forbiddenAccessAlert, errorAlert, doneAlert, waitAlert } from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 
 const $ = require('jquery');
@@ -135,6 +135,38 @@ class Conceptos extends Component {
         $('#kt_datatable_conceptos').DataTable().ajax.reload();
     }
 
+    async exportConceptosAxios(){
+
+        waitAlert()
+
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'exportar/conceptos', { responseType:'blob', headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'conceptos.xlsx');
+                document.body.appendChild(link);
+                link.click();
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render() {
 
         const { modalDelete, conceptos } = this.state
@@ -155,6 +187,8 @@ class Conceptos extends Component {
                         'edit': { function: this.changePageEdit },
                         'delete': { function: this.openModalDelete }
                     }}
+                    exportar_boton={true} 
+                    onClickExport={() => this.exportConceptosAxios()}
                     accessToken = { this.props.authUser.access_token }
                     setter = { this.setConceptos }
                     urlRender = {URL_DEV + 'conceptos'}
