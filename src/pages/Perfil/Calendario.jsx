@@ -9,7 +9,7 @@ import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClic
 import esLocale from '@fullcalendar/core/locales/es';
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { Modal } from '../../components/singles'
-import { SolicitarVacacionesForm, EstatusForm} from "../../components/forms";
+import { SolicitarVacacionesForm, EstatusForm } from "../../components/forms";
 import { errorAlert, forbiddenAccessAlert, waitAlert, doneAlert } from '../../functions/alert';
 import { countDaysWithoutWeekend } from '../../functions/functions';
 import { URL_DEV } from '../../constants';
@@ -26,7 +26,7 @@ class Calendario extends Component {
         modal: false,
         empleado: '',
         vacaciones_totales: '',
-        modal_status:false,
+        modal_status: false,
         form: {
             fechaInicio: new Date(),
             fechaFin: new Date(),
@@ -34,12 +34,12 @@ class Calendario extends Component {
         estatus: []
     };
 
-    componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
-        const { match : { params: { action: action } } } = this.props
-        const { history, location: { state: state} } = this.props
-        const remisiones = permisos.find(function(element, index) {
+    componentDidMount() {
+        const { authUser: { user: { permisos: permisos } } } = this.props
+        const { history: { location: { pathname: pathname } } } = this.props
+        const { match: { params: { action: action } } } = this.props
+        const { history, location: { state: state } } = this.props
+        const remisiones = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
             return pathname === url
         });
@@ -118,53 +118,51 @@ class Calendario extends Component {
     getDiasDisponibles = (empleado, vacaciones_totales) => {
         /* const { empleado, vacaciones_totales } = this.state */
         /* console.log(empleado, 'empleado') */
-        let contador =  0
+        let contador = 0
         let fecha_inicio_empleado = ''
-        if(empleado){
+        if (empleado) {
 
             fecha_inicio_empleado = new Date(empleado.fecha_inicio)
             fecha_inicio_empleado.setDate(fecha_inicio_empleado.getDate() + 1)
-            
+
             let mes = fecha_inicio_empleado.getMonth() + 1
-            
-            if(mes.toString().length === 1){
-                mes = '0'+mes
+
+            if (mes.toString().length === 1) {
+                mes = '0' + mes
             }
-            
+
             let dia = fecha_inicio_empleado.getDate()
             let now = new Date();
             now.setDate(now.getDate() + 366)
             let año = now.getFullYear();
 
-            let fecha_fin = new Date(mes+'/'+dia+'/'+año)
-            let fecha_inicio = new Date(mes+'/'+dia+'/'+(año-1))
+            let fecha_fin = new Date(mes + '/' + dia + '/' + año)
+            let fecha_inicio = new Date(mes + '/' + dia + '/' + (año - 1))
 
-            if(fecha_fin < fecha_inicio_empleado){
-                fecha_fin = new Date(mes+'/'+dia+'/'+(año+1))
-                fecha_inicio = new Date(mes+'/'+dia+'/'+año)
+            if (fecha_fin < fecha_inicio_empleado) {
+                fecha_fin = new Date(mes + '/' + dia + '/' + (año + 1))
+                fecha_inicio = new Date(mes + '/' + dia + '/' + año)
             }
 
-            vacaciones_totales.map( (vacacion, key) => {
-                if(vacacion.estatus !== 'Rechazadas'){
+            vacaciones_totales.map((vacacion, key) => {
+                if (vacacion.estatus !== 'Rechazadas') {
                     let vacacion_fecha_inicio = new Date(vacacion.fecha_inicio)
                     let vacacion_fecha_fin = new Date(vacacion.fecha_fin)
-                    if(vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin && vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin)
+                    if (vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin && vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin)
                         contador = contador + countDaysWithoutWeekend(vacacion_fecha_inicio, vacacion_fecha_fin)
-                    if(vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin && !(vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin))
-                    {
-                        while(vacacion_fecha_inicio.getTime() >= vacacion_fecha_fin.getTime()){
-                            if(vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin)
-                                if(vacacion_fecha_inicio.getDay() !== 6 && vacacion_fecha_inicio.getDay() !== 0)
-                                    contador ++
+                    if (vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin && !(vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin)) {
+                        while (vacacion_fecha_inicio.getTime() >= vacacion_fecha_fin.getTime()) {
+                            if (vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin)
+                                if (vacacion_fecha_inicio.getDay() !== 6 && vacacion_fecha_inicio.getDay() !== 0)
+                                    contador++
                             vacacion_fecha_inicio.setDate(vacacion_fecha_inicio.getDate() + 1);
                         }
                     }
-                    if(!(vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin) && (vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin))
-                    {
-                        while(vacacion_fecha_inicio.getTime() < vacacion_fecha_fin.getTime()){
-                            if(vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin){
-                                if(vacacion_fecha_fin.getDay() !== 6 && vacacion_fecha_fin.getDay() !== 0)
-                                    contador ++
+                    if (!(vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin) && (vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin)) {
+                        while (vacacion_fecha_inicio.getTime() < vacacion_fecha_fin.getTime()) {
+                            if (vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin) {
+                                if (vacacion_fecha_fin.getDay() !== 6 && vacacion_fecha_fin.getDay() !== 0)
+                                    contador++
                             }
                             vacacion_fecha_fin.setDate(vacacion_fecha_fin.getDate() - 1);
                         }
@@ -178,38 +176,38 @@ class Calendario extends Component {
             return contador
     }
 
-    getVacaciones(empleado, vacaciones_totales){
-        let contador =  []
+    getVacaciones(empleado, vacaciones_totales) {
+        let contador = []
         let fecha_inicio_empleado = ''
-        if(empleado){
+        if (empleado) {
 
             fecha_inicio_empleado = new Date(empleado.fecha_inicio)
             fecha_inicio_empleado.setDate(fecha_inicio_empleado.getDate() + 1)
-            
+
             let mes = fecha_inicio_empleado.getMonth() + 1
-            
-            if(mes.toString().length === 1){
-                mes = '0'+mes
+
+            if (mes.toString().length === 1) {
+                mes = '0' + mes
             }
-            
+
             let dia = fecha_inicio_empleado.getDate()
             let now = new Date();
             now.setDate(now.getDate() + 366)
             let año = now.getFullYear();
 
-            let fecha_fin = new Date(mes+'/'+dia+'/'+año)
-            let fecha_inicio = new Date(mes+'/'+dia+'/'+(año-1))
+            let fecha_fin = new Date(mes + '/' + dia + '/' + año)
+            let fecha_inicio = new Date(mes + '/' + dia + '/' + (año - 1))
 
-            if(fecha_fin < fecha_inicio_empleado){
-                fecha_fin = new Date(mes+'/'+dia+'/'+(año+1))
-                fecha_inicio = new Date(mes+'/'+dia+'/'+año)
+            if (fecha_fin < fecha_inicio_empleado) {
+                fecha_fin = new Date(mes + '/' + dia + '/' + (año + 1))
+                fecha_inicio = new Date(mes + '/' + dia + '/' + año)
             }
 
-            vacaciones_totales.map( (vacacion, key) => {
-                if(vacacion.estatus !== 'Aceptadas'){
+            vacaciones_totales.map((vacacion, key) => {
+                if (vacacion.estatus !== 'Aceptadas') {
                     let vacacion_fecha_inicio = new Date(vacacion.fecha_inicio)
                     let vacacion_fecha_fin = new Date(vacacion.fecha_fin)
-                    if(vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin && vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin)
+                    if (vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin && vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin)
                         contador.push(vacacion)
                 }
             })
@@ -220,7 +218,7 @@ class Calendario extends Component {
             return contador
     }
 
-    async askVacationAxios(){
+    async askVacationAxios() {
         const { access_token } = this.props.authUser
         const { form } = this.state
         await axios.post(URL_DEV + 'vacaciones', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -230,21 +228,21 @@ class Calendario extends Component {
                 let mes = ''
                 let dia = ''
                 let año = new Date().getFullYear();
-                empleados.map( (empleado, key) => {
-                    mes = empleado.rfc.substr(6,2);
-                    dia = empleado.rfc.substr(8,2);
-                    for(let x = -5; x <= 5; x++){
+                empleados.map((empleado, key) => {
+                    mes = empleado.rfc.substr(6, 2);
+                    dia = empleado.rfc.substr(8, 2);
+                    for (let x = -5; x <= 5; x++) {
                         aux.push({
                             title: empleado.nombre,
-                            start: Number(Number(año) + Number(x))+'-'+mes+'-'+dia,
-                            end: Number(Number(año) + Number(x))+'-'+mes+'-'+dia,
+                            start: Number(Number(año) + Number(x)) + '-' + mes + '-' + dia,
+                            end: Number(Number(año) + Number(x)) + '-' + mes + '-' + dia,
                             iconClass: 'fas fa-birthday-cake',
                             containerClass: 'cumpleaños'
                         })
                     }
                 })
-                vacaciones.map( (vacacion) => {
-                    if(vacacion.estatus === 'Aceptadas')
+                vacaciones.map((vacacion) => {
+                    if (vacacion.estatus === 'Aceptadas')
                         aux.push({
                             title: vacacion.empleado.nombre,
                             start: vacacion.fecha_inicio,
@@ -262,14 +260,14 @@ class Calendario extends Component {
                     empleado: empleado,
                     vacaciones_totales: user_vacaciones,
                     disponibles: this.getDiasDisponibles(empleado, user_vacaciones),
-                    estatus:this.getVacaciones(empleado, user_vacaciones)
+                    estatus: this.getVacaciones(empleado, user_vacaciones)
                 })
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -288,21 +286,21 @@ class Calendario extends Component {
                 let mes = ''
                 let dia = ''
                 let año = new Date().getFullYear();
-                empleados.map( (empleado, key) => {
-                    mes = empleado.rfc.substr(6,2);
-                    dia = empleado.rfc.substr(8,2);
-                    for(let x = -5; x <= 5; x++){
+                empleados.map((empleado, key) => {
+                    mes = empleado.rfc.substr(6, 2);
+                    dia = empleado.rfc.substr(8, 2);
+                    for (let x = -5; x <= 5; x++) {
                         aux.push({
                             title: empleado.nombre,
-                            start: Number(Number(año) + Number(x))+'-'+mes+'-'+dia,
-                            end: Number(Number(año) + Number(x))+'-'+mes+'-'+dia,
+                            start: Number(Number(año) + Number(x)) + '-' + mes + '-' + dia,
+                            end: Number(Number(año) + Number(x)) + '-' + mes + '-' + dia,
                             iconClass: 'fas fa-birthday-cake',
                             containerClass: 'cumpleaños'
                         })
                     }
                 })
-                vacaciones.map( (vacacion) => {
-                    if(vacacion.estatus === 'Aceptadas')
+                vacaciones.map((vacacion) => {
+                    if (vacacion.estatus === 'Aceptadas')
                         aux.push({
                             title: vacacion.empleado.nombre,
                             start: vacacion.fecha_inicio,
@@ -318,15 +316,15 @@ class Calendario extends Component {
                     empleado: empleado,
                     vacaciones_totales: user_vacaciones,
                     disponibles: this.getDiasDisponibles(empleado, user_vacaciones),
-                    estatus:this.getVacaciones(empleado, user_vacaciones)
+                    estatus: this.getVacaciones(empleado, user_vacaciones)
                 })
 
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -337,25 +335,25 @@ class Calendario extends Component {
     }
 
     render() {
-        const { events, form, title, formeditado, modal, key, modal_status, estatus, disponibles} = this.state
+        const { events, form, title, formeditado, modal, key, modal_status, estatus, disponibles } = this.state
         return (
             <Layout active='rh'  {...this.props}>
-                <Card className="card-custom"> 
+                <Card className="card-custom">
                     <Card.Header>
                         <div className="card-title">
                             <h3 className="card-label">Calendario</h3>
                         </div>
                         <div className="card-toolbar">
-                        <DropdownButton
-                            title={
-                                <i className="ki ki-bold-more-ver p-0"></i>
-                            }
-                            id={`dropdown-button-drop-left`}
-                            drop={'left'}
+                            <DropdownButton
+                                title={
+                                    <i className="ki ki-bold-more-ver p-0"></i>
+                                }
+                                id={`dropdown-button-drop-left`}
+                                drop={'left'}
                             >
-                            <Dropdown.Item onClick={this.openModal}>Solicitar vacaciones</Dropdown.Item>
-                            <Dropdown.Item onClick={this.openModalEstatus}>Estatus de vacaciones</Dropdown.Item>
-                        </DropdownButton>
+                                <Dropdown.Item onClick={this.openModal}>Solicitar vacaciones</Dropdown.Item>
+                                <Dropdown.Item onClick={this.openModalEstatus}>Estatus de vacaciones</Dropdown.Item>
+                            </DropdownButton>
                         </div>
                     </Card.Header>
                     <Modal title={title} show={modal} handleClose={this.handleClose}>
@@ -363,7 +361,7 @@ class Calendario extends Component {
                             formeditado={formeditado}
                             form={form}
                             onChange={this.onChange}
-                            onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.askVacationAxios()}}
+                            onSubmit={(e) => { e.preventDefault(); waitAlert(); this.askVacationAxios() }}
                         />
                     </Modal>
                     <Modal title={title} show={modal_status} handleClose={this.handleCloseEstatus}>
@@ -374,23 +372,25 @@ class Calendario extends Component {
                             estatus={estatus}
                         />
                     </Modal>
-                    <Card.Body>
-                        <div className="mx-0 py-2">
-                            <b>Vacaciones disponibles: </b>{ disponibles }
-                        </div>
+                    <Card.Body> 
+                            <div className="mb-3"> 
+                                <i className="fa fa-genderless text-info mr-2"></i> 
+                                <span className=" font-weight-bolder font-size-lg">Vacaciones disponibles:</span> 
+                                <span className="label label-rounded label-light-info font-weight-bolder ml-2">{disponibles}</span> 
+                            </div>
                         <FullCalendar
-                            locale = { esLocale }
-                            plugins = {[ dayGridPlugin, interactionPlugin, bootstrapPlugin]}
-                            initialView = "dayGridMonth"
-                            weekends = { true }
-                            events = { events }
-                            dateClick = { this.handleDateClick }
-                            eventContent = { renderEventContent }
-                            firstDay = { 1 }
+                            locale={esLocale}
+                            plugins={[dayGridPlugin, interactionPlugin, bootstrapPlugin]}
+                            initialView="dayGridMonth"
+                            weekends={true}
+                            events={events}
+                            dateClick={this.handleDateClick}
+                            eventContent={renderEventContent}
+                            firstDay={1}
                             themeSystem='bootstrap'
-                            />
+                        />
                     </Card.Body>
-				</Card>
+                </Card>
             </Layout>
         );
     }
