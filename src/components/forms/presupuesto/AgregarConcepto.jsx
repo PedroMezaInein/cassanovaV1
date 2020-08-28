@@ -60,7 +60,7 @@ class AgregarConcepto extends Component {
                     }
                 }
             >
-                <Tabs defaultActiveKey="nuevo" className="pt-2 nav nav-tabs nav-tabs-line justify-content-start nav-tabs-line-2x" activeKey={activeKey} onSelect = {onSelect}>
+                <Tabs defaultActiveKey="nuevo" className="pt-2 nav nav-tabs nav-tabs-line justify-content-start nav-tabs-line-2x border-0" activeKey={activeKey} onSelect = {onSelect}>
                     <Tab eventKey="nuevo" title="Nuevo concepto">
                         <div className="form-group row form-group-marginless pt-4">
                             <div className="col-md-4">
@@ -169,7 +169,7 @@ class AgregarConcepto extends Component {
                             </div>
                         </div>
                         <div className="table-responsive">
-                            <div className="list list-hover min-w-500px" data-inbox="list">
+                            <div className="list  min-w-500px" data-inbox="list">
                                 {
                                     form.subpartida ?
                                         <div className="list min-w-500px" data-inbox="list">

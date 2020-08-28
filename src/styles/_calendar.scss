@@ -1,8 +1,7 @@
 .evento {
     padding: 0.4rem 1rem;
     border: 0px;
-    text-align: center;
-
+    text-align: center; 
     i {
         color: white
     }
@@ -26,6 +25,9 @@ a.fc-daygrid-event.fc-daygrid-block-event.fc-h-event.fc-event.fc-event-start.fc-
 
 a.fc-daygrid-event.fc-daygrid-block-event.fc-h-event.fc-event.fc-event-start.fc-event-end.fc-event-future {
     border-color: white;
+}
+a.fc-daygrid-event.fc-daygrid-block-event.fc-h-event.fc-event.fc-event-start.fc-event-end.fc-event-today{
+    border-color: #F3F6F9 ;
 }
 
 .cumpleaños {
