@@ -495,7 +495,7 @@ class MiProyecto extends Component {
     setEstatus = (text) => {
         return (
             <>
-                <span className="label label-lg bg- label-inline font-weight-bold py-4" style={{
+                <span className="label label-lg bg- label-inline font-weight-bold py-2" style={{
                     color: `${text.letra}`,
                     backgroundColor: `${text.fondo}`,
                     fontSize:"11.7px"
