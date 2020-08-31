@@ -19,7 +19,6 @@ import TableForModals from '../components/tables/TableForModals'
 class MiProyecto extends Component {
 
     state = {
-        texto: [],
         tickets: [],
         proyecto: '',
         formeditado: 0,
