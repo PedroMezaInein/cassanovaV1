@@ -400,12 +400,12 @@ class EmpleadosForm extends Component {
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             onChange={onChange}
-                                            name="vacaciones_tomadas"
+                                            name="vacaciones_disponibles"
                                             type="text"
-                                            value={form.vacaciones_tomadas}
-                                            placeholder="DÍAS DE VACACIONES TOMADAS"
+                                            value={form.vacaciones_disponibles}
+                                            placeholder="VACACIONES DISPONIBLES AL AÑO"
                                             iconclass={"far fa-calendar-alt"}
-                                            messageinc="Incorrecto. Ingresa lod días de vacaciones tomadas."
+                                            messageinc="Incorrecto. Ingresa loS días de vacaciones disponibles al año."
                                         />
                                     </div>
                                     <div className="col-md-4">

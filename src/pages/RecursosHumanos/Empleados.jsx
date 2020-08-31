@@ -46,7 +46,7 @@ class Empleados extends Component {
             fechaFin: '',
             estatus_imss: 'Activo',
             puesto:'',
-            vacaciones_tomadas:0, 
+            vacaciones_disponibles:0, 
             fecha_alta_imss: '',
             numero_alta_imss: '',
             nomina_imss: 0.0,
@@ -124,7 +124,7 @@ class Empleados extends Component {
         form.fechaFin = new Date(empleado.fecha_fin)
         form.puesto = empleado.puesto  
         form.estatus_imss = this.showStatusImss(empleado.estatus_imss);
-        form.vacaciones_tomadas = empleado.vacaciones_tomadas 
+        form.vacaciones_disponibles = empleado.vacaciones_disponibles 
         form.fecha_alta_imss = new Date(empleado.fecha_alta_imss)
         form.numero_alta_imss = empleado.numero_alta_imss  
         modal.form = true
