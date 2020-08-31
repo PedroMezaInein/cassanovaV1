@@ -1723,3 +1723,26 @@ export const PRESUPUESTO_DISEÑO_COLUMNS = [
         accessor: 'total',
     }
 ]
+
+export const TICKETS_ESTATUS = [
+    {
+        Header: 'Fecha',
+        accessor: 'fecha',
+    },
+    {
+        Header: 'Partida',
+        accessor: 'partida'
+    },
+    {
+        Header: 'Estatus',
+        accessor: 'estatus',
+    },
+    {
+        Header: 'Tipo de trabajo',
+        accessor: 'tipo_trabajo',
+    },
+    {
+        Header: 'Descripción',
+        accessor: 'descripcion',
+    }
+]
