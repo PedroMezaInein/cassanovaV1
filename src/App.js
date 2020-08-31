@@ -102,6 +102,8 @@ const Empleados = Loader(() => import('./pages/RecursosHumanos/Empleados') )
 
 const Vacaciones = Loader(() => import('./pages/RecursosHumanos/Vacaciones/Vacaciones') )
 
+const Calidad = Loader(() => import('./pages/Calidad/Calidad') )
+
 class App extends Component{
     async componentDidMount(){
         const { access_token } = this.props.authUser
@@ -256,6 +258,8 @@ class App extends Component{
                 <Route path = "/rh/nomina-admin/single/:id" exact component ={ NominaAdminSingle } />
                 <Route path = "/rh/empleados" exact component ={ Empleados } />
                 <Route path = "/rh/vacaciones" exact component ={ Vacaciones } />
+
+                <Route path = "/calidad/calidad" exact component ={ Calidad } />
 
             </>
         )
