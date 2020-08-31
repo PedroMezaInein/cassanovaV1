@@ -446,7 +446,6 @@ class VentasForm extends Component {
                                             placeholder={form['adjuntos']['presupuesto']['placeholder']}
                                             value={form['adjuntos']['presupuesto']['value']}
                                             name={'presupuesto'} id={'presupuesto'}
-                                            accept="text/xml, application/pdf"
                                             files={form['adjuntos']['presupuesto']['files']}
                                             deleteAdjunto={clearFiles} multiple
                                         />
@@ -459,7 +458,6 @@ class VentasForm extends Component {
                                             placeholder={form['adjuntos']['pago']['placeholder']}
                                             value={form['adjuntos']['pago']['value']}
                                             name={'pago'} id={'pago'}
-                                            accept="text/xml, application/pdf"
                                             files={form['adjuntos']['pago']['files']}
                                             deleteAdjunto={clearFiles} multiple
                                         />
