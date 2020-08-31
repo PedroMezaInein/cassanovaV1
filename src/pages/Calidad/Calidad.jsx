@@ -6,7 +6,7 @@ import { Button } from '../../components/form-components'
 import { Modal } from '../../components/singles'
 import axios from 'axios'
 import swal from 'sweetalert'
-import { URL_DEV, CUENTAS_COLUMNS, EDOS_CUENTAS_COLUMNS } from '../../constants'
+import { URL_DEV, PROYECTOS_TICKETS } from '../../constants'
 import { CuentaForm } from '../../components/forms'
 import Moment from 'react-moment'
 import { Small } from '../../components/texts'
@@ -18,8 +18,12 @@ import { setTextTable, setDateTable, setListTable, setMoneyTable, setArrayTable 
 import { errorAlert, forbiddenAccessAlert, waitAlert, doneAlert } from '../../functions/alert'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 
-
+const $ = require('jquery');
 class Calidad extends Component {
+
+    state = {
+        calidad: ''
+    }
 
     componentDidMount() {
         const { authUser: { user: { permisos: permisos } } } = this.props
@@ -33,12 +37,77 @@ class Calidad extends Component {
             history.push('/')
     }
 
+    changePageSee = calidad => {
+        const { history } = this.props
+        history.push({
+            pathname: '/calidad/calidad/see',
+            state: { calidad: calidad},
+            formeditado:1
+        });
+    }
+
+    setCalidad = calidad => {
+        let aux = []
+        calidad.map((calidad) => {
+            aux.push(
+                {
+                    actions: this.setActions(calidad),
+                    proyectos: renderToString(setTextTable( calidad.proyecto ? calidad.proyecto.nombre : '' )),
+                    cliente: renderToString(setTextTable( calidad.cliente ? calidad.cliente.empresa : '' )),
+                    estatus: renderToString(setTextTable(calidad.estatus)),
+                    tipo_trabajo: renderToString(setTextTable(calidad.tipo_trabajo)),
+                    fecha: renderToString(setDateTable(calidad.created_at)),
+                    descripcion: renderToString(setTextTable(calidad.descripcion)),
+                    id: calidad.id
+                }
+            )
+        })
+        return aux
+    }
+
+    setActions = () => {
+        let aux = []
+            aux.push(
+                {
+                    text: 'Ver',
+                    btnclass: 'primary',
+                    iconclass: 'flaticon2-expand',                  
+                    action: 'see',
+                    tooltip: {id:'see', text:'Mostrar', type:'success'},
+                }
+        )
+        return aux
+    }
+
+    async getCalidadAxios() {
+        var table = $('#kt_datatable_calidad').DataTable().ajax.reload();
+    }
+    
     render() {
         
         return (
             <Layout active={'calidad'}  {...this.props}>
-
-                
+                <NewTableServerRender
+                    columns={PROYECTOS_TICKETS} 
+                    title='Calidad' 
+                    subtitle='Listado de presupuestos por proyecto'
+                    mostrar_boton={true}
+                    abrir_modal={false}
+                    mostrar_acciones={true}
+                    actions={{
+                        // 'edit': { function: this.changePageEdit },
+                        // 'delete': { function: this.openModalDelete },
+                        'see': {function: this.changePageSee},
+                    }}
+                    url='/calidad/calidad/add'
+                    idTable = 'kt_datatable_calidad'
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
+                    accessToken={this.props.authUser.access_token}
+                    setter={this.setCalidad}
+                    urlRender={URL_DEV + 'calidad'}
+                    />
             </Layout>
         )
     }

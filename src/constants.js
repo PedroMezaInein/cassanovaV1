@@ -1746,3 +1746,34 @@ export const TICKETS_ESTATUS = [
         accessor: 'descripcion',
     }
 ]
+
+export const PROYECTOS_TICKETS = [
+    {
+        Header: 'Opciones',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Proyecto',
+        accessor: 'proyectos',
+    },
+    {
+        Header: 'Cliente',
+        accessor: 'cliente'
+    },
+    {
+        Header: 'Estatus',
+        accessor: 'estatus',
+    },
+    {
+        Header: 'Tipo de trabajo',
+        accessor: 'tipo_trabajo',
+    },
+    {
+        Header: 'Fecha',
+        accessor: 'fecha',
+    },
+    {
+        Header: 'Descripción',
+        accessor: 'descripcion',
+    }
+]

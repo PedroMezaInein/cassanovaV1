@@ -103,6 +103,7 @@ const Empleados = Loader(() => import('./pages/RecursosHumanos/Empleados') )
 const Vacaciones = Loader(() => import('./pages/RecursosHumanos/Vacaciones/Vacaciones') )
 
 const Calidad = Loader(() => import('./pages/Calidad/Calidad') )
+const CalidadForm = Loader(() => import('./pages/Calidad/CalidadForm') )
 
 class App extends Component{
     async componentDidMount(){
@@ -260,6 +261,7 @@ class App extends Component{
                 <Route path = "/rh/vacaciones" exact component ={ Vacaciones } />
 
                 <Route path = "/calidad/calidad" exact component ={ Calidad } />
+                <Route path = "/calidad/calidad/:action" exact component = { CalidadForm } />
 
             </>
         )
