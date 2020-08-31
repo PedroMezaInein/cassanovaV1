@@ -540,7 +540,7 @@ class MiProyecto extends Component {
                     <div className="col-md-12">
                         <div className="row">
                             <div className="col-lg-4 mb-3">
-                                <div className="card card-custom wave wave-animate-slow wave-primary mb-8 mb-lg-0">
+                                <div className="card card-custom wave wave-animate-slow wave-primary mb-8 mb-lg-0 h-100">
                                     <div className="card-body">
                                         <div className="d-flex align-items-center ">
                                             <div className="mr-6">
@@ -565,7 +565,7 @@ class MiProyecto extends Component {
                                 </div>
                             </div>
                             <div className="col-lg-4 mb-3">
-                                <div className="card card-custom wave wave-animate-slow wave-danger mb-8 mb-lg-0">
+                                <div className="card card-custom wave wave-animate-slow wave-danger mb-8 mb-lg-0 h-100">
                                     <div className="card-body">
                                         <div className="d-flex align-items-center">
                                             <div className="mr-6">
@@ -601,7 +601,7 @@ class MiProyecto extends Component {
                                                                     {proyecto.cp}
                                                                 </Small>
                                                             </div>
-                                                            : ""
+                                                        : ""
                                                     }
                                                 </div>
                                             </div>
@@ -610,7 +610,7 @@ class MiProyecto extends Component {
                                 </div>
                             </div>
                             <div className="col-lg-4 mb-3">
-                                <div className="card card-custom wave wave-animate-slow wave-info mb-8 mb-lg-0">
+                                <div className="card card-custom wave wave-animate-slow wave-info mb-8 mb-lg-0 h-100">
                                     <div className="card-body">
                                         <div className="d-flex align-items-center">
                                             <div className="mr-6">
