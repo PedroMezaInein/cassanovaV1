@@ -377,6 +377,7 @@ class Calendario extends Component {
                                 <i className="fa fa-genderless text-info mr-2"></i> 
                                 <span className=" font-weight-bolder font-size-lg">Vacaciones disponibles:</span> 
                                 <span className="label label-rounded label-light-info font-weight-bolder ml-2">{disponibles}</span> 
+                                <span className=" font-weight-bolder font-size-lg ml-2">días.</span> 
                             </div>
                         <FullCalendar
                             locale={esLocale}
