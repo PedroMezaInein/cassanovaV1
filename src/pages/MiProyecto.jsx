@@ -78,7 +78,14 @@ class MiProyecto extends Component {
             tipo_trabajo: '',
             partida: '',
             descripcion: '',
-            nombre: ''
+            nombre: '',
+            adjuntos: {
+                adjunto: {
+                    value: '',
+                    placeholder: 'Ingresa los adjuntos',
+                    files: []
+                }
+            }
         },
         options: {
             proyectos: [],
@@ -254,13 +261,7 @@ class MiProyecto extends Component {
                     }
                 ]
             }
-        ],
-        adjuntosTickets:{
-            factura:{
-                value: '', 
-                files: []
-            }
-        }
+        ]
     }
 
     seleccionaradj(adjuntos) {
@@ -517,11 +518,33 @@ class MiProyecto extends Component {
             </span>
         )
     }
+    onChangeAdjunto = e => {
+        const { form } = this.state
+        const { files, value, name } = e.target
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        // form['adjuntos'][name].value = value
+        // form['adjuntos'][name].files = aux
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
 
-    handleChangeImages = (files, item) => {
-        // this.onChangeAdjuntoGrupo({ target: { name: item, value: files, files: files } })
+    handleChange = (files, item) => {
+        this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
         swal({
             title: '¿Confirmas el envio de adjuntos?',
+            icon: "warning",
             buttons: {
                 cancel: {
                     text: "Cancelar",
@@ -541,7 +564,7 @@ class MiProyecto extends Component {
         }).then((result) => {
             if (result) {
                 waitAlert()
-                this.addAdjuntoAxios(item)
+                // this.addProyectoAdjuntoAxios(item)
             }
         })
     }
@@ -567,7 +590,7 @@ class MiProyecto extends Component {
             }
         }).then((result) => {
             if (result) {
-                this.deleteAdjuntoAxios(element.id)
+                // this.deleteAdjuntoAxios(element.id)
             }
         })
     }
@@ -646,7 +669,15 @@ class MiProyecto extends Component {
                                                     {
                                                         proyecto ?
                                                             <div>
-                                                                <Small className="mr-1 mb-0" >
+                                                                {proyecto.calle}
+                                                                , colonia
+                                                                {proyecto.colonia},
+                                                                {proyecto.municipio},
+                                                                {proyecto.estado}. CP:
+                                                                {proyecto.cp}
+
+
+                                                                {/* <Small className="mr-1 mb-0" >
                                                                     {proyecto.calle}, colonia
                                                                     </Small>
                                                                 <Small className="mr-1 mb-0">
@@ -660,7 +691,7 @@ class MiProyecto extends Component {
                                                                     </Small>
                                                                 <Small className="mr-1 mb-0">
                                                                     {proyecto.cp}
-                                                                </Small>
+                                                                </Small> */}
                                                             </div>
                                                         : ""
                                                     }
@@ -711,7 +742,7 @@ class MiProyecto extends Component {
                     </div>
                 </div>
                 {proyecto ?
-                    <Tab.Container defaultActiveKey="first">
+                    <Tab.Container defaultActiveKey="third">
                         <Card className="card-custom">
                             <Card.Header className="card-header-tabs-line">
                                 <Nav className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-tabs-bold nav-tabs-line-3x">
@@ -944,9 +975,13 @@ class MiProyecto extends Component {
                                                         </div>
                                                         <div className="form-group row form-group-marginless">
                                                             <div className="col-md-12">
-                                                                <label className="col-form-label">ADJUNTA EL(LOS) ARCHIVOS</label>
-                                                                {/* <ItemSlider multiple = { false } items={ " "} handleChange={this.handleChangeImages}
-                                                                            item={" "} /> */}
+                                                                <ItemSlider 
+                                                                    items = { "" }
+                                                                    handleChange = { this.handleChange }
+                                                                    // item = {""}
+                                                                    deleteFile = { this.deleteFile }
+                                                                />
+                                                                {/* <label className="col-form-label d-flex justify-content-center align-items-center"><b>Nota:</b> Para un mejor levantamiento del problema, puede adjuntar fotografías.</label> */}
                                                             </div>
                                                         </div>
                                                         <div className="card-footer py-3 pr-1">
