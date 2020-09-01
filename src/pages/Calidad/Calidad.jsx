@@ -49,12 +49,13 @@ class Calidad extends Component {
     setCalidad = calidad => {
         let aux = []
         calidad.map((calidad) => {
+            console.log(calidad)
             aux.push(
                 {
                     actions: this.setActions(calidad),
                     proyectos: renderToString(setTextTable( calidad.proyecto ? calidad.proyecto.nombre : '' )),
                     cliente: renderToString(setTextTable( calidad.usuario ? calidad.usuario.name : '' )),
-                    estatus: renderToString(setTextTable(calidad.estatus_ticket ? calidad.estatus_ticket.estatus : '')),
+                    estatus: renderToString(this.setEstatus(calidad.estatus_ticket)),
                     tipo_trabajo: renderToString(setTextTable(calidad.tipo_trabajo ?  calidad.tipo_trabajo.tipo : '')),
                     fecha: renderToString(setDateTable(calidad.created_at)),
                     descripcion: renderToString(setTextTable(calidad.descripcion)),
@@ -64,6 +65,19 @@ class Calidad extends Component {
         })
         return aux
     }
+
+    setEstatus = (text) => {
+        return (
+            <>
+                <span className="label label-lg bg- label-inline font-weight-bold py-2" style={{
+                    color: `${text.letra}`,
+                    backgroundColor: `${text.fondo}`,
+                    fontSize:"10.4px"
+                }} >{text.estatus}</span>
+            </>
+        )
+    }
+
 
     setActions = () => {
         let aux = []
