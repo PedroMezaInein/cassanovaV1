@@ -11,11 +11,15 @@ import { forbiddenAccessAlert, errorAlert, createAlert, doneAlert, waitAlert } f
 import { URL_DEV } from '../../../constants';
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { setDateTableLG } from '../../../functions/setters';
+import { setDateTableLG, setOptions } from '../../../functions/setters';
 import { Modal } from '../../../components/singles'
+import DropdownButton from 'react-bootstrap/DropdownButton'
+import Dropdown from 'react-bootstrap/Dropdown'
+import { AgregarVacacionesForm } from "../../../components/forms";
 class Vacaciones extends Component {
 
     state = {
+        formeditado: 0,
         modal: false,
         events: [
             {
@@ -26,7 +30,16 @@ class Vacaciones extends Component {
                 iconClass: 'fas fa-user-tie'
             }
         ],
-        espera: []
+        modal_add_vacaciones: false,
+        form: {
+            fechaInicio: new Date(),
+            fechaFin: new Date(),
+            empleado:''
+        },
+        espera: [],
+        options:{
+            empleados: []
+        },
     }
 
     componentDidMount() {
@@ -61,11 +74,23 @@ class Vacaciones extends Component {
         })
     }
 
+    setOptions = (name, array) => {
+        const {options} = this.state
+        options[name] = setOptions(array, 'nombre', 'id')
+        this.setState({
+            ... this.state,
+            options
+        })
+    }
+
     async getVacaciones() {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'vacaciones/vacaciones', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { empleados, vacaciones, vacaciones_espera } = response.data
+                const { options } = this.state
+                options['empleados'] = setOptions(empleados, 'nombre', 'id')
+
                 let aux = []
                 let mes = ''
                 let dia = ''
@@ -103,6 +128,65 @@ class Vacaciones extends Component {
                     espera: vacaciones_espera
                 })
 
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async addVacationAxios() {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        await axios.put(URL_DEV + 'vacaciones', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empleados, vacaciones, empleado, user_vacaciones } = response.data
+                let aux = []
+                // let mes = ''
+                // let dia = ''
+                // let año = new Date().getFullYear();
+                // empleados.map((empleado, key) => {
+                //     mes = empleado.rfc.substr(6, 2);
+                //     dia = empleado.rfc.substr(8, 2);
+                //     for (let x = -5; x <= 5; x++) {
+                //         aux.push({
+                //             title: empleado.nombre,
+                //             start: Number(Number(año) + Number(x)) + '-' + mes + '-' + dia,
+                //             end: Number(Number(año) + Number(x)) + '-' + mes + '-' + dia,
+                //             iconClass: 'fas fa-birthday-cake',
+                //             containerClass: 'cumpleaños'
+                //         })
+                //     }
+                // })
+                vacaciones.map((vacacion) => {
+                    if (vacacion.estatus === 'Aceptadas')
+                        aux.push({
+                            title: vacacion.empleado.nombre,
+                            start: vacacion.fecha_inicio,
+                            end: vacacion.fecha_fin,
+                            iconClass: 'fas fa-umbrella-beach',
+                            containerClass: 'vacaciones'
+                        })
+                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Vacaciones agregadas con éxito.')
+                this.setState({
+                    ... this.state,
+                    modal: false,
+                    events: aux,
+                    empleado: empleado,
+                    // vacaciones_totales: user_vacaciones, 
+                    // disponibles: this.getDiasDisponibles(empleado, user_vacaciones),
+                    // estatus: this.getVacaciones(empleado, user_vacaciones)
+                })
             },
             (error) => {
                 console.log(error, 'error')
@@ -182,8 +266,55 @@ class Vacaciones extends Component {
         })
     }
 
+    openModalAddVacaciones = () => {
+        this.setState({
+            ... this.state,
+            modal_add_vacaciones: true,
+            title: 'Agregar vacaciones',
+            form: this.clearForm(),
+            formeditado: 0
+        })
+    }
+
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                case 'fechaInicio':
+                case 'fechaFin':
+                    form[element] = new Date()
+                    break;
+                default:
+                    form[element] = ''
+                    break;
+            }
+        })
+        return form;
+    }
+
+    handleCloseAddVacaciones = () => {
+        const { modal_add_vacaciones } = this.state
+        this.setState({
+            ... this.state,
+            modal_add_vacaciones: !modal_add_vacaciones,
+            title: 'Agregar vacaciones',
+            form: this.clearForm()
+        })
+    }
+
+    onChange = e => {
+        const { name, value } = e.target
+        const { form } = this.state
+        form[name] = value
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
     render() {
-        const { events, espera, modal } = this.state
+        const { events, espera, modal, form, title, modal_add_vacaciones, formeditado, options} = this.state
         return (
             <Layout active='rh'  {...this.props}>
                 <Card className="card-custom">
@@ -191,18 +322,22 @@ class Vacaciones extends Component {
                         <div className="card-title">
                             <h3 className="card-label">Vacaciones</h3>
                         </div>
-                        {
-                            espera.length ?
-                                <div className="card-toolbar">
-                                    <OverlayTrigger overlay={<Tooltip>Mostrar solicitudes</Tooltip>}>
-                                        <a className="btn btn-light-primary font-weight-bold px-2" onClick={this.openModal}>
-                                            <i className="fas fa-umbrella-beach"></i>
-                                        </a>
-                                    </OverlayTrigger>
-                                </div>
-                            : ''
-                        }
-                        
+                        <div className="card-toolbar">
+                            <DropdownButton
+                                title={
+                                    <i className="ki ki-bold-more-ver p-0"></i>
+                                }
+                                id={`dropdown-button-drop-left`}
+                                drop={'left'}
+                            >
+                                {
+                                    espera.length ?
+                                        <Dropdown.Item onClick={this.openModal}>Mostrar solicitudes</Dropdown.Item>
+                                        : ''
+                                }
+                                <Dropdown.Item onClick={this.openModalAddVacaciones}>Agregar vacaciones</Dropdown.Item>
+                            </DropdownButton>
+                        </div>
                     </Card.Header>
                     <Card.Body>
                         <FullCalendar
@@ -227,7 +362,7 @@ class Vacaciones extends Component {
                         />
                     </Card.Body>
                 </Card>
-                <Modal size="lg" title="Solicitudes de vacaciones" show={modal} handleClose={this.handleClose} >
+                <Modal size="xl" title="Solicitudes de vacaciones" show={modal} handleClose={this.handleClose} >
                     {
                         espera.map((empleado, key) => {
                             return (
@@ -298,6 +433,15 @@ class Vacaciones extends Component {
                             )
                         })
                     }
+                </Modal>
+                <Modal size={"lg"} title={title} show={modal_add_vacaciones} handleClose={this.handleCloseAddVacaciones}>
+                    <AgregarVacacionesForm
+                            formeditado={formeditado}
+                            form={form}
+                            onChange={this.onChange}
+                            options = { options }
+                            // onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addVacationAxios() }}
+                        />
                 </Modal>
             </Layout>
         );
