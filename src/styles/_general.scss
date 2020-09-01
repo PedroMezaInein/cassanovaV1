@@ -312,6 +312,22 @@ td.concepto{
 
 
 .img-calidad {
-    width: 30%;
+    @include down-screen($md) { 
+        width: 100%;
+    margin-top: 2rem;
     height: auto;
+}    
+    width: 27%;
+    height: auto;
+}
+
+div#symbol_calidad{
+    @include down-screen($md) { 
+        display: none;
+    }
+}
+div#partida_calidad, div#tipoT_calidad,div#fecha_calidad{
+    @include down-screen($md) { 
+        justify-content: start !important;
+    }
 }
