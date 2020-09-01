@@ -143,49 +143,48 @@ class Vacaciones extends Component {
         })
     }
 
-    async addVacationAxios() {
+    async addVacationAxiosAdmin() {
         const { access_token } = this.props.authUser
         const { form } = this.state
-        await axios.put(URL_DEV + 'vacaciones', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'vacaciones/admin', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empleados, vacaciones, empleado, user_vacaciones } = response.data
+                const { empleados, vacaciones, vacaciones_espera, vacacion } = response.data
                 let aux = []
-                // let mes = ''
-                // let dia = ''
-                // let año = new Date().getFullYear();
-                // empleados.map((empleado, key) => {
-                //     mes = empleado.rfc.substr(6, 2);
-                //     dia = empleado.rfc.substr(8, 2);
-                //     for (let x = -5; x <= 5; x++) {
-                //         aux.push({
-                //             title: empleado.nombre,
-                //             start: Number(Number(año) + Number(x)) + '-' + mes + '-' + dia,
-                //             end: Number(Number(año) + Number(x)) + '-' + mes + '-' + dia,
-                //             iconClass: 'fas fa-birthday-cake',
-                //             containerClass: 'cumpleaños'
-                //         })
-                //     }
-                // })
-                vacaciones.map((vacacion) => {
-                    if (vacacion.estatus === 'Aceptadas')
+                let mes = ''
+                let dia = ''
+                let año = new Date().getFullYear();
+                empleados.map( (empleado, key) => {
+                    mes = empleado.rfc.substr(6,2);
+                    dia = empleado.rfc.substr(8,2);
+                    for(let x = -5; x <= 5; x++){
                         aux.push({
-                            title: vacacion.empleado.nombre,
-                            start: vacacion.fecha_inicio,
-                            end: vacacion.fecha_fin,
-                            iconClass: 'fas fa-umbrella-beach',
-                            containerClass: 'vacaciones'
+                            title: empleado.nombre,
+                            shortName: empleado.nombre.split(" ")[0],
+                            start: Number(Number(año) + Number(x))+'-'+mes+'-'+dia,
+                            end: Number(Number(año) + Number(x))+'-'+mes+'-'+dia,
+                            iconClass: 'fas fa-birthday-cake icon-md',
+                            containerClass: 'cumpleaños'
                         })
+                    }
+                })
+                vacaciones.map( (vacacion) => {
+                    aux.push({
+                        shortName:"Vacaciones",
+                        title: vacacion.empleado.nombre,
+                        start: vacacion.fecha_inicio,
+                        end: vacacion.fecha_fin,
+                        iconClass: 'fas fa-umbrella-beach',
+                        containerClass: 'vacaciones'
+                    })
                 })
 
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Vacaciones agregadas con éxito.')
+                doneAlert('Vacaciones aceptadas con éxito')
+
                 this.setState({
                     ... this.state,
-                    modal: false,
                     events: aux,
-                    empleado: empleado,
-                    // vacaciones_totales: user_vacaciones, 
-                    // disponibles: this.getDiasDisponibles(empleado, user_vacaciones),
-                    // estatus: this.getVacaciones(empleado, user_vacaciones)
+                    espera: vacaciones_espera,
+                    modal_add_vacaciones: false,
                 })
             },
             (error) => {
@@ -440,7 +439,7 @@ class Vacaciones extends Component {
                             form={form}
                             onChange={this.onChange}
                             options = { options }
-                            // onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addVacationAxios() }}
+                            onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addVacationAxiosAdmin() }}
                         />
                 </Modal>
             </Layout>
