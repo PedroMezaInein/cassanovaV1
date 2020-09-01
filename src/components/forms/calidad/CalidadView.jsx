@@ -5,13 +5,19 @@ import Tooltip from 'react-bootstrap/Tooltip'
 
 class CalidadView extends Component {
 
-    constructor(props) {
-        super(props)
+    getIniciales = nombre => {
+        let aux = nombre.split(' ');
+        let iniciales = ''
+        aux.map((element)=>{
+            if(element !== '-')
+                iniciales = iniciales + element.charAt(0) + ' '
+        })
+        return iniciales
     }
 
     render() {
 
-        const { form, onChange, changeCP, estado, municipio, colonias, updateColonia, formeditado } = this.props
+        const { data, changeEstatus } = this.props
         return (
             <>
                 <div className="card card-custom gutter-b">
@@ -19,18 +25,40 @@ class CalidadView extends Component {
                         <div className="d-flex">
                             <div className="mr-4" id="symbol_calidad">
                                 <div className="symbol symbol-50 symbol-lg-120 symbol-light-primary">
-                                    <span className="font-size-h3 symbol-label font-weight-boldest">K-D-V</span>
+                                    <span className="font-size-h3 symbol-label font-weight-boldest">
+                                        {
+                                            data ?
+                                                data.proyecto ?
+                                                    this.getIniciales(data.proyecto.nombre)
+                                                : ''
+                                            : ''
+                                        }
+                                    </span>
                                 </div>
                             </div>
 
                             <div className="flex-grow-1">
                                 <div className="d-flex align-items-start justify-content-between flex-wrap mt-2">
                                     <div className="mr-3">
-                                        <div className="d-flex align-items-center text-dark font-size-h5 font-weight-bold mr-3">KERALTY - DISEÑO - VIA 515 - PROYECTO</div>
+                                        <div className="d-flex align-items-center text-dark font-size-h5 font-weight-bold mr-3"> 
+                                            {
+                                                data ?
+                                                    data.proyecto?
+                                                        data.proyecto.nombre
+                                                    : ''
+                                                : ''
+                                            }
+                                        </div>
                                         <div className="d-flex flex-wrap my-2">
                                             <div className="text-muted font-weight-bold my-2">
                                                 <i className="far fa-user-circle icon-md mr-2"></i>
-                                                        KERALTY MEXICO SA DE CV - CLIENTE
+                                                    {
+                                                        data ?
+                                                            data.usuario ?
+                                                                data.usuario.name
+                                                            : ''
+                                                        : ''
+                                                    }
                                                 </div>
                                         </div>
                                     </div>
@@ -42,17 +70,18 @@ class CalidadView extends Component {
 
                                 <div className="d-flex align-items-start flex-wrap justify-content-between">
                                     <div className="font-weight-bold text-dark-50 py-lg-2 col-md-10 text-justify pl-0">
-                                        I distinguish three main text objectives could be merely to inform people.
-                                        A second could be persuade people.You want people to bay objective. - DESCRIPCIÓN
-                                        </div>
-                                    <div className="d-flex mt-4 mt-sm-0">
-                                        <OverlayTrigger overlay={<Tooltip>Aceptar</Tooltip>}>
-                                            <a className="btn btn-icon btn-light-success success2 btn-sm mr-2 ml-auto"><i className="flaticon2-check-mark icon-sm"></i></a>
-                                        </OverlayTrigger>
-                                        <OverlayTrigger overlay={<Tooltip>Rechazar</Tooltip>}>
-                                            <a className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger"><i className="flaticon2-cross icon-sm"></i></a>
-                                        </OverlayTrigger>
+                                            {
+                                                data ?
+                                                    data.descripcion
+                                                : ''
+                                            }
                                     </div>
+                                    <OverlayTrigger overlay={<Tooltip>Aceptar</Tooltip>}>
+                                        <a onClick = { () => { changeEstatus('Aceptado') } } className="btn btn-icon btn-light-success success2 btn-sm mr-2 ml-auto"><i className="flaticon2-check-mark icon-sm"></i></a>
+                                    </OverlayTrigger>
+                                    <OverlayTrigger overlay={<Tooltip>Rechazar</Tooltip>}>
+                                        <a onClick = { () => { changeEstatus('Rechazado') } } className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger"><i className="flaticon2-cross icon-sm"></i></a>
+                                    </OverlayTrigger>
                                 </div>
                             </div>
                         </div>

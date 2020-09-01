@@ -13,22 +13,7 @@ import { Card } from 'react-bootstrap'
 class CalidadForm extends Component{
 
     state = {
-        title: 'Levantamiento de ticket',
-        remision: '',
-        form:{
-            proyecto: '',
-            fecha: new Date(),
-            area: '',
-            subarea: '',
-            descripcion: '',
-            adjuntos:{
-                adjunto:{
-                    value: '',
-                    placeholder: 'Adjunto',
-                    files: []
-                }
-            }
-        },
+        ticket: ''
     }
 
     componentDidMount(){
@@ -49,6 +34,12 @@ class CalidadForm extends Component{
                         const { calidad } = state
                         if(calidad.estatus_ticket.estatus === 'En espera')
                             this.changeEstatusAxios({id: calidad.id})
+                        else{
+                            this.setState({
+                                ... this.state,
+                                ticket: calidad
+                            })
+                        }
                     }
                 }
                 break;
@@ -57,75 +48,26 @@ class CalidadForm extends Component{
         }
         if(!remisiones)
             history.push('/')
-        // this.getCalidadAxios()
     }
 
-    onChange = e => {
-        const {form} = this.state
-        const {name, value} = e.target
-        form[name] = value
-        this.setState({
-            ... this.state,
-            form
-        })
-    }
-
-    onSubmit = e => {
-        e.preventDefault()
-        const{ title } = this.state
-        waitAlert()
-        if(title === 'Editar calidad'){
-            this.editRemisionAxios()
-        }else
-            this.addRemisionAxios()
-    }
-
-    setOptions = (name, array) => {
-        const {options} = this.state
-        options[name] = setOptions(array, 'nombre', 'id')
-        this.setState({
-            ... this.state,
-            options
-        })
+    changeEstatus = estatus =>  {
+        const { ticket } = this.state
+        this.changeEstatusAxios({id: ticket.id, estatus: estatus})
     }
 
     async changeEstatusAxios(data){
         const { access_token } = this.props.authUser
-        const { ticket } = this.state
         await axios.put(URL_DEV + 'calidad/estatus/' + data.id, data, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { ticket } = response.data
+                console.log(ticket, 'ticket')
                 this.setState({
                     ... this.state,
                     ticket: ticket
                 })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                if(data.estatus){
+                    doneAlert('El ticket fue actualizado con éxito.')
                 }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-    
-    async getCalidadAxios(){
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'calidad', { headers: {Authorization:`Bearer ${access_token}`}}).then(
-            (response) => {
-                const { proyectos, areas } = response.data
-                const { options } = this.state
-                options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
-                options['areas'] = setOptions(areas, 'nombre', 'id')
-                this.setState({
-                    ... this.state,
-                    options
-                })
             },
             (error) => {
                 console.log(error, 'error')
@@ -143,18 +85,13 @@ class CalidadForm extends Component{
 
     render(){
 
-        const { form, title, options } = this.state
+        const { ticket } = this.state
 
         return(
             <Layout active={'proyectos'}  {...this.props}>
                 <CalidadView
-                    title={title}
-                    form={form}
-                    onChange={this.onChange}
-                    options={options}
-                    setOptions={this.setOptions}
-                    onSubmit={this.onSubmit}
-                />
+                    data = { ticket } 
+                    changeEstatus = { this.changeEstatus } />
             </Layout>
         )
     }
