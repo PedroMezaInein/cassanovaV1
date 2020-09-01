@@ -511,6 +511,7 @@ class Ventas extends Component{
                         let auxCliente = ''
                         data.clientes.find(function(element, index) {
                             let cadena = obj.nombre_receptor.replace(' S. C.',  ' SC').toUpperCase()
+                            cadena = cadena.replace(',S.A.',  ' SA').toUpperCase()
                             cadena = cadena.replace(/,/g, '').toUpperCase()
                             cadena = cadena.replace(/\./g, '').toUpperCase()
                             if (element.empresa === obj.nombre_receptor ||
@@ -651,6 +652,7 @@ class Ventas extends Component{
 
 
         let cadena = obj.nombre_receptor.replace(' S. C.',  ' SC').toUpperCase()
+        cadena = cadena.replace(',S.A.',  ' SA').toUpperCase()
         cadena = cadena.replace(/,/g, '').toUpperCase()
         cadena = cadena.replace(/\./g, '').toUpperCase()
         data.append('empresa', cadena)

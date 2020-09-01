@@ -159,6 +159,7 @@ class EgresosForm extends Component{
                         let auxProveedor = ''
                         data.proveedores.find(function(element, index) {
                             let cadena = obj.nombre_emisor.replace(' S. C.',  ' SC').toUpperCase()
+                            cadena = cadena.replace(',S.A.',  ' SA').toUpperCase()
                             cadena = cadena.replace(/,/g, '').toUpperCase()
                             cadena = cadena.replace(/\./g, '').toUpperCase()
                             if (element.razon_social.toUpperCase() === obj.nombre_emisor.toUpperCase() ||
@@ -532,6 +533,7 @@ class EgresosForm extends Component{
         const data = new FormData();
 
         let cadena = obj.nombre_emisor.replace(' S. C.',  ' SC').toUpperCase()
+        cadena = cadena.replace(',S.A.',  ' SA').toUpperCase()
         cadena = cadena.replace(/,/g, '').toUpperCase()
         cadena = cadena.replace(/\./g, '').toUpperCase()
         data.append('nombre', cadena)
