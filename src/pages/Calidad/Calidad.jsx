@@ -105,7 +105,7 @@ class Calidad extends Component {
                     columns={PROYECTOS_TICKETS} 
                     title='Calidad' 
                     subtitle='Listado de presupuestos por proyecto'
-                    mostrar_boton={true}
+                    mostrar_boton={false}
                     abrir_modal={false}
                     mostrar_acciones={true}
                     actions={{
@@ -113,7 +113,7 @@ class Calidad extends Component {
                         // 'delete': { function: this.openModalDelete },
                         'see': {function: this.changePageSee},
                     }}
-                    url='/calidad/calidad/add'
+                    // url='/calidad/calidad/add'
                     idTable = 'kt_datatable_calidad'
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'
