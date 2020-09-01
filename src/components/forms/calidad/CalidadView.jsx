@@ -89,12 +89,23 @@ class CalidadView extends Component {
                                             : ''
                                         }
                                     </div>
-                                    <OverlayTrigger overlay={<Tooltip>Aceptar</Tooltip>}>
-                                        <a onClick={() => { changeEstatus('Aceptado') }} className="btn btn-icon btn-light-success success2 btn-sm mr-2 ml-auto"><i className="flaticon2-check-mark icon-sm"></i></a>
-                                    </OverlayTrigger>
-                                    <OverlayTrigger overlay={<Tooltip>Rechazar</Tooltip>}>
-                                        <a onClick={() => { changeEstatus('Rechazado') }} className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger"><i className="flaticon2-cross icon-sm"></i></a>
-                                    </OverlayTrigger>
+                                    {
+                                        data ?
+                                            data.estatus_ticket ?
+                                                data.estatus_ticket.estatus === 'En espera' ?   
+                                                    <>
+                                                        <OverlayTrigger overlay={<Tooltip>Aceptar</Tooltip>}>
+                                                            <a onClick={() => { changeEstatus('Aceptado') }} className="btn btn-icon btn-light-success success2 btn-sm mr-2 ml-auto"><i className="flaticon2-check-mark icon-sm"></i></a>
+                                                        </OverlayTrigger>
+                                                        <OverlayTrigger overlay={<Tooltip>Rechazar</Tooltip>}>
+                                                            <a onClick={() => { changeEstatus('Rechazado') }} className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger"><i className="flaticon2-cross icon-sm"></i></a>
+                                                        </OverlayTrigger>
+                                                    </>
+                                                : ''
+                                            : ''
+                                        : '' 
+                                    }
+                                    
                                 </div>
                             </div>
                         </div>
