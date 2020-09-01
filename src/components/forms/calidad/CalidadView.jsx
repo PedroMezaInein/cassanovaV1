@@ -17,7 +17,7 @@ class CalidadView extends Component {
 
     render() {
 
-        const { data } = this.props
+        const { data, changeEstatus } = this.props
         return (
             <div className="card card-custom gutter-b">
                 <div className="card-body">
@@ -66,10 +66,10 @@ class CalidadView extends Component {
 
                                 <div className="my-lg-0 my-1">
                                     <OverlayTrigger overlay={<Tooltip>Aceptar</Tooltip>}>
-                                        <a className="btn btn-icon btn-light-success success2 btn-sm mr-2 ml-auto"><i className="flaticon2-check-mark icon-sm"></i></a>
+                                        <a onClick = { () => { changeEstatus('Aceptado') } } className="btn btn-icon btn-light-success success2 btn-sm mr-2 ml-auto"><i className="flaticon2-check-mark icon-sm"></i></a>
                                     </OverlayTrigger>
                                     <OverlayTrigger overlay={<Tooltip>Rechazar</Tooltip>}>
-                                        <a className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger"><i className="flaticon2-cross icon-sm"></i></a>
+                                        <a onClick = { () => { changeEstatus('Rechazado') } } className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger"><i className="flaticon2-cross icon-sm"></i></a>
                                     </OverlayTrigger>
                                 </div>
                             </div>

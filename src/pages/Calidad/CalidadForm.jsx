@@ -50,9 +50,13 @@ class CalidadForm extends Component{
             history.push('/')
     }
 
+    changeEstatus = estatus =>  {
+        const { ticket } = this.state
+        this.changeEstatusAxios({id: ticket.id, estatus: estatus})
+    }
+
     async changeEstatusAxios(data){
         const { access_token } = this.props.authUser
-        const { ticket } = this.state
         await axios.put(URL_DEV + 'calidad/estatus/' + data.id, data, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { ticket } = response.data
@@ -61,6 +65,9 @@ class CalidadForm extends Component{
                     ... this.state,
                     ticket: ticket
                 })
+                if(data.estatus){
+                    doneAlert('El ticket fue actualizado con éxito.')
+                }
             },
             (error) => {
                 console.log(error, 'error')
@@ -83,7 +90,8 @@ class CalidadForm extends Component{
         return(
             <Layout active={'proyectos'}  {...this.props}>
                 <CalidadView
-                    data = { ticket } />
+                    data = { ticket } 
+                    changeEstatus = { this.changeEstatus } />
             </Layout>
         )
     }
