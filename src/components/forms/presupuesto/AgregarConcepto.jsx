@@ -60,7 +60,7 @@ class AgregarConcepto extends Component {
                     }
                 }
             >
-                <Tabs defaultActiveKey="nuevo" className="pt-2 nav nav-tabs nav-tabs-line justify-content-start nav-tabs-line-2x border-0" activeKey={activeKey} onSelect = {onSelect}>
+                <Tabs defaultActiveKey="nuevo" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100" activeKey={activeKey} onSelect = {onSelect}>
                     <Tab eventKey="nuevo" title="Nuevo concepto">
                         <div className="form-group row form-group-marginless pt-4">
                             <div className="col-md-4">
