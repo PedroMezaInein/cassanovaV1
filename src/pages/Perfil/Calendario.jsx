@@ -20,7 +20,7 @@ import Dropdown from 'react-bootstrap/Dropdown'
 class Calendario extends Component {
 
     state = {
-        disponibles: 1,
+        disponibles: 0,
         events: [],
         formeditado: 0,
         modal: false,
@@ -336,6 +336,7 @@ class Calendario extends Component {
 
     render() {
         const { events, form, title, formeditado, modal, key, modal_status, estatus, disponibles } = this.state
+        console.log(disponibles)
         return (
             <Layout active='rh'  {...this.props}>
                 <Card className="card-custom">
@@ -344,16 +345,21 @@ class Calendario extends Component {
                             <h3 className="card-label">Calendario</h3>
                         </div>
                         <div className="card-toolbar">
-                            <DropdownButton
-                                title={
-                                    <i className="ki ki-bold-more-ver p-0"></i>
-                                }
-                                id={`dropdown-button-drop-left`}
-                                drop={'left'}
-                            >
-                                <Dropdown.Item onClick={this.openModal}>Solicitar vacaciones</Dropdown.Item>
-                                <Dropdown.Item onClick={this.openModalEstatus}>Estatus de vacaciones</Dropdown.Item>
-                            </DropdownButton>
+                            {
+                                disponibles > 0 ? 
+                                <DropdownButton
+                                    title={
+                                        <i className="ki ki-bold-more-ver p-0"></i>
+                                    }
+                                    id={`dropdown-button-drop-left`}
+                                    drop={'left'}
+                                >
+                                    <Dropdown.Item onClick={this.openModal}>Solicitar vacaciones</Dropdown.Item>
+                                    <Dropdown.Item onClick={this.openModalEstatus}>Estatus de vacaciones</Dropdown.Item>
+                                </DropdownButton>
+                                :''
+                            }
+                            
                         </div>
                     </Card.Header>
                     <Modal title={title} show={modal} handleClose={this.handleClose}>
