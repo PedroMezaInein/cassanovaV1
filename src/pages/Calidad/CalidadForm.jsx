@@ -41,12 +41,16 @@ class CalidadForm extends Component{
             return pathname === url + '/' + action
         });
         switch(action){
+            
             case 'see':
-                this.setState({
-                    ... this.state,
-                    title: 'Levantamiento de ticket',
-                    formeditado:0
-                })
+                if(state){
+                    if(state.calidad)
+                    {
+                        const { calidad } = state
+                        if(calidad.estatus_ticket.estatus === 'En espera')
+                            this.changeEstatusAxios({id: calidad.id})
+                    }
+                }
                 break;
             default:
                 break;
@@ -82,6 +86,31 @@ class CalidadForm extends Component{
         this.setState({
             ... this.state,
             options
+        })
+    }
+
+    async changeEstatusAxios(data){
+        const { access_token } = this.props.authUser
+        const { ticket } = this.state
+        await axios.put(URL_DEV + 'calidad/estatus/' + data.id, data, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { ticket } = response.data
+                this.setState({
+                    ... this.state,
+                    ticket: ticket
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
     
