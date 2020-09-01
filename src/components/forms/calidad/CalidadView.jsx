@@ -5,13 +5,19 @@ import Tooltip from 'react-bootstrap/Tooltip'
 
 class CalidadView extends Component {
 
-    constructor(props) {
-        super(props)
+    getIniciales = nombre => {
+        let aux = nombre.split(' ');
+        let iniciales = ''
+        aux.map((element)=>{
+            if(element !== '-')
+                iniciales = iniciales + element.charAt(0) + ' '
+        })
+        return iniciales
     }
 
     render() {
 
-        const { form, onChange, changeCP, estado, municipio, colonias, updateColonia, formeditado } = this.props
+        const { data } = this.props
         return (
             <div className="card card-custom gutter-b">
                 <div className="card-body">
@@ -20,18 +26,40 @@ class CalidadView extends Component {
 
                         <div className="flex-shrink-0 mr-4">
                             <div className="symbol symbol-50 symbol-lg-120 symbol-light-primary">
-                                <span className="font-size-h3 symbol-label font-weight-boldest">K-D-V</span>
+                                <span className="font-size-h3 symbol-label font-weight-boldest">
+                                    {
+                                        data ?
+                                            data.proyecto ?
+                                                this.getIniciales(data.proyecto.nombre)
+                                            : ''
+                                        : ''
+                                    }
+                                </span>
                             </div>
                         </div>
 
                         <div className="flex-grow-1">
                             <div className="d-flex align-items-center justify-content-between flex-wrap mt-2">
                                 <div className="mr-3">
-                                    <div className="d-flex align-items-center text-dark font-size-h5 font-weight-bold mr-3">KERALTY - DISEÑO - VIA 515 - PROYECTO</div>
+                                    <div className="d-flex align-items-center text-dark font-size-h5 font-weight-bold mr-3">
+                                        {
+                                            data ?
+                                                data.proyecto?
+                                                    data.proyecto.nombre
+                                                : ''
+                                            : ''
+                                        }
+                                    </div>
                                     <div className="d-flex flex-wrap my-2">
                                         <div className="text-muted font-weight-bold mr-lg-5 mr-5 mb-lg-0 mb-2 mt-2">
                                             <i className="far fa-user-circle icon-md mr-2"></i>
-                                                KERALTY MEXICO SA DE CV - CLIENTE
+                                            {
+                                                data ?
+                                                    data.usuario ?
+                                                        data.usuario.name
+                                                    : ''
+                                                : ''
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -48,8 +76,11 @@ class CalidadView extends Component {
 
                             <div className="d-flex align-items-center flex-wrap justify-content-between">
                                 <div className="font-weight-bold text-dark-50 py-lg-2 col-md-12 text-justify pl-0">
-                                    I distinguish three main text objectives could be merely to inform people.
-                                    A second could be persuade people.You want people to bay objective. - DESCRIPCIÓN
+                                    {
+                                        data ?
+                                            data.descripcion
+                                        : ''
+                                    }
                                 </div>
                             </div>
                             {/* <div className="d-flex align-items-center flex-wrap justify-content-between">
