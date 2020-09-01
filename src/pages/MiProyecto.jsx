@@ -254,7 +254,13 @@ class MiProyecto extends Component {
                     }
                 ]
             }
-        ]
+        ],
+        adjuntosTickets:{
+            factura:{
+                value: '', 
+                files: []
+            }
+        }
     }
 
     seleccionaradj(adjuntos) {
@@ -511,6 +517,61 @@ class MiProyecto extends Component {
             </span>
         )
     }
+
+    handleChangeImages = (files, item) => {
+        // this.onChangeAdjuntoGrupo({ target: { name: item, value: files, files: files } })
+        swal({
+            title: '¿Confirmas el envio de adjuntos?',
+            buttons: {
+                cancel: {
+                    text: "Cancelar",
+                    value: null,
+                    visible: true,
+                    className: "button__red btn-primary cancel",
+                    closeModal: true,
+                },
+                confirm: {
+                    text: "Aceptar",
+                    value: true,
+                    visible: true,
+                    className: "button__green btn-primary",
+                    closeModal: true
+                }
+            }
+        }).then((result) => {
+            if (result) {
+                waitAlert()
+                this.addAdjuntoAxios(item)
+            }
+        })
+    }
+
+    deleteFile = element => {
+        swal({
+            title: '¿Deseas eliminar el archivo?',
+            buttons: {
+                cancel: {
+                    text: "Cancelar",
+                    value: null,
+                    visible: true,
+                    className: "button__green btn-primary cancel",
+                    closeModal: true,
+                },
+                confirm: {
+                    text: "Aceptar",
+                    value: true,
+                    visible: true,
+                    className: "button__red btn-primary",
+                    closeModal: true
+                }
+            }
+        }).then((result) => {
+            if (result) {
+                this.deleteAdjuntoAxios(element.id)
+            }
+        })
+    }
+
 
     render() {
         const { options, proyecto, form, adjuntos, showadjuntos, primeravista, defaultactivekey, subActiveKey, formeditado, tickets, data } = this.state
@@ -879,6 +940,13 @@ class MiProyecto extends Component {
                                                                     messageinc="Incorrecto. Ingresa una descripción."
                                                                     style={{ paddingLeft: "10px" }}
                                                                 />
+                                                            </div>
+                                                        </div>
+                                                        <div className="form-group row form-group-marginless">
+                                                            <div className="col-md-12">
+                                                                <label className="col-form-label">ADJUNTA EL(LOS) ARCHIVOS</label>
+                                                                {/* <ItemSlider multiple = { false } items={ " "} handleChange={this.handleChangeImages}
+                                                                            item={" "} /> */}
                                                             </div>
                                                         </div>
                                                         <div className="card-footer py-3 pr-1">
