@@ -384,18 +384,30 @@ class ActualizarPresupuesto extends Component {
                             mensaje: ''
                         }
                     }
-                    aux.push({
-                        descripcion: concepto.descripcion,
-                        costo: concepto.costo.toFixed(2),
-                        cantidad_preliminar: concepto.cantidad_preliminar,
-                        desperdicio: concepto.desperdicio,
-                        cantidad: (concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100))).toFixed(2),
-                        importe: ((concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100))) * concepto.costo).toFixed(2),
-                        active: concepto.active ? true : false,
-                        id: concepto.id, 
-                        mensajes: mensajeAux
+                    let bandera=false
+                    form.conceptos.map((elemento)=>{
+                        if(concepto.id === elemento.id){
+                            bandera=elemento
+                        }
                     })
-
+                    if(bandera){
+                        aux.push(
+                            bandera
+                        )
+                    
+                    }else{
+                        aux.push({
+                            descripcion: concepto.descripcion,
+                            costo: concepto.costo.toFixed(2),
+                            cantidad_preliminar: concepto.cantidad_preliminar,
+                            desperdicio: concepto.desperdicio,
+                            cantidad: (concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100))).toFixed(2),
+                            importe: ((concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100))) * concepto.costo).toFixed(2),
+                            active: concepto.active ? true : false,
+                            id: concepto.id,
+                            mensajes: mensajeAux
+                        })
+                    }
                 })
 
                 form.conceptos = aux
