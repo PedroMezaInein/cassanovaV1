@@ -881,7 +881,7 @@ class egresos extends Component{
                         <div className="col-md-12">
                             <ProgressBar 
                                 animated 
-                                label={`${porcentaje}%`} 
+                                label={`${porcentaje}`} 
                                 variant = { porcentaje > 100 ? 'danger' : porcentaje > 75 ? 'success' : 'warning'} 
                                 now = {porcentaje} />
                         </div>
