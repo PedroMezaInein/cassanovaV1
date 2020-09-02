@@ -25,6 +25,7 @@ class ActualizarPresupuesto extends Component {
             costo: '',
             proveedor: '',
             conceptos: [{
+                unidad: '',
                 descipcion: '',
                 costo: '',
                 cantidad_preliminar: '',
@@ -405,7 +406,8 @@ class ActualizarPresupuesto extends Component {
                             importe: ((concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100))) * concepto.costo).toFixed(2),
                             active: concepto.active ? true : false,
                             id: concepto.id,
-                            mensajes: mensajeAux
+                            mensajes: mensajeAux,
+                            unidad: concepto ? concepto.concepto ? concepto.concepto.unidad ? concepto.concepto.unidad.nombre : '' : '' : ''
                         })
                     }
                 })
