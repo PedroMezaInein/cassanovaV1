@@ -10,7 +10,10 @@ import Moment from 'react-moment'
 import NumberFormat from 'react-number-format';
 import swal from 'sweetalert'
 import { setTextTable, setMoneyTable, setDateTable } from '../../functions/setters'
-import { errorAlert, forbiddenAccessAlert } from '../../functions/alert'
+import { errorAlert, forbiddenAccessAlert, createAlert, doneAlert } from '../../functions/alert'
+
+
+const $ = require('jquery');
 
 class Facturacion extends Component {
 
@@ -40,7 +43,9 @@ class Facturacion extends Component {
         facturas.map((factura) => {
             aux.push(
                 {
+                    actions: this.setActions(factura),
                     folio: renderToString(setTextTable(factura.folio)),
+                    estatus: renderToString(this.setLabelTable(factura)),
                     fecha: renderToString(setDateTable(factura.fecha)),
                     serie: renderToString(setTextTable(factura.serie)),
                     emisor: renderToString(this.setInfoTable(factura.rfc_emisor, factura.nombre_emisor)),
@@ -61,30 +66,59 @@ class Facturacion extends Component {
         return aux
     }
 
-    setDateTable = date => {
-        return (
-            <Small>
-                <Moment format="DD/MM/YYYY">
-                    {date}
-                </Moment>
-            </Small>
-        )
+    setActions = factura => {
+        
+        let aux = []
+
+        if(!factura.cancelada){
+            aux.push(
+                {
+                    text: 'Cancelar',
+                    btnclass: 'danger',
+                    iconclass: "flaticon-circle",
+                    action: 'cancelarFactura',
+                    tooltip: { id: 'delete-Adjunto', text: 'Eliminar', type: 'error' },
+                })
+        }
+
+        return aux
     }
 
-    setExpedicionTable = factura => {
-        return (
-            <div>
-                <Small className="mr-1" >
-                    <B color="gold">
-                        Lugar:
-                    </B>
-                </Small>
-                <Small>
-                    {factura.lugar_expedicion}
-                </Small>
-            </div>
+    setLabelTable = objeto => {
+        let restante = objeto.total - objeto.ventas_count - objeto.ingresos_count
+        let text = {}
+        if(objeto.cancelada){
+            text.letra = '#8950FC'
+            text.fondo = '#EEE5FF'
+            text.estatus = 'CANCELADA'
+        }else{
+            if(restante <= 1){
+                text.letra = '#388E3C'
+                text.fondo = '#E8F5E9'
+                text.estatus = 'PAGADA'
+            }else{
+                text.letra = '#F64E60'
+                text.fondo = '#FFE2E5'
+                text.estatus = 'PENDIENTE'
+            }
+        }
+            
+        return(
+            <>
+                <div class="d-none">
+                    {text.estatus}
+                </div>
+                <span className="label label-lg bg- label-inline font-weight-bold py-2" style={{
+                    color: `${text.letra}`,
+                    backgroundColor: `${text.fondo}`,
+                    fontSize:"11.7px"
+                    }} >
+                    {text.estatus}
+                </span>
+            </>
         )
     }
+    
 
     setAdjuntosTable = factura => {
         return (
@@ -136,19 +170,35 @@ class Facturacion extends Component {
         )
     }
 
-    setMoneyTable = value => {
-        return (
-            <NumberFormat value={value} displayType={'text'} thousandSeparator={true} prefix={'$'}
-                renderText={value => <Small> {value} </Small>} />
-        )
+    cancelarFactura = (factura) => {
+        createAlert('¿Deseas cancelar la factura?', '', () => this.cancelarFacturaAxios(factura))
     }
 
-    setTextTable = text => {
-        return (
-            <Small>
-                {text}
-            </Small>
-        )
+    async cancelarFacturaAxios(factura){
+        const { access_token } = this.props.authUser
+        await axios.put(URL_DEV + 'facturas/cancelar/'+factura.id, {}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { data } = this.state
+                const { facturasVentas } = response.data
+                data.facturas = facturasVentas
+                this.setState({
+                    facturas: this.setFactura(facturasVentas),
+                    data
+                })
+                doneAlert('Factura cancelada con éxito')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     async getFacturas() {
@@ -157,7 +207,7 @@ class Facturacion extends Component {
             (response) => {
                 const { data } = this.state
                 const { facturas, facturasVentas } = response.data
-                data.facturas = facturas
+                data.facturas = facturasVentas
                 this.setState({
                     facturas: this.setFactura(facturasVentas),
                     data
@@ -181,17 +231,24 @@ class Facturacion extends Component {
         const { facturas, data } = this.state
         return (
             <Layout active={'administracion'}  {...this.props}>
-                <NewTable columns={FACTURAS_COLUMNS} data={facturas}
-                    title='Facturas' subtitle='Listado de facturas'
-                    mostrar_boton={false}
-                    abrir_modal={false}
-                    mostrar_acciones={false}
-                    elements={data.facturas}
+                <NewTable 
+                    columns = { FACTURAS_COLUMNS } 
+                    data = { facturas }
+                    title = 'Facturas' 
+                    subtitle = 'Listado de facturas'
+                    mostrar_boton = { false }
+                    abrir_modal = { false }
+                    mostrar_acciones = { true }
+                    elements = { data.facturas }
                     tipo_validacion = 'facturas'
-                    cardTable='cardTable'
-                    cardTableHeader='cardTableHeader'
-                    cardBody='cardBody'
-                />
+                    cardTable = 'cardTable'
+                    cardTableHeader = 'cardTableHeader'
+                    cardBody = 'cardBody'
+                    idTable = 'facturas-table'
+                    actions={{
+                        'cancelarFactura': { function: this.cancelarFactura }
+                    }}
+                    />
 
             </Layout>
         )

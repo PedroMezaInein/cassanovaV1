@@ -546,12 +546,18 @@ export const EGRESOS_COLUMNS = [
 
 
 export const FACTURAS_COLUMNS = [
-    
+    {
+        Header: 'Opciones',
+        accessor: 'actions',
+    },
     {
         Header: 'Folio',
         accessor: 'folio',
     },
-    
+    {
+        Header: 'Estatus',
+        accessor: 'estatus',
+    },
     {
         Header: 'Fecha',
         accessor: 'fecha',

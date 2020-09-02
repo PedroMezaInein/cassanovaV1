@@ -182,12 +182,12 @@ class NewTable extends Component {
                             }
                             break;
                         case 'facturas':
-                            let restante = objeto.total - objeto.ventas_count - objeto.ingresos_count
+                            /* let restante = objeto.total - objeto.ventas_count - objeto.ingresos_count
                             if(restante <= 1){
                                 $(row).addClass('blanco');
                             }else{
                                 $(row).addClass('rojo');
-                            }
+                            } */
                             break;
                         default:
                             break
@@ -247,7 +247,7 @@ class NewTable extends Component {
                     }
                     else {
                         return (`<div>${data}</div>`)
-                    }
+                    }   
                 }
             }
             ],
