@@ -168,77 +168,83 @@ class AgregarConcepto extends Component {
                                 />
                             </div>
                         </div>
-                        <div className="table-responsive">
-                            <div className="list  min-w-500px" data-inbox="list">
-                                {
-                                    form.subpartida ?
-                                        <div className="list min-w-500px" data-inbox="list">
-                                            <div className="d-flex align-items-start list-item card-spacer-x pt-4" data-inbox="message">
-                                                <div className="d-flex align-items-center col-1">
-                                                </div>
-                                                <div className="flex-grow-1 col-1 pl-0" data-toggle="view">
-                                                    <div className="font-weight-bold font-size-lg text-center">CLAVE</div>
-                                                </div>
-                                                <div className="flex-grow-1 col-6 p-0" data-toggle="view">
-                                                    <div className="font-weight-bold font-size-lg text-center"> DESCRIPCIÓN</div>
-                                                </div>
-                                                <div className="d-flex align-items-center justify-content-center flex-wrap col-2 pr-0" data-toggle="view">
-                                                    <div className="font-weight-bolder font-size-lg text-center" data-toggle="view">UNIDAD</div>
-                                                </div>
-                                                <div className="d-flex align-items-center justify-content-center flex-wrap col-2 p-0" data-toggle="view">
-                                                    <div className="font-weight-bolder font-size-lg text-center" data-toggle="view">COSTO</div>
-                                                </div>
-                                            </div>
+                        {
+                            form.partida ?
+                                <>
+                                    <div className="table-responsive">
+                                        <div className="list  min-w-500px" data-inbox="list">
+                                            {
+                                                form.subpartida ?
+                                                    <div className="list min-w-500px" data-inbox="list">
+                                                        <div className="d-flex align-items-start list-item card-spacer-x pt-4" data-inbox="message">
+                                                            <div className="d-flex align-items-center col-1">
+                                                            </div>
+                                                            <div className="flex-grow-1 col-1 pl-0" data-toggle="view">
+                                                                <div className="font-weight-bold font-size-lg text-center">CLAVE</div>
+                                                            </div>
+                                                            <div className="flex-grow-1 col-6 p-0" data-toggle="view">
+                                                                <div className="font-weight-bold font-size-lg text-center"> DESCRIPCIÓN</div>
+                                                            </div>
+                                                            <div className="d-flex align-items-center justify-content-center flex-wrap col-2 pr-0" data-toggle="view">
+                                                                <div className="font-weight-bolder font-size-lg text-center" data-toggle="view">UNIDAD</div>
+                                                            </div>
+                                                            <div className="d-flex align-items-center justify-content-center flex-wrap col-2 p-0" data-toggle="view">
+                                                                <div className="font-weight-bolder font-size-lg text-center" data-toggle="view">COSTO</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    : ''
+                                            }
+                                            {
+                                                form.conceptosNuevos.map((concepto, key) => {
+                                                    return (
+                                                        <div key={key} className="d-flex align-items-start list-item card-spacer-x pt-4 pb-5 rounded-0" data-inbox="message">
+                                                            <div className="d-flex align-items-center col-1">
+                                                                <div className="d-flex align-items-center" data-inbox="actions">
+                                                                    <label className="checkbox checkbox-single checkbox-primary flex-shrink-0">
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            onChange={(e) => { checkButtonConceptos(e, key) }}
+                                                                            name={concepto.clave}
+                                                                            checked={form.conceptosNuevos.active}
+                                                                            value={form.conceptosNuevos.active}
+                                                                        />
+                                                                        <span></span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div className="flex-grow-1 col-1 pl-0" data-toggle="view">
+                                                                <div className="font-size-xs font-weight-bold text-center">
+                                                                    {concepto.clave}
+                                                                </div>
+                                                            </div>
+                                                            <div className="flex-grow-1 col-6 p-0" data-toggle="view">
+                                                                <div className="font-size-xs text-justify font-weight-bold">
+                                                                    {concepto.descripcion}
+                                                                </div>
+                                                            </div>
+                                                            <div className="d-flex align-items-center justify-content-center flex-wrap col-2 pr-0" data-toggle="view">
+                                                                <div className="font-size-xs font-weight-bold" data-toggle="view">
+                                                                    {concepto.unidad.nombre}
+                                                                </div>
+                                                            </div>
+                                                            <div className="d-flex align-items-center justify-content-center flex-wrap col-2 p-0" data-toggle="view">
+                                                                <div className="font-size-xs font-weight-bold" data-toggle="view">
+                                                                    {setMoneyTableSinSmall(concepto.costo)}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    )
+                                                })
+                                            }
                                         </div>
-                                        : ''
-                                }
-                                {
-                                    form.conceptosNuevos.map((concepto, key) => {
-                                        return (
-                                            <div key={key} className="d-flex align-items-start list-item card-spacer-x pt-4 pb-5 rounded-0" data-inbox="message">
-                                                <div className="d-flex align-items-center col-1">
-                                                    <div className="d-flex align-items-center" data-inbox="actions">
-                                                        <label className="checkbox checkbox-single checkbox-primary flex-shrink-0">
-                                                            <input
-                                                                type="checkbox"
-                                                                onChange={(e) => { checkButtonConceptos(e, key) }}
-                                                                name={concepto.clave}
-                                                                checked={form.conceptosNuevos.active}
-                                                                value={form.conceptosNuevos.active}
-                                                            />
-                                                            <span></span>
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div className="flex-grow-1 col-1 pl-0" data-toggle="view">
-                                                    <div className="font-size-xs font-weight-bold text-center">
-                                                        {concepto.clave}
-                                                    </div>
-                                                </div>
-                                                <div className="flex-grow-1 col-6 p-0" data-toggle="view">
-                                                    <div className="font-size-xs text-justify font-weight-bold">
-                                                        {concepto.descripcion}
-                                                    </div>
-                                                </div>
-                                                <div className="d-flex align-items-center justify-content-center flex-wrap col-2 pr-0" data-toggle="view">
-                                                    <div className="font-size-xs font-weight-bold" data-toggle="view">
-                                                        {concepto.unidad.nombre}
-                                                    </div>
-                                                </div>
-                                                <div className="d-flex align-items-center justify-content-center flex-wrap col-2 p-0" data-toggle="view">
-                                                    <div className="font-size-xs font-weight-bold" data-toggle="view">
-                                                        {setMoneyTableSinSmall(concepto.costo)}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )
-                                    })
-                                }
-                            </div>
-                        </div>
-                        <div className="d-flex justify-content-center my-3">
-                            <Button icon='' type="submit" className="text-center mx-auto" text='AGREGAR' />
-                        </div>
+                                    </div>
+                                    <div className="d-flex justify-content-center my-3">
+                                        <Button icon='' type="submit" className="text-center mx-auto" text='AGREGAR' />
+                                    </div>
+                                </>
+                                : ''
+                        }
                     </Tab>
                 </Tabs>
             </Form>
