@@ -119,7 +119,7 @@ class CalidadView extends Component {
                                     <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
                                         <div className="symbol-label">
                                             <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                                <SVG src={toAbsoluteUrl('/images/svg/partida.svg')} />
+                                                <SVG src={toAbsoluteUrl('/images/svg/document.svg')} />
                                             </span>
                                         </div>
                                     </div>
@@ -195,7 +195,7 @@ class CalidadView extends Component {
                                 <div className="symbol symbol-40 symbol-light-primary mr-4">
                                     <span className="symbol-label">
                                         <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                            <SVG src={toAbsoluteUrl('/images/svg/partida.svg')} />
+                                            <SVG src={toAbsoluteUrl('/images/svg/document.svg')} />
                                         </span>
                                     </span>
                                 </div>
