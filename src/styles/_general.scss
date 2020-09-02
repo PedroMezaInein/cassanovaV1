@@ -96,8 +96,10 @@ a.text-hover-danger2:hover, .text-hover-danger2:hover{
 }
 
 .pdfview-img{
-    width: 100%;
-    height: auto;
+    /* width: 100%;
+    height: auto; */
+    width: auto;
+    max-height: 60%;
 }
 
 @media screen and (max-width: 992px) {

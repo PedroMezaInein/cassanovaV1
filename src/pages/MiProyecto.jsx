@@ -84,6 +84,11 @@ class MiProyecto extends Component {
                     value: '',
                     placeholder: 'Ingresa los adjuntos',
                     files: []
+                },
+                fotos: {
+                    value: '',
+                    placeholder: 'Fotos del incidente',
+                    files: []
                 }
             }
         },
@@ -298,7 +303,21 @@ class MiProyecto extends Component {
         const { form } = this.state
         let aux = Object.keys(form)
         aux.map((element) => {
-            form[element] = ''
+            if(element !== 'adjuntos')
+                form[element] = ''
+            else
+                form[element] = {
+                    adjunto: {
+                        value: '',
+                        placeholder: 'Ingresa los adjuntos',
+                        files: []
+                    },
+                    fotos: {
+                        value: '',
+                        placeholder: 'Fotos del incidente',
+                        files: []
+                    }
+                }
         })
         return form
     }
@@ -431,8 +450,33 @@ class MiProyecto extends Component {
     async addTicketAxios() {
         const { access_token } = this.props.authUser
         const { form, proyecto } = this.state
-        form.proyecto = proyecto.id
-        await axios.post(URL_DEV + 'proyectos/mi-proyecto/tickets', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+
+        const data = new FormData();
+        
+        let aux = Object.keys(form)
+        aux.map( (element) => {
+            switch(element){
+                case 'adjuntos':
+                    break;
+                default:
+                    data.append(element, form[element]);
+                    break
+            }
+        })
+        aux = Object.keys(form.adjuntos)
+        aux.map( (element) => {
+            if(form.adjuntos[element].value !== ''){
+                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                }
+                data.append('adjuntos[]', element)
+            }
+        })
+
+        data.append('proyecto', proyecto.id)
+
+        await axios.post(URL_DEV + 'proyectos/mi-proyecto/tickets', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ticket fue solicitado con éxito.')
@@ -532,8 +576,8 @@ class MiProyecto extends Component {
                 }
             )
         }
-        // form['adjuntos'][name].value = value
-        // form['adjuntos'][name].files = aux
+        form['adjuntos'][name].value = value
+        form['adjuntos'][name].files = aux
         this.setState({
             ... this.state,
             form
@@ -542,57 +586,6 @@ class MiProyecto extends Component {
 
     handleChange = (files, item) => {
         this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
-        swal({
-            title: '¿Confirmas el envio de adjuntos?',
-            icon: "warning",
-            buttons: {
-                cancel: {
-                    text: "Cancelar",
-                    value: null,
-                    visible: true,
-                    className: "button__red btn-primary cancel",
-                    closeModal: true,
-                },
-                confirm: {
-                    text: "Aceptar",
-                    value: true,
-                    visible: true,
-                    className: "button__green btn-primary",
-                    closeModal: true
-                }
-            }
-        }).then((result) => {
-            if (result) {
-                waitAlert()
-                // this.addProyectoAdjuntoAxios(item)
-            }
-        })
-    }
-
-    deleteFile = element => {
-        swal({
-            title: '¿Deseas eliminar el archivo?',
-            buttons: {
-                cancel: {
-                    text: "Cancelar",
-                    value: null,
-                    visible: true,
-                    className: "button__green btn-primary cancel",
-                    closeModal: true,
-                },
-                confirm: {
-                    text: "Aceptar",
-                    value: true,
-                    visible: true,
-                    className: "button__red btn-primary",
-                    closeModal: true
-                }
-            }
-        }).then((result) => {
-            if (result) {
-                // this.deleteAdjuntoAxios(element.id)
-            }
-        })
     }
 
 
@@ -976,10 +969,10 @@ class MiProyecto extends Component {
                                                         <div className="form-group row form-group-marginless">
                                                             <div className="col-md-12">
                                                                 <ItemSlider 
-                                                                    items = { "" }
+                                                                    items = { form.adjuntos.fotos.files }
                                                                     handleChange = { this.handleChange }
-                                                                    // item = {""}
-                                                                    deleteFile = { this.deleteFile }
+                                                                    item = "fotos"
+                                                                    /* deleteFile = { this.deleteFile } */
                                                                 />
                                                                 {/* <label className="col-form-label d-flex justify-content-center align-items-center"><b>Nota:</b> Para un mejor levantamiento del problema, puede adjuntar fotografías.</label> */}
                                                             </div>

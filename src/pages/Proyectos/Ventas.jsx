@@ -1280,7 +1280,7 @@ class Ventas extends Component{
                     
                     <div className="form-group row form-group-marginless pt-4">
                         <div className="col-md-12">
-                            <ProgressBar animated label={`${porcentaje}%`} 
+                            <ProgressBar animated label={`${porcentaje}`} 
                                 variant = { porcentaje > 100 ? 'danger' : porcentaje > 75 ? 'success' : 'warning'} 
                                 now = {porcentaje} />
                         </div>
