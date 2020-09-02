@@ -139,8 +139,15 @@ class Conceptos extends Component {
 
         waitAlert()
 
+        let aux = $('#kt_datatable_conceptos').DataTable().rows({ selected: true }).data();
+        let longitud = aux.length
+        let arreglo = []
+        for(let i = 0; i < longitud; i++){
+            arreglo.push(aux[i].id)
+        }
+        
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'exportar/conceptos', { responseType:'blob', headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'exportar/conceptos', { selected: arreglo }, { responseType:'blob', headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 
                 const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -195,7 +202,8 @@ class Conceptos extends Component {
                     idTable='kt_datatable_conceptos'
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'
-                    cardBody='cardBody'/>
+                    cardBody='cardBody'
+                    checkbox = { true } />
 
                 <ModalDelete 
                     title="¿Estás seguro que deseas eliminar el concepto?" 

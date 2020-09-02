@@ -12,7 +12,6 @@ require("datatables.net-select");
 require("datatables.net-searchpanes");
 require("datatables.net-colreorder");
 require("datatables.net-buttons");
-require("datatables.net-select");
 require("datatables.net-fixedheader");
 const global_variable = {}
 
@@ -90,7 +89,8 @@ class NewTableServerRender extends Component {
         });
     }
     componentDidMount() {
-        const { actions, mostrar_acciones, elementClass, accessToken, setter, urlRender, validateFactura, tipo_validacion, cardTable, cardTableHeader, cardBody, isTab} = this.props
+        const { actions, mostrar_acciones, elementClass, accessToken, setter, urlRender, validateFactura, tipo_validacion, cardTable, 
+            cardTableHeader, cardBody, isTab, checkbox } = this.props
         global_variable["mostrar_acciones"] = mostrar_acciones;
 
         $("body").addClass("card-sticky-on")
@@ -191,21 +191,11 @@ class NewTableServerRender extends Component {
                         ..._that.state,
                         newElements: response.elements
                     })
-                    /* swal.close() */
                     drawCallback(response);
                 });
             },
             columns,
             createdRow: function (row, data) {
-                // if(validateFactura){
-                //     const { objeto } = data 
-                //     let resta = objeto.total - objeto.total_facturas
-                //     if(objeto.factura && !( resta < 1 && resta > -1)) {
-                //         $(row).addClass('rojo');
-                //     }else{
-                //         $(row).addClass('blanco');
-                //     }
-                // }
                 if (tipo_validacion) {
                     const { objeto } = data
                     switch (tipo_validacion) {
@@ -257,7 +247,6 @@ class NewTableServerRender extends Component {
                     }
                 }
             },
-            // DOM Layout settings
             dom:
                 `<'row'
                 <'col-sm-12'tr>>
@@ -317,6 +306,7 @@ class NewTableServerRender extends Component {
             ],
             lengthMenu: [[20, 30, 40, 50, -1], [20, 30, 40, 50, "Todos"]],
             pageLength: 20,
+            select: checkbox ? {style: 'multi'} : false
 
         });
         table.on('responsive-resize.dt', function (e, datatable, columns) {
