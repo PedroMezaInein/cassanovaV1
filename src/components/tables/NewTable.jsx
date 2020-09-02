@@ -152,46 +152,45 @@ class NewTable extends Component {
             data: data,
             columns,
             createdRow: function(row, data) {
-                if(tipo_validacion){
-                    const { objeto } = data 
+                const { objeto } = data 
+                if(tipo_validacion){                    
                     switch (tipo_validacion) {
                         case 'compras':
-                            if (objeto.factura > objeto.monto) {
-                                $(row).addClass('verde');
-                            } else if (objeto.factura === objeto.monto) {
+                            if (objeto.factura) {
+                                if (objeto.total_facturas - objeto.monto >1) {
+                                    $(row).addClass('verde');
+                                } else if (objeto.total_facturas - objeto.monto >= -1 && objeto.total_facturas - objeto.monto <= -1) {
+                                    $(row).addClass('blanco');
+                                } else if (objeto.total_facturas - objeto.monto <-1 ) {
+                                    $(row).addClass('rojo');
+                                }
+                            } else {
                                 $(row).addClass('blanco');
-                            } else if (objeto.factura < objeto.monto) {
-                                $(row).addClass('rojo');
                             }
-                            break; 
+                            break;
                         case 'ventas':
-                            if (objeto.factura > objeto.monto) {
-                                $(row).addClass('rojo');
-                            } else if (objeto.factura === objeto.monto) {
+                            if (objeto.factura) {
+                                if (objeto.total_facturas - objeto.monto >1) {
+                                    $(row).addClass('rojo');
+                                } else if (objeto.total_facturas - objeto.monto >= -1 && objeto.total_facturas - objeto.monto <= -1) {
+                                    $(row).addClass('blanco');
+                                } else if (objeto.total_facturas - objeto.monto <-1 ) {
+                                    $(row).addClass('verde');
+                                }
+                            } else {
                                 $(row).addClass('blanco');
-                            } else if (objeto.factura < objeto.monto) {
-                                $(row).addClass('verde');
+                            }
+                            break;
+                        case 'facturas':
+                            let restante = objeto.total - objeto.ventas_count - objeto.ingresos_count
+                            if(restante <= 1){
+                                $(row).addClass('blanco');
+                            }else{
+                                $(row).addClass('rojo');
                             }
                             break;
                         default:
                             break
-                    }
-                }
-                if (elementClass) {
-                    let auxiliar = data[elementClass].split('<!-- -->')
-                    if(auxiliar.length > 1){
-                        if (auxiliar[1] === '$0.00')
-                            $(row).addClass('rojo');
-                        else {
-                            let auxiliar2 = auxiliar[1].charAt(0)
-                            if (auxiliar2 === '-')
-                                $(row).addClass('rojo');
-                        }
-                    }
-                    else {
-                        let auxiliar = data[elementClass].includes('Inactivo')
-                        if (auxiliar)
-                            $(row).addClass('gris');
                     }
                 }
             },

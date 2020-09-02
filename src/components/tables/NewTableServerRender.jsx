@@ -211,11 +211,11 @@ class NewTableServerRender extends Component {
                     switch (tipo_validacion) {
                         case 'compras':
                             if (objeto.factura) {
-                                if (objeto.total_facturas > objeto.monto) {
+                                if (objeto.total_facturas - objeto.monto >1) {
                                     $(row).addClass('verde');
-                                } else if (objeto.total_facturas === objeto.monto) {
+                                } else if (objeto.total_facturas - objeto.monto >= -1 && objeto.total_facturas - objeto.monto <= -1) {
                                     $(row).addClass('blanco');
-                                } else if (objeto.total_facturas < objeto.monto) {
+                                } else if (objeto.total_facturas - objeto.monto <-1 ) {
                                     $(row).addClass('rojo');
                                 }
                             } else {
@@ -224,11 +224,11 @@ class NewTableServerRender extends Component {
                             break;
                         case 'ventas':
                             if (objeto.factura) {
-                                if (objeto.total_facturas > objeto.monto) {
+                                if (objeto.total_facturas - objeto.monto >1) {
                                     $(row).addClass('rojo');
-                                } else if (objeto.total_facturas === objeto.monto) {
+                                } else if (objeto.total_facturas - objeto.monto >= -1 && objeto.total_facturas - objeto.monto <= -1) {
                                     $(row).addClass('blanco');
-                                } else if (objeto.total_facturas < objeto.monto) {
+                                } else if (objeto.total_facturas - objeto.monto <-1 ) {
                                     $(row).addClass('verde');
                                 }
                             } else {
