@@ -36,10 +36,15 @@ class ActualizarPresupuestoForm extends Component {
     onChangeDesperdicio = e =>{
         const { value, name } = e.target
         const { form, onChange } = this.props
+        console.log(form, 'form')
         if(value)
             form.conceptos.map( (concepto, key) => {
                 if(concepto.active)
-                    onChange(key, e, 'desperdicio')
+                    if(!(concepto.unidad === 'VIAJE' || concepto.unidad === 'SAL' || concepto.unidad === 'PZA' || concepto.unidad === 'LOTE'
+                        || concepto.unidad === 'JGO' || concepto.unidad === 'EQUIPO' || concepto.unidad === 'BULTO')){
+                        console.log(concepto.unidad, 'unidad')
+                        onChange(key, e, 'desperdicio')
+                    }
             })
         this.setState({
             ... this.state,
@@ -265,33 +270,6 @@ class ActualizarPresupuestoForm extends Component {
                                             presupuesto.conceptos.map((concepto, key) => {
                                                 return (
                                                     <>
-                                                        {/* {
-                                                            concepto.mensaje ?
-                                                                <tr>
-                                                                    <td>
-                                                                        <ReactTooltip id={key + '-th'} type='light' className="popover tooltip-inner2"  >
-                                                                            <div>
-                                                                                {
-                                                                                    concepto.user_comentario ?
-                                                                                        <b>
-                                                                                            {
-                                                                                                concepto.user_comentario.name
-                                                                                            }
-                                                                                        </b>
-                                                                                        : ''
-                                                                                }
-                                                                                <br />
-                                                                                {
-                                                                                    concepto.mensaje
-                                                                                }
-                                                                            </div>
-                                                                        </ReactTooltip>
-                                                                    </td>
-                                                                </tr>
-                                                                : ''
-
-                                                                
-                                                        } */}
                                                         {
                                                             this.getPartida(key)?
                                                                 <tr>
