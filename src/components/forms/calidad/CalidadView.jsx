@@ -111,154 +111,84 @@ class CalidadView extends Component {
                                 </div>
                             </div>
                         </div>
-
                         <div className="separator separator-solid my-4"></div>
                         <div className="row row-paddingless">
-                            <div className="col-md-4">
-                                <div className="d-flex justify-content-center" id="partida_calidad">
-                                    <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
-                                        <div className="symbol-label">
-                                            <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                                <SVG src={toAbsoluteUrl('/images/svg/document.svg')} />
-                                            </span>
+                            <div className = { data ? data.fotos ? data.fotos.length === 0 ? 'col-md-12' : 'col-md-5' : 'col-md-12' : 'col-md-12'} >
+                                <div className={ data ? data.fotos ? data.fotos.length ? "d-block" : "row row-paddingless" : "row row-paddingless" : "row row-paddingless" }>
+                                    <div className="col-md-4">
+                                        <div className={ data ? data.fotos ? data.fotos.length ? "d-flex justify-content-start" : "d-flex justify-content-center" : "d-flex justify-content-center" : "d-flex justify-content-center"}>
+                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
+                                                <div className="symbol-label">
+                                                    <span className="svg-icon svg-icon-lg svg-icon-primary">
+                                                        <SVG src={toAbsoluteUrl('/images/svg/document.svg')} />
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div className="font-size-h6 text-dark-75 font-weight-bolder">
+                                                    {
+                                                        data ?
+                                                            data.partida ?
+                                                                data.partida.nombre
+                                                            : ''
+                                                        : ''
+                                                    }
+                                                </div>
+                                                <div className="font-size-sm text-muted font-weight-bold mt-1">PARTIDA</div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div>
-                                        <div className="font-size-h6 text-dark-75 font-weight-bolder">
-                                            {
-                                                data ?
-                                                    data.partida ?
-                                                        data.partida.nombre
-                                                    : ''
-                                                : ''
-                                            }
+                                    <div className="col-md-4">
+                                        <div className={ data ? data.fotos ? data.fotos.length ? "d-flex justify-content-start" : "d-flex justify-content-center" : "d-flex justify-content-center" : "d-flex justify-content-center"}>
+                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
+                                                <div className="symbol-label">
+                                                    <span className="svg-icon svg-icon-lg svg-icon-primary">
+                                                        <SVG src={toAbsoluteUrl('/images/svg/trabajo.svg')} />
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div className="font-size-h6 text-dark-75 font-weight-bolder">
+                                                    {
+                                                        data ?
+                                                            data.tipo_trabajo ?
+                                                                data.tipo_trabajo.tipo
+                                                            : ''
+                                                        : ''
+                                                    }
+                                                </div>
+                                                <div className="font-size-sm text-muted font-weight-bold mt-1">TIPO DE TRABAJO</div>
+                                            </div>
                                         </div>
-                                        <div className="font-size-sm text-muted font-weight-bold mt-1">PARTIDA</div>
+                                    </div>
+                                    <div className="col-md-4">
+                                        <div className={ data ? data.fotos ? data.fotos.length ? "d-flex justify-content-start" : "d-flex justify-content-center" : "d-flex justify-content-center" : "d-flex justify-content-center"}>
+                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
+                                                <div className="symbol-label">
+                                                    <span className="svg-icon svg-icon-lg svg-icon-primary">
+                                                        <SVG src={toAbsoluteUrl('/images/svg/archivero.svg')} />
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div className="font-size-h6 text-dark-75 font-weight-bolder">
+                                                    {
+                                                        data ?
+                                                            data.updated_at ?
+                                                                <Moment format="DD/MM/YYYY">
+                                                                    {data.created_at}
+                                                                </Moment>
+                                                            : ''
+                                                        : ''
+                                                    }
+                                                </div>
+                                                <div className="font-size-sm text-muted font-weight-bold mt-1">FECHA</div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-md-4">
-                                <div className="d-flex justify-content-center" id="tipoT_calidad">
-                                    <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
-                                        <div className="symbol-label">
-                                            <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                                <SVG src={toAbsoluteUrl('/images/svg/trabajo.svg')} />
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div className="font-size-h6 text-dark-75 font-weight-bolder">
-                                            {
-                                                data ?
-                                                    data.tipo_trabajo ?
-                                                        data.tipo_trabajo.tipo
-                                                    : ''
-                                                : ''
-                                            }
-                                        </div>
-                                        <div className="font-size-sm text-muted font-weight-bold mt-1">TIPO DE TRABAJO</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-4">
-                                <div className="d-flex justify-content-center" id="fecha_calidad">
-                                    <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
-                                        <div className="symbol-label">
-                                            <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                                <SVG src={toAbsoluteUrl('/images/svg/archivero.svg')} />
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div className="font-size-h6 text-dark-75 font-weight-bolder">
-                                            {
-                                                data ?
-                                                    data.updated_at ?
-                                                        <Moment format="DD/MM/YYYY">
-                                                            {data.created_at}
-                                                        </Moment>
-                                                    : ''
-                                                : ''
-                                            }
-                                        </div>
-                                        <div className="font-size-sm text-muted font-weight-bold mt-1">FECHA</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="card card-custom">
-                    <div className="card-body row mx-0">
-                        <div className="col-md-5 px-0">
-                            <div className="d-flex align-items-center mb-3">
-                                <div className="symbol symbol-40 symbol-light-primary mr-4">
-                                    <span className="symbol-label">
-                                        <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                            <SVG src={toAbsoluteUrl('/images/svg/document.svg')} />
-                                        </span>
-                                    </span>
-                                </div>
-                                <div className="d-flex flex-column font-weight-bold">
-                                    <div className="font-size-h6 text-dark-75 font-weight-bolder">
-                                        {
-                                            data ?
-                                                data.partida ?
-                                                    data.partida.nombre
-                                                : ''
-                                            : ''
-                                        }
-                                    </div>
-                                    <span className="text-muted">PARTIDA</span>
-                                </div>
-                            </div>
-                            <div className="d-flex align-items-center mb-3">
-                                <div className="symbol symbol-40 symbol-light-primary mr-4">
-                                    <span className="symbol-label">
-                                        <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                            <SVG src={toAbsoluteUrl('/images/svg/trabajo.svg')} />
-                                        </span>
-                                    </span>
-                                </div>
-                                <div className="d-flex flex-column font-weight-bold">
-                                    <div className="font-size-h6 text-dark-75 font-weight-bolder">
-                                        {
-                                            data ?
-                                                data.tipo_trabajo ?
-                                                    data.tipo_trabajo.tipo
-                                                : ''
-                                            : ''
-                                        }
-                                    </div>
-                                    <span className="text-muted">TIPO DE TRABAJO</span>
-                                </div>
-                            </div>
-                            <div className="d-flex align-items-center">
-                                <div className="symbol symbol-40 symbol-light-primary mr-4">
-                                    <span className="symbol-label">
-                                        <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                            <SVG src={toAbsoluteUrl('/images/svg/archivero.svg')} />
-                                        </span>
-                                    </span>
-                                </div>
-                                <div className="d-flex flex-column font-weight-bold">
-                                    <div className="font-size-h6 text-dark-75 font-weight-bolder">
-                                        {
-                                            data ?
-                                                data.updated_at ?
-                                                    <Moment format="DD/MM/YYYY">
-                                                        {data.created_at}
-                                                    </Moment>
-                                                : ''
-                                            : ''
-                                        }
-                                    </div>
-                                    <span className="text-muted">FECHA</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-md-7 d-flex justify-content-center align-items-center pr-0">
-                            <div className="">
+                            <div className = { data ? data.fotos ? data.fotos.length ? 'col-md-7' : 'd-none' : 'd-none' : 'd-none'} >
                                 {
                                     data ?
                                         data.fotos ?
