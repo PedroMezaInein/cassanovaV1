@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import NumberFormat from 'react-number-format'
 import Moment from 'react-moment'
 import Card from 'react-bootstrap/Card'
+import SVG from "react-inlinesvg";
+import { toAbsoluteUrl } from "../../../functions/routers"
 
 export default class SolicitudCompraCard extends Component {
     render() {
@@ -36,13 +38,7 @@ export default class SolicitudCompraCard extends Component {
                                     <div className="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
                                         <div className="symbol-label">
                                             <span className="svg-icon svg-icon-lg svg-icon-info">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                                        <rect x="0" y="0" width="24" height="24" />
-                                                        <path d="M2,6 L21,6 C21.5522847,6 22,6.44771525 22,7 L22,17 C22,17.5522847 21.5522847,18 21,18 L2,18 C1.44771525,18 1,17.5522847 1,17 L1,7 C1,6.44771525 1.44771525,6 2,6 Z M11.5,16 C13.709139,16 15.5,14.209139 15.5,12 C15.5,9.790861 13.709139,8 11.5,8 C9.290861,8 7.5,9.790861 7.5,12 C7.5,14.209139 9.290861,16 11.5,16 Z" fill="#000000" opacity="0.3" transform="translate(11.500000, 12.000000) rotate(-345.000000) translate(-11.500000, -12.000000) " />
-                                                        <path d="M2,6 L21,6 C21.5522847,6 22,6.44771525 22,7 L22,17 C22,17.5522847 21.5522847,18 21,18 L2,18 C1.44771525,18 1,17.5522847 1,17 L1,7 C1,6.44771525 1.44771525,6 2,6 Z M11.5,16 C13.709139,16 15.5,14.209139 15.5,12 C15.5,9.790861 13.709139,8 11.5,8 C9.290861,8 7.5,9.790861 7.5,12 C7.5,14.209139 9.290861,16 11.5,16 Z M11.5,14 C12.6045695,14 13.5,13.1045695 13.5,12 C13.5,10.8954305 12.6045695,10 11.5,10 C10.3954305,10 9.5,10.8954305 9.5,12 C9.5,13.1045695 10.3954305,14 11.5,14 Z" fill="#000000" />
-                                                    </g>
-                                                </svg>
+                                                <SVG src={toAbsoluteUrl('/images/svg/dollar.svg')} />
                                             </span>
                                         </div>
                                     </div>
@@ -68,14 +64,7 @@ export default class SolicitudCompraCard extends Component {
                                     <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
                                         <div className="symbol-label">
                                             <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                                        <polygon points="0 0 24 0 24 24 0 24" />
-                                                        <path d="M5.85714286,2 L13.7364114,2 C14.0910962,2 14.4343066,2.12568431 14.7051108,2.35473959 L19.4686994,6.3839416 C19.8056532,6.66894833 20,7.08787823 20,7.52920201 L20,20.0833333 C20,21.8738751 19.9795521,22 18.1428571,22 L5.85714286,22 C4.02044787,22 4,21.8738751 4,20.0833333 L4,3.91666667 C4,2.12612489 4.02044787,2 5.85714286,2 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
-                                                        <rect fill="#000000" x="6" y="11" width="9" height="2" rx="1" />
-                                                        <rect fill="#000000" x="6" y="15" width="5" height="2" rx="1" />
-                                                    </g>
-                                                </svg>
+                                                <SVG src={toAbsoluteUrl('/images/svg/document.svg')} />
                                             </span>
                                         </div>
                                     </div>
