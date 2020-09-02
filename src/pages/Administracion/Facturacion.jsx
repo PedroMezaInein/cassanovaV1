@@ -53,7 +53,8 @@ class Facturacion extends Component {
                     descripcion: renderToString(setTextTable(factura.descripcion)),
                     noCertificado: renderToString(setTextTable(factura.numero_certificado)),
                     usoCFDI: renderToString(setTextTable(factura.uso_cfdi)),
-                    id: factura.id
+                    id: factura.id,
+                    objeto: factura
                 }
             )
         })
@@ -186,7 +187,7 @@ class Facturacion extends Component {
                     abrir_modal={false}
                     mostrar_acciones={false}
                     elements={data.facturas}
-                    elementClass = 'restante'
+                    tipo_validacion = 'facturas'
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'
                     cardBody='cardBody'
