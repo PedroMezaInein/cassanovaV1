@@ -4,6 +4,7 @@ import Tooltip from 'react-bootstrap/Tooltip'
 import Moment from 'react-moment'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
+import ItemSlider from '../../singles/ItemSlider';
 class CalidadView extends Component {
 
     getIniciales = nombre => {
@@ -257,8 +258,14 @@ class CalidadView extends Component {
                             </div>
                         </div>
                         <div className="col-md-7 d-flex justify-content-center align-items-center pr-0">
-                            <div className="d-flex justify-content-center">
-                                <img className="rounded img-calidad" src="https://www.arquima.net/wp-content/uploads/2018/03/madera-3.jpg" />
+                            <div className="">
+                                {
+                                    data ?
+                                        data.fotos ?
+                                            <ItemSlider items={data.fotos} item={'fotos'} /> 
+                                        : ''
+                                    : ''
+                                }
                             </div>
                         </div>
                     </div>
