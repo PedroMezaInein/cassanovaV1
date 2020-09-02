@@ -80,11 +80,11 @@ class MiProyecto extends Component {
             descripcion: '',
             nombre: '',
             adjuntos: {
-                adjunto: {
-                    value: '',
-                    placeholder: 'Ingresa los adjuntos',
-                    files: []
-                },
+                // adjunto: {
+                //     value: '',
+                //     placeholder: 'Ingresa los adjuntos',
+                //     files: []
+                // },
                 fotos: {
                     value: '',
                     placeholder: 'Fotos del incidente',

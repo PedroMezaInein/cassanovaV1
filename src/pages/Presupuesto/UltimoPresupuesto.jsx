@@ -386,19 +386,19 @@ class UltimoPresupuesto extends Component {
 
                 const { presupuesto } = response.data
 
-                if(presupuesto.pdfs){
-                    var win = window.open( presupuesto.pdfs[0].url, '_blank');
-                    win.focus();    
-                }
+                // if(presupuesto.pdfs){
+                //     var win = window.open( presupuesto.pdfs[0].url, '_blank');
+                //     win.focus();    
+                // }
 
                 const { history } = this.props
                 history.push({
                     pathname: '/presupuesto/presupuesto'
                 });
                 
-                this.getOnePresupuestoAxios(presupuesto.id)
+                // this.getOnePresupuestoAxios(presupuesto.id)
 
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+                // doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
 
             },
             (error) => {

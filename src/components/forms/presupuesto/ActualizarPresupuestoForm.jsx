@@ -101,7 +101,7 @@ class ActualizarPresupuestoForm extends Component {
                                             <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
                                                 <div className="symbol-label">
                                                     <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/foco.svg')} />
+                                                        <SVG src={toAbsoluteUrl('/images/svg/Bulb1.svg')} />
                                                     </span>
                                                 </div>
                                             </div>
@@ -114,7 +114,7 @@ class ActualizarPresupuestoForm extends Component {
                                             <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
                                                 <div className="symbol-label">
                                                     <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/card.svg')} />
+                                                        <SVG src={toAbsoluteUrl('/images/svg/Layout-top-panel-6.svg')} />
                                                     </span>
                                                 </div>
                                             </div>
@@ -127,7 +127,7 @@ class ActualizarPresupuestoForm extends Component {
                                             <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
                                                 <div className="symbol-label">
                                                     <span className="svg-icon svg-icon-primary svg-icon-lg">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/build.svg')} />
+                                                        <SVG src={toAbsoluteUrl('/images/svg/Building.svg')} />
                                                     </span>
                                                 </div>
                                             </div>
@@ -140,7 +140,7 @@ class ActualizarPresupuestoForm extends Component {
                                             <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
                                                 <div className="symbol-label">
                                                     <span className="svg-icon svg-icon-primary svg-icon-lg">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/clock.svg')} />
+                                                        <SVG src={toAbsoluteUrl('/images/svg/Clock.svg')} />
                                                     </span>
                                                 </div>
                                             </div>
@@ -153,7 +153,7 @@ class ActualizarPresupuestoForm extends Component {
                                             <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
                                                 <div className="symbol-label">
                                                     <span className="svg-icon svg-icon-primary svg-icon-lg">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/overlay.svg')} />
+                                                        <SVG src={toAbsoluteUrl('/images/svg/Menu.svg')} />
                                                     </span>
                                                 </div>
                                             </div>
@@ -170,7 +170,7 @@ class ActualizarPresupuestoForm extends Component {
                                             <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
                                                 <div className="symbol-label">
                                                     <span className="svg-icon svg-icon-primary svg-icon-lg">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/document.svg')} />
+                                                        <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
                                                     </span>
                                                 </div>
                                             </div>
