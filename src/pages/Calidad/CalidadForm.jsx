@@ -4,7 +4,7 @@ import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV} from '../../constants'
 import { setOptions} from '../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert, createAlert } from '../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert, createAlert,questionAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { CalidadView} from '../../components/forms'
 import { Card } from 'react-bootstrap'
@@ -160,7 +160,8 @@ class CalidadForm extends Component{
 
     changeEstatus = estatus =>  {
         const { ticket } = this.state
-        this.changeEstatusAxios({id: ticket.id, estatus: estatus})
+        // this.changeEstatusAxios({id: ticket.id, estatus: estatus})
+        questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({id: ticket.id, estatus: estatus}))
     }
 
     onSubmit = e => {

@@ -116,24 +116,8 @@ export function questionAlert(title, text, action) {
         confirmButtonText: "Enviar",
         cancelButtonText: "CANCELAR",
         reverseButtons: true,
-        // buttons: {
-        //     cancel: {
-        //         text: "Cancelar",
-        //         value: null,
-        //         visible: true,
-        //         className: "btn btn-light-danger font-weight-bold btn-square",
-        //         closeModal: true,
-        //     },
-        //     confirm: {
-        //         text: "Aceptar",
-        //         value: true,
-        //         visible: true,
-        //         className: "btn btn-light-primary font-weight-bold btn-square",
-        //         closeModal: true
-        //     }
-        // }
     }).then((result) => {
-        if (result) {
+        if (result.value) {
             action()
         }
     })
