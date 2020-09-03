@@ -1732,6 +1732,10 @@ export const PRESUPUESTO_DISEÑO_COLUMNS = [
 
 export const TICKETS_ESTATUS = [
     {
+        Header: 'Opciones',
+        accessor: 'actions',
+    },
+    {
         Header: 'Fecha',
         accessor: 'fecha',
     },

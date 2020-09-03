@@ -7,10 +7,9 @@ import swal from 'sweetalert'
 import { URL_DEV, URL_ASSETS, TICKETS_ESTATUS } from '../constants'
 import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert } from '../functions/alert'
 import { SelectSearch, SelectSearchSinText, Input } from '../components/form-components'
-import { setOptions} from '../functions/setters'
-import { Card, Nav, Tab, Col, Row, NavDropdown } from 'react-bootstrap'
+import { setOptions } from '../functions/setters'
+import { Card, Nav, Tab, Col, Row } from 'react-bootstrap'
 import { Button } from '../components/form-components'
-import ItemSlider from '../components/singles/ItemSlider'
 import Moment from 'react-moment'
 import { Small } from '../components/texts'
 import { Form } from 'react-bootstrap'
@@ -18,6 +17,10 @@ import { validateAlert } from '../functions/alert'
 import TableForModals from '../components/tables/TableForModals'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../functions/routers"
+import { Modal, ItemSlider } from '../components/singles'
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Tooltip from 'react-bootstrap/Tooltip'
+
 class MiProyecto extends Component {
 
     state = {
@@ -26,6 +29,7 @@ class MiProyecto extends Component {
         formeditado: 0,
         primeravista: true,
         defaultactivekey: "",
+        modal: false,
         showadjuntos: [
             {
                 name: 'Fotografías levantamiento',
@@ -73,7 +77,8 @@ class MiProyecto extends Component {
             }
         ],
         data: {
-            proyectos: []
+            proyectos: [],
+            tickets: [],
         },
         form: {
             proyecto: '',
@@ -305,7 +310,7 @@ class MiProyecto extends Component {
         const { form } = this.state
         let aux = Object.keys(form)
         aux.map((element) => {
-            if(element !== 'adjuntos')
+            if (element !== 'adjuntos')
                 form[element] = ''
             else
                 form[element] = {
@@ -350,12 +355,14 @@ class MiProyecto extends Component {
                         break;
                     }
                 }
+                data.tickets = proyecto.tickets
                 this.setState({
                     ... this.state,
                     defaultactivekey: newdefaultactivekey,
                     proyecto: proyecto,
                     tickets: this.setMiProyecto(proyecto.tickets),
-                    form: this.clearForm()
+                    form: this.clearForm(),
+                    data
                 })
             }
         })
@@ -454,10 +461,10 @@ class MiProyecto extends Component {
         const { form, proyecto } = this.state
 
         const data = new FormData();
-        
+
         let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'adjuntos':
                     break;
                 default:
@@ -466,8 +473,8 @@ class MiProyecto extends Component {
             }
         })
         aux = Object.keys(form.adjuntos)
-        aux.map( (element) => {
-            if(form.adjuntos[element].value !== ''){
+        aux.map((element) => {
+            if (form.adjuntos[element].value !== '') {
                 for (var i = 0; i < form.adjuntos[element].files.length; i++) {
                     data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
                     data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
@@ -478,7 +485,7 @@ class MiProyecto extends Component {
 
         data.append('proyecto', proyecto.id)
 
-        await axios.post(URL_DEV + 'proyectos/mi-proyecto/tickets', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'proyectos/mi-proyecto/tickets', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ticket fue solicitado con éxito.')
@@ -507,15 +514,17 @@ class MiProyecto extends Component {
 
     setMiProyecto = (tickets) => {
         let aux = []
-        tickets.map((ticket) => { 
+        tickets.map((ticket) => {
             aux.push(
                 {
+                    actions: this.setActions(ticket),
                     fecha: renderToString(this.setDate(ticket.created_at)),
                     partida: renderToString(this.setText(ticket.partida.nombre)),
                     estatus: renderToString(this.setEstatus(ticket.estatus_ticket)),
                     descripcion: renderToString(this.setText(ticket.descripcion)),
                     descripcion: renderToString(this.setText(ticket.descripcion)),
                     tipo_trabajo: renderToString(this.setText(ticket.tipo_trabajo.tipo)),
+                    id: ticket.id
                 }
             )
         })
@@ -527,18 +536,18 @@ class MiProyecto extends Component {
         seconds = seconds.getTime() / 1000;
         return (
             <>
-                <span className="d-none" style={{fontSize:"11.7px"}}>
+                <span className="d-none" style={{ fontSize: "11.7px" }}>
                     {
                         seconds
                     }
                 </span>
-                <span className="d-none" style={{fontSize:"11.7px"}}>
+                <span className="d-none" style={{ fontSize: "11.7px" }}>
                     <Moment format="YYYY/MM/DD">
                         {date}
                     </Moment>
                 </span>
 
-                <Moment format="DD/MM/YYYY" style={{fontSize:"11.7px"}}>
+                <Moment format="DD/MM/YYYY" style={{ fontSize: "11.7px" }}>
                     {date}
                 </Moment>
             </>
@@ -551,7 +560,7 @@ class MiProyecto extends Component {
                 <span className="label label-lg bg- label-inline font-weight-bold py-2" style={{
                     color: `${text.letra}`,
                     backgroundColor: `${text.fondo}`,
-                    fontSize:"11.7px"
+                    fontSize: "11.7px"
                 }} >{text.estatus}</span>
             </>
         )
@@ -559,7 +568,7 @@ class MiProyecto extends Component {
 
     setText(text) {
         return (
-            <span style={{fontSize:"11.7px"}}>
+            <span style={{ fontSize: "11.7px" }}>
                 {text}
             </span>
         )
@@ -590,9 +599,65 @@ class MiProyecto extends Component {
         this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
     }
 
+    openModalSee = (proyecto) => {
+        this.setState({
+            ... this.state,
+            modal: true,
+            formeditado: 0,
+            proyecto: ''
+
+        })
+    }
+
+    handleClose = () => {
+        const { modal } = this.state
+        this.setState({
+            ... this.state,
+            modal: !modal,
+            form: this.cleanForm()
+
+        })
+    }
+
+    cleanForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                default:
+                    form[element] = ''
+                    break;
+            }
+        })
+        return form
+    }
+    onchange = e => {
+        const { form } = this.state
+        const { name, value } = e.target
+        form[name] = value
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
+    setActions = () => {
+        let aux = []
+        aux.push(
+            {
+                text: 'Ver&nbsp;Presupuesto',
+                btnclass: 'primary',
+                iconclass: 'flaticon2-file-1',
+                action: 'see',
+                tooltip: { id: 'see', text: 'Ver presupuesto' }
+            }
+        )
+        return aux
+    }
+
 
     render() {
-        const { options, proyecto, form, adjuntos, showadjuntos, primeravista, defaultactivekey, subActiveKey, formeditado, tickets, data } = this.state
+        const { options, proyecto, form, adjuntos, showadjuntos, primeravista, defaultactivekey, subActiveKey, formeditado, tickets, data, modal } = this.state
 
         return (
             <Layout {...this.props}>
@@ -674,7 +739,7 @@ class MiProyecto extends Component {
                                                                     {proyecto.cp}
                                                                 </Small> */}
                                                             </div>
-                                                        : ""
+                                                            : ""
                                                     }
                                                 </div>
                                             </div>
@@ -749,18 +814,26 @@ class MiProyecto extends Component {
                                             </Nav.Item>
                                             : '' : ''
                                     }
-                                    <NavDropdown title={
-                                        <>
+                                    <Nav.Item className="nav-item">
+                                        <Nav.Link eventKey="third">
                                             <span className="nav-icon">
                                                 <span className="svg-icon mr-3">
                                                     <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
                                                 </span>
                                             </span>
-                                            <span className="nav-text font-weight-bold">TICKETS</span>
-                                        </>}>
-                                        <NavDropdown.Item eventKey="third">LEVANTAMIENTO DE TICKETS</NavDropdown.Item>
-                                        <NavDropdown.Item eventKey="fourth">ESTATUS DE TICKETS</NavDropdown.Item>
-                                    </NavDropdown>
+                                            <span className="nav-text font-weight-bold">LEVANTAMIENTO DE TICKETS</span>
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                    <Nav.Item className="nav-item">
+                                        <Nav.Link eventKey="fourth">
+                                            <span className="nav-icon">
+                                                <span className="svg-icon mr-3">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/Question-circle.svg')} />
+                                                </span>
+                                            </span>
+                                            <span className="nav-text font-weight-bold">ESTATUS DE TICKETS</span>
+                                        </Nav.Link>
+                                    </Nav.Item>
                                 </Nav>
                             </Card.Header>
                             <Card.Body>
@@ -930,11 +1003,11 @@ class MiProyecto extends Component {
                                                         </div>
                                                         <div className="form-group row form-group-marginless">
                                                             <div className="col-md-12">
-                                                                <ItemSlider 
-                                                                    items = { form.adjuntos.fotos.files }
-                                                                    handleChange = { this.handleChange }
-                                                                    item = "fotos"
-                                                                    /* deleteFile = { this.deleteFile } */
+                                                                <ItemSlider
+                                                                    items={form.adjuntos.fotos.files}
+                                                                    handleChange={this.handleChange}
+                                                                    item="fotos"
+                                                                /* deleteFile = { this.deleteFile } */
                                                                 />
                                                                 {/* <label className="col-form-label d-flex justify-content-center align-items-center"><b>Nota:</b> Para un mejor levantamiento del problema, puede adjuntar fotografías.</label> */}
                                                             </div>
@@ -955,12 +1028,17 @@ class MiProyecto extends Component {
                                         {
                                             proyecto ?
                                                 <TableForModals
-                                                    mostrar_boton={false}
-                                                    abrir_modal={false}
-                                                    mostrar_acciones={false}
+                                                    // mostrar_boton={false}
+                                                    // abrir_modal={false}
+                                                    // hideSelector={true}
+                                                    mostrar_acciones={true}
+                                                    actions={{
+                                                        'see': { function: this.openModalSee },
+                                                    }}
                                                     columns={TICKETS_ESTATUS}
                                                     data={tickets}
                                                     elements={data.tickets}
+                                                    idTable='kt_datatable_presupuesto'
                                                 />
                                                 : ''
                                         }
@@ -971,6 +1049,29 @@ class MiProyecto extends Component {
                     </Tab.Container>
                     : ''
                 }
+                <Modal title="Presupuesto" show={modal} handleClose={this.handleClose} >
+                    <div className="mt-4">
+                        <ItemSlider 
+                            multiple = { false } 
+                            // items = { form.adjuntos.presupuesto.files }
+                            items = { "" } 
+                            item = 'presupuesto' 
+                            handleChange = { this.handleChange }
+                        /> 
+                    </div>
+                    <div className="d-flex justify-content-center mt-5">
+                        <OverlayTrigger overlay={<Tooltip>Aceptar</Tooltip>}>
+                            <a 
+                            // onClick={() => { changeEstatus('Aceptado') }} 
+                            className="btn btn-icon btn-light-success success2 btn-sm mr-2"><i className="flaticon2-check-mark icon-sm"></i></a>
+                        </OverlayTrigger>
+                        <OverlayTrigger overlay={<Tooltip>Rechazar</Tooltip>}>
+                            <a 
+                            // onClick={() => { changeEstatus('Rechazado') }} 
+                            className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger"><i className="flaticon2-cross icon-sm"></i></a>
+                        </OverlayTrigger>
+                    </div>
+                </Modal>
             </Layout>
         )
     }
