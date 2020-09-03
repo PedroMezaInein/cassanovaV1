@@ -5,6 +5,7 @@ import Moment from 'react-moment'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import ItemSlider from '../../singles/ItemSlider';
+import {ProcesoTicketForm} from '../../forms';
 class CalidadView extends Component {
 
     getIniciales = nombre => {
@@ -19,7 +20,7 @@ class CalidadView extends Component {
 
     render() {
 
-        const { data, changeEstatus, handleChange, form } = this.props
+        const { data, changeEstatus, handleChange, form, options, onChange, onSubmit, generateEmail } = this.props
         return (
             <>
                 <div className="card card-custom gutter-b">
@@ -217,6 +218,19 @@ class CalidadView extends Component {
                                     : ''
                                 : ''
                             : ''
+                        }
+                        {
+                            data ?
+                                data.estatus_ticket ?
+                                    (data.estatus_ticket.estatus === 'En proceso' || data.estatus_ticket.estatus === 'Terminado') ?
+                                        <>
+                                            <div className="separator separator-solid my-4"></div>
+                                            <ProcesoTicketForm form = { form } options = { options } onChange = { onChange } formEditado = { 1 } 
+                                                handleChange = { handleChange } onSubmit = { onSubmit } generateEmail = { generateEmail } estatus = { data.estatus_ticket.estatus } />
+                                        </>
+                                    : ''
+                                : ''
+                            :''
                         }
                     </div>
                 </div>

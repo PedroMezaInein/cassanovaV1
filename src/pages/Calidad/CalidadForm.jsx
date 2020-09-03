@@ -20,8 +20,24 @@ class CalidadForm extends Component{
                     value: '',
                     placeholder: 'Presupuesto',
                     files: []
+                },
+                reporte_problema_reportado:{
+                    value: '',
+                    placeholder: 'Reporte fotográfico del problema reportado',
+                    files: []
+                },
+                reporte_problema_solucionado:{
+                    value: '',
+                    placeholder: 'Reporte fotográfico del problema solucionado',
+                    files: []
                 }
-            }
+            },
+            fechaProgramada: new Date(),
+            empleado: '',
+            recibe: ''
+        },
+        options:{
+            empleados: []
         }
     }
 
@@ -34,6 +50,7 @@ class CalidadForm extends Component{
             const { modulo: { url: url } } = element
             return pathname === url + '/' + action
         });
+        this.getTicketsOptions()
         switch(action){
             
             case 'see':
@@ -49,7 +66,8 @@ class CalidadForm extends Component{
                                 ticket: calidad,
                                 form: this.setForm(calidad)
                             })
-                        } 
+                        }
+                        window.history.replaceState(null, '')
                     }
                     else
                         history.push('/calidad/calidad')
@@ -74,8 +92,30 @@ class CalidadForm extends Component{
                 file: ''
             })
         })
-        console.log(ticket, 'ticket')
         form.adjuntos.presupuesto.files = aux
+        aux = []
+        ticket.reporte_problema_reportado.map( (element) => {
+            aux.push({
+                name: element.name,
+                url: element.url,
+                file: ''
+            })
+        })
+        form.adjuntos.reporte_problema_reportado.files = aux
+        aux = []
+        ticket.reporte_problema_solucionado.map( (element) => {
+            aux.push({
+                name: element.name,
+                url: element.url,
+                file: ''
+            })
+        })
+        form.adjuntos.reporte_problema_solucionado.files = aux
+        form.fechaProgramada = new Date(ticket.fecha_programada)
+        if(ticket.tecnico)
+            form.empleado = ticket.tecnico.id.toString()
+        form.descripcion = ticket.descripcion_solucion
+        form.recibe = ticket.recibe
         return form
     }
 
@@ -101,13 +141,96 @@ class CalidadForm extends Component{
         })
     }
 
+    onChange = e => {
+        const { name, value } = e.target
+        const { form } = this.state
+        form[name] = value
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
     handleChange = (files, item) => {
-        createAlert('¿Deseas enviar el presupuesto?', '', () => this.sendPresupuestoTicketAxios( files, item ))
+        if(item === 'presupuesto')
+            createAlert('¿Deseas enviar el presupuesto?', '', () => this.sendPresupuestoTicketAxios( files, item ))
+        else
+            this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
     }
 
     changeEstatus = estatus =>  {
         const { ticket } = this.state
         this.changeEstatusAxios({id: ticket.id, estatus: estatus})
+    }
+
+    onSubmit = e => {
+        e.preventDefault();
+        this.saveProcesoTicketAxios('')
+    }
+
+    generateEmail = value => {
+        this.saveProcesoTicketAxios(value)
+    }
+
+    async saveProcesoTicketAxios( email ){
+
+        waitAlert()
+
+        const { access_token } = this.props.authUser
+        const { ticket, form } = this.state
+        const data = new FormData();
+
+        let aux = Object.keys(form)
+        aux.map( (element) => {
+            switch(element){
+                case 'fechaProgramada':
+                    data.append(element, (new Date(form[element])).toDateString())
+                    break
+                case 'adjuntos':
+                    break;
+                default:
+                    data.append(element, form[element]);
+                    break
+            }
+        })
+        aux = Object.keys(form.adjuntos)
+        aux.map((element) => {
+            if (form.adjuntos[element].value !== '' && element !== 'presupuesto') {
+                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                }
+                data.append('adjuntos[]', element)
+            }
+        })
+        if(email !== '')
+            data.append('email', email)
+
+        await axios.post(URL_DEV + 'calidad/proceso/' + ticket.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { ticket } = response.data
+                
+                window.history.replaceState(ticket, 'calidad')
+
+                this.setState({
+                    ... this.state,
+                    ticket: ticket,
+                    form: this.setForm(ticket)
+                })
+                doneAlert('Presupuesto adjuntado con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     async sendPresupuestoTicketAxios( files, item ){
@@ -188,17 +311,47 @@ class CalidadForm extends Component{
         })
     }
 
+    async getTicketsOptions(){
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'calidad/options', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { empleados } = response.data
+                const { options } = this.state
+                options['empleados'] = setOptions(empleados, 'nombre', 'id')
+                this.setState({
+                    ... this.state,
+                    options
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render(){
 
-        const { ticket, form } = this.state
+        const { ticket, form, options } = this.state
 
         return(
             <Layout active={'proyectos'}  {...this.props}>
                 <CalidadView
                     data = { ticket } 
                     form = { form }
+                    options = { options }
                     handleChange = { this.handleChange }
-                    changeEstatus = { this.changeEstatus } />
+                    changeEstatus = { this.changeEstatus }
+                    onChange = { this.onChange } 
+                    onSubmit = { this.onSubmit }
+                    generateEmail = { this.generateEmail } />
             </Layout>
         )
     }
