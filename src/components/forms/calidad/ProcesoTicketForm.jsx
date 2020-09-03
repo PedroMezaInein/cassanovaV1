@@ -18,7 +18,7 @@ class ProcesoTicketForm extends Component {
     }
 
     render() {
-        const { form, onSubmit, formeditado, onChange, options, handleChange, generateEmail, estatus, ...props } = this.props
+        const { form, onSubmit, formeditado, onChange, options, handleChange, deleteFile, generateEmail, estatus, ...props } = this.props
         return (
             <Form 
                 id = "form-proceso"
@@ -93,7 +93,7 @@ class ProcesoTicketForm extends Component {
                                 item = 'reporte_problema_reportado' /> 
                             :
                                 <ItemSlider items = { form.adjuntos.reporte_problema_reportado.files } 
-                                item = 'reporte_problema_reportado' handleChange = { handleChange } /> 
+                                item = 'reporte_problema_reportado' handleChange = { handleChange } deleteFile = { deleteFile } /> 
                         }
                     </div>
                     <div className="col-md-6">
@@ -106,7 +106,7 @@ class ProcesoTicketForm extends Component {
                                     item = 'reporte_problema_solucionado' /> 
                             :
                                 <ItemSlider items = { form.adjuntos.reporte_problema_solucionado.files } 
-                                    item = 'reporte_problema_solucionado' handleChange = { handleChange } /> 
+                                    item = 'reporte_problema_solucionado' handleChange = { handleChange } deleteFile = { deleteFile } /> 
                         }
                     </div>
                 </div>
