@@ -128,7 +128,7 @@ class ItemSlider extends Component {
                                     <>
                                         <div>
                                             {
-                                                items[active].name.substring(items[active].name.length - 3) === 'pdf' ?
+                                                (items[active].name.substring(items[active].name.length - 3)).toUpperCase() === 'PDF' ?
                                                     <div className="w-100 pb-2">
                                                         <iframe src={items[active].url} className="pdfview" />
                                                     </div>

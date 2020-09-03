@@ -19,7 +19,7 @@ class CalidadView extends Component {
 
     render() {
 
-        const { data, changeEstatus } = this.props
+        const { data, changeEstatus, handleChange, form } = this.props
         return (
             <>
                 <div className="card card-custom gutter-b">
@@ -113,91 +113,111 @@ class CalidadView extends Component {
                         </div>
                         <div className="separator separator-solid my-4"></div>
                         <div className="row row-paddingless">
-                            <div className = { data ? data.fotos ? data.fotos.length === 0 ? 'col-md-12' : 'col-md-5' : 'col-md-12' : 'col-md-12'} >
-                                <div className={ data ? data.fotos ? data.fotos.length ? "d-block" : "row row-paddingless" : "row row-paddingless" : "row row-paddingless" }>
-                                    <div className="col-md-4">
-                                        <div className={ data ? data.fotos ? data.fotos.length ? "d-flex justify-content-start" : "d-flex justify-content-center" : "d-flex justify-content-center" : "d-flex justify-content-center"}>
-                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
-                                                <div className="symbol-label">
-                                                    <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <div className="font-size-h6 text-dark-75 font-weight-bolder">
-                                                    {
-                                                        data ?
-                                                            data.partida ?
-                                                                data.partida.nombre
-                                                            : ''
-                                                        : ''
-                                                    }
-                                                </div>
-                                                <div className="font-size-sm text-muted font-weight-bold mt-1">PARTIDA</div>
-                                            </div>
+                            <div className="col-md-4">
+                                <div className = "d-flex justify-content-center" >
+                                    <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
+                                        <div className="symbol-label">
+                                            <span className="svg-icon svg-icon-lg svg-icon-primary">
+                                                <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
+                                            </span>
                                         </div>
                                     </div>
-                                    <div className="col-md-4">
-                                        <div className={ data ? data.fotos ? data.fotos.length ? "d-flex justify-content-start" : "d-flex justify-content-center" : "d-flex justify-content-center" : "d-flex justify-content-center"}>
-                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
-                                                <div className="symbol-label">
-                                                    <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/Tools.svg')} />
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <div className="font-size-h6 text-dark-75 font-weight-bolder">
-                                                    {
-                                                        data ?
-                                                            data.tipo_trabajo ?
-                                                                data.tipo_trabajo.tipo
-                                                            : ''
-                                                        : ''
-                                                    }
-                                                </div>
-                                                <div className="font-size-sm text-muted font-weight-bold mt-1">TIPO DE TRABAJO</div>
-                                            </div>
+                                    <div>
+                                        <div className="font-size-h6 text-dark-75 font-weight-bolder">
+                                            {
+                                                data ?
+                                                    data.partida ?
+                                                        data.partida.nombre
+                                                    : ''
+                                                : ''
+                                            }
                                         </div>
-                                    </div>
-                                    <div className="col-md-4">
-                                        <div className={ data ? data.fotos ? data.fotos.length ? "d-flex justify-content-start" : "d-flex justify-content-center" : "d-flex justify-content-center" : "d-flex justify-content-center"}>
-                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
-                                                <div className="symbol-label">
-                                                    <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/Box1.svg')} />
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <div className="font-size-h6 text-dark-75 font-weight-bolder">
-                                                    {
-                                                        data ?
-                                                            data.updated_at ?
-                                                                <Moment format="DD/MM/YYYY">
-                                                                    {data.created_at}
-                                                                </Moment>
-                                                            : ''
-                                                        : ''
-                                                    }
-                                                </div>
-                                                <div className="font-size-sm text-muted font-weight-bold mt-1">FECHA</div>
-                                            </div>
-                                        </div>
+                                        <div className="font-size-sm text-muted font-weight-bold mt-1">PARTIDA</div>
                                     </div>
                                 </div>
                             </div>
-                            <div className = { data ? data.fotos ? data.fotos.length ? 'col-md-7' : 'd-none' : 'd-none' : 'd-none'} >
-                                {
-                                    data ?
-                                        data.fotos ?
-                                            <ItemSlider items={data.fotos} item={'fotos'} /> 
-                                        : ''
-                                    : ''
-                                }
+                            <div className="col-md-4">
+                                <div className = "d-flex justify-content-center" >
+                                    <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
+                                        <div className="symbol-label">
+                                            <span className="svg-icon svg-icon-lg svg-icon-primary">
+                                                <SVG src={toAbsoluteUrl('/images/svg/Tools.svg')} />
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div className="font-size-h6 text-dark-75 font-weight-bolder">
+                                            {
+                                                data ?
+                                                    data.tipo_trabajo ?
+                                                        data.tipo_trabajo.tipo
+                                                    : ''
+                                                : ''
+                                            }
+                                        </div>
+                                        <div className="font-size-sm text-muted font-weight-bold mt-1">TIPO DE TRABAJO</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-md-4">
+                                <div className = "d-flex justify-content-center" >
+                                    <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
+                                        <div className="symbol-label">
+                                            <span className="svg-icon svg-icon-lg svg-icon-primary">
+                                                <SVG src={toAbsoluteUrl('/images/svg/Box1.svg')} />
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div className="font-size-h6 text-dark-75 font-weight-bolder">
+                                            {
+                                                data ?
+                                                    data.created_at ?
+                                                        <Moment format="DD/MM/YYYY">
+                                                            {data.created_at}
+                                                        </Moment>
+                                                    : ''
+                                                : ''
+                                            }
+                                        </div>
+                                        <div className="font-size-sm text-muted font-weight-bold mt-1">FECHA</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        {
+                            data ?
+                                data.estatus_ticket ?
+                                    (data.estatus_ticket.estatus !== 'En revisión' && data.estatus_ticket.estatus !== 'Rechazado') || (data.fotos.length) ?
+                                        <>
+                                            <div className="separator separator-solid my-4"></div>
+                                            
+                                            <div className="row row-paddingless">
+                                                {
+                                                    data.fotos.length ?
+                                                        <div className={data.estatus_ticket.estatus !== 'En revisión' && data.estatus_ticket.estatus !== 'Rechazado' 
+                                                            ? 'col-md-6' : 'col-md-12'}>
+                                                            <div className="text-center text-dark font-size-h5 font-weight-bold">
+                                                                Fotos
+                                                            </div>
+                                                            <ItemSlider items={data.fotos} item={'fotos'} />
+                                                        </div>
+                                                    : ''
+
+                                                }
+                                                <div className = { data.fotos.length ? 'col-md-6' : 'col-md-12'}>
+                                                    <div className="text-center text-dark font-size-h5 font-weight-bold">
+                                                        Presupuesto
+                                                    </div>
+                                                    <ItemSlider multiple = { false } items = { form.adjuntos.presupuesto.files } 
+                                                        item = 'presupuesto' handleChange = { handleChange } /> 
+                                                </div>
+                                            </div>
+                                        </>
+                                    : ''
+                                : ''
+                            : ''
+                        }
                     </div>
                 </div>
             </>
