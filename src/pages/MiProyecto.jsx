@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV, URL_ASSETS, TICKETS_ESTATUS } from '../constants'
-import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert } from '../functions/alert'
+import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert, createAlert, questionAlert } from '../functions/alert'
 import { SelectSearch, SelectSearchSinText, Input } from '../components/form-components'
 import { setOptions } from '../functions/setters'
 import { Card, Nav, Tab, Col, Row } from 'react-bootstrap'
@@ -596,7 +596,7 @@ class MiProyecto extends Component {
     }
 
     handleChange = (files, item) => {
-        this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
+        questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => this.onChangeAdjunto({ target: { name: item, value: files, files: files } }))
     }
 
     openModalSee = (proyecto) => {
@@ -1052,12 +1052,9 @@ class MiProyecto extends Component {
                 <Modal title="Presupuesto" show={modal} handleClose={this.handleClose} >
                     <div className="mt-4">
                         <ItemSlider 
-                            multiple = { false } 
-                            // items = { form.adjuntos.presupuesto.files }
-                            items = { "" } 
-                            item = 'presupuesto' 
-                            handleChange = { this.handleChange }
-                        /> 
+                            items={"data.fotos"} 
+                            item={'fotos'} 
+                        />
                     </div>
                     <div className="d-flex justify-content-center mt-5">
                         <OverlayTrigger overlay={<Tooltip>Aceptar</Tooltip>}>

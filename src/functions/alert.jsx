@@ -5,6 +5,10 @@ import { Done } from '../components/Lottie/'
 import ReactDOM from 'react-dom';
 import React, { Component } from 'react'
 
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+const MySwal = withReactContent(Swal)
+
 let wrapperSending = document.createElement('div');
 ReactDOM.render(<Sending />, wrapperSending);
 let sending = wrapperSending.firstChild;
@@ -103,6 +107,38 @@ export function createAlert(title, text, action) {
     })
 }
 
+export function questionAlert(title, text, action) {
+    MySwal.fire({
+        title: title,
+        text: text,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Enviar",
+        cancelButtonText: "CANCELAR",
+        reverseButtons: true,
+        // buttons: {
+        //     cancel: {
+        //         text: "Cancelar",
+        //         value: null,
+        //         visible: true,
+        //         className: "btn btn-light-danger font-weight-bold btn-square",
+        //         closeModal: true,
+        //     },
+        //     confirm: {
+        //         text: "Aceptar",
+        //         value: true,
+        //         visible: true,
+        //         className: "btn btn-light-primary font-weight-bold btn-square",
+        //         closeModal: true
+        //     }
+        // }
+    }).then((result) => {
+        if (result) {
+            action()
+        }
+    })
+}
+
 export function forbiddenAccessAlert() {
     swal({
         title: '¡Ups 😕!',
@@ -120,3 +156,4 @@ export function validateAlert(success, e, name) {
         alert("Rellena todos los campos")
     }
 }
+
