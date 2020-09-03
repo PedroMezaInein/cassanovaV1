@@ -6,7 +6,7 @@ export default function UserNotifications() {
         <>   
 			<div>
 				<h5 className="mb-4">Notificaciones recientes</h5>
-				    <div className="d-flex align-items-center bg-light-warning rounded p-3 gutter-b">
+					<div className="d-flex align-items-center bg-light-warning rounded p-3 gutter-b">
 						<span className="svg-icon svg-icon-warning mr-3">
 							<span className="svg-icon svg-icon-lg">
 								<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
