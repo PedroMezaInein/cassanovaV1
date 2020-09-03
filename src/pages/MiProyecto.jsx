@@ -24,6 +24,7 @@ import Tooltip from 'react-bootstrap/Tooltip'
 class MiProyecto extends Component {
 
     state = {
+        ticket:'',
         tickets: [],
         proyecto: '',
         formeditado: 0,
@@ -360,7 +361,7 @@ class MiProyecto extends Component {
                     ... this.state,
                     defaultactivekey: newdefaultactivekey,
                     proyecto: proyecto,
-                    tickets: this.setMiProyecto(proyecto.tickets),
+                    tickets: this.setTickets(proyecto.tickets),
                     form: this.clearForm(),
                     data
                 })
@@ -512,7 +513,7 @@ class MiProyecto extends Component {
         })
     }
 
-    setMiProyecto = (tickets) => {
+    setTickets = (tickets) => {
         let aux = []
         tickets.map((ticket) => {
             aux.push(
@@ -599,13 +600,12 @@ class MiProyecto extends Component {
         questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => this.onChangeAdjunto({ target: { name: item, value: files, files: files } }))
     }
 
-    openModalSee = (proyecto) => {
+    openModalSee = (ticket) => {
         this.setState({
             ... this.state,
             modal: true,
             formeditado: 0,
-            proyecto: ''
-
+            ticket:ticket
         })
     }
 
@@ -614,23 +614,9 @@ class MiProyecto extends Component {
         this.setState({
             ... this.state,
             modal: !modal,
-            form: this.cleanForm()
-
         })
     }
 
-    cleanForm = () => {
-        const { form } = this.state
-        let aux = Object.keys(form)
-        aux.map((element) => {
-            switch (element) {
-                default:
-                    form[element] = ''
-                    break;
-            }
-        })
-        return form
-    }
     onchange = e => {
         const { form } = this.state
         const { name, value } = e.target
@@ -641,23 +627,54 @@ class MiProyecto extends Component {
         })
     }
 
-    setActions = () => {
+    setActions = (ticket) => {
         let aux = []
-        aux.push(
-            {
-                text: 'Ver&nbsp;Presupuesto',
-                btnclass: 'primary',
-                iconclass: 'flaticon2-file-1',
-                action: 'see',
-                tooltip: { id: 'see', text: 'Ver presupuesto' }
-            }
-        )
+        if (ticket.presupuesto.length){
+            aux.push(
+                {
+                    text: 'Ver&nbsp;Presupuesto',
+                    btnclass: 'primary',
+                    iconclass: 'flaticon2-file-1',
+                    action: 'see',
+                    tooltip: { id: 'see', text: 'Ver presupuesto' }
+                }
+            )
+        }
         return aux
     }
 
+    changeEstatus = estatus =>  {
+        const { ticket } = this.state
+        // this.changeEstatusAxios({id: ticket.id, estatus: estatus})
+        questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({id: ticket.id, estatus: estatus}))
+    }
+
+    async changeEstatusAxios(data){
+        const { access_token } = this.props.authUser
+        await axios.put(URL_DEV + 'calidad/estatus/' + data.id, data, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { ticket } = response.data
+                                
+                if(data.estatus){
+                    doneAlert('El ticket fue actualizado con éxito.')
+                }
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
 
     render() {
-        const { options, proyecto, form, adjuntos, showadjuntos, primeravista, defaultactivekey, subActiveKey, formeditado, tickets, data, modal } = this.state
+        const { options, proyecto, form, adjuntos, showadjuntos, primeravista, defaultactivekey, subActiveKey, formeditado, tickets, data, modal,ticket } = this.state
 
         return (
             <Layout {...this.props}>
@@ -1028,9 +1045,6 @@ class MiProyecto extends Component {
                                         {
                                             proyecto ?
                                                 <TableForModals
-                                                    // mostrar_boton={false}
-                                                    // abrir_modal={false}
-                                                    // hideSelector={true}
                                                     mostrar_acciones={true}
                                                     actions={{
                                                         'see': { function: this.openModalSee },
@@ -1049,22 +1063,32 @@ class MiProyecto extends Component {
                     </Tab.Container>
                     : ''
                 }
-                <Modal title="Presupuesto" show={modal} handleClose={this.handleClose} >
+                <Modal size="lg" title="Presupuesto" show={modal} handleClose={this.handleClose} >
                     <div className="mt-4">
-                        <ItemSlider 
-                            items={"data.fotos"} 
-                            item={'fotos'} 
-                        />
+                        {
+                            ticket? 
+                                <ItemSlider 
+                                items={ticket.presupuesto} 
+                                item={'presupuesto'} 
+                            />
+                            :''
+                        }
+                        
                     </div>
                     <div className="d-flex justify-content-center mt-5">
+                        {
+                            
+                            console.log(this.state)
+                            // console.log(ticket.estatus_ticket.estatus)
+                        }
                         <OverlayTrigger overlay={<Tooltip>Aceptar</Tooltip>}>
                             <a 
-                            // onClick={() => { changeEstatus('Aceptado') }} 
+                            onClick={() => { this.changeEstatus('En proceso') }} 
                             className="btn btn-icon btn-light-success success2 btn-sm mr-2"><i className="flaticon2-check-mark icon-sm"></i></a>
                         </OverlayTrigger>
                         <OverlayTrigger overlay={<Tooltip>Rechazar</Tooltip>}>
                             <a 
-                            // onClick={() => { changeEstatus('Rechazado') }} 
+                            onClick={() => { this.changeEstatus('En espera') }} 
                             className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger"><i className="flaticon2-cross icon-sm"></i></a>
                         </OverlayTrigger>
                     </div>

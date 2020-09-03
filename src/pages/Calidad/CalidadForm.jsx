@@ -155,7 +155,7 @@ class CalidadForm extends Component{
 
     handleChange = (files, item) => {
         if(item === 'presupuesto')
-            createAlert('¿Deseas enviar el presupuesto?', '', () => this.sendPresupuestoTicketAxios( files, item ))
+            questionAlert('¿DESEAS ENVIAR EL PRESUPUESTO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.sendPresupuestoTicketAxios( files, item ))
         else
             this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
     }
