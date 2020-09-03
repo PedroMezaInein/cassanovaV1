@@ -4,7 +4,7 @@ import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV} from '../../constants'
 import { setOptions} from '../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert, createAlert,questionAlert } from '../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert, createAlert,questionAlert, deleteAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { CalidadView} from '../../components/forms'
 import { Card } from 'react-bootstrap'
@@ -98,7 +98,8 @@ class CalidadForm extends Component{
             aux.push({
                 name: element.name,
                 url: element.url,
-                file: ''
+                file: '',
+                id: element.id
             })
         })
         form.adjuntos.reporte_problema_reportado.files = aux
@@ -107,7 +108,8 @@ class CalidadForm extends Component{
             aux.push({
                 name: element.name,
                 url: element.url,
-                file: ''
+                file: '',
+                id: element.id
             })
         })
         form.adjuntos.reporte_problema_solucionado.files = aux
@@ -158,6 +160,11 @@ class CalidadForm extends Component{
             this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
     }
 
+    deleteFile = element => {
+        console.log(element, 'element')
+        deleteAlert('¿Deseas eliminar el archivo?', () => this.deleteAdjuntoAxios(element.id))
+    }
+
     changeEstatus = estatus =>  {
         const { ticket } = this.state
         // this.changeEstatusAxios({id: ticket.id, estatus: estatus})
@@ -171,6 +178,36 @@ class CalidadForm extends Component{
 
     generateEmail = value => {
         this.saveProcesoTicketAxios(value)
+    }
+
+    async deleteAdjuntoAxios(id){
+        const { access_token } = this.props.authUser
+        const { ticket } = this.state
+        await axios.delete(URL_DEV + 'calidad/' + ticket.id + '/adjuntos/' + id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { ticket } = response.data
+                
+                window.history.replaceState(ticket, 'calidad')
+
+                this.setState({
+                    ... this.state,
+                    ticket: ticket,
+                    form: this.setForm(ticket)
+                })
+                doneAlert('Adjunto eliminado con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     async saveProcesoTicketAxios( email ){
@@ -352,7 +389,8 @@ class CalidadForm extends Component{
                     changeEstatus = { this.changeEstatus }
                     onChange = { this.onChange } 
                     onSubmit = { this.onSubmit }
-                    generateEmail = { this.generateEmail } />
+                    generateEmail = { this.generateEmail } 
+                    deleteFile = { this.deleteFile } />
             </Layout>
         )
     }

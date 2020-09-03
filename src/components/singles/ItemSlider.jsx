@@ -148,7 +148,7 @@ class ItemSlider extends Component {
                                             }
                                         </div>
                                         {
-                                            deleteFile ?
+                                            deleteFile && items[active].id ?
                                                 <div className="d-flex justify-content-center">
 
                                                     <span className="btn btn-text-danger btn-hover-danger" onClick={(e) => { e.preventDefault(); deleteFile(items[active]) }} >

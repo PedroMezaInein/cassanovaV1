@@ -20,7 +20,7 @@ class CalidadView extends Component {
 
     render() {
 
-        const { data, changeEstatus, handleChange, form, options, onChange, onSubmit, generateEmail } = this.props
+        const { data, changeEstatus, handleChange, form, options, onChange, onSubmit, generateEmail, deleteFile } = this.props
         return (
             <>
                 <div className="card card-custom gutter-b">
@@ -196,7 +196,7 @@ class CalidadView extends Component {
                                             <div className="row row-paddingless">
                                                 {
                                                     data.fotos.length ?
-                                                        <div className={data.estatus_ticket.estatus !== 'En revisión' && data.estatus_ticket.estatus !== 'Rechazado' 
+                                                        <div className={data.estatus_ticket.estatus !== 'En espera' && data.estatus_ticket.estatus !== 'Rechazado' 
                                                             ? 'col-md-6' : 'col-md-12'}>
                                                             <div className="text-center text-dark font-size-h5 font-weight-bold">
                                                                 Fotos
@@ -226,7 +226,8 @@ class CalidadView extends Component {
                                         <>
                                             <div className="separator separator-solid my-4"></div>
                                             <ProcesoTicketForm form = { form } options = { options } onChange = { onChange } formEditado = { 1 } 
-                                                handleChange = { handleChange } onSubmit = { onSubmit } generateEmail = { generateEmail } estatus = { data.estatus_ticket.estatus } />
+                                                handleChange = { handleChange } onSubmit = { onSubmit } generateEmail = { generateEmail } estatus = { data.estatus_ticket.estatus }
+                                                deleteFile = { deleteFile } />
                                         </>
                                     : ''
                                 : ''
