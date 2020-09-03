@@ -1077,9 +1077,20 @@ class MiProyecto extends Component {
                     </div>
                     <div className="d-flex justify-content-center mt-5">
                         {
-                            
-                            console.log(this.state)
-                            // console.log(ticket.estatus_ticket.estatus)
+
+                            ticket.estatus_ticket? 
+                                console.log(ticket.estatus_ticket,'estoy aqui')
+                                
+                                // ticket.map((nombre)=>{
+                                //     console.log(nombre)
+                                // })
+                            //     // ticket.map((estatus_ticket) => {
+                            //             console.log("hola", ticket)
+                            //         // })
+                            :''
+                            // this.state.map((ticket) => {
+                            //     console.log(ticket)
+                            // })
                         }
                         <OverlayTrigger overlay={<Tooltip>Aceptar</Tooltip>}>
                             <a 

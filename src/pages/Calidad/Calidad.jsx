@@ -88,6 +88,13 @@ class Calidad extends Component {
                     iconclass: 'flaticon2-expand',                  
                     action: 'see',
                     tooltip: {id:'see', text:'Mostrar', type:'success'},
+                },
+                {
+                    text: 'Reporte',
+                    btnclass: 'info',
+                    iconclass: 'flaticon-edit-1',                  
+                    action: 'reporte',
+                    tooltip: {id:'see', text:'Reporte', type:'info'},
                 }
         )
         return aux
@@ -112,6 +119,7 @@ class Calidad extends Component {
                         // 'edit': { function: this.changePageEdit },
                         // 'delete': { function: this.openModalDelete },
                         'see': {function: this.changePageSee},
+                        'reporte': { function: this.changePageReporte}
                     }}
                     // url='/calidad/calidad/add'
                     idTable = 'kt_datatable_calidad'
