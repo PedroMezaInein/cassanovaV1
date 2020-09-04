@@ -346,7 +346,6 @@ class MiProyecto extends Component {
         let newdefaultactivekey = "";
         form.proyecto = value
         data.proyectos.map((proyecto) => {
-
             if (proyecto.id.toString() === value.toString()) {
                 for (var i = 0; i < adjuntos.length; i++) {
                     var grupo = adjuntos[i];
@@ -379,20 +378,25 @@ class MiProyecto extends Component {
             (response) => {
                 const { proyectos, partidas, tiposTrabajo } = response.data
                 const { data, options } = this.state
-                let { proyecto } = this.state
+                let { proyecto, tickets } = this.state
                 options.proyectos = setOptions(proyectos, 'nombre', 'id')
                 options.partidas = setOptions(partidas, 'nombre', 'id')
                 options.tiposTrabajo = setOptions(tiposTrabajo, 'tipo', 'id')
-
                 data.proyectos = proyectos
-                if (proyectos.length === 1) {
-                    proyecto = proyectos[0]
+                if(proyecto !== ''){
+                    proyectos.map( (element) => {
+                        if(element.id === proyecto.id){
+                            proyecto = element
+                            tickets = this.setTickets(element.tickets)
+                        }
+                    } )
                 }
                 this.setState({
                     ... this.state,
                     data,
                     options,
                     proyecto,
+                    tickets,
                     form: this.clearForm()
                 })
             },
@@ -464,9 +468,7 @@ class MiProyecto extends Component {
     async addTicketAxios() {
         const { access_token } = this.props.authUser
         const { form, proyecto } = this.state
-
         const data = new FormData();
-
         let aux = Object.keys(form)
         aux.map((element) => {
             switch (element) {
@@ -487,14 +489,10 @@ class MiProyecto extends Component {
                 data.append('adjuntos[]', element)
             }
         })
-
         data.append('proyecto', proyecto.id)
-
         await axios.post(URL_DEV + 'proyectos/mi-proyecto/tickets', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ticket fue solicitado con éxito.')
-
                 const { history } = this.props
                 history.push({ pathname: '/mi-proyecto' })
 
@@ -618,6 +616,7 @@ class MiProyecto extends Component {
         this.setState({
             ... this.state,
             modal: !modal,
+            ticket: ''
         })
     }
 
@@ -658,9 +657,13 @@ class MiProyecto extends Component {
         await axios.put(URL_DEV + 'calidad/estatus/' + data.id, data, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { ticket } = response.data
-                                
+                this.setState({
+                    ... this.state,
+                    modal: false
+                })
                 if(data.estatus){
                     doneAlert('El ticket fue actualizado con éxito.')
+                    this.getMiProyectoAxios()
                 }
             },
             (error) => {
@@ -679,7 +682,6 @@ class MiProyecto extends Component {
 
     render() {
         const { options, proyecto, form, adjuntos, showadjuntos, primeravista, defaultactivekey, subActiveKey, formeditado, tickets, data, modal,ticket } = this.state
-
         return (
             <Layout {...this.props}>
                 <div className="content pt-0 d-flex flex-column flex-column-fluid" style={{ paddingBottom: "11px" }}>
@@ -1028,9 +1030,7 @@ class MiProyecto extends Component {
                                                                     items={form.adjuntos.fotos.files}
                                                                     handleChange={this.handleChange}
                                                                     item="fotos"
-                                                                /* deleteFile = { this.deleteFile } */
                                                                 />
-                                                                {/* <label className="col-form-label d-flex justify-content-center align-items-center"><b>Nota:</b> Para un mejor levantamiento del problema, puede adjuntar fotografías.</label> */}
                                                             </div>
                                                         </div>
                                                         <div className="card-footer py-3 pr-1">
@@ -1070,34 +1070,34 @@ class MiProyecto extends Component {
                 <Modal size="lg" title="Presupuesto" show={modal} handleClose={this.handleClose} >
                     <div className="mt-4">
                         {
-                            ticket? 
+                            ticket ? 
                                 <ItemSlider 
-                                items={ticket.presupuesto} 
-                                item={'presupuesto'} 
-                            />
-                            :''
+                                    items={ticket.presupuesto} 
+                                    item={'presupuesto'} />
+                            :   ''
                         }
-                        
                     </div>
                     <div className="d-flex justify-content-center mt-5">
                         {
-                        
-                            ticket.estatus_ticket.estatus==="Respuesta pendiente"? 
-                                <>
-                                <OverlayTrigger overlay={<Tooltip>Aceptar</Tooltip>}>
-                                    <a 
-                                    onClick={() => { this.changeEstatus('En proceso') }} 
-                                    className="btn btn-icon btn-light-success success2 btn-sm mr-2"><i className="flaticon2-check-mark icon-sm"></i></a>
-                                </OverlayTrigger>
-                                <OverlayTrigger overlay={<Tooltip>Rechazar</Tooltip>}>
-                                    <a 
-                                    onClick={() => { this.changeEstatus('En espera') }} 
-                                    className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger"><i className="flaticon2-cross icon-sm"></i></a>
-                                </OverlayTrigger>
-                                </>
+                            ticket ? 
+                                ticket.estatus_ticket ?
+                                    ticket.estatus_ticket.estatus === "Respuesta pendiente"  ? 
+                                        <>
+                                            <OverlayTrigger overlay={<Tooltip>Aceptar</Tooltip>}>
+                                                <a 
+                                                onClick={() => { this.changeEstatus('En proceso') }} 
+                                                className="btn btn-icon btn-light-success success2 btn-sm mr-2"><i className="flaticon2-check-mark icon-sm"></i></a>
+                                            </OverlayTrigger>
+                                            <OverlayTrigger overlay={<Tooltip>Rechazar</Tooltip>}>
+                                                <a 
+                                                onClick={() => { this.changeEstatus('En espera') }} 
+                                                className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger"><i className="flaticon2-cross icon-sm"></i></a>
+                                            </OverlayTrigger>
+                                        </>
+                                    : ''
                                 : ''
+                            : ''
                         }
-                        
                     </div>
                 </Modal>
             </Layout>
