@@ -8,7 +8,7 @@ import { URL_DEV, URL_ASSETS, TICKETS_ESTATUS } from '../constants'
 import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert, createAlert, questionAlert } from '../functions/alert'
 import { SelectSearch, SelectSearchSinText, Input } from '../components/form-components'
 import { setOptions } from '../functions/setters'
-import { Card, Nav, Tab, Col, Row } from 'react-bootstrap'
+import { Card, Nav, Tab, Col, Row, NavDropdown } from 'react-bootstrap'
 import { Button } from '../components/form-components'
 import Moment from 'react-moment'
 import { Small } from '../components/texts'
@@ -27,6 +27,9 @@ class MiProyecto extends Component {
         ticket:{
             estatus_ticket:{
                 estatus:''
+            },
+            tecnico:{
+                nombre:''
             }
         },
         tickets: [],
@@ -35,6 +38,7 @@ class MiProyecto extends Component {
         primeravista: true,
         defaultactivekey: "",
         modal: false,
+        modalDetalles: false,
         showadjuntos: [
             {
                 name: 'Fotografías levantamiento',
@@ -622,6 +626,24 @@ class MiProyecto extends Component {
         })
     }
 
+    openModalDetalles = (ticket) => {
+        this.setState({
+            ... this.state,
+            modalDetalles: true,
+            formeditado: 0,
+            ticket:ticket
+        })
+    }
+
+    handleCloseDetalles = () => {
+        const { modalDetalles } = this.state
+        this.setState({
+            ... this.state,
+            modalDetalles: !modalDetalles,
+            ticket: ''
+        })
+    }
+
     onchange = e => {
         const { form } = this.state
         const { name, value } = e.target
@@ -637,13 +659,23 @@ class MiProyecto extends Component {
         if (ticket.presupuesto.length){
             aux.push(
                 {
-                    text: 'Ver&nbsp;Presupuesto',
+                    text: 'Ver&nbsp;presupuesto',
                     btnclass: 'primary',
                     iconclass: 'flaticon2-file-1',
                     action: 'see',
                     tooltip: { id: 'see', text: 'Ver presupuesto' }
                 }
             )
+        }
+        if( ticket.estatus_ticket.estatus==="Terminado")
+            {
+                aux.push({
+                    text: 'Ticket&nbsp;final',
+                    btnclass: 'info',
+                    iconclass: 'flaticon-list-2',
+                    action: 'details',
+                    tooltip: { id: 'details', text: 'Ticket final' }
+            })
         }
         return aux
     }
@@ -683,7 +715,8 @@ class MiProyecto extends Component {
     }
 
     render() {
-        const { options, proyecto, form, adjuntos, showadjuntos, primeravista, defaultactivekey, subActiveKey, formeditado, tickets, data, modal,ticket } = this.state
+        const { options, proyecto, form, adjuntos, showadjuntos, primeravista, defaultactivekey, subActiveKey, formeditado, tickets, data, modal,ticket, modalDetalles } = this.state
+
         return (
             <Layout {...this.props}>
                 <div className="content pt-0 d-flex flex-column flex-column-fluid" style={{ paddingBottom: "11px" }}>
@@ -1054,6 +1087,7 @@ class MiProyecto extends Component {
                                                     mostrar_acciones={true}
                                                     actions={{
                                                         'see': { function: this.openModalSee },
+                                                        'details': { function: this.openModalDetalles },
                                                     }}
                                                     columns={TICKETS_ESTATUS}
                                                     data={tickets}
@@ -1075,7 +1109,8 @@ class MiProyecto extends Component {
                             ticket ? 
                                 <ItemSlider 
                                     items={ticket.presupuesto} 
-                                    item={'presupuesto'} />
+                                    item={'presupuesto'} 
+                                />
                             :   ''
                         }
                     </div>
@@ -1101,6 +1136,111 @@ class MiProyecto extends Component {
                             : ''
                         }
                     </div>
+                </Modal>
+                <Modal size="lg" title="Detalles del levantamiento" show={modalDetalles} handleClose={this.handleCloseDetalles} >
+                <Tab.Container defaultActiveKey="first">
+                        <Nav  className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-tabs-bold nav-tabs-line-2x mt-2">
+                            <Nav.Item>
+                                <Nav.Link eventKey="first"> <span className="nav-text font-weight-bold">Información general</span></Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <NavDropdown title={
+                                            <>
+                                                <span className="nav-text font-weight-bold ml-0">REPORTES FOTOGRÁFICOS</span>
+                                            </>}>
+                                            <NavDropdown.Item className="ml-0" eventKey="second">PROBLEMA REPORTADO</NavDropdown.Item>
+                                            <NavDropdown.Item className="ml-0" eventKey="third">PROBLEMA SOLUCIONADO</NavDropdown.Item>
+                                </NavDropdown>
+                            </Nav.Item>
+                        </Nav>
+                        <Tab.Content>
+                            {
+                                ticket ? 
+                                    <>
+                                        <Tab.Pane eventKey="first">
+                                            <p className="my-5 lead font-weight-bold text-justify">{ticket.descripcion_solucion}</p>
+                                            <div className="table-responsive">
+                                                <div className="list min-w-500px" data-inbox="list">
+                                                    <div className="d-flex justify-content-center align-items-center list-item ">
+
+                                                    <div className="col-md-4 d-flex align-items-center justify-content-center px-0">
+                                                            <div className="symbol symbol-35 symbol-light-primary mr-3 flex-shrink-0">
+                                                                <div className="symbol-label">
+                                                                    <span className="svg-icon svg-icon-primary svg-icon-lg">
+                                                                        <SVG src={toAbsoluteUrl('/images/svg/Clock.svg')} />
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div className="d-flex flex-column font-weight-bold">
+                                                                <div className="text-dark mb-1 ">{ticket.tecnico.nombre}</div>
+                                                                <span className="text-muted ">TÉCNICO QUE ASISTE</span>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-md-4 d-flex align-items-center justify-content-center px-0">
+                                                            <div className="symbol symbol-35 symbol-light-primary mr-3 flex-shrink-0">
+                                                                <div className="symbol-label">
+                                                                    <span className="svg-icon svg-icon-primary svg-icon-lg">
+                                                                        <SVG src={toAbsoluteUrl('/images/svg/Building.svg')} />
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div className="d-flex flex-column font-weight-bold">
+                                                                <div className="text-dark mb-1 ">
+                                                                        <Moment format="DD/MM/YYYY">
+                                                                            {ticket.fecha_programada}
+                                                                        </Moment></div>
+                                                                <span className="text-muted ">FECHA PROGRAMADA</span>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div className="col-md-4 d-flex align-items-center justify-content-center px-0">
+                                                            <div className="symbol symbol-35 symbol-light-primary mr-3 flex-shrink-0">
+                                                                <div className="symbol-label">
+                                                                    <span className="svg-icon svg-icon-primary svg-icon-lg">
+                                                                        <SVG src={toAbsoluteUrl('/images/svg/Menu.svg')} />
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div className="d-flex flex-column font-weight-bold">
+                                                                <div className="text-dark mb-1 ">
+                                                                    {ticket.recibe}
+                                                                </div>
+                                                                <span className="text-muted ">¿QUIÉN RECIBE?</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Tab.Pane>
+                                        <Tab.Pane eventKey="second">
+                                        {
+                                            ticket ? 
+                                                <div className="my-3">
+                                                    <ItemSlider 
+                                                        items={ticket.reporte_problema_reportado} 
+                                                        item={'presupuesto'} 
+                                                    />
+                                                </div>
+                                            :''
+                                        }
+                                        </Tab.Pane>
+                                        <Tab.Pane eventKey="third">
+                                        {
+                                            ticket ? 
+                                                <div className="my-3">
+                                                    <ItemSlider 
+                                                        items={ticket.reporte_problema_solucionado} 
+                                                        item={'presupuesto'} 
+                                                    />
+                                                </div>
+                                            :''
+                                        }
+                                        </Tab.Pane>
+                                    </>
+                                :''
+                            }
+                        </Tab.Content>
+                    </Tab.Container>
                 </Modal>
             </Layout>
         )

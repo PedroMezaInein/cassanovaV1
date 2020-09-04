@@ -335,3 +335,8 @@ div#partida_calidad, div#tipoT_calidad,div#fecha_calidad{
 }
 
 
+a.dropdown-toggle.nav-link {
+    @include down-screen($md) {
+        margin-left: 0px!important;
+    }
+}
