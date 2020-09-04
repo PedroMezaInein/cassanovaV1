@@ -500,6 +500,8 @@ class MiProyecto extends Component {
                 const { history } = this.props
                 history.push({ pathname: '/mi-proyecto' })
 
+                this.getMiProyectoAxios()
+
                 this.setState({
                     ... this.state,
                     form: this.clearForm()

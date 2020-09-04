@@ -174,7 +174,14 @@ export default class FacturaForm extends Component {
                 </div>
 
                 <div className="d-flex justify-content-center my-3">
-                    <Button icon='' type="submit" className="text-center mx-auto" text='ENVIAR' />
+                    <Button icon='' 
+                        onClick={
+                            (e) => {
+                                e.preventDefault();
+                                validateAlert(onSubmit, e, 'form-solicitar-factura')
+                            }
+                        }
+                        className="text-center mx-auto" text='ENVIAR' />
                 </div>
 
             </Form>

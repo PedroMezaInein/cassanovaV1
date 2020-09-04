@@ -48,7 +48,7 @@ class Calendario extends Component {
 
     handleDateClick = (arg) => { // bind with an arrow function
         console.log(arg)
-        alert(arg.dateStr)
+        /* alert(arg.dateStr) */
     }
     openModal = () => {
         this.setState({

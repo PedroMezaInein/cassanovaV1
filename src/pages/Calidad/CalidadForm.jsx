@@ -161,7 +161,6 @@ class CalidadForm extends Component{
     }
 
     deleteFile = element => {
-        console.log(element, 'element')
         deleteAlert('¿Deseas eliminar el archivo?', () => this.deleteAdjuntoAxios(element.id))
     }
 

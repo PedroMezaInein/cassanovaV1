@@ -49,7 +49,6 @@ class Calidad extends Component {
     setCalidad = calidad => {
         let aux = []
         calidad.map((calidad) => {
-            console.log(calidad)
             aux.push(
                 {
                     actions: this.setActions(calidad),
@@ -104,7 +103,7 @@ class Calidad extends Component {
                 <NewTableServerRender
                     columns={PROYECTOS_TICKETS} 
                     title='Calidad' 
-                    subtitle='Listado de presupuestos por proyecto'
+                    subtitle='Listado de tickets levantados'
                     mostrar_boton={false}
                     abrir_modal={false}
                     mostrar_acciones={true}

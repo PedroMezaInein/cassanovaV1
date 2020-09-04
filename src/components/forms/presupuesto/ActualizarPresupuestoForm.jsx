@@ -42,7 +42,6 @@ class ActualizarPresupuestoForm extends Component {
                 if(concepto.active)
                     if(!(concepto.unidad === 'VIAJE' || concepto.unidad === 'SAL' || concepto.unidad === 'PZA' || concepto.unidad === 'LOTE'
                         || concepto.unidad === 'JGO' || concepto.unidad === 'EQUIPO' || concepto.unidad === 'BULTO')){
-                        console.log(concepto.unidad, 'unidad')
                         onChange(key, e, 'desperdicio')
                     }
             })
@@ -429,7 +428,14 @@ class ActualizarPresupuestoForm extends Component {
                                     </tbody>
                                 </table>
                                 <div className="mt-3 text-center">
-                                    <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
+                                    <Button icon='' className="mx-auto" 
+                                        onClick={
+                                            (e) => {
+                                                e.preventDefault();
+                                                validateAlert(onSubmit, e, 'form-presupuesto')
+                                            }
+                                        }
+                                        text="ENVIAR" />
                                 </div>
                             </Form>
                         </Card.Body>

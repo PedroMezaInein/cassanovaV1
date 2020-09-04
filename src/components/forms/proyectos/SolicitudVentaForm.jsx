@@ -53,7 +53,7 @@ class SolicitudVentaForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, children, onChangeAdjunto, clearFiles, onSubmit, formeditado, ...props } = this.props
+        const { title, options, form, onChange, children, onChangeAdjunto, clearFiles, onSubmit, formeditado, setOptions, ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -258,7 +258,14 @@ class SolicitudVentaForm extends Component {
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
                                     </div>
                                     <div>
-                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type="submit" text="ENVIAR" />
+                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase"
+                                            onClick = {
+                                                (e) => {
+                                                    validateAlert(onSubmit, e, 'wizard-3-content')
+                                                    e.preventDefault();
+                                                }
+                                            }
+                                            text="ENVIAR" />
                                     </div>
                                 </div>
                             </div>

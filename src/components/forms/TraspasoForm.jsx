@@ -137,7 +137,14 @@ class TareaForm extends Component {
                 </div>
 
                 <div className="text-center mt-3 mb-2">
-                    <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
+                    <Button icon='' className="mx-auto" 
+                        onClick={
+                            (e) => {
+                                e.preventDefault();
+                                validateAlert(onSubmit, e, 'form-transpasos')
+                            }
+                        }
+                        text="ENVIAR" />
                 </div>
 
             </Form>

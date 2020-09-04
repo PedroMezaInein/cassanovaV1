@@ -467,7 +467,14 @@ class Leads extends Component {
                             />
                         </div>
                         <div className="mt-3 text-center">
-                            <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
+                            <Button icon='' className="mx-auto"
+                                onClick = { 
+                                    (e) => {
+                                        e.preventDefault(); 
+                                        validateAlert(this.onSubmit, e, 'form-cliente')
+                                    }
+                                }
+                                text="ENVIAR" />
                         </div>
                     </Form>
                 </Modal>

@@ -115,7 +115,14 @@ class ProcesoTicketForm extends Component {
                     estatus !== 'Terminado' ? 
                         <div className="d-flex justify-content-center mt-3 pt-3">
                             <div className="mr-5">
-                                <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type="submit" text="GUARDAR" />
+                                <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" 
+                                    onClick = {
+                                        (e) => {
+                                            e.preventDefault();
+                                            validateAlert(onSubmit, e, 'form-proceso')
+                                        }
+                                    }
+                                    text="GUARDAR" />
                             </div>
                             <div>
                                 <Button icon='' className="btn btn-success font-weight-bold text-uppercase" onClick = { (e) => { e.preventDefault(); generateEmail(true)} }  text="TERMINAR" />

@@ -70,7 +70,14 @@ class PartidaForm extends Component {
                 {
                     form.partida !== '' && form.subpartidas.length > 0 ?
                         <div className="mt-3 text-center">
-                            <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
+                            <Button icon='' className="mx-auto" 
+                                onClick={
+                                    (e) => {
+                                        e.preventDefault();
+                                        validateAlert(onSubmit, e, 'form-partida')
+                                    }
+                                }
+                                text="ENVIAR" />
                         </div>
                         : ''
                 }
