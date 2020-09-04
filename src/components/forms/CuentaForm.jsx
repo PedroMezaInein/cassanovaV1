@@ -200,7 +200,14 @@ class CuentaForm extends Component {
                     </div>
                 </div>
                 <div className="mt-3 text-center">
-                    <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
+                    <Button icon='' className="mx-auto" 
+                        onClick={
+                            (e) => {
+                                e.preventDefault();
+                                validateAlert(onSubmit, e, 'form-cuenta')
+                            }
+                        }
+                        text="ENVIAR" />
                 </div>
             </Form>
         )

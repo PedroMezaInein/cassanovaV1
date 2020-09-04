@@ -198,7 +198,14 @@ class ContratoForm extends Component {
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="mt-3 text-center">
-                    <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
+                    <Button icon='' className="mx-auto" 
+                        onClick={
+                            (e) => {
+                                e.preventDefault();
+                                validateAlert(onSubmit, e, 'form-contrato')
+                            }
+                        }
+                        text="ENVIAR" />
                 </div>
             </Form>
         )

@@ -894,7 +894,14 @@ class Contratos extends Component {
                             </div>
                         </div>
                         <div className="mt-3 text-center">
-                            <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
+                            <Button icon='' className="mx-auto" 
+                                onClick={
+                                    (e) => {
+                                        e.preventDefault();
+                                        validateAlert(this.onSubmitAdjuntos, e, 'form-adjuntos')
+                                    }
+                                }
+                                text="ENVIAR" />
                         </div>
                     </Form>
                     <div className="separator separator-dashed mt-1 mb-2"></div>

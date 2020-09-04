@@ -395,7 +395,14 @@ class PresupuestoDiseñoForm extends Component {
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
                                     </div>
                                     <div>
-                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase mr-4" type="submit" text="ENVIAR" />
+                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase mr-4" 
+                                            onClick={
+                                                (e) => {
+                                                    e.preventDefault();
+                                                    validateAlert(onSubmit, e, 'wizard-3-content')
+                                                }
+                                            }
+                                            text="ENVIAR" />
                                         <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" onClick = { submitPDF } text="ENVIAR Y GENERAR PDF" />
                                     </div>
                                 </div>

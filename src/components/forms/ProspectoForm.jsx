@@ -344,7 +344,14 @@ class ProspectoForm extends Component {
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
                                     </div>
                                     <div>
-                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" type="submit" text="ENVIAR" />
+                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" 
+                                            onClick={
+                                                (e) => {
+                                                    e.preventDefault();
+                                                    validateAlert(onSubmit, e, 'wizard-3-content')
+                                                }
+                                            }
+                                            text="ENVIAR" />
                                     </div>
                                 </div>
                             </div>
