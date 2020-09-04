@@ -42,7 +42,6 @@ class ActualizarPresupuestoForm extends Component {
                 if(concepto.active)
                     if(!(concepto.unidad === 'VIAJE' || concepto.unidad === 'SAL' || concepto.unidad === 'PZA' || concepto.unidad === 'LOTE'
                         || concepto.unidad === 'JGO' || concepto.unidad === 'EQUIPO' || concepto.unidad === 'BULTO')){
-                        console.log(concepto.unidad, 'unidad')
                         onChange(key, e, 'desperdicio')
                     }
             })

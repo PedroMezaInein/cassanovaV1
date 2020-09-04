@@ -49,7 +49,6 @@ class Calidad extends Component {
     setCalidad = calidad => {
         let aux = []
         calidad.map((calidad) => {
-            console.log(calidad)
             aux.push(
                 {
                     actions: this.setActions(calidad),

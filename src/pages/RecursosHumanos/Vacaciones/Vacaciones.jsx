@@ -57,7 +57,7 @@ class Vacaciones extends Component {
     }
 
     handleDateClick = (arg) => {
-        console.log(arg)
+        /* console.log(arg) */
     }
 
     openModal = () => {
