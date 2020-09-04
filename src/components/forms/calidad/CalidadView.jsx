@@ -196,16 +196,20 @@ class CalidadView extends Component {
                                 (data.estatus_ticket.estatus !== 'En revisión' && data.estatus_ticket.estatus !== 'Rechazado') || (data.fotos.length) ?
                                     <div class="col-lg-4">
                                         <Card className="card-custom card-stretch">
-                                            <Tab.Container defaultActiveKey="first">
+                                            <Tab.Container defaultActiveKey="second">
                                                 <Card.Header>
                                                     <Card.Title>
                                                         <span class="card-label">Adjuntos</span>
                                                     </Card.Title>
                                                     <div class="card-toolbar">
                                                         <Nav variant="pills">
-                                                            <Nav.Item>
-                                                                <Nav.Link eventKey="first">FOTOS</Nav.Link>
-                                                            </Nav.Item>
+                                                            {
+                                                                data.fotos.length ?
+                                                                <Nav.Item>
+                                                                    <Nav.Link eventKey="first">FOTOS</Nav.Link>
+                                                                </Nav.Item>
+                                                                :''
+                                                            }
                                                             <Nav.Item>
                                                                 <Nav.Link eventKey="second">PRESUPUESTO</Nav.Link>
                                                             </Nav.Item>
