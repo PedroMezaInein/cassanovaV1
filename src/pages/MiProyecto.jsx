@@ -1171,10 +1171,16 @@ class MiProyecto extends Component {
                                                                     </span>
                                                                 </div>
                                                             </div>
-                                                            <div className="d-flex flex-column font-weight-bold">
-                                                                <div className="text-dark mb-1 ">{ticket.tecnico.nombre}</div>
-                                                                <span className="text-muted ">TÉCNICO QUE ASISTE</span>
-                                                            </div>
+                                                            {
+                                                                ticket ? 
+                                                                    ticket.tecnico ?
+                                                                        <div className="d-flex flex-column font-weight-bold">
+                                                                            <div className="text-dark mb-1 ">{ticket.tecnico.nombre}</div>
+                                                                            <span className="text-muted ">TÉCNICO QUE ASISTE</span>
+                                                                        </div>
+                                                                    :''
+                                                                :''
+                                                            }
                                                         </div>
                                                         <div className="col-md-4 d-flex align-items-center justify-content-center px-0">
                                                             <div className="symbol symbol-35 symbol-light-primary mr-3 flex-shrink-0">
