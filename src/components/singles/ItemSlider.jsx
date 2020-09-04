@@ -179,7 +179,7 @@ class ItemSlider extends Component {
                         items.length > 0 && active !== items.length ? 
                         <>
                             <a href={items[active].url} target='_blank' className="text-muted text-hover-primary font-weight-bold mr-lg-8 mr-5 mb-lg-0 mb-2">
-                                <span class="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
+                                <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
                                     <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
 								</span>
                                     Ver archivo
