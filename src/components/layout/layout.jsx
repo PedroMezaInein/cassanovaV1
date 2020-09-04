@@ -8,6 +8,9 @@ import { URL_DEV } from '../../constants'
 import UrlLocation from './urlLocation'
 import MobileHeader from './mobileHeader'
 import UserPanel from '../../../src/components/layout/UserPanel/userPanel'
+import { Notificacion } from '../singles'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function openUserProfile (){  
     if(document.getElementsByClassName("offcanvas")[0].classList.contains("offcanvas-on")){
@@ -37,8 +40,8 @@ class Layout extends Component {
         menu: false
     }
 
-    constructor(props) {
-        super(props)
+    componentDidMount(){
+        this.getNotificacionesAxios()
     }
 
     logoutUser = () => {
@@ -50,6 +53,56 @@ class Layout extends Component {
             menu: !this.state.menu
         })
     }
+
+    async getNotificacionesAxios(){
+        const options = {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: false,
+            progress: undefined,
+        }
+        console.log('notificaciones')
+        const { authUser: { access_token: access_token }} = this.props
+        await axios.get(URL_DEV + 'notificaciones', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { notificaciones } = response.data
+                let numero = notificaciones.length
+                notificaciones.map( (notificacion, i) => {
+                    setTimeout(
+                        () => {
+                            toast( <Notificacion data = {notificacion} />, options);
+                        }, (i) * 2500
+                    )
+                })
+                setTimeout( () => {
+                    this.getNotificacionesAxios()
+                }, (numero * 2500) + 300000)
+            },
+            (error) => {
+            }
+        ).catch((error) => {
+        })
+        /* for(let i = 0; i < 5; i++)
+            setTimeout(
+                () => {
+                    toast('🦄 Wow so easy!', {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: true,
+                        closeOnClick: false,
+                        pauseOnHover: true,
+                        draggable: false,
+                        progress: undefined,
+                        });
+                }, (i) * 2500
+            ) */
+        
+    }
+
+    
 
     async logoutUserAxios() {
         const { logout, authUser: { access_token: access_token }, history } = this.props
@@ -72,7 +125,17 @@ class Layout extends Component {
         const { children, } = this.props
         const { menu } = this.state   
         return (
-            <div> 
+            <div>
+                <ToastContainer 
+                    position="top-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick={false}
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable={false}
+                    pauseOnHover/>
                 <MobileHeader/>
                 <div className="d-flex flex-column flex-root">
                     <div className="d-flex flex-row flex-column-fluid page">
