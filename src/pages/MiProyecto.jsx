@@ -24,7 +24,11 @@ import Tooltip from 'react-bootstrap/Tooltip'
 class MiProyecto extends Component {
 
     state = {
-        ticket:'',
+        ticket:{
+            estatus_ticket:{
+                estatus:''
+            }
+        },
         tickets: [],
         proyecto: '',
         formeditado: 0,
@@ -1077,31 +1081,23 @@ class MiProyecto extends Component {
                     </div>
                     <div className="d-flex justify-content-center mt-5">
                         {
-
-                            ticket.estatus_ticket? 
-                                console.log(ticket.estatus_ticket,'estoy aqui')
-                                
-                                // ticket.map((nombre)=>{
-                                //     console.log(nombre)
-                                // })
-                            //     // ticket.map((estatus_ticket) => {
-                            //             console.log("hola", ticket)
-                            //         // })
-                            :''
-                            // this.state.map((ticket) => {
-                            //     console.log(ticket)
-                            // })
+                        
+                            ticket.estatus_ticket.estatus==="Respuesta pendiente"? 
+                                <>
+                                <OverlayTrigger overlay={<Tooltip>Aceptar</Tooltip>}>
+                                    <a 
+                                    onClick={() => { this.changeEstatus('En proceso') }} 
+                                    className="btn btn-icon btn-light-success success2 btn-sm mr-2"><i className="flaticon2-check-mark icon-sm"></i></a>
+                                </OverlayTrigger>
+                                <OverlayTrigger overlay={<Tooltip>Rechazar</Tooltip>}>
+                                    <a 
+                                    onClick={() => { this.changeEstatus('En espera') }} 
+                                    className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger"><i className="flaticon2-cross icon-sm"></i></a>
+                                </OverlayTrigger>
+                                </>
+                                : ''
                         }
-                        <OverlayTrigger overlay={<Tooltip>Aceptar</Tooltip>}>
-                            <a 
-                            onClick={() => { this.changeEstatus('En proceso') }} 
-                            className="btn btn-icon btn-light-success success2 btn-sm mr-2"><i className="flaticon2-check-mark icon-sm"></i></a>
-                        </OverlayTrigger>
-                        <OverlayTrigger overlay={<Tooltip>Rechazar</Tooltip>}>
-                            <a 
-                            onClick={() => { this.changeEstatus('En espera') }} 
-                            className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger"><i className="flaticon2-cross icon-sm"></i></a>
-                        </OverlayTrigger>
+                        
                     </div>
                 </Modal>
             </Layout>
