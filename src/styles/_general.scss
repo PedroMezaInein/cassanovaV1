@@ -340,3 +340,9 @@ a.dropdown-toggle.nav-link {
         margin-left: 0px!important;
     }
 }
+
+a.nav-link {
+    @include down-screen($md) {
+        margin-left: 0px!important;
+    }
+}
