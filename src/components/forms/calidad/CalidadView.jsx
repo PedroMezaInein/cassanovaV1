@@ -194,9 +194,9 @@ class CalidadView extends Component {
                         data ?
                             data.estatus_ticket ?
                                 (data.estatus_ticket.estatus !== 'En revisión' && data.estatus_ticket.estatus !== 'Rechazado') || (data.fotos.length) ?
-                                    <div class="col-lg-4">
+                                    <div className={data.estatus_ticket.estatus === 'En proceso' || data.estatus_ticket.estatus === 'Terminado' ? 'col-lg-4' : 'col-lg-12'}>
                                         <Card className="card-custom card-stretch">
-                                            <Tab.Container defaultActiveKey="second">
+                                            <Tab.Container defaultActiveKey="first">
                                                 <Card.Header>
                                                     <Card.Title>
                                                         <span class="card-label">Adjuntos</span>
@@ -206,20 +206,25 @@ class CalidadView extends Component {
                                                             {
                                                                 data.fotos.length ?
                                                                 <Nav.Item>
-                                                                    <Nav.Link eventKey="first">FOTOS</Nav.Link>
+                                                                    <Nav.Link eventKey={data.fotos.length ===0 ?"second":"first"}>FOTOS</Nav.Link>
                                                                 </Nav.Item>
                                                                 :''
                                                             }
-                                                            <Nav.Item>
-                                                                <Nav.Link eventKey="second">PRESUPUESTO</Nav.Link>
-                                                            </Nav.Item>
+                                                            {
+                                                                data.estatus_ticket.estatus==='Rechazado' ? 
+                                                                '':
+                                                                    <Nav.Item>
+                                                                        <Nav.Link eventKey={data.fotos.length ===0 ?"first":"second"}>PRESUPUESTO</Nav.Link>
+                                                                    </Nav.Item>
+                                                                    
+                                                            }
                                                         </Nav>
                                                     </div>
                                                 </Card.Header>
                                                 <Card.Body>
 
                                                     <Tab.Content>
-                                                        <Tab.Pane eventKey="first">
+                                                        <Tab.Pane eventKey={data.fotos.length ===0 ?"second":"first"}>
                                                             {
                                                                 data.fotos.length ?
                                                                     <>
@@ -231,12 +236,17 @@ class CalidadView extends Component {
                                                                     : ''
                                                             }
                                                         </Tab.Pane>
-                                                        <Tab.Pane eventKey="second">
-                                                            {/* <div className = { data.fotos.length ? 'col-md-6' : 'col-md-12'}> */}
-                                                            <ItemSlider multiple={false} items={form.adjuntos.presupuesto.files}
-                                                                item='presupuesto' handleChange={handleChange} />
-                                                            {/* </div> */}
-                                                        </Tab.Pane>
+                                                        {
+                                                            data.estatus_ticket.estatus==='Rechazado' ? 
+                                                            '':
+                                                                <Tab.Pane eventKey={data.fotos.length ===0 ?"first":"second"}>
+                                                                    {/* <div className = { data.fotos.length ? 'col-md-6' : 'col-md-12'}> */}
+                                                                    <ItemSlider multiple={false} items={form.adjuntos.presupuesto.files}
+                                                                        item='presupuesto' handleChange={handleChange} />
+                                                                    {/* </div> */}
+                                                                </Tab.Pane>
+                                                            
+                                                        }
                                                     </Tab.Content>
                                                 </Card.Body>
                                             </Tab.Container>
