@@ -12,26 +12,25 @@ import { Notificacion } from '../singles'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-function openUserProfile (){  
-    if(document.getElementsByClassName("offcanvas")[0].classList.contains("offcanvas-on")){
+function openUserProfile() {
+    if (document.getElementsByClassName("offcanvas")[0].classList.contains("offcanvas-on")) {
         document.getElementsByClassName("offcanvas")[0].classList.remove("offcanvas-on");
     }
-    else
-    { 
+    else {
         document.getElementsByClassName("offcanvas")[0].classList.add("offcanvas-on");
     }
 }
-function clickShowAside(){    
+function clickShowAside() {
     document.body.classList.remove('aside-on');
     document.getElementById("openbuerger").classList.remove("mobile-toggle-active");
     document.getElementById("aside").classList.remove("aside-on");
-    document.getElementById('showaside').classList.remove("aside-overlay");     
+    document.getElementById('showaside').classList.remove("aside-overlay");
 }
-function clickShowHeader(){
-    document.body.classList.remove('header-menu-wrapper-on');		
-	document.getElementById("openbuerger").classList.remove("mobile-toggle-active");
-	document.getElementById("showheadermenu").classList.remove("header-menu-wrapper-on");
-	document.getElementById('showheader').classList.remove("header-menu-wrapper-overlay"); 	     
+function clickShowHeader() {
+    document.body.classList.remove('header-menu-wrapper-on');
+    document.getElementById("openbuerger").classList.remove("mobile-toggle-active");
+    document.getElementById("showheadermenu").classList.remove("header-menu-wrapper-on");
+    document.getElementById('showheader').classList.remove("header-menu-wrapper-overlay");
 }
 
 class Layout extends Component {
@@ -40,7 +39,7 @@ class Layout extends Component {
         menu: false
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.getNotificacionesAxios()
     }
 
@@ -54,7 +53,7 @@ class Layout extends Component {
         })
     }
 
-    async getNotificacionesAxios(){
+    async getNotificacionesAxios() {
         const options = {
             position: "top-right",
             autoClose: 5000,
@@ -65,19 +64,19 @@ class Layout extends Component {
             progress: undefined,
         }
         console.log('notificaciones')
-        const { authUser: { access_token: access_token }} = this.props
+        const { authUser: { access_token: access_token } } = this.props
         await axios.get(URL_DEV + 'notificaciones', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { notificaciones } = response.data
                 let numero = notificaciones.length
-                notificaciones.map( (notificacion, i) => {
+                notificaciones.map((notificacion, i) => {
                     setTimeout(
                         () => {
-                            toast( <Notificacion data = {notificacion} />, options);
+                            toast(<Notificacion data={notificacion} />, options);
                         }, (i) * 2500
                     )
                 })
-                setTimeout( () => {
+                setTimeout(() => {
                     this.getNotificacionesAxios()
                 }, (numero * 2500) + 300000)
             },
@@ -99,10 +98,10 @@ class Layout extends Component {
                         });
                 }, (i) * 2500
             ) */
-        
+
     }
 
-    
+
 
     async logoutUserAxios() {
         const { logout, authUser: { access_token: access_token }, history } = this.props
@@ -120,13 +119,16 @@ class Layout extends Component {
             history.push('/login')
         })
     }
-    
+
     render() {
-        const { children, } = this.props
-        const { menu } = this.state   
+        const { children, authUser } = this.props
+        const { menu } = this.state
+        let tipo_usuario = authUser.user.tipo.tipo;
+
+        console.log(tipo_usuario)
         return (
             <div>
-                <ToastContainer 
+                <ToastContainer
                     position="top-right"
                     autoClose={5000}
                     hideProgressBar={false}
@@ -135,14 +137,21 @@ class Layout extends Component {
                     rtl={false}
                     pauseOnFocusLoss
                     draggable={false}
-                    pauseOnHover/>
-                <MobileHeader/>
+                    pauseOnHover />
+                <MobileHeader />
                 <div className="d-flex flex-column flex-root">
                     <div className="d-flex flex-row flex-column-fluid page">
-                        <NewAsideMenu props =  {this.props} /> 
-                        <div id="showaside" onClick = { () => { clickShowAside() } }></div>
-                        <div className="d-flex flex-column flex-row-fluid wrapper"> 
-                            <div  className="header header-fixed">
+                        {
+                            tipo_usuario === 'Cliente' ?
+                                '' :
+                                <NewAsideMenu props={this.props} />
+                        }
+                        <div id="showaside" onClick={() => { clickShowAside() }}></div>
+                        <div className={tipo_usuario === 'Cliente' ?
+                            "d-flex flex-column flex-row-fluid wrapper pl-0 pt-65px" : "d-flex flex-column flex-row-fluid wrapper"
+                        }>
+                            <div className={tipo_usuario === 'Cliente' ?
+                                "header header-fixed left-0" : "header header-fixed"}>
                                 <div className="container-fluid d-flex align-items-stretch justify-content-between">
                                     {/* <div id="showheadermenu"className="header-menu-wrapper header-menu-wrapper-left" >
                                         <div  className="header-menu header-menu-mobile header-menu-layout-default">
@@ -168,13 +177,13 @@ class Layout extends Component {
                                             </ul>
                                         </div>
                                     </div>    */}
-                                    <div id="showheader" onClick = { () => { clickShowHeader() } }></div>                             
+                                    <div id="showheader" onClick={() => { clickShowHeader() }}></div>
                                     <div className="topbar" >
-                                        <div className="topbar-item">                                    
+                                        <div className="topbar-item">
                                             {/* <Navbar clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {... this.props} />*/}
-                                            <div className="btn btn-icon w-auto btn-clean d-flex align-items-center btn-lg px-2" id="kt_quick_user_toggle" onClick = { () => { openUserProfile() } }>
+                                            <div className="btn btn-icon w-auto btn-clean d-flex align-items-center btn-lg px-2" id="kt_quick_user_toggle" onClick={() => { openUserProfile() }}>
                                                 <span className="text-muted font-weight-bold font-size-base d-none d-md-inline mr-1">Hola,</span>
-                                                <br/>
+                                                <br />
                                                 <span className="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-3">
                                                     {
                                                         this.props.authUser.user.name
@@ -192,26 +201,30 @@ class Layout extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className="content d-flex flex-column flex-column-fluid">                            
-                                <UrlLocation {... this.props} props =  {this.props} />                            
+                            <div className="content d-flex flex-column flex-column-fluid">
+                                {
+                                    tipo_usuario === 'Cliente' ?
+                                        '' :
+                                        <UrlLocation {... this.props} props={this.props} />
+                                }
                                 <div className="d-flex flex-column-fluid">
                                     <div className="container-fluid">
                                         <div className="row">
                                             <div className="col-sm-12">
                                                 {children}
                                             </div>
-                                        </div> 
+                                        </div>
                                     </div>
                                 </div>
-                            </div>                
-                        </div> 
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <UserPanel clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {... this.props} />
             </div>
         )
     }
-    
+
 }
 
 const mapStateToProps = state => {
