@@ -6,14 +6,18 @@ import axios from 'axios'
 import { URL_DEV, FACTURAS_COLUMNS } from '../../constants'
 import NewTable from '../../components/tables/NewTable'
 import { Small, B } from '../../components/texts'
-import { setTextTable, setMoneyTable, setDateTable } from '../../functions/setters'
-import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert} from '../../functions/alert'
+import { setTextTable, setMoneyTable, setDateTable, setOptions } from '../../functions/setters'
+import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert, createAlert} from '../../functions/alert'
 import { Modal, ItemSlider} from '../../components/singles'
-import { Button } from '../../components/form-components'
+import { Button, FileInput } from '../../components/form-components'
+import swal from 'sweetalert'
+import { Form } from 'react-bootstrap'
 class Facturacion extends Component {
 
     state = {
-        modal: false,
+        formeditado: 0,
+        modalFacturas: false,
+        modalCancelar: false,
         facturas: [],
         factura: '',
         data: {
@@ -21,13 +25,18 @@ class Facturacion extends Component {
         },
         form: {
             adjuntos: {
+                factura:{
+                    value: '',
+                    placeholder: 'Factura',
+                    files: []
+                },
                 adjuntos: {
                     value: '',
                     placeholder: 'Ingresa los adjuntos',
                     files: []
                 }
             }
-        },
+        }
     }
 
     componentDidMount() {
@@ -128,7 +137,7 @@ class Facturacion extends Component {
                 <span className="label label-lg bg- label-inline font-weight-bold py-2" style={{
                     color: `${text.letra}`,
                     backgroundColor: `${text.fondo}`,
-                    fontSize: "11.7px"
+                    fontSize: "75%"
                 }} >
                     {text.estatus}
                 </span>
@@ -202,7 +211,7 @@ class Facturacion extends Component {
 
         this.setState({
             ... this.state,
-            modal: true,
+            modalCancelar: true,
             factura: factura,
             form
         })
@@ -217,6 +226,11 @@ class Facturacion extends Component {
                         adjuntos: {
                             value: '',
                             placeholder: 'Ingresa los adjuntos',
+                            files: []
+                        },
+                        factura:{
+                            value: '',
+                            placeholder: 'Factura',
                             files: []
                         }
                     }
@@ -321,10 +335,10 @@ class Facturacion extends Component {
     }
 
     handleClose = () => {
-        const { modal } = this.state
+        const { modalCancelar } = this.state
         this.setState({
             ... this.state,
-            modal: !modal,
+            modalCancelar: !modalCancelar,
             form: this.clearForm()
         })
     }
@@ -335,8 +349,191 @@ class Facturacion extends Component {
         this.cancelarFacturaAxios(e)
     }
 
+    openModal = () => {
+        this.setState({
+            ... this.state,
+            modalFacturas: true,
+            title: 'Agregar Factura',
+            form: this.clearForm(),
+            formeditado: 0
+        })
+    }
+
+    handleCloseFacturas = () => {
+        const { modalFacturas } = this.state
+        this.setState({
+            ... this.state,
+            modalFacturas: !modalFacturas,
+            // form: this.clearForm()
+        })
+    }
+
+    onChangeAdjunto = e => {
+        const { form, data, options } = this.state
+        const { files, value, name } = e.target
+        let aux = []
+        for(let counter = 0; counter < files.length; counter ++){
+            if(name === 'factura')
+            {
+                let extension = files[counter].name.slice((Math.max(0, files[counter].name.lastIndexOf(".")) || Infinity) + 1);
+                if(extension.toUpperCase() === 'XML'){
+                    waitAlert()
+                    const reader = new FileReader()
+                    reader.onload = async (e) => { 
+                        const text = (e.target.result)
+                        var XMLParser = require('react-xml-parser');
+                        var xml = new XMLParser().parseFromString(text);
+                        const emisor = xml.getElementsByTagName('cfdi:Emisor')[0]
+                        const receptor = xml.getElementsByTagName('cfdi:Receptor')[0]
+                        const timbreFiscalDigital = xml.getElementsByTagName('tfd:TimbreFiscalDigital')[0]
+                        const concepto = xml.getElementsByTagName('cfdi:Concepto')[0]
+                        let relacionados = xml.getElementsByTagName('cfdi:CfdiRelacionados')
+                        let obj = {
+                            rfc_receptor: receptor.attributes.Rfc ? receptor.attributes.Rfc : '',
+                            nombre_receptor: receptor.attributes.Nombre ? receptor.attributes.Nombre : '',
+                            uso_cfdi: receptor.attributes.UsoCFDI ? receptor.attributes.UsoCFDI : '',
+                            rfc_emisor: emisor.attributes.Rfc ? emisor.attributes.Rfc : '',
+                            nombre_emisor: emisor.attributes.Nombre ? emisor.attributes.Nombre : '',
+                            regimen_fiscal: emisor.attributes.RegimenFiscal ? emisor.attributes.RegimenFiscal : '',
+                            lugar_expedicion: xml.attributes.LugarExpedicion ? xml.attributes.LugarExpedicion : '',
+                            fecha: xml.attributes.Fecha ? new Date(xml.attributes.Fecha) : '',
+                            metodo_pago: xml.attributes.MetodoPago ? xml.attributes.MetodoPago : '',
+                            tipo_de_comprobante: xml.attributes.TipoDeComprobante ? xml.attributes.TipoDeComprobante : '',
+                            total: xml.attributes.Total ? xml.attributes.Total : '',
+                            subtotal: xml.attributes.SubTotal ? xml.attributes.SubTotal : '',
+                            tipo_cambio: xml.attributes.TipoCambio ? xml.attributes.TipoCambio : '',
+                            moneda: xml.attributes.Moneda ? xml.attributes.Moneda : '',
+                            numero_certificado: timbreFiscalDigital.attributes.UUID ? timbreFiscalDigital.attributes.UUID : '',
+                            descripcion: concepto.attributes.Descripcion,
+                            folio: xml.attributes.Folio ? xml.attributes.Folio : '',
+                            serie: xml.attributes.Serie ? xml.attributes.Serie : '',
+                        }
+                        let tipoRelacion = ''
+                        if(relacionados){
+                            if(relacionados.length){
+                                relacionados = relacionados[0]
+                                tipoRelacion = relacionados.attributes.TipoRelacion
+                                let uuidRelacionado = xml.getElementsByTagName('cfdi:CfdiRelacionado')[0]
+                                uuidRelacionado = uuidRelacionado.attributes.UUID
+                                obj.tipo_relacion = tipoRelacion
+                                obj.uuid_relacionado = uuidRelacionado
+                            }
+                        }
+                        if(obj.numero_certificado === ''){
+                            let NoCertificado = text.search('NoCertificado="')
+                            if(NoCertificado)
+                                obj.numero_certificado = text.substring(NoCertificado+15, NoCertificado + 35)
+                        }
+                        if(obj.subtotal === ''){
+                            let Subtotal = text.search('SubTotal="')
+                            if(Subtotal)
+                                Subtotal = text.substring(Subtotal+10)
+                                aux = Subtotal.search('"')
+                                Subtotal = Subtotal.substring(0,aux)
+                                obj.subtotal = Subtotal
+                        }
+                        if(obj.fecha === ''){
+                            let Fecha = text.search('Fecha="')
+                            if(Fecha)
+                                Fecha = text.substring(Fecha+7)
+                                aux = Fecha.search('"')
+                                Fecha = Fecha.substring(0,aux)
+                                obj.fecha = Fecha
+                        }
+                        let auxEmpresa = ''
+                        data.empresas.find(function(element, index) {
+                            if(element.rfc === obj.rfc_emisor){
+                                auxEmpresa = element
+                            }
+                        });
+                        let auxCliente = ''
+                        data.clientes.find(function(element, index) {
+                            let cadena = obj.nombre_receptor.replace(' S. C.',  ' SC').toUpperCase()
+                            cadena = cadena.replace(',S.A.',  ' SA').toUpperCase()
+                            cadena = cadena.replace(/,/g, '').toUpperCase()
+                            cadena = cadena.replace(/\./g, '').toUpperCase()
+                            if (element.empresa === obj.nombre_receptor ||
+                                element.empresa === cadena){
+                                auxCliente = element
+                            }
+                        });
+                        if(auxEmpresa){
+                            options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')
+                            form.empresa = auxEmpresa.name
+                        }else{
+                            errorAlert('No existe la empresa')
+                        }
+                        if(auxCliente){
+                            options['proyectos'] = setOptions(auxCliente.proyectos, 'nombre', 'id')
+                            form.cliente = auxCliente.empresa
+                            if(auxCliente.contratos){
+                                options['contratos'] = setOptions(auxCliente.contratos, 'nombre', 'id')
+                            }
+                        }else{
+                            createAlert('No existe el cliente', '¿Lo quieres crear?', () => this.addClienteAxios(obj))
+                        }
+                        if(auxEmpresa && auxCliente){
+                            swal.close()
+                        }
+                        form.facturaObject = obj
+                        form.rfc = obj.rfc_receptor
+                        this.setState({
+                            ... this.state,
+                            options,
+                            form
+                        })
+                    }
+                    reader.readAsText(files[counter])
+                }
+            }
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]) ,
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][name].value = value
+        form['adjuntos'][name].files = aux
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
+    setOptions = (name, array) => {
+        const { options } = this.state
+        options[name] = setOptions(array, 'nombre', 'id')
+        this.setState({
+            ... this.state,
+            options
+        })
+    }
+    
+    clearFiles = (name, key) => {
+        const { form } = this.state
+        let aux = []
+        for(let counter = 0; counter < form['adjuntos'][name].files.length; counter ++){
+            if(counter !== key){
+                aux.push(form['adjuntos'][name].files[counter])
+            }
+        }
+        if(aux.length < 1){
+            form['adjuntos'][name].value = ''
+            if(name === 'factura')
+                form['facturaObject'] = ''
+        }
+        form['adjuntos'][name].files = aux
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
     render() {
-        const { facturas, data, modal, form } = this.state
+        const { facturas, data, modalCancelar, form, modalFacturas } = this.state
         return (
             <Layout active={'administracion'}  {...this.props}>
                 <NewTable
@@ -344,8 +541,9 @@ class Facturacion extends Component {
                     data={facturas}
                     title='Facturas'
                     subtitle='Listado de facturas'
-                    mostrar_boton={false}
-                    abrir_modal={false}
+                    onClick={this.openModal}
+                    mostrar_boton={true}
+                    abrir_modal={true}
                     mostrar_acciones={true}
                     elements={data.facturas}
                     tipo_validacion='facturas'
@@ -357,7 +555,7 @@ class Facturacion extends Component {
                         'cancelarFactura': { function: this.cancelarFactura }
                     }}
                 />
-                <Modal size="lg" title={"Agregar adjuntos"} show={modal} handleClose={this.handleClose} >
+                <Modal size="lg" title={"Agregar adjuntos"} show={modalCancelar} handleClose={this.handleClose} >
                     <div className="mt-4 mb-4">
                         <ItemSlider
                             items={form.adjuntos.adjuntos.files}
@@ -375,6 +573,34 @@ class Facturacion extends Component {
                             </div>
                         </div>
                     </div>
+                </Modal>
+
+                <Modal title={"Agregar facturas"} show={modalFacturas} handleClose={this.handleCloseFacturas} >
+                    <Form
+                    // onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios();}}
+                    >
+                        <div className="mt-3 mb-4">
+                            <FileInput
+                                onChangeAdjunto={this.onChangeAdjunto}
+                                placeholder={form['adjuntos']['factura']['placeholder']}
+                                value={form['adjuntos']['factura']['value']}
+                                name={'factura'}
+                                id={'factura'}
+                                accept="text/xml, application/pdf"
+                                files={form['adjuntos']['factura']['files']}
+                                deleteAdjunto={this.clearFiles}
+                                multiple
+                            />
+                        </div>
+                        <div className="card-footer py-3 pr-1">
+                            <div className="row">
+                                <div className="col-lg-12 text-right pr-0 pb-0">
+                                    <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </Form>
                 </Modal>
 
             </Layout>
