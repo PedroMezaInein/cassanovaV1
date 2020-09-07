@@ -278,8 +278,8 @@ class Leads extends Component {
     safeConvert = e => prospecto => {
         const { history } = this.props
         history.push({
-            pathname: '/proyectos/proyectos',
-            state: { prospectos: prospecto }
+            pathname: '/proyectos/proyectos/convert',
+            state: { prospecto: prospecto }
         });
     }
 
