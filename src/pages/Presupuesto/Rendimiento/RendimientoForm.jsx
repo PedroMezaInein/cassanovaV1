@@ -55,7 +55,7 @@ class RendimientoForm extends Component {
                     if(state.rendimiento)
                     {
                         const { rendimiento } = state
-                        const { form, options } = this.state
+                        const { form } = this.state
                         if(rendimiento.unidad)
                             form.unidad = rendimiento.unidad.id.toString()
                         if(rendimiento.proveedor)
@@ -270,7 +270,7 @@ class RendimientoForm extends Component {
     }
 
     render() {
-        const { data, formeditado, form, options, title} = this.state
+        const { formeditado, form, options, title} = this.state
         return (
             <Layout active={'presupuesto'}  { ...this.props}>
                 <Card className="card-custom">

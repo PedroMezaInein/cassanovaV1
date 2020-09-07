@@ -386,7 +386,7 @@ class ProyectosForm extends Component {
                     if(state.proyecto)
                     {
                         const { proyecto } = state
-                        const { form, options } = this.state
+                        const { form } = this.state
                         console.log(proyecto, 'proyecto')
                         form.cp = proyecto.cp;
                         this.cpAxios(proyecto.cp)
@@ -477,7 +477,7 @@ class ProyectosForm extends Component {
         })
     }
     onChangeOptions = (e, arreglo) => {
-        const { name, value } = e.target
+        const { value } = e.target
         const { form, options } = this.state
         let auxArray = form[arreglo]
         let aux = []
@@ -800,7 +800,7 @@ class ProyectosForm extends Component {
         await axios.get(URL_DEV + 'prospecto/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { prospecto } = response.data
-                const { form, options } = this.state
+                const { form } = this.state
                 if (prospecto.cliente.cp) {
                     form.cp = prospecto.cliente.cp
                     this.cpAxios(prospecto.cliente.cp)

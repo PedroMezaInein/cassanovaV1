@@ -197,7 +197,7 @@ class AddPresupuestoForm extends Component {
     };
 
     checkButton = e => {
-        const { name, value, checked } = e.target
+        const { name, checked } = e.target
         const { form } = this.state
         form.conceptos[name] = checked
         this.setState({

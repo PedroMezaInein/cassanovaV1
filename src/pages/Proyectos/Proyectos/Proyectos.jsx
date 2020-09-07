@@ -972,8 +972,8 @@ class Proyectos extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'proyectos', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { clientes, empresas, proyectos } = response.data
-                const { options, prospecto, data } = this.state
+                const { proyectos } = response.data
+                const { options, data } = this.state
                 data.proyectos = proyectos
                 this.setState({
                     ...this.state,
@@ -1279,7 +1279,7 @@ class Proyectos extends Component {
                                                 form.adjuntos_grupo.map( (grupo, key) => {
                                                     return(
                                                         <Nav.Item as="li" key = {key}>
-                                                            <Nav.Link data-toggle="tab" className={primeravista&&key==0?"active":""} eventKey={grupo.id} onClick = { () => {this.seleccionaradj(grupo.adjuntos) } }>{grupo.text}</Nav.Link>
+                                                            <Nav.Link data-toggle="tab" className={primeravista&&key===0?"active":""} eventKey={grupo.id} onClick = { () => {this.seleccionaradj(grupo.adjuntos) } }>{grupo.text}</Nav.Link>
                                                         </Nav.Item>
                                                     )
                                                 })
