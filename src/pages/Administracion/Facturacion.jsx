@@ -6,14 +6,8 @@ import axios from 'axios'
 import { URL_DEV, FACTURAS_COLUMNS} from '../../constants'
 import NewTable from '../../components/tables/NewTable'
 import { Small, B } from '../../components/texts'
-import Moment from 'react-moment'
-import NumberFormat from 'react-number-format';
-import swal from 'sweetalert'
 import { setTextTable, setMoneyTable, setDateTable } from '../../functions/setters'
 import { errorAlert, forbiddenAccessAlert, createAlert, doneAlert } from '../../functions/alert'
-
-
-const $ = require('jquery');
 
 class Facturacion extends Component {
 

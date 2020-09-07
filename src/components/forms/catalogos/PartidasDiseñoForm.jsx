@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { Input, Button, RadioGroup } from '../../form-components'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { validateAlert } from '../../../functions/alert'
 
 class PartidasDiseñoForm extends Component {

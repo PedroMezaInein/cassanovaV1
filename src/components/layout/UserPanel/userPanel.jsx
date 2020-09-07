@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import NavUser from '../UserPanel/navUser'
-import UserNotifications from "./userNotifications"
 import CustomUser from "./customUser"
 
 function closeButton(){  

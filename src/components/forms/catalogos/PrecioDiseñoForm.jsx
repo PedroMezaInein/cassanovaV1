@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { Input, Button } from '../../form-components'
-import { faPlus } from '@fortawesome/free-solid-svg-icons' 
+import { Button } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import InputNumber from '../../form-components/InputNumber'
 import InputMoney from '../../form-components/InputMoney'
-import { Subtitle } from '../../texts'
 
 class AreaForm extends Component {
 

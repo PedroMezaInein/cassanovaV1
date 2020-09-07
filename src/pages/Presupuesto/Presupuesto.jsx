@@ -312,7 +312,7 @@ class Presupuesto extends Component {
 
     render() {
 
-        const { modal, title, form, options, data, adjuntos, formeditado} = this.state
+        const { modal, data, adjuntos} = this.state
 
         return (
             <Layout active={'presupuesto'}  {...this.props}> 

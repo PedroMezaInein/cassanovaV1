@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import '../../styles/custom_datatable.css'
 import '../../styles/metronic/_datables.scss';
 import { errorAlert } from '../../functions/alert'
-import swal from 'sweetalert'
 import { Card } from 'react-bootstrap'
 
 const $ = require('jquery');

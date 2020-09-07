@@ -3,15 +3,11 @@ import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
-import { Title, Subtitle, P, Small, B } from '../../../components/texts'
-import { Button } from '../../../components/form-components'
-import { faUserPlus, faUserEdit, faUserSlash, faKey } from '@fortawesome/free-solid-svg-icons'
-import { Card, Modal, ModalDelete } from '../../../components/singles'
-import { RegisterUserForm, PermisosForm, ClienteUserForm } from '../../../components/forms'
+import { Modal, ModalDelete } from '../../../components/singles'
+import { RegisterUserForm, PermisosForm } from '../../../components/forms'
 import swal from 'sweetalert'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
 import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert } from '../../../functions/alert'
-import modal from '../../../components/singles/Modal'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { USUARIOS, CLIENTES } from '../../../constants'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
@@ -523,7 +519,7 @@ class Usuarios extends Component {
     }
 
     render(){
-        const { modal, title, user, form, options, key, formeditado} = this.state
+        const { modal, title, user, form, options, key} = this.state
         const { formulario } = this.props
         return (
             <Layout active = { 'usuarios' }  { ...this.props } >

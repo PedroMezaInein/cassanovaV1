@@ -106,8 +106,6 @@ class ActualizarPresupuesto extends Component {
         if (state) {
             if (state.presupuesto) {
                 const { presupuesto } = state
-                const { form } = this.state
-
                 this.getOnePresupuestoAxios(presupuesto.id);
             }
         }
@@ -122,7 +120,7 @@ class ActualizarPresupuesto extends Component {
             (response) => {
                 swal.close() 
                 const { empresas, proyectos, areas, partidas, proveedores, unidades, conceptos} = response.data
-                const { options, data, form} = this.state 
+                const { options, data} = this.state 
 
                 data.partidas = partidas
                 let aux = {}
@@ -319,7 +317,7 @@ class ActualizarPresupuesto extends Component {
     }
 
     checkButton = (key, e) => {
-        const { name, value, checked } = e.target
+        const { name, checked } = e.target
         const { form, presupuesto } = this.state
 
         form.conceptos[key][name] = checked
@@ -368,7 +366,7 @@ class ActualizarPresupuesto extends Component {
         await axios.get(URL_DEV + 'presupuestos/' + id, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
 
-                const { form, data } = this.state
+                const { form } = this.state
                 const { presupuesto } = response.data
                 
                 let aux = []
