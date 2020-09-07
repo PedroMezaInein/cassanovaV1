@@ -42,7 +42,7 @@ class Empleados extends Component {
             tipo_empleado: 'Administrativo' ,
             estatus_empleado: 'Activo',
             empresa: '',
-            fechaInicio: new Date,
+            fechaInicio: new Date (),
             fechaFin: '',
             estatus_imss: 'Activo',
             puesto:'',
