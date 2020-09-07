@@ -883,7 +883,7 @@ class ProyectosForm extends Component {
                                 prospecto !== '' ? 
                                     <Accordion>
                                         <div className="d-flex justify-content-end">
-                                            <Accordion.Toggle as={Button} icon={faEye} color="transparent" eventKey={0} />
+                                            <Accordion.Toggle as={Button} icon={faEye} pulse="pulse-ring" eventKey={0} className="btn btn-icon btn-light-info pulse pulse-info" />
                                         </div>
                                         <Accordion.Collapse eventKey={0} className="px-md-5 px-2" >
                                             <div>
