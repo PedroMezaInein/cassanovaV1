@@ -314,15 +314,15 @@ td.concepto{
         color: #2171c1;
     }
 }
-.btn.btn-primary:hover:not(.btn-text), .btn.btn-primary:focus:not(.btn-text), .btn.btn-primary.focus:not(.btn-text) {
-    color: #FFFFFF!important;
-    background-color: #2171c1!important;
-    border-color: transparent;
-    i{
-        color: #E1F0FF!important;
-    }
+// .btn.btn-primary:hover:not(.btn-text), .btn.btn-primary:focus:not(.btn-text), .btn.btn-primary.focus:not(.btn-text) {
+//     color: #FFFFFF!important;
+//     background-color: #2171c1!important;
+//     border-color: transparent;
+//     i{
+//         color: #E1F0FF!important;
+//     }
     
-}
+// }
 .dropdown-toggle.nav-link:after, .dropdown-toggle.btn:after{
     display:none!important;
 }
