@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { RFC, DATE } from '../../../constants'
-import { SelectSearch, Button, Input, Calendar, InputSinText, InputNumber, OptionsCheckbox, InputMoney, SelectSearchTrue} from '../../form-components'
+import { DATE } from '../../../constants'
+import { SelectSearch, Button, Input, Calendar, InputSinText, InputNumber, OptionsCheckbox, InputMoney} from '../../form-components'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
 
@@ -28,7 +28,7 @@ class PresupuestoDiseñoForm extends Component {
     }
 
     handleChangeCheckbox = e => {
-        const { name, value, checked } = e.target
+        const { name, checked } = e.target
         const { form, onChangeCheckboxes } = this.props
         let aux = form[form.tipo_partida]
         aux.find(function (_aux, index) {

@@ -3,20 +3,15 @@ import { renderToString } from 'react-dom/server'
 import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import { Modal, ModalDelete} from '../../../components/singles'
-import { Button } from '../../../components/form-components'
-import { faPlus, faEye, faPhone, faEnvelope} from '@fortawesome/free-solid-svg-icons'
-import { ProyectosForm, AvanceForm } from '../../../components/forms'
+import { AvanceForm } from '../../../components/forms'
 import axios from 'axios'
-import { URL_DEV, CP_URL, PROYECTOS_COLUMNS, URL_ASSETS } from '../../../constants'
-import { Small, B, P } from '../../../components/texts'
-import Moment from 'react-moment'
+import { URL_DEV, PROYECTOS_COLUMNS, URL_ASSETS } from '../../../constants'
+import { Small } from '../../../components/texts'
 import swal from 'sweetalert'
-import { Accordion , Card} from 'react-bootstrap'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { setOptions, setTextTable, setDateTable, setArrayTable, setListTable } from '../../../functions/setters'
+import { Card} from 'react-bootstrap'
+import { setTextTable, setDateTable, setArrayTable, setListTable } from '../../../functions/setters'
 import NewTable from '../../../components/tables/NewTable'
 import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert} from '../../../functions/alert'
-import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import ItemSlider from '../../../components/singles/ItemSlider'
 import {Nav, Tab, Col, Row} from 'react-bootstrap'
 
@@ -916,7 +911,7 @@ class Proyectos extends Component {
         )
     }
 
-    setActions = concepto => {
+    setActions = () => {
         let aux = []
         aux.push(
             {
@@ -1244,7 +1239,7 @@ class Proyectos extends Component {
     }
 
     render() {
-        const { modal, modalDelete, modalAdjuntos, modalAvances, title, adjuntos, prospecto, form, options, proyectos, proyecto, data, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey} = this.state
+        const { modalDelete, modalAdjuntos, modalAvances, title, form, proyectos, proyecto, data, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey} = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 
