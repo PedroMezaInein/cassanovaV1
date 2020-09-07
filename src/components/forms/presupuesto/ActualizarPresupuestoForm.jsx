@@ -36,7 +36,6 @@ class ActualizarPresupuestoForm extends Component {
     onChangeDesperdicio = e =>{
         const { value, name } = e.target
         const { form, onChange } = this.props
-        console.log(form, 'form')
         if(value)
             form.conceptos.map( (concepto, key) => {
                 if(concepto.active)

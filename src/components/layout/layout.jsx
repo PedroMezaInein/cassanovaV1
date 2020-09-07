@@ -64,7 +64,6 @@ class Layout extends Component {
             draggable: false,
             progress: undefined,
         }
-        console.log('notificaciones')
         const { authUser: { access_token: access_token }} = this.props
         await axios.get(URL_DEV + 'notificaciones', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
