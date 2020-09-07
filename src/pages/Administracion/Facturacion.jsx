@@ -3,26 +3,37 @@ import { renderToString } from 'react-dom/server'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import { URL_DEV, FACTURAS_COLUMNS} from '../../constants'
+import { URL_DEV, FACTURAS_COLUMNS } from '../../constants'
 import NewTable from '../../components/tables/NewTable'
 import { Small, B } from '../../components/texts'
 import { setTextTable, setMoneyTable, setDateTable } from '../../functions/setters'
-import { errorAlert, forbiddenAccessAlert, createAlert, doneAlert } from '../../functions/alert'
-
+import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert} from '../../functions/alert'
+import { Modal, ItemSlider} from '../../components/singles'
+import { Button } from '../../components/form-components'
 class Facturacion extends Component {
 
     state = {
+        modal: false,
         facturas: [],
         data: {
             facturas: []
-        }
+        },
+        form: {
+            adjuntos: {
+                adjuntos: {
+                    value: '',
+                    placeholder: 'Ingresa los adjuntos',
+                    files: []
+                }
+            }
+        },
     }
 
     componentDidMount() {
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props
-        let aux = pathname.substr(1, pathname.length-1)
+        let aux = pathname.substr(1, pathname.length - 1)
         const facturas = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
             return pathname === url
@@ -61,15 +72,15 @@ class Facturacion extends Component {
     }
 
     setActions = factura => {
-        
+
         let aux = []
 
-        if(!factura.cancelada){
+        if (!factura.cancelada) {
             aux.push(
                 {
                     text: 'Cancelar',
                     btnclass: 'danger',
-                    iconclass: "flaticon-circle",
+                    iconclass: "flaticon-close",
                     action: 'cancelarFactura',
                     tooltip: { id: 'delete-Adjunto', text: 'Eliminar', type: 'error' },
                 })
@@ -81,38 +92,38 @@ class Facturacion extends Component {
     setLabelTable = objeto => {
         let restante = objeto.total - objeto.ventas_count - objeto.ingresos_count
         let text = {}
-        if(objeto.cancelada){
+        if (objeto.cancelada) {
             text.letra = '#8950FC'
             text.fondo = '#EEE5FF'
             text.estatus = 'CANCELADA'
-        }else{
-            if(restante <= 1){
+        } else {
+            if (restante <= 1) {
                 text.letra = '#388E3C'
                 text.fondo = '#E8F5E9'
                 text.estatus = 'PAGADA'
-            }else{
+            } else {
                 text.letra = '#F64E60'
                 text.fondo = '#FFE2E5'
                 text.estatus = 'PENDIENTE'
             }
         }
-            
-        return(
+
+        return (
             <>
-                <div class="d-none">
+                <div className="d-none">
                     {text.estatus}
                 </div>
                 <span className="label label-lg bg- label-inline font-weight-bold py-2" style={{
                     color: `${text.letra}`,
                     backgroundColor: `${text.fondo}`,
-                    fontSize:"11.7px"
-                    }} >
+                    fontSize: "11.7px"
+                }} >
                     {text.estatus}
                 </span>
             </>
         )
     }
-    
+
 
     setAdjuntosTable = factura => {
         return (
@@ -165,12 +176,63 @@ class Facturacion extends Component {
     }
 
     cancelarFactura = (factura) => {
-        createAlert('¿Deseas cancelar la factura?', '', () => this.cancelarFacturaAxios(factura))
+        // createAlert('¿Deseas cancelar la factura?', '', () => this.cancelarFacturaAxios(factura))
+        this.setState({
+            ... this.state,
+            modal: true
+        })
+    }
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                case 'adjuntos':
+                    form[element] = {
+                        adjuntos: {
+                            value: '',
+                            placeholder: 'Ingresa los adjuntos',
+                            files: []
+                        }
+                    }
+                    break;
+                default:
+                    form[element] = ''
+                    break;
+            }
+        })
+        return form;
     }
 
-    async cancelarFacturaAxios(factura){
+    handleChange = (files, item) => {
+        this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
+    }
+    
+    onChangeAdjunto = e => {
+        const { form } = this.state
+        const { files, value, name } = e.target
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][name].value = value
+        form['adjuntos'][name].files = aux
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
+    async cancelarFacturaAxios(factura) {
         const { access_token } = this.props.authUser
-        await axios.put(URL_DEV + 'facturas/cancelar/'+factura.id, {}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(URL_DEV + 'facturas/cancelar/' + factura.id, {}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { data } = this.state
                 const { facturasVentas } = response.data
@@ -183,9 +245,9 @@ class Facturacion extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -209,9 +271,9 @@ class Facturacion extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -221,28 +283,60 @@ class Facturacion extends Component {
         })
     }
 
+    handleClose = () => {
+        const { modal } = this.state
+        this.setState({
+            ... this.state,
+            modal: !modal,
+            form: this.clearForm()
+        })
+    }
+
+    onSubmit = e => {
+        e.preventDefault()
+        waitAlert()
+        this.cancelarFacturaAxios(e)
+    }
+
     render() {
-        const { facturas, data } = this.state
+        const { facturas, data, modal, form } = this.state
         return (
             <Layout active={'administracion'}  {...this.props}>
-                <NewTable 
-                    columns = { FACTURAS_COLUMNS } 
-                    data = { facturas }
-                    title = 'Facturas' 
-                    subtitle = 'Listado de facturas'
-                    mostrar_boton = { false }
-                    abrir_modal = { false }
-                    mostrar_acciones = { true }
-                    elements = { data.facturas }
-                    tipo_validacion = 'facturas'
-                    cardTable = 'cardTable'
-                    cardTableHeader = 'cardTableHeader'
-                    cardBody = 'cardBody'
-                    idTable = 'facturas-table'
+                <NewTable
+                    columns={FACTURAS_COLUMNS}
+                    data={facturas}
+                    title='Facturas'
+                    subtitle='Listado de facturas'
+                    mostrar_boton={false}
+                    abrir_modal={false}
+                    mostrar_acciones={true}
+                    elements={data.facturas}
+                    tipo_validacion='facturas'
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
+                    idTable='facturas-table'
                     actions={{
                         'cancelarFactura': { function: this.cancelarFactura }
                     }}
-                    />
+                />
+                <Modal size="lg" title={"Agregar adjuntos"} show={modal} handleClose={this.handleClose} >
+                    <div className="mt-4 mb-4">
+                        <ItemSlider
+                            items={form.adjuntos.adjuntos.files}
+                            handleChange={this.handleChange}
+                            item="adjuntos"
+                            multiple = {true}
+                        />
+                    </div>
+                    <div className="card-footer py-3 pr-1">
+                        <div className="row">
+                            <div className="col-lg-12 text-right pr-0 pb-0">
+                                <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" onSubmit={this.onSubmit}/>
+                            </div>
+                        </div>
+                    </div>
+                </Modal>
 
             </Layout>
         )
