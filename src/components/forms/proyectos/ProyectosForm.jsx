@@ -409,57 +409,6 @@ class ProyectosForm extends Component {
                                         />
                                     </div>
                                 </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-
-                                {
-                                    title !== 'Editar proyecto' ?
-                                        <Accordion>
-                                            {
-                                                form.adjuntos_grupo.map((grupo, key) => {
-                                                    return (
-                                                        <div key={key}>
-                                                            <div className="px-3 pt-2">
-                                                                <CustomToggle eventKey={grupo.id} >
-                                                                    <strong>
-                                                                        <p className="label-form">
-                                                                            {grupo.text}
-                                                                        </p>
-                                                                    </strong>
-                                                                </CustomToggle>
-                                                            </div>
-                                                            <Accordion.Collapse eventKey={grupo.id}>
-                                                                <div className="row mx-0">
-                                                                    {
-                                                                        grupo.adjuntos.map((adjunto, key) => {
-                                                                            return (
-
-                                                                                <div className="col-md-6" key={key}>
-                                                                                    <FileInput
-                                                                                        onChangeAdjunto={onChangeAdjuntoGrupo}
-                                                                                        placeholder={adjunto.placeholder}
-                                                                                        value={adjunto.value}
-                                                                                        name={adjunto.id}
-                                                                                        id={adjunto.id}
-                                                                                        accept="image/*, application/pdf"
-                                                                                        files={adjunto.files}
-                                                                                        deleteAdjunto={clearFilesGrupo}
-                                                                                        multiple
-                                                                                        iconclass={"fas fa-paperclip"}
-                                                                                    />
-                                                                                </div>
-                                                                            )
-                                                                        })
-                                                                    }
-                                                                </div>
-                                                            </Accordion.Collapse>
-                                                        </div>
-                                                    )
-
-                                                })
-                                            }
-                                        </Accordion>
-                                        : ''
-                                }
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
