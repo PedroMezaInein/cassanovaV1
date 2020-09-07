@@ -91,11 +91,23 @@ a.text-hover-danger2:hover, .text-hover-danger2:hover{
 }
 
 .pdfview{
+    @include screen ($lg) {
+        width: 275px;
+        height: 418.984px;
+    }
+    @include screen ($xxl) {
+        width: 468px;
+        height: 418.984px;
+    }
     width: 468px;
     height: 418.984px;
 }
 
 .pdfview-img{
+    @include down-screen($xs){
+        width: 18rem;
+        height: auto;
+    }
     width: 100%;
     height: auto;
     /* width: auto;
@@ -103,9 +115,13 @@ a.text-hover-danger2:hover, .text-hover-danger2:hover{
 }
 
 @media screen and (max-width: 992px) {
+    // @include down-screen($xs){
+    //     width: 18rem;
+    //     height: auto;
+    // }
     #descarga, img, iframe {
-        max-width:100px;
-        max-height:100px;
+        max-width:527px;
+        max-height:527px;
     }
 
 }
