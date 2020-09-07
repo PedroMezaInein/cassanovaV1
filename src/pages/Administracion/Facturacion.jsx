@@ -15,6 +15,7 @@ class Facturacion extends Component {
     state = {
         modal: false,
         facturas: [],
+        factura: '',
         data: {
             facturas: []
         },
@@ -81,6 +82,17 @@ class Facturacion extends Component {
                     text: 'Cancelar',
                     btnclass: 'danger',
                     iconclass: "flaticon-close",
+                    action: 'cancelarFactura',
+                    tooltip: { id: 'delete-Adjunto', text: 'Eliminar', type: 'error' },
+                })
+        }
+
+        if(factura.cancelada){
+            aux.push(
+                {
+                    text: 'Mostrar adjuntos',
+                    btnclass: 'success',
+                    iconclass: "flaticon-attachment",
                     action: 'cancelarFactura',
                     tooltip: { id: 'delete-Adjunto', text: 'Eliminar', type: 'error' },
                 })
@@ -176,10 +188,23 @@ class Facturacion extends Component {
     }
 
     cancelarFactura = (factura) => {
-        // createAlert('¿Deseas cancelar la factura?', '', () => this.cancelarFacturaAxios(factura))
+        const { form } = this.state
+
+        let aux = []
+        factura.adjuntos_cancelados.map((adjunto)=> {
+            aux.push({
+                name: adjunto.name,
+                url: adjunto.url
+            })
+        })
+
+        form.adjuntos.adjuntos.files = aux
+
         this.setState({
             ... this.state,
-            modal: true
+            modal: true,
+            factura: factura,
+            form
         })
     }
     clearForm = () => {
@@ -230,9 +255,21 @@ class Facturacion extends Component {
         })
     }
 
-    async cancelarFacturaAxios(factura) {
+    async cancelarFacturaAxios() {
         const { access_token } = this.props.authUser
-        await axios.put(URL_DEV + 'facturas/cancelar/' + factura.id, {}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { form, factura } = this.state
+        const data = new FormData();
+        let aux = Object.keys(form.adjuntos)
+        aux.map((element) => {
+            if (form.adjuntos[element].value !== '') {
+                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                }
+                data.append('adjuntos[]', element)
+            }
+        })
+        await axios.post(URL_DEV + 'facturas/cancelar/' + factura.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { data } = this.state
                 const { facturasVentas } = response.data
@@ -332,7 +369,9 @@ class Facturacion extends Component {
                     <div className="card-footer py-3 pr-1">
                         <div className="row">
                             <div className="col-lg-12 text-right pr-0 pb-0">
-                                <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" onSubmit={this.onSubmit}/>
+                                <Button text='ENVIAR' 
+                                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.cancelarFacturaAxios() }}
+                                    className="btn btn-primary mr-2" />
                             </div>
                         </div>
                     </div>
