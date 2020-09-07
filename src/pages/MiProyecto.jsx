@@ -7,7 +7,7 @@ import swal from 'sweetalert'
 import { URL_DEV, URL_ASSETS, TICKETS_ESTATUS } from '../constants'
 import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert, createAlert, questionAlert } from '../functions/alert'
 import { SelectSearch, SelectSearchSinText, Input } from '../components/form-components'
-import { setOptions } from '../functions/setters'
+import { setOptions, setLabelTable } from '../functions/setters'
 import { Card, Nav, Tab, Col, Row, NavDropdown } from 'react-bootstrap'
 import { Button } from '../components/form-components'
 import Moment from 'react-moment'
@@ -529,7 +529,7 @@ class MiProyecto extends Component {
                     actions: this.setActions(ticket),
                     fecha: renderToString(this.setDate(ticket.created_at)),
                     partida: renderToString(this.setText(ticket.partida.nombre)),
-                    estatus: renderToString(this.setEstatus(ticket.estatus_ticket)),
+                    estatus: renderToString(setLabelTable(ticket.estatus_ticket)),
                     descripcion: renderToString(this.setText(ticket.descripcion)),
                     descripcion: renderToString(this.setText(ticket.descripcion)),
                     tipo_trabajo: renderToString(this.setText(ticket.tipo_trabajo.tipo)),
@@ -559,18 +559,6 @@ class MiProyecto extends Component {
                 <Moment format="DD/MM/YYYY" style={{ fontSize: "11.7px" }}>
                     {date}
                 </Moment>
-            </>
-        )
-    }
-
-    setEstatus = (text) => {
-        return (
-            <>
-                <span className="label label-lg bg- label-inline font-weight-bold py-2" style={{
-                    color: `${text.letra}`,
-                    backgroundColor: `${text.fondo}`,
-                    fontSize: "11.7px"
-                }} >{text.estatus}</span>
             </>
         )
     }
