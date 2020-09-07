@@ -64,7 +64,9 @@ const Flujos = Loader(() => import('./pages/Administracion/Flujos') )
 const Proveedores = Loader(() => import('./pages/Administracion/Proveedor/Proveedor') )
 const ProveedoresForm = Loader(() => import('./pages/Administracion/Proveedor/ProveedorForm') )
 
-const Proyectos = Loader(() => import('./pages/Proyectos/Proyectos') )
+const Proyectos = Loader(() => import('./pages/Proyectos/Proyectos/Proyectos') )
+const ProyectosForm = Loader(() => import('./pages/Proyectos/Proyectos/ProyectosForm') )
+
 const Ventas = Loader(() => import('./pages/Proyectos/Ventas') )
 const Compras = Loader(() => import('./pages/Proyectos/Compras') )
 const Utilidad = Loader(() => import('./pages/Proyectos/Utilidad') )
@@ -198,6 +200,8 @@ class App extends Component{
                 <Route path = "/presupuesto/presupuesto-diseño/:action" exact component ={ PresupuestoDiseñoForm } />            
 
                 <Route path = "/proyectos/proyectos" exact component ={ Proyectos } />
+                <Route path = "/proyectos/proyectos/:action" exact component ={ ProyectosForm } />
+
                 <Route path = "/proyectos/ventas" exact component ={ Ventas } />
                 <Route path = "/proyectos/compras" exact component ={ Compras } />
                 <Route path = "/proyectos/utilidad" exact component ={ Utilidad } />

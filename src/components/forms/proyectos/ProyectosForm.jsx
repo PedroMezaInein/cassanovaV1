@@ -6,6 +6,7 @@ import { faPlus} from '@fortawesome/free-solid-svg-icons'
 import { DATE, TEL, EMAIL } from '../../../constants'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
+import SelectSearchTrue from '../../form-components/SelectSearchTrue';
 
 function CustomToggle({ children, eventKey }) {
 
@@ -69,8 +70,20 @@ class ProyectosForm extends Component {
     }
 
     updateCliente = value => {
-        const { onChange } = this.props
-        onChange({ target: { name: 'cliente', value: value } })
+        const { onChange, options, onChangeOptions, form } = this.props
+        options.clientes.map((cliente) => {
+            if (cliente.value === value) {
+                let aux = false;
+                form.clientes.map((element) => {
+                    if (element.value === value)
+                        aux = true
+                })
+                if (!aux)
+                    onChangeOptions({ target: { value: cliente.value, name: 'cliente' } }, 'clientes')
+            }
+
+        })
+        onChange({ target: { value: value, name: 'cliente' } })
     }
 
     updateEmpresa = value => {
@@ -84,7 +97,7 @@ class ProyectosForm extends Component {
     }
 
     render() {
-        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, removeCorreo, formeditado, ...props } = this.props
+        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, removeCorreo, formeditado, deleteOption, onChangeOptions, ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -127,7 +140,7 @@ class ProyectosForm extends Component {
                             <div id="wizard-1-content" className="pb-3" data-wizard-type="step-content" data-wizard-state="current">
                                 <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos de generales</h5>
                                 <div className="form-group row form-group-marginless">
-                                    <div className="col-md-6">
+                                    <div className="col-md-4">
                                         <Input
                                             requirevalidation={1}
                                             formeditado={formeditado}
@@ -140,21 +153,7 @@ class ProyectosForm extends Component {
                                             messageinc="Incorrecto. Ingresa el nombre del proyecto."
                                         />
                                     </div>
-                                    <div className="col-md-6">
-                                        <SelectSearch
-                                            formeditado={formeditado}
-                                            options={options.clientes}
-                                            placeholder="SELECCIONA EL CLIENTE"
-                                            name="cliente"
-                                            value={form.cliente}
-                                            onChange={this.updateCliente}
-                                            iconclass={"far fa-user"}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-6">
+                                    <div className="col-md-4">
                                         <InputPhone
                                             requirevalidation={1}
                                             formeditado={formeditado}
@@ -169,7 +168,7 @@ class ProyectosForm extends Component {
                                             patterns={TEL}
                                         />
                                     </div>
-                                    <div className="col-md-6">
+                                    <div className="col-md-4">
                                         <Input
                                             requirevalidation={1}
                                             formeditado={formeditado}
@@ -181,6 +180,58 @@ class ProyectosForm extends Component {
                                             iconclass={"far fa-user-circle"}
                                             messageinc="Incorrecto. Ingresa el nombre de contacto."
                                         />
+                                    </div>
+                                </div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="form-group row form-group-marginless">
+                                    
+                                    <div className="col-md-4">
+
+                                        {
+                                            formeditado && form.clientes.length ? 
+                                                <SelectSearchTrue
+                                                    formeditado={formeditado}
+                                                    options={options.clientes}
+                                                    placeholder="SELECCIONA EL CLIENTE"
+                                                    name="cliente"
+                                                    value={form.cliente}
+                                                    onChange={this.updateCliente}
+                                                    iconclass={"far fa-user"}
+                                                    />
+                                            :   
+                                                <SelectSearch
+                                                    formeditado={formeditado}
+                                                    options={options.clientes}
+                                                    placeholder="SELECCIONA EL CLIENTE"
+                                                    name="cliente"
+                                                    value={form.cliente}
+                                                    onChange={this.updateCliente}
+                                                    iconclass={"far fa-user"}
+                                                />
+                                        }
+
+                                        
+                                    </div>
+                                    <div className="col-md-8 row mx-0">
+                                        {
+                                            form.clientes.map((cliente, key) => {
+                                                return (
+                                                    <div className="tagify form-control p-1 col-md-4 px-2 d-flex justify-content-center align-items-center white-space" tabIndex="-1" style={{ borderWidth: "0px" }} key={key}>
+                                                        <div className=" image-upload d-flex px-3 align-items-center tagify__tag tagify__tag--primary tagify--noAnim white-space"  >
+                                                            <div
+                                                                title="Borrar archivo"
+                                                                className="tagify__tag__removeBtn"
+                                                                role="button"
+                                                                aria-label="remove tag"
+                                                                onClick={(e) => { e.preventDefault(); deleteOption(cliente, 'clientes') }}
+                                                            >
+                                                            </div>
+                                                            <div><span className="tagify__tag-text p-1 white-space">{cliente.name}</span></div>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
+                                        }
                                     </div>
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
@@ -409,6 +460,57 @@ class ProyectosForm extends Component {
                                         />
                                     </div>
                                 </div>
+                                {/* <div className="separator separator-dashed mt-1 mb-2"></div> */}
+
+                                {/* {
+                                    title !== 'Editar proyecto' ?
+                                        <Accordion>
+                                            {
+                                                form.adjuntos_grupo.map((grupo, key) => {
+                                                    return (
+                                                        <div key={key}>
+                                                            <div className="px-3 pt-2">
+                                                                <CustomToggle eventKey={grupo.id} >
+                                                                    <strong>
+                                                                        <p className="label-form">
+                                                                            {grupo.text}
+                                                                        </p>
+                                                                    </strong>
+                                                                </CustomToggle>
+                                                            </div>
+                                                            <Accordion.Collapse eventKey={grupo.id}>
+                                                                <div className="row mx-0">
+                                                                    {
+                                                                        grupo.adjuntos.map((adjunto, key) => {
+                                                                            return (
+
+                                                                                <div className="col-md-6" key={key}>
+                                                                                    <FileInput
+                                                                                        onChangeAdjunto={onChangeAdjuntoGrupo}
+                                                                                        placeholder={adjunto.placeholder}
+                                                                                        value={adjunto.value}
+                                                                                        name={adjunto.id}
+                                                                                        id={adjunto.id}
+                                                                                        accept="image/*, application/pdf"
+                                                                                        files={adjunto.files}
+                                                                                        deleteAdjunto={clearFilesGrupo}
+                                                                                        multiple
+                                                                                        iconclass={"fas fa-paperclip"}
+                                                                                    />
+                                                                                </div>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                </div>
+                                                            </Accordion.Collapse>
+                                                        </div>
+                                                    )
+
+                                                })
+                                            }
+                                        </Accordion>
+                                        : ''
+                                } */}
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
