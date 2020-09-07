@@ -2,7 +2,7 @@ import "react-app-polyfill/ie11";
 import "react-app-polyfill/stable";
 import React from 'react';
 import ReactDOM from 'react-dom';
-import * as _redux from "./redux";
+// import * as _redux from "./redux";
 import App from './App'; 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "react-datepicker/dist/react-datepicker.css";
@@ -17,7 +17,7 @@ import './styles/app.scss'
 import thunk from 'redux-thunk'
 import { loadState, saveState } from './redux/store/store' 
 
-const { PUBLIC_URL } = process.env;
+// const { PUBLIC_URL } = process.env;
 const history = createBrowserHistory();
 const initialData = loadState()
 

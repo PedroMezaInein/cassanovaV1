@@ -323,7 +323,6 @@ class Leads extends Component {
             (response) => {
                 this.getProspectoAxios()
                 const { modal } = this.state
-                const { prospectos } = response.data
                 modal.delete = false
                 this.setState({
                     ... this.state,

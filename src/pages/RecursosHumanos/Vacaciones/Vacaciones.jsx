@@ -45,9 +45,9 @@ class Vacaciones extends Component {
     componentDidMount() {
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
-        const { match: { params: { action: action } } } = this.props
-        const { history, location: { state: state } } = this.props
-        const remisiones = permisos.find(function (element, index) {
+        // const { match: { params: { action: action } } } = this.props
+        // const { history, location: { state: state } } = this.props
+        const vacaciones = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
             return pathname === url
         });

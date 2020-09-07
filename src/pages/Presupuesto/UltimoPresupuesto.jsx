@@ -34,7 +34,7 @@ class UltimoPresupuesto extends Component {
                 margen:'',
                 precio_unitario:''
             }],
-            fecha_creacion: new Date,
+            fecha_creacion: new Date (),
             fecha_aceptacion: '',
         },
         options: {

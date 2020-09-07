@@ -227,7 +227,6 @@ class RemisionForm extends Component{
 
         await axios.post(URL_DEV + 'remision', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { remision } = response.data
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
 
