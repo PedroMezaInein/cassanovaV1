@@ -1,7 +1,6 @@
 import React, { Component } from 'react' 
 import { connect } from 'react-redux'
 import axios from 'axios'
-import swal from 'sweetalert'
 import Layout from '../../../components/layout/layout' 
 import { ModalDelete, Modal } from '../../../components/singles' 
 import { PRESUPUESTO_DISEÑO_COLUMNS, URL_DEV, ADJUNTOS_PRESUPUESTOS_COLUMNS} from '../../../constants'

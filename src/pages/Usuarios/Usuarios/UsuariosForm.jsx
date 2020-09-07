@@ -3,22 +3,11 @@ import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
-import { Title, Subtitle, P, Small, B } from '../../../components/texts'
-import { Button } from '../../../components/form-components'
-import { faUserPlus, faUserEdit, faUserSlash, faKey } from '@fortawesome/free-solid-svg-icons'
-import { Modal, ModalDelete } from '../../../components/singles'
 import { RegisterUserForm } from '../../../components/forms'
 import swal from 'sweetalert'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
 import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert } from '../../../functions/alert'
-import modal from '../../../components/singles/Modal'
-import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { USUARIOS } from '../../../constants'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
-import FloatButtons from '../../../components/singles/FloatButtons'
-import { setTextTable } from '../../../functions/setters'
-import { renderToString } from 'react-dom/server'
-import { Tabs, Tab } from 'react-bootstrap' 
 import { Card } from 'react-bootstrap'
 
 const $ = require('jquery');
@@ -421,8 +410,7 @@ class UsuariosForm extends Component {
     }
 
     render(){
-        const { modal, title, users, user, form, options, key, data,usuarios, formeditado} = this.state
-        const { formulario, deleteForm } = this.props 
+        const { title, form, options, formeditado} = this.state
         return (
             <Layout active = { 'usuarios' }  { ...this.props } >
                 <Card className="card-custom">

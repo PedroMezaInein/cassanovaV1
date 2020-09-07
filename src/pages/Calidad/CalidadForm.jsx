@@ -1,13 +1,11 @@
 import React, { Component } from 'react' 
 import { connect } from 'react-redux'
 import axios from 'axios'
-import swal from 'sweetalert'
 import { URL_DEV} from '../../constants'
 import { setOptions} from '../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert, createAlert,questionAlert, deleteAlert } from '../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert,questionAlert, deleteAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { CalidadView} from '../../components/forms'
-import { Card } from 'react-bootstrap'
 
 
 class CalidadForm extends Component{

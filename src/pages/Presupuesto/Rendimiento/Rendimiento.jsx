@@ -2,13 +2,10 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import swal from 'sweetalert'
 import { URL_DEV, RENDIMIENTOS_COLUMNS } from '../../../constants'
-import { setOptions, setTextTable, setMoneyTable} from '../../../functions/setters'
+import { setTextTable, setMoneyTable} from '../../../functions/setters'
 import Layout from '../../../components/layout/layout'
-import { Modal, ModalDelete } from '../../../components/singles'
-import { RendimientoForm } from '../../../components/forms'
-import NewTable from '../../../components/tables/NewTable'
+import { ModalDelete } from '../../../components/singles'
 import { doneAlert, forbiddenAccessAlert, errorAlert, waitAlert } from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 
@@ -79,7 +76,7 @@ class Rendimientos extends Component {
         return aux
     }
 
-    setActions = rendimiento => {
+    setActions = () => {
         let aux = []
         aux.push(
             {
@@ -146,7 +143,7 @@ class Rendimientos extends Component {
 
     render() {
 
-        const { modal, modalDelete, title, form, options, rendimientos, formeditado, data } = this.state
+        const { modalDelete } = this.state
 
         return (
             <Layout active={'presupuesto'}  {...this.props}>

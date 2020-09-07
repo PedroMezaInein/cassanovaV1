@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { validateAlert } from '../../../functions/alert'
-import {Input, Calendar, SelectSearch, Button } from '../../form-components'
+import { Input, Calendar, SelectSearch, Button } from '../../form-components'
 import { DATE } from '../../../constants'
 import ItemSlider from '../../singles/ItemSlider'
+import { openWizard1_for2_wizard, openWizard2_for2_wizard } from '../../../functions/wizard'
 
 class ProcesoTicketForm extends Component {
 
-    handleChangeDate = ( date ) => {
+    handleChangeDate = (date) => {
         const { onChange } = this.props
         onChange({ target: { name: 'fechaProgramada', value: date } })
     }
@@ -20,118 +21,160 @@ class ProcesoTicketForm extends Component {
     render() {
         const { form, onSubmit, formeditado, onChange, options, handleChange, deleteFile, generateEmail, estatus, ...props } = this.props
         return (
-            <Form 
-                id = "form-proceso"
-                onSubmit={
-                    (e) => {
-                        e.preventDefault();
-                        validateAlert(onSubmit, e, 'form-proceso')
-                    }
-                }
-                {...props}>
-                <div className="text-center text-dark font-size-h5 font-weight-bold">
-                    TICKET EN PROCESO
+            <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
+                <div className="wizard-nav">
+                    <div className="wizard-steps px-8 py-8 px-lg-15 py-lg-3">
+                        <div id="wizard-1" className="wizard-step" data-wizard-state="current" data-wizard-type="step" onClick={() => { openWizard1_for2_wizard() }}>
+                            <div className="wizard-label">
+                                <h3 className="wizard-title">
+                                    <span>1.</span> Datos de solicitud</h3>
+                                <div className="wizard-bar"></div>
+                            </div>
+                        </div>
+                        <div id="wizard-2" className="wizard-step" data-wizard-type="step" onClick={() => { openWizard2_for2_wizard() }}>
+                            <div className="wizard-label">
+                                <h3 className="wizard-title">
+                                    <span>2.</span> Reporte de archivos</h3>
+                                <div className="wizard-bar"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div className="form-group row form-group-marginless pt-4">
-                    <div className="col-md-4">
-                        <Calendar
-                            onChangeCalendar = { this.handleChangeDate }
-                            placeholder = "FECHA PROGRAMADA"
-                            name = "fechaProgramada"
-                            value = { form.fechaProgramada }
-                            iconclass = "far fa-calendar-alt"
-                            requirevalidation = { 0 }
-                            patterns = { DATE }
-                            disabled = { estatus === 'Terminado' ? true : false }
-                            />
-                    </div>
-                    <div className="col-md-4">
-                        <SelectSearch
-                            options = { options.empleados }
-                            placeholder = "TÉCNICO QUE ASISTE"
-                            name = "empleado"
-                            value = { form.empleado }
-                            onChange = { this.updateEmpleado }
-                            iconclass = "fas fa-layer-group"
-                            formeditado = { formeditado }
-                            disabled = { estatus === 'Terminado' ? true : false }
-                            />
-                    </div>
-                    <div className="col-md-4">
-                        <Input
-                            placeholder = "¿QUIÉN RECIBE?"
-                            name = "recibe"
-                            value = { form.recibe }
-                            onChange = { onChange }
-                            iconclass = "fas fa-layer-group"
-                            requirevalidation = { 0 }
-                            formeditado = { formeditado }
-                            disabled = { estatus === 'Terminado' ? true : false }
-                            />
-                    </div>
+                <div className="row justify-content-center py-10 px-8 py-lg-12 px-lg-10">
                     <div className="col-md-12">
-                        <Input
-                            formeditado = {formeditado}
-                            requirevalidation = { 0 }
-                            as = 'textarea'
-                            name = 'descripcion'
-                            placeholder = 'DESCRIPCIÓN SOLUCIÓN DEL PROBLEMA'
-                            onChange = { onChange }
-                            value = { form.descripcion }
-                            rows = '3'
-                            disabled = { estatus === 'Terminado' ? true : false }
-                            messageinc = "Incorrecto. Ingresa una descripción."
-                        />
-                    </div>
-                    <div className="col-md-6">
-                        <div className="text-center mt-4">
-                            { form.adjuntos.reporte_problema_reportado.placeholder }
-                        </div>
-                        {
-                            estatus === 'Terminado' ? 
-                                <ItemSlider items = { form.adjuntos.reporte_problema_reportado.files } 
-                                item = 'reporte_problema_reportado' /> 
-                            :
-                                <ItemSlider items = { form.adjuntos.reporte_problema_reportado.files } 
-                                item = 'reporte_problema_reportado' handleChange = { handleChange } deleteFile = { deleteFile } /> 
-                        }
-                    </div>
-                    <div className="col-md-6">
-                        <div className="text-center mt-4">
-                            { form.adjuntos.reporte_problema_solucionado.placeholder }
-                        </div>
-                        {
-                            estatus === 'Terminado' ? 
-                                <ItemSlider items = { form.adjuntos.reporte_problema_solucionado.files } 
-                                    item = 'reporte_problema_solucionado' /> 
-                            :
-                                <ItemSlider items = { form.adjuntos.reporte_problema_solucionado.files } 
-                                    item = 'reporte_problema_solucionado' handleChange = { handleChange } deleteFile = { deleteFile } /> 
-                        }
+                        <Form
+                            onSubmit={
+                                (e) => {
+                                    e.preventDefault();
+                                    validateAlert(onSubmit, e, 'wizard-2-content')
+                                }
+                            }
+                            {...props}
+                        >
+                            <div id="wizard-1-content" className="pb-3" data-wizard-type="step-content" data-wizard-state="current">
+                                <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos</h5>
+                                <div className="form-group row form-group-marginless">
+                                    <div className="col-md-4">
+                                        <Calendar
+                                            onChangeCalendar={this.handleChangeDate}
+                                            placeholder="FECHA PROGRAMADA"
+                                            name="fechaProgramada"
+                                            value={form.fechaProgramada}
+                                            iconclass="far fa-calendar-alt"
+                                            requirevalidation={0}
+                                            patterns={DATE}
+                                            disabled={estatus === 'Terminado' ? true : false}
+                                        />
+                                    </div>
+                                    <div className="col-md-4">
+                                        <SelectSearch
+                                            options={options.empleados}
+                                            placeholder="TÉCNICO QUE ASISTE"
+                                            name="empleado"
+                                            value={form.empleado}
+                                            onChange={this.updateEmpleado}
+                                            iconclass="fas fa-layer-group"
+                                            formeditado={formeditado}
+                                            disabled={estatus === 'Terminado' ? true : false}
+                                        />
+                                    </div>
+                                    <div className="col-md-4">
+                                        <Input
+                                            placeholder="¿QUIÉN RECIBE?"
+                                            name="recibe"
+                                            value={form.recibe}
+                                            onChange={onChange}
+                                            iconclass="fas fa-layer-group"
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
+                                            disabled={estatus === 'Terminado' ? true : false}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="form-group row form-group-marginless">
+                                    <div className="col-md-12">
+                                        <Input
+                                            formeditado={formeditado}
+                                            requirevalidation={0}
+                                            as='textarea'
+                                            name='descripcion'
+                                            placeholder='DESCRIPCIÓN SOLUCIÓN DEL PROBLEMA'
+                                            onChange={onChange}
+                                            value={form.descripcion}
+                                            rows='3'
+                                            disabled={estatus === 'Terminado' ? true : false}
+                                            messageinc="Incorrecto. Ingresa una descripción."
+                                            style={{ paddingLeft: "10px" }}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="d-flex justify-content-between border-top mt-3 pt-3">
+                                    <div className="mr-2"></div>
+                                    <div>
+                                        <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick={() => { openWizard2_for2_wizard() }} data-wizard-type="action-next">Siguiente</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="wizard-2-content" className="pb-3" data-wizard-type="step-content">
+                                <h5 className="mb-4 font-weight-bold text-dark">Adjunta los reportes</h5>
+                                <div className="form-group row form-group-marginless">
+                                    <div className="col-md-6">
+                                        <div className="text-center mt-4">
+                                            {form.adjuntos.reporte_problema_reportado.placeholder}
+                                        </div>
+                                        {
+                                            estatus === 'Terminado' ?
+                                                <ItemSlider items={form.adjuntos.reporte_problema_reportado.files}
+                                                    item='reporte_problema_reportado' />
+                                                :
+                                                <ItemSlider items={form.adjuntos.reporte_problema_reportado.files}
+                                                    item='reporte_problema_reportado' handleChange={handleChange} deleteFile={deleteFile} />
+                                        }
+                                    </div>
+                                    <div className="col-md-6">
+                                        <div className="text-center mt-4">
+                                            {form.adjuntos.reporte_problema_solucionado.placeholder}
+                                        </div>
+                                        {
+                                            estatus === 'Terminado' ?
+                                                <ItemSlider items={form.adjuntos.reporte_problema_solucionado.files}
+                                                    item='reporte_problema_solucionado' />
+                                                :
+                                                <ItemSlider items={form.adjuntos.reporte_problema_solucionado.files}
+                                                    item='reporte_problema_solucionado' handleChange={handleChange} deleteFile={deleteFile} />
+                                        }
+                                    </div>
+                                </div>
+                                <div className="border-top mt-3 pt-3">
+                                    <div class="row">
+                                        <div class="col-lg-6 text-left">
+                                            <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard1_for2_wizard() }} data-wizard-type="action-prev">Anterior</button>
+                                        </div>
+                                        <div class="col-lg-6 text-right">
+                                            {
+                                                estatus !== 'Terminado' ?
+                                                    <div className="">
+                                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase mr-2"
+                                                                onClick={
+                                                                    (e) => {
+                                                                        e.preventDefault();
+                                                                        validateAlert(onSubmit, e, 'wizard-2-content')
+                                                                    }
+                                                                }
+                                                                text="GUARDAR" />
+                                                        <Button icon='' className="btn btn-success font-weight-bold text-uppercase" onClick={(e) => { e.preventDefault(); generateEmail(true) }} text="TERMINAR" />
+                                                    </div>
+                                                : ''
+                                            }
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
+                        </Form>
                     </div>
                 </div>
-
-                {
-                    estatus !== 'Terminado' ? 
-                        <div className="d-flex justify-content-center mt-3 pt-3">
-                            <div className="mr-5">
-                                <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" 
-                                    onClick = {
-                                        (e) => {
-                                            e.preventDefault();
-                                            validateAlert(onSubmit, e, 'form-proceso')
-                                        }
-                                    }
-                                    text="GUARDAR" />
-                            </div>
-                            <div>
-                                <Button icon='' className="btn btn-success font-weight-bold text-uppercase" onClick = { (e) => { e.preventDefault(); generateEmail(true)} }  text="TERMINAR" />
-                            </div>
-                        </div>
-                    : ''
-                }
-                
-            </Form>
+            </div>
         );
     }
 }

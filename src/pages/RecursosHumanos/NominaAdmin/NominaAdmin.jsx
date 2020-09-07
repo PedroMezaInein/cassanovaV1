@@ -123,7 +123,7 @@ class NominaAdmin extends Component {
         return aux
     }
 
-    setActionsAdjuntos = adjunto => {
+    setActionsAdjuntos = () => {
         let aux = []
         aux.push(
             {
@@ -184,7 +184,6 @@ class NominaAdmin extends Component {
         await axios.delete(URL_DEV + 'rh/nomina-administrativa/' + nomina.id, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { modal } = this.state
-                const { nomina } = response.data
                 this.getNominasAxios()
 
                 modal.delete = false

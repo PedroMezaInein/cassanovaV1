@@ -2,16 +2,11 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
-import { AreasForm } from '../../../components/forms'
 import { URL_DEV, PRECIO_M2_DISEÑOS_COLUMNS } from '../../../constants'
-import { Small} from '../../../components/texts'
-import { Modal, ModalDelete } from '../../../components/singles'
+import { ModalDelete } from '../../../components/singles'
 import axios from 'axios'
-import swal from 'sweetalert'
-import NewTable from '../../../components/tables/NewTable'
 import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
-import { setTextTable, setListTable, setMoneyTable} from '../../../functions/setters'
-import { Tabs, Tab } from 'react-bootstrap'
+import { setTextTable, setMoneyTable} from '../../../functions/setters'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 
 const $ = require('jquery');
@@ -84,7 +79,7 @@ class PrecioDiseño extends Component {
         return aux
     }
 
-    setActions = (precio) => {
+    setActions = () => {
         let aux = []
         aux.push(
             {

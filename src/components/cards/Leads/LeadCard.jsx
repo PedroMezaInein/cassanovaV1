@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {Card} from '../../singles'
-import {P, Small, B} from '../../texts'
+import {P} from '../../texts'
 import Moment from 'react-moment'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons'

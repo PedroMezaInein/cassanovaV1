@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import swal from 'sweetalert'
 import { URL_DEV, SOLICITUD_COMPRA_COLUMNS } from '../../../constants'
 import { setTextTable, setDateTable, setMoneyTable, setArrayTable} from '../../../functions/setters'
 import { errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
@@ -106,7 +105,7 @@ class SolicitudCompra extends Component{
         return aux
     }
 
-    setActions = solicitud => {
+    setActions = () => {
         let aux = []
             aux.push(
                 {

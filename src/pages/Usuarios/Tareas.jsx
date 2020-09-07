@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes} from '@fortawesome/free-solid-svg-icons'
 import {Input, Button}from '../../components/form-components'
 import moment from 'moment'
-import { Badge, Card, Col, Nav, Tab } from 'react-bootstrap'
+import { Badge, Card, Nav, Tab } from 'react-bootstrap'
 import { errorAlert, forbiddenAccessAlert } from '../../functions/alert'
 
 class Tareas extends Component{

@@ -4,7 +4,7 @@ import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { Modal, ModalDelete} from '../../components/singles'
 import { Button } from '../../components/form-components'
-import { faPlus, faEye, faPhone, faEnvelope} from '@fortawesome/free-solid-svg-icons'
+import { faEye, faPhone, faEnvelope} from '@fortawesome/free-solid-svg-icons'
 import { ProyectosForm, AvanceForm } from '../../components/forms'
 import axios from 'axios'
 import { URL_DEV, CP_URL, PROYECTOS_COLUMNS, URL_ASSETS } from '../../constants'
@@ -16,7 +16,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { setOptions, setTextTable, setDateTable, setArrayTable} from '../../functions/setters'
 import NewTable from '../../components/tables/NewTable'
 import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert} from '../../functions/alert'
-import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import ItemSlider from '../../components/singles/ItemSlider'
 import {Nav, Tab, Col, Row} from 'react-bootstrap'
 
@@ -1009,7 +1008,7 @@ class Proyectos extends Component {
         )
     }
 
-    setActions = concepto => {
+    setActions = () => {
         let aux = []
         aux.push(
             {
@@ -1293,7 +1292,7 @@ class Proyectos extends Component {
         })
         await axios.post(URL_DEV + 'proyectos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { proyectos, proyecto } = response.data
+                const { proyectos } = response.data
                 const { options, data } = this.state
                 data.proyectos = proyectos
                 options['clientes'] = []
@@ -1517,7 +1516,7 @@ class Proyectos extends Component {
         await axios.get(URL_DEV + 'prospecto/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { prospecto } = response.data
-                const { form, options } = this.state
+                const { form } = this.state
                 if (prospecto.cliente.cp) {
                     form.cp = prospecto.cliente.cp
                     this.cpAxios(prospecto.cliente.cp)
@@ -1622,7 +1621,7 @@ class Proyectos extends Component {
     }
 
     render() {
-        const { modal, modalDelete, modalAdjuntos, modalAvances, title, adjuntos, prospecto, form, options, proyectos, proyecto, data, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey} = this.state
+        const { modal, modalDelete, modalAdjuntos, modalAvances, title, prospecto, form, options, proyectos, proyecto, data, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey} = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 

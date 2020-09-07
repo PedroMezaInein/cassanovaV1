@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { Input, InputImage, Button } from '../form-components' 
-import { faTimesCircle, faCamera } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Input, Button } from '../form-components' 
 import { validateAlert } from '../../functions/alert'
 import { RFC } from '../../constants'
 
