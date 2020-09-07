@@ -6,7 +6,6 @@ class EstatusForm extends Component {
 
     render() {
         const { onSubmit, estatus } = this.props
-        console.log(estatus)
         return (
             <Form id="form-estatus"
                 onSubmit={
