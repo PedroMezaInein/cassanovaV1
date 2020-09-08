@@ -4,7 +4,6 @@ import { InputMoneySinText, InputNumberSinText, InputSinText, Button } from '../
 import { validateAlert } from '../../../functions/alert'
 import { setMoneyTableForNominas } from '../../../functions/setters'
 import Moment from 'react-moment'
-import ReactTooltip from 'react-tooltip/dist';
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 class ActualizarPresupuestoForm extends Component {
