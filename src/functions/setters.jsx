@@ -79,7 +79,7 @@ export function setLabelTable(text) {
             <span className="label label-lg bg- label-inline font-weight-bold py-2" style={{
                 color: `${text.letra}`,
                 backgroundColor: `${text.fondo}`,
-                fontSize: "11.7px"
+                fontSize: "75%"
             }} >
                 {text.estatus}
             </span>

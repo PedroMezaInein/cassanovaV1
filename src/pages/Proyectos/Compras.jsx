@@ -651,7 +651,7 @@ class Compras extends Component {
             (response) => {
                 swal.close()
                 const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos,
-                    clientes, proveedores, formasPago, metodosPago, estatusFacturas, contratos } = response.data
+                        proveedores, formasPago, metodosPago, estatusFacturas } = response.data
                 const { options, data } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
