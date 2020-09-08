@@ -740,7 +740,7 @@ class MiProyecto extends Component {
                                             </div>
                                             <div className="d-flex flex-column">
                                                 <a className="text-dark text-hover-primary font-weight-bold font-size-h4 mb-3 pl-2">PROYECTO</a>
-                                                <div className="text-dark-75">{proyecto.nombre}</div>
+                                                <div className="text-dark-75 pl-2">{proyecto.nombre}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -757,7 +757,7 @@ class MiProyecto extends Component {
                                             </div>
                                             <div className="d-flex flex-column">
                                                 <a className="text-dark text-hover-danger font-weight-bold font-size-h4 mb-3 pl-2">Dirección</a>
-                                                <div className="text-dark-75 text-justify">
+                                                <div className="text-dark-75 text-justify pl-2">
                                                     {
                                                         proyecto ?
                                                             <div>
@@ -804,7 +804,7 @@ class MiProyecto extends Component {
                                             </div>
                                             <div className="d-flex flex-column">
                                                 <a className="text-dark text-hover-info font-weight-bold font-size-h4 mb-3 pl-2">PERIODO</a>
-                                                <div className="text-dark-75">
+                                                <div className="text-dark-75 pl-2">
                                                     {
                                                         proyecto ?
                                                             <div>
