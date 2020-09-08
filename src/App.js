@@ -90,6 +90,8 @@ const PartidasDiseño = Loader( () => import('./pages/Catalogos/PartidasDiseño/
 const PartidasDiseñoForm = Loader( () => import('./pages/Catalogos/PartidasDiseño/PartidasDiseñoForm') )
 
 const Contabilidad = Loader( () => import('./pages/Reportes/Contabilidad') )
+const ReporteVentas = Loader( () => import('./pages/Reportes/ReporteVentas') )
+
 const AccountSettings = Loader(() => import('./pages/Perfil/AccountSettings') )
 const Calendario = Loader(() => import('./pages/Perfil/Calendario') )
 
@@ -251,6 +253,8 @@ class App extends Component{
                 <Route path = "/catalogos/partidas-diseño/:action" exact component ={ PartidasDiseñoForm } />
 
                 <Route path = "/reportes/contabilidad" exact component ={ Contabilidad } />
+                <Route path = "/reportes/reporte-ventas" exact component ={ ReporteVentas } />
+
                 <Route path = "/mi-perfil" exact component ={ AccountSettings } />
                 <Route path = "/mi-calendario" exact component ={ Calendario } />
 
