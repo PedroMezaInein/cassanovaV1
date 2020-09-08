@@ -1,32 +1,48 @@
 import React, { Component } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button } from 'react-bootstrap'
-import ReactTooltip from "react-tooltip";
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import { Tooltip } from 'react-bootstrap'
 
-export default class button extends Component{
-    constructor(props){
+
+export default class button extends Component {
+    constructor(props) {
         super(props)
     }
 
-    render(){
-        const { children, color, text, icon, onClick, className, type, tooltip, pulse, ...props } = this.props
-        return(
-            <Button data-tip data-for={tooltip ? tooltip.id : 'undefined'} type={type} onClick={onClick} className={`button__${color} ${className}` } { ... props }>
+    render() {
+        const { children, color, text, icon, onClick, className, type, tooltip, pulse, only_icon, ...props } = this.props
+        return (
+            <>
                 {
-                    icon !== ''  && <FontAwesomeIcon icon={icon} />
-                }<span className={pulse}></span>
-                {
-                    tooltip ? 
-                        <ReactTooltip id={tooltip.id} place="top" type={tooltip.type ? tooltip.type : 'dark'} effect="solid">
+                    tooltip ?
+                        <OverlayTrigger overlay={<Tooltip>{tooltip.text}</Tooltip>}>
+                            <Button type={type} onClick={onClick} className={className} {...props}>
+                                {
+                                    <i className={only_icon}></i>
+                                }
+                                {
+                                    icon !== '' && <FontAwesomeIcon icon={icon} />
+                                }   <span className={pulse}></span>
+
+                                {text}
+                                {children}
+                            </Button>
+                        </OverlayTrigger>
+                        :
+                        <Button type={type} onClick={onClick} className={className} {...props}>
                             {
-                                tooltip.text
+                                <i className={only_icon}></i>
                             }
-                        </ReactTooltip>
-                    : ''
+                            {
+                                icon !== '' && <FontAwesomeIcon icon={icon} />
+                            }<span className={pulse}></span>
+
+                            {text}
+                            {children}
+                        </Button>
                 }
-                {text}
-                {children}
-            </Button>
+            </>
         )
     }
 }
