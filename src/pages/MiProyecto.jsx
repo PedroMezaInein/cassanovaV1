@@ -5,21 +5,18 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV, URL_ASSETS, TICKETS_ESTATUS } from '../constants'
-import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert, createAlert, questionAlert } from '../functions/alert'
+import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert, questionAlert } from '../functions/alert'
 import { SelectSearch, SelectSearchSinText, Input } from '../components/form-components'
 import { setOptions, setLabelTable } from '../functions/setters'
 import { Card, Nav, Tab, Col, Row, NavDropdown } from 'react-bootstrap'
 import { Button } from '../components/form-components'
 import Moment from 'react-moment'
-import { Small } from '../components/texts'
 import { Form } from 'react-bootstrap'
 import { validateAlert } from '../functions/alert'
 import TableForModals from '../components/tables/TableForModals'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../functions/routers"
 import { Modal, ItemSlider } from '../components/singles'
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
-import Tooltip from 'react-bootstrap/Tooltip'
 
 class MiProyecto extends Component {
 
@@ -96,11 +93,6 @@ class MiProyecto extends Component {
             descripcion: '',
             nombre: '',
             adjuntos: {
-                // adjunto: {
-                //     value: '',
-                //     placeholder: 'Ingresa los adjuntos',
-                //     files: []
-                // },
                 fotos: {
                     value: '',
                     placeholder: 'Fotos del incidente',
@@ -1108,16 +1100,18 @@ class MiProyecto extends Component {
                                 ticket.estatus_ticket ?
                                     ticket.estatus_ticket.estatus === "Respuesta pendiente"  ? 
                                         <>
-                                            <OverlayTrigger overlay={<Tooltip>Aceptar</Tooltip>}>
-                                                <a 
+                                            <Button
                                                 onClick={() => { this.changeEstatus('En proceso') }} 
-                                                className="btn btn-icon btn-light-success success2 btn-sm mr-2"><i className="flaticon2-check-mark icon-sm"></i></a>
-                                            </OverlayTrigger>
-                                            <OverlayTrigger overlay={<Tooltip>Rechazar</Tooltip>}>
-                                                <a 
+                                                className={"btn btn-icon btn-light-success success2 btn-sm mr-2"}
+                                                only_icon={"flaticon2-check-mark icon-sm"}
+                                                tooltip={{text:'Aceptar'}}
+                                            />
+                                            <Button 
                                                 onClick={() => { this.changeEstatus('En espera') }} 
-                                                className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger"><i className="flaticon2-cross icon-sm"></i></a>
-                                            </OverlayTrigger>
+                                                className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger"
+                                                only_icon={"flaticon2-cross icon-sm"}
+                                                tooltip={{text:'Rechazar'}}
+                                            />  
                                         </>
                                     : ''
                                 : ''
