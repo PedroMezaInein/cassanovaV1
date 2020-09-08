@@ -4,7 +4,6 @@ import { Input, Button } from '../form-components'
 import { faTrashAlt, faCalendarCheck } from '@fortawesome/free-solid-svg-icons'
 import Calendar from '../form-components/Calendar'
 import { Small } from '../texts'
-import { GOLD} from '../../constants'
 
 class TareaForm extends Component {
 
