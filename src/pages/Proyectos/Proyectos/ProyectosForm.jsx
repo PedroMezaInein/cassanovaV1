@@ -871,14 +871,23 @@ class ProyectosForm extends Component {
                             <h3 className="card-label">{title}</h3>
                         </div>
                     </Card.Header>
-                    <Card.Body>
+                    <Card.Body className="pt-0">
                         <ProyectoFormulario 
-                            title = { title } form = { form } options = { options } formeditado = { formeditado } 
-                            onChange = { this.onChange } onChangeAdjunto = { this.onChangeAdjunto }
-                            deleteOption = { this.deleteOption } onChangeOptions = { this.onChangeOptions }
-                            clearFiles = { this.clearFiles } onChangeCP = { this.onChangeCP }
-                            onSubmit = { this.onSubmit } onChangeAdjuntoGrupo = { this.onChangeAdjuntoGrupo } 
-                            clearFilesGrupo = { this.clearFilesGrupo } removeCorreo = {this.removeCorreo}>
+                            title = { title } 
+                            form = { form }
+                            options = { options }
+                            formeditado = { formeditado } 
+                            onChange = { this.onChange }
+                            onChangeAdjunto = { this.onChangeAdjunto }
+                            deleteOption = { this.deleteOption }
+                            onChangeOptions = { this.onChangeOptions }
+                            clearFiles = { this.clearFiles }
+                            onChangeCP = { this.onChangeCP }
+                            onSubmit = { this.onSubmit }
+                            onChangeAdjuntoGrupo = { this.onChangeAdjuntoGrupo } 
+                            clearFilesGrupo = { this.clearFilesGrupo }
+                            removeCorreo = {this.removeCorreo}
+                            className="px-3">
                             {
                                 prospecto !== '' ? 
                                     <Accordion>

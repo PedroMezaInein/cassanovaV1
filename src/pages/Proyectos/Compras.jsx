@@ -1248,9 +1248,20 @@ class Compras extends Component {
                 />
 
                 <Modal size="xl" title={title} show={modal} handleClose={this.handleClose} >
-                    <ComprasForm options={options} form={form} setOptions={this.setOptions} data={data} title={title}
-                        onChange={this.onChange} onChangeAdjunto={this.onChangeAdjunto} clearFiles={this.clearFiles}
-                        sendFactura={() => { this.sendFactura() }} onSubmit={this.onSubmit} formeditado={formeditado}>
+                    <ComprasForm 
+                        options={options} 
+                        form={form} 
+                        setOptions={this.setOptions} 
+                        data={data} 
+                        title={title}
+                        onChange={this.onChange} 
+                        onChangeAdjunto={this.onChangeAdjunto} 
+                        clearFiles={this.clearFiles}
+                        sendFactura={() => { this.sendFactura() }} 
+                        onSubmit={this.onSubmit} 
+                        formeditado={formeditado}
+                        className="px-3"
+                    >
                         {
                             solicitud ?
                                 <SolicitudCompraCard solicitud={solicitud} formeditado={formeditado} />

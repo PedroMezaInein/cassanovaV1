@@ -1644,11 +1644,20 @@ class Proyectos extends Component {
                 />
 
                 <Modal size="xl" title = { title } show={modal} handleClose={this.handleClose}>
-                    <ProyectosForm title={title} form={form} onChange={this.onChange} options={options}
-                        onChangeAdjunto={this.onChangeAdjunto} clearFiles={this.clearFiles} onChangeCP={this.onChangeCP}
-                        onSubmit={this.onSubmit} onChangeAdjuntoGrupo = { this.onChangeAdjuntoGrupo } 
-                        clearFilesGrupo = { this.clearFilesGrupo } removeCorreo = {this.removeCorreo}
-                        formeditado={formeditado} >
+                    <ProyectosForm 
+                        title={title} 
+                        form={form} 
+                        onChange={this.onChange} 
+                        options={options}
+                        onChangeAdjunto={this.onChangeAdjunto}
+                        clearFiles={this.clearFiles}
+                        onChangeCP={this.onChangeCP}
+                        onSubmit={this.onSubmit}
+                        onChangeAdjuntoGrupo = { this.onChangeAdjuntoGrupo } 
+                        clearFilesGrupo = { this.clearFilesGrupo }
+                        removeCorreo = {this.removeCorreo}
+                        formeditado={formeditado}
+                    >
                         {
                             prospecto !== '' ?
                                 <Accordion>

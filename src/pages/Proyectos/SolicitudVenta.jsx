@@ -661,9 +661,18 @@ class SolicitudVenta extends Component{
                     cardBody='cardBody'
                 />
                 <Modal size="xl" show = { modal } handleClose = { this.handleClose } title = { title }>
-                    <SolicitudVentaForm title = { title } form = { form } options = { options } 
-                        setOptions = {this.setOptions}  onChange = { this.onChange } onChangeAdjunto = { this.onChangeAdjunto }
-                        clearFiles = { this.clearFiles } onSubmit = { this.onSubmit } formeditado={formeditado}/>
+                    <SolicitudVentaForm 
+                        title = { title } 
+                        form = { form } 
+                        options = { options } 
+                        setOptions = {this.setOptions} 
+                        onChange = { this.onChange }
+                        onChangeAdjunto = { this.onChangeAdjunto }
+                        clearFiles = { this.clearFiles }
+                        onSubmit = { this.onSubmit }
+                        formeditado={formeditado}
+                        className="px-3"
+                    />
                 </Modal>
                 <ModalDelete title={"¿Deseas eliminar la solicitud de venta?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteSolicitudAxios() }}>
                 </ModalDelete>

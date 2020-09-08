@@ -249,8 +249,13 @@ class LeadsForm extends Component {
         const { form, options, formeditado } = this.state
         return (
             <Layout active = 'leads'  { ...this.props } >
-                <Card className="pt-0">
-                    <Card.Body className="pt-0">
+                <Card className="card-custom">
+                    <Card.Header>
+                        <div className="card-title">
+                            <h3 className="card-label">LEADS</h3>
+                        </div>
+                    </Card.Header>
+                    <Card.Body>
                         <LeadFormulario 
                             form = { form } 
                             options = { options }
