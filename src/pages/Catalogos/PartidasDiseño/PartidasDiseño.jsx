@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { ModalDelete } from '../../../components/singles'
-import swal from 'sweetalert'
 import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert } from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { PARTIDAS_DISEÑO_COLUMNS } from '../../../constants'
@@ -70,7 +69,6 @@ class PartidasDiseño extends Component {
         await axios.delete(URL_DEV + 'partidas-diseño/' + partida.id, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
                 
-                const { partidas } = response.data
                 const { modal, key } = this.state
 
                 if(key === 'inein'){

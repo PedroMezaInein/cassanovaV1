@@ -33,7 +33,7 @@ class LoginForm extends React.Component {
     async handleSubmit(event) {
         event.preventDefault();
         const data = this.state.form;
-        let error = this.state.error;;
+        // let error = this.state.error;;
         await axios.post(URL_DEV + 'user/login', data).then(
             (response) => {
                 const { history, login } = this.props

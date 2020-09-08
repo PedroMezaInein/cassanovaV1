@@ -3,20 +3,15 @@ import { renderToString } from 'react-dom/server'
 import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import { Modal, ModalDelete} from '../../../components/singles'
-import { Button } from '../../../components/form-components'
-import { faPlus, faEye, faPhone, faEnvelope} from '@fortawesome/free-solid-svg-icons'
-import { ProyectosForm, AvanceForm } from '../../../components/forms'
+import { AvanceForm } from '../../../components/forms'
 import axios from 'axios'
-import { URL_DEV, CP_URL, PROYECTOS_COLUMNS, URL_ASSETS } from '../../../constants'
-import { Small, B, P } from '../../../components/texts'
-import Moment from 'react-moment'
+import { URL_DEV, PROYECTOS_COLUMNS, URL_ASSETS } from '../../../constants'
+import { Small } from '../../../components/texts'
 import swal from 'sweetalert'
-import { Accordion , Card} from 'react-bootstrap'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { setOptions, setTextTable, setDateTable, setArrayTable, setListTable } from '../../../functions/setters'
+import { Card} from 'react-bootstrap'
+import { setTextTable, setDateTable, setArrayTable, setListTable } from '../../../functions/setters'
 import NewTable from '../../../components/tables/NewTable'
 import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert} from '../../../functions/alert'
-import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import ItemSlider from '../../../components/singles/ItemSlider'
 import {Nav, Tab, Col, Row} from 'react-bootstrap'
 
@@ -916,7 +911,7 @@ class Proyectos extends Component {
         )
     }
 
-    setActions = concepto => {
+    setActions = () => {
         let aux = []
         aux.push(
             {
@@ -977,8 +972,8 @@ class Proyectos extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'proyectos', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { clientes, empresas, proyectos } = response.data
-                const { options, prospecto, data } = this.state
+                const { proyectos } = response.data
+                const { options, data } = this.state
                 data.proyectos = proyectos
                 this.setState({
                     ...this.state,
@@ -1244,7 +1239,7 @@ class Proyectos extends Component {
     }
 
     render() {
-        const { modal, modalDelete, modalAdjuntos, modalAvances, title, adjuntos, prospecto, form, options, proyectos, proyecto, data, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey} = this.state
+        const { modalDelete, modalAdjuntos, modalAvances, title, form, proyectos, proyecto, data, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey} = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 
@@ -1284,7 +1279,7 @@ class Proyectos extends Component {
                                                 form.adjuntos_grupo.map( (grupo, key) => {
                                                     return(
                                                         <Nav.Item as="li" key = {key}>
-                                                            <Nav.Link data-toggle="tab" className={primeravista&&key==0?"active":""} eventKey={grupo.id} onClick = { () => {this.seleccionaradj(grupo.adjuntos) } }>{grupo.text}</Nav.Link>
+                                                            <Nav.Link data-toggle="tab" className={primeravista&&key===0?"active":""} eventKey={grupo.id} onClick = { () => {this.seleccionaradj(grupo.adjuntos) } }>{grupo.text}</Nav.Link>
                                                         </Nav.Item>
                                                     )
                                                 })

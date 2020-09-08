@@ -4,7 +4,6 @@ import { URL_DEV } from '../../constants'
 import { ToggleButton, Button } from '../form-components' 
 import { Accordion, Card } from 'react-bootstrap' 
 import Form from 'react-bootstrap/Form'
-import swal from 'sweetalert'
 import { doneAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
 class PermisosForm extends Component {
 

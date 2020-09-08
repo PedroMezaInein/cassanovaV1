@@ -386,7 +386,7 @@ class ProyectosForm extends Component {
                     if(state.proyecto)
                     {
                         const { proyecto } = state
-                        const { form, options } = this.state
+                        const { form } = this.state
                         console.log(proyecto, 'proyecto')
                         form.cp = proyecto.cp;
                         this.cpAxios(proyecto.cp)
@@ -477,7 +477,7 @@ class ProyectosForm extends Component {
         })
     }
     onChangeOptions = (e, arreglo) => {
-        const { name, value } = e.target
+        const { value } = e.target
         const { form, options } = this.state
         let auxArray = form[arreglo]
         let aux = []
@@ -800,7 +800,7 @@ class ProyectosForm extends Component {
         await axios.get(URL_DEV + 'prospecto/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { prospecto } = response.data
-                const { form, options } = this.state
+                const { form } = this.state
                 if (prospecto.cliente.cp) {
                     form.cp = prospecto.cliente.cp
                     this.cpAxios(prospecto.cliente.cp)
@@ -883,7 +883,7 @@ class ProyectosForm extends Component {
                                 prospecto !== '' ? 
                                     <Accordion>
                                         <div className="d-flex justify-content-end">
-                                            <Accordion.Toggle as={Button} icon={faEye} color="transparent" eventKey={0} />
+                                            <Accordion.Toggle as={Button} icon={faEye} pulse="pulse-ring" eventKey={0} className="btn btn-icon btn-light-info pulse pulse-info" />
                                         </div>
                                         <Accordion.Collapse eventKey={0} className="px-md-5 px-2" >
                                             <div>

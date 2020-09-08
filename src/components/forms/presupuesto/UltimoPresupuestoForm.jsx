@@ -4,7 +4,6 @@ import { InputMoneySinText, InputNumberSinText, InputSinText, Button, Calendar }
 import { validateAlert } from '../../../functions/alert'
 import { setMoneyTableForNominas } from '../../../functions/setters'
 import Moment from 'react-moment'
-import ReactTooltip from 'react-tooltip/dist';
 import { DATE } from '../../../constants'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
@@ -46,7 +45,7 @@ class ActualizarPresupuestoForm extends Component {
     }
 
     onChangeDesperdicio = e =>{
-        const { value, name } = e.target
+        const { value } = e.target
         const { form, onChange } = this.props
         if(value)
             form.conceptos.map( (concepto, key) => {
@@ -99,7 +98,7 @@ class ActualizarPresupuestoForm extends Component {
     }
 
     render() {
-        const { aceptarPresupuesto, onChange, formeditado, checkButton, form, presupuesto, onSubmit, onChangeInput, openModal} = this.props
+        const { aceptarPresupuesto, onChange, formeditado, checkButton, form, presupuesto, onSubmit, onChangeInput} = this.props
         const { margen } = this.state
         if (presupuesto)
             return (

@@ -224,7 +224,7 @@ class EmpresasForm extends Component {
 
     removeFile = (e) => {
         e.preventDefault()
-        const { name, logo, file, razon_social } = this.state.empresa
+        const { name, logo, razon_social } = this.state.empresa
         this.setState({
             ... this.state,
             form: {

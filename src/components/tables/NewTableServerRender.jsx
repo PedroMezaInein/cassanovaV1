@@ -58,7 +58,7 @@ class NewTableServerRender extends Component {
         }) 
         $( window ).on('scroll',function(){ 
             var pos = $(this).scrollTop(); 
-            if (pos == 0) {
+            if (pos === 0) {
                 $("#"+cardTableHeader).css("margin-top","0px").css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)")
             }
             else
@@ -88,7 +88,7 @@ class NewTableServerRender extends Component {
         });
     }
     componentDidMount() {
-        const { actions, mostrar_acciones, elementClass, accessToken, setter, urlRender, validateFactura, tipo_validacion, cardTable, 
+        const { actions, mostrar_acciones, elementClass, accessToken, setter, urlRender, tipo_validacion, cardTable, 
             cardTableHeader, cardBody, isTab, checkbox } = this.props
         global_variable["mostrar_acciones"] = mostrar_acciones;
 
@@ -107,7 +107,7 @@ class NewTableServerRender extends Component {
         }) 
         $( window ).on('scroll',function(){ 
             var pos = $(this).scrollTop(); 
-            if (pos == 0) {
+            if (pos === 0) {
                 $("#"+cardTableHeader).css("margin-top","0px").css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)")
             }
             else
@@ -154,8 +154,8 @@ class NewTableServerRender extends Component {
         table.DataTable({
 
             initComplete: function () {
-                var html_append;
-                var html;
+                // var html_append;
+                // var html;
                 var contador = 0;
                 table.find("thead th").each(function () {
                     var title = $(this).text();

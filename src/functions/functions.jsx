@@ -4,7 +4,7 @@ export function countDaysWithoutWeekend(startDate, endDate) {
     while (curDate <= endDate) {
         var dayOfWeek = curDate.getDay();
         if(!((dayOfWeek == 6) || (dayOfWeek == 0)))
-           count++;
+            count++;
         curDate.setDate(curDate.getDate() + 1);
     }
     return count;

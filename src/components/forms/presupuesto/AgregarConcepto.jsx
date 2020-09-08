@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { Input, SelectSearch, InputMoney, Button, ToggleButton } from '../../form-components'
+import { Input, SelectSearch, InputMoney, Button } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import SelectSearchTrue from '../../form-components/SelectSearchTrue'
 import Tabs from 'react-bootstrap/Tabs'
@@ -40,7 +40,7 @@ class AgregarConcepto extends Component {
 
     onChange = e => {
         const { checked } = e.target
-        const { form, data, checkButtonConceptos } = this.props
+        const { data, checkButtonConceptos } = this.props
 
         data.subpartidas.map((subpartida) => {
             subpartida.conceptos.map((concepto) => {
@@ -50,7 +50,7 @@ class AgregarConcepto extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, onSubmit, formeditado, data, checkButtonConceptos, activeKey, onSelect, ...props } = this.props
+        const { title, options, form, onChange, onSubmit, formeditado, data, checkButtonConceptos, activeKey, onSelect } = this.props
         return (
             <Form id="form-presupuesto"
                 onSubmit={

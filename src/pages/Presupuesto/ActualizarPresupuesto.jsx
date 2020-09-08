@@ -158,7 +158,7 @@ class ActualizarPresupuesto extends Component {
         const { form } = this.state
         await axios.post(URL_DEV + 'conceptos', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { conceptos, concepto} = response.data
+                const { concepto} = response.data
 
                 this.addConceptoToPresupuestoAxios([concepto])
                 
@@ -179,7 +179,7 @@ class ActualizarPresupuesto extends Component {
 
     async addConceptoToPresupuestoAxios(conceptos) {
         const { access_token } = this.props.authUser
-        const { form, presupuesto} = this.state
+        const { presupuesto} = this.state
         let aux = {
             conceptos: conceptos
         }
@@ -271,7 +271,7 @@ class ActualizarPresupuesto extends Component {
     };
 
     checkButtonConceptos = (e, key)=> {
-        const { name, value, checked } = e.target
+        const { checked } = e.target
         const { form } = this.state
         form.conceptosNuevos[key].active = checked
         this.setState({

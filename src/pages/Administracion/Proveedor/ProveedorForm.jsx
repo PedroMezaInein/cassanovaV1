@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
-// import swal from 'sweetalert'
 import { URL_DEV } from '../../../constants'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
@@ -231,7 +230,6 @@ class ProveedorForm extends Component{
         const { form } = this.state
         await axios.post(URL_DEV + 'proveedores', form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { proveedores } = response.data
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
@@ -264,7 +262,6 @@ class ProveedorForm extends Component{
         const { form, proveedor } = this.state
         await axios.put(URL_DEV + 'proveedores/' + proveedor.id, form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { proveedores } = response.data
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
