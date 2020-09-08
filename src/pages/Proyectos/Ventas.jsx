@@ -1258,10 +1258,10 @@ class Ventas extends Component{
                     setter = { this.setVentas }
                     urlRender = {URL_DEV + 'ventas'}
                     idTable = 'kt_datatable2_ventas'
-                    elementClass = 'total'
+                    // elementClass = 'total'
                     // zeroRed = { true }
-                    validateFactura={true}
-                    tipo_validacion = 'ventas'
+                    // validateFactura={true}
+                    // tipo_validacion = 'ventas'
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'
                     cardBody='cardBody'
