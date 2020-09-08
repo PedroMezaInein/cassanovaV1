@@ -57,7 +57,7 @@ class SolicitudVentaForm extends Component {
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
-                    <div className="wizard-steps px-8 py-8 px-lg-15 py-lg-3">
+                    <div className="wizard-steps">
                         <div id="wizard-1" className="wizard-step" data-wizard-state="current" data-wizard-type="step" onClick={() => { openWizard1() }}>
                             <div className="wizard-label">
                                 <h3 className="wizard-title">
@@ -81,7 +81,7 @@ class SolicitudVentaForm extends Component {
                         </div>
                     </div>
                 </div>
-                <div className="row justify-content-center py-10 px-8 py-lg-12 px-lg-10">
+                <div className="row justify-content-center">
                     <div className="col-md-12">
                         <Form
                             onSubmit={
@@ -93,7 +93,7 @@ class SolicitudVentaForm extends Component {
                             {...props}
                         >
                             {children}
-                            <div id="wizard-1-content" className="pb-3" data-wizard-type="step-content" data-wizard-state="current">
+                            <div id="wizard-1-content" className="pb-3 px-2" data-wizard-type="step-content" data-wizard-state="current">
                                 <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos</h5>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-6">
