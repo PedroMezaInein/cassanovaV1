@@ -33,9 +33,8 @@ class FlujosForm extends Component {
         const { form, onChange, options, deleteOption, onChangeAndAdd, clear, ...props } = this.props
         return (
             <Form {...props}>
-                <h1 className="text-center mb-3">Flujos</h1>
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-6">
+                    <div className="col-md-5">
                         <SelectSearch
                             options={options.cuentas}
                             placeholder="SELECCIONA LA CUENTA"
@@ -44,9 +43,14 @@ class FlujosForm extends Component {
                             onChange={this.updateCuenta}
                             iconclass={"fas fa-credit-card"}
                         /> 
-                        <a className="btn btn-outline-primary mt-3" onClick={this.mostrarTodasCuentas}>
-                            <i className="fas fa-list-ol icon-md"></i> Seleccionar todas las cuentas
-                        </a>
+                    </div>
+                    <div className="col-md-1 d-flex justify-content-center align-items-center mt-4">
+                        <Button 
+                            className="btn btn-icon btn-light-primary" 
+                            onClick={this.mostrarTodasCuentas}
+                            only_icon={"flaticon2-plus icon-sm"}
+                            tooltip={{text:'Agregar todas las cuentas'}}
+                        />
                     </div>
                     <div className="col-md-3">
                         <Calendar
