@@ -3,8 +3,6 @@ import { Form } from 'react-bootstrap'
 import { Input, SelectSearch, Button, Calendar, SelectSearchSinText } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { DATE } from '../../../constants'
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
-import Tooltip from 'react-bootstrap/Tooltip'
 import { setMoneyTableSinSmall } from '../../../functions/setters'
 
 class PresupuestoForm extends Component {
@@ -222,9 +220,13 @@ class PresupuestoForm extends Component {
                                                     <a className="text-dark text-hover-primary font-weight-bold font-size-h4 mr-3"> CONCEPTOS SELECCIONADOS</a>
                                                 </div>
                                                 <div className="d-flex py-2">
-                                                    <OverlayTrigger overlay={<Tooltip>Formulario</Tooltip>}>
-                                                        <button type="button" className="btn btn-light-primary font-weight-bold mr-2" onClick={() => { this.mostrarFormulario() }}>Siguiente</button>
-                                                    </OverlayTrigger>
+                                                        <Button 
+                                                            type="button" 
+                                                            className="btn btn-light-primary font-weight-bold mr-2" 
+                                                            onClick={() => { this.mostrarFormulario() }}
+                                                            tooltip={{text:'Mostrar formulario'}}
+                                                            text={"SIGUIENTE"}
+                                                        />
                                                 </div>
                                                 <Form id="form-presupuesto"
                                                     onSubmit={

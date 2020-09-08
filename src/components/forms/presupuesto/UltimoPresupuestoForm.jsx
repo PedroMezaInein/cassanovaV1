@@ -5,8 +5,6 @@ import { validateAlert } from '../../../functions/alert'
 import { setMoneyTableForNominas } from '../../../functions/setters'
 import Moment from 'react-moment'
 import { DATE } from '../../../constants'
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
-import Tooltip from 'react-bootstrap/Tooltip'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 class ActualizarPresupuestoForm extends Component {
@@ -229,11 +227,12 @@ class ActualizarPresupuestoForm extends Component {
                             <Card.Body className="pt-2">
                                 <div className="d-flex justify-content-start">
                                 <div className="d-flex align-items-center">
-                                    <OverlayTrigger overlay={<Tooltip>Mostrar fechas</Tooltip>}>
-                                        <a className="btn btn-icon btn-light-primary" onClick={() => { this.mostrarFormulario() }}>
-                                            <i className="flaticon2-calendar-9"></i>
-                                        </a>
-                                    </OverlayTrigger>
+                                        <Button 
+                                            className={"btn btn-icon btn-light-primary"}
+                                            onClick={() => { this.mostrarFormulario() }}
+                                            only_icon={"flaticon2-calendar-9"}
+                                            tooltip={{text:'Mostrar fechas'}}                                        
+                                        />
                                 </div>
                                 <div className={this.state.showFechas ? 'w-100 formulario-escondido' : 'w-0 overflow-hidden formulario-escondido'}>
                                     <div className="form-group row form-group-marginless m-0 mb-3 d-flex justify-content-end">

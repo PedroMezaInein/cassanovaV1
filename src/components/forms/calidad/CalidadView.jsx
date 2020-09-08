@@ -7,6 +7,8 @@ import { toAbsoluteUrl } from "../../../functions/routers"
 import ItemSlider from '../../singles/ItemSlider';
 import { ProcesoTicketForm } from '../../forms';
 import { setLabelTable } from '../../../functions/setters';
+import { Button } from '../../../components/form-components'
+
 class CalidadView extends Component {
 
     getIniciales = nombre => {
@@ -91,18 +93,23 @@ class CalidadView extends Component {
                                             data.estatus_ticket ?
                                                 data.estatus_ticket.estatus === 'En revisión' ?
                                                     <>
-                                                        <OverlayTrigger overlay={<Tooltip>Aceptar</Tooltip>}>
-                                                            <a onClick={() => { changeEstatus('Aceptado') }} className="btn btn-icon btn-light-success success2 btn-sm mr-2 ml-auto"><i className="flaticon2-check-mark icon-sm"></i></a>
-                                                        </OverlayTrigger>
-                                                        <OverlayTrigger overlay={<Tooltip>Rechazar</Tooltip>}>
-                                                            <a onClick={() => { changeEstatus('Rechazado') }} className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger"><i className="flaticon2-cross icon-sm"></i></a>
-                                                        </OverlayTrigger>
+                                                        <Button 
+                                                            onClick={() => { changeEstatus('Aceptado') }} 
+                                                            className={"btn btn-icon btn-light-success success2 btn-sm mr-2 ml-auto"}
+                                                            only_icon={"flaticon2-check-mark icon-sm"}
+                                                            tooltip={{text:'Aceptar'}}
+                                                        />
+                                                        <Button 
+                                                            onClick={() => { changeEstatus('Rechazado') }} 
+                                                            className={"btn btn-icon btn-light-danger btn-sm pulse pulse-danger"}
+                                                            only_icon={"flaticon2-cross icon-sm"}
+                                                            tooltip={{text:'Rechazar'}}
+                                                        />
                                                     </>
                                                     : ''
                                                 : ''
                                             : ''
                                     }
-
                                 </div>
                             </div>
                         </div>

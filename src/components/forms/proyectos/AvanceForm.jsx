@@ -145,7 +145,7 @@ class AvanceForm extends Component {
                     }
 
                     <div className="d-flex justify-content-end my-2">
-                        <Button icon={faPlus} tooltip={{ id: 'add-avance', text: 'Nuevo' }} onClick={addRowAvance} color='transparent' />
+                        <Button icon={faPlus} tooltip={{text:'NUEVO'}} onClick={addRowAvance} color='transparent' />
                     </div>
                     <div className="d-flex justify-content-center mt-2 mb-4">
                         <Button text='ENVIAR' type='submit' />
