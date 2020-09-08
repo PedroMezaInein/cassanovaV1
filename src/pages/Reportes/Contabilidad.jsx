@@ -471,7 +471,7 @@ class Contabilidad extends Component {
                 <Card className="card-custom">
                     <Card.Header>
                         <div className="card-title">
-                            <h3 className="card-label">Reporte</h3>
+                            <h3 className="card-label">Reporte de contabilidad</h3>
                         </div>
                     </Card.Header>
                     <Card.Body>
