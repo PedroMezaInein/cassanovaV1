@@ -159,7 +159,7 @@ class Facturacion extends Component {
     }
 
     setLabelTable = objeto => {
-        let restante = objeto.total - objeto.ventas_count - objeto.ingresos_count
+        let restante = objeto.total - objeto.ventas_compras_count - objeto.ingresos_egresos_count
         let text = {}
         if (objeto.cancelada) {
             text.letra = '#8950FC'
