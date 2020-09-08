@@ -62,6 +62,7 @@ class Leads extends Component{
                 origen: renderToString(setTextTable(lead.origen ? lead.origen.origen : '')),
                 fecha: renderToString(setDateTable(lead.created_at)),
                 tipo_lead: renderToString(setTextTable(lead.tipo_lead ? lead.tipo_lead : 'Sin definir')),
+                convertido: renderToString(setTextTable(lead.convertido ? 'Convertido' : 'Sin convertir')),
                 id: lead.id
             }
         })

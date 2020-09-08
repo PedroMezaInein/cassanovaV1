@@ -1052,15 +1052,15 @@ class Ventas extends Component{
                 form.solicitud = solicitud.id
                 form.factura = solicitud.factura ? 'Con factura' : 'Sin factura'
                 if(solicitud.proyecto){
-                    if(solicitud.proyecto.cliente){
-                        if(solicitud.proyecto.cliente.proyectos){
-                            options['proyectos'] = setOptions(solicitud.proyecto.cliente.proyectos, 'nombre', 'id')
-                            form.cliente = solicitud.proyecto.cliente.id.toString()
-                            form.rfc = solicitud.proyecto.cliente.rfc
+                    if(solicitud.proyecto.clientes){
+                        if(solicitud.proyecto.clientes.proyectos){
+                            options['proyectos'] = setOptions(solicitud.proyecto.clientes.proyectos, 'nombre', 'id')
+                            form.cliente = solicitud.proyecto.clientes[0].id.toString()
+                            form.rfc = solicitud.proyecto.clientes[0].rfc
                             form.proyecto = solicitud.proyecto.id.toString()
                         }
-                        if(solicitud.proyecto.cliente.contratos){
-                            options['contratos'] = setOptions(solicitud.proyecto.cliente.contratos, 'nombre', 'id')
+                        if(solicitud.proyecto.clientes.contratos){
+                            options['contratos'] = setOptions(solicitud.proyecto.clientes.contratos, 'nombre', 'id')
                         }
                     }
                 }
