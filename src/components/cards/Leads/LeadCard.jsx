@@ -1,12 +1,7 @@
 import React, { Component } from 'react'
-import { Card } from '../../singles'
-import { P } from '../../texts'
 import Moment from 'react-moment'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
-import {Tab, Nav} from 'react-bootstrap'
 
 export default class LeadCard extends Component {
     render() {
