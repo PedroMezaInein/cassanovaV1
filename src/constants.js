@@ -181,6 +181,10 @@ export const LEADS_COLUMNS = [
     {
         Header: 'Fecha',
         accessor: 'fecha',
+    },
+    {
+        Header: 'Convertido',
+        accessor: 'convertido',
     }
 ]
 
