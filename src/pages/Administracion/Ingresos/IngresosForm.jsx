@@ -586,10 +586,16 @@ class IngresosForm extends Component{
         const { form, title, options, formeditado, data } = this.state
         return(
             <Layout active={'administracion'}  { ...this.props}>
-                <Card className="pt-0">
+                <Card className="card-custom">
+                    <Card.Header>
+                        <div className="card-title">
+                            <h3 className="card-label">INGRESOS</h3>
+                        </div>
+                    </Card.Header>
                     <Card.Body className="pt-0">
                     <IngresosFormulario 
                         formeditado={formeditado}
+                        className = "px-3"
                         title = { title } 
                         form = { form }
                         onChange = { this.onChange } 
