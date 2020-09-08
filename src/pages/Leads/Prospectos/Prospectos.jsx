@@ -8,7 +8,7 @@ import { ContactoLeadForm } from '../../../components/forms'
 import axios from 'axios'
 import { URL_DEV, PROSPECTOS_COLUMNS, CONTACTO_COLUMNS } from '../../../constants'
 import { Form } from 'react-bootstrap'
-import { setOptions, setTextTable, setDateTable, setArrayTable, setContactoTable } from '../../../functions/setters'
+import { setOptions, setTextTable, setDateTable, setArrayTable, setContactoTable, setLabelTable } from '../../../functions/setters'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import TableForModals from '../../../components/tables/TableForModals'
 import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert'
@@ -215,7 +215,7 @@ class Leads extends Component {
                 descripcion:  renderToString(setTextTable(prospecto.descripcion)),
                 vendedor: prospecto.vendedor ?  renderToString(setTextTable(prospecto.vendedor.name)) : '',
                 preferencia:  renderToString(setTextTable(prospecto.preferencia)),
-                estatusProspecto: prospecto.estatus_prospecto ?  renderToString(setTextTable(prospecto.estatus_prospecto.estatus)) : '',
+                estatusProspecto: prospecto.estatus_prospecto ?  renderToString(this.setLabel(prospecto.estatus_prospecto)) : '',
                 motivo:  renderToString(setTextTable(prospecto.motivo)),
                 fechaConversion:  renderToString(setDateTable(prospecto.created_at)),
                 id: prospecto.id
@@ -268,6 +268,15 @@ class Leads extends Component {
             )        
         }
         return aux
+    }
+
+    setLabel = (estatus) => {
+        console.log(estatus, 'estatus')
+        let text = {}
+        text.letra = estatus.color_texto
+        text.fondo = estatus.color_fondo
+        text.estatus = estatus.estatus
+        return setLabelTable(text)
     }
 
     submitContactForm = e => {
