@@ -6,6 +6,7 @@ import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import ItemSlider from '../../singles/ItemSlider';
 import { ProcesoTicketForm } from '../../forms';
+import { setLabelTable } from '../../../functions/setters';
 class CalidadView extends Component {
 
     getIniciales = nombre => {
@@ -70,14 +71,7 @@ class CalidadView extends Component {
                                         {
                                             data ?
                                                 data.estatus_ticket ?
-                                                    <span className="label label-lg bg- label-inline font-weight-bold py-2"
-                                                        style={{
-                                                            color: `${data.estatus_ticket.letra}`,
-                                                            backgroundColor: `${data.estatus_ticket.fondo}`,
-                                                            fontSize: "11.7px"
-                                                        }} >
-                                                        {data.estatus_ticket.estatus}
-                                                    </span>
+                                                    setLabelTable(data.estatus_ticket)
                                                     : ''
                                                 : ''
                                         }

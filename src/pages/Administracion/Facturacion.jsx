@@ -6,7 +6,7 @@ import axios from 'axios'
 import { URL_DEV, FACTURAS_COLUMNS } from '../../constants'
 import NewTable from '../../components/tables/NewTable'
 import { Small, B } from '../../components/texts'
-import { setTextTable, setMoneyTable, setDateTable, setOptions } from '../../functions/setters'
+import { setTextTable, setMoneyTable, setDateTable, setOptions, setLabelTable } from '../../functions/setters'
 import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert, createAlert} from '../../functions/alert'
 import { Modal, ItemSlider} from '../../components/singles'
 import { Button, FileInput } from '../../components/form-components'
@@ -176,20 +176,7 @@ class Facturacion extends Component {
             }
         }
 
-        return (
-            <>
-                <div className="d-none">
-                    {text.estatus}
-                </div>
-                <span className="label label-lg bg- label-inline font-weight-bold py-2" style={{
-                    color: `${text.letra}`,
-                    backgroundColor: `${text.fondo}`,
-                    fontSize: "75%"
-                }} >
-                    {text.estatus}
-                </span>
-            </>
-        )
+        return setLabelTable(text)
     }
 
 

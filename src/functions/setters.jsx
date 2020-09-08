@@ -70,6 +70,23 @@ export function setTextTable(text) {
     )
 }
 
+export function setLabelTable(text) {
+    return (
+        <>
+            <div className="d-none">
+                {text.estatus}
+            </div>
+            <span className="label label-lg bg- label-inline font-weight-bold py-2" style={{
+                color: `${text.letra}`,
+                backgroundColor: `${text.fondo}`,
+                fontSize: "11.7px"
+            }} >
+                {text.estatus}
+            </span>
+        </>
+    )
+}
+
 export function setDateTable(date) {
     let seconds = new Date(date);
     seconds = seconds.getTime() / 1000;
