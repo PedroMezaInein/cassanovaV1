@@ -790,7 +790,6 @@ class Empleados extends Component {
                 <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseModal}>
                     <EmpleadosForm
                         formeditado={formeditado}
-                        className=" px-3 "   
                         options = { options }
                         form ={form}
                         onChange = { this.onChange } 
