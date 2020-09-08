@@ -1268,9 +1268,18 @@ class Ventas extends Component{
                 /> 
 
                 <Modal size="xl" show = {modal} handleClose = { this.handleClose } title = { title } >
-                    <VentasForm options = {options} form = {form} setOptions = {this.setOptions} 
-                        onChange = { this.onChange } onChangeAdjunto = { this.onChangeAdjunto } clearFiles = {this.clearFiles}
-                        onSubmit = { this.onSubmit } formeditado={formeditado} data = {data} />
+                    <VentasForm 
+                        options = {options}
+                        form = {form}
+                        setOptions = {this.setOptions} 
+                        onChange = { this.onChange }
+                        onChangeAdjunto = { this.onChangeAdjunto }
+                        clearFiles = {this.clearFiles}
+                        onSubmit = { this.onSubmit }
+                        formeditado={formeditado}
+                        data = {data}
+                        className="px-3"
+                    />
                 </Modal>
 
                 <ModalDelete title={"¿Estás seguro que deseas eliminar la venta?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteVentaAxios() }}>
