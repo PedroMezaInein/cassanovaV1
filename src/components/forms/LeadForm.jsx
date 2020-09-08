@@ -171,16 +171,20 @@ class LeadForm extends Component {
                         />
                     </div>
                 </div>
-
-                <div className="mt-3 text-center">
-                    <Button icon='' className="mx-auto"
-                        onClick={
-                            (e) => {
-                                e.preventDefault();
-                                validateAlert(onSubmit, e, 'form-lead')
-                            }
-                        }
-                        text="ENVIAR" />
+                <div className="card-footer py-3 pr-1">
+                    <div className="row">
+                        <div className="col-lg-12 text-right pr-0 pb-0">
+                            <Button icon='' className="btn btn-primary mr-2"
+                                onClick={
+                                    (e) => {
+                                        e.preventDefault();
+                                        validateAlert(onSubmit, e, 'form-lead')
+                                    }
+                                }
+                                text="ENVIAR" 
+                            />
+                        </div>
+                    </div>
                 </div>
             </Form>
         )
