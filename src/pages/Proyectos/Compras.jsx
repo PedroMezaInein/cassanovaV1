@@ -267,10 +267,11 @@ class Compras extends Component {
     }
 
     openModalEdit = (compra) => {
+        console.log(compra)
         const { form, options } = this.state
         form.factura = compra.factura ? 'Con factura' : 'Sin factura'
         if (compra.proyecto) {
-            if (compra.proyecto.cliente) {
+            if (compra.proyecto.clientes) {
                 form.proyecto = compra.proyecto.id.toString()
             }
         }
@@ -968,9 +969,9 @@ class Compras extends Component {
                     }
                 }
                 if (solicitud.proyecto) {
-                    if (solicitud.proyecto.cliente) {
-                        if (solicitud.proyecto.cliente.proyectos) {
-                            options['proyectos'] = setOptions(solicitud.proyecto.cliente.proyectos, 'nombre', 'id')
+                    if (solicitud.proyecto.clientes) {
+                        if (solicitud.proyecto.clientes.proyectos) {
+                            options['proyectos'] = setOptions(solicitud.proyecto.clientes.proyectos, 'nombre', 'id')
                             form.proyecto = solicitud.proyecto.id.toString()
                         }
                     }
