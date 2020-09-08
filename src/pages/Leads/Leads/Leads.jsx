@@ -142,37 +142,40 @@ class Leads extends Component {
 
     setActions = lead => {
         let aux = []
-        aux.push(
-            {
-                text: 'Editar',
-                btnclass: 'success',
-                iconclass: 'flaticon2-pen',
-                action: 'edit',
-                tooltip: {id:'edit', text:'Editar'}
-            },
-            {
-                text: 'Eliminar',
-                btnclass: 'danger',
-                iconclass: 'flaticon2-rubbish-bin', 
-                action: 'delete',
-                tooltip: {id:'delete', text:'Eliminar', type:'error'}
-            },
-            {
-                text: 'Convertir&nbsp;a&nbsp;prospecto',
-                btnclass: 'primary',
-                iconclass: 'flaticon2-user-1',
-                action: 'prospecto',
-                tooltip: {id:'prospecto', text:'Convertir en prospecto'}
-            },
-            {
-                text: 'Convertir&nbsp;en&nbsp;proveedor',
-                btnclass: 'info',
-                iconclass: 'flaticon-user-ok',
-                action: 'proveedor',
-                tooltip: {id:'proveedor', text:'Convertir en proveedor'}
-            }
-        )
-        return aux
+        console.log(lead, 'lead')
+        if(lead.contactado === 0)
+            aux.push(
+                {
+                    text: 'Editar',
+                    btnclass: 'success',
+                    iconclass: 'flaticon2-pen',
+                    action: 'edit',
+                    tooltip: {id:'edit', text:'Editar'}
+                },
+                {
+                    text: 'Eliminar',
+                    btnclass: 'danger',
+                    iconclass: 'flaticon2-rubbish-bin', 
+                    action: 'delete',
+                    tooltip: {id:'delete', text:'Eliminar', type:'error'}
+                },
+                {
+                    text: 'Convertir&nbsp;a&nbsp;prospecto',
+                    btnclass: 'primary',
+                    iconclass: 'flaticon2-user-1',
+                    action: 'prospecto',
+                    tooltip: {id:'prospecto', text:'Convertir en prospecto'}
+                },
+                {
+                    text: 'Convertir&nbsp;en&nbsp;proveedor',
+                    btnclass: 'info',
+                    iconclass: 'flaticon-user-ok',
+                    action: 'proveedor',
+                    tooltip: {id:'proveedor', text:'Convertir en proveedor'}
+                }
+            )
+        
+            return aux
     }
 
     setLabel = lead => {
