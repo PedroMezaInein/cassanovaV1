@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 import { Input, Button } from '../form-components'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes, faTrashAlt, faCheck, faCalendarCheck } from '@fortawesome/free-solid-svg-icons'
+import { faTrashAlt, faCalendarCheck } from '@fortawesome/free-solid-svg-icons'
 import Calendar from '../form-components/Calendar'
 import { Small } from '../texts'
 import { GOLD} from '../../constants'
-import ReactTooltip from "react-tooltip";
 
 class TareaForm extends Component {
 
@@ -93,65 +91,56 @@ class TareaForm extends Component {
                             />
                         </div>
                         <div className="col-md-3 d-flex justify-content-center align-items-center">
-                            <Button icon={faCalendarCheck} pulse={"pulse-ring"} className={"btn btn-icon btn-light-primary pulse pulse-primary mr-2"} data-tip data-for="end" onClick={() => this.onClickEnd()} />
+                            <Button 
+                                icon={faCalendarCheck} 
+                                pulse={"pulse-ring"} 
+                                className={"btn btn-icon btn-light-primary pulse pulse-primary mr-2"}
+                                onClick={() => this.onClickEnd()}
+                                tooltip={{text:'Terminar'}}
+                            />
                             <div className={`${activeEnd} transition-all hidden`}>
                                 <Small className="d-flex align-items-center">
                                     ¿Das por terminada la tarea?
-                                        <Button icon={faTimes} color="transparent" text="" className="small-button mx-1" onClick={() => this.onClickClose()} />
-                                    <Button color="transparent" className="small-button" onClick={() => endTarea(form.id)}>
-                                        <FontAwesomeIcon color={GOLD} icon={faCheck} />
-                                    </Button>
+                                        <Button
+                                            className={"btn btn-icon btn-xs mx-2 btn-light btn-text-dark btn-hover-text-dark"}
+                                            onClick={() => this.onClickClose()} 
+                                            only_icon={"flaticon2-cross icon-xs"}
+                                        />
+                                        
+                                        <Button
+                                            className={"btn btn-icon btn-xs mr-2 btn-light btn-text-success btn-hover-text-success"} 
+                                            onClick={() => endTarea(form.id)}
+                                            only_icon={"flaticon2-check-mark icon-sm"}
+                                        />
                                 </Small>
                             </div>
-                            <Button icon={faTrashAlt} pulse={"pulse-ring"} className={"btn btn-icon btn-light-danger pulse pulse-danger mr-2"} data-tip data-for="delete" onClick={() => this.onClickDelete()} />
+
+
+                            <Button 
+                                icon={faTrashAlt} 
+                                pulse={"pulse-ring"} 
+                                className={"btn btn-icon btn-light-danger pulse pulse-danger mr-2"} 
+                                onClick={() => this.onClickDelete()} 
+                                tooltip={{text:'Eliminar'}}
+                            />
                             <div className={`${activeDelete} transition-all hidden`}>
                                 <Small className="d-flex align-items-center">
                                     ¿Estás seguro?
-                                        <Button color="transparent" className="small-button mx-1" onClick={() => this.onClickClose()}>
-                                        <FontAwesomeIcon color={GOLD} icon={faTimes} />
-                                    </Button>
-                                    <Button icon={faCheck} color="transparent" text="" className="small-button" onClick={() => deleteTarea(form.id)} />
+                                        <Button 
+                                            className={"btn btn-icon btn-xs mx-2 btn-light btn-text-dark btn-hover-text-dark"} 
+                                            onClick={() => this.onClickClose()}
+                                            only_icon={"flaticon2-cross icon-xs"}
+                                        />
+                                        <Button 
+                                            className={"btn btn-icon btn-xs mr-2 btn-light btn-text-success btn-hover-text-success"}  
+                                            onClick={() => deleteTarea(form.id)} 
+                                            only_icon={"flaticon2-check-mark icon-sm"}
+                                        />
                                 </Small>
                             </div>
 
                         </div>
                     </div>
-
-                    <div className="col-md-12 d-flex justify-content-end">
-                        <div className="d-flex align-items-center px-2">
-                            <ReactTooltip
-                                id='end'
-                                place="top"
-                                type='success'
-                                effect="solid"
-                            >
-                                Terminar
-                            </ReactTooltip>
-                        </div>
-                        <div className="d-flex align-items-center px-2">
-                            {/* <FontAwesomeIcon data-tip data-for="delete" icon={faTrashAlt} color="red" className="mr-2 button-hover" onClick = { () => this.onClickDelete() }/> */}
-                            <ReactTooltip id='delete' place="top" type='error' effect="solid">
-                                Eliminar
-                            </ReactTooltip>
-
-                        </div>
-                    </div>
-                    {/* <OverlayTrigger overlay={<Tooltip>Tooltip!</Tooltip>}>
-                    <span className="d-inline-block">
-                        <Button disabled style={{ pointerEvents: 'none' }}>
-                        Disabled button
-                        </Button>
-                    </span>
-                    </OverlayTrigger> */}
-
-                    {
-                        /* <OverlayTrigger overlay={<Tooltip>Terminar</Tooltip>}>
-                                <span className="d-inline-block"> 
-                                    <Button style={{ pointerEvents: 'none' }} icon = {faCalendarCheck} pulse={"pulse-ring"} className={"btn btn-icon btn-light-primary pulse pulse-primary mr-2"} onClick = { () => this.onClickEnd() } />
-                                </span>
-                            </OverlayTrigger> 
-                        */
-                    }
 
                     <div className="col-md-12">
                         <Input
