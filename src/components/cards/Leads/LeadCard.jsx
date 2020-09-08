@@ -1,88 +1,134 @@
-import React, {Component} from 'react'
-import {Card} from '../../singles'
-import {P} from '../../texts'
+import React, { Component } from 'react'
+import { Card } from '../../singles'
+import { P } from '../../texts'
 import Moment from 'react-moment'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons'
+import SVG from "react-inlinesvg";
+import { toAbsoluteUrl } from "../../../functions/routers"
+import {Tab, Nav} from 'react-bootstrap'
 
 export default class LeadCard extends Component {
     render() {
-        const {lead, children} = this.props
+        const { lead, children } = this.props
         return (
-            <Card className="mx-md-5 my-3">
-                <div className="row mx-0">
-                    <div className="col-md-6 mb-3">
-                        <P color="dark-blue">
-                            {lead.nombre}
-                        </P>
-                        <hr/>
-                        <P color="dark-blue">
-                            <a target="_blank" href={`tel:+${lead.telefono}`}>
-                                <FontAwesomeIcon icon={faPhone} className="mr-2"/> {lead.telefono}
-                            </a>
-                        </P>
-                        <hr/>
-                        <P color="dark-blue">
-                            <a target="_blank" href={`mailto:+${lead.email}`}>
-                                <FontAwesomeIcon icon={faEnvelope} className="mr-2"/> {lead.email}
-                            </a>
-                        </P>
-                        <hr/>
-                    </div>
-                    <div className="col-md-6 mb-3">
-                        <P color="dark-blue">
-                            <strong className="text-color__gold mr-1">Empresa:</strong>
-                            {lead.empresa.name}
-                        </P>
-                        <hr/>
-                        <P color="dark-blue">
-                            <strong className="text-color__gold mr-1">Origen:</strong>
-                            {lead.origen.origen}
-                        </P>
-                        <hr/>
-                        <P color="dark-blue">
-                            <strong className="text-color__gold mr-1">Fecha:</strong>
-                            <Moment format="DD/MM/YYYY">
-                                {lead.created_at}
-                            </Moment>
-                        </P>
-                        <hr/>
-                    </div>
-                    <div className="col-md-6 mb-3">
-                        <P color="dark-blue">
-                            <strong className="text-color__gold mr-1">Comentario:</strong><br/>
-                            <div className="px-2">
-                                {lead.comentario}
+            <div className="border-nav mt-4 mb-5">
+                {/* <strong className="font-size-h4">LEAD</strong> */}
+                <p className="font-size-h5 text-muted font-size-lg mt-0">Nombre:&nbsp;<strong className="font-size-h6">{lead.nombre}</strong></p>
+                <div className="separator separator-solid mb-3"></div>
+                <div className="mb-4">
+                    <div className="row row-paddingless mb-4">
+                        <div className="col-md-3">
+                            <div className="d-flex justify-content-start">
+                                <div className="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
+                                    <div className="symbol-label">
+                                        <span className="svg-icon svg-icon-lg svg-icon-info">
+                                            <SVG src={toAbsoluteUrl('/images/svg/Building.svg')} />
+                                        </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="font-size-h6 text-dark-75 font-weight-bolder">{lead.empresa.name}</div>
+                                    <div className="font-size-sm text-muted font-weight-bold mt-1">Empresa</div>
+                                </div>
                             </div>
-
-                        </P>
-                        <hr/>
+                        </div>
+                        <div className="col-md-3">
+                            <div className="d-flex justify-content-start mr-2">
+                                <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
+                                    <div className="symbol-label">
+                                        <span className="svg-icon svg-icon-lg svg-icon-primary">
+                                            <SVG src={toAbsoluteUrl('/images/svg/iPhone-X.svg')} />
+                                        </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <a target="_blank" href={`tel:+${lead.telefono}`} className="font-size-h6 text-dark-75 font-weight-bolder text-hover-primary">{lead.telefono}</a>
+                                    <div className="font-size-sm text-muted font-weight-bold mt-1">TELÉFONO</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-md-3">
+                            <div className="d-flex justify-content-start mr-2">
+                                <div className="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
+                                    <div className="symbol-label">
+                                        <span className="svg-icon svg-icon-lg svg-icon-info">
+                                            <SVG src={toAbsoluteUrl('/images/svg/Box1.svg')} />
+                                        </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="font-size-h6 text-dark-75 font-weight-bolder"><Moment format="DD/MM/YYYY">{lead.created_at}</Moment></div>
+                                    <div className="font-size-sm text-muted font-weight-bold mt-1">FECHA</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-md-3">
+                            <div className="d-flex align-items-start mr-2">
+                                <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
+                                    <div className="symbol-label">
+                                        <span className="svg-icon svg-icon-lg svg-icon-primary">
+                                            <SVG src={toAbsoluteUrl('/images/svg/Mail.svg')} />
+                                        </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <a target="_blank" href={`mailto:+${lead.email}`} className="font-size-h6 text-dark-75 font-weight-bolder text-hover-primary">{lead.email}</a>
+                                    <div className="font-size-sm text-muted font-weight-bold mt-1">Correo electrónico</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div className="col-md-6 mb-3">
-                        <P color="dark-blue">
-                            <strong className="text-color__gold mr-1">Servicios:</strong><br/>
-                            <div className="px-2">
-                                <ul>
+                    <div className="row row-paddingless">
+                        <div className="col-md-3">
+                            <div className="d-flex align-items-start mr-2">
+                                <div className="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
+                                    <div className="symbol-label">
+                                        <span className="svg-icon svg-icon-lg svg-icon-info">
+                                            <SVG src={toAbsoluteUrl('/images/svg/Folder-cloud.svg')} />
+                                        </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="font-size-h6 text-dark-75 font-weight-bolder">{lead.origen.origen}</div>
+                                    <div className="font-size-sm text-muted font-weight-bold mt-1">Origen</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-md-9">
+                            <div className="d-flex align-items-start mr-2">
+                                <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
+                                    <div className="symbol-label">
+                                        <span className="svg-icon svg-icon-lg svg-icon-primary">
+                                            <SVG src={toAbsoluteUrl('/images/svg/Tools.svg')} />
+                                        </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <ul className="list-inline mb-0 font-size-h6 text-dark-75 font-weight-bolder">
                                     {
                                         lead.servicios
                                             ? lead
                                                 .servicios
                                                 .map((servicio, key) => {
                                                     return (
-                                                        <li key={key}>
-                                                            {servicio.servicio}
-                                                        </li>
+                                                    <li className="list-inline-item" key={key}>&#8226; {servicio.servicio}</li>
                                                     )
                                                 })
-                                            : <li>No hay servicios registrados</li>
+                                            :
+                                                <li className="list-inline-item">No hay servicios registrados</li>
                                     }
-                                </ul>
+                                    </ul>
+                                    <div className="font-size-sm text-muted font-weight-bold mt-1">Servicios</div>
+                                </div>
                             </div>
-                        </P>
-                        <hr/>
+                        </div>
                     </div>
                 </div>
-            </Card>
+                <div className="bg-gray-100 p-3 font-size-lg font-weight-light" >
+                    <strong >Comentario: </strong>{lead.comentario}
+                </div>
+            </div>
         )
     }
 }
