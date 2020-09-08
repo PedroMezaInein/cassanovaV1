@@ -235,7 +235,7 @@ class App extends Component{
                 <Route path = "/bancos/traspasos" exact component ={ Traspasos } />
                 
                 <Route path = "/leads/leads" exact component ={ Leads } />
-                <Route path = "/leads/leads/:actions" exact component ={ LeadsForm } />
+                <Route path = "/leads/leads/:action" exact component ={ LeadsForm } />
 
                 <Route path = "/leads/prospectos" exact component = { Prospectos } />
                 <Route path = "/leads/prospectos/:action" exact component = { ProspectosForm } />

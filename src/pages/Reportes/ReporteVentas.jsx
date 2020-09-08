@@ -23,7 +23,6 @@ class ReporteVentas extends Component {
             ... this.state,
             form
         })
-        console.log(form, 'form')
     }
 
     render() {

@@ -2,24 +2,34 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import { renderToString } from 'react-dom/server';
+import moment from 'moment'
 
 // Custom components
 import Layout from '../../../components/layout/layout';
 import { ModalDelete } from '../../../components/singles';
+import { URL_DEV, LEADS_COLUMNS } from '../../../constants';
+import NewTableServerRender from '../../../components/tables/NewTableServerRender';
+import { Modal } from '../../../components/singles'
+import { RangeCalendar, Button } from '../../../components/form-components';
 
 // Functions
 import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert, createAlert } from '../../../functions/alert'
-import { URL_DEV, LEADS_COLUMNS } from '../../../constants';
-import NewTableServerRender from '../../../components/tables/NewTableServerRender';
 import { setTextTable, setContactoTable, setListTable, setDateTable, setLabelTable } from '../../../functions/setters';
-import { renderToString } from 'react-dom/server';
+
+const $ = require('jquery');
 
 class Leads extends Component {
 
     state = {
         modalDelete: false,
         modalConvert: false,
-        lead: ''
+        modalExport: false,
+        lead: '',
+        form:{
+            fechaInicio: moment().startOf('month').toDate(),
+            fechaFin: moment().endOf('month').toDate(),
+        }
     }
 
     changePageEdit = lead => {
@@ -43,11 +53,70 @@ class Leads extends Component {
         )
     }
 
+    openModalSafeConvertProveedor = lead => {
+        const { history } = this.props
+        createAlert(
+            '¿Deseas convertir el lead?', 
+            `¿Deseas convertir el lead ${lead.nombre} en un proveedor?`, 
+            () => 
+                history.push({
+                    pathname: '/administracion/proveedores/convert',
+                    state: { lead: lead}
+                })
+        )
+    }
+
+    openModalSafeDelete =  (lead) => {
+        this.setState({
+            ... this.state,
+            modalDelete: true,
+            lead: lead,
+        })
+
+    }
+
+    openModalExport = () => {
+        this.setState({
+            ... this.state,
+            modalExport: true
+        })
+    }
+
     handleClose = () => {
         this.setState({
             ... this.state,
             modalDelete: false,
             lead: ''
+        })
+    }
+
+    handleCloseDelete = () => {
+        this.setState({
+            ... this.state,
+            modalDelete: false,
+            lead : ''
+        })
+    }
+
+    handleCloseExport = () => {
+        const { form } = this.state
+        form.fechaInicio = moment().startOf('month').toDate()
+        form.fechaFin = moment().endOf('month').toDate()
+        this.setState({
+            ... this.state,
+            form,
+            modalExport: false
+        })
+    }
+
+    onChangeRange = range => {
+        const { startDate, endDate } = range
+        const { form } = this.state
+        form.fechaInicio = startDate
+        form.fechaFin = endDate
+        this.setState({
+            ... this.state,
+            form
         })
     }
 
@@ -107,7 +176,6 @@ class Leads extends Component {
     }
 
     setLabel = lead => {
-        console.log(lead)
         let text = {}
         if(lead.contactado){
             text.letra = '#388E3C'
@@ -121,13 +189,54 @@ class Leads extends Component {
         return setLabelTable(text)
     }
 
+    async getLeadAxios() {
+        $('#lead_table').DataTable().ajax.reload();
+    }
+
     async deleteLeadAxios (){
         const { access_token } = this.props.authUser
         const { lead } = this.state
 
         await axios.delete(URL_DEV + 'lead/' + lead.id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
+                this.getLeadAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito el lead.')
+                this.setState({
+                    ... this.state,
+                    modalDelete: false,
+                    lead: ''
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async exportLeadsAxios(){
+        const { form } = this.state
+
+        const { access_token } = this.props.authUser
+        await axios.post(URL_DEV + 'exportar/leads',  form, { responseType:'blob', headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'leads.xlsx');
+                document.body.appendChild(link);
+                link.click();
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Leads exportados con éxito.')
+
             },
             (error) => {
                 console.log(error, 'error')
@@ -144,7 +253,7 @@ class Leads extends Component {
     }
 
     render() {
-        const { modalDelete } = this.state
+        const { modalDelete, modalExport, form } = this.state
         return (
             <Layout active = 'leads'  { ...this.props } >
 
@@ -163,14 +272,14 @@ class Leads extends Component {
                         'proveedor': {function: this.openModalSafeConvertProveedor},
                     }}
                     exportar_boton = { true }
-                    onClickExport = { () => console.log('aux') }
+                    onClickExport = { () => this.openModalExport() }
                     accessToken = { this.props.authUser.access_token }
                     setter = { this.setLead }
                     urlRender = { URL_DEV + 'lead' }
                     cardTable = 'cardTable'
                     cardTableHeader = 'cardTableHeader'
-                    cardBody = 'cardBody'/>
-
+                    cardBody = 'cardBody'
+                    idTable = 'lead_table'/>
                 
                 <ModalDelete 
                     title = "¿Estás seguro que deseas eliminar el lead?"
@@ -178,6 +287,25 @@ class Leads extends Component {
                     handleClose = { this.handleCloseDelete } 
                     onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteLeadAxios() }}>
                 </ModalDelete>
+
+                <Modal size = 'lg' show = { modalExport } handleClose = { this.handleCloseExport } title = 'Rango de leads a exportar'>
+                    <div className="pt-3 d-flex justify-content-center">
+                        <RangeCalendar start = { form.fechaInicio } end = { form.fechaFin } 
+                            onChange = { this.onChangeRange } />
+                    </div>
+                    <div className = "d-flex text-center py-3">
+                        <Button icon='' className="mx-auto" text="DESCARGAR" 
+                            onClick = {
+                                (e) => {
+                                    e.preventDefault();
+                                    waitAlert();
+                                    this.exportLeadsAxios()
+                                }
+                            }
+                            />
+                    </div>
+                </Modal>
+
             </Layout>
         );
     }

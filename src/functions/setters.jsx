@@ -51,6 +51,18 @@ export function setOptions(arreglo, name, value) {
     return aux
 }
 
+export function setCheckedOptions(arreglo, name) {
+    let aux = []
+    arreglo.map((element) => {
+        aux.push({
+            checked: false,
+            text: element[name],
+            id: element.id
+        })
+    })
+    return aux
+}
+
 export function setSelectOptions(arreglo, name) {
     let aux = []
     arreglo.map((element) => {

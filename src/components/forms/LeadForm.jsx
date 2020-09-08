@@ -23,7 +23,7 @@ class LeadForm extends Component {
 
 
     render() {
-        const { title, servicios, empresas, origenes, form, onChange, onChangeCalendar, onChangeCheckboxes, onSubmit, formeditado, ...props } = this.props
+        const { title, servicios, options, form, onChange, onChangeCalendar, onChangeCheckboxes, onSubmit, formeditado, ...props } = this.props
         return (
             <Form id="form-lead"
                 onSubmit={
@@ -86,7 +86,7 @@ class LeadForm extends Component {
                             requirevalidation={1}
                             formeditado={formeditado}
                             placeholder="SELECCIONA LA EMPRESA PARA EL LEAD"
-                            options={empresas}
+                            options={options.empresas}
                             name="empresa"
                             value={form.empresa}
                             onChange={onChange}
@@ -99,7 +99,7 @@ class LeadForm extends Component {
                             requirevalidation={1}
                             formeditado={formeditado}
                             placeholder="SELECCIONA EL ORIGEN PARA EL LEAD"
-                            options={origenes}
+                            options={options.origenes}
                             name="origen"
                             value={form.origen}
                             onChange={onChange}

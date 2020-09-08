@@ -39,6 +39,7 @@ class Facturacion extends Component {
             contratos: []
         },
         form: {
+            facturaObject: '',
             adjuntos: {
                 factura:{
                     value: '',
@@ -404,7 +405,7 @@ class Facturacion extends Component {
         })
     }
 
-    onChangeAdjunto = e => {
+    onChangeAdjuntoFacturas = e => {
         const { form, data, options } = this.state
         const { files, value, name } = e.target
         let aux = []
@@ -494,17 +495,12 @@ class Facturacion extends Component {
                             }
                         });
                         if(auxEmpresa){
-                            options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')
-                            form.empresa = auxEmpresa.name
+                            
                         }else{
                             errorAlert('No existe la empresa')
                         }
                         if(auxCliente){
-                            options['proyectos'] = setOptions(auxCliente.proyectos, 'nombre', 'id')
-                            form.cliente = auxCliente.empresa
-                            if(auxCliente.contratos){
-                                options['contratos'] = setOptions(auxCliente.contratos, 'nombre', 'id')
-                            }
+                            
                         }else{
                             createAlert('No existe el cliente', '¿Lo quieres crear?', () => this.addClienteAxios(obj))
                         }
@@ -512,10 +508,8 @@ class Facturacion extends Component {
                             swal.close()
                         }
                         form.facturaObject = obj
-                        form.rfc = obj.rfc_receptor
                         this.setState({
                             ... this.state,
-                            options,
                             form
                         })
                     }
@@ -589,6 +583,112 @@ class Facturacion extends Component {
         })
     }
 
+    async sendFacturaAxios(){
+        waitAlert();
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        const data = new FormData();
+
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                case 'adjuntos':
+                    break;
+                case 'facturaObject':
+                    data.append(element, JSON.stringify(form[element]))
+                    break;
+                default:
+                    break
+            }
+        })
+        aux = Object.keys(form.adjuntos)
+        aux.map((element) => {
+            if (form.adjuntos[element].value !== '') {
+                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                }
+                data.append('adjuntos[]', element)
+            }
+        })
+        await axios.post(URL_DEV + 'facturas/new', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+
+                this.getVentasAxios()
+
+                this.setState({
+                    ... this.state,
+                    form: this.clearForm(),
+                    modalFacturas: false
+                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async addClienteAxios(obj) {
+        const { access_token } = this.props.authUser
+        const data = new FormData();
+        
+        let cadena = obj.nombre_receptor.replace(' S. C.',  ' SC').toUpperCase()
+        cadena = cadena.replace(',S.A.',  ' SA').toUpperCase()
+        cadena = cadena.replace(/,/g, '').toUpperCase()
+        cadena = cadena.replace(/\./g, '').toUpperCase()
+        data.append('empresa', cadena)
+        data.append('nombre', cadena)
+        data.append('rfc', obj.rfc_receptor.toUpperCase())
+
+        await axios.post(URL_DEV + 'cliente', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+
+                const { clientes } = response.data
+
+                const { options, data, form } = this.state
+
+                options.clientes = []
+                options['clientes'] = setOptions(clientes, 'empresa', 'id')
+                data.clientes = clientes
+                clientes.map( (cliente) => {
+                    if(cliente.empresa === cadena){
+                        form.cliente = cliente.empresa
+                    }
+                })
+
+                this.setState({
+                    ... this.state,
+                    form,
+                    data,
+                    options
+                })
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
 
     render() {
         const { facturas, data, modalCancelar, form, modalFacturas, key} = this.state
@@ -673,7 +773,7 @@ class Facturacion extends Component {
                     >
                         <div className="mt-3 mb-4">
                             <FileInput
-                                onChangeAdjunto={this.onChangeAdjunto}
+                                onChangeAdjunto={this.onChangeAdjuntoFacturas}
                                 placeholder={form['adjuntos']['factura']['placeholder']}
                                 value={form['adjuntos']['factura']['value']}
                                 name={'factura'}
@@ -687,7 +787,8 @@ class Facturacion extends Component {
                         <div className="card-footer py-3 pr-1">
                             <div className="row">
                                 <div className="col-lg-12 text-right pr-0 pb-0">
-                                    <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
+                                    <Button icon='' className="mx-auto" type="submit" text="ENVIAR" 
+                                        onClick = { (e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios();}}/>
                                 </div>
                             </div>
                         </div>
