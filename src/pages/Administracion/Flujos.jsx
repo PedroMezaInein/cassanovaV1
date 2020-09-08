@@ -238,7 +238,12 @@ class Flujos extends Component {
         const { form, options, data, flujos, total } = this.state
         return (
             <Layout active={'administracion'}  {...this.props}>
-                <Card className="m-2 p-2 m-md-4 p-md-4">
+                <Card className="card-custom">
+                    <Card.Header>
+                        <div className="card-title">
+                            <h3 className="card-label">Flujos</h3>
+                        </div>
+                    </Card.Header>
                     <Card.Body>
                         <FlujosForm form = { form } options = { options } onChange = { this.onChange }
                             onSubmit = { this.onSubmit } onChangeAndAdd = { this.onChangeAndAdd } 
