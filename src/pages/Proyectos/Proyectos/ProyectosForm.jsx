@@ -387,7 +387,6 @@ class ProyectosForm extends Component {
                     {
                         const { proyecto } = state
                         const { form } = this.state
-                        console.log(proyecto, 'proyecto')
                         form.cp = proyecto.cp;
                         this.cpAxios(proyecto.cp)
                         form.calle = proyecto.calle

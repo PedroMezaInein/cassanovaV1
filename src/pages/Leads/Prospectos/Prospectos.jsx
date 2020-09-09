@@ -271,7 +271,6 @@ class Leads extends Component {
     }
 
     setLabel = (estatus) => {
-        console.log(estatus, 'estatus')
         let text = {}
         text.letra = estatus.color_texto
         text.fondo = estatus.color_fondo

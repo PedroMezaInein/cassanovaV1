@@ -267,7 +267,6 @@ class Compras extends Component {
     }
 
     openModalEdit = (compra) => {
-        console.log(compra)
         const { form, options } = this.state
         form.factura = compra.factura ? 'Con factura' : 'Sin factura'
         if (compra.proyecto) {

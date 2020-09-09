@@ -117,7 +117,6 @@ class Calendario extends Component {
 
     getDiasDisponibles = (empleado, vacaciones_totales) => {
         /* const { empleado, vacaciones_totales } = this.state */
-        /* console.log(empleado, 'empleado') */
         let contador = 0
         let fecha_inicio_empleado = ''
         if (empleado) {
