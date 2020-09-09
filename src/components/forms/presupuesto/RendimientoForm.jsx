@@ -128,7 +128,7 @@ class RendimientoForm extends Component {
                 <div className="card-footer py-3 pr-1">
                     <div className="row">
                         <div className="col-lg-12 text-right pr-0 pb-0">
-                            <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" />
+                            <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" icon=''/>
                         </div>
                     </div>
                 </div>

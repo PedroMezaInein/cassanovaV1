@@ -226,6 +226,7 @@ class PresupuestoForm extends Component {
                                                             onClick={() => { this.mostrarFormulario() }}
                                                             tooltip={{text:'Mostrar formulario'}}
                                                             text={"SIGUIENTE"}
+                                                            icon=''
                                                         />
                                                 </div>
                                                 <Form id="form-presupuesto"

@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-
 import { validateAlert } from '../../../functions/alert'
 import { Form } from 'react-bootstrap'
 import { Button, Calendar, SelectSearch } from '../../form-components'

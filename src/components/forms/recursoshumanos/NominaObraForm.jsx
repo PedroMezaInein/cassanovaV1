@@ -18,7 +18,7 @@ class NominaObraForm extends Component {
     }
 
     updateEmpresa = value => {
-        const { onChange, setOptions } = this.props
+        const { onChange } = this.props
         onChange({ target: { value: value, name: 'empresa' } })
     }
 
@@ -339,7 +339,7 @@ class NominaObraForm extends Component {
                     <Card.Footer>
                         <div className="row">
                             <div className="col-lg-12 text-right">
-                                <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" />
+                                <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" icon=''/>
                             </div>
                         </div>
                     </Card.Footer>

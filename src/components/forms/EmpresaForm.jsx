@@ -14,7 +14,7 @@ class EmpresaForm extends Component {
     }
 
     render() {
-        const { form, onChange, img, removefile, onSubmit, formeditado } = this.props
+        const { form, onChange, onSubmit, formeditado } = this.props
         return (
             <Form id="form-empresa"
                 onSubmit={
@@ -71,7 +71,7 @@ class EmpresaForm extends Component {
                 <div className="card-footer py-3 pr-1">
                     <div className="row">
                         <div className="col-lg-12 text-right pr-0 pb-0">
-                            <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" />
+                            <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" icon=''/>
                         </div>
                     </div>
                 </div>

@@ -200,9 +200,9 @@ class CalidadView extends Component {
                                             <Tab.Container defaultActiveKey="first">
                                                 <Card.Header>
                                                     <Card.Title>
-                                                        <span class="card-label">Adjuntos</span>
+                                                        <span className="card-label">Adjuntos</span>
                                                     </Card.Title>
-                                                    <div class="card-toolbar">
+                                                    <div className="card-toolbar">
                                                         <Nav variant="pills">
                                                             {
                                                                 data.fotos.length ?
@@ -261,17 +261,17 @@ class CalidadView extends Component {
                         data ?
                             data.estatus_ticket ?
                                 (data.estatus_ticket.estatus === 'En proceso' || data.estatus_ticket.estatus === 'Terminado') ?
-                                    <div class="col-lg-8">
-                                        <div class="card card-custom card-stretch">
-                                            <div class="card-header">
-                                                <div class="card-title">
-                                                    <h3 class="card-label">TICKET EN PROCESO</h3>
+                                    <div className="col-lg-8">
+                                        <div className="card card-custom card-stretch">
+                                            <div className="card-header">
+                                                <div className="card-title">
+                                                    <h3 className="card-label">TICKET EN PROCESO</h3>
                                                 </div>
                                             </div>
-                                            <div class="card-body pt-0">
+                                            <div className="card-body pt-0">
 
                                                 <>
-                                                    <ProcesoTicketForm form={form} options={options} onChange={onChange} formEditado={1}
+                                                    <ProcesoTicketForm form={form} options={options} onChange={onChange} formeditado={1}
                                                         handleChange={handleChange} onSubmit={onSubmit} generateEmail={generateEmail} estatus={data.estatus_ticket.estatus}
                                                         deleteFile={deleteFile} />
                                                 </>

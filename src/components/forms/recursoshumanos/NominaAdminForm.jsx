@@ -6,7 +6,6 @@ import { DATE } from '../../../constants'
 import { setMoneyTableForNominas } from '../../../functions/setters'
 import { Card } from 'react-bootstrap'
 
-
 class NominaAdminForm extends Component {
 
     handleChangeDateInicio = date => {
@@ -277,7 +276,7 @@ class NominaAdminForm extends Component {
                     <Card.Footer>
                         <div className="row">
                             <div className="col-lg-12 text-right">
-                                <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" />
+                                <Button icon='' text='ENVIAR' type='submit' className="btn btn-primary mr-2" />
                             </div>
                         </div>
                     </Card.Footer>

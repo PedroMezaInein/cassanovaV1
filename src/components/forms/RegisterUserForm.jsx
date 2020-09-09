@@ -106,6 +106,17 @@ class RegisterUserForm extends Component {
                                 />
                             </div>
                             <div className="col-md-4">
+                                <SelectSearchTrue
+                                    options={options.empleados}
+                                    placeholder="SELECCIONA EL EMPLEADO"
+                                    name="empleado"
+                                    value={form.empleado}
+                                    onChange={this.updateEmpleado}
+                                    iconclass={"fas fa-layer-group"}
+                                    formeditado={formeditado}
+                                />
+                            </div>
+                            <div className="col-md-4">
                                 {
                                     form.departamentos.length > 0 ?
                                         <div className="col-md-12 row mx-0 align-items-center image-upload">
@@ -131,17 +142,6 @@ class RegisterUserForm extends Component {
                                         </div>
                                         : ''
                                 }
-                            </div>
-                            <div className="col-md-4">
-                                <SelectSearchTrue
-                                    options={options.empleados}
-                                    placeholder="SELECCIONA EL EMPLEADO"
-                                    name="empleado"
-                                    value={form.empleado}
-                                    onChange={this.updateEmpleado}
-                                    iconclass={"fas fa-layer-group"}
-                                    formeditado={formeditado}
-                                />
                             </div>
                         </div>
                         : ''
@@ -193,7 +193,7 @@ class RegisterUserForm extends Component {
                 <div className="card-footer py-3 pr-1">
                     <div className="row">
                         <div className="col-lg-12 text-right pr-0 pb-0">
-                            <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" />
+                            <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" icon='' />
                         </div>
                     </div>
                 </div>

@@ -228,6 +228,7 @@ class ActualizarPresupuestoForm extends Component {
                                 <div className="d-flex justify-content-start">
                                 <div className="d-flex align-items-center">
                                         <Button 
+                                            icon=''
                                             className={"btn btn-icon btn-light-primary"}
                                             onClick={() => { this.mostrarFormulario() }}
                                             only_icon={"flaticon2-calendar-9"}

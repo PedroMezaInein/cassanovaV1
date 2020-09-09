@@ -222,20 +222,20 @@ class EmpresasForm extends Component {
         }
     }
 
-    removeFile = (e) => {
-        e.preventDefault()
-        const { name, logo, razon_social } = this.state.empresa
-        this.setState({
-            ... this.state,
-            form: {
-                name: name,
-                razonSocial: razon_social,
-                logo: '',
-                file: logo
-            },
-            img: ''
-        })
-    }
+    // removeFile = (e) => {
+    //     e.preventDefault()
+    //     const { name, logo, razon_social } = this.state.empresa
+    //     this.setState({
+    //         ... this.state,
+    //         form: {
+    //             name: name,
+    //             razonSocial: razon_social,
+    //             logo: '',
+    //             file: logo
+    //         },
+    //         img: ''
+    //     })
+    // }
 
     deleteFile = element => {
         swal({
@@ -264,7 +264,7 @@ class EmpresasForm extends Component {
     }
 
     render() {
-        const { form, img, title, formeditado} = this.state
+        const { form, title, formeditado} = this.state
         return (
             <Layout active={'usuarios'} {...this.props}>
                 <Card className="card-custom">
@@ -275,9 +275,7 @@ class EmpresasForm extends Component {
                     </Card.Header>
                     <Card.Body>
                         <EmpresaForm
-                            removefile={this.removeFile}
                             form={form}
-                            img={img}
                             onSubmit = {this.onSubmit}
                             onChange={(e) => this.handleChange(e)}
                             title={title}

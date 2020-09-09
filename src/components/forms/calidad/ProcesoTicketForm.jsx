@@ -147,11 +147,11 @@ class ProcesoTicketForm extends Component {
                                     </div>
                                 </div>
                                 <div className="border-top mt-3 pt-3">
-                                    <div class="row">
-                                        <div class="col-lg-6 text-left">
+                                    <div className="row">
+                                        <div className="col-lg-6 text-left">
                                             <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard1_for2_wizard() }} data-wizard-type="action-prev">Anterior</button>
                                         </div>
-                                        <div class="col-lg-6 text-right">
+                                        <div className="col-lg-6 text-right">
                                             {
                                                 estatus !== 'Terminado' ?
                                                     <div className="">

@@ -101,12 +101,14 @@ class TareaForm extends Component {
                                 <Small className="d-flex align-items-center">
                                     ¿Das por terminada la tarea?
                                         <Button
+                                            icon=''
                                             className={"btn btn-icon btn-xs mx-2 btn-light btn-text-dark btn-hover-text-dark"}
                                             onClick={() => this.onClickClose()} 
                                             only_icon={"flaticon2-cross icon-xs"}
                                         />
                                         
                                         <Button
+                                            icon=''
                                             className={"btn btn-icon btn-xs mr-2 btn-light btn-text-success btn-hover-text-success"} 
                                             onClick={() => endTarea(form.id)}
                                             only_icon={"flaticon2-check-mark icon-sm"}
@@ -126,11 +128,13 @@ class TareaForm extends Component {
                                 <Small className="d-flex align-items-center">
                                     ¿Estás seguro?
                                         <Button 
+                                            icon=''
                                             className={"btn btn-icon btn-xs mx-2 btn-light btn-text-dark btn-hover-text-dark"} 
                                             onClick={() => this.onClickClose()}
                                             only_icon={"flaticon2-cross icon-xs"}
                                         />
                                         <Button 
+                                            icon=''
                                             className={"btn btn-icon btn-xs mr-2 btn-light btn-text-success btn-hover-text-success"}  
                                             onClick={() => deleteTarea(form.id)} 
                                             only_icon={"flaticon2-check-mark icon-sm"}

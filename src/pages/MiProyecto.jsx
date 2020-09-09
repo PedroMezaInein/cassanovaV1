@@ -1051,7 +1051,7 @@ class MiProyecto extends Component {
                                                         <div className="card-footer py-3 pr-1">
                                                             <div className="row">
                                                                 <div className="col-lg-12 text-right pr-0 pb-0">
-                                                                    <Button text='SOLICITAR' type='submit' className="btn btn-primary mr-2" />
+                                                                    <Button text='SOLICITAR' type='submit' className="btn btn-primary mr-2" icon=''/>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1105,12 +1105,14 @@ class MiProyecto extends Component {
                                                 className={"btn btn-icon btn-light-success success2 btn-sm mr-2"}
                                                 only_icon={"flaticon2-check-mark icon-sm"}
                                                 tooltip={{text:'Aceptar'}}
+                                                icon=''
                                             />
                                             <Button 
                                                 onClick={() => { this.changeEstatus('En espera') }} 
                                                 className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger"
                                                 only_icon={"flaticon2-cross icon-sm"}
                                                 tooltip={{text:'Rechazar'}}
+                                                icon=''
                                             />  
                                         </>
                                     : ''

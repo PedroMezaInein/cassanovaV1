@@ -1,14 +1,10 @@
 import React, { Component } from 'react'
-import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import swal from 'sweetalert'
-import { URL_DEV, CONCEPTOS_COLUMNS } from '../../../constants'
-import { setOptions, setTextTable, setMoneyTable } from '../../../functions/setters'
+import { URL_DEV } from '../../../constants'
+import { setOptions } from '../../../functions/setters'
 import Layout from '../../../components/layout/layout'
-import { Modal, ModalDelete } from '../../../components/singles'
 import { ConceptoForm } from '../../../components/forms'
-import NewTable from '../../../components/tables/NewTable'
 import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert } from '../../../functions/alert'
 import { Card } from 'react-bootstrap'
 
@@ -220,7 +216,7 @@ class Conceptos extends Component {
 
     render() {
 
-        const { modal, title, form, options, formeditado } = this.state
+        const { title, form, options, formeditado } = this.state
 
         return (
             <Layout active={'presupuesto'}  {...this.props}>

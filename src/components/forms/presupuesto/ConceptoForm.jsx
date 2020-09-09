@@ -104,7 +104,7 @@ class ConceptoForm extends Component {
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <SelectSearchTrue
-                            requirevalidation={false}
+                            requirevalidation={0}
                             options={options.proveedores}
                             placeholder="SELECCIONA EL PROVEEDOR"
                             name="proveedor"
@@ -128,7 +128,7 @@ class ConceptoForm extends Component {
                 <div className="card-footer py-3 pr-1">
                     <div className="row">
                         <div className="col-lg-12 text-right pr-0 pb-0">
-                            <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" />
+                            <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" icon=''/>
                         </div>
                     </div>
                 </div>
