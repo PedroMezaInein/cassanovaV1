@@ -92,6 +92,9 @@ const PartidasDiseñoForm = Loader( () => import('./pages/Catalogos/PartidasDise
 
 const Contabilidad = Loader( () => import('./pages/Reportes/Contabilidad') )
 const ReporteVentas = Loader( () => import('./pages/Reportes/ReporteVentas') )
+const FlujoProyectos = Loader( () => import('./pages/Reportes/FlujoProyectos') )
+const FlujoDepartamentos = Loader( () => import('./pages/Reportes/FlujoDepartamentos') )
+const EstadoResultados = Loader( () => import('./pages/Reportes/EstadoResultados') )
 
 const AccountSettings = Loader(() => import('./pages/Perfil/AccountSettings') )
 const Calendario = Loader(() => import('./pages/Perfil/Calendario') )
@@ -256,7 +259,10 @@ class App extends Component{
 
                 <Route path = "/reportes/contabilidad" exact component ={ Contabilidad } />
                 <Route path = "/reportes/reporte-ventas" exact component ={ ReporteVentas } />
-
+                <Route path = "/reportes/flujo-proyectos" exact component ={ FlujoProyectos } />
+                <Route path = "/reportes/flujo-departamentos" exact component ={ FlujoDepartamentos } />
+                <Route path = "/reportes/estado-resultados" exact component ={ EstadoResultados } />
+                
                 <Route path = "/mi-perfil" exact component ={ AccountSettings } />
                 <Route path = "/mi-calendario" exact component ={ Calendario } />
 

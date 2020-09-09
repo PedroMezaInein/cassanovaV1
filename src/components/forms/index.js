@@ -46,6 +46,10 @@ import partidasDiseñoForm from './catalogos/PartidasDiseñoForm'
 import calidadView from './calidad/CalidadView' 
 import procesoTicketForm from './calidad/ProcesoTicketForm'
 import agregarVacacionesForm from './recursoshumanos/AgregarVacacionesForm'
+import flujoProyectosForm from './reportes/FlujoProyectosForm'
+import flujoDepartamentosForm from './reportes/FlujoDepartamentosForm'
+import estadoResultadosForm from './reportes/EstadoResultadosForm'
+import tablaReportes from './reportes/TablaReportes'
 
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
@@ -95,3 +99,8 @@ export const PartidasDiseñoForm = partidasDiseñoForm
 export const CalidadView = calidadView
 export const AgregarVacacionesForm = agregarVacacionesForm
 export const ProcesoTicketForm = procesoTicketForm
+export const FlujoProyectosForm = flujoProyectosForm
+export const FlujoDepartamentosForm = flujoDepartamentosForm
+export const EstadoResultadosForm = estadoResultadosForm
+export const TablaReportes = tablaReportes
+

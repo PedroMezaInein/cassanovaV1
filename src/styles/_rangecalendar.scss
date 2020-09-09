@@ -2,6 +2,10 @@
     @include down-screen($md){
         display: block!important;
     }
+    border: 3px solid #F3F6F9;
+    padding: 1.75rem 1.5rem;
+    border-top-left-radius: 0.42rem;
+    border-top-right-radius: 0.42rem;
 }
 
 .rdrDefinedRangesWrapper{
@@ -27,3 +31,4 @@
 .rdrInputRanges{
     display: none!important;
 }
+
