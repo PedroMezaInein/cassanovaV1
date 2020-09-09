@@ -87,12 +87,12 @@ class AccordionEstadosResultados extends Component {
                     <div class="card">
                         <div class="card-header" id="headingOne6">
                             <div id="card-title1" class="card-title collapsed" data-toggle="collapse" data-target="#collapseOne6" onClick = { () => { openAccordion1() } }>
-                                <i class="flaticon-pie-chart-1"></i> Product Inventory
+                                <i class="flaticon-pie-chart-1"></i> VENTAS
                             </div>
                         </div>
                         <div id="collapse1" class="collapse" data-parent="#accordionExample6">
                             <div class="card-body">
-                            ...
+                                (VENTAS)
                             </div>
                         </div>
                     </div>
@@ -100,12 +100,12 @@ class AccordionEstadosResultados extends Component {
                     <div class="card">
                         <div class="card-header" id="headingTwo6">
                             <div id="card-title2" class="card-title collapsed" data-toggle="collapse" data-target="#collapseTwo6" onClick = { () => { openAccordion2() } }>
-                                <i class="flaticon2-notification"></i> Order Statistics
+                                <i class="flaticon2-notification"></i> COSTOS DE SERVICIO
                             </div>
                         </div>
                         <div id="collapse2" class="collapse" data-parent="#accordionExample6">
                             <div class="card-body">
-                            ...
+                            (COSTOS DE SERVICIO)
                             </div>
                         </div>
                     </div>
@@ -113,12 +113,12 @@ class AccordionEstadosResultados extends Component {
                     <div class="card">
                         <div class="card-header" id="headingThree6">
                             <div id="card-title3" class="card-title collapsed" data-toggle="collapse" data-target="#collapseThree6" onClick = { () => { openAccordion3() } }>
-                                <i class="flaticon2-chart"></i> eCommerce Reports
+                                <i class="flaticon2-chart"></i> GASTOS OPERATIVOS
                             </div>
                         </div>
                         <div id="collapse3" class="collapse" data-parent="#accordionExample6">
                             <div class="card-body">
-                            ...
+                                (GASTOS OPERATIVOS)
                             </div>
                         </div>
                     </div>
