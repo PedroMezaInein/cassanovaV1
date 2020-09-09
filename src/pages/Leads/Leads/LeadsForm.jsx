@@ -4,11 +4,11 @@ import axios from 'axios';
 import { Card } from 'react-bootstrap';
 
 import Layout from '../../../components/layout/layout';
-import { URL_DEV, LEADS_COLUMNS } from '../../../constants';
+import { URL_DEV } from '../../../constants';
 import { LeadForm as LeadFormulario } from '../../../components/forms'
 
-import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert, createAlert } from '../../../functions/alert'
-import { setOptions, setCheckedOptions, setSelectOptions } from '../../../functions/setters';
+import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
+import { setCheckedOptions, setSelectOptions } from '../../../functions/setters';
 
 class LeadsForm extends Component {
 

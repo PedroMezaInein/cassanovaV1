@@ -216,7 +216,7 @@ class Usuarios extends Component {
                 
                 deleteForm()
 
-                const { users } = response.data
+                // const { users } = response.data
                 const { modal, key } = this.state
 
                 if(key === 'administrador'){
@@ -261,7 +261,7 @@ class Usuarios extends Component {
         await axios.delete(URL_DEV + 'user/' + user.id, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
                 
-                const { users } = response.data
+                // const { users } = response.data
                 const { modal, key } = this.state
 
                 if(key === 'administrador'){
@@ -431,7 +431,7 @@ class Usuarios extends Component {
     }
 
     onChangeOptions = (e, arreglo) => {
-        const { name, value } = e.target
+        const { value } = e.target
         const { form, options } = this.state
         let auxArray = form[arreglo]
         let aux = []
