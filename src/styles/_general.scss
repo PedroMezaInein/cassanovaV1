@@ -366,3 +366,27 @@ a.nav-link {
 .pt-65px{
     padding-top: 65px!important;
 }
+
+
+#form-flujo-proyectos{
+    @include down-screen($lg){
+        text-align: center!important;
+    }
+}
+#id-row{
+    @include down-screen($lg){
+        display: block!important;
+    }
+}
+#col-calendar{
+    @include down-screen($lg){
+        flex: none; 
+        max-width: none;
+    }
+}
+#col-table{
+    @include down-screen($lg){ 
+        flex: none; 
+        max-width: none;
+    }
+}
