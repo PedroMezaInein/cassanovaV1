@@ -18,8 +18,30 @@ class FlujoProyectos extends Component {
         },
     }
 
+    onChangeEmpresa = e => {
+        const { name, value } = e.target
+        const { options, form } = this.state
+        let auxEmpresa = form.empresas
+        let aux = []
+        options.empresas.find(function (_aux) {
+            if (_aux.value.toString() === value.toString()) {
+                auxEmpresa.push(_aux)
+            } else {
+                aux.push(_aux)
+            }
+        })
+
+        options.empresas = aux
+        form['empresas'] = auxEmpresa
+        this.setState({
+            ... this.state,
+            form,
+            options
+        })
+    }
+
     render() {
-        const { form } = this.state
+        const { form, options} = this.state
         return (
             <Layout active='reportes'  {...this.props}>
                 <Card className="card-custom">
@@ -29,13 +51,15 @@ class FlujoProyectos extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <div className="row">
-                            <div className="col-lg-5">
+                        <div id="id-row" className="row">
+                            <div id="col-calendar" className="col-lg-5">
                                 <FlujoProyectosForm
+                                    onChangeEmpresa = { this.onChangeEmpresa } 
                                     form={form}
+                                    options = { options } 
                                 />
                             </div>
-                            <div className="col-lg-7">
+                            <div id="col-table"  className="col-lg-7">
                                 <TablaReportes />
                             </div>
                         </div>
