@@ -21,17 +21,6 @@ class FlujoProyectosForm extends Component {
         onChange({ target: { value: value, name: 'empresa' } })
     }
 
-    // onChangeRange = range => {
-    //     const { startDate, endDate } = range
-    //     const { form } = this.state
-    //     form.fechaInicio = startDate
-    //     form.fechaFin = endDate
-    //     this.setState({
-    //         ... this.state,
-    //         form
-    //     })
-    // }
-
     render() {
         const { form, onChange, onChangeRange, options, formeditado, onSubmit, ...props } = this.props
         return (
@@ -45,16 +34,18 @@ class FlujoProyectosForm extends Component {
                     }
                     {...props}
                 >
-                    <SelectSearch
-                        formeditado={formeditado}
-                        name='empresa'
-                        options={options.empresas}
-                        placeholder='SELECCIONA LA(S) EMPRESA(S)'
-                        value={form.empresa}
-                        onChange={this.updateEmpresa}
-                        iconclass={"far fa-building"}
-                        messageinc="Incorrecto. Selecciona la(s) empresa(s)."
-                    />
+                    <div className="">
+                            <SelectSearch
+                                formeditado={formeditado}
+                                name='empresa'
+                                options={options.empresas}
+                                placeholder='SELECCIONA LA(S) EMPRESA(S)'
+                                value={form.empresa}
+                                onChange={this.updateEmpresa}
+                                iconclass={"far fa-building"}
+                                messageinc="Incorrecto. Selecciona la(s) empresa(s)."
+                            /> 
+                    </div>  
                     <div className="text-center mt-4">
                         <RangeCalendar
                             onChange={onChangeRange}

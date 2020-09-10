@@ -5,14 +5,14 @@ import { connect } from 'react-redux';
 import Layout from '../../components/layout/layout';
 import { Card } from 'react-bootstrap';
 import { FlujoProyectosForm, TablaReportes } from '../../components/forms'
-import { setOptions } from '../../functions/setters'
+import { setOptions, setMoneyTableSinSmall} from '../../functions/setters'
 import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
 import { URL_DEV } from '../../constants'
-
 
 class FlujoProyectos extends Component {
 
     state = {
+        suma:'',
         proyectos:[],
         form: {
             fechaInicio: new Date(),
@@ -104,13 +104,14 @@ class FlujoProyectos extends Component {
         waitAlert()
         await axios.post(URL_DEV + 'reportes/flujo-proyectos', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empresa } = response.data
+                const { empresa, suma} = response.data
                 const { proyectos } = this.state
 
 
                 this.setState({
                     ... this.state,
-                    proyectos: empresa.proyectos ? empresa.proyectos : []
+                    proyectos: empresa.proyectos ? empresa.proyectos : [],
+                    suma:suma
                 })
             },
             (error) => {
@@ -128,7 +129,7 @@ class FlujoProyectos extends Component {
     }
 
     render() {
-        const { form, options, proyectos} = this.state
+        const { form, options, proyectos, suma} = this.state
         return (
             <Layout active='reportes'  {...this.props}>
                 <Card className="card-custom">
@@ -139,30 +140,35 @@ class FlujoProyectos extends Component {
                     </Card.Header>
                     <Card.Body>
                         <div id="id-row" className="row">
-                            <div id="col-calendar" className="col-lg-5">
+                            <div id="col-calendar" className={form.empresa ? 'col-lg-5' : 'col-lg-12'}>
                                 <FlujoProyectosForm
                                     form={form}
                                     options={options}
                                     onChangeRange = { this.onChangeRange }
                                     onChange={this.onChange}
+                                    className="mb-3"
                                 />
-                            </div>
-
-                            <div id="col-table" className="col-lg-7">
-                                <TablaReportes    
-                                    proyectos={proyectos}
-                                />
-                                <div className="d-flex justify-content-end">
-                                    <div className="d-flex flex-column mt-5">
-                                        <div className="d-flex align-items-center justify-content-between flex-grow-1 mt-5">
-                                            <div className="mr-2">
-                                                <h5 className="font-weight-bolder">CUENTAS POR COBRAR</h5>
-                                                <div className="text-muted font-size-lg mt-2">Total</div>
+                            </div> 
+                            <div id="col-table" className='col-lg-7'>
+                                {
+                                    form.empresa ? 
+                                    <>
+                                        <TablaReportes    
+                                            proyectos={proyectos}
+                                        />
+                                        <div className="d-flex justify-content-end">
+                                            <div className="d-flex flex-column mt-2">
+                                                <div className="d-flex align-items-center justify-content-between flex-grow-1 mt-5">
+                                                    <div className="mr-2">
+                                                        <div className="text-right font-weight-bolder font-size-h6">CUENTAS POR COBRAR:</div>
+                                                    </div>
+                                                    <div className="font-weight-boldest font-size-h6 text-primary ml-2">{setMoneyTableSinSmall(suma)}</div>
+                                                </div>
                                             </div>
-                                            <div className="font-weight-boldest font-size-h3 text-primary ml-5">$24,200</div>
-                                        </div>
-                                    </div>
-                                </div>                        
+                                        </div>  
+                                    </>
+                                    : ''
+                                } 
                             </div>
                         </div>
                     </Card.Body>
