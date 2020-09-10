@@ -13,11 +13,12 @@ import { URL_DEV } from '../../constants'
 class FlujoProyectos extends Component {
 
     state = {
+        proyectos:[],
         form: {
             fechaInicio: new Date(),
             fechaFin: new Date,
             empresas: [],
-            empresa: 0,
+            empresa: '',
         },
         options: {
             empresas: [],
@@ -71,14 +72,63 @@ class FlujoProyectos extends Component {
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
+        if(form.empresa !== '' && form.fechaInicio !== '' && form.fechaFin !==''){
+            this.getReporteFlujosProyectosAxios()
+        }
         this.setState({
             ... this.state,
             form
         })
     }
 
+    onChangeRange = range => {
+        waitAlert()
+        const { startDate, endDate } = range
+        const { form } = this.state
+        form.fechaInicio = startDate
+        form.fechaFin = endDate
+        this.setState({
+            ... this.state,
+            form
+        })
+
+        if(form.empresa !== '' && form.fechaInicio !== '' && form.fechaFin !==''){
+            this.getReporteFlujosProyectosAxios()
+        }
+    }
+
+    async getReporteFlujosProyectosAxios(){
+        
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        waitAlert()
+        await axios.post(URL_DEV + 'reportes/flujo-proyectos', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empresa } = response.data
+                const { proyectos } = this.state
+
+
+                this.setState({
+                    ... this.state,
+                    proyectos: empresa.proyectos ? empresa.proyectos : []
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render() {
-        const { form, options } = this.state
+        const { form, options, proyectos} = this.state
         return (
             <Layout active='reportes'  {...this.props}>
                 <Card className="card-custom">
@@ -93,18 +143,21 @@ class FlujoProyectos extends Component {
                                 <FlujoProyectosForm
                                     form={form}
                                     options={options}
+                                    onChangeRange = { this.onChangeRange }
                                     onChange={this.onChange}
                                 />
                             </div>
 
                             <div id="col-table" className="col-lg-7">
-                                <TablaReportes />
+                                <TablaReportes    
+                                    proyectos={proyectos}
+                                />
                                 <div className="d-flex justify-content-end">
                                     <div className="d-flex flex-column mt-5">
                                         <div className="d-flex align-items-center justify-content-between flex-grow-1 mt-5">
                                             <div className="mr-2">
                                                 <h5 className="font-weight-bolder">CUENTAS POR COBRAR</h5>
-                                                <div className="text-muted font-size-lg mt-2">Resultado</div>
+                                                <div className="text-muted font-size-lg mt-2">Total</div>
                                             </div>
                                             <div className="font-weight-boldest font-size-h3 text-primary ml-5">$24,200</div>
                                         </div>

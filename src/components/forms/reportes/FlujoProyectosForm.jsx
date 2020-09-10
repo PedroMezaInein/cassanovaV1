@@ -21,19 +21,19 @@ class FlujoProyectosForm extends Component {
         onChange({ target: { value: value, name: 'empresa' } })
     }
 
-    onChangeRange = range => {
-        const { startDate, endDate } = range
-        const { form } = this.state
-        form.fechaInicio = startDate
-        form.fechaFin = endDate
-        this.setState({
-            ... this.state,
-            form
-        })
-    }
+    // onChangeRange = range => {
+    //     const { startDate, endDate } = range
+    //     const { form } = this.state
+    //     form.fechaInicio = startDate
+    //     form.fechaFin = endDate
+    //     this.setState({
+    //         ... this.state,
+    //         form
+    //     })
+    // }
 
     render() {
-        const { form, onChange, options, formeditado, onSubmit, ...props } = this.props
+        const { form, onChange, onChangeRange, options, formeditado, onSubmit, ...props } = this.props
         return (
             <>
                 <Form id="form-flujo-proyectos"
@@ -57,7 +57,7 @@ class FlujoProyectosForm extends Component {
                     />
                     <div className="text-center mt-4">
                         <RangeCalendar
-                            onChange={this.onChangeRange}
+                            onChange={onChangeRange}
                             start={form.fechaInicio}
                             end={form.fechaFin}
                         />
