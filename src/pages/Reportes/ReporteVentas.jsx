@@ -10,6 +10,7 @@ import { URL_DEV, URL_ASSETS } from '../../constants'
 import axios from 'axios'
 import { Page, Text, View, PDFDownloadLink, Document, StyleSheet, PDFViewer, BlobProvider, pdf } from '@react-pdf/renderer'
 import {ItemSlider} from '../../components/singles'
+import {Pie} from 'react-chartjs-2';
 
 const styles = StyleSheet.create({
     page: {
@@ -23,9 +24,31 @@ const styles = StyleSheet.create({
     }
 });
 
+const data = {
+	labels: [
+		'Red',
+		'Blue',
+		'Yellow'
+	],
+	datasets: [{
+		data: [300, 50, 100],
+		backgroundColor: [
+		'#FF6384',
+		'#36A2EB',
+		'#FFCE56'
+		],
+		hoverBackgroundColor: [
+		'#FF6384',
+		'#36A2EB',
+		'#FFCE56'
+		]
+	}]
+};
+
 class ReporteVentas extends Component {
 
     state = {
+        url: '',
         form:{
             fechaInicio: moment().startOf('month').toDate(),
             fechaFin: moment().endOf('month').toDate(),
@@ -39,6 +62,15 @@ class ReporteVentas extends Component {
         },
         leads: [],
         leadsAnteriores: []
+    }
+
+    constructor(props) {
+        super(props);
+        this.chartTotalReference = React.createRef();
+    }
+
+    componentDidMount() {
+        console.log(this.chartTotalReference); // returns a Chart.js instance reference
     }
 
     onChangeRange = range => {
@@ -75,11 +107,15 @@ class ReporteVentas extends Component {
         await axios.post(URL_DEV + 'reportes/ventas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { leads } = response.data
+                const url = this.chartTotalReference.current.chartInstance.toBase64Image()
+                console.log(url, 'base 64')
                 this.setState({
                     ... this.state,
-                    leads: leads
+                    leads: leads,
+                    url: url
                 })
-                doneAlert('success')
+                /* const url = this.refs.chartTotalReference.chartInstance */
+                
                 swal.close()
                 /* const url = URL_ASSETS + '/storage/adjuntos.zip'
                 const link = document.createElement('a');
@@ -163,6 +199,12 @@ class ReporteVentas extends Component {
                                 }
                             </div>
                         </div>
+                        <Pie ref = { this.chartTotalReference } data = { data }  />
+                        {
+                            this.state.url ?
+                                <img src = { this.state.url } />
+                            : ''
+                        }
                     </Card.Body>
                 </Card>
             </Layout>
