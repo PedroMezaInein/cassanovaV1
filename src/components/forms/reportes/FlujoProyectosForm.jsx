@@ -6,16 +6,6 @@ import RangeCalendar from '../../../components/form-components/RangeCalendar';
 
 class FlujoProyectosForm extends Component {
 
-    handleChangeDateInicio = date => {
-        const { onChange } = this.props
-        onChange({ target: { value: date, name: 'fechaInicio' } })
-    }
-
-    handleChangeDateFin = date => {
-        const { onChange } = this.props
-        onChange({ target: { value: date, name: 'fechaFin' } })
-    }
-
     updateEmpresa = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'empresa' } })

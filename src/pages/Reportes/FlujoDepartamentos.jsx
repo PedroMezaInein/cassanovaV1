@@ -4,19 +4,21 @@ import swal from 'sweetalert'
 import { connect } from 'react-redux';
 import Layout from '../../components/layout/layout';
 import { Card } from 'react-bootstrap';
-import { FlujoDepartamentosForm, TablaReportes } from '../../components/forms'
-import { URL_DEV } from '../../constants'
+import { FlujoDepartamentosForm, TablaReportesDepartamento } from '../../components/forms'
+import { setOptions, setMoneyTableSinSmall} from '../../functions/setters'
 import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
-import { setOptions } from '../../functions/setters'
+import { URL_DEV } from '../../constants'
 
 class FlujoDepartamentos extends Component {
 
     state = {
+        suma:'',
+        departamentos:[],
         form: {
             fechaInicio: new Date(),
             fechaFin: new Date,
             empresas: [],
-            empresa: 0,
+            empresa: '',
         },
         options: {
             empresas: [],
@@ -70,14 +72,63 @@ class FlujoDepartamentos extends Component {
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
+        if(form.empresa !== '' && form.fechaInicio !== '' && form.fechaFin !==''){
+            this.getReporteFlujosProyectosAxios()
+        }
         this.setState({
             ... this.state,
             form
         })
     }
 
+    onChangeRange = range => {
+        waitAlert()
+        const { startDate, endDate } = range
+        const { form } = this.state
+        form.fechaInicio = startDate
+        form.fechaFin = endDate
+        this.setState({
+            ... this.state,
+            form
+        })
+
+        if(form.empresa !== '' && form.fechaInicio !== '' && form.fechaFin !==''){
+            this.getReporteFlujosProyectosAxios()
+        }
+    }
+
+    async getReporteFlujosProyectosAxios(){
+        
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        waitAlert()
+        await axios.post(URL_DEV + 'reportes/flujo-departamentos', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { suma, departamentos} = response.data
+
+                this.setState({
+                    ... this.state,
+                    departamentos: departamentos,
+                    suma:suma
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render() {
-        const { form, options} = this.state
+        const { form, options, departamentos, suma} = this.state
+        console.log(suma)
         return (
             <Layout active='reportes'  {...this.props}>
                 <Card className="card-custom">
@@ -88,26 +139,35 @@ class FlujoDepartamentos extends Component {
                     </Card.Header>
                     <Card.Body>
                         <div id="id-row" className="row">
-                            <div id="col-calendar" className="col-lg-5">
+                            <div id="col-calendar" className={form.empresa ? 'col-lg-5' : 'col-lg-12'}>
                                 <FlujoDepartamentosForm
-                                    onChange={this.onChange}
                                     form={form}
-                                    options = { options } 
+                                    options={options}
+                                    onChangeRange = { this.onChangeRange }
+                                    onChange={this.onChange}
+                                    className="mb-3"
                                 />
-                            </div>
-                            <div id="col-table"  className="col-lg-7">
-                                <TablaReportes />
-                                <div className="d-flex justify-content-end">
-                                    <div className="d-flex flex-column mt-5">
-                                        <div className="d-flex align-items-center justify-content-between flex-grow-1 mt-5">
-                                            <div className="mr-2">
-                                                <h5 className="font-weight-bolder">CUENTAS POR COBRAR</h5>
-                                                <div className="text-muted font-size-lg mt-2">Resultado</div>
+                            </div> 
+                            <div id="col-table" className='col-lg-7'>
+                                {
+                                    form.empresa ? 
+                                    <>
+                                        <TablaReportesDepartamento    
+                                            departamentos={departamentos}
+                                        />
+                                        <div className="d-flex justify-content-end">
+                                            <div className="d-flex flex-column mt-2">
+                                                <div className="d-flex align-items-center justify-content-between flex-grow-1 mt-5">
+                                                    <div className="mr-2">
+                                                        <div className="text-right font-weight-bolder font-size-h6">CUENTAS POR COBRAR:</div>
+                                                    </div>
+                                                    <div className="font-weight-boldest font-size-h6 text-primary ml-2">{setMoneyTableSinSmall(suma)}</div>
+                                                </div>
                                             </div>
-                                            <div className="font-weight-boldest font-size-h3 text-primary ml-5">$24,200</div>
-                                        </div>
-                                    </div>
-                                </div>
+                                        </div>  
+                                    </>
+                                    : ''
+                                } 
                             </div>
                         </div>
                     </Card.Body>
