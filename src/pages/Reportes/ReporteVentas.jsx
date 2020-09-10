@@ -8,7 +8,7 @@ import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../fu
 import swal from 'sweetalert'
 import { URL_DEV, URL_ASSETS } from '../../constants'
 import axios from 'axios'
-import { Page, Text, View, PDFDownloadLink, Document, StyleSheet, PDFViewer, BlobProvider, pdf } from '@react-pdf/renderer'
+import { Page, Text, View, PDFDownloadLink, Document, StyleSheet, PDFViewer, BlobProvider, pdf, Image } from '@react-pdf/renderer'
 import {ItemSlider} from '../../components/singles'
 import {Pie} from 'react-chartjs-2';
 
@@ -24,26 +24,16 @@ const styles = StyleSheet.create({
     }
 });
 
-const data = {
-	labels: [
-		'Red',
-		'Blue',
-		'Yellow'
-	],
-	datasets: [{
-		data: [300, 50, 100],
-		backgroundColor: [
-		'#FF6384',
-		'#36A2EB',
-		'#FFCE56'
-		],
-		hoverBackgroundColor: [
-		'#FF6384',
-		'#36A2EB',
-		'#FFCE56'
-		]
-	}]
-};
+const options = {
+    plugins: {
+        datalabels: {
+          color: '#ffffff',
+          formatter: (value) => {
+            return value + '%'
+          }
+        }
+      }
+}
 
 class ReporteVentas extends Component {
 
@@ -60,6 +50,9 @@ class ReporteVentas extends Component {
                 }
             }
         },
+        data:{
+            total: {}
+        },
         leads: [],
         leadsAnteriores: []
     }
@@ -70,10 +63,11 @@ class ReporteVentas extends Component {
     }
 
     componentDidMount() {
-        console.log(this.chartTotalReference); // returns a Chart.js instance reference
+        this.getReporteVentasAxios()
     }
 
     onChangeRange = range => {
+        waitAlert()
         const { startDate, endDate } = range
         const { form } = this.state
         form.fechaInicio = startDate
@@ -82,6 +76,7 @@ class ReporteVentas extends Component {
             ... this.state,
             form
         })
+        this.getReporteVentasAxios()
     }
 
     setPdf = blob => {
@@ -99,30 +94,35 @@ class ReporteVentas extends Component {
     }
 
     async getReporteVentasAxios(){
-        const { chart } = this
-        console.log(chart, 'chart', this)
+        
         const { access_token } = this.props.authUser
         const { form } = this.state
         waitAlert()
         await axios.post(URL_DEV + 'reportes/ventas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { leads } = response.data
-                const url = this.chartTotalReference.current.chartInstance.toBase64Image()
-                console.log(url, 'base 64')
+                const { data } = this.state
+                data.total = {
+                    labels: ['Total'],
+                    datasets: [{
+                        data: [leads.length],
+                        backgroundColor: [
+                            '#FF6384',
+                        ],
+                        hoverBackgroundColor: [
+                            '#FF6384',
+                        ]
+                    }]
+                }
+
+                let url = ''
+                this.chartTotalReference.current.chartInstance.render(options)
+
                 this.setState({
                     ... this.state,
                     leads: leads,
                     url: url
                 })
-                /* const url = this.refs.chartTotalReference.chartInstance */
-                
-                swal.close()
-                /* const url = URL_ASSETS + '/storage/adjuntos.zip'
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', proyecto.nombre + '.zip');
-                document.body.appendChild(link);
-                link.click(); */
             },
             (error) => {
                 console.log(error, 'error')
@@ -138,7 +138,7 @@ class ReporteVentas extends Component {
         })
     }
     render() {
-        const { form, leads } = this.state
+        const { form, leads, data } = this.state
         return (
             <Layout active = 'reportes'  {...this.props}>
                 <Card className="card-custom">
@@ -153,17 +153,6 @@ class ReporteVentas extends Component {
                                 <div className="d-flex justify-content-center">
                                     <RangeCalendar start = { form.fechaInicio } end = { form.fechaFin } 
                                         onChange = { this.onChangeRange } />
-                                </div>
-                                <div className = "d-flex text-center py-3">
-                                    <Button icon='' className="mx-auto" text="DESCARGAR" 
-                                        onClick = {
-                                            (e) => {
-                                                e.preventDefault();
-                                                waitAlert();
-                                                this.getReporteVentasAxios()
-                                            }
-                                        }
-                                        />
                                 </div>
                             </div>
                             <div className="col-md-6">
@@ -180,13 +169,14 @@ class ReporteVentas extends Component {
                                                                     } 
                                                                 }
                                                             >
-                                                        <Page size="A4" style={styles.page}>
-                                                            <View style={styles.section}>
+                                                        <Page size="A4">
+                                                            {/* <View style={styles.section}>
                                                                 <Text>Section #1</Text>
-                                                            </View>
-                                                            <View style={styles.section}>
+                                                            </View> */}
+                                                            {/* <Image src = {this.state.url} /> */}
+                                                            {/* <View style={styles.section}>
                                                                 <Text>Section #2</Text>
-                                                            </View>
+                                                            </View> */}
                                                         </Page>
                                                     </Document>
                                                 </PDFViewer>
@@ -199,12 +189,12 @@ class ReporteVentas extends Component {
                                 }
                             </div>
                         </div>
-                        <Pie ref = { this.chartTotalReference } data = { data }  />
-                        {
-                            this.state.url ?
-                                <img src = { this.state.url } />
-                            : ''
-                        }
+                        <div className="row mx-0">
+                            <div className="col-md-6">
+                                <Pie plugins =  {['ChartDataLabels']}ref = { this.chartTotalReference } data = { data.total } options = { options } />
+                            </div>
+                        </div>
+                        <img src = { this.state.url } />
                     </Card.Body>
                 </Card>
             </Layout>
