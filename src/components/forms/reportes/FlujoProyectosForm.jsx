@@ -62,10 +62,6 @@ class FlujoProyectosForm extends Component {
                             end={form.fechaFin}
                         />
                     </div>
-                    <div className="text-center">
-                        <div className="mt-4 font-size-h6 label label-light-primary label-inline p-3"><strong>Cuentas por cobrar:</strong><span className="font-weight-normal font-size-lg">&nbsp;Suma</span></div>
-                    </div>
-                    {/* <div className="card-title font-weight-bolder mt-4 font-size-h5 text-center ">Cuentas por cobrar: <span className="font-weight-normal font-size-h6">Suma</span></div> */}
                 </Form>
             </>
         )
