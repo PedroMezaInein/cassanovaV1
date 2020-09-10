@@ -23,6 +23,7 @@
       "@material-ui/lab": "^4.0.0-alpha.50",
       "@material-ui/pickers": "3.2.10",
       "@material-ui/styles": "4.9.10",
+      "@react-pdf/renderer": "^1.6.11",
       "@reduxjs/toolkit": "1.1.0",
       "@tanem/svg-injector": "8.0.35",
       "@testing-library/jest-dom": "^4.2.4",
