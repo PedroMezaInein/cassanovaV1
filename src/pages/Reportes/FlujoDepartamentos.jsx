@@ -128,7 +128,7 @@ class FlujoDepartamentos extends Component {
 
     render() {
         const { form, options, departamentos, suma} = this.state
-        console.log(suma)
+        // console.log(suma)
         return (
             <Layout active='reportes'  {...this.props}>
                 <Card className="card-custom">
