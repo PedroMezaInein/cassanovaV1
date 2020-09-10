@@ -101,10 +101,10 @@ class FlujoDepartamentos extends Component {
                                     <div className="d-flex flex-column mt-5">
                                         <div className="d-flex align-items-center justify-content-between flex-grow-1 mt-5">
                                             <div className="mr-2">
-                                                <h3 className="font-weight-bolder">CUENTAS POR COBRAR</h3>
+                                                <h5 className="font-weight-bolder">CUENTAS POR COBRAR</h5>
                                                 <div className="text-muted font-size-lg mt-2">Resultado</div>
                                             </div>
-                                            <div className="font-weight-boldest font-size-h1 text-primary ml-5">$24,200</div>
+                                            <div className="font-weight-boldest font-size-h3 text-primary ml-5">$24,200</div>
                                         </div>
                                     </div>
                                 </div>
