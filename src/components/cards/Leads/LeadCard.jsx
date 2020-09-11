@@ -5,7 +5,7 @@ import { toAbsoluteUrl } from "../../../functions/routers"
 
 export default class LeadCard extends Component {
     render() {
-        const { lead, children } = this.props
+        const { lead } = this.props
         return (
             <div className="border-nav mt-4 mb-5">
                 {/* <strong className="font-size-h4">LEAD</strong> */}
@@ -101,18 +101,18 @@ export default class LeadCard extends Component {
                                 </div>
                                 <div>
                                     <ul className="list-inline mb-0 font-size-h6 text-dark-75 font-weight-bolder">
-                                    {
-                                        lead.servicios
-                                            ? lead
-                                                .servicios
-                                                .map((servicio, key) => {
-                                                    return (
-                                                    <li className="list-inline-item" key={key}>&#8226; {servicio.servicio}</li>
-                                                    )
-                                                })
-                                            :
+                                        {
+                                            lead.servicios
+                                                ? lead
+                                                    .servicios
+                                                    .map((servicio, key) => {
+                                                        return (
+                                                            <li className="list-inline-item" key={key}>&#8226; {servicio.servicio}</li>
+                                                        )
+                                                    })
+                                                :
                                                 <li className="list-inline-item">No hay servicios registrados</li>
-                                    }
+                                        }
                                     </ul>
                                     <div className="font-size-sm text-muted font-weight-bold mt-1">Servicios</div>
                                 </div>
