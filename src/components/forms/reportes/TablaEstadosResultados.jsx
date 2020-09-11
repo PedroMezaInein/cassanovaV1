@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import Moment from 'react-moment'
 import { setMoneyTableSinSmall } from '../../../functions/setters'
 import Pagination from "react-js-pagination";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
 class TablaEstadosResultados extends Component {
 
@@ -176,40 +178,53 @@ class TablaEstadosResultados extends Component {
                 {
                     egresos ? 
                         egresos.length > itemsPerPage ?
-                            <Pagination
-                                itemClass="page-item"
-                                linkClass="page-link"
-                                firstPageText = 'Primero'
-                                lastPageText = 'Último'
-                                activePage = { activePage.egresos }
-                                itemsCountPerPage = { itemsPerPage }
-                                totalItemsCount = { egresos.length }
-                                pageRangeDisplayed = { 5 }
-                                onChange={this.onChangePageEgresos.bind(this)}
-                            />
+                            <div className="d-flex justify-content-center my-2">
+                                <Pagination
+                                    itemClass="page-item"
+                                    linkClass="page-link"
+                                    firstPageText = 'Primero'
+                                    lastPageText = 'Último'
+                                    activePage = { activePage.egresos }
+                                    itemsCountPerPage = { itemsPerPage }
+                                    totalItemsCount = { egresos.length }
+                                    pageRangeDisplayed = { 5 }
+                                    onChange={this.onChangePageEgresos.bind(this)}
+                                    itemClassLast="d-none"
+                                    itemClassFirst="d-none"
+                                    nextPageText= { '>' }
+                                    prevPageText= { '<' }
+                                />
+                            </div>
                         : ''
                     : ''
                 }
                 {
                     compras ? 
                         compras.length > itemsPerPage ?
-                            <Pagination
-                                itemClass="page-item"
-                                linkClass="page-link"
-                                firstPageText = 'Primero'
-                                lastPageText = 'Último'
-                                activePage = { activePage.compras }
-                                itemsCountPerPage = { itemsPerPage }
-                                totalItemsCount = {compras.length }
-                                pageRangeDisplayed = { 5 }
-                                onChange={this.onChangePageCompras.bind(this)}
-                            />
+                            <div className="d-flex justify-content-center my-2">
+                                <Pagination
+                                    itemClass="page-item"
+                                    linkClass="page-link"
+                                    firstPageText = 'Primero'
+                                    lastPageText = 'Último'
+                                    activePage = { activePage.compras }
+                                    itemsCountPerPage = { itemsPerPage }
+                                    totalItemsCount = {compras.length }
+                                    pageRangeDisplayed = { 5 }
+                                    onChange={this.onChangePageCompras.bind(this)}
+                                    itemClassLast="d-none"
+                                    itemClassFirst="d-none"
+                                    nextPageText= { '>' }
+                                    prevPageText= { '<' }
+                                />
+                            </div>
                         : ''
                     : ''
                 }
                 {
                     ingresos ? 
                     ingresos.length > itemsPerPage ?
+                        <div className="d-flex justify-content-center my-2">
                             <Pagination
                                 itemClass="page-item"
                                 linkClass="page-link"
@@ -220,13 +235,19 @@ class TablaEstadosResultados extends Component {
                                 totalItemsCount = {ingresos.length }
                                 pageRangeDisplayed = { 5 }
                                 onChange={this.onChangePageIngresos.bind(this)}
+                                itemClassLast="d-none"
+                                itemClassFirst="d-none"
+                                nextPageText= { '>' }
+                                prevPageText= { '<' }
                             />
+                        </div>
                         : ''
                     : ''
                 }
                 {
                     ventas ? 
                     ventas.length > itemsPerPage ?
+                        <div className="d-flex justify-content-center my-2">
                             <Pagination
                                 itemClass="page-item"
                                 linkClass="page-link"
@@ -237,7 +258,12 @@ class TablaEstadosResultados extends Component {
                                 totalItemsCount = {ventas.length }
                                 pageRangeDisplayed = { 5 }
                                 onChange={this.onChangePageVentas.bind(this)}
+                                itemClassLast="d-none"
+                                itemClassFirst="d-none"
+                                nextPageText= { '>' }
+                                prevPageText= { '<' }
                             />
+                        </div>
                         : ''
                     : ''
                 }
