@@ -12,6 +12,17 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 
+export const COLORES_GRAFICAS = [
+    '#007BFF',
+    '#6610F2',
+    '#E83E8C',
+    '#DC3545',
+    '#FD7E14',
+    '#FFC107',
+    '#6F42C1',
+    '#28A745'
+]
+
 // DEV
 /* export const URL_DEV = 'http://127.0.0.1:8000/api/';
 export const URL_ASSETS = 'http://127.0.0.1:8000'; */
