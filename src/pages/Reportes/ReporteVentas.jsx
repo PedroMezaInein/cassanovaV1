@@ -126,7 +126,7 @@ class ReporteVentas extends Component {
     }
 
     onChangeRange = range => {
-        waitAlert()
+        // waitAlert()
         const { startDate, endDate } = range
         const { form } = this.state
         form.fechaInicio = startDate

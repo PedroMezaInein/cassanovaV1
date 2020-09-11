@@ -84,7 +84,6 @@ class EstadoResultados extends Component {
     }
 
     onChangeRange = range => {
-        waitAlert()
         const { startDate, endDate } = range
         const { form } = this.state
         form.fechaInicio = startDate
@@ -100,15 +99,11 @@ class EstadoResultados extends Component {
     }
 
     async getReporteEstadosResultadosAxios(){
-        
         const { access_token } = this.props.authUser
         const { form } = this.state
-        waitAlert()
         await axios.post(URL_DEV + 'reportes/estado-resultados', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { egresos,compras, ingresos, ventas, suma} = response.data
-
-
                 this.setState({
                     ... this.state,
                     egresos: egresos,
