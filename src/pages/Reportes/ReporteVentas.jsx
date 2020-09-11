@@ -2,20 +2,19 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Layout from '../../components/layout/layout'
 import { Card } from 'react-bootstrap'
-import { RangeCalendar, Button } from '../../components/form-components';
+import { Button } from '../../components/form-components';
 import moment from 'moment'
-import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../functions/alert'
+import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
 import swal from 'sweetalert'
-import { URL_DEV, URL_ASSETS, COLORES_GRAFICAS } from '../../constants'
+import { URL_DEV } from '../../constants'
 import axios from 'axios'
-import { Page, Text, View, PDFDownloadLink, Document, StyleSheet, PDFViewer, BlobProvider, pdf, Image } from '@react-pdf/renderer'
+import { Page, Text, View, Document, StyleSheet, pdf, Image } from '@react-pdf/renderer'
 import {ItemSlider} from '../../components/singles'
 import {Pie} from 'react-chartjs-2';
 import "chartjs-plugin-datalabels";
 import { generateColor } from '../../functions/functions';
 import { setOptions } from '../../functions/setters';
 import FlujoDepartamentosForm from '../../components/forms/reportes/FlujoDepartamentosForm';
-import { saveAs } from 'file-saver';
 
 
 const styles = StyleSheet.create({
@@ -721,7 +720,7 @@ class ReporteVentas extends Component {
                         {
                             leads.length > 0 ?
                                 <div className="text-center">
-                                    <Button text='Generar PDF' className="btn btn-primary mr-2" icon=''
+                                    <Button text='Generar PDF' className="btn btn-primary my-4" icon=''
                                         onClick = {
                                             (e) => {
                                                 e.preventDefault();
