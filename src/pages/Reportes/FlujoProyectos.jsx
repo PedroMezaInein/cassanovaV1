@@ -104,13 +104,13 @@ class FlujoProyectos extends Component {
         waitAlert()
         await axios.post(URL_DEV + 'reportes/flujo-proyectos', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empresa, suma} = response.data
-                const { proyectos } = this.state
+                const { proyectos, suma} = response.data
+                /* const { proyectos } = this.state */
 
 
                 this.setState({
                     ... this.state,
-                    proyectos: empresa.proyectos ? empresa.proyectos : [],
+                    proyectos: proyectos,
                     suma:suma
                 })
             },
