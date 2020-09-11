@@ -58,7 +58,7 @@ class TablaReportes extends Component {
                                 <span className="text-dark-75 font-weight-bolder d-block font-size-sm">{setMoneyTableSinSmall(this.sumaTotalVentasProyectos())}</span>
                             </th>
                             
-                            <th className="text-right"  >
+                            <th className="text-right">
                                 <span className="text-muted font-weight-bold">Compras</span>
                                 <span className="text-dark-75 font-weight-bolder d-block font-size-sm">{setMoneyTableSinSmall(this.sumaTotalComprasProyectos())}</span>
                             </th>
@@ -68,12 +68,10 @@ class TablaReportes extends Component {
                         {
                             proyectos.map((proyecto,key)=>{
                                     return(
-                                        <tr className="text-right" key={key}>
+                                        <tr className="text-right border-bottom" key={key}>
                                                 <td className="p-2">
                                                     <div className="d-flex align-items-start">
-                                                        <div>
-                                                            <div className="text-dark-75 text-hover-primary mb-1 font-size-sm pl-2">{proyecto.nombre}</div>
-                                                        </div>
+                                                        <div className="text-dark-75 mb-1 font-size-sm pl-2">{proyecto.nombre}</div>
                                                     </div>
                                                 </td>           
                                                 <td>
