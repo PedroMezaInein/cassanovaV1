@@ -23,7 +23,6 @@ class TablaReportesDepartamento extends Component {
                 })
             })          
         })
-        
         return suma
     }
 
@@ -31,11 +30,11 @@ class TablaReportesDepartamento extends Component {
     render() {
         const { departamentos } = this.props
         return (
-            <div className="table-responsive w-50">
-                <table className="table table-head-custom table-head-bg table-borderless table-vertical-center">
+            <div className="table-responsive w-75">
+                <table className="table table-head-custom table-head-bg table-vertical-center">
                     <thead>
                         <tr>
-                            <th style={{ minWidth: "250px" }} className="pl-7">
+                            <th className="pl-7">
                                 <span className="text-dark-75 font-size-lg">Departamento</span>
                             </th>
                             

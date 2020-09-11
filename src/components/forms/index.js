@@ -53,6 +53,8 @@ import tablaReportes from './reportes/TablaReportes'
 import accordionEstadosResultados from './reportes/AccordionEstadosResultados'
 import tablaEstadosResultados from './reportes/TablaEstadosResultados'
 import tablaReportesDepartamento from './reportes/TablaReportesDepartamento'
+import headersTotales from './reportes/HeadersTotales'
+
 
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
@@ -109,3 +111,4 @@ export const TablaReportes = tablaReportes
 export const AccordionEstadosResultados = accordionEstadosResultados
 export const TablaEstadosResultados = tablaEstadosResultados
 export const TablaReportesDepartamento = tablaReportesDepartamento
+export const HeadersTotales = headersTotales

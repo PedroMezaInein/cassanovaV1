@@ -20,7 +20,7 @@ class EstadoResultados extends Component {
             fechaInicio: new Date(),
             fechaFin: new Date,
             empresas: [],
-            empresa: 0,
+            empresa: '',
         },
         options: {
             empresas: [],
@@ -143,7 +143,7 @@ class EstadoResultados extends Component {
                     </Card.Header>
                     <Card.Body>
                         <div id="id-row" className="row">
-                            <div id="col-calendar" className="col-lg-5">
+                            <div id="col-calendar" className="col-md-6">
                                 <EstadoResultadosForm
                                     form={ form }
                                     options = { options } 
@@ -151,7 +151,7 @@ class EstadoResultados extends Component {
                                     onChange={this.onChange}
                                 />
                             </div>
-                            <div id="col-table"  className="col-lg-7">
+                            <div id="col-table"  className="col-md-6 align-self-center d-flex justify-content-center">
                                 <AccordionEstadosResultados
                                     egresos = { egresos }
                                     compras = { compras }
