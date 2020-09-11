@@ -65,14 +65,19 @@ class AccordionEstadosResultados extends Component {
     
     render() {
         const {accordion} = this.state
-        
+        const {ventas, ingresos, compras, egresos} = this.props
         const project = (element) => {
             
             switch(element.tipo) {                                                         
-            case 1: return <TablaEstadosResultados/>;
-            case 2: return <TablaEstadosResultados/>;
-            case 3: return <TablaEstadosResultados/>;
-            case 4: return <TablaEstadosResultados/>;
+            case 1: return <TablaEstadosResultados
+                                ventas = { ventas }
+                            />;
+            case 2: return <TablaEstadosResultados
+                            />;
+            case 3: return <TablaEstadosResultados
+                            />;
+            case 4: return <TablaEstadosResultados
+                            />;
             default: 
                 return <div>No soy ninguno</div>
             }
@@ -88,11 +93,11 @@ class AccordionEstadosResultados extends Component {
                                     <div className="card" key={key}>
                                         <div className="card-header" >
                                             <div className={(element.isActive) ? 'card-title text-primary collapsed' : 'card-title text-dark-50'} onClick = { () => { this.openAccordion(key) } }>
-                                                <div class="card-label">
+                                                <div className="card-label">
                                                     <i className= {(element.isActive) ?element.icono+' text-primary' : element.icono+' text-dark-50'}>
                                                     </i> {element.nombre}
                                                 </div>
-                                                <span class="svg-icon ">
+                                                <span className="svg-icon ">
                                                     <SVG src={toAbsoluteUrl('/images/svg/Angle-double-right.svg')} />
                                                 </span>
                                             </div>

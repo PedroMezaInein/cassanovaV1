@@ -148,14 +148,16 @@ class FlujoDepartamentos extends Component {
                                     className="mb-3"
                                 />
                             </div> 
-                            <div id="col-table" className='col-lg-7'>
+                            <div id="col-table" className='col-lg-7 align-self-center'>
                                 {
                                     form.empresa ? 
                                     <>
-                                        <TablaReportesDepartamento    
-                                            departamentos={departamentos}
-                                        />
-                                        <div className="d-flex justify-content-end">
+                                        <div className="d-flex justify-content-center">
+                                            <TablaReportesDepartamento    
+                                                departamentos={departamentos}
+                                            />
+                                        </div>
+                                        <div className="d-flex justify-content-center">
                                             <div className="d-flex flex-column mt-2">
                                                 <div className="d-flex align-items-center justify-content-between flex-grow-1 mt-5">
                                                     <div className="mr-2">
