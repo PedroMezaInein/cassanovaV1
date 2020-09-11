@@ -82,7 +82,6 @@ class FlujoDepartamentos extends Component {
     }
 
     onChangeRange = range => {
-        waitAlert()
         const { startDate, endDate } = range
         const { form } = this.state
         form.fechaInicio = startDate
@@ -101,7 +100,6 @@ class FlujoDepartamentos extends Component {
         
         const { access_token } = this.props.authUser
         const { form } = this.state
-        waitAlert()
         await axios.post(URL_DEV + 'reportes/flujo-departamentos', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { suma, departamentos} = response.data
