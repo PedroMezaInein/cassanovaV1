@@ -261,7 +261,7 @@ class Remisiones extends Component{
                         {
                             remision.convertido ? '' :
                                 <div className="col-md-12 mb-3 d-flex justify-content-end">
-                                    <Button className="mx-2 my-2 my-md-0 small-button" onClick={(e) => {e.preventDefault(); this.changePageConvert(remision)} } text='' icon={faSync} color="transparent" 
+                                    <Button pulse="pulse-ring" className="btn btn-icon btn-light-info pulse pulse-info" onClick={(e) => {e.preventDefault(); this.changePageConvert(remision)} } icon={faSync}
                                         tooltip={{text:'COMPRAR'}} />
                                 </div>
                         }
