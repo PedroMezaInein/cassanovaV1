@@ -52,7 +52,7 @@ class TablaReportesDepartamento extends Component {
                                                 <td className="p-2">
                                                     <div className="d-flex align-items-start">
                                                         <div>
-                                                            <div className="text-dark-75 text-hover-primary mb-1 font-size-lg pl-2">{departamento.nombre}</div>
+                                                            <div className="text-dark-75 mb-1 font-size-lg pl-2">{departamento.nombre}</div>
                                                         </div>
                                                     </div>
                                                 </td>
