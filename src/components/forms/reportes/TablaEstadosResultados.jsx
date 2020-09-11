@@ -1,12 +1,58 @@
 import React, { Component } from 'react';
 import Moment from 'react-moment'
 import { setMoneyTableSinSmall } from '../../../functions/setters'
+import Pagination from "react-js-pagination";
 
 class TablaEstadosResultados extends Component {
 
+    state = {
+        itemsPerPage: 10,
+        activePage:{
+            compras: 1,
+            egresos: 1,
+            ingresos: 1,
+            ventas: 1
+        }
+    }
+
+    onChangePageCompras(pageNumber){
+        const { activePage } = this.state
+        activePage.compras = pageNumber
+        this.setState({
+            ... this.state,
+            activePage
+        })
+    }
+
+    onChangePageEgresos(pageNumber){
+        const { activePage } = this.state
+        activePage.egresos = pageNumber
+        this.setState({
+            ... this.state,
+            activePage
+        })
+    }
+    onChangePageIngresos(pageNumber){
+        const { activePage } = this.state
+        activePage.ingresos = pageNumber
+        this.setState({
+            ... this.state,
+            activePage
+        })
+    }
+
+    onChangePageVentas(pageNumber){
+        const { activePage } = this.state
+        activePage.ventas = pageNumber
+        this.setState({
+            ... this.state,
+            activePage
+        })
+    }
+
     render() {
         const { ventas, ingresos, compras, egresos } = this.props
-        
+        const { itemsPerPage, activePage } = this.state
         return (
             <>
                 <div className="table-responsive d-flex justify-content-center">
@@ -28,6 +74,10 @@ class TablaEstadosResultados extends Component {
                         {
                             ventas?                            
                                 ventas.map((venta,key)=>{
+                                    let limiteInferior = (activePage.ventas - 1) * itemsPerPage
+                                    let limiteSuperior = limiteInferior + (itemsPerPage - 1)
+
+                                    if(ventas.length < itemsPerPage || ( key >= limiteInferior && key <= limiteSuperior))
                                         return(
                                             <tr key={key} className="border-bottom">
                                                 <td className="p-2">
@@ -48,6 +98,10 @@ class TablaEstadosResultados extends Component {
                         {
                             ingresos?                            
                                 ingresos.map((ingreso,key)=>{
+                                    let limiteInferior = (activePage.ingresos - 1) * itemsPerPage
+                                    let limiteSuperior = limiteInferior + (itemsPerPage - 1)
+
+                                    if(ingresos.length < itemsPerPage || ( key >= limiteInferior && key <= limiteSuperior))
                                         return(
                                             <tr key={key} className="border-bottom">
                                                 <td className="p-2">
@@ -70,6 +124,11 @@ class TablaEstadosResultados extends Component {
                         {
                             compras?                            
                                 compras.map((compra,key)=>{
+
+                                    let limiteInferior = (activePage.compras - 1) * itemsPerPage
+                                    let limiteSuperior = limiteInferior + (itemsPerPage - 1)
+
+                                    if(compras.length < itemsPerPage || ( key >= limiteInferior && key <= limiteSuperior))
                                         return(
                                             <tr key={key} className="border-bottom">
                                                 <td className="p-2">
@@ -90,6 +149,10 @@ class TablaEstadosResultados extends Component {
                         {
                             egresos?                            
                                 egresos.map((egreso,key)=>{
+                                    let limiteInferior = (activePage.egresos - 1) * itemsPerPage
+                                    let limiteSuperior = limiteInferior + (itemsPerPage - 1)
+
+                                    if(egresos.length < itemsPerPage || ( key >= limiteInferior && key <= limiteSuperior))
                                         return(
                                             <tr key={key} className="border-bottom">
                                                 <td className="p-2">
@@ -110,6 +173,75 @@ class TablaEstadosResultados extends Component {
                         </tbody>
                     </table>
                 </div>
+                {
+                    egresos ? 
+                        egresos.length > itemsPerPage ?
+                            <Pagination
+                                itemClass="page-item"
+                                linkClass="page-link"
+                                firstPageText = 'Primero'
+                                lastPageText = 'Último'
+                                activePage = { activePage.egresos }
+                                itemsCountPerPage = { itemsPerPage }
+                                totalItemsCount = { egresos.length }
+                                pageRangeDisplayed = { 5 }
+                                onChange={this.onChangePageEgresos.bind(this)}
+                            />
+                        : ''
+                    : ''
+                }
+                {
+                    compras ? 
+                        compras.length > itemsPerPage ?
+                            <Pagination
+                                itemClass="page-item"
+                                linkClass="page-link"
+                                firstPageText = 'Primero'
+                                lastPageText = 'Último'
+                                activePage = { activePage.compras }
+                                itemsCountPerPage = { itemsPerPage }
+                                totalItemsCount = {compras.length }
+                                pageRangeDisplayed = { 5 }
+                                onChange={this.onChangePageCompras.bind(this)}
+                            />
+                        : ''
+                    : ''
+                }
+                {
+                    ingresos ? 
+                    ingresos.length > itemsPerPage ?
+                            <Pagination
+                                itemClass="page-item"
+                                linkClass="page-link"
+                                firstPageText = 'Primero'
+                                lastPageText = 'Último'
+                                activePage = { activePage.ingresos }
+                                itemsCountPerPage = { itemsPerPage }
+                                totalItemsCount = {ingresos.length }
+                                pageRangeDisplayed = { 5 }
+                                onChange={this.onChangePageIngresos.bind(this)}
+                            />
+                        : ''
+                    : ''
+                }
+                {
+                    ventas ? 
+                    ventas.length > itemsPerPage ?
+                            <Pagination
+                                itemClass="page-item"
+                                linkClass="page-link"
+                                firstPageText = 'Primero'
+                                lastPageText = 'Último'
+                                activePage = { activePage.ventas }
+                                itemsCountPerPage = { itemsPerPage }
+                                totalItemsCount = {ventas.length }
+                                pageRangeDisplayed = { 5 }
+                                onChange={this.onChangePageVentas.bind(this)}
+                            />
+                        : ''
+                    : ''
+                }
+                
             </>
         )
     }
