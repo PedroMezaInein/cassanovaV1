@@ -19,23 +19,31 @@ import { saveAs } from 'file-saver';
 
 
 const styles = StyleSheet.create({
-    /* page: {
-        flexDirection: 'row',
-        backgroundColor: '#E4E4E4'
+    table: {
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column'
     },
-    section: {
-        margin: 10,
-        padding: 10,
-        flexGrow: 1
-    } */
-    row: {
-        flexDirection: 'row',
+    tableRow:{
+        display: 'flex',
+        flexDirection: 'row'
     },
-    col6:{
-        flexGrow: 1
+    cell: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignContent: 'center',
+        textAlign: 'center',
+        flexWrap: 'wrap',
+        width: '50%'
     },
     imagenCentrada:{
-        width: '60%',
+        width: '75%',
+        textAlign: 'center',
+        marginLeft: 'auto',
+        marginRight: 'auto'
+    },
+    imagenDoble:{
+        width: '90%',
         textAlign: 'center',
         marginLeft: 'auto',
         marginRight: 'auto'
@@ -187,19 +195,6 @@ class ReporteVentas extends Component {
         return año
     }
 
-    getBlob = image64 => {
-        /* console.log(image64.replace('data:image/png;base64,', ''))
-
-        return image64 */
-        const byteCharacters = atob(image64.replace('data:image/png;base64,', ''));
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-        return new Blob([byteArray], {type: 'image/png'});
-    }
-
     async generarPDF(){
         let aux = []
         const { leads, form } = this.state
@@ -249,12 +244,152 @@ class ReporteVentas extends Component {
                 <Page size="A4" orientation = "landscape" wrap = { true } >
                     <View>
                         <Text style = { styles.titulo }>
-                            01 ENTRADA DE LEADS
+                            01 ENTRADA DE LEADS { this.getMonth() } { this.getYear() }
                         </Text>
                         <Image style = { styles.imagenCentrada }  src = { aux[0].url }/>
                         <Text style = { styles.text }>
                             {leads.length} LEADS totales en Infraestructura e Interiores
                         </Text>
+                    </View>
+                </Page>
+                <Page size="A4" orientation = "landscape" wrap = { true } >
+                    <View>
+                        <Text style = { styles.titulo }>
+                            02 COMPARATIVA LEADS VS { this.getLastMonth() }
+                        </Text>
+                        <View style = { styles.table}  >
+                            <View style = { styles.tableRow } >
+                                <View style = { styles.cell }>
+                                    <View>
+                                        <Image style = { styles.imagenDoble } src = { aux[0].url }/>
+                                        <Text>
+                                            { this.getMonth() }
+                                        </Text>
+                                    </View>
+                                </View>
+                                <View style = { styles.cell }>
+                                    <View>
+                                        <Image style = { styles.imagenDoble } src = { aux[1].url }/>
+                                        <Text>
+                                            { this.getLastMonth() }
+                                        </Text>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                </Page>
+                <Page size="A4" orientation = "landscape" wrap = { true } >
+                    <View>
+                        <Text style = { styles.titulo }>
+                            03 ENTRADA DE LEADS { this.getMonth() } { this.getYear() }
+                        </Text>
+                        <Image style = { styles.imagenCentrada }  src = { aux[2].url }/>
+                    </View>
+                </Page>
+                <Page size="A4" orientation = "landscape" wrap = { true } >
+                    <View>
+                        <Text style = { styles.titulo }>
+                            04 COMPARATIVA LEADS VS { this.getLastMonth() }
+                        </Text>
+                        <View style = { styles.table}  >
+                            <View style = { styles.tableRow } >
+                                <View style = { styles.cell }>
+                                    <View>
+                                        <Image style = { styles.imagenDoble } src = { aux[2].url }/>
+                                        <Text>
+                                            { this.getMonth() }
+                                        </Text>
+                                    </View>
+                                </View>
+                                <View style = { styles.cell }>
+                                    <View>
+                                        <Image style = { styles.imagenDoble } src = { aux[3].url }/>
+                                        <Text>
+                                            { this.getLastMonth() }
+                                        </Text>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                </Page>
+                <Page size="A4" orientation = "landscape" wrap = { true } >
+                    <View>
+                        <Text style = { styles.titulo }>
+                            05 SERVICIOS SOLICITADOS { this.getMonth() } { this.getYear() }
+                        </Text>
+                        <Image style = { styles.imagenCentrada }  src = { aux[4].url }/>
+                    </View>
+                </Page>
+                <Page size="A4" orientation = "landscape" wrap = { true } >
+                    <View>
+                        <Text style = { styles.titulo }>
+                            06 SERVICIOS SOLICITADOS VS { this.getLastMonth() }
+                        </Text>
+                        <View style = { styles.table}  >
+                            <View style = { styles.tableRow } >
+                                <View style = { styles.cell }>
+                                    <View>
+                                        <Image style = { styles.imagenDoble } src = { aux[4].url }/>
+                                        <Text>
+                                            { this.getMonth() }
+                                        </Text>
+                                    </View>
+                                </View>
+                                <View style = { styles.cell }>
+                                    <View>
+                                        <Image style = { styles.imagenDoble } src = { aux[5].url }/>
+                                        <Text>
+                                            { this.getLastMonth() }
+                                        </Text>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                </Page>
+                <Page size="A4" orientation = "landscape" wrap = { true } >
+                    <View>
+                        <Text style = { styles.titulo }>
+                            07 TIPO DE LEADS { this.getMonth() } { this.getYear() }
+                        </Text>
+                        <Image style = { styles.imagenCentrada }  src = { aux[6].url }/>
+                    </View>
+                </Page>
+                <Page size="A4" orientation = "landscape" wrap = { true } >
+                    <View>
+                        <Text style = { styles.titulo }>
+                            08 COMPARATIVA DE LEADS VS { this.getLastMonth() }
+                        </Text>
+                        <View style = { styles.table}  >
+                            <View style = { styles.tableRow } >
+                                <View style = { styles.cell }>
+                                    <View>
+                                        <Image style = { styles.imagenDoble } src = { aux[6].url }/>
+                                        <Text>
+                                            { this.getMonth() }
+                                        </Text>
+                                    </View>
+                                </View>
+                                <View style = { styles.cell }>
+                                    <View>
+                                        <Image style = { styles.imagenDoble } src = { aux[7].url }/>
+                                        <Text>
+                                            { this.getLastMonth() }
+                                        </Text>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                </Page>
+                <Page size="A4" orientation = "landscape" wrap = { true } >
+                    <View>
+                        <Text style = { styles.titulo }>
+                            09 STATUS LEADS POTENCIALES { this.getMonth() } { this.getYear() }
+                        </Text>
+                        <Image style = { styles.imagenCentrada }  src = { aux[8].url }/>
                     </View>
                 </Page>
             </Document>
