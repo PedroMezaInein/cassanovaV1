@@ -105,9 +105,7 @@ class FlujoProyectos extends Component {
         await axios.post(URL_DEV + 'reportes/flujo-proyectos', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { proyectos, suma} = response.data
-                /* const { proyectos } = this.state */
-
-
+                
                 this.setState({
                     ... this.state,
                     proyectos: proyectos,

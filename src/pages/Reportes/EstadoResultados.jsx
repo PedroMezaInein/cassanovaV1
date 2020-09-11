@@ -12,6 +12,10 @@ import { URL_DEV } from '../../constants'
 class EstadoResultados extends Component {
 
     state = {
+        egresos:[],
+        compras:[],
+        ingresos:[],
+        ventas:[],
         form: {
             fechaInicio: new Date(),
             fechaFin: new Date,
@@ -27,11 +31,11 @@ class EstadoResultados extends Component {
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props
-        const flujo_proyectos = permisos.find(function (element, index) {
+        const estado_resultado = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
             return pathname === url
         });
-        if (!flujo_proyectos)
+        if (!estado_resultado)
             history.push('/')
         this.getOptionsAxios()
     }
@@ -70,14 +74,65 @@ class EstadoResultados extends Component {
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
+        if(form.empresa !== '' && form.fechaInicio !== '' && form.fechaFin !==''){
+            this.getReporteEstadosResultadosAxios()
+        }
         this.setState({
             ... this.state,
             form
         })
     }
 
+    onChangeRange = range => {
+        waitAlert()
+        const { startDate, endDate } = range
+        const { form } = this.state
+        form.fechaInicio = startDate
+        form.fechaFin = endDate
+        this.setState({
+            ... this.state,
+            form
+        })
+
+        if(form.empresa !== '' && form.fechaInicio !== '' && form.fechaFin !==''){
+            this.getReporteEstadosResultadosAxios()
+        }
+    }
+
+    async getReporteEstadosResultadosAxios(){
+        
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        waitAlert()
+        await axios.post(URL_DEV + 'reportes/estado-resultados', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { egresos,compras, ingresos, ventas, suma} = response.data
+
+
+                this.setState({
+                    ... this.state,
+                    egresos: egresos,
+                    compras: compras,
+                    ingresos: ingresos,
+                    ventas: ventas,
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render() {
-        const { form, options} = this.state
+        const { form, options, ventas, ingresos, compras, egresos} = this.state
         return (
             <Layout active='reportes'  {...this.props}>
                 <Card className="card-custom">
@@ -90,13 +145,19 @@ class EstadoResultados extends Component {
                         <div id="id-row" className="row">
                             <div id="col-calendar" className="col-lg-5">
                                 <EstadoResultadosForm
-                                    onChangeEmpresa = { this.onChangeEmpresa } 
-                                    form={form}
+                                    form={ form }
                                     options = { options } 
+                                    onChangeRange = { this.onChangeRange }
+                                    onChange={this.onChange}
                                 />
                             </div>
                             <div id="col-table"  className="col-lg-7">
-                                <AccordionEstadosResultados />
+                                <AccordionEstadosResultados
+                                    egresos = { egresos }
+                                    compras = { compras }
+                                    ingresos = { ingresos }
+                                    ventas = { ventas }
+                                />
                             </div>
                         </div>
                     </Card.Body>

@@ -17,10 +17,10 @@ class ProspectosForm extends Component {
         title: '',
         lead: '',
         prospecto: '',
-        options:{
+        options: {
             tiposContactos: []
         },
-        form:{
+        form: {
             descripcion: '',
             vendedor: '',
             preferencia: '',
@@ -33,16 +33,16 @@ class ProspectosForm extends Component {
             newTipoProyecto: '',
             newEstatusContratacion: ''
         },
-        formContacto:{
+        formContacto: {
             comentario: '',
             fechaContacto: '',
             success: 'Contactado',
             tipoContacto: '',
             newTipoContacto: ''
         },
-        formCliente:{
+        formCliente: {
             empresa: '',
-            nombre:'',
+            nombre: '',
             puesto: '',
             cp: '',
             estado: '',
@@ -52,7 +52,7 @@ class ProspectosForm extends Component {
             perfil: '',
             rfc: ''
         },
-        options:{
+        options: {
             tiposContactos: [],
             clientes: [],
             vendedores: [],
@@ -63,31 +63,29 @@ class ProspectosForm extends Component {
     }
 
     componentDidMount() {
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
-        const { match : { params: { action: action } } } = this.props
-        const { history, location: { state: state} } = this.props
-        const remisiones = permisos.find(function(element, index) {
+        const { authUser: { user: { permisos: permisos } } } = this.props
+        const { history: { location: { pathname: pathname } } } = this.props
+        const { match: { params: { action: action } } } = this.props
+        const { history, location: { state: state } } = this.props
+        const remisiones = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
             return pathname === url + '/' + action
         });
-        switch(action){
+        switch (action) {
             case 'convert':
-                if(state){
-                    if(state.lead)
-                    {
+                if (state) {
+                    if (state.lead) {
                         const { lead } = state
                         this.getLeadAxios(lead.id)
                     }
                     else
                         history.push('/leads/leads')
-                }else
+                } else
                     history.push('/leads/leads')
                 break;
             case 'edit':
-                if(state){
-                    if(state.prospecto)
-                    {
+                if (state) {
+                    if (state.prospecto) {
                         const { form } = this.state
                         const { prospecto } = state
                         form.descripcion = prospecto.descripcion
@@ -110,18 +108,18 @@ class ProspectosForm extends Component {
                             prospecto: prospecto,
                             title: 'Editar prospecto',
                             form,
-                            formeditado:1
+                            formeditado: 1
                         })
                     }
                     else
                         history.push('/leads/prospectos')
-                }else
+                } else
                     history.push('/leads/prospectos')
                 break;
             default:
                 break;
         }
-        if(!remisiones)
+        if (!remisiones)
             history.push('/')
         this.getOptionsAxios()
     }
@@ -164,7 +162,7 @@ class ProspectosForm extends Component {
         form['formCliente'] = formCliente;
         form['lead'] = lead;
         form['formContacto'] = formContacto;
-        if(title === 'Editar prospecto')
+        if (title === 'Editar prospecto')
             this.editProspectoAxios(form);
         else
             this.addProspectoAxios(form);
@@ -200,9 +198,9 @@ class ProspectosForm extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -224,9 +222,9 @@ class ProspectosForm extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -269,7 +267,7 @@ class ProspectosForm extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste el prospecto con éxito.')
 
                 const { history } = this.props
-                
+
                 history.push({
                     pathname: '/leads/prospectos'
                 });
@@ -277,9 +275,9 @@ class ProspectosForm extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -321,17 +319,17 @@ class ProspectosForm extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste el prospecto con éxito.')
 
                 const { history } = this.props
-                
+
                 history.push({
                     pathname: '/leads/prospectos'
                 });
-                
+
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -355,18 +353,18 @@ class ProspectosForm extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body className="pt-0">
-                        <ProspectoFormulario 
-                            formeditado = { formeditado }
-                            className = "px-3"
-                            options = { options }
-                            form = { form }
-                            formCliente = { formCliente }
-                            formContacto = { formContacto }
-                            onChange = { this.onChange }
-                            onChangeCliente = { this.onChangeCliente }
-                            onChangeContacto = { this.onChangeContacto }
-                            onSubmit = { this.onSubmit }
-                            title = { title } >
+                        <ProspectoFormulario
+                            formeditado={formeditado}
+                            className="px-3"
+                            options={options}
+                            form={form}
+                            formCliente={formCliente}
+                            formContacto={formContacto}
+                            onChange={this.onChange}
+                            onChangeCliente={this.onChangeCliente}
+                            onChangeContacto={this.onChangeContacto}
+                            onSubmit={this.onSubmit}
+                            title={title} >
                             {
                                 lead ?
                                     <Accordion>
@@ -374,10 +372,10 @@ class ProspectosForm extends Component {
                                             <Accordion.Toggle as={Button} icon={faEye} pulse="pulse-ring" eventKey={0} className="btn btn-icon btn-light-info pulse pulse-info" />
                                         </div>
                                         <Accordion.Collapse eventKey={0} className="px-md-5 px-2" >
-                                            <LeadCard lead = {lead} />
+                                            <LeadCard lead={lead} />
                                         </Accordion.Collapse>
                                     </Accordion>
-                                : ''
+                                    : ''
                             }
                         </ProspectoFormulario>
                     </Card.Body>
