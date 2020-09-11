@@ -720,7 +720,7 @@ class ReporteVentas extends Component {
                         {
                             leads.length > 0 ?
                                 <div className="text-center">
-                                    <Button text='Generar PDF' className="btn btn-primary mr-2" icon=''
+                                    <Button text='Generar PDF' className="btn btn-primary my-4" icon=''
                                         onClick = {
                                             (e) => {
                                                 e.preventDefault();
