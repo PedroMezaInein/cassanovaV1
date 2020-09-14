@@ -138,7 +138,7 @@ class EstadoResultados extends Component {
                     </Card.Header>
                     <Card.Body>
                         <div id="id-row" className="row">
-                            <div id="col-calendar" className="col-md-6">
+                            <div id="col-calendar" className={form.empresa ? 'col-lg-6' : 'col-lg-12'}>
                                 <EstadoResultadosForm
                                     form={ form }
                                     options = { options } 
@@ -147,12 +147,16 @@ class EstadoResultados extends Component {
                                 />
                             </div>
                             <div id="col-table"  className="col-md-6 align-self-center d-flex justify-content-center">
-                                <AccordionEstadosResultados
-                                    egresos = { egresos }
-                                    compras = { compras }
-                                    ingresos = { ingresos }
-                                    ventas = { ventas }
-                                />
+                                {
+                                    form.empresa ?
+                                    <AccordionEstadosResultados
+                                        egresos = { egresos }
+                                        compras = { compras }
+                                        ingresos = { ingresos }
+                                        ventas = { ventas }
+                                    />
+                                    : ''
+                                } 
                             </div>
                         </div>
                     </Card.Body>

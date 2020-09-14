@@ -145,13 +145,15 @@ class FlujoProyectos extends Component {
                                     className="mb-3"
                                 />
                             </div> 
-                            <div id="col-table" className='col-lg-7'>
+                            <div id="col-table" className='col-lg-7 align-self-center'>
                                 {
                                     form.empresa ? 
                                     <>
-                                        <TablaReportes    
-                                            proyectos={proyectos}
-                                        />
+                                        <div className="d-flex justify-content-center">
+                                            <TablaReportes    
+                                                proyectos={proyectos}
+                                            />
+                                        </div>
                                         <div className="d-flex justify-content-end">
                                             <div className="d-flex flex-column mt-2">
                                                 <div className="d-flex align-items-center justify-content-between flex-grow-1 mt-5">
