@@ -525,6 +525,7 @@ class MiProyecto extends Component {
                     descripcion: renderToString(this.setText(ticket.descripcion)),
                     descripcion: renderToString(this.setText(ticket.descripcion)),
                     tipo_trabajo: renderToString(this.setText(ticket.tipo_trabajo.tipo)),
+                    motivo: renderToString(this.setText(ticket.motivo_cancelacion)),
                     id: ticket.id
                 }
             )

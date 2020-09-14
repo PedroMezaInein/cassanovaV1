@@ -23,7 +23,7 @@ class CalidadView extends Component {
 
     render() {
 
-        const { data, changeEstatus, handleChange, form, options, onChange, onSubmit, generateEmail, deleteFile } = this.props
+        const { data, changeEstatus, handleChange, form, options, onChange, onSubmit, generateEmail, deleteFile, openModalWithInput } = this.props
         return (
             <>
                 <div className="card card-custom gutter-b">
@@ -100,15 +100,29 @@ class CalidadView extends Component {
                                                             tooltip={{text:'Aceptar'}}
                                                         />
                                                         <Button 
-                                                            onClick={() => { changeEstatus('Rechazado') }} 
+                                                            onClick={() => { openModalWithInput('Rechazado') }}
                                                             className={"btn btn-icon btn-light-danger btn-sm pulse pulse-danger"}
                                                             only_icon={"flaticon2-cross icon-sm"}
                                                             tooltip={{text:'Rechazar'}}
                                                         />
                                                     </>
-                                                    : ''
+                                                : data.estatus_ticket.estatus === 'Rechazado' ?
+                                                    <>
+                                                        <div className="d-flex flex-wrap">
+                                                            <div>
+                                                                <div className="text-muted font-weight-bold">
+                                                                    {
+                                                                        data ?
+                                                                            data.motivo_cancelacion    
+                                                                        : ''
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </>
                                                 : ''
                                             : ''
+                                        : ''
                                     }
                                 </div>
                             </div>

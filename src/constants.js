@@ -1769,6 +1769,10 @@ export const TICKETS_ESTATUS = [
     {
         Header: 'Descripción',
         accessor: 'descripcion',
+    },
+    {
+        Header: 'Motivo de cancelación',
+        accessor: 'motivo',
     }
 ]
 
@@ -1800,5 +1804,9 @@ export const PROYECTOS_TICKETS = [
     {
         Header: 'Descripción',
         accessor: 'descripcion',
+    },
+    {
+        Header: 'Motivo de cancelación',
+        accessor: 'motivo',
     }
 ]

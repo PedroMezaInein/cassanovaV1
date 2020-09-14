@@ -123,6 +123,24 @@ export function questionAlert(title, text, action) {
     })
 }
 
+export function questionAlert2(title, text, action, html) {
+    MySwal.fire({
+        title: title,
+        text: text,
+        icon: "question",
+        html: html,
+        showCancelButton: true,
+        confirmButtonText: "Enviar",
+        cancelButtonText: "CANCELAR",
+        reverseButtons: true,
+    }).then((result) => {
+        if (result.value) {
+            action()
+        }
+    })
+}
+
+
 export function forbiddenAccessAlert() {
     swal({
         title: '¡Ups 😕!',

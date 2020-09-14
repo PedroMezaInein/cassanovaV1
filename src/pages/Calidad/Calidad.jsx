@@ -46,6 +46,7 @@ class Calidad extends Component {
                     tipo_trabajo: renderToString(setTextTable(calidad.tipo_trabajo ?  calidad.tipo_trabajo.tipo : '')),
                     fecha: renderToString(setDateTable(calidad.created_at)),
                     descripcion: renderToString(setTextTable(calidad.descripcion)),
+                    motivo: renderToString(setTextTable(calidad.motivo_cancelacion)),
                     id: calidad.id
                 }
             )

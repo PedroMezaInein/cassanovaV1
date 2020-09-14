@@ -3,9 +3,11 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV} from '../../constants'
 import { setOptions} from '../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert,questionAlert, deleteAlert } from '../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert,questionAlert, deleteAlert, questionAlert2 } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { CalidadView} from '../../components/forms'
+import Input from '../../components/form-components/Input'
+import { Form } from 'react-bootstrap'
 
 
 class CalidadForm extends Component{
@@ -32,13 +34,13 @@ class CalidadForm extends Component{
             },
             fechaProgramada: new Date(),
             empleado: '',
-            recibe: ''
+            recibe: '',
+            motivo: ''
         },
         options:{
             empleados: []
         }
     }
-
     componentDidMount(){
         const { authUser: { user : { permisos : permisos } } } = this.props
         const { history : { location: { pathname: pathname } } } = this.props
@@ -142,9 +144,14 @@ class CalidadForm extends Component{
     }
 
     onChange = e => {
+        console.log('Hola')
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
+
+        console.log(form[name], 'formname')
+        console.log(name, 'name')
+        console.log(value, 'value')
         this.setState({
             ... this.state,
             form
@@ -166,6 +173,22 @@ class CalidadForm extends Component{
         const { ticket } = this.state
         // this.changeEstatusAxios({id: ticket.id, estatus: estatus})
         questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({id: ticket.id, estatus: estatus}))
+    }
+
+    openModalWithInput = estatus => {
+        const { ticket, form } = this.state
+        // this.changeEstatusAxios({id: ticket.id, estatus: estatus})
+        questionAlert2('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.cancelTicket({id: ticket.id, estatus: estatus}), 
+            <div>
+                <Form.Control 
+                    placeholder = 'Motivo de cancelación'
+                    className = "form-control is-valid"
+                    id = 'motivo'
+                    as="textarea" 
+                    rows="3"
+                    /> 
+            </div>
+            )
     }
 
     onSubmit = e => {
@@ -346,6 +369,38 @@ class CalidadForm extends Component{
         })
     }
 
+    async cancelTicket(data){
+        const { access_token } = this.props.authUser
+        data.motivo = document.getElementById('motivo').value
+        await axios.put(URL_DEV + 'calidad/estatus/' + data.id, data, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { ticket } = response.data
+                
+                window.history.replaceState(ticket, 'calidad')
+                
+                this.setState({
+                    ... this.state,
+                    ticket: ticket,
+                    form: this.setForm(ticket)
+                })
+                if(data.estatus){
+                    doneAlert('El ticket fue actualizado con éxito.')
+                }
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     async getTicketsOptions(){
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'calidad/options', { headers: {Authorization:`Bearer ${access_token}`}}).then(
@@ -387,6 +442,7 @@ class CalidadForm extends Component{
                     onChange = { this.onChange } 
                     onSubmit = { this.onSubmit }
                     generateEmail = { this.generateEmail } 
+                    openModalWithInput = { this.openModalWithInput }
                     deleteFile = { this.deleteFile } />
             </Layout>
         )
