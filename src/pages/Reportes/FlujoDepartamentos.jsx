@@ -137,13 +137,18 @@ class FlujoDepartamentos extends Component {
                     <Card.Body>
                         <div id="id-row" className="row">
                             <div id="col-calendar" className={form.empresa ? 'col-lg-5' : 'col-lg-12'}>
-                                <FlujoDepartamentosForm
-                                    form={form}
-                                    options={options}
-                                    onChangeRange = { this.onChangeRange }
-                                    onChange={this.onChange}
-                                    className="mb-3"
-                                />
+                                <div className={form.empresa ? '' : 'row mx-0 justify-content-center'}>
+                                    <div className={form.empresa ? '' : 'col-md-6'}>
+                                        <FlujoDepartamentosForm
+                                            form={form}
+                                            options={options}
+                                            onChangeRange = { this.onChangeRange }
+                                            onChange={this.onChange}
+                                            className="mb-3"
+                                        />
+                                    </div>
+                                </div>
+                                
                             </div> 
                             <div id="col-table" className='col-lg-7 align-self-center'>
                                 {

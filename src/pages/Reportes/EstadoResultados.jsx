@@ -4,7 +4,7 @@ import swal from 'sweetalert'
 import { connect } from 'react-redux';
 import Layout from '../../components/layout/layout';
 import { Card } from 'react-bootstrap';
-import { EstadoResultadosForm, AccordionEstadosResultados } from '../../components/forms'
+import { FlujoDepartamentosForm, AccordionEstadosResultados } from '../../components/forms'
 import { setOptions } from '../../functions/setters'
 import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
 import { URL_DEV } from '../../constants'
@@ -139,12 +139,17 @@ class EstadoResultados extends Component {
                     <Card.Body>
                         <div id="id-row" className="row">
                             <div id="col-calendar" className={form.empresa ? 'col-lg-6' : 'col-lg-12'}>
-                                <EstadoResultadosForm
-                                    form={ form }
-                                    options = { options } 
-                                    onChangeRange = { this.onChangeRange }
-                                    onChange={this.onChange}
-                                />
+                                <div className={form.empresa ? '' : 'row mx-0 justify-content-center'}>
+                                    <div className={form.empresa ? '' : 'col-md-6'}>
+                                        <FlujoDepartamentosForm
+                                            form={ form }
+                                            options = { options } 
+                                            onChangeRange = { this.onChangeRange }
+                                            onChange={this.onChange}
+                                        />
+                                    </div>
+                                </div>
+                                
                             </div>
                             <div id="col-table"  className="col-md-6 align-self-center d-flex justify-content-center">
                                 {
