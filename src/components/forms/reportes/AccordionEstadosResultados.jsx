@@ -10,19 +10,19 @@ class AccordionEstadosResultados extends Component {
         title: '',
         accordion: [
             {
-                nombre: 'VENTAS',
+                nombre: 'Ingresos',
                 icono: 'flaticon2-chart',
                 tipo: 1,
                 isActive: false,
-                total_header: 'Total ventas'
+                total_header: 'Total ingresos'
             },
             {
-                nombre: 'Ingresos',
+                nombre: 'VENTAS',
                 icono: 'flaticon2-chart',
                 tipo: 2,
                 isActive: false,
-                total_header: 'Total ingresos'
-            },
+                total_header: 'Total ventas'
+            },            
             {
                 nombre: 'COSTOS DE SERVICIO',
                 icono: 'flaticon-coins',
@@ -93,31 +93,56 @@ class AccordionEstadosResultados extends Component {
     }
 
     sumaUtilidadBruta() {
-        const { ingresos, compras } = this.props
+        const { ingresos, compras, ventas } = this.props    
+        let sumaVentas = 0
         let sumaIngresos = 0
         let sumaCostos = 0
+
+        ventas.map((venta) => {
+            sumaVentas = sumaVentas + venta.total
+        })
         ingresos.map((ingreso) => {
             sumaIngresos = sumaIngresos + ingreso.total
         })
         compras.map((compra) => {
             sumaCostos = sumaCostos + compra.total
         })
-        let totalUtilidad = sumaIngresos + sumaCostos
+        let totalUtilidad = sumaVentas + sumaIngresos - sumaCostos
         return totalUtilidad
+    }
+
+    sumaTotalIngresosYVentas(){
+        const { ingresos, ventas } = this.props    
+        let sumaVentas = 0
+        let sumaIngresos = 0
+
+        ventas.map((venta) => {
+            sumaVentas = sumaVentas + venta.total
+        })
+        ingresos.map((ingreso) => {
+            sumaIngresos = sumaIngresos + ingreso.total
+        })
+        let totalIngresosYVentas = sumaVentas + sumaIngresos
+        return totalIngresosYVentas
     }
 
 
     resultOperativo() {
-        const { ingresos, compras, egresos } = this.props
+        const { ingresos, compras, egresos, ventas } = this.props
+        let sumaVentas = 0
         let sumaIngresos = 0
         let sumaCostos = 0
+
+        ventas.map((venta) => {
+            sumaVentas = sumaVentas + venta.total
+        })
         ingresos.map((ingreso) => {
             sumaIngresos = sumaIngresos + ingreso.total
         })
         compras.map((compra) => {
             sumaCostos = sumaCostos + compra.total
         })
-        let utilidadBruta = sumaIngresos + sumaCostos
+        let utilidadBruta = sumaVentas + sumaIngresos - sumaCostos
 
         let sumaGastos = 0
         egresos.map((egreso) => {
@@ -133,20 +158,21 @@ class AccordionEstadosResultados extends Component {
         const { ventas, ingresos, compras, egresos } = this.props
 
         const table = (element) => {
-            switch (element.tipo) {
-                case 1: return <TablaEstadosResultados ventas={ventas} />;
-                case 2: return <TablaEstadosResultados ingresos={ingresos} />;
-                case 3: return <TablaEstadosResultados compras={compras} />;
-                case 4: return <TablaEstadosResultados egresos={egresos} />;
+            switch (element.tipo) {                
+                case 1: return <><TablaEstadosResultados ingresos={ingresos}/><HeadersTotales title={'Total ingresos'} sumaTotal={this.sumaTotalIngresos()} /></>;
+                case 2: return <><TablaEstadosResultados ventas={ventas}/><HeadersTotales title={'Total ventas'} sumaTotal={this.sumaTotalVentas()} /></>;
+                case 3: return <TablaEstadosResultados compras={compras}/>;
+                case 4: return <TablaEstadosResultados egresos={egresos}/>;
                 default:
                     return ''
             }
         }
 
         const headers = (element) => {
-            switch (element.tipo) {
-                case 1: return <HeadersTotales title={'Total ventas'} sumaTotal={this.sumaTotalVentas()} />
-                case 2: return <HeadersTotales title={'Total ingresos'} sumaTotal={this.sumaTotalIngresos()} />;
+            switch (element.tipo) {                
+                // case 1: return <HeadersTotales title={'Total ingresos'} sumaTotal={this.sumaTotalIngresos()} />
+                // case 2: return <HeadersTotales title={'Total ventas'} sumaTotal={this.sumaTotalVentas()} />;
+                case 2: return <HeadersTotales title={'Total ingresos'} sumaTotal={this.sumaTotalIngresosYVentas()} />
                 case 3: return <><HeadersTotales title={'Total costos de servicio'} sumaTotal={this.sumaTotalCostos()} /><HeadersTotales title={'Utilidad bruta'} sumaTotal2={this.sumaUtilidadBruta()} /></>;
                 case 4: return <><HeadersTotales title={'Total de gastos operativos'} sumaTotal={this.sumaTotalGastos()} /><HeadersTotales title={'Resultado operativo'} sumaTotal2={this.resultOperativo()} /></>;
                 default:
