@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 import { SelectSearch } from '../../form-components'
-import RangeCalendar from '../../../components/form-components/RangeCalendar';
+import RangeCalendar from '../../form-components/RangeCalendar';
 
-class FlujoDepartamentosForm extends Component {
+class FlujosReportesForm extends Component {
 
     updateEmpresa = value => {
         const { onChange } = this.props
@@ -37,4 +37,4 @@ class FlujoDepartamentosForm extends Component {
     }
 }
 
-export default FlujoDepartamentosForm
+export default FlujosReportesForm

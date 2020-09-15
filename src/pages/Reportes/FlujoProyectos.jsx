@@ -4,7 +4,7 @@ import swal from 'sweetalert'
 import { connect } from 'react-redux';
 import Layout from '../../components/layout/layout';
 import { Card } from 'react-bootstrap';
-import { FlujoDepartamentosForm, TablaReportes } from '../../components/forms'
+import { FlujosReportesForm, TablaReportes } from '../../components/forms'
 import { setOptions, setMoneyTableSinSmall} from '../../functions/setters'
 import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
 import { URL_DEV } from '../../constants'
@@ -139,7 +139,7 @@ class FlujoProyectos extends Component {
                             <div id="col-calendar" className={form.empresa ? 'col-lg-5' : 'col-lg-12'}>
                                 <div className={form.empresa ? '' : 'row mx-0 justify-content-center'}>
                                     <div className={form.empresa ? '' : 'col-md-6'}>
-                                        <FlujoDepartamentosForm
+                                        <FlujosReportesForm
                                             form={form}
                                             options={options}
                                             onChangeRange = { this.onChangeRange }

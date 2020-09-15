@@ -14,7 +14,7 @@ import {Pie} from 'react-chartjs-2';
 import "chartjs-plugin-datalabels";
 import { generateColor } from '../../functions/functions';
 import { setOptions } from '../../functions/setters';
-import FlujoDepartamentosForm from '../../components/forms/reportes/FlujoDepartamentosForm';
+import FlujosReportesForm from '../../components/forms/reportes/FlujosReportesForm';
 
 
 const styles = StyleSheet.create({
@@ -691,9 +691,8 @@ class ReporteVentas extends Component {
                     </Card.Header>
                     <Card.Body>
                         <div className="row mx-0 justify-content-center">
-                            <div className="col-md-6">
-                                
-                                <FlujoDepartamentosForm
+                            <div className="col-md-6">                                
+                                <FlujosReportesForm
                                     form={form}
                                     options={this.state.options}
                                     onChangeRange = { this.onChangeRange }
