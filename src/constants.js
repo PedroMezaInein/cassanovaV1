@@ -1111,6 +1111,41 @@ export const CONCEPTOS_COLUMNS = [
     }
 ]
 
+export const HERRAMIENTAS_COLUMNS = [
+    {
+        Header: 'OPCIONES',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Empresa',
+        accessor: 'empresa',
+    },
+    {
+        Header: 'Proyecto',
+        accessor: 'proyecto',
+    },
+    {
+        Header: 'Nombre',
+        accessor: 'nombre',
+    },
+    {
+        Header: 'Modelo',
+        accessor: 'modelo',
+    },
+    {
+        Header: 'Serie',
+        accessor: 'serie',
+    },
+    {
+        Header: 'Descripción',
+        accessor: 'descripcion',
+    },
+    {
+        Header: 'Fecha de compra',
+        accessor: 'fecha',
+    }
+]
+
 export const RENDIMIENTOS_COLUMNS = [
     {
         Header: 'OPCIONES',

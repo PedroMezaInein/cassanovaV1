@@ -23,6 +23,7 @@ import comprasForm from './proyectos/ComprasForm'
 import facturaForm from './administracion/FacturaForm'
 import solicitudCompraForm from './proyectos/SolicitudCompraForm'
 import solicitudVentaForm from './proyectos/SolicitudVentaForm'
+import herramientasForm from './proyectos/HerramientasForm'
 import conceptoForm from './presupuesto/ConceptoForm'
 import rendimientoForm from './presupuesto/RendimientoForm'
 import presupuestoForm from './presupuesto/PresupuestoForm'
@@ -108,3 +109,4 @@ export const AccordionEstadosResultados = accordionEstadosResultados
 export const TablaEstadosResultados = tablaEstadosResultados
 export const TablaReportesDepartamento = tablaReportesDepartamento
 export const HeadersTotales = headersTotales
+export const HerramientasForm = herramientasForm
