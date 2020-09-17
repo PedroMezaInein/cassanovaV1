@@ -1146,6 +1146,29 @@ export const HERRAMIENTAS_COLUMNS = [
     }
 ]
 
+export const UBICACIONES_HERRAMIENTAS_COLUMNS = [
+    {
+        Header: 'OPCIONES',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Usuario',
+        accessor: 'user',
+    },
+    {
+        Header: 'Ubicación',
+        accessor: 'ubicacion',
+    },
+    {
+        Header: 'Comentario',
+        accessor: 'comentario',
+    },
+    {
+        Header: 'Fecha',
+        accessor: 'fecha',
+    }
+]
+
 export const RENDIMIENTOS_COLUMNS = [
     {
         Header: 'OPCIONES',

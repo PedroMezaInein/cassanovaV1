@@ -4,11 +4,14 @@ import { connect } from 'react-redux';
 import Layout from '../../../components/layout/layout';
 import { ModalDelete, Modal, ItemSlider } from '../../../components/singles';
 import NewTableServerRender from '../../../components/tables/NewTableServerRender';
-import { URL_DEV, HERRAMIENTAS_COLUMNS } from '../../../constants';
+import { URL_DEV, HERRAMIENTAS_COLUMNS, UBICACIONES_HERRAMIENTAS_COLUMNS } from '../../../constants';
 import { deleteAlert, doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert';
 import { setDateTable, setTextTable } from '../../../functions/setters';
 import axios from 'axios'
 import { Button } from '../../../components/form-components'
+import UbicacionHerramientaForm from '../../../components/forms/proyectos/UbicacionHerramientaForm';
+import { Tab, Tabs } from 'react-bootstrap';
+import TableForModals from '../../../components/tables/TableForModals';
 
 const $ = require('jquery');
 
@@ -17,6 +20,9 @@ class Herramienta extends Component {
     state = {
         modalDelete:false,
         modalAdjuntos: false,
+        modalUbicacion: false,
+        modalDeleteUbicacion: false,
+        active: 'historial',
         herramienta: '',
         form:{
             adjuntos:{
@@ -25,8 +31,17 @@ class Herramienta extends Component {
                     placeholder: 'Adjuntos',
                     files: []
                 }
-            }
-        }
+            },
+            fecha: new Date(),
+            herramienta: '',
+            ubicacion: '',
+            comentario: ''
+        },
+        data:{
+            ubicaciones: []
+        },
+        ubicaciones: [],
+        ubicacion: ''
     }
 
     setHerramientas = herramientas => {
@@ -71,8 +86,54 @@ class Herramienta extends Component {
                 action: 'adjuntos',
                 tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
             },
+            {
+                text: 'Historial de ubicaciones',
+                btnclass: 'primary',
+                iconclass: 'flaticon-calendar',
+                action: 'ubicacion',
+                tooltip: { id: 'ubicacion', text: 'Ubicacion', type: 'error' }
+            },
         )
         return aux
+    }
+
+    setActionsUbicaciones = ubicacion => {
+        let aux = []
+        aux.push(
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',
+                action: 'delete',
+                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
+            }
+        )
+        return aux
+    }
+
+    setUbicaciones = ubicaciones => {
+        let aux = []
+        ubicaciones.map( (ubicacion) => {
+            aux.push({
+                actions: this.setActionsUbicaciones(ubicacion),
+                user: renderToString(setTextTable(ubicacion.user ? ubicacion.user.name : 'Sin definir')),
+                ubicacion: renderToString(setTextTable(ubicacion.ubicacion)),
+                comentario: renderToString(setTextTable(ubicacion.comentario)),
+                fecha: renderToString(setDateTable(ubicacion.created_at)),
+                id: ubicacion.id
+            })
+        })
+        return aux
+    }
+
+    onChange = e => {
+        const { value, name } = e.target
+        const { form } = this.state
+        form[name] = value
+        this.setState({
+            ... this.state,
+            form
+        })
     }
 
     changePageEdit = (herramienta) => {
@@ -110,6 +171,28 @@ class Herramienta extends Component {
         })
     }
 
+    openModalUbicacion = (herramienta) => {
+        const { data } = this.state
+        data.ubicaciones = herramienta.ubicaciones
+
+        this.setState({
+            ... this.state,
+            herramienta: herramienta,
+            modalUbicacion: true,
+            data,
+            ubicaciones: this.setUbicaciones(herramienta.ubicaciones)
+        })
+    }
+
+    openModalDeleteUbicacion = ubicacion => {
+        console.log(ubicacion, 'ubicacion')
+        this.setState({
+            ... this.state,
+            modalDeleteUbicacion: true,
+            ubicacion: ubicacion
+        })
+    }
+
     handleCloseDelete = () => {
         this.setState({
             ... this.state,
@@ -126,6 +209,22 @@ class Herramienta extends Component {
             modalAdjuntos: false,
             herramienta: '',
             form
+        })
+    }
+
+    handleCloseUbicacion = () => {
+        this.setState({
+            ... this.state,
+            herramienta: '',
+            modalUbicacion: false
+        })
+    }
+
+    handleCloseDeleteUbicacion = () => {
+        this.setState({
+            ... this.state,
+            modalDeleteUbicacion: false,
+            ubicacion: ''
         })
     }
 
@@ -150,6 +249,26 @@ class Herramienta extends Component {
         })
     }
 
+    onSelect = value => {
+        const { form } = this.state
+        if(value === 'nuevo'){
+            form.fecha = new Date()
+            form.ubicacion = ''
+            form.comentario = ''
+        }
+        this.setState({
+            ... this.state,
+            active: value,
+            form
+        })
+    }
+
+    onSubmit = e => {
+        e.preventDefault()
+        waitAlert()
+        this.sendUbicacionAxios()
+    }
+
     deleteFile = element => {
         deleteAlert('¿Deseas eliminar el archivo?', () => this.deleteAdjuntoAxios(element.id))
     }
@@ -165,6 +284,39 @@ class Herramienta extends Component {
             (response) => {
                 this.getHerramientasAxios()
                 doneAlert('Herramienta eliminada con éxito')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async deleteUbicacionAxios(){
+        const { access_token } = this.props.authUser
+        const { herramienta, ubicacion } = this.state
+        await axios.delete(URL_DEV + 'herramientas/' + herramienta.id +'/ubicacion/' + ubicacion.id , { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getHerramientasAxios()
+                doneAlert('Ubicación eliminada con éxito')
+                const { herramienta } = response.data
+                const { data } = this.state
+                data.ubicaciones = herramienta.ubicaciones
+                this.setState({
+                    ... this.state,
+                    active: 'historial',
+                    herramienta: herramienta,
+                    data,
+                    modalDeleteUbicacion: false,
+                    ubicaciones: this.setUbicaciones(herramienta.ubicaciones)
+                })
             },
             (error) => {
                 console.log(error, 'error')
@@ -285,8 +437,47 @@ class Herramienta extends Component {
         })
     }
 
+    async sendUbicacionAxios(){
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { form, herramienta } = this.state
+        
+        await axios.post(URL_DEV + 'herramientas/' + herramienta.id + '/ubicacion', form, { headers: {  Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { herramienta } = response.data
+                let { form } = this.state
+                const { data } = this.state
+                this.getHerramientasAxios()
+                form.fecha = new Date
+                form.ubicacion = ''
+                form.comentario = ''
+                data.ubicaciones = herramienta.ubicaciones
+                this.setState({
+                    ... this.state,
+                    active: 'historial',
+                    herramienta: herramienta,
+                    form,
+                    data,
+                    ubicaciones: this.setUbicaciones(herramienta.ubicaciones)
+                })
+                doneAlert('Herramienta actualizada')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render() {
-        const { modalDelete, modalAdjuntos, form } = this.state
+        const { modalDelete, modalAdjuntos, modalUbicacion, modalDeleteUbicacion, form, active, data, ubicaciones } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <NewTableServerRender 
@@ -302,6 +493,7 @@ class Herramienta extends Component {
                             'edit': { function: this.changePageEdit },
                             'delete': { function: this.openModalDelete },
                             'adjuntos': { function: this.openModalAdjuntos },
+                            'ubicacion': { function: this.openModalUbicacion }
                         }
                     }
                     accessToken = { this.props.authUser.access_token }
@@ -328,6 +520,33 @@ class Herramienta extends Component {
                         : ''
                     }
                 </Modal>
+                <Modal size="xl" title = "Historial de ubicaciones" show = { modalUbicacion } handleClose = { this.handleCloseUbicacion } >
+                    <Tabs defaultActiveKey = "historial" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100"
+                        activeKey = { active } onSelect = { this.onSelect }>
+                        <Tab eventKey="historial" title="Historial de ubicación">
+                            <TableForModals
+                                columns = { UBICACIONES_HERRAMIENTAS_COLUMNS }
+                                data = { ubicaciones }
+                                hideSelector = { true }
+                                mostrar_acciones = { true }
+                                /* dataID = 'ubicaciones' */
+                                elements = { data.ubicaciones }
+                                actions = {
+                                    {
+                                        'delete': { function: this.openModalDeleteUbicacion },
+                                    }
+                                }
+                            />
+                        </Tab>
+                        <Tab eventKey="nuevo" title="Nueva ubicación">
+                            <UbicacionHerramientaForm form = { form } onChange = { this.onChange } onSubmit = { this.onSubmit }  />
+                        </Tab>
+                    </Tabs>        
+                </Modal>
+
+                <ModalDelete title = '¿Estás seguro que deseas eliminar la ubicación?' show = { modalDeleteUbicacion }
+                    handleClose = { this.handleCloseDeleteUbicacion } 
+                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteUbicacionAxios() } }  />
             </Layout>
         );
     }
