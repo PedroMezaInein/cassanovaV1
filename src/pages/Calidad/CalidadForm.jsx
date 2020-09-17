@@ -113,7 +113,7 @@ class CalidadForm extends Component{
             })
         })
         form.adjuntos.reporte_problema_solucionado.files = aux
-        form.fechaProgramada = new Date(ticket.fecha_programada)
+        form.fechaProgramada = new Date(ticket.created_at)
         if(ticket.tecnico)
             form.empleado = ticket.tecnico.id.toString()
         form.descripcion = ticket.descripcion_solucion
