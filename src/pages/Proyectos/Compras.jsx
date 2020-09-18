@@ -11,12 +11,13 @@ import { Button, FileInput } from '../../components/form-components'
 import { Modal, ModalDelete } from '../../components/singles'
 import { ComprasForm } from '../../components/forms'
 import { FacturaTable } from '../../components/tables'
-import { SolicitudCompraCard } from '../../components/cards'
+import { SolicitudCompraCard, ComprasCard } from '../../components/cards'
 import { Form, ProgressBar } from 'react-bootstrap'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import TableForModals from '../../components/tables/TableForModals'
 import AdjuntosForm from '../../components/forms/AdjuntosForm'
 import Select from '../../components/form-components/Select'
+
 const $ = require('jquery');
 
 class Compras extends Component {
@@ -26,6 +27,7 @@ class Compras extends Component {
         modalDelete: false,
         modalFacturas: false,
         modalAskFactura: false,
+        modalSee: false,
         title: 'Nueva compra',
         form: {
             factura: 'Sin factura',
@@ -238,7 +240,14 @@ class Compras extends Component {
                 iconclass: 'flaticon-attachment',
                 action: 'adjuntos',
                 tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
-            }
+            },
+            {
+                text: 'Ver',
+                btnclass: 'info',
+                iconclass: 'flaticon2-expand',                  
+                action: 'see',
+                tooltip: {id:'see', text:'Mostrar', type:'info'},
+            },
         )
 
         if (compra.factura) {
@@ -406,6 +415,22 @@ class Compras extends Component {
             form: this.clearForm(),
             adjuntos: [],
             data
+        })
+    }
+
+    openModalSee = compra => {
+        this.setState({
+            ... this.state,
+            modalSee: true,
+            compra: compra
+        })
+    }
+
+    handleCloseSee = () => {
+        this.setState({
+            ... this.state,
+            modalSee: false,
+            compra: ''
         })
     }
 
@@ -1214,7 +1239,8 @@ class Compras extends Component {
         const {
             modal, modalDelete, modalFacturas, modalAskFactura, modalAdjuntos,
             title, form, options,
-            solicitud, compras, porcentaje, facturas, compra, data, formeditado, adjuntos
+            solicitud, compras, porcentaje, facturas, compra, data, formeditado, adjuntos,
+            modalSee
         } = this.state
 
         return (
@@ -1230,7 +1256,8 @@ class Compras extends Component {
                         'edit': { function: this.openModalEdit },
                         'delete': { function: this.openModalDelete },
                         'facturas': { function: this.openModalFacturas },
-                        'adjuntos': { function: this.openModalAdjuntos }
+                        'adjuntos': { function: this.openModalAdjuntos },
+                        'see': { function: this.openModalSee },
                     }}
                     elements={data.compras}
                     exportar_boton={true}
@@ -1328,6 +1355,10 @@ class Compras extends Component {
                         dataID='adjuntos'
                         elements={data.adjuntos}
                     />
+                </Modal>
+
+                <Modal size="lg" title="Compra" show = { modalSee } handleClose = { this.handleCloseSee } >
+                    <ComprasCard compras={compras}/>
                 </Modal>
             </Layout>
         )
