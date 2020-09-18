@@ -71,6 +71,14 @@ class SolicitudCompra extends Component{
         })
     }
 
+    openModalSee = ( solicitud ) => {
+        this.setState({
+            ... this.state,
+            modalSingle: true,
+            solicitud: solicitud
+        })
+    }
+
     handleCloseSingle = () => {
         const { modalSingle } = this.state
         this.setState({
@@ -121,6 +129,13 @@ class SolicitudCompra extends Component{
                     iconclass: 'flaticon2-rubbish-bin',                  
                     action: 'delete',
                     tooltip: {id:'delete', text:'Eliminar', type:'error'},
+                },
+                {
+                    text: 'Ver',
+                    btnclass: 'primary',
+                    iconclass: 'flaticon2-expand',                  
+                    action: 'see',
+                    tooltip: {id:'see', text:'Mostrar', type:'success'},
                 },
                 {
                     text: 'Convertir&nbsp;a&nbsp;compra',
@@ -253,7 +268,8 @@ class SolicitudCompra extends Component{
                     actions = {{
                         'edit': {function: this.changePageEdit},
                         'delete': {function: this.openModalDelete},
-                        'convert': {function: this.changePageConvert}
+                        'convert': {function: this.changePageConvert},
+                        'see': { function: this.openModalSee }
                     }}
                     elements = { data.solicitudes }
                     cardTable='cardTable'

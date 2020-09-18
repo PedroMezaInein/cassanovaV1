@@ -61,6 +61,14 @@ class Remisiones extends Component{
         })
     }
 
+    openModalSee = remision => {
+        this.setState({
+            ... this.state,
+            modalSingle: true,
+            remision: remision
+        })
+    }
+
     handleCloseSingle = () => {
         this.setState({
             ... this.state,
@@ -120,7 +128,14 @@ class Remisiones extends Component{
                     iconclass: 'flaticon2-refresh',                  
                     action: 'convert',
                     tooltip: {id:'convert', text:'Convertir', type:'success'},
-                }
+                },
+                {
+                    text: 'Ver',
+                    btnclass: 'primary',
+                    iconclass: 'flaticon2-expand',                  
+                    action: 'see',
+                    tooltip: {id:'see', text:'Mostrar', type:'success'},
+                },
         )
         return aux
     }
@@ -244,7 +259,8 @@ class Remisiones extends Component{
                     actions = {{
                         'edit': {function: this.changePageEdit},
                         'delete': {function: this.openModalDelete},
-                        'convert': {function: this.changePageConvert}
+                        'convert': {function: this.changePageConvert},
+                        'see': { function: this.openModalSee },
                     }}
                     elements = { data.remisiones }
                     cardTable='cardTable'

@@ -16,6 +16,7 @@ import { RangeCalendar, Button } from '../../../components/form-components';
 // Functions
 import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert, createAlert } from '../../../functions/alert'
 import { setTextTable, setContactoTable, setListTable, setDateTable, setLabelTable } from '../../../functions/setters';
+import { LeadCard } from '../../../components/cards';
 
 const $ = require('jquery');
 
@@ -25,6 +26,7 @@ class Leads extends Component {
         modalDelete: false,
         modalConvert: false,
         modalExport: false,
+        modalSingle: false,
         lead: '',
         form:{
             fechaInicio: moment().startOf('month').toDate(),
@@ -82,6 +84,14 @@ class Leads extends Component {
         })
     }
 
+    openModalSee = lead => {
+        this.setState({
+            ... this.state,
+            modalSingle: true,
+            lead: lead
+        })
+    }
+
     handleClose = () => {
         this.setState({
             ... this.state,
@@ -106,6 +116,14 @@ class Leads extends Component {
             ... this.state,
             form,
             modalExport: false
+        })
+    }
+
+    handleCloseSingle = () => {
+        this.setState({
+            ... this.state,
+            modalSingle: false,
+            lead : ''
         })
     }
 
@@ -172,7 +190,14 @@ class Leads extends Component {
                     iconclass: 'flaticon-user-ok',
                     action: 'proveedor',
                     tooltip: {id:'proveedor', text:'Convertir en proveedor'}
-                }
+                },
+                {
+                    text: 'Ver',
+                    btnclass: 'primary',
+                    iconclass: 'flaticon2-expand',                  
+                    action: 'see',
+                    tooltip: {id:'see', text:'Mostrar', type:'success'},
+                },
             )
         
             return aux
@@ -256,7 +281,7 @@ class Leads extends Component {
     }
 
     render() {
-        const { modalDelete, modalExport, form } = this.state
+        const { modalDelete, modalExport, modalSingle, lead, form } = this.state
         return (
             <Layout active = 'leads'  { ...this.props } >
 
@@ -273,6 +298,7 @@ class Leads extends Component {
                         'delete': {function: this.openModalSafeDelete},
                         'prospecto': {function: this.openModalSafeConvert},
                         'proveedor': {function: this.openModalSafeConvertProveedor},
+                        'see': { function: this.openModalSee }
                     }}
                     exportar_boton = { true }
                     onClickExport = { () => this.openModalExport() }
@@ -308,6 +334,15 @@ class Leads extends Component {
                             />
                     </div>
                 </Modal>
+
+                {
+                    lead ?
+                        <Modal size="xl" show = { modalSingle } handleClose = { this.handleCloseSingle } >
+                            <LeadCard lead = { lead } />
+                        </Modal>
+                    :''
+                }
+                
 
             </Layout>
         );
