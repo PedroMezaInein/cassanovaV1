@@ -11,7 +11,7 @@ export default class ComprasCard extends Component {
             <div className="col-md-12 mt-4">
                 <Tab.Container defaultActiveKey="first">
                     <Row>
-                        <Col md={3} className="pl-0">
+                        <Col md={3} className="pl-0 align-self-center">
                             <Nav className="navi navi-hover navi-active navi-bold">
                                 <Nav.Item className="navi-item">
                                     <Nav.Link className="navi-link px-3" eventKey="first">
