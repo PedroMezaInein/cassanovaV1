@@ -21,6 +21,7 @@ import { Modal, ItemSlider } from '../components/singles'
 class MiProyecto extends Component {
 
     state = {
+        id: '',
         ticket:{
             estatus_ticket:{
                 estatus:''
@@ -305,6 +306,18 @@ class MiProyecto extends Component {
         if (!proyecto)
             history.push('/')
         this.getMiProyectoAxios()
+        let queryString = this.props.history.location.search
+        if(queryString){
+            let params = new URLSearchParams(queryString)
+            let id = parseInt(params.get("id"))
+            if(id){
+                console.log(id, 'ID')
+                this.setState({
+                    ... this.state,
+                    id: id
+                })
+            }
+        }
     }
 
     clearForm = () => {
@@ -373,12 +386,19 @@ class MiProyecto extends Component {
         await axios.get(URL_DEV + 'proyectos/mi-proyecto', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { proyectos, partidas, tiposTrabajo } = response.data
-                const { data, options } = this.state
+                const { data, options, id } = this.state
                 let { proyecto, tickets } = this.state
                 options.proyectos = setOptions(proyectos, 'nombre', 'id')
                 options.partidas = setOptions(partidas, 'nombre', 'id')
                 options.tiposTrabajo = setOptions(tiposTrabajo, 'tipo', 'id')
                 data.proyectos = proyectos
+                if(id !== ''){
+                    proyectos.map( (proy) => {
+                        if(proy.id === id){
+                            proyecto = proy
+                        }
+                    })
+                }
                 if(proyecto !== ''){
                     proyectos.map( (element) => {
                         if(element.id === proyecto.id){
