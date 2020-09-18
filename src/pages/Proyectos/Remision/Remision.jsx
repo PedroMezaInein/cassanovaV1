@@ -271,15 +271,13 @@ class Remisiones extends Component{
                 <ModalDelete title={"¿Estás seguro que deseas eliminar la remisión?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteRemisionAxios() }}>
                 </ModalDelete>
 
-                <Modal size="xl" show = { modalSingle } handleClose = { this.handleCloseSingle } >
+                <Modal size="xl" title="Remisión" show = { modalSingle } handleClose = { this.handleCloseSingle } >
 
                     <RemisionCard data = { remision }>
                         {
                             remision.convertido ? '' :
-                                <div className="col-md-12 mb-3 d-flex justify-content-end">
                                     <Button pulse="pulse-ring" className="btn btn-icon btn-light-info pulse pulse-info" onClick={(e) => {e.preventDefault(); this.changePageConvert(remision)} } icon={faSync}
                                         tooltip={{text:'COMPRAR'}} />
-                                </div>
                         }
                         
                     </RemisionCard>

@@ -280,14 +280,12 @@ class SolicitudCompra extends Component{
                 <ModalDelete title={"¿Quieres eliminar la solicitud de compra?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteSolicitudAxios() }}>
                 </ModalDelete>
                 
-                <Modal size="xl" show = { modalSingle } handleClose = { this.handleCloseSingle } >
+                <Modal size="xl" title = "Solicitud de compra" show = { modalSingle } handleClose = { this.handleCloseSingle } >
                     <SolicitudCompraCard data = { solicitud }>
                         {
                             solicitud.convertido ? '' :
-                                <div className="col-md-12 mb-3 d-flex justify-content-end">
                                     <Button pulse="pulse-ring" className="btn btn-icon btn-light-info pulse pulse-info" onClick={(e) => {e.preventDefault(); this.changePageConvert(solicitud)} } icon={faSync} 
                                         tooltip={{text:'COMPRAR'}} />
-                                </div>
                         }
                         
                     </SolicitudCompraCard>
