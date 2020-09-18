@@ -334,7 +334,6 @@ class Leads extends Component {
                             />
                     </div>
                 </Modal>
-
                 {
                     lead ?
                         <Modal size="xl" show = { modalSingle } handleClose = { this.handleCloseSingle } >
@@ -342,8 +341,6 @@ class Leads extends Component {
                         </Modal>
                     :''
                 }
-                
-
             </Layout>
         );
     }
