@@ -1165,6 +1165,21 @@ export const DOCUMENTOS_COLUMNS = [
     }
 ]
 
+export const IMSS_COLUMNS = [
+    {
+        Header: 'OPCIONES',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Empresa',
+        accessor: 'empresa',
+    },
+    {
+        Header: 'Fecha',
+        accessor: 'fecha',
+    }
+]
+
 export const UBICACIONES_HERRAMIENTAS_COLUMNS = [
     {
         Header: 'OPCIONES',

@@ -114,6 +114,9 @@ const NominaAdminForm = Loader(() => import('./pages/RecursosHumanos/NominaAdmin
 const NominaAdminSingle = Loader(() => import('./pages/RecursosHumanos/NominaAdmin/NominaAdminSingle') )
 const Empleados = Loader(() => import('./pages/RecursosHumanos/Empleados') )
 
+const Imss = Loader( () => import('./pages/RecursosHumanos/Imss/Imss') )
+const ImssForm = Loader( () => import('./pages/RecursosHumanos/Imss/ImssForm') )
+
 const Vacaciones = Loader(() => import('./pages/RecursosHumanos/Vacaciones/Vacaciones') )
 
 const Calidad = Loader(() => import('./pages/Calidad/Calidad') )
@@ -287,6 +290,9 @@ class App extends Component{
                 <Route path = "/rh/nomina-admin/single/:id" exact component ={ NominaAdminSingle } />
                 <Route path = "/rh/empleados" exact component ={ Empleados } />
                 <Route path = "/rh/vacaciones" exact component ={ Vacaciones } />
+
+                <Route path = "/rh/imss" exact component ={ Imss } />
+                <Route path = "/rh/imss/:action" exact component = { ImssForm } />
 
                 <Route path = "/calidad/calidad" exact component ={ Calidad } />
                 <Route path = "/calidad/calidad/:action" exact component = { CalidadForm } />
