@@ -1,24 +1,23 @@
-import React, { Component } from 'react'
-import { renderToString } from 'react-dom/server'
-import { connect } from 'react-redux'
+import React, { Component } from 'react';
+import { renderToString } from 'react-dom/server';
+import { connect } from 'react-redux';
 import Layout from '../../../components/layout/layout'
-import { ModalDelete, Modal, ItemSlider } from '../../../components/singles'
-import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { URL_DEV, DOCUMENTOS_COLUMNS } from '../../../constants'
-import { setDateTable, setTextTable } from '../../../functions/setters'
-import { waitAlert, errorAlert, doneAlert, forbiddenAccessAlert, deleteAlert } from '../../../functions/alert'
+import NewTableServerRender from '../../../components/tables/NewTableServerRender';
+import { URL_DEV, IMSS_COLUMNS } from '../../../constants';
+import { deleteAlert, doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert';
+import { setDateTable, setTextTable } from '../../../functions/setters';
 import axios from 'axios'
+import { ModalDelete, Modal, ItemSlider } from '../../../components/singles';
 import { Button } from '../../../components/form-components'
-
 
 const $ = require('jquery');
 
-class Documentos extends Component {
+class Imss extends Component {
 
     state = {
         modalDelete: false,
         modalAdjuntos: false,
-        documento: '',
+        imss: '',
         form:{
             adjuntos:{
                 adjuntos:{
@@ -30,21 +29,20 @@ class Documentos extends Component {
         }
     }
 
-    setDocumentos = documentos => {
+    setImss = imsses => {
         let aux = []
-        documentos.map( (documento) => {
+        imsses.map( (imss) => {
             aux.push({
-                actions: this.setActions(documento),
-                empresa: renderToString(setTextTable(documento.empresa ? documento.empresa.name : 'Sin definir')),
-                nombre: renderToString(setTextTable(documento.nombre)),
-                fecha: renderToString(setDateTable(documento.created_at)),
-                id: documento.id
+                actions: this.setActions(imss),
+                empresa: renderToString(setTextTable(imss.empresa ? imss.empresa.name : 'Sin definir')),
+                fecha: renderToString(setDateTable(imss.fecha)),
+                id: imss.id
             })
         })
         return aux
     }
 
-    setActions = herramienta => {
+    setActions = imss => {
         let aux = []
         aux.push(
             {
@@ -72,78 +70,12 @@ class Documentos extends Component {
         return aux
     }
 
-    setAdjuntos = adjuntos => {
-        const { form } = this.state
-        let aux = []
-        adjuntos.map( (adj) => {
-            aux.push({
-                name: adj.name,
-                url: adj.url,
-                id: adj.id
-            })
-        })
-        form.adjuntos.adjuntos.files = aux
-        this.setState({
-            ... this.state,
-            form
-        })
-    }
-
-    changePageEdit = documento => {
+    changePageEdit = imss => {
         const { history } = this.props
         history.push({
-            pathname: '/administracion/documentos/edit',
-            state: { documento: documento}
+            pathname: '/rh/imss/edit',
+            state: { imss: imss}
         });
-    }
-
-    openModalDelete = documento => {
-        this.setState({
-            ... this.state,
-            documento: documento,
-            modalDelete: true
-        })
-    }
-
-    openModalAdjuntos = documento => {
-        const { form } = this.state
-        let aux = []
-        if(documento.adjuntos)
-        {
-            documento.adjuntos.map( (adj) => {
-                aux.push({
-                    id: adj.id,
-                    name: adj.name,
-                    url: adj.url
-                })
-            })
-        }
-        form.adjuntos.adjuntos.files = aux
-        this.setState({
-            ... this.state,
-            modalAdjuntos: true,
-            form,
-            documento: documento
-        })
-    }
-
-    handleCloseDelete = () => {
-        this.setState({
-            ... this.state,
-            documento: '',
-            modalDelete: false
-        })
-    }
-
-    handleCloseAdjuntos = () => {
-        const { form } = this.state
-        form.adjuntos.adjuntos.files = []
-        this.setState({
-            ... this.state,
-            documento: '',
-            form,
-            modalAdjuntos: false
-        })
     }
 
     handleChange = (files, item) => {
@@ -171,20 +103,78 @@ class Documentos extends Component {
         deleteAlert('¿Deseas eliminar el archivo?', () => this.deleteAdjuntoAxios(element.id))
     }
 
-    async getDocumentosAxios(){
-        $('#kt_datatable_documentos').DataTable().ajax.reload();
+    setAdjuntos = adjuntos => {
+        const { form } = this.state
+        let aux = []
+        adjuntos.map( (adj) => {
+            aux.push({
+                name: adj.name,
+                url: adj.url,
+                id: adj.id
+            })
+        })
+        form.adjuntos.adjuntos.files = aux
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+
+    openModalDelete = imss => {
+        this.setState({
+            ... this.state,
+            imss: imss,
+            modalDelete: true
+        })
+    }
+
+    openModalAdjuntos = imss => {
+        const { form } = this.state
+        let aux = []
+        if(imss.adjuntos)
+        {
+            imss.adjuntos.map( (adj) => {
+                aux.push({
+                    id: adj.id,
+                    name: adj.name,
+                    url: adj.url
+                })
+            })
+        }
+        form.adjuntos.adjuntos.files = aux
+        this.setState({
+            ... this.state,
+            modalAdjuntos: true,
+            form,
+            imss: imss
+        })
+    }
+
+    handleCloseAdjuntos = () => {
+        const { form } = this.state
+        form.adjuntos.adjuntos.files = []
+        this.setState({
+            ... this.state,
+            modalAdjuntos: false,
+            form,
+            imss: ''
+        })
+    }
+
+    async getImssAxios(){
+        $('#kt_datatable_imss').DataTable().ajax.reload();
     }
 
     async deleteDocumentoAxios(){
         const { access_token } = this.props.authUser
-        const { documento } = this.state
-        await axios.delete(URL_DEV + 'documentos/' + documento.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { imss } = this.state
+        await axios.delete(URL_DEV + 'imss/' + imss.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getDocumentosAxios()
+                this.getImssAxios()
                 this.setState({
                     ... this.state,
                     modalDelete: '',
-                    documento: ''
+                    imss: ''
                 })
                 doneAlert('Documento eliminado con éxito')
             },
@@ -205,7 +195,7 @@ class Documentos extends Component {
     async sendAdjuntoAxios(){
         waitAlert()
         const { access_token } = this.props.authUser
-        const { form, documento } = this.state
+        const { form, imss } = this.state
         const data = new FormData();
         
         let aux = Object.keys(form.adjuntos)
@@ -217,13 +207,13 @@ class Documentos extends Component {
             data.append('adjuntos[]', element)
         })
         
-        await axios.post(URL_DEV + 'documentos/' + documento.id + '/adjuntos', data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'imss/' + imss.id + '/adjuntos', data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 
-                const { documento } = response.data
+                const { imss } = response.data
                 const { form } = this.state
                 let aux = []
-                documento.adjuntos.map((adj)=>{
+                imss.adjuntos.map((adj)=>{
                     aux.push({
                         name: adj.name,
                         url: adj.url,
@@ -231,12 +221,13 @@ class Documentos extends Component {
                     })
                 })
                 form.adjuntos.adjuntos.files = aux
+                form.adjuntos.adjuntos.value = ''
                 this.setState({
                     ... this.state,
                     form
                 })
                 doneAlert('Adjunto creado con éxito')
-                this.getDocumentosAxios()
+                this.getImssAxios()
             },
             (error) => {
                 console.log(error, 'error')
@@ -255,13 +246,13 @@ class Documentos extends Component {
     async deleteAdjuntoAxios(id){
         waitAlert()
         const { access_token } = this.props.authUser
-        const { form, state, documento } = this.state
-        await axios.delete(URL_DEV + 'documentos/' + documento.id + '/adjuntos/' +id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { form, state, imss } = this.state
+        await axios.delete(URL_DEV + 'imss/' + imss.id + '/adjuntos/' +id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { documento } = response.data
-                this.setAdjuntos(documento.adjuntos)
+                const { imss } = response.data
+                this.setAdjuntos(imss.adjuntos)
                 doneAlert('Adjunto eliminado con éxito')
-                this.getDocumentosAxios()
+                this.getImssAxios()
             },
             (error) => {
                 console.log(error, 'error')
@@ -280,14 +271,14 @@ class Documentos extends Component {
     render() {
         const { modalDelete, modalAdjuntos, form } = this.state
         return (
-            <Layout active={'administracion'}  {...this.props}>
+            <Layout active={'rh'} {...this.props}>
                 <NewTableServerRender
-                    columns = { DOCUMENTOS_COLUMNS }
-                    title = 'Documentos'
-                    subtitle = 'Listado de documentos'
+                    columns = { IMSS_COLUMNS }
+                    title = 'IMSS'
+                    subtitle = 'Listado de documentos IMSS'
                     mostrar_boton = { true }
                     abrir_modal = { false }
-                    url = '/administracion/documentos/add'
+                    url = '/rh/imss/add'
                     mostrar_acciones = { true }
                     actions = {
                         {
@@ -297,20 +288,20 @@ class Documentos extends Component {
                         }
                     }
                     accessToken = { this.props.authUser.access_token }
-                    setter = { this.setDocumentos }
-                    urlRender = { URL_DEV + 'documentos' }
-                    idTable = 'kt_datatable_documentos'
+                    setter = { this.setImss }
+                    urlRender = { URL_DEV + 'imss' }
+                    idTable = 'kt_datatable_imss'
                     cardTable = 'cardTable'
                     cardTableHeader = 'cardTableHeader'
                     cardBody = 'cardBody'/>
-                <ModalDelete title = '¿Estás seguro que deseas eliminar el documento?'
+                <ModalDelete title = '¿Estás seguro que deseas eliminar el documento del IMSS?'
                     show = { modalDelete } handleClose = { this.handleCloseDelete }
                     onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteDocumentoAxios() } } />
                 <Modal size="lg" title = "Adjuntos" show = { modalAdjuntos } handleClose = { this.handleCloseAdjuntos } >
                     <ItemSlider items = { form.adjuntos.adjuntos.files } item = 'adjuntos' handleChange = { this.handleChange } 
                         deleteFile = { this.deleteFile }/>
                     {
-                        form.adjuntos.adjuntos.value ?
+                        form.adjuntos.adjuntos.value !== '' ?
                             <div className="d-flex justify-content-center mt-2 mb-4">
                                 <Button icon='' text='ENVIAR'
                                     onClick = { (e) => { e.preventDefault(); this.sendAdjuntoAxios()}  } />
@@ -324,7 +315,7 @@ class Documentos extends Component {
 }
 
 const mapStateToProps = state => {
-    return {
+    return{
         authUser: state.authUser
     }
 }
@@ -332,4 +323,4 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Documentos)
+export default connect(mapStateToProps, mapDispatchToProps)(Imss)
