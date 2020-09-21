@@ -161,6 +161,14 @@ class Imss extends Component {
         })
     }
 
+    handleCloseDelete = () => {
+        this.setState({
+            ... this.state,
+            modalDelete: false,
+            imss: ''
+        })
+    }
+
     async getImssAxios(){
         $('#kt_datatable_imss').DataTable().ajax.reload();
     }

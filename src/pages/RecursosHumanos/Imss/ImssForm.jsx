@@ -145,7 +145,7 @@ class ImssForm extends Component {
         const { title } = this.state
         waitAlert()
         if(title === 'Editar documento IMSS')
-            this.editHerramientaAxios()
+            this.editImssAxios()
         else
             this.createImssAxios()
     }
@@ -201,7 +201,7 @@ class ImssForm extends Component {
         })
     }
 
-    async editHerramientaAxios(){
+    async editImssAxios(){
         waitAlert()
         const { access_token } = this.props.authUser
         const { form, imss } = this.state
