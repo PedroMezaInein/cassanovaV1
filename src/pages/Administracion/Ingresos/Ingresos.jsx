@@ -16,6 +16,7 @@ import NewTableServerRender from '../../../components/tables/NewTableServerRende
 import Select from '../../../components/form-components/Select'
 import AdjuntosForm from '../../../components/forms/AdjuntosForm'
 import TableForModals from '../../../components/tables/TableForModals'
+import { IngresosCard } from '../../../components/cards'
 
 const $ = require('jquery');
 class Ingresos extends Component {
@@ -29,6 +30,7 @@ class Ingresos extends Component {
         modalFacturas: false,
         modalAskFacturas: false,
         modalAdjuntos: false,
+        modalSee: false,
         facturas: [],
         porcentaje: 0,
         data: {
@@ -394,7 +396,14 @@ class Ingresos extends Component {
                 iconclass: 'flaticon-attachment',
                 action: 'adjuntos',
                 tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
-            }
+            },
+            {
+                text: 'Ver',
+                btnclass: 'dark',
+                iconclass: 'flaticon2-expand',                  
+                action: 'see',
+                tooltip: {id:'see', text:'Mostrar', type:'info'},
+            },
         )
 
         if (ingreso.factura) {
@@ -519,6 +528,22 @@ class Ingresos extends Component {
 
     openModalDeleteAdjuntos = adjunto => {
         deleteAlert('¿Seguro deseas borrar el adjunto?', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) }  )
+    }
+
+    openModalSee = ingreso => {
+        this.setState({
+            ... this.state,
+            modalSee: true,
+            ingreso: ingreso
+        })
+    }
+
+    handleCloseSee = () => {
+        this.setState({
+            ... this.state,
+            modalSee: false,
+            ingreso: ''
+        })
     }
 
     handleCloseAdjuntos = () => {
@@ -918,7 +943,7 @@ class Ingresos extends Component {
     }
 
     render() {
-        const { ingresos, form, options, modalDelete, modalFacturas, modalAdjuntos, adjuntos, porcentaje, facturas, modalAskFactura, data, formeditado } = this.state
+        const { ingresos, form, options, modalDelete, modalFacturas, modalAdjuntos, adjuntos, porcentaje, facturas, modalAskFactura, data, formeditado, modalSee, ingreso } = this.state
         return (
             <Layout active={'administracion'}  {...this.props}>
                 
@@ -934,7 +959,8 @@ class Ingresos extends Component {
                         'delete': { function: this.openModalDelete },
                         'facturas': { function: this.openModalFacturas },
                         'askFacturas': { function: this.openModalAskFactura },
-                        'adjuntos': { function: this.openModalAdjuntos }
+                        'adjuntos': { function: this.openModalAdjuntos }, 
+                        'see': { function: this.openModalSee },
                     }}
                     elements={data.ingresos}
                     exportar_boton={true} 
@@ -1018,7 +1044,9 @@ class Ingresos extends Component {
                         elements={data.adjuntos}
                             />
                 </Modal>
-
+                <Modal size="lg" title="Ingreso" show = { modalSee } handleClose = { this.handleCloseSee } >
+                    <IngresosCard ingreso={ingreso}/>
+                </Modal>
             </Layout>
         )
     }

@@ -15,6 +15,7 @@ import NewTableServerRender from '../../../components/tables/NewTableServerRende
 import Select from '../../../components/form-components/Select'
 import TableForModals from '../../../components/tables/TableForModals'
 import AdjuntosForm from '../../../components/forms/AdjuntosForm'
+import { EgresosCard } from '../../../components/cards'
 
 const $ = require('jquery');
 class egresos extends Component{
@@ -27,6 +28,7 @@ class egresos extends Component{
         modalDelete: false,
         modalFacturas: false,
         modalAdjuntos: false,
+        modalSee: false,
         facturas: [],
         porcentaje: 0,
         data: {
@@ -367,7 +369,14 @@ class egresos extends Component{
                     iconclass: 'flaticon-attachment',
                     action: 'adjuntos',
                     tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
-                }
+                },
+                {
+                    text: 'Ver',
+                    btnclass: 'info',
+                    iconclass: 'flaticon2-expand',                  
+                    action: 'see',
+                    tooltip: {id:'see', text:'Mostrar', type:'info'},
+                },
             )
         
         if(egreso.factura)
@@ -456,6 +465,22 @@ class egresos extends Component{
 
     openModalDeleteAdjuntos = adjunto => {
         deleteAlert('¿Seguro deseas borrar el adjunto?', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) }  )
+    }
+
+    openModalSee = egreso => {
+        this.setState({
+            ... this.state,
+            modalSee: true,
+            egreso: egreso
+        })
+    }
+
+    handleCloseSee = () => {
+        this.setState({
+            ... this.state,
+            modalSee: false,
+            egreso: ''
+        })
     }
 
     handleCloseFacturas = () => {
@@ -845,7 +870,7 @@ class egresos extends Component{
     }
 
     render(){
-        const { egresos, modalDelete, modalFacturas, modalAdjuntos, adjuntos, facturas, porcentaje, form, data, options } = this.state
+        const { egresos, modalDelete, modalFacturas, modalAdjuntos, adjuntos, facturas, porcentaje, form, data, options, modalSee, egreso} = this.state
         return(
             <Layout active={'administracion'}  { ...this.props}>
                 <NewTableServerRender columns={EGRESOS_COLUMNS} data={egresos}
@@ -858,7 +883,8 @@ class egresos extends Component{
                         'edit': { function: this.changePageEdit },
                         'delete': { function: this.openModalDelete },
                         'facturas': { function: this.openModalFacturas },
-                        'adjuntos': { function: this.openModalAdjuntos }
+                        'adjuntos': { function: this.openModalAdjuntos },
+                        'see': { function: this.openModalSee },
                     }}
                     elements={data.egresos}
                     idTable='egresos'
@@ -934,6 +960,9 @@ class egresos extends Component{
                         dataID = 'adjuntos'
                         elements={data.adjuntos}
                             />
+                </Modal>
+                <Modal size="lg" title="Egreso" show = { modalSee } handleClose = { this.handleCloseSee } >
+                    <EgresosCard egreso={egreso}/>
                 </Modal>
             </Layout>
         )
