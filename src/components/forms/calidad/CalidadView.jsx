@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
-import { Tooltip, Card, Nav, Tab } from 'react-bootstrap'
+import { Card, Nav, Tab } from 'react-bootstrap'
 import Moment from 'react-moment'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
