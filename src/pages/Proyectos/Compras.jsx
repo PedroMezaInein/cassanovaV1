@@ -1358,7 +1358,7 @@ class Compras extends Component {
                 </Modal>
 
                 <Modal size="lg" title="Compra" show = { modalSee } handleClose = { this.handleCloseSee } >
-                    <ComprasCard compras={compras}/>
+                    <ComprasCard compra={compra}/>
                 </Modal>
             </Layout>
         )
