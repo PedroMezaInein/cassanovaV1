@@ -54,6 +54,7 @@ import tablaEstadosResultados from './reportes/TablaEstadosResultados'
 import tablaReportesDepartamento from './reportes/TablaReportesDepartamento'
 import headersTotales from './reportes/HeadersTotales'
 import ubicacionHerramientaForm from './proyectos/UbicacionHerramientaForm'
+import documentosForm from './administracion/DocumentosForm'
 
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
@@ -111,3 +112,4 @@ export const TablaReportesDepartamento = tablaReportesDepartamento
 export const HeadersTotales = headersTotales
 export const HerramientasForm = herramientasForm
 export const UbicacionHerramientaForm = ubicacionHerramientaForm
+export const DocumentosForm = documentosForm
