@@ -15,6 +15,7 @@ import { Form, ProgressBar } from 'react-bootstrap'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import TableForModals from '../../components/tables/TableForModals'
 import Select from '../../components/form-components/Select'
+import { VentasCard } from '../../components/cards'
 
 const $ = require('jquery');
 
@@ -27,6 +28,7 @@ class Ventas extends Component{
         modalFacturas: false,
         modalAskFactura: false,
         modalAdjuntos: false,
+        modalSee: false,
         porcentaje: 0,
         title: 'Nueva venta',
         ventas: [],
@@ -241,6 +243,22 @@ class Ventas extends Component{
         deleteAlert('¿Seguro deseas borrar el adjunto?', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) }  )
     }
 
+    openModalSee = venta => {
+        this.setState({
+            ... this.state,
+            modalSee: true,
+            venta: venta
+        })
+    }
+
+    handleCloseSee = () => {
+        this.setState({
+            ... this.state,
+            modalSee: false,
+            venta: ''
+        })
+    }
+
     handleClose = () => {
         const { modal } = this.state
         this.setState({
@@ -295,12 +313,28 @@ class Ventas extends Component{
 
     setVentas = ventas => {
         const { data } = this.state
+        let _aux = []
         data.ventas = ventas
         this.setState({
             data
         })
         let aux = []
         ventas.map( (venta) => {
+            _aux = []
+            if (venta.presupuestos) {
+                venta.presupuestos.map((presupuesto) => {
+                    _aux.push({
+                        name: 'Presupuesto', text: presupuesto.name, url: presupuesto.url
+                    })
+                })
+            }
+            if (venta.pagos) {
+                venta.pagos.map((pago) => {
+                    _aux.push({
+                        name: 'Pago', text: pago.name, url: pago.url
+                    })
+                })
+            }
             aux.push(
                 {
                     actions: this.setActions(venta),
@@ -323,10 +357,11 @@ class Ventas extends Component{
                     subarea: renderToString(setTextTable( venta.subarea ? venta.subarea.nombre : '')),
                     estatusCompra: renderToString(setTextTable( venta.estatus_compra ? venta.estatus_compra.estatus : '')),
                     total: renderToString(setMoneyTable(venta.total)),
-                    adjuntos: renderToString(setAdjuntosList([
-                        venta.pago ? {name: 'Pago', url: venta.pago.url} : '',
-                        venta.presupuesto ? {name: 'Presupuesto', url: venta.presupuesto.url} : '',
-                    ])),
+                    // adjuntos: renderToString(setAdjuntosList([
+                    //     venta.pago ? {name: 'Pago', url: venta.pago.url} : '',
+                    //     venta.presupuesto ? {name: 'Presupuesto', url: venta.presupuesto.url} : '',
+                    // ])),
+                    adjuntos: renderToString(setArrayTable(_aux)),
                     fecha: renderToString(setDateTable(venta.created_at)),
                     id: venta.id,
                     objeto: venta
@@ -375,7 +410,14 @@ class Ventas extends Component{
                 iconclass: 'flaticon-attachment',
                 action: 'adjuntos',
                 tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
-            }
+            },
+            {
+                text: 'Ver',
+                btnclass: 'dark',
+                iconclass: 'flaticon2-expand',                  
+                action: 'see',
+                tooltip: {id:'see', text:'Mostrar', type:'info'},
+            },
         )
         if(venta.factura){
             aux.push(
@@ -1234,7 +1276,7 @@ class Ventas extends Component{
 
     render(){
 
-        const { modal, modalDelete, modalFacturas, modalAskFactura, modalAdjuntos, adjuntos, title, options, form, ventas, venta, porcentaje, facturas,data, formeditado} = this.state
+        const { modal, modalDelete, modalFacturas, modalAskFactura, modalAdjuntos, adjuntos, title, options, form, ventas, venta, porcentaje, facturas,data, formeditado, modalSee} = this.state
         return(
             <Layout active={'proyectos'}  { ...this.props}>
                 
@@ -1249,7 +1291,8 @@ class Ventas extends Component{
                         'delete': { function: this.openModalDelete },                        
                         'taxes': { function: this.openModalFacturas },                   
                         'bills': { function: this.openModalAskFactura },
-                        'adjuntos': { function: this.openModalAdjuntos }
+                        'adjuntos': { function: this.openModalAdjuntos },
+                        'see': { function: this.openModalSee },
                     }}
                     elements={data.ventas}
                     exportar_boton={true} 
@@ -1346,6 +1389,11 @@ class Ventas extends Component{
                         elements={data.adjuntos}
                             />
                 </Modal>
+
+                <Modal size="lg" title="Ventas" show = { modalSee } handleClose = { this.handleCloseSee } >
+                    <VentasCard venta={venta}/>
+                </Modal>
+
             </Layout>
         )
     }

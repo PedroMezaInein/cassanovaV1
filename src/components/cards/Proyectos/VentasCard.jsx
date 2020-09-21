@@ -3,7 +3,8 @@ import NumberFormat from 'react-number-format'
 import Moment from 'react-moment'
 import { Card, Tab, Row, Col, Nav } from 'react-bootstrap'
 import {ItemSlider} from '../../../components/singles'
-export default class ComprasCard extends Component {
+
+export default class VentasCard extends Component {
     setAdjuntosFacturas = facturas => {
         let aux=[];
         facturas.map((factura) => {
@@ -23,7 +24,8 @@ export default class ComprasCard extends Component {
         return aux
     }
     render() {
-        const { compra } = this.props
+        const { venta } = this.props
+        console.log(venta)
         return (
             <div className="col-md-12 mt-4">
                 <Tab.Container defaultActiveKey="first">
@@ -43,7 +45,7 @@ export default class ComprasCard extends Component {
                                     </Nav.Link>
                                 </Nav.Item>
                                 {
-                                    // compra.presupuestos != 0 || compra.pago != 0 ? || compra.facturas != 0
+                                    // venta.presupuestos != 0 || venta.pago != 0 ? || venta.facturas != 0
                                         <Nav.Item className="navi-item">
                                             <Nav.Link className="navi-link px-3" eventKey="third" >
                                                 <span className="navi-icon"><i className="flaticon2-checking"></i></span>
@@ -64,8 +66,8 @@ export default class ComprasCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary">ID:</label>
                                                     <div className="col-9">
                                                         {
-                                                            compra.id ?
-                                                                <span>{compra.id}</span>
+                                                            venta.id ?
+                                                                <span>{venta.id}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -74,8 +76,8 @@ export default class ComprasCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary">FECHA:</label>
                                                     <div className="col-9">
                                                         {
-                                                            compra.created_at ?
-                                                                <span><Moment format="DD/MM/YYYY">{compra.created_at}</Moment></span>
+                                                            venta.created_at ?
+                                                                <span><Moment format="DD/MM/YYYY">{venta.created_at}</Moment></span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -84,9 +86,9 @@ export default class ComprasCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary">ÁREA:</label>
                                                     <div className="col-9">
                                                         {
-                                                            compra.subarea ?
-                                                                compra.subarea.area ?
-                                                                    <span>{compra.subarea.area.nombre}</span>
+                                                            venta.subarea ?
+                                                                venta.subarea.area ?
+                                                                    <span>{venta.subarea.area.nombre}</span>
                                                                     : <span>-</span>
                                                             :''
                                                         }
@@ -96,18 +98,18 @@ export default class ComprasCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary">SUBÁREA:</label>
                                                     <div className="col-9">
                                                         {
-                                                            compra.subarea ?
-                                                                <span>{compra.subarea.nombre}</span>
+                                                            venta.subarea ?
+                                                                <span>{venta.subarea.nombre}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">PROVEEDOR:</label>
+                                                    <label className="col-3 font-weight-bolder text-primary">CLIENTE:</label>
                                                     <div className="col-9">
                                                         {
-                                                            compra.proveedor ?
-                                                                <span>{compra.proveedor.razon_social}</span>
+                                                            venta.cliente ?
+                                                                <span>{venta.cliente.empresa}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -116,8 +118,8 @@ export default class ComprasCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary">PROYECTO:</label>
                                                     <div className="col-9">
                                                         {
-                                                            compra.proyecto ?
-                                                                <span>{compra.proyecto.nombre}</span>
+                                                            venta.proyecto ?
+                                                                <span>{venta.proyecto.nombre}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -126,8 +128,8 @@ export default class ComprasCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary align-self-center">DESCRIPCIÓN:</label>
                                                     <div className="col-9">
                                                         {
-                                                            compra.descripcion ?
-                                                                <span>{compra.descripcion}</span>
+                                                            venta.descripcion ?
+                                                                <span>{venta.descripcion}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -144,8 +146,8 @@ export default class ComprasCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary">EMPRESA:</label>
                                                     <div className="col-9">
                                                         {
-                                                            compra.empresa ?
-                                                                <span>{compra.empresa.name}</span>
+                                                            venta.empresa ?
+                                                                <span>{venta.empresa.name}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -154,8 +156,8 @@ export default class ComprasCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary">RFC:</label>
                                                     <div className="col-9">
                                                         {
-                                                            compra.empresa ?
-                                                                <span>{compra.empresa.rfc}</span>
+                                                            venta.empresa ?
+                                                                <span>{venta.empresa.rfc}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -164,8 +166,8 @@ export default class ComprasCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary">CUENTA:</label>
                                                     <div className="col-9">
                                                         {
-                                                            compra.cuenta ?
-                                                                <span>{compra.cuenta.nombre}</span>
+                                                            venta.cuenta ?
+                                                                <span>{venta.cuenta.nombre}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -174,8 +176,8 @@ export default class ComprasCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary">NO. CUENTA:</label>
                                                     <div className="col-9">
                                                         {
-                                                            compra.cuenta ?
-                                                                <span>{compra.cuenta.numero}</span>
+                                                            venta.cuenta ?
+                                                                <span>{venta.cuenta.numero}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -184,10 +186,10 @@ export default class ComprasCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary">MONTO:</label>
                                                     <div className="col-9">
                                                         {
-                                                            compra.monto ?
+                                                            venta.monto ?
                                                                 <span>
                                                                     <NumberFormat
-                                                                        value={compra.monto}
+                                                                        value={venta.monto}
                                                                         displayType={'text'}
                                                                         thousandSeparator={true}
                                                                         prefix={'$'}
@@ -202,8 +204,8 @@ export default class ComprasCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary">TIPO DE PAGO:</label>
                                                     <div className="col-9">
                                                         {
-                                                            compra.tipo_pago ?
-                                                                <span>{compra.tipo_pago.tipo}</span>
+                                                            venta.tipo_pago ?
+                                                                <span>{venta.tipo_pago.tipo}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -212,8 +214,8 @@ export default class ComprasCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary">ESTATUS:</label>
                                                     <div className="col-9">
                                                         {
-                                                            compra.estatus_compra ?
-                                                                <span>{compra.estatus_compra.estatus}</span>
+                                                            venta.estatus_compra ?
+                                                                <span>{venta.estatus_compra.estatus}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -222,18 +224,8 @@ export default class ComprasCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary">IMPUESTO:</label>
                                                     <div className="col-9">
                                                         {
-                                                            compra.tipo_impuesto ?
-                                                                <span>{compra.tipo_impuesto.tipo}</span>
-                                                                : <span>-</span>
-                                                        }
-                                                    </div>
-                                                </div>
-                                                <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">COMISIÓN:</label>
-                                                    <div className="col-9">
-                                                        {
-                                                            compra.comision ?
-                                                                <span>{compra.comision}</span>
+                                                            venta.tipo_impuesto ?
+                                                                <span>{venta.tipo_impuesto.tipo}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -242,8 +234,8 @@ export default class ComprasCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary">CONTRATO:</label>
                                                     <div className="col-9">
                                                         {
-                                                            compra.contrato ?
-                                                                <span>{compra.contrato}</span>
+                                                            venta.contrato ?
+                                                                <span>{venta.contrato}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -253,11 +245,11 @@ export default class ComprasCard extends Component {
                                     </Card>
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="third">
-                                    <Tab.Container defaultActiveKey={compra.presupuestos != 0 ? "first" : compra.pagos !=0 ? "second" : compra.facturas !=0 ? "third" :''}>
+                                    <Tab.Container defaultActiveKey={venta.presupuestos != 0 ? "first" : venta.pagos !=0 ? "second" : venta.facturas !=0 ? "third" :''}>
                                         <Nav className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-tabs-bold nav-tabs-line-2x border-0">
                                             {/* border-0 d-flex justify-content-end*/}
                                             {
-                                                compra.presupuestos != 0 ? 
+                                                venta.presupuestos != 0 ? 
                                                 <Nav.Item>
                                                     <Nav.Link className="pt-0" eventKey="first"
                                                     >
@@ -267,7 +259,7 @@ export default class ComprasCard extends Component {
                                                 :''                                                
                                             }
                                             {
-                                                compra.pagos != 0 ?
+                                                venta.pagos != 0 ?
                                                 <Nav.Item>
                                                     <Nav.Link className="pt-0" eventKey="second"
                                                         >
@@ -277,7 +269,7 @@ export default class ComprasCard extends Component {
                                                 :''                                                
                                             }
                                             {
-                                                compra.facturas != 0 ?
+                                                venta.facturas != 0 ?
                                                 <Nav.Item>
                                                     <Nav.Link className="pt-0" eventKey="third"
                                                         >
@@ -290,22 +282,22 @@ export default class ComprasCard extends Component {
                                         <Tab.Content>
                                             <Tab.Pane eventKey="first">
                                                 {
-                                                    compra.presupuestos ?
-                                                        <ItemSlider items={compra.presupuestos} item='' />
+                                                    venta.presupuestos ?
+                                                        <ItemSlider items={venta.presupuestos} item='' />
                                                     :''
                                                 }                                                
                                             </Tab.Pane>
                                             <Tab.Pane eventKey="second">
                                                 {
-                                                    compra.pagos ?
-                                                        <ItemSlider items={compra.pagos} item='' />
+                                                    venta.pagos ?
+                                                        <ItemSlider items={venta.pagos} item=''/>
                                                     :''
                                                 }  
                                             </Tab.Pane>
                                             <Tab.Pane eventKey="third">
                                                 {
-                                                    compra.facturas ?
-                                                        <ItemSlider items={this.setAdjuntosFacturas(compra.facturas)} item='' />
+                                                    venta.facturas ?
+                                                        <ItemSlider items={this.setAdjuntosFacturas(venta.facturas)} item='' />
                                                     :''
                                                 }  
                                             </Tab.Pane>
