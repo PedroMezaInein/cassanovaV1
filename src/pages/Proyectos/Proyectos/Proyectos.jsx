@@ -14,6 +14,7 @@ import NewTable from '../../../components/tables/NewTable'
 import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert} from '../../../functions/alert'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import {Nav, Tab, Col, Row} from 'react-bootstrap'
+import { ProyectosCard } from '../../../components/cards'
 
 class Proyectos extends Component {
 
@@ -520,6 +521,21 @@ class Proyectos extends Component {
         })
     }
 
+    openModalSee = proyecto => {
+        this.setState({
+            ... this.state,
+            modalSee: true,
+            proyecto: proyecto
+        })
+    }
+
+    handleCloseSee = () => {
+        this.setState({
+            ... this.state,
+            modalSee: false,
+            proyecto: ''
+        })
+    }
     setAdjuntosSlider = proyecto => {
 
         let auxheaders = [
@@ -937,11 +953,18 @@ class Proyectos extends Component {
             },
             {
                 text: 'Avances',
-                btnclass: 'primary',
-                iconclass: 'flaticon-photo-camera',
+                btnclass: 'info',
+                iconclass: 'flaticon2-photo-camera',
                 action: 'avances',
                 tooltip: { id: 'avances', text: 'Avances' }
-            }
+            },
+            {
+                text: 'Ver',
+                btnclass: 'dark',
+                iconclass: 'flaticon2-expand',                  
+                action: 'see',
+                tooltip: {id:'see', text:'Mostrar', type:'info'},
+            },
         )
         return aux
     }
@@ -1239,7 +1262,7 @@ class Proyectos extends Component {
     }
 
     render() {
-        const { modalDelete, modalAdjuntos, modalAvances, title, form, proyectos, proyecto, data, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey} = this.state
+        const { modalDelete, modalAdjuntos, modalAvances, title, form, proyectos, proyecto, data, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey, modalSee} = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 
@@ -1257,6 +1280,7 @@ class Proyectos extends Component {
                         'delete': { function: this.openModalDelete },
                         'adjuntos': { function: this.openModalAdjuntos },
                         'avances': { function: this.openModalAvances },
+                        'see': { function: this.openModalSee }
                     }}
                     elements={data.proyectos}
                     cardTable='cardTable'
@@ -1351,6 +1375,9 @@ class Proyectos extends Component {
                     <AvanceForm form = { form } onChangeAvance =  { this.onChangeAvance } onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance } 
                         clearFilesAvances = { this.clearFilesAvances } addRowAvance = { this.addRowAvance } onSubmit = { this.onSubmitAvance }
                         onChange = { this.onChange } proyecto = { proyecto } sendMail = { this.sendMail }  formeditado={formeditado} />
+                </Modal>
+                <Modal size="lg" title="Proyecto" show = { modalSee } handleClose = { this.handleCloseSee } >
+                    <ProyectosCard proyecto={proyecto}/>
                 </Modal>
             </Layout>
         )
