@@ -110,6 +110,9 @@ class NominaObraSingle extends Component {
                             mostrar_acciones = {false}
                             elements = { data.nominaData }
                             totales = { totales }
+                            cardTable='cardTable'
+                            cardTableHeader='cardTableHeader'
+                            cardBody='cardBody'
                             />
                             
                     : ''

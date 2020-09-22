@@ -105,6 +105,9 @@ class NominaAdminSingle extends Component {
                             elements = { data.nominaData }
                             totales = { totales }
                             idTable = 'kt_datatable2_nomina_admin'
+                            cardTable='cardTable'
+                            cardTableHeader='cardTableHeader'
+                            cardBody='cardBody'
                             />
                     : ''
                 }
