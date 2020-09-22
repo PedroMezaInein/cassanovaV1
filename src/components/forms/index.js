@@ -56,6 +56,8 @@ import headersTotales from './reportes/HeadersTotales'
 import ubicacionHerramientaForm from './proyectos/UbicacionHerramientaForm'
 import documentosForm from './administracion/DocumentosForm'
 import imssForm from './recursoshumanos/ImssForm'
+import prestamosForm from './recursoshumanos/PrestamosForm'
+import abonoPrestamosForm from './recursoshumanos/AbonoPrestamosForm'
 
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
@@ -115,3 +117,5 @@ export const HerramientasForm = herramientasForm
 export const UbicacionHerramientaForm = ubicacionHerramientaForm
 export const DocumentosForm = documentosForm
 export const ImssForm = imssForm
+export const PrestamosForm = prestamosForm
+export const AbonoPrestamosForm = abonoPrestamosForm

@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import '../../styles/custom_datatable.css'
 import '../../styles/metronic/_datables.scss';
 import { errorAlert } from '../../functions/alert'
-import { Card } from 'react-bootstrap'
+import { Card, Spinner } from 'react-bootstrap'
+import Sending from '../Lottie/Sending';
+import { renderToString } from 'react-dom/server';
 
 const $ = require('jquery');
 $.DataTable = require('datatables.net');
@@ -253,7 +255,14 @@ class NewTableServerRender extends Component {
                 <'col-sm-12 col-md-7 flex-column-reverse flex-md-row dataTables_pager'lp>
             >`,
             language: {
-                "sProcessing": "Procesando...",
+                "sProcessing": renderToString(
+                    <div className="d-flex align-items-center justify-content-center">
+                        <div className="position-fixed p-5">
+                            <div className="">
+                                <Spinner animation="border" variant="primary" size = "lg" as ="span"/>
+                            </div>
+                        </div>
+                    </div>),
                 "sLengthMenu": "Mostrar _MENU_ &nbsp;registros",
                 "sZeroRecords": "No se encontraron resultados",
                 "sEmptyTable": "Ningún dato disponible en esta tabla",
