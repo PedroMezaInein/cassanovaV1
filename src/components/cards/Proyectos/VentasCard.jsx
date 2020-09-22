@@ -45,14 +45,16 @@ export default class VentasCard extends Component {
                                     </Nav.Link>
                                 </Nav.Item>
                                 {
-                                    // venta.presupuestos != 0 || venta.pago != 0 ? || venta.facturas != 0
-                                        <Nav.Item className="navi-item">
-                                            <Nav.Link className="navi-link px-3" eventKey="third" >
-                                                <span className="navi-icon"><i className="flaticon2-checking"></i></span>
-                                                <span className="navi-text font-size-lg">Facturas</span>
-                                            </Nav.Link>
-                                        </Nav.Item>  
-                                    // :''
+                                    venta!==''?
+                                        venta.presupuestos.length > 0 || venta.pagos.length > 0 || venta.facturas.length > 0 ?
+                                            <Nav.Item className="navi-item">
+                                                <Nav.Link className="navi-link px-3" eventKey="third" >
+                                                    <span className="navi-icon"><i className="flaticon2-checking"></i></span>
+                                                    <span className="navi-text font-size-lg">Facturas</span>
+                                                </Nav.Link>
+                                            </Nav.Item>  
+                                        :''
+                                    :''
                                 }
                             </Nav>
                         </Col>

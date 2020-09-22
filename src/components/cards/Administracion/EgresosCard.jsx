@@ -45,14 +45,16 @@ export default class EgresosCard extends Component {
                                     </Nav.Link>
                                 </Nav.Item>
                                 {
-                                    // egreso.presupuestos != 0 || egreso.pago != 0 ? || egreso.facturas != 0
-                                        <Nav.Item className="navi-item">
-                                            <Nav.Link className="navi-link px-3" eventKey="third" >
-                                                <span className="navi-icon"><i className="flaticon2-checking"></i></span>
-                                                <span className="navi-text font-size-lg">Facturas</span>
-                                            </Nav.Link>
-                                        </Nav.Item>  
-                                    // :''
+                                    egreso!==''?
+                                        egreso.presupuestos.length > 0 || egreso.pagos.length > 0 || egreso.facturas.length > 0 ?
+                                            <Nav.Item className="navi-item">
+                                                <Nav.Link className="navi-link px-3" eventKey="third" >
+                                                    <span className="navi-icon"><i className="flaticon2-checking"></i></span>
+                                                    <span className="navi-text font-size-lg">Facturas</span>
+                                                </Nav.Link>
+                                            </Nav.Item>
+                                        :''
+                                    :''
                                 }
                             </Nav>
                         </Col>

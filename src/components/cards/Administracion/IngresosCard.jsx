@@ -45,14 +45,16 @@ export default class IngresosCard extends Component {
                                     </Nav.Link>
                                 </Nav.Item>
                                 {
-                                    // ingreso.presupuestos != 0 || ingreso.pago != 0 ? || ingreso.facturas != 0
-                                        <Nav.Item className="navi-item">
-                                            <Nav.Link className="navi-link px-3" eventKey="third" >
-                                                <span className="navi-icon"><i className="flaticon2-checking"></i></span>
-                                                <span className="navi-text font-size-lg">Facturas</span>
-                                            </Nav.Link>
-                                        </Nav.Item>  
-                                    // :''
+                                    ingreso!==''?
+                                    ingreso.presupuestos.length > 0 || ingreso.pagos.length > 0 || ingreso.facturas.length > 0 ?
+                                            <Nav.Item className="navi-item">
+                                                <Nav.Link className="navi-link px-3" eventKey="third" >
+                                                    <span className="navi-icon"><i className="flaticon2-checking"></i></span>
+                                                    <span className="navi-text font-size-lg">Facturas</span>
+                                                </Nav.Link>
+                                            </Nav.Item>
+                                        :''
+                                    :''
                                 }
                             </Nav>
                         </Col>
