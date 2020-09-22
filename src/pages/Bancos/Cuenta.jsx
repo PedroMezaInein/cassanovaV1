@@ -17,7 +17,7 @@ import TableForModals from '../../components/tables/TableForModals'
 import { setTextTable, setDateTable, setListTable, setMoneyTable, setArrayTable } from '../../functions/setters'
 import { errorAlert, forbiddenAccessAlert, waitAlert, doneAlert } from '../../functions/alert'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
-
+import { CuentaCard } from '../../components/cards'
 const $ = require('jquery');
 
 class Cuentas extends Component {
@@ -26,6 +26,7 @@ class Cuentas extends Component {
         modal: false,
         modalDelete: false,
         modalEstado: false,
+        modalSee: false,
         bancos: [],
         tipos: [],
         estatus: [],
@@ -239,7 +240,7 @@ class Cuentas extends Component {
         )
     }
 
-    setActionsEstado = estado => {
+    setActionsEstado = () => {
         let aux = []
         aux.push(
             {
@@ -307,7 +308,23 @@ class Cuentas extends Component {
         )
     }
 
-    setActions = cuenta => {
+    openModalSee = cuenta => {
+        this.setState({
+            ... this.state,
+            modalSee: true,
+            cuenta: cuenta
+        })
+    }
+
+    handleCloseSee = () => {
+        this.setState({
+            ... this.state,
+            modalSee: false,
+            cuenta: ''
+        })
+    }
+
+    setActions = () => {
         let aux = []
         aux.push(
             {
@@ -330,7 +347,14 @@ class Cuentas extends Component {
                 iconclass: 'flaticon2-infographic',
                 action: 'estado',
                 tooltip: { id: 'estado', text: 'Agregar estados de cuenta', type: 'error' }
-            }
+            },
+            {
+                text: 'Ver',
+                btnclass: 'info',
+                iconclass: 'flaticon2-expand',                  
+                action: 'see',
+                tooltip: {id:'see', text:'Mostrar', type:'info'},
+            },
         )
         return aux
     }
@@ -790,7 +814,7 @@ class Cuentas extends Component {
     }
 
     render() {
-        const { modal, modalDelete, modalEstado, bancos, estatus, tipos, key, form, cuentas, cuenta, empresas, empresas2, estados, adjunto, adjuntoName, fecha, data, formeditado, tipo, cajas } = this.state
+        const { modal, modalDelete, modalEstado, bancos, estatus, tipos, key, form, modalSee, cuenta, empresas, empresas2, estados, adjunto, adjuntoName, fecha, data, formeditado, tipo, cajas } = this.state
         return (
             <Layout active={'bancos'}  {...this.props}>
 
@@ -807,7 +831,8 @@ class Cuentas extends Component {
                             actions={{
                                 'edit': { function: this.openModalEdit },
                                 'delete': { function: this.openModalDelete },
-                                'estado': { function: this.openModalAddEstado }
+                                'estado': { function: this.openModalAddEstado },
+                                'see': { function: this.openModalSee },
                             }}
                             accessToken={this.props.authUser.access_token}
                             setter={this.setCuentas}
@@ -832,7 +857,8 @@ class Cuentas extends Component {
                             actions={{
                                 'edit': { function: this.openModalEditCajaChica },
                                 'delete': { function: this.openModalDelete },
-                                'estado': { function: this.openModalAddEstado }
+                                'estado': { function: this.openModalAddEstado },
+                                'see': { function: this.openModalSee },
                             }}
                             accessToken={this.props.authUser.access_token}
                             setter={this.setCuentas}
@@ -945,6 +971,10 @@ class Cuentas extends Component {
                             idTable='kt_datatable_estado'
                         />
                     }
+                </Modal>
+
+                <Modal size="lg" title="Cuenta" show = { modalSee } handleClose = { this.handleCloseSee } >
+                    <CuentaCard cuenta={cuenta}/>
                 </Modal>
             </Layout>
         )

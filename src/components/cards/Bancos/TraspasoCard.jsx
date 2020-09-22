@@ -4,7 +4,7 @@ import NumberFormat from 'react-number-format'
 import Moment from 'react-moment'
 import { toAbsoluteUrl } from "../../../functions/routers"
 import Card from 'react-bootstrap/Card'
-import {ItemSlider} from '../../../components/singles'
+import { ItemSlider } from '../../../components/singles'
 
 export default class TranspasoCard extends Component {
     render() {
@@ -97,14 +97,12 @@ export default class TranspasoCard extends Component {
                             }
                         </div>
                         {
-                                traspaso.adjunto ?
+                            traspaso.adjunto ?
                                 <div className="d-flex justify-content-center">
                                     <div className="col-md-10">
                                         <ItemSlider items={[traspaso.adjunto]} item='' />
                                     </div>
                                 </div>
-                                
-                                    
                                 : ''
                         }
                         {
