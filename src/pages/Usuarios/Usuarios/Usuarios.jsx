@@ -15,6 +15,7 @@ import FloatButtons from '../../../components/singles/FloatButtons'
 import { setTextTable,setListTable } from '../../../functions/setters'
 import { renderToString } from 'react-dom/server'
 import { Tabs, Tab } from 'react-bootstrap' 
+import { UsuarioCard } from '../../../components/cards'
 
 const $ = require('jquery');
 
@@ -27,7 +28,8 @@ class Usuarios extends Component {
         modal: {
             form: false,
             delete: false,
-            permisos: false
+            permisos: false,
+            see: false,
         },
         title: 'Registrar nuevo usuario',
         form: {
@@ -64,34 +66,6 @@ class Usuarios extends Component {
         this.getOptionsAxios();
     }
 
-    // openModal = () => {
-    //     const { modal} = this.state
-    //     modal.form = true
-    //     this.setState({
-    //         ... this.state,
-    //         modal,
-    //         form: this.clearForm(),
-    //         title: 'Registrar nuevo usuario',
-    //         formeditado:0
-    //     })
-    // }
-
-    // openModalEdit = user => {
-    //     const { modal, options, form } = this.state
-    //     modal.form = true
-    //     form.name = user.name
-    //     form.email = user.email
-    //     form.tipo = user.tipo
-    //     this.setState({
-    //         ... this.state,
-    //         modal,
-    //         title: 'Editar usuario',                      
-    //         form,            
-    //         options,
-    //         user: user,  
-    //         formeditado:1,
-    //     })
-    // }
     changePageEdit = user => {
         const { history } = this.props
         history.push({
@@ -100,7 +74,7 @@ class Usuarios extends Component {
         });
     }
 
-    openModalDelete = (user) => {
+    openModalDelete = user => {
         const { modal } = this.state
         modal.delete = true
         this.setState({
@@ -117,6 +91,26 @@ class Usuarios extends Component {
             ... this.state,
             modal,
             user: user
+        })
+    }
+
+    openModalSee = user => {
+        const { modal} = this.state
+        modal.see =true
+        this.setState({
+            ... this.state,
+            modal,
+            user: user
+        })
+    }
+
+    handleCloseSee = () => {
+        const { modal} = this.state
+        modal.see =false
+        this.setState({
+            ... this.state,
+            modal,
+            user: ''
         })
     }
 
@@ -393,6 +387,13 @@ class Usuarios extends Component {
                     tooltip: {id:'edit', text:'Editar'},
                 },
                 {
+                    text: 'Eliminar',
+                    btnclass: 'danger',
+                    iconclass: 'flaticon2-rubbish-bin',                  
+                    action: 'delete',
+                    tooltip: {id:'delete', text:'Eliminar', type:'error'},
+                },
+                {
                     text: 'Permisos',
                     btnclass: 'primary',
                     iconclass: 'flaticon2-accept',
@@ -400,12 +401,12 @@ class Usuarios extends Component {
                     tooltip: { id: 'permisos', text: 'Permisos' }
                 },
                 {
-                    text: 'Eliminar',
-                    btnclass: 'danger',
-                    iconclass: 'flaticon2-rubbish-bin',                  
-                    action: 'delete',
-                    tooltip: {id:'delete', text:'Eliminar', type:'error'},
-                }       
+                    text: 'Ver',
+                    btnclass: 'info',
+                    iconclass: 'flaticon2-expand',                  
+                    action: 'see',
+                    tooltip: {id:'see', text:'Mostrar', type:'info'},
+                }
         ) 
         return aux 
     }
@@ -537,7 +538,8 @@ class Usuarios extends Component {
                                 {
                                     'edit': { function:this.changePageEdit},
                                     'delete': { function: this.openModalDelete },
-                                    'permisos': { function: this.openModalPermisos}
+                                    'permisos': { function: this.openModalPermisos},
+                                    'see': { function: this.openModalSee },
                                 }
                             }
                             accessToken={this.props.authUser.access_token}
@@ -562,7 +564,8 @@ class Usuarios extends Component {
                             actions={{
                                 'edit': { function:this.changePageEdit},
                                 'delete': { function: this.openModalDelete },
-                                'permisos': { function: this.openModalPermisos}
+                                'permisos': { function: this.openModalPermisos},
+                                'see': { function: this.openModalSee },
                             }}
                             accessToken={this.props.authUser.access_token}
                             setter={this.setUsers}
@@ -587,7 +590,8 @@ class Usuarios extends Component {
                             actions={{
                                 'edit': { function:this.changePageEdit},
                                 'delete': { function: this.openModalDelete },
-                                'permisos': { function: this.openModalPermisos}
+                                'permisos': { function: this.openModalPermisos},
+                                'see': { function: this.openModalSee },
                             }}
                             accessToken={this.props.authUser.access_token}
                             setter={this.setUsers}
@@ -627,7 +631,9 @@ class Usuarios extends Component {
                     handleClose = { this.handleCloseModalPermisos } >
                     <PermisosForm {... this.props} handleClose={this.handleCloseModalPermisos} user = {user.id} />
                 </Modal>
-
+                <Modal size="lg" title="Empleado" show = { modal.see } handleClose = { this.handleCloseSee } >
+                    <UsuarioCard user={user}/>
+                </Modal>
             </Layout>
         )
     }

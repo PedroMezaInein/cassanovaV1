@@ -13,8 +13,8 @@ import ContratoForm from '../../components/forms/administracion/ContratoForm'
 import { Button } from '../../components/form-components'
 import FileInput from '../../components/form-components/FileInput'
 import TableForModals from '../../components/tables/TableForModals'
-
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
+import { ContratoCard } from '../../components/cards'
 
 const $ = require('jquery');
 
@@ -39,6 +39,7 @@ class Contratos extends Component {
             form: false,
             delete: false,
             adjuntos: false,
+            see: false,
         },
         options: {
             empresas: [],
@@ -258,6 +259,27 @@ class Contratos extends Component {
         })
     }
 
+    openModalSee = contrato => {
+        const { modal} = this.state
+        modal.see =true
+        this.setState({
+            ... this.state,
+            modal,
+            contrato: contrato
+        })
+    }
+
+    handleCloseSee = () => {
+        const { modal} = this.state
+        modal.see =false
+        this.setState({
+            ... this.state,
+            modal,
+            contrato: ''
+        })
+    }
+
+
     setAdjuntos = adjuntos => {
         let aux = []
         adjuntos.map((documento) => {
@@ -438,7 +460,7 @@ class Contratos extends Component {
         })
     }
 
-    setActionsCliente = (contrato) => {
+    setActionsCliente = () => {
         let aux = []
         aux.push(
             {
@@ -461,12 +483,19 @@ class Contratos extends Component {
                 iconclass: 'flaticon-attachment',
                 action: 'adjuntos',
                 tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
+            },
+            {
+                text: 'Ver',
+                btnclass: 'info',
+                iconclass: 'flaticon2-expand',                  
+                action: 'see',
+                tooltip: {id:'see', text:'Mostrar', type:'info'},
             }
         )
         return aux
     }
 
-    setActionsProveedor = (contrato) => {
+    setActionsProveedor = () => {
         let aux = []
         aux.push(
             {
@@ -489,6 +518,13 @@ class Contratos extends Component {
                 iconclass: 'flaticon-attachment',
                 action: 'adjuntos',
                 tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
+            },
+            {
+                text: 'Ver',
+                btnclass: 'info',
+                iconclass: 'flaticon2-expand',                  
+                action: 'see',
+                tooltip: {id:'see', text:'Mostrar', type:'info'},
             }
         )
         return aux
@@ -799,7 +835,7 @@ class Contratos extends Component {
 
 
     render() {
-        const { data, contratos, title, options, form, modal, tipo, formeditado, adjuntos, key } = this.state
+        const { data, contrato, title, options, form, modal, tipo, formeditado, adjuntos, key} = this.state
         return (
             <Layout active={'administracion'}  {...this.props}>
 
@@ -817,6 +853,7 @@ class Contratos extends Component {
                                 'edit': { function: this.openModalEditCliente },
                                 'delete': { function: this.openModalDeleteCliente },
                                 'adjuntos': { function: this.openModalAdjuntos },
+                                'see': { function: this.openModalSee }
                             }}
                             idTable='kt_datatable_cliente'
                             accessToken={this.props.authUser.access_token}
@@ -841,6 +878,7 @@ class Contratos extends Component {
                                 'edit': { function: this.openModalEditProveedor },
                                 'delete': { function: this.openModalDeleteProveedor },
                                 'adjuntos': { function: this.openModalAdjuntos },
+                                'see': { function: this.openModalSee }
                             }}
                             idTable='kt_datatable_proveedor'
                             accessToken={this.props.authUser.access_token}
@@ -916,6 +954,9 @@ class Contratos extends Component {
                         elements={data.adjuntos}
                         idTable='kt_datatable_estado'
                     />
+                </Modal>
+                <Modal size="lg" title="Contrato" show = { modal.see } handleClose = { this.handleCloseSee } >
+                    <ContratoCard contrato={contrato}/>
                 </Modal>
             </Layout>
         )

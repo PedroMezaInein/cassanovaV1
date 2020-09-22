@@ -5,9 +5,10 @@ import axios from 'axios'
 import { URL_DEV, RENDIMIENTOS_COLUMNS } from '../../../constants'
 import { setTextTable, setMoneyTable} from '../../../functions/setters'
 import Layout from '../../../components/layout/layout'
-import { ModalDelete } from '../../../components/singles'
+import { ModalDelete, Modal } from '../../../components/singles'
 import { doneAlert, forbiddenAccessAlert, errorAlert, waitAlert } from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
+import { RendimientoCard } from '../../../components/cards'
 
 const $ = require('jquery');
 
@@ -15,6 +16,7 @@ class Rendimientos extends Component {
 
     state = {
         modalDelete: false,
+        modalSee: false,
         formeditado:0,
         rendimientos: [],
         rendimiento: ''
@@ -40,7 +42,7 @@ class Rendimientos extends Component {
         });
     }
 
-    openModalDelete = (rendimiento) => {
+    openModalDelete = rendimiento => {
         this.setState({
             ... this.state,
             modalDelete: true,
@@ -54,6 +56,22 @@ class Rendimientos extends Component {
             ... this.state,
             modalDelete: !modalDelete,
             rendimiento: '',
+        })
+    }
+
+    openModalSee = rendimiento => {
+        this.setState({
+            ... this.state,
+            modalSee: true,
+            rendimiento: rendimiento
+        })
+    }
+
+    handleCloseSee = () => {
+        this.setState({
+            ... this.state,
+            modalSee: false,
+            rendimiento: ''
         })
     }
 
@@ -92,6 +110,13 @@ class Rendimientos extends Component {
                 iconclass: 'flaticon2-rubbish-bin',
                 action: 'delete',
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
+            },
+            {
+                text: 'Ver',
+                btnclass: 'info',
+                iconclass: 'flaticon2-expand',                  
+                action: 'see',
+                tooltip: {id:'see', text:'Mostrar', type:'info'},
             }
         )
         return aux
@@ -116,7 +141,7 @@ class Rendimientos extends Component {
         const { rendimiento } = this.state
         await axios.delete(URL_DEV + 'rendimientos/' + rendimiento.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { rendimientos } = response.data
+                // const { rendimientos } = response.data
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La rendimiento fue registrado con éxito.')
                 
@@ -143,7 +168,7 @@ class Rendimientos extends Component {
 
     render() {
 
-        const { modalDelete } = this.state
+        const { modalDelete, modalSee, rendimiento} = this.state
 
         return (
             <Layout active={'presupuesto'}  {...this.props}>
@@ -156,7 +181,8 @@ class Rendimientos extends Component {
                     mostrar_acciones={true}
                     actions={{
                         'edit': { function: this.changePageEdit },
-                        'delete': { function: this.openModalDelete }
+                        'delete': { function: this.openModalDelete },
+                        'see': { function: this.openModalSee },
                     }}
                     url='/presupuesto/rendimiento/add'
                     idTable = 'kt_datatable_rendimiento'
@@ -169,6 +195,10 @@ class Rendimientos extends Component {
                     />
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el rendimiento?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); this.deleteRendimientoAxios() }}>
                 </ModalDelete>
+
+                <Modal size="lg" title="Rendimiento" show = { modalSee } handleClose = { this.handleCloseSee } >
+                    <RendimientoCard rendimiento={rendimiento}/>
+                </Modal>
             </Layout>
         )
     }

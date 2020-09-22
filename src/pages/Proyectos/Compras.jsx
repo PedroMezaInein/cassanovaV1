@@ -204,7 +204,7 @@ class Compras extends Component {
         return aux
     }
 
-    setActionsAdjuntos = adjunto => {
+    setActionsAdjuntos = () => {
         let aux = []
         aux.push(
             {
@@ -1237,7 +1237,7 @@ class Compras extends Component {
     render() {
 
         const {
-            modal, modalDelete, modalFacturas, modalAskFactura, modalAdjuntos,
+            modal, modalDelete, modalFacturas, modalAdjuntos,
             title, form, options,
             solicitud, compras, porcentaje, facturas, compra, data, formeditado, adjuntos,
             modalSee

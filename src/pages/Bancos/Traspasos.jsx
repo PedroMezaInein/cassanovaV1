@@ -13,12 +13,14 @@ import NumberFormat from 'react-number-format';
 import NewTable from '../../components/tables/NewTable'
 import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert } from '../../functions/alert'
 import { setTextTable, setDateTable, setMoneyTable, setArrayTable} from '../../functions/setters'
+import { TraspasoCard } from '../../components/cards'
 
 class Traspasos extends Component{
 
     state = {
         modal: false,
         modalDelete: false,
+        modalSee: false,
         cuentas: [],
         form:{
             cantidad: '',
@@ -257,6 +259,23 @@ class Traspasos extends Component{
         })
     }
 
+    openModalSee = traspaso => {
+        this.setState({
+            ... this.state,
+            modalSee: true,
+            traspaso: traspaso
+        })
+    }
+
+    handleCloseSee = () => {
+        this.setState({
+            ... this.state,
+            modalSee: false,
+            traspaso: ''
+        })
+    }
+
+
     setActions = traspaso => {
         let aux = []
         aux.push(
@@ -273,6 +292,13 @@ class Traspasos extends Component{
                 iconclass: 'flaticon2-rubbish-bin', 
                 action: 'delete',
                 tooltip: {id:'delete', text:'Eliminar', type:'error'}
+            },
+            {
+                text: 'Ver',
+                btnclass: 'info',
+                iconclass: 'flaticon2-expand',                  
+                action: 'see',
+                tooltip: {id:'see', text:'Mostrar', type:'info'},
             }
         )
             if (traspaso.adjunto) {
@@ -540,7 +566,7 @@ class Traspasos extends Component{
 
     render(){
 
-        const { modal, modalDelete, cuentas, form, traspasos, traspaso, data, formeditado} = this.state
+        const { modal, modalDelete, cuentas, form, traspasos, traspaso, data, formeditado, modalSee} = this.state
 
         return(
             <Layout active={'bancos'}  { ...this.props}>
@@ -555,6 +581,7 @@ class Traspasos extends Component{
                         'edit': { function: this.openEdit },
                         'delete': { function: this.openDelete },
                         'adjuntos': { function: this.adjuntoTranspaso },
+                        'see': { function: this.openModalSee },
                     }}
                     elements={data.traspasos} 
                     idTable = 'kt_datatable_transpasos'
@@ -564,8 +591,6 @@ class Traspasos extends Component{
                     cardTableHeader='cardTableHeader'
                     cardBody='cardBody'
                 />
-
-
                 <Modal size="xl" title = { traspaso === '' ? "Nuevo traspaso" : 'Editar traspaso'}  show = { modal } handleClose={ this.handleClose } >
                     <TraspasoForm cuentas = { cuentas } form = { form } onChange = { this.onchange } onChangeAdjunto = { this.onChangeAdjunto } 
                         deleteAdjunto = { this.deleteAdjunto }
@@ -575,6 +600,10 @@ class Traspasos extends Component{
 
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el traspaso?"} show = { modalDelete } handleClose={ this.handleCloseDelete }  onClick = { (e) => { this.safeDelete(e)() }}>
                 </ModalDelete>
+
+                <Modal size="lg" title="Traspaso" show = { modalSee } handleClose = { this.handleCloseSee } >
+                    <TraspasoCard traspaso={traspaso}/>
+                </Modal>
             </Layout>
         )
     }

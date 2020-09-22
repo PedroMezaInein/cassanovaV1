@@ -5,9 +5,10 @@ import axios from 'axios'
 import { URL_DEV, CONCEPTOS_COLUMNS } from '../../../constants'
 import { setTextTable, setMoneyTable } from '../../../functions/setters'
 import Layout from '../../../components/layout/layout'
-import { ModalDelete } from '../../../components/singles'
+import { ModalDelete, Modal } from '../../../components/singles'
 import { forbiddenAccessAlert, errorAlert, doneAlert, waitAlert } from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
+import { ConceptoCard } from '../../../components/cards'
 
 const $ = require('jquery');
 
@@ -15,6 +16,7 @@ class Conceptos extends Component {
 
     state = {
         modalDelete: false,
+        modalSee: false,
         title: 'Nuevo concepto',
         formeditado: 0,
         conceptos: [],
@@ -40,7 +42,7 @@ class Conceptos extends Component {
         })
     }
 
-    openModalDelete = (concepto) => {
+    openModalDelete = concepto => {
         this.setState({
             ... this.state,
             modalDelete: true,
@@ -54,6 +56,22 @@ class Conceptos extends Component {
             ... this.state,
             modalDelete: !modalDelete,
             concepto: '',
+        })
+    }
+
+    openModalSee = concepto => {
+        this.setState({
+            ... this.state,
+            modalSee: true,
+            concepto: concepto
+        })
+    }
+
+    handleCloseSee = () => {
+        this.setState({
+            ... this.state,
+            modalSee: false,
+            concepto: ''
         })
     }
 
@@ -77,7 +95,7 @@ class Conceptos extends Component {
         return aux
     }
 
-    setActions = concepto => {
+    setActions = () => {
         let aux = []
         aux.push(
             {
@@ -93,7 +111,14 @@ class Conceptos extends Component {
                 iconclass: 'flaticon2-rubbish-bin',
                 action: 'delete',
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
-            }
+            },
+            {
+                text: 'Ver',
+                btnclass: 'info',
+                iconclass: 'flaticon2-expand',                  
+                action: 'see',
+                tooltip: {id:'see', text:'Mostrar', type:'info'},
+            },
         )
         return aux
     }
@@ -173,7 +198,7 @@ class Conceptos extends Component {
 
     render() {
 
-        const { modalDelete, conceptos } = this.state
+        const { modalDelete, conceptos, modalSee, concepto } = this.state
 
         return (
             <Layout active={'presupuesto'}  {...this.props}>
@@ -189,7 +214,9 @@ class Conceptos extends Component {
                     mostrar_acciones={true}
                     actions={{
                         'edit': { function: this.changePageEdit },
-                        'delete': { function: this.openModalDelete }
+                        'delete': { function: this.openModalDelete },
+                        'see': { function: this.openModalSee },
+
                     }}
                     exportar_boton={true} 
                     onClickExport={() => this.exportConceptosAxios()}
@@ -207,6 +234,10 @@ class Conceptos extends Component {
                     show={modalDelete} 
                     handleClose={this.handleCloseDelete} 
                     onClick={(e) => { e.preventDefault(); this.deleteConceptoAxios() }} />
+
+                <Modal size="lg" title="Concepto" show = { modalSee } handleClose = { this.handleCloseSee } >
+                    <ConceptoCard concepto={concepto}/>
+                </Modal>
             </Layout>
         )
     }

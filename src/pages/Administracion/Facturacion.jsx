@@ -12,6 +12,7 @@ import { Button, FileInput } from '../../components/form-components'
 import swal from 'sweetalert'
 import { Tabs, Tab,Form } from 'react-bootstrap'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
+import { FacturacionCard } from '../../components/cards'
 
 const $ = require('jquery');
 class Facturacion extends Component {
@@ -20,6 +21,7 @@ class Facturacion extends Component {
         formeditado: 0,
         modalFacturas: false,
         modalCancelar: false,
+        modalSee: false,
         facturas: [],
         factura: '',
         data: {
@@ -128,9 +130,33 @@ class Facturacion extends Component {
         return aux
     }
 
-    setActions = factura => {
+    openModalSee = factura => {
+        this.setState({
+            ... this.state,
+            modalSee: true,
+            factura: factura
+        })
+    }
 
+    handleCloseSee = () => {
+        this.setState({
+            ... this.state,
+            modalSee: false,
+            factura: ''
+        })
+    }
+
+    setActions = factura => {
         let aux = []
+        aux.push(
+            {
+                text: 'Ver',
+                btnclass: 'primary',
+                iconclass: 'flaticon2-expand',                  
+                action: 'see',
+                tooltip: {id:'see', text:'Mostrar', type:'primary'},
+            },
+        )
 
         if (!factura.cancelada) {
             aux.push(
@@ -690,7 +716,7 @@ class Facturacion extends Component {
     }
 
     render() {
-        const { facturas, data, modalCancelar, form, modalFacturas, key} = this.state
+        const { factura, modalSee, modalCancelar, form, modalFacturas, key} = this.state
         return (
             <Layout active={'administracion'}  {...this.props}>
                 <Tabs defaultActiveKey="ventas" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
@@ -704,6 +730,7 @@ class Facturacion extends Component {
                             mostrar_acciones={true}
                             onClick={this.openModal}
                             actions={{
+                                'see': { function: this.openModalSee },
                                 'cancelarFactura': { function: this.cancelarFactura }
                             }}
                             idTable='kt_datatable_ventas'
@@ -727,6 +754,7 @@ class Facturacion extends Component {
                             mostrar_acciones={true}
                             onClick={this.openModal}
                             actions={{
+                                'see': { function: this.openModalSee },
                                 'cancelarFactura': { function: this.cancelarFactura }
                             }}
                             idTable='kt_datatable_compras'
@@ -794,7 +822,9 @@ class Facturacion extends Component {
 
                     </Form>
                 </Modal>
-
+                <Modal size="lg" title="Factura" show = { modalSee } handleClose = { this.handleCloseSee } >
+                    <FacturacionCard factura={factura}/>
+                </Modal>
             </Layout>
         )
     }

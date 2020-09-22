@@ -7,11 +7,12 @@ import { URL_DEV } from '../../../constants'
 import { Modal, ModalDelete } from '../../../components/singles'
 import swal from 'sweetalert'
 import NewTable from '../../../components/tables/NewTable'
-import { EMPRESA_COLUMNS, DARK_BLUE } from '../../../constants'
+import { EMPRESA_COLUMNS } from '../../../constants'
 import { setTextTable } from '../../../functions/setters'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Nav, Tab, Col, Row, Card } from 'react-bootstrap'
 import { waitAlert, forbiddenAccessAlert, errorAlert, doneAlert } from '../../../functions/alert'
+import { EmpresaCard } from '../../../components/cards'
 
 class Empresas extends Component {
 
@@ -19,6 +20,7 @@ class Empresas extends Component {
         empresas: [],
         modalDelete: false,
         modalAdjuntos: false,
+        modalSee: false,
         empresa: {},
         form: {
             name: '',
@@ -144,6 +146,13 @@ class Empresas extends Component {
                 tooltip: { id: 'edit', text: 'Editar' }
             },
             {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',
+                action: 'delete',
+                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
+            },            
+            {
                 text: 'Imagen&nbsp;coorporativa',
                 btnclass: 'primary',
                 iconclass: 'flaticon-attachment',
@@ -151,12 +160,12 @@ class Empresas extends Component {
                 tooltip: { id: 'adjuntos', text: 'Eliminar', type: 'error' }
             },
             {
-                text: 'Eliminar',
-                btnclass: 'danger',
-                iconclass: 'flaticon2-rubbish-bin',
-                action: 'delete',
-                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
-            }
+                text: 'Ver',
+                btnclass: 'info',
+                iconclass: 'flaticon2-expand',                  
+                action: 'see',
+                tooltip: {id:'see', text:'Mostrar', type:'info'},
+            },
         )
         return aux
     }
@@ -190,6 +199,22 @@ class Empresas extends Component {
             empresa: empresa,
             form: this.clearForm(),
             formeditado: 0,
+        })
+    }
+
+    openModalSee = empresa => {
+        this.setState({
+            ... this.state,
+            modalSee: true,
+            empresa: empresa
+        })
+    }
+
+    handleCloseSee = () => {
+        this.setState({
+            ... this.state,
+            modalSee: false,
+            empresa: ''
         })
     }
 
@@ -543,7 +568,7 @@ class Empresas extends Component {
     }
 
     render() {
-        const { empresas, modalDelete, empresa, form, img, title, formAction, data, formeditado, modalAdjuntos, showadjuntos, defaultactivekey } = this.state
+        const { empresas, modalDelete, empresa, form, img, title, formAction, data, formeditado, modalAdjuntos, showadjuntos, defaultactivekey,modalSee } = this.state
         return (
             <Layout active={'usuarios'} {...this.props}>
 
@@ -557,7 +582,9 @@ class Empresas extends Component {
                     actions={{
                         'edit': {function: this.changePageEdit},
                         'delete': { function: this.openModalDeleteEmpresa },
-                        'adjuntos': { function: this.openModalAdjuntos }
+                        'adjuntos': { function: this.openModalAdjuntos },  
+                        'see': { function: this.openModalSee },
+
                     }}
                     elements={data.empresas}
                     idTable='kt_datatable_empresas'
@@ -621,6 +648,9 @@ class Empresas extends Component {
                 <ModalDelete title={empresa === null ? "¿Estás seguro que deseas eliminar a " : "¿Estás seguro que deseas eliminar a " + empresa.name + " ?"} show={modalDelete} handleClose={this.handleDeleteModal} onClick={(e) => { this.safeDeleteEmpresa(e)(empresa.id) }}>
                 </ModalDelete>
 
+                <Modal size="lg" title="Empresa" show = { modalSee } handleClose = { this.handleCloseSee } >
+                    <EmpresaCard empresa={empresa}/>
+                </Modal>
             </Layout>
         )
     }
