@@ -9,6 +9,7 @@ import Layout from '../../components/layout/layout'
 import { Modal, ModalDelete } from '../../components/singles'
 import { PartidaForm } from '../../components/forms'
 import NewTable from '../../components/tables/NewTable'
+import { PartidaCard } from '../../components/cards'
 
 class Partidas extends Component {
 
@@ -26,6 +27,7 @@ class Partidas extends Component {
         modal:{
             form: false,
             delete: false,
+            see: false,
         },
         title: 'Nueva partida',
         partida: ''
@@ -114,7 +116,7 @@ class Partidas extends Component {
         return aux
     }
 
-    setActions = partida => {
+    setActions = () => {
         let aux = []
         aux.push(
             {
@@ -130,6 +132,13 @@ class Partidas extends Component {
                 iconclass: 'flaticon2-rubbish-bin',
                 action: 'delete',
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
+            },
+            {
+                text: 'Ver',
+                btnclass: 'info',
+                iconclass: 'flaticon2-expand',                  
+                action: 'see',
+                tooltip: {id:'see', text:'Mostrar', type:'info'},
             }
         )
         return aux
@@ -206,6 +215,26 @@ class Partidas extends Component {
             partida: partida,
             form,
             formeditado:1
+        })
+    }
+
+    openModalSee = partida => {
+        const { modal} = this.state
+        modal.see =true
+        this.setState({
+            ... this.state,
+            modal,
+            partida: partida
+        })
+    }
+
+    handleCloseSee = () => {
+        const { modal} = this.state
+        modal.see =false
+        this.setState({
+            ... this.state,
+            modal,
+            partida: ''
         })
     }
 
@@ -354,7 +383,7 @@ class Partidas extends Component {
     }
 
     render() {
-        const { form, partidas, modal, title, data, formeditado } = this.state
+        const { form, partidas, modal, title, data, formeditado, partida} = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
                 <NewTable 
@@ -368,7 +397,8 @@ class Partidas extends Component {
                     onClick={this.openModal}
                     actions={{
                         'edit': { function: this.openModalEdit },
-                        'delete': { function: this.openModalDelete }
+                        'delete': { function: this.openModalDelete },
+                        'see': { function: this.openModalSee },
                     }}
                     elements={data.partidas}
                     idTable = 'kt_datatable_partidas'
@@ -384,6 +414,9 @@ class Partidas extends Component {
                 </Modal>
                 <ModalDelete title={"¿Estás seguro que deseas eliminar la partida?"} show = { modal.delete } handleClose = { this.handleCloseDelete } onClick={(e) => { e.preventDefault(); waitAlert(); this.deletePartidaAxios() }}>
                 </ModalDelete>
+                <Modal title="Partida" show = { modal.see } handleClose = { this.handleCloseSee } >
+                    <PartidaCard partida={partida}/>
+                </Modal>
             </Layout>
         )
     }

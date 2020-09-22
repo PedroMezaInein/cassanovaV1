@@ -3,11 +3,12 @@ import { renderToString } from 'react-dom/server'
 import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import { URL_DEV, PRECIO_M2_DISEÑOS_COLUMNS } from '../../../constants'
-import { ModalDelete } from '../../../components/singles'
+import { ModalDelete, Modal } from '../../../components/singles'
 import axios from 'axios'
 import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import { setTextTable, setMoneyTable} from '../../../functions/setters'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
+import { PreciosDiseñoCard } from '../../../components/cards'
 
 const $ = require('jquery');
 
@@ -15,7 +16,8 @@ class PrecioDiseño extends Component {
 
     state = {
         modal:{
-            delete: false
+            delete: false,
+            see: false
         },
         precio: ''
     }
@@ -61,6 +63,25 @@ class PrecioDiseño extends Component {
             precio: ''
         })
     }
+    openModalSee = precio => {
+        const { modal} = this.state
+        modal.see =true
+        this.setState({
+            ... this.state,
+            modal,
+            precio: precio
+        })
+    }
+
+    handleCloseSee = () => {
+        const { modal} = this.state
+        modal.see =false
+        this.setState({
+            ... this.state,
+            modal,
+            precio: ''
+        })
+    }
 
     //setters
 
@@ -95,6 +116,13 @@ class PrecioDiseño extends Component {
                 iconclass: 'flaticon2-rubbish-bin',
                 action: 'delete',
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
+            },
+            {
+                text: 'Ver',
+                btnclass: 'info',
+                iconclass: 'flaticon2-expand',                  
+                action: 'see',
+                tooltip: {id:'see', text:'Mostrar', type:'info'},
             }
         )
         return aux
@@ -138,7 +166,7 @@ class PrecioDiseño extends Component {
     }
 
     render() {
-        const { modal } = this.state
+        const { modal, precio} = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
                 <NewTableServerRender
@@ -151,7 +179,8 @@ class PrecioDiseño extends Component {
                     url='/catalogos/precio-diseno/add'
                     actions={{
                         'edit': { function: this.changePageEdit },
-                        'delete': { function: this.openModalDelete }
+                        'delete': { function: this.openModalDelete },
+                        'see': { function: this.openModalSee },
                     }}
                     idTable='kt_datatable_precio'
                     accessToken={this.props.authUser.access_token}
@@ -164,7 +193,13 @@ class PrecioDiseño extends Component {
                 <ModalDelete 
                     title='¿Quieres eliminar el elemento?' 
                     show={modal.delete} 
-                    handleClose={this.handleCloseModalDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deletePrecioAxios() }} />
+                    handleClose={this.handleCloseModalDelete} 
+                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deletePrecioAxios() }} 
+                />
+
+                <Modal title="Precio para diseño" show = { modal.see } handleClose = { this.handleCloseSee } >
+                    <PreciosDiseñoCard precio={precio}/>
+                </Modal>
             </Layout>
         )
     }

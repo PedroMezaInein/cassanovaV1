@@ -372,7 +372,7 @@ class ProspectosForm extends Component {
                                             <Accordion.Toggle as={Button} icon={faEye} pulse="pulse-ring" eventKey={0} className="btn btn-icon btn-light-info pulse pulse-info" />
                                         </div>
                                         <Accordion.Collapse eventKey={0} className="px-md-5 px-2" >
-                                            <LeadCard lead={lead} />
+                                            <LeadCard lead={lead} border={"border-nav mt-4 mb-5"}/>
                                         </Accordion.Collapse>
                                     </Accordion>
                                     : ''

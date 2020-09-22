@@ -33,7 +33,6 @@ class Leads extends Component {
             fechaFin: moment().endOf('month').toDate(),
         }
     }
-
     changePageEdit = lead => {
         const { history } = this.props
         history.push({
@@ -336,8 +335,11 @@ class Leads extends Component {
                 </Modal>
                 {
                     lead ?
-                        <Modal size="xl" show = { modalSingle } handleClose = { this.handleCloseSingle } >
-                            <LeadCard lead = { lead } />
+                        <Modal size="xl" title="lead" show = { modalSingle } handleClose = { this.handleCloseSingle } >
+                            <LeadCard 
+                                lead = { lead } 
+                                border={"mt-4"}
+                            />
                         </Modal>
                     :''
                 }

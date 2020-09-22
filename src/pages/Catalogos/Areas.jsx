@@ -7,7 +7,7 @@ import { URL_DEV, AREAS_COLUMNS } from '../../constants'
 import { Small} from '../../components/texts'
 import { Modal, ModalDelete } from '../../components/singles'
 import axios from 'axios'
-import swal from 'sweetalert'
+import { AreaCard } from '../../components/cards'
 import NewTable from '../../components/tables/NewTable'
 import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../functions/alert'
 import { setTextTable, setListTable} from '../../functions/setters'
@@ -34,6 +34,7 @@ class Areas extends Component {
         areasEgresos: [],
         modal: false,
         modalDelete: false,
+        modalSee: false,
         title: 'Nueva área',
         area: '',
         tipo: 'compras',
@@ -114,7 +115,7 @@ class Areas extends Component {
         return aux
     }
 
-    setActions = concepto => {
+    setActions = () => {
         let aux = []
         aux.push(
             {
@@ -130,7 +131,14 @@ class Areas extends Component {
                 iconclass: 'flaticon2-rubbish-bin',
                 action: 'delete',
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
-            }
+            },
+            {
+                text: 'Ver',
+                btnclass: 'info',
+                iconclass: 'flaticon2-expand',                  
+                action: 'see',
+                tooltip: {id:'see', text:'Mostrar', type:'info'},
+            },
         )
         return aux
     }
@@ -295,6 +303,22 @@ class Areas extends Component {
             form,
             tipo,
             formeditado:1
+        })
+    }
+
+    openModalSee = area => {
+        this.setState({
+            ... this.state,
+            modalSee: true,
+            area: area
+        })
+    }
+
+    handleCloseSee = () => {
+        this.setState({
+            ... this.state,
+            modalSee: false,
+            area: ''
         })
     }
 
@@ -509,7 +533,7 @@ class Areas extends Component {
     }
 
     render() {
-        const { form, areas, areasVentas, modal, modalDelete, title, data, formeditado, areasEgresos, key, aux} = this.state
+        const { form, areas, areasVentas, modal, modalDelete, title, data, formeditado, areasEgresos, key, aux, modalSee, area} = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
                 <Tabs id="tabsAreas" defaultActiveKey="compras" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
@@ -524,7 +548,8 @@ class Areas extends Component {
                                     onClick={this.openModal}
                                     actions={{
                                         'edit': { function: this.openModalEdit },
-                                        'delete': { function: this.openModalDelete }
+                                        'delete': { function: this.openModalDelete },
+                                        'see': { function: this.openModalSee },
                                     }}
                                     elements={data.areas}
                                     idTable='kt_datatable_compras'
@@ -551,7 +576,8 @@ class Areas extends Component {
                                     onClick={this.openModalVentas}
                                     actions={{
                                         'edit': { function: this.openModalEditVentas },
-                                        'delete': { function: this.openModalDelete }
+                                        'delete': { function: this.openModalDelete },
+                                        'see': { function: this.openModalSee },
                                     }}
                                     elements={data.areasVentas}
                                     idTable='kt_datatable_ventas'
@@ -578,7 +604,8 @@ class Areas extends Component {
                                     onClick={this.openModalEgresos}
                                     actions={{
                                         'edit': { function: this.openModalEditEgresos },
-                                        'delete': { function: this.openModalDelete }
+                                        'delete': { function: this.openModalDelete },
+                                        'see': { function: this.openModalSee },
                                     }}
                                     elements={data.areasEgresos}
                                     idTable='kt_datatable_egresos'
@@ -608,6 +635,10 @@ class Areas extends Component {
                 
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el área?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.safeDelete(e)() }}>
                 </ModalDelete>
+
+                <Modal title={key === 'egresos' ?'Egreso' : key === 'compras' ? 'Compra' : key === 'ventas' ? 'Venta/Ingreso' :''} show = { modalSee } handleClose = { this.handleCloseSee } >
+                    <AreaCard area={area}/>
+                </Modal>
             </Layout>
         )
     }

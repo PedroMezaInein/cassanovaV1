@@ -13,7 +13,7 @@ class ClienteForm extends Component {
         const { form, onChange, changeCP, estado, municipio, colonias, updateColonia, formeditado } = this.props
         return (
             <>
-                <div className="form-group row form-group-marginless">
+                <div className="form-group row form-group-marginless mt-4">
                     <div className="col-md-4">
                         <Input
                             requirevalidation={1}
