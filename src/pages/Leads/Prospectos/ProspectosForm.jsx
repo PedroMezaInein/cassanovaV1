@@ -237,7 +237,6 @@ class ProspectosForm extends Component {
     async editProspectoAxios(data) {
         const { access_token } = this.props.authUser
         const { prospecto } = this.state
-        console.log(prospecto, 'prospecto')
         await axios.put(URL_DEV + 'prospecto/' + prospecto.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { options } = this.state
