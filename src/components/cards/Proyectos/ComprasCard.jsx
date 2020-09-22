@@ -50,7 +50,7 @@ export default class ComprasCard extends Component {
                                                     <span className="navi-icon"><i className="flaticon2-checking"></i></span>
                                                     <span className="navi-text font-size-lg">Facturas</span>
                                                 </Nav.Link>
-                                            </Nav.Item>  
+                                            </Nav.Item>
                                         :''
                                     :''
                                 }

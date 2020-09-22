@@ -210,8 +210,8 @@ export default class EmpleadosCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary">IMSS ESTATUS:</label>
                                                     <div className="col-9">
                                                         {
-                                                            empleado.estatus_imss ?
-                                                                <span>{empleado.estatus_imss}</span>
+                                                            empleado.estatus_imss || empleado.estatus_imss===0?
+                                                                <span>{empleado.estatus_imss===0 ? 'Inactivo' : 'Activo'}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -220,7 +220,7 @@ export default class EmpleadosCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary">VACACIONES DISPONIBLES AL AÑO:</label>
                                                     <div className="col-9">
                                                         {
-                                                            empleado.vacaciones_disponibles ?
+                                                            empleado.vacaciones_disponibles || empleado.vacaciones_disponibles===0 ?
                                                                 <span>{empleado.vacaciones_disponibles}</span>
                                                                 : <span>-</span>
                                                         }
