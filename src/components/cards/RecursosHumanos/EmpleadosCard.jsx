@@ -41,8 +41,8 @@ export default class EmpleadosCard extends Component {
                                         <Card.Body className="p-0">
                                             <div className="text-justify">
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">NOMBRE DEL EMPLEADO:</label>
-                                                    <div className="col-9">
+                                                    <label className="col-5 font-weight-bolder text-primary">NOMBRE DEL EMPLEADO:</label>
+                                                    <div className="col-7">
                                                         {
                                                             empleado.nombre ?
                                                                 <span>{empleado.nombre}</span>
@@ -51,8 +51,8 @@ export default class EmpleadosCard extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">CURP:</label>
-                                                    <div className="col-9">
+                                                    <label className="col-5 font-weight-bolder text-primary">CURP:</label>
+                                                    <div className="col-7">
                                                         {
                                                             empleado.curp ?
                                                                 <span>{empleado.curp}</span>
@@ -61,8 +61,8 @@ export default class EmpleadosCard extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">RFC:</label>
-                                                    <div className="col-9">
+                                                    <label className="col-5 font-weight-bolder text-primary">RFC:</label>
+                                                    <div className="col-7">
                                                         {
                                                             empleado.rfc ?
                                                                 <span>{empleado.rfc}</span>
@@ -71,8 +71,8 @@ export default class EmpleadosCard extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">NSS:</label>
-                                                    <div className="col-9">
+                                                    <label className="col-5 font-weight-bolder text-primary">NSS:</label>
+                                                    <div className="col-7">
                                                         {
                                                             empleado.nss ?
                                                                 <span>{empleado.nss}</span>
@@ -81,28 +81,8 @@ export default class EmpleadosCard extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">NOMBRE DEL CONTACTO DE EMERGENCIA:</label>
-                                                    <div className="col-9">
-                                                        {
-                                                            empleado.nombre_emergencia ?
-                                                                <span>{empleado.nombre_emergencia}</span>
-                                                                : <span>-</span>
-                                                        }
-                                                    </div>
-                                                </div>
-                                                <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">TELÉFONO DE EMERGENCIA:</label>
-                                                    <div className="col-9">
-                                                        {
-                                                            empleado.telefono_emergencia ?
-                                                                <span>{empleado.telefono_emergencia}</span>
-                                                                : <span>-</span>
-                                                        }
-                                                    </div>
-                                                </div>
-                                                <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">BANCO:</label>
-                                                    <div className="col-9">
+                                                    <label className="col-5 font-weight-bolder text-primary">BANCO:</label>
+                                                    <div className="col-7">
                                                         {
                                                             empleado.banco ?
                                                                 <span>{empleado.banco}</span>
@@ -111,8 +91,8 @@ export default class EmpleadosCard extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">CUENTA:</label>
-                                                    <div className="col-9">
+                                                    <label className="col-5 font-weight-bolder text-primary">CUENTA:</label>
+                                                    <div className="col-7">
                                                         {
                                                             empleado.cuenta ?
                                                                 <span>{empleado.cuenta}</span>
@@ -121,11 +101,31 @@ export default class EmpleadosCard extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">CLABE:</label>
-                                                    <div className="col-9">
+                                                    <label className="col-5 font-weight-bolder text-primary">CLABE:</label>
+                                                    <div className="col-7">
                                                         {
                                                             empleado.clabe ?
                                                                 <span>{empleado.clabe}</span>
+                                                                : <span>-</span>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div className="row pb-1">
+                                                    <label className="col-5 font-weight-bolder text-primary">NOMBRE DEL CONTACTO DE EMERGENCIA:</label>
+                                                    <div className="col-7">
+                                                        {
+                                                            empleado.nombre_emergencia ?
+                                                                <span>{empleado.nombre_emergencia}</span>
+                                                                : <span>-</span>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div className="row pb-1">
+                                                    <label className="col-5 font-weight-bolder text-primary">TELÉFONO DE EMERGENCIA:</label>
+                                                    <div className="col-7">
+                                                        {
+                                                            empleado.telefono_emergencia ?
+                                                                <span>{empleado.telefono_emergencia}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -139,8 +139,8 @@ export default class EmpleadosCard extends Component {
                                         <Card.Body className="p-0">
                                             <div className="text-justify">
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">TIPO DE EMPLEADO:</label>
-                                                    <div className="col-9">
+                                                    <label className="col-5 font-weight-bolder text-primary">TIPO DE EMPLEADO:</label>
+                                                    <div className="col-7">
                                                         {
                                                             empleado.tipo_empleado ?
                                                                 <span>{empleado.tipo_empleado}</span>
@@ -149,8 +149,8 @@ export default class EmpleadosCard extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">ESTATUS DEL EMPLEADO:</label>
-                                                    <div className="col-9">
+                                                    <label className="col-5 font-weight-bolder text-primary">ESTATUS DEL EMPLEADO:</label>
+                                                    <div className="col-7">
                                                         {
                                                             empleado.estatus_empleado ?
                                                                 <span>{empleado.estatus_empleado}</span>
@@ -159,8 +159,8 @@ export default class EmpleadosCard extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">EMPRESA:</label>
-                                                    <div className="col-9">
+                                                    <label className="col-5 font-weight-bolder text-primary">EMPRESA:</label>
+                                                    <div className="col-7">
                                                         {
                                                             empleado.empresa ?
                                                                 <span>{empleado.empresa.name}</span>
@@ -169,8 +169,8 @@ export default class EmpleadosCard extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">FECHA DE INICIO:</label>
-                                                    <div className="col-9">
+                                                    <label className="col-5 font-weight-bolder text-primary">FECHA DE INICIO:</label>
+                                                    <div className="col-7">
                                                         {
                                                             empleado.fecha_inicio ?
                                                                 <span><Moment format="DD/MM/YYYY">{empleado.fecha_inicio}</Moment></span>
@@ -179,8 +179,8 @@ export default class EmpleadosCard extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">FECHA FINAL:</label>
-                                                    <div className="col-9">
+                                                    <label className="col-5 font-weight-bolder text-primary">FECHA FINAL:</label>
+                                                    <div className="col-7">
                                                         {
                                                             empleado.fecha_fin ?
                                                                 <span><Moment format="DD/MM/YYYY">{empleado.fecha_fin}</Moment></span>
@@ -189,8 +189,8 @@ export default class EmpleadosCard extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">PUESTO:</label>
-                                                    <div className="col-9">
+                                                    <label className="col-5 font-weight-bolder text-primary">PUESTO:</label>
+                                                    <div className="col-7">
                                                         {
                                                             empleado.puesto ?
                                                                 <span>{empleado.puesto}</span>
@@ -207,8 +207,8 @@ export default class EmpleadosCard extends Component {
                                         <Card.Body className="p-0">
                                             <div className="text-justify">
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">IMSS ESTATUS:</label>
-                                                    <div className="col-9">
+                                                    <label className="col-5 font-weight-bolder text-primary">IMSS ESTATUS:</label>
+                                                    <div className="col-7">
                                                         {
                                                             empleado.estatus_imss || empleado.estatus_imss===0?
                                                                 <span>{empleado.estatus_imss===0 ? 'Inactivo' : 'Activo'}</span>
@@ -217,8 +217,8 @@ export default class EmpleadosCard extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">VACACIONES DISPONIBLES AL AÑO:</label>
-                                                    <div className="col-9">
+                                                    <label className="col-5 font-weight-bolder text-primary">VACACIONES DISPONIBLES AL AÑO:</label>
+                                                    <div className="col-7">
                                                         {
                                                             empleado.vacaciones_disponibles || empleado.vacaciones_disponibles===0 ?
                                                                 <span>{empleado.vacaciones_disponibles}</span>
@@ -227,8 +227,8 @@ export default class EmpleadosCard extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">FECHA DE ALTA AL IMSS:</label>
-                                                    <div className="col-9">
+                                                    <label className="col-5 font-weight-bolder text-primary">FECHA DE ALTA AL IMSS:</label>
+                                                    <div className="col-7">
                                                         {
                                                             empleado.fecha_alta_imss ?
                                                                 <span><Moment format="DD/MM/YYYY">{empleado.fecha_alta_imss}</Moment></span>
@@ -237,8 +237,8 @@ export default class EmpleadosCard extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">NÚMERO DE ALTA IMSS:</label>
-                                                    <div className="col-9">
+                                                    <label className="col-5 font-weight-bolder text-primary">NÚMERO DE ALTA IMSS:</label>
+                                                    <div className="col-7">
                                                         {
                                                             empleado.numero_alta_imss ?
                                                                 <span>{empleado.numero_alta_imss}</span>
@@ -247,8 +247,8 @@ export default class EmpleadosCard extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">NOMINA IMSS:</label>
-                                                    <div className="col-9">
+                                                    <label className="col-5 font-weight-bolder text-primary">NOMINA IMSS:</label>
+                                                    <div className="col-7">
                                                         {
                                                             empleado.nomina_imss ?
                                                                 <span>
