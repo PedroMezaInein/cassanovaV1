@@ -320,13 +320,20 @@ class Facturacion extends Component {
         })
         await axios.post(URL_DEV + 'facturas/cancelar/' + factura.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { data } = this.state
+                const { data, key } = this.state
                 const { facturasVentas } = response.data
                 data.facturas = facturasVentas
                 this.setState({
                     facturas: this.setFactura(facturasVentas),
-                    data
+                    data,
+                    modalCancelar: false
                 })
+                if (key === 'compras') {
+                    this.getComprasAxios()
+                }
+                if (key === 'ventas') {
+                    this.getVentasAxios()
+                }
                 doneAlert('Factura cancelada con éxito')
             },
             (error) => {
