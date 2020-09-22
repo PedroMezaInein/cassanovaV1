@@ -92,63 +92,31 @@ class AccordionEstadosResultados extends Component {
         return sumaGastos
     }
 
-    sumaUtilidadBruta() {
-        const { ingresos, compras, ventas } = this.props    
-        let sumaVentas = 0
-        let sumaIngresos = 0
-        let sumaCostos = 0
-
-        ventas.map((venta) => {
-            sumaVentas = sumaVentas + venta.total
-        })
-        ingresos.map((ingreso) => {
-            sumaIngresos = sumaIngresos + ingreso.total
-        })
-        compras.map((compra) => {
-            sumaCostos = sumaCostos + compra.total
-        })
+    sumaUtilidadBruta() {    
+        let sumaVentas = this.sumaTotalVentas()
+        let sumaIngresos = this.sumaTotalIngresos()
+        let sumaCostos = this.sumaTotalCostos()
+        
         let totalUtilidad = sumaVentas + sumaIngresos - sumaCostos
         return totalUtilidad
     }
 
-    sumaTotalIngresosYVentas(){
-        const { ingresos, ventas } = this.props    
-        let sumaVentas = 0
-        let sumaIngresos = 0
+    sumaTotalIngresosYVentas(){   
+        let sumaVentas = this.sumaTotalVentas()
+        let sumaIngresos = this.sumaTotalIngresos()
 
-        ventas.map((venta) => {
-            sumaVentas = sumaVentas + venta.total
-        })
-        ingresos.map((ingreso) => {
-            sumaIngresos = sumaIngresos + ingreso.total
-        })
         let totalIngresosYVentas = sumaVentas + sumaIngresos
         return totalIngresosYVentas
     }
 
 
     resultOperativo() {
-        const { ingresos, compras, egresos, ventas } = this.props
-        let sumaVentas = 0
-        let sumaIngresos = 0
-        let sumaCostos = 0
+        let sumaVentas = this.sumaTotalVentas()
+        let sumaIngresos = this.sumaTotalIngresos()
+        let sumaCostos = this.sumaTotalCostos()
+        let sumaGastos = this.sumaTotalGastos()
 
-        ventas.map((venta) => {
-            sumaVentas = sumaVentas + venta.total
-        })
-        ingresos.map((ingreso) => {
-            sumaIngresos = sumaIngresos + ingreso.total
-        })
-        compras.map((compra) => {
-            sumaCostos = sumaCostos + compra.total
-        })
         let utilidadBruta = sumaVentas + sumaIngresos - sumaCostos
-
-        let sumaGastos = 0
-        egresos.map((egreso) => {
-            sumaGastos = sumaGastos + egreso.total
-        })
-
         let resultado = utilidadBruta - sumaGastos
         return resultado
     }

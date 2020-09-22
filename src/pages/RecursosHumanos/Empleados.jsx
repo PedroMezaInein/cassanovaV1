@@ -12,7 +12,7 @@ import { setOptions, setTextTable, setArrayTable, setAdjuntosList, setDateTable}
 import { errorAlert, waitAlert, forbiddenAccessAlert, deleteAlert, doneAlert } from '../../functions/alert'
 import { Tabs, Tab } from 'react-bootstrap' 
 import TableForModals from '../../components/tables/TableForModals'
-
+import { EmpleadosCard } from '../../components/cards'
 const $ = require('jquery');
 
 class Empleados extends Component {
@@ -27,6 +27,7 @@ class Empleados extends Component {
             form: false,
             delete: false,
             adjuntos: false,
+            see: false,
         },
         title: 'Nuevo empleado',
         form:{
@@ -181,6 +182,26 @@ class Empleados extends Component {
 
     openModalDeleteAdjuntos = adjunto => {
         deleteAlert('¿Seguro deseas borrar el adjunto?', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
+    }
+
+    openModalSee = empleado => {
+        const { modal} = this.state
+        modal.see =true
+        this.setState({
+            ... this.state,
+            modal,
+            empleado: empleado
+        })
+    }
+
+    handleCloseSee = () => {
+        const { modal} = this.state
+        modal.see =false
+        this.setState({
+            ... this.state,
+            modal,
+            empleado: ''
+        })
     }
 
     setAdjuntosTable = adjuntos => {
@@ -660,7 +681,14 @@ class Empleados extends Component {
                     iconclass: 'flaticon-attachment',
                     action: 'adjuntos',
                     tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
-                }
+                },
+                {
+                    text: 'Ver',
+                    btnclass: 'info',
+                    iconclass: 'flaticon2-expand',                  
+                    action: 'see',
+                    tooltip: {id:'see', text:'Mostrar', type:'info'},
+                },
         ) 
         return aux 
     }
@@ -732,7 +760,7 @@ class Empleados extends Component {
 
 
     render() {
-        const { modal, options, title, form, formeditado, key, adjuntos, data } = this.state
+        const { modal, options, title, form, formeditado, key, adjuntos, data, empleado } = this.state
         return (
             <Layout active={'rh'} {...this.props}>
                 <Tabs defaultActiveKey="administrativo" activeKey={key} onSelect = { (value) =>  { this.controlledTab(value)} }>
@@ -749,7 +777,8 @@ class Empleados extends Component {
                                 {
                                     'edit': { function: this.openModalEdit },
                                     'delete': { function: this.openModalDelete },
-                                    'adjuntos': { function: this.openModalAdjuntos }
+                                    'adjuntos': { function: this.openModalAdjuntos },
+                                    'see': { function: this.openModalSee },
                                 }
                             }
                             accessToken={this.props.authUser.access_token}
@@ -774,7 +803,8 @@ class Empleados extends Component {
                             actions={{
                                 'edit': { function: this.openModalEdit },
                                 'delete': { function: this.openModalDelete },
-                                'adjuntos': { function: this.openModalAdjuntos }
+                                'adjuntos': { function: this.openModalAdjuntos },
+                                'see': { function: this.openModalSee },
                             }}
                             accessToken={this.props.authUser.access_token}
                             setter={this.setEmpleado}
@@ -818,6 +848,9 @@ class Empleados extends Component {
                         dataID='adjuntos'
                         elements={data.adjuntos}
                     />
+                </Modal>
+                <Modal size="lg" title="Empleados" show = { modal.see } handleClose = { this.handleCloseSee } >
+                    <EmpleadosCard empleado={empleado}/>
                 </Modal>
             </Layout>
         )

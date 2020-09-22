@@ -43,14 +43,16 @@ export default class ComprasCard extends Component {
                                     </Nav.Link>
                                 </Nav.Item>
                                 {
-                                    // compra.presupuestos != 0 || compra.pago != 0 ? || compra.facturas != 0
-                                        <Nav.Item className="navi-item">
-                                            <Nav.Link className="navi-link px-3" eventKey="third" >
-                                                <span className="navi-icon"><i className="flaticon2-checking"></i></span>
-                                                <span className="navi-text font-size-lg">Facturas</span>
-                                            </Nav.Link>
-                                        </Nav.Item>  
-                                    // :''
+                                    compra!==''?
+                                        compra.presupuestos.length > 0 || compra.pagos.length > 0 || compra.facturas.length > 0 ?
+                                            <Nav.Item className="navi-item">
+                                                <Nav.Link className="navi-link px-3" eventKey="third" >
+                                                    <span className="navi-icon"><i className="flaticon2-checking"></i></span>
+                                                    <span className="navi-text font-size-lg">Facturas</span>
+                                                </Nav.Link>
+                                            </Nav.Item>
+                                        :''
+                                    :''
                                 }
                             </Nav>
                         </Col>
@@ -151,16 +153,6 @@ export default class ComprasCard extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">RFC:</label>
-                                                    <div className="col-9">
-                                                        {
-                                                            compra.empresa ?
-                                                                <span>{compra.empresa.rfc}</span>
-                                                                : <span>-</span>
-                                                        }
-                                                    </div>
-                                                </div>
-                                                <div className="row pb-1">
                                                     <label className="col-3 font-weight-bolder text-primary">CUENTA:</label>
                                                     <div className="col-9">
                                                         {
@@ -176,24 +168,6 @@ export default class ComprasCard extends Component {
                                                         {
                                                             compra.cuenta ?
                                                                 <span>{compra.cuenta.numero}</span>
-                                                                : <span>-</span>
-                                                        }
-                                                    </div>
-                                                </div>
-                                                <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">MONTO:</label>
-                                                    <div className="col-9">
-                                                        {
-                                                            compra.monto ?
-                                                                <span>
-                                                                    <NumberFormat
-                                                                        value={compra.monto}
-                                                                        displayType={'text'}
-                                                                        thousandSeparator={true}
-                                                                        prefix={'$'}
-                                                                        renderText={value => <div>{value}</div>}
-                                                                    />
-                                                                </span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -229,11 +203,55 @@ export default class ComprasCard extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
+                                                    <label className="col-3 font-weight-bolder text-primary">MONTO:</label>
+                                                    <div className="col-9">
+                                                        {
+                                                            compra.monto ?
+                                                                <span>
+                                                                    <NumberFormat
+                                                                        value={compra.monto}
+                                                                        displayType={'text'}
+                                                                        thousandSeparator={true}
+                                                                        prefix={'$'}
+                                                                        renderText={value => <div>{value}</div>}
+                                                                    />
+                                                                </span>
+                                                                : <span>-</span>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div className="row pb-1">
                                                     <label className="col-3 font-weight-bolder text-primary">COMISIÓN:</label>
                                                     <div className="col-9">
                                                         {
-                                                            compra.comision ?
-                                                                <span>{compra.comision}</span>
+                                                            compra.comision || compra.comision ===0 ?
+                                                            <span>
+                                                                <NumberFormat
+                                                                    value={compra.comision}
+                                                                    displayType={'text'}
+                                                                    thousandSeparator={true}
+                                                                    prefix={'$'}
+                                                                    renderText={value => <div>{value}</div>}
+                                                                />
+                                                            </span>
+                                                                : <span>-</span>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div className="row pb-1">
+                                                    <label className="col-3 font-weight-bolder text-primary">TOTAL:</label>
+                                                    <div className="col-9">
+                                                        {
+                                                            compra.total ?
+                                                            <span>
+                                                                <NumberFormat
+                                                                    value={compra.total}
+                                                                    displayType={'text'}
+                                                                    thousandSeparator={true}
+                                                                    prefix={'$'}
+                                                                    renderText={value => <div>{value}</div>}
+                                                                />
+                                                            </span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>

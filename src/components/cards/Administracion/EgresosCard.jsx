@@ -4,7 +4,7 @@ import Moment from 'react-moment'
 import { Card, Tab, Row, Col, Nav } from 'react-bootstrap'
 import {ItemSlider} from '../../../components/singles'
 
-export default class VentasCard extends Component {
+export default class EgresosCard extends Component {
     setAdjuntosFacturas = facturas => {
         let aux=[];
         facturas.map((factura) => {
@@ -24,8 +24,8 @@ export default class VentasCard extends Component {
         return aux
     }
     render() {
-        const { venta } = this.props
-        console.log(venta)
+        const { egreso } = this.props
+        console.log(egreso)
         return (
             <div className="col-md-12 mt-4">
                 <Tab.Container defaultActiveKey="first">
@@ -45,14 +45,14 @@ export default class VentasCard extends Component {
                                     </Nav.Link>
                                 </Nav.Item>
                                 {
-                                    venta!==''?
-                                        venta.presupuestos.length > 0 || venta.pagos.length > 0 || venta.facturas.length > 0 ?
+                                    egreso!==''?
+                                        egreso.presupuestos.length > 0 || egreso.pagos.length > 0 || egreso.facturas.length > 0 ?
                                             <Nav.Item className="navi-item">
                                                 <Nav.Link className="navi-link px-3" eventKey="third" >
                                                     <span className="navi-icon"><i className="flaticon2-checking"></i></span>
                                                     <span className="navi-text font-size-lg">Facturas</span>
                                                 </Nav.Link>
-                                            </Nav.Item>  
+                                            </Nav.Item>
                                         :''
                                     :''
                                 }
@@ -68,8 +68,8 @@ export default class VentasCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary">ID:</label>
                                                     <div className="col-9">
                                                         {
-                                                            venta.id ?
-                                                                <span>{venta.id}</span>
+                                                            egreso.id ?
+                                                                <span>{egreso.id}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -78,8 +78,8 @@ export default class VentasCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary">FECHA:</label>
                                                     <div className="col-9">
                                                         {
-                                                            venta.created_at ?
-                                                                <span><Moment format="DD/MM/YYYY">{venta.created_at}</Moment></span>
+                                                            egreso.created_at ?
+                                                                <span><Moment format="DD/MM/YYYY">{egreso.created_at}</Moment></span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -88,9 +88,9 @@ export default class VentasCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary">ÁREA:</label>
                                                     <div className="col-9">
                                                         {
-                                                            venta.subarea ?
-                                                                venta.subarea.area ?
-                                                                    <span>{venta.subarea.area.nombre}</span>
+                                                            egreso.subarea ?
+                                                                egreso.subarea.area ?
+                                                                    <span>{egreso.subarea.area.nombre}</span>
                                                                     : <span>-</span>
                                                             :''
                                                         }
@@ -100,28 +100,18 @@ export default class VentasCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary">SUBÁREA:</label>
                                                     <div className="col-9">
                                                         {
-                                                            venta.subarea ?
-                                                                <span>{venta.subarea.nombre}</span>
+                                                            egreso.subarea ?
+                                                                <span>{egreso.subarea.nombre}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">CLIENTE:</label>
+                                                    <label className="col-3 font-weight-bolder text-primary">PROVEEDOR:</label>
                                                     <div className="col-9">
                                                         {
-                                                            venta.cliente ?
-                                                                <span>{venta.cliente.empresa}</span>
-                                                                : <span>-</span>
-                                                        }
-                                                    </div>
-                                                </div>
-                                                <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">PROYECTO:</label>
-                                                    <div className="col-9">
-                                                        {
-                                                            venta.proyecto ?
-                                                                <span>{venta.proyecto.nombre}</span>
+                                                            egreso.proveedor ?
+                                                                <span>{egreso.proveedor.razon_social}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -130,8 +120,8 @@ export default class VentasCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary align-self-center">DESCRIPCIÓN:</label>
                                                     <div className="col-9">
                                                         {
-                                                            venta.descripcion ?
-                                                                <span>{venta.descripcion}</span>
+                                                            egreso.descripcion ?
+                                                                <span>{egreso.descripcion}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -148,8 +138,8 @@ export default class VentasCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary">EMPRESA:</label>
                                                     <div className="col-9">
                                                         {
-                                                            venta.empresa ?
-                                                                <span>{venta.empresa.name}</span>
+                                                            egreso.empresa ?
+                                                                <span>{egreso.empresa.name}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -158,8 +148,8 @@ export default class VentasCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary">CUENTA:</label>
                                                     <div className="col-9">
                                                         {
-                                                            venta.cuenta ?
-                                                                <span>{venta.cuenta.nombre}</span>
+                                                            egreso.cuenta ?
+                                                                <span>{egreso.cuenta.nombre}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -168,20 +158,50 @@ export default class VentasCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary">NO. CUENTA:</label>
                                                     <div className="col-9">
                                                         {
-                                                            venta.cuenta ?
-                                                                <span>{venta.cuenta.numero}</span>
+                                                            egreso.cuenta ?
+                                                                <span>{egreso.cuenta.numero}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">TOTAL:</label>
+                                                    <label className="col-3 font-weight-bolder text-primary">TIPO DE PAGO:</label>
                                                     <div className="col-9">
                                                         {
-                                                            venta.total ?
+                                                            egreso.tipo_pago ?
+                                                                <span>{egreso.tipo_pago.tipo}</span>
+                                                                : <span>-</span>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div className="row pb-1">
+                                                    <label className="col-3 font-weight-bolder text-primary">ESTATUS:</label>
+                                                    <div className="col-9">
+                                                        {
+                                                            egreso.estatus_compra ?
+                                                                <span>{egreso.estatus_compra.estatus}</span>
+                                                                : <span>-</span>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div className="row pb-1">
+                                                    <label className="col-3 font-weight-bolder text-primary">IMPUESTO:</label>
+                                                    <div className="col-9">
+                                                        {
+                                                            egreso.tipo_impuesto ?
+                                                                <span>{egreso.tipo_impuesto.tipo}</span>
+                                                                : <span>-</span>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div className="row pb-1">
+                                                    <label className="col-3 font-weight-bolder text-primary">MONTO:</label>
+                                                    <div className="col-9">
+                                                        {
+                                                            egreso.monto ?
                                                                 <span>
                                                                     <NumberFormat
-                                                                        value={venta.total}
+                                                                        value={egreso.monto}
                                                                         displayType={'text'}
                                                                         thousandSeparator={true}
                                                                         prefix={'$'}
@@ -193,41 +213,37 @@ export default class VentasCard extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">TIPO DE PAGO:</label>
+                                                    <label className="col-3 font-weight-bolder text-primary">COMISIÓN:</label>
                                                     <div className="col-9">
                                                         {
-                                                            venta.tipo_pago ?
-                                                                <span>{venta.tipo_pago.tipo}</span>
+                                                            egreso.comision ?
+                                                                <span>
+                                                                    <NumberFormat
+                                                                        value={egreso.comision}
+                                                                        displayType={'text'}
+                                                                        thousandSeparator={true}
+                                                                        prefix={'$'}
+                                                                        renderText={value => <div>{value}</div>}
+                                                                    />
+                                                                </span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">ESTATUS:</label>
+                                                    <label className="col-3 font-weight-bolder text-primary">TOTAL:</label>
                                                     <div className="col-9">
                                                         {
-                                                            venta.estatus_compra ?
-                                                                <span>{venta.estatus_compra.estatus}</span>
-                                                                : <span>-</span>
-                                                        }
-                                                    </div>
-                                                </div>
-                                                <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">IMPUESTO:</label>
-                                                    <div className="col-9">
-                                                        {
-                                                            venta.tipo_impuesto ?
-                                                                <span>{venta.tipo_impuesto.tipo}</span>
-                                                                : <span>-</span>
-                                                        }
-                                                    </div>
-                                                </div>
-                                                <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">CONTRATO:</label>
-                                                    <div className="col-9">
-                                                        {
-                                                            venta.contrato ?
-                                                                <span>{venta.contrato}</span>
+                                                            egreso.total ?
+                                                                <span>
+                                                                    <NumberFormat
+                                                                        value={egreso.total}
+                                                                        displayType={'text'}
+                                                                        thousandSeparator={true}
+                                                                        prefix={'$'}
+                                                                        renderText={value => <div>{value}</div>}
+                                                                    />
+                                                                </span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -237,11 +253,11 @@ export default class VentasCard extends Component {
                                     </Card>
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="third">
-                                    <Tab.Container defaultActiveKey={venta.presupuestos != 0 ? "first" : venta.pagos !=0 ? "second" : venta.facturas !=0 ? "third" :''}>
+                                    <Tab.Container defaultActiveKey={egreso.presupuestos != 0 ? "first" : egreso.pagos !=0 ? "second" : egreso.facturas !=0 ? "third" :''}>
                                         <Nav className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-tabs-bold nav-tabs-line-2x border-0">
                                             {/* border-0 d-flex justify-content-end*/}
                                             {
-                                                venta.presupuestos != 0 ? 
+                                                egreso.presupuestos != 0 ? 
                                                 <Nav.Item>
                                                     <Nav.Link className="pt-0" eventKey="first"
                                                     >
@@ -251,7 +267,7 @@ export default class VentasCard extends Component {
                                                 :''                                                
                                             }
                                             {
-                                                venta.pagos != 0 ?
+                                                egreso.pagos != 0 ?
                                                 <Nav.Item>
                                                     <Nav.Link className="pt-0" eventKey="second"
                                                         >
@@ -261,7 +277,7 @@ export default class VentasCard extends Component {
                                                 :''                                                
                                             }
                                             {
-                                                venta.facturas != 0 ?
+                                                egreso.facturas != 0 ?
                                                 <Nav.Item>
                                                     <Nav.Link className="pt-0" eventKey="third"
                                                         >
@@ -274,22 +290,22 @@ export default class VentasCard extends Component {
                                         <Tab.Content>
                                             <Tab.Pane eventKey="first">
                                                 {
-                                                    venta.presupuestos ?
-                                                        <ItemSlider items={venta.presupuestos} item='' />
+                                                    egreso.presupuestos ?
+                                                        <ItemSlider items={egreso.presupuestos} item='' />
                                                     :''
                                                 }                                                
                                             </Tab.Pane>
                                             <Tab.Pane eventKey="second">
                                                 {
-                                                    venta.pagos ?
-                                                        <ItemSlider items={venta.pagos} item=''/>
+                                                    egreso.pagos ?
+                                                        <ItemSlider items={egreso.pagos} item='' />
                                                     :''
                                                 }  
                                             </Tab.Pane>
                                             <Tab.Pane eventKey="third">
                                                 {
-                                                    venta.facturas ?
-                                                        <ItemSlider items={this.setAdjuntosFacturas(venta.facturas)} item='' />
+                                                    egreso.facturas ?
+                                                        <ItemSlider items={this.setAdjuntosFacturas(egreso.facturas)} item='' />
                                                     :''
                                                 }  
                                             </Tab.Pane>
