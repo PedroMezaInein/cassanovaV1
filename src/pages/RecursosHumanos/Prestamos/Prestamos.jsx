@@ -209,6 +209,10 @@ class Prestamos extends Component {
         deleteAlert('¿Deseas eliminar el archivo?', () => this.deleteAdjuntoAxios(element.id))
     }
 
+    deleteAbono = element => {
+        deleteAlert('¿Deseas eliminar el abono?', () => this.deleteAbonoAxios(element))
+    }
+
     setAdjuntos = adjuntos => {
         const { form } = this.state
         let aux = []
@@ -378,6 +382,34 @@ class Prestamos extends Component {
         })
     }
 
+    async deleteAbonoAxios(abono){
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { form, prestamo } = this.state
+        await axios.delete(URL_DEV + 'prestamos/' + prestamo.id + '/abonos/' +abono.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { prestamo } = response.data
+                this.setState({
+                    ... this.state,
+                    prestamo: prestamo
+                })
+                doneAlert('Abono eliminado con éxito')
+                this.getPrestamosAxios()
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render() {
         const { modalDelete, form, modalAdjuntos, modalAbonos, active, prestamo, activePage, itemsPerPage } = this.state
         return (
@@ -494,6 +526,9 @@ class Prestamos extends Component {
                                     <thead className="bg-primary-o-20">
                                         <tr>
                                             <th className="text-center">
+                                                <span className="text-dark-75 font-size-lg"></span>
+                                            </th>
+                                            <th className="text-center">
                                                 <span className="text-dark-75 font-size-lg">Fecha</span>
                                             </th>
                                             <th className="text-right">
@@ -503,6 +538,19 @@ class Prestamos extends Component {
                                     </thead>
                                     <tbody>
                                         {
+                                            prestamo ?
+                                                prestamo.abonos.length === 0 ?
+                                                    <tr className = "border-bottom" >
+                                                        <td colSpan="3" className="text-center">
+                                                            <span className="text-center text-dark-75 d-block font-size-lg"> 
+                                                                Aún no hay pagos registrados.
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                :''
+                                            :''
+                                        }
+                                        {
                                             prestamo ? 
                                                 prestamo.abonos.map( (abono, key) => {
                                                     let limiteInferior = (activePage - 1) * itemsPerPage
@@ -510,6 +558,12 @@ class Prestamos extends Component {
                                                     if(prestamo.abonos.length < itemsPerPage || ( key >= limiteInferior && key <= limiteSuperior))
                                                         return(
                                                             <tr key = { key } className = "border-bottom" >
+                                                                <td className="text-center">
+                                                                    <button class="btn btn-actions-table btn-xs btn-icon btn-text-danger btn-hover-danger" title="Eliminar"
+                                                                        onClick = { (e) => { e.preventDefault(); this.deleteAbono(abono)} }>
+                                                                        <i class="flaticon2-rubbish-bin"></i>
+                                                                    </button>
+                                                                </td>
                                                                 <td>
                                                                     <span className="text-center text-dark-75 d-block font-size-lg"> 
                                                                         {
