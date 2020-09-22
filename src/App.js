@@ -117,6 +117,9 @@ const Empleados = Loader(() => import('./pages/RecursosHumanos/Empleados') )
 const Imss = Loader( () => import('./pages/RecursosHumanos/Imss/Imss') )
 const ImssForm = Loader( () => import('./pages/RecursosHumanos/Imss/ImssForm') )
 
+const Prestamos = Loader( () => import('./pages/RecursosHumanos/Prestamos/Prestamos') )
+const PrestamosForm = Loader( () => import('./pages/RecursosHumanos/Prestamos/PrestamosForm') )
+
 const Vacaciones = Loader(() => import('./pages/RecursosHumanos/Vacaciones/Vacaciones') )
 
 const Calidad = Loader(() => import('./pages/Calidad/Calidad') )
@@ -293,6 +296,9 @@ class App extends Component{
 
                 <Route path = "/rh/imss" exact component ={ Imss } />
                 <Route path = "/rh/imss/:action" exact component = { ImssForm } />
+
+                <Route path = "/rh/prestamos" exact component ={ Prestamos } />
+                <Route path = "/rh/prestamos/:action" exact component = { PrestamosForm } />
 
                 <Route path = "/calidad/calidad" exact component ={ Calidad } />
                 <Route path = "/calidad/calidad/:action" exact component = { CalidadForm } />

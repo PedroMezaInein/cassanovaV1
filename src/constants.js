@@ -1180,6 +1180,37 @@ export const IMSS_COLUMNS = [
     }
 ]
 
+export const PRESTAMOS_COLUMNS = [
+    {
+        Header: 'OPCIONES',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Empleado',
+        accessor: 'empleado',
+    },
+    {
+        Header: 'Fecha',
+        accessor: 'fecha',
+    },
+    {
+        Header: 'Descripción',
+        accessor: 'descripcion',
+    },
+    {
+        Header: 'Monto',
+        accessor: 'monto',
+    },
+    {
+        Header: 'Acumulado',
+        accessor: 'acumulado',
+    },
+    {
+        Header: 'Restante',
+        accessor: 'restante',
+    }
+]
+
 export const UBICACIONES_HERRAMIENTAS_COLUMNS = [
     {
         Header: 'OPCIONES',
