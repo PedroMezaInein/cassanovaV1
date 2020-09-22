@@ -43,14 +43,16 @@ export default class ComprasCard extends Component {
                                     </Nav.Link>
                                 </Nav.Item>
                                 {
-                                    // compra.presupuestos != 0 || compra.pago != 0 ? || compra.facturas != 0
-                                        <Nav.Item className="navi-item">
-                                            <Nav.Link className="navi-link px-3" eventKey="third" >
-                                                <span className="navi-icon"><i className="flaticon2-checking"></i></span>
-                                                <span className="navi-text font-size-lg">Facturas</span>
-                                            </Nav.Link>
-                                        </Nav.Item>  
-                                    // :''
+                                    compra!==''?
+                                        compra.presupuestos.length > 0 || compra.pagos.length > 0 || compra.facturas.length > 0 ?
+                                            <Nav.Item className="navi-item">
+                                                <Nav.Link className="navi-link px-3" eventKey="third" >
+                                                    <span className="navi-icon"><i className="flaticon2-checking"></i></span>
+                                                    <span className="navi-text font-size-lg">Facturas</span>
+                                                </Nav.Link>
+                                            </Nav.Item>  
+                                        :''
+                                    :''
                                 }
                             </Nav>
                         </Col>
@@ -222,7 +224,7 @@ export default class ComprasCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary">COMISIÓN:</label>
                                                     <div className="col-9">
                                                         {
-                                                            compra.comision ?
+                                                            compra.comision || compra.comision ===0 ?
                                                             <span>
                                                                 <NumberFormat
                                                                     value={compra.comision}
