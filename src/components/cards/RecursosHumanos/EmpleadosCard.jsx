@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import NumberFormat from 'react-number-format'
 import Moment from 'react-moment'
 import { Card, Tab, Row, Col, Nav } from 'react-bootstrap'
-import {ItemSlider} from '../../../components/singles'
 
 export default class EmpleadosCard extends Component {
     render() {

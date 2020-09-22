@@ -32,6 +32,7 @@ import preciosDiseñoCard from './Catalogos/PreciosDiseñoCard'
 
 //Leads
 import leadCard from './Leads/LeadCard'
+import prospectoCard from './Leads/ProspectoCard'
 
 
 //-------------------------------------------------------
@@ -73,3 +74,4 @@ export const PartidaCard = partidaCard
 export const PreciosDiseñoCard = preciosDiseñoCard
 //Leads
 export const LeadCard = leadCard
+export const ProspectoCard = prospectoCard

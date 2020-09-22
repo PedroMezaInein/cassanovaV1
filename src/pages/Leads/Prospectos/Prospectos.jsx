@@ -12,6 +12,7 @@ import { setOptions, setTextTable, setDateTable, setArrayTable, setContactoTable
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import TableForModals from '../../../components/tables/TableForModals'
 import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert'
+import { ProspectoCard } from '../../../components/cards'
 
 const $ = require('jquery');
 
@@ -22,7 +23,8 @@ class Leads extends Component {
             convert: false,
             historyContact: false,
             contactForm: false,
-            delete: false
+            delete: false,
+            see: false,
         },
         title: '',
         lead: '',
@@ -169,6 +171,26 @@ class Leads extends Component {
         });
     }
 
+    openModalSee = prospecto => {
+        const { modal} = this.state
+        modal.see =true
+        this.setState({
+            ... this.state,
+            modal,
+            prospecto: prospecto
+        })
+    }
+
+    handleCloseSee = () => {
+        const { modal} = this.state
+        modal.see =false
+        this.setState({
+            ... this.state,
+            modal,
+            prospecto: ''
+        })
+    }
+
     // Clear form
     clearContactForm = () => {
         const { formContacto } = this.state
@@ -254,13 +276,20 @@ class Leads extends Component {
                 iconclass: 'flaticon-folder-1', 
                 action: 'convert',
                 tooltip: {id:'convert', text:'Convertir en proyecto'}
-            }
+            },
+            {
+                text: 'Ver',
+                btnclass: 'info',
+                iconclass: 'flaticon2-expand',                  
+                action: 'see',
+                tooltip: {id:'see', text:'Mostrar', type:'info'},
+            },
         )
         if (prospecto.contactos.length > 0) {
             aux.push(
                 {
                     text: 'Historial&nbsp;de&nbsp;contacto',
-                    btnclass: 'info',
+                    btnclass: 'primary',
                     iconclass: 'flaticon-list-1', 
                     action: 'historial',
                     tooltip: {id:'historial', text:'Historial de contacto'}
@@ -415,7 +444,8 @@ class Leads extends Component {
                         'delete': { function: this.openSafeDelete },
                         'contacto': { function: this.activeFormContact },
                         'historial': { function: this.activeModalHistory },
-                        'convert': { function: this.openConvert }
+                        'convert': { function: this.openConvert },
+                        'see': { function: this.openModalSee },
                     }}
                     idTable='kt_datatable_prospectos'
                     accessToken={this.props.authUser.access_token}
@@ -475,6 +505,9 @@ class Leads extends Component {
                         <Button icon='' onClick={this.handleCloseConvertModal} text="CANCELAR" className="mr-3" className={"btn btn-light-primary font-weight-bolder mr-3"} />
                         <Button icon='' onClick={(e) => { this.safeConvert(e)(prospecto) }} text="CONTINUAR" className={"btn btn-success font-weight-bold mr-2"}/>
                     </div>
+                </Modal>
+                <Modal size="lg" title="Prospecto" show = { modal.see } handleClose = { this.handleCloseSee } >
+                    <ProspectoCard prospecto={prospecto}/>
                 </Modal>
             </Layout>
         )
