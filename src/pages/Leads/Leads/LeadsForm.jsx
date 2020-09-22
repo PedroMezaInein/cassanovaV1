@@ -222,8 +222,8 @@ class LeadsForm extends Component {
 
     async editLeadAxios (){
         const { access_token } = this.props.authUser
-        const { form: data, leadId } = this.state
-        await axios.put(URL_DEV + 'lead/' + leadId.id, data, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        const { form: data, lead } = this.state
+        await axios.put(URL_DEV + 'lead/' + lead.id, data, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { history } = this.props
                 history.push({
