@@ -1,32 +1,29 @@
-import React, { Component } from 'react' 
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import { URL_DEV} from '../../constants'
-import { setOptions} from '../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert,questionAlert, deleteAlert, questionAlert2 } from '../../functions/alert'
+import { URL_DEV } from '../../constants'
+import { setOptions } from '../../functions/setters'
+import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert, questionAlert, deleteAlert, questionAlert2 } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
-import { CalidadView} from '../../components/forms'
-import Input from '../../components/form-components/Input'
+import { CalidadView } from '../../components/forms'
 import { Form } from 'react-bootstrap'
-
-
-class CalidadForm extends Component{
+class CalidadForm extends Component {
 
     state = {
         ticket: '',
         form: {
-            adjuntos:{
-                presupuesto:{
+            adjuntos: {
+                presupuesto: {
                     value: '',
                     placeholder: 'Presupuesto',
                     files: []
                 },
-                reporte_problema_reportado:{
+                reporte_problema_reportado: {
                     value: '',
                     placeholder: 'Reporte fotográfico del problema reportado',
                     files: []
                 },
-                reporte_problema_solucionado:{
+                reporte_problema_solucionado: {
                     value: '',
                     placeholder: 'Reporte fotográfico del problema solucionado',
                     files: []
@@ -37,30 +34,29 @@ class CalidadForm extends Component{
             recibe: '',
             motivo: ''
         },
-        options:{
+        options: {
             empleados: []
         }
     }
-    componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
-        const { match : { params: { action: action } } } = this.props
-        const { history, location: { state: state} } = this.props
-        const remisiones = permisos.find(function(element, index) {
+    componentDidMount() {
+        const { authUser: { user: { permisos: permisos } } } = this.props
+        const { history: { location: { pathname: pathname } } } = this.props
+        const { match: { params: { action: action } } } = this.props
+        const { history, location: { state: state } } = this.props
+        const remisiones = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
             return pathname === url + '/' + action
         });
         this.getTicketsOptions()
-        switch(action){
-            
+        switch (action) {
+
             case 'see':
-                if(state){
-                    if(state.calidad)
-                    {
+                if (state) {
+                    if (state.calidad) {
                         const { calidad } = state
-                        if(calidad.estatus_ticket.estatus === 'En espera')
-                            this.changeEstatusAxios({id: calidad.id})
-                        else{
+                        if (calidad.estatus_ticket.estatus === 'En espera')
+                            this.changeEstatusAxios({ id: calidad.id })
+                        else {
                             this.setState({
                                 ... this.state,
                                 ticket: calidad,
@@ -78,14 +74,14 @@ class CalidadForm extends Component{
             default:
                 break;
         }
-        if(!remisiones)
+        if (!remisiones)
             history.push('/')
     }
 
     setForm = ticket => {
         const { form } = this.state
         let aux = []
-        ticket.presupuesto.map( (presupuesto) => {
+        ticket.presupuesto.map((presupuesto) => {
             aux.push({
                 name: presupuesto.name,
                 url: presupuesto.url,
@@ -94,7 +90,7 @@ class CalidadForm extends Component{
         })
         form.adjuntos.presupuesto.files = aux
         aux = []
-        ticket.reporte_problema_reportado.map( (element) => {
+        ticket.reporte_problema_reportado.map((element) => {
             aux.push({
                 name: element.name,
                 url: element.url,
@@ -104,7 +100,7 @@ class CalidadForm extends Component{
         })
         form.adjuntos.reporte_problema_reportado.files = aux
         aux = []
-        ticket.reporte_problema_solucionado.map( (element) => {
+        ticket.reporte_problema_solucionado.map((element) => {
             aux.push({
                 name: element.name,
                 url: element.url,
@@ -114,7 +110,7 @@ class CalidadForm extends Component{
         })
         form.adjuntos.reporte_problema_solucionado.files = aux
         form.fechaProgramada = new Date(ticket.created_at)
-        if(ticket.tecnico)
+        if (ticket.tecnico)
             form.empleado = ticket.tecnico.id.toString()
         form.descripcion = ticket.descripcion_solucion
         form.recibe = ticket.recibe
@@ -154,8 +150,8 @@ class CalidadForm extends Component{
     }
 
     handleChange = (files, item) => {
-        if(item === 'presupuesto')
-            questionAlert('¿DESEAS ENVIAR EL PRESUPUESTO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.sendPresupuestoTicketAxios( files, item ))
+        if (item === 'presupuesto')
+            questionAlert('¿DESEAS ENVIAR EL PRESUPUESTO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.sendPresupuestoTicketAxios(files, item))
         else
             this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
     }
@@ -164,26 +160,26 @@ class CalidadForm extends Component{
         deleteAlert('¿Deseas eliminar el archivo?', () => this.deleteAdjuntoAxios(element.id))
     }
 
-    changeEstatus = estatus =>  {
+    changeEstatus = estatus => {
         const { ticket } = this.state
         // this.changeEstatusAxios({id: ticket.id, estatus: estatus})
-        questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({id: ticket.id, estatus: estatus}))
+        questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
     }
 
     openModalWithInput = estatus => {
         const { ticket, form } = this.state
         // this.changeEstatusAxios({id: ticket.id, estatus: estatus})
-        questionAlert2('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.cancelTicket({id: ticket.id, estatus: estatus}), 
+        questionAlert2('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.cancelTicket({ id: ticket.id, estatus: estatus }),
             <div>
-                <Form.Control 
-                    placeholder = 'Motivo de cancelación'
-                    className = "form-control is-valid"
-                    id = 'motivo'
-                    as="textarea" 
+                <Form.Control
+                    placeholder='MOTIVO DE CANCELACIÓN'
+                    className="form-control form-control-solid h-auto py-7 px-6"
+                    id='motivo'
+                    as="textarea"
                     rows="3"
-                    /> 
+                />
             </div>
-            )
+        )
     }
 
     onSubmit = e => {
@@ -195,13 +191,13 @@ class CalidadForm extends Component{
         this.saveProcesoTicketAxios(value)
     }
 
-    async deleteAdjuntoAxios(id){
+    async deleteAdjuntoAxios(id) {
         const { access_token } = this.props.authUser
         const { ticket } = this.state
-        await axios.delete(URL_DEV + 'calidad/' + ticket.id + '/adjuntos/' + id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.delete(URL_DEV + 'calidad/' + ticket.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { ticket } = response.data
-                
+
                 window.history.replaceState(ticket, 'calidad')
 
                 this.setState({
@@ -213,9 +209,9 @@ class CalidadForm extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -225,7 +221,7 @@ class CalidadForm extends Component{
         })
     }
 
-    async saveProcesoTicketAxios( email ){
+    async saveProcesoTicketAxios(email) {
 
         waitAlert()
 
@@ -234,8 +230,8 @@ class CalidadForm extends Component{
         const data = new FormData();
 
         let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'fechaProgramada':
                     data.append(element, (new Date(form[element])).toDateString())
                     break
@@ -256,13 +252,13 @@ class CalidadForm extends Component{
                 data.append('adjuntos[]', element)
             }
         })
-        if(email !== '')
+        if (email !== '')
             data.append('email', email)
 
         await axios.post(URL_DEV + 'calidad/proceso/' + ticket.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { ticket } = response.data
-                
+
                 window.history.replaceState(ticket, 'calidad')
 
                 this.setState({
@@ -274,9 +270,9 @@ class CalidadForm extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -286,7 +282,7 @@ class CalidadForm extends Component{
         })
     }
 
-    async sendPresupuestoTicketAxios( files, item ){
+    async sendPresupuestoTicketAxios(files, item) {
 
         this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
 
@@ -309,7 +305,7 @@ class CalidadForm extends Component{
         await axios.post(URL_DEV + 'calidad/presupuesto/' + ticket.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { ticket } = response.data
-                
+
                 window.history.replaceState(ticket, 'calidad')
 
                 this.setState({
@@ -321,9 +317,9 @@ class CalidadForm extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -333,28 +329,28 @@ class CalidadForm extends Component{
         })
     }
 
-    async changeEstatusAxios(data){
+    async changeEstatusAxios(data) {
         const { access_token } = this.props.authUser
-        await axios.put(URL_DEV + 'calidad/estatus/' + data.id, data, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.put(URL_DEV + 'calidad/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { ticket } = response.data
-                
+
                 window.history.replaceState(ticket, 'calidad')
-                
+
                 this.setState({
                     ... this.state,
                     ticket: ticket,
                     form: this.setForm(ticket)
                 })
-                if(data.estatus){
+                if (data.estatus) {
                     doneAlert('El ticket fue actualizado con éxito.')
                 }
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -364,29 +360,29 @@ class CalidadForm extends Component{
         })
     }
 
-    async cancelTicket(data){
+    async cancelTicket(data) {
         const { access_token } = this.props.authUser
         data.motivo = document.getElementById('motivo').value
-        await axios.put(URL_DEV + 'calidad/estatus/' + data.id, data, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.put(URL_DEV + 'calidad/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { ticket } = response.data
-                
+
                 window.history.replaceState(ticket, 'calidad')
-                
+
                 this.setState({
                     ... this.state,
                     ticket: ticket,
                     form: this.setForm(ticket)
                 })
-                if(data.estatus){
+                if (data.estatus) {
                     doneAlert('El ticket fue actualizado con éxito.')
                 }
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -396,9 +392,9 @@ class CalidadForm extends Component{
         })
     }
 
-    async getTicketsOptions(){
+    async getTicketsOptions() {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'calidad/options', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'calidad/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { empleados } = response.data
                 const { options } = this.state
@@ -410,9 +406,9 @@ class CalidadForm extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -422,30 +418,30 @@ class CalidadForm extends Component{
         })
     }
 
-    render(){
+    render() {
 
         const { ticket, form, options } = this.state
 
-        return(
+        return (
             <Layout active={'proyectos'}  {...this.props}>
                 <CalidadView
-                    data = { ticket } 
-                    form = { form }
-                    options = { options }
-                    handleChange = { this.handleChange }
-                    changeEstatus = { this.changeEstatus }
-                    onChange = { this.onChange } 
-                    onSubmit = { this.onSubmit }
-                    generateEmail = { this.generateEmail } 
-                    openModalWithInput = { this.openModalWithInput }
-                    deleteFile = { this.deleteFile } />
+                    data={ticket}
+                    form={form}
+                    options={options}
+                    handleChange={this.handleChange}
+                    changeEstatus={this.changeEstatus}
+                    onChange={this.onChange}
+                    onSubmit={this.onSubmit}
+                    generateEmail={this.generateEmail}
+                    openModalWithInput={this.openModalWithInput}
+                    deleteFile={this.deleteFile} />
             </Layout>
         )
     }
 }
 
 const mapStateToProps = state => {
-    return{
+    return {
         authUser: state.authUser
     }
 }

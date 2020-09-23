@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import NumberFormat from 'react-number-format'
 import Moment from 'react-moment'
 import { Card, Tab, Row, Col, Nav } from 'react-bootstrap'
-
 export default class EmpleadosCard extends Component {
     render() {
         const { empleado } = this.props
@@ -201,15 +200,15 @@ export default class EmpleadosCard extends Component {
                                     </Card>
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="third">
-                                <Card className="card card-without-box-shadown border-0">
+                                    <Card className="card card-without-box-shadown border-0">
                                         <Card.Body className="p-0">
                                             <div className="text-justify">
                                                 <div className="row pb-1">
                                                     <label className="col-5 font-weight-bolder text-primary">IMSS ESTATUS:</label>
                                                     <div className="col-7">
                                                         {
-                                                            empleado.estatus_imss || empleado.estatus_imss===0?
-                                                                <span>{empleado.estatus_imss===0 ? 'Inactivo' : 'Activo'}</span>
+                                                            empleado.estatus_imss || empleado.estatus_imss === 0 ?
+                                                                <span>{empleado.estatus_imss === 0 ? 'Inactivo' : 'Activo'}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -218,7 +217,7 @@ export default class EmpleadosCard extends Component {
                                                     <label className="col-5 font-weight-bolder text-primary">VACACIONES DISPONIBLES AL AÑO:</label>
                                                     <div className="col-7">
                                                         {
-                                                            empleado.vacaciones_disponibles || empleado.vacaciones_disponibles===0 ?
+                                                            empleado.vacaciones_disponibles || empleado.vacaciones_disponibles === 0 ?
                                                                 <span>{empleado.vacaciones_disponibles}</span>
                                                                 : <span>-</span>
                                                         }

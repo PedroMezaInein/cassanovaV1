@@ -2,30 +2,26 @@ import React, { Component } from 'react'
 import NumberFormat from 'react-number-format'
 import Moment from 'react-moment'
 import { Card, Tab, Row, Col, Nav } from 'react-bootstrap'
-import {ItemSlider} from '../../../components/singles'
+import { ItemSlider } from '../../../components/singles'
 import { setLabelTable } from '../../../functions/setters'
-
-export default class FacturacionCard extends Component {
-
+export default class FacturacionCard extends Component {    
     setAdjuntosFacturas = () => {
-        const { factura } = this.props 
-        let aux=[];
-        if(factura || factura.xml.length>0){
+        const { factura } = this.props
+        let aux = [];
+        if (factura || factura.xml.length > 0) {
             let xml = factura.xml
             aux.push({
-                name: xml.folio +'-xml.xml',
+                name: xml.folio + '-xml.xml',
                 url: xml.url
             })
         }
-        if(factura || factura.pdf.length>0){
+        if (factura || factura.pdf.length > 0) {
             let pdf = factura.pdf
             aux.push({
-                name: pdf.folio +'-pdf.pdf',
+                name: pdf.folio + '-pdf.pdf',
                 url: pdf.url
             })
         }
-        
-        
         return aux
     }
 
@@ -47,12 +43,11 @@ export default class FacturacionCard extends Component {
                 text.estatus = 'PENDIENTE'
             }
         }
-
         return setLabelTable(text)
     }
 
     render() {
-        const { factura } = this.props 
+        const { factura } = this.props
         return (
             <div className="col-md-12 mt-4">
                 <Tab.Container defaultActiveKey="first">
@@ -72,16 +67,14 @@ export default class FacturacionCard extends Component {
                                     </Nav.Link>
                                 </Nav.Item>
                                 {
-                                    // factura!==''?
-                                        factura.pdf  || factura.xml ?
-                                            <Nav.Item className="navi-item">
-                                                <Nav.Link className="navi-link px-3" eventKey="third" >
-                                                    <span className="navi-icon"><i className="flaticon2-checking"></i></span>
-                                                    <span className="navi-text font-size-lg">Facturas</span>
-                                                </Nav.Link>
-                                            </Nav.Item>
-                                        :''
-                                    // :''
+                                    factura.pdf || factura.xml ?
+                                        <Nav.Item className="navi-item">
+                                            <Nav.Link className="navi-link px-3" eventKey="third" >
+                                                <span className="navi-icon"><i className="flaticon2-checking"></i></span>
+                                                <span className="navi-text font-size-lg">Facturas</span>
+                                            </Nav.Link>
+                                        </Nav.Item>
+                                        : ''
                                 }
                             </Nav>
                         </Col>
@@ -94,7 +87,7 @@ export default class FacturacionCard extends Component {
                                                 <div className="row pb-1">
                                                     <div className="col d-flex justify-content-end">
                                                         {
-                                                            factura?
+                                                            factura ?
                                                                 <span>{this.setLabelTable(factura)}</span>
                                                                 : <span>-</span>
                                                         }
@@ -125,8 +118,8 @@ export default class FacturacionCard extends Component {
                                                     <div className="col-8">
                                                         {
                                                             factura.serie ?
-                                                                    <span>{factura.serie}</span>
-                                                                    : <span>-</span>
+                                                                <span>{factura.serie}</span>
+                                                                : <span>-</span>
                                                         }
                                                     </div>
                                                 </div>
@@ -156,7 +149,7 @@ export default class FacturacionCard extends Component {
                                                         {
                                                             factura.nombre_emisor ?
                                                                 <div>
-                                                                    <strong>RFC: </strong><span>{factura.rfc_emisor}</span><br/>
+                                                                    <strong>RFC: </strong><span>{factura.rfc_emisor}</span><br />
                                                                     <strong>NOMBRE: </strong><span>{factura.nombre_emisor}</span>
                                                                 </div>
                                                                 : <span>-</span>
@@ -169,7 +162,7 @@ export default class FacturacionCard extends Component {
                                                         {
                                                             factura.nombre_receptor ?
                                                                 <div>
-                                                                    <strong>RFC: </strong><span>{factura.rfc_receptor}</span><br/>
+                                                                    <strong>RFC: </strong><span>{factura.rfc_receptor}</span><br />
                                                                     <strong>NOMBRE: </strong><span>{factura.nombre_receptor}</span>
                                                                 </div>
                                                                 : <span>-</span>
@@ -272,17 +265,16 @@ export default class FacturacionCard extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="third">
                                     {
-                                        factura!==''?
+                                        factura !== '' ?
                                             <ItemSlider items={this.setAdjuntosFacturas()} item='' />
-                                            :''
-                                    } 
+                                            : ''
+                                    }
                                 </Tab.Pane>
                             </Tab.Content>
                         </Col>
                     </Row>
                 </Tab.Container>
             </div>
-
         )
     }
 }

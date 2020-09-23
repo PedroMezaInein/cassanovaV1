@@ -4,7 +4,6 @@ import Moment from 'react-moment'
 import Card from 'react-bootstrap/Card'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
-
 export default class SolicitudCompraCard extends Component {
     render() {
         const { data, children } = this.props
@@ -15,16 +14,12 @@ export default class SolicitudCompraCard extends Component {
                         <div className="mr-2">
                             {
                                 data.proyecto ?
-                                    <>
                                         <p className="font-size-h3 mb-0">Proyecto:&nbsp;<strong className="font-size-h4"> {data.proyecto.nombre}</strong></p>
-                                    </>
                                     : ''
                             }
                             {
                                 data.empresa ?
-                                    <>
                                         <p className="font-size-h5 text-muted font-size-lg mt-0">Empresa:&nbsp;<strong className="font-size-h6"> {data.empresa.name} </strong></p>
-                                    </>
                                     : ''
                             }
                         </div>

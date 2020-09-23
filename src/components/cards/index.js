@@ -18,10 +18,13 @@ import egresosCard from './Administracion/EgresosCard'
 import ingresosCard from './Administracion/IngresosCard'
 import contratoCard from './Administracion/ContratoCard'
 import facturacionCard from './Administracion/FacturacionCard'
+import documentosCard from './Administracion/DocumentosCard'
 
 //RecursosHumanos
 import empleadosCard from './RecursosHumanos/EmpleadosCard'
 import prestamosCard from './RecursosHumanos/PrestamosCard'
+import imssCard from './RecursosHumanos/ImssCard'
+
 
 //Bancos
 import traspasoCard from './Bancos/TraspasoCard'
@@ -62,9 +65,13 @@ export const EgresosCard = egresosCard
 export const IngresosCard = ingresosCard
 export const ContratoCard = contratoCard
 export const FacturacionCard = facturacionCard
+export const DocumentosCard = documentosCard
+
 //RecursosHumanos
 export const EmpleadosCard = empleadosCard
 export const PrestamosCard = prestamosCard
+export const ImssCard = imssCard
+
 //Bancos
 export const TraspasoCard = traspasoCard
 export const EstadoCuentaCard = estadoCuentaCard

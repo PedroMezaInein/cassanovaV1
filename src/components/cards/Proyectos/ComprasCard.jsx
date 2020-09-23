@@ -2,20 +2,20 @@ import React, { Component } from 'react'
 import NumberFormat from 'react-number-format'
 import Moment from 'react-moment'
 import { Card, Tab, Row, Col, Nav } from 'react-bootstrap'
-import {ItemSlider} from '../../../components/singles'
+import { ItemSlider } from '../../../components/singles'
 export default class ComprasCard extends Component {
     setAdjuntosFacturas = facturas => {
-        let aux=[];
+        let aux = [];
         facturas.map((factura) => {
-            if(factura.xml){
+            if (factura.xml) {
                 aux.push({
-                    name: factura.folio +'-xml.xml',
+                    name: factura.folio + '-xml.xml',
                     url: factura.xml.url
                 })
             }
-            if(factura.pdf){
+            if (factura.pdf) {
                 aux.push({
-                    name: factura.folio +'-pdf.pdf',
+                    name: factura.folio + '-pdf.pdf',
                     url: factura.pdf.url
                 })
             }
@@ -43,7 +43,7 @@ export default class ComprasCard extends Component {
                                     </Nav.Link>
                                 </Nav.Item>
                                 {
-                                    compra!==''?
+                                    compra !== '' ?
                                         compra.presupuestos.length > 0 || compra.pagos.length > 0 || compra.facturas.length > 0 ?
                                             <Nav.Item className="navi-item">
                                                 <Nav.Link className="navi-link px-3" eventKey="third" >
@@ -51,8 +51,8 @@ export default class ComprasCard extends Component {
                                                     <span className="navi-text font-size-lg">Facturas</span>
                                                 </Nav.Link>
                                             </Nav.Item>
-                                        :''
-                                    :''
+                                            : ''
+                                        : ''
                                 }
                             </Nav>
                         </Col>
@@ -90,7 +90,7 @@ export default class ComprasCard extends Component {
                                                                 compra.subarea.area ?
                                                                     <span>{compra.subarea.area.nombre}</span>
                                                                     : <span>-</span>
-                                                            :''
+                                                                : ''
                                                         }
                                                     </div>
                                                 </div>
@@ -224,16 +224,16 @@ export default class ComprasCard extends Component {
                                                     <label className="col-3 font-weight-bolder text-primary">COMISIÓN:</label>
                                                     <div className="col-9">
                                                         {
-                                                            compra.comision || compra.comision ===0 ?
-                                                            <span>
-                                                                <NumberFormat
-                                                                    value={compra.comision}
-                                                                    displayType={'text'}
-                                                                    thousandSeparator={true}
-                                                                    prefix={'$'}
-                                                                    renderText={value => <div>{value}</div>}
-                                                                />
-                                                            </span>
+                                                            compra.comision || compra.comision === 0 ?
+                                                                <span>
+                                                                    <NumberFormat
+                                                                        value={compra.comision}
+                                                                        displayType={'text'}
+                                                                        thousandSeparator={true}
+                                                                        prefix={'$'}
+                                                                        renderText={value => <div>{value}</div>}
+                                                                    />
+                                                                </span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -243,15 +243,15 @@ export default class ComprasCard extends Component {
                                                     <div className="col-9">
                                                         {
                                                             compra.total ?
-                                                            <span>
-                                                                <NumberFormat
-                                                                    value={compra.total}
-                                                                    displayType={'text'}
-                                                                    thousandSeparator={true}
-                                                                    prefix={'$'}
-                                                                    renderText={value => <div>{value}</div>}
-                                                                />
-                                                            </span>
+                                                                <span>
+                                                                    <NumberFormat
+                                                                        value={compra.total}
+                                                                        displayType={'text'}
+                                                                        thousandSeparator={true}
+                                                                        prefix={'$'}
+                                                                        renderText={value => <div>{value}</div>}
+                                                                    />
+                                                                </span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -271,38 +271,37 @@ export default class ComprasCard extends Component {
                                     </Card>
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="third">
-                                    <Tab.Container defaultActiveKey={compra.presupuestos != 0 ? "first" : compra.pagos !=0 ? "second" : compra.facturas !=0 ? "third" :''}>
+                                    <Tab.Container defaultActiveKey={compra.presupuestos != 0 ? "first" : compra.pagos != 0 ? "second" : compra.facturas != 0 ? "third" : ''}>
                                         <Nav className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-tabs-bold nav-tabs-line-2x border-0">
-                                            {/* border-0 d-flex justify-content-end*/}
                                             {
-                                                compra.presupuestos != 0 ? 
-                                                <Nav.Item>
-                                                    <Nav.Link className="pt-0" eventKey="first"
-                                                    >
-                                                        <span className="nav-text font-weight-bold">PRESUPUESTO</span>
-                                                    </Nav.Link>
-                                                </Nav.Item>
-                                                :''                                                
+                                                compra.presupuestos != 0 ?
+                                                    <Nav.Item>
+                                                        <Nav.Link className="pt-0" eventKey="first"
+                                                        >
+                                                            <span className="nav-text font-weight-bold">PRESUPUESTO</span>
+                                                        </Nav.Link>
+                                                    </Nav.Item>
+                                                    : ''
                                             }
                                             {
                                                 compra.pagos != 0 ?
-                                                <Nav.Item>
-                                                    <Nav.Link className="pt-0" eventKey="second"
+                                                    <Nav.Item>
+                                                        <Nav.Link className="pt-0" eventKey="second"
                                                         >
-                                                        <span className="nav-text font-weight-bold">PAGO</span>
-                                                    </Nav.Link>
-                                                </Nav.Item>
-                                                :''                                                
+                                                            <span className="nav-text font-weight-bold">PAGO</span>
+                                                        </Nav.Link>
+                                                    </Nav.Item>
+                                                    : ''
                                             }
                                             {
                                                 compra.facturas != 0 ?
-                                                <Nav.Item>
-                                                    <Nav.Link className="pt-0" eventKey="third"
+                                                    <Nav.Item>
+                                                        <Nav.Link className="pt-0" eventKey="third"
                                                         >
-                                                        <span className="nav-text font-weight-bold">FACTURAS</span>
-                                                    </Nav.Link>
-                                                </Nav.Item>
-                                                :''
+                                                            <span className="nav-text font-weight-bold">FACTURAS</span>
+                                                        </Nav.Link>
+                                                    </Nav.Item>
+                                                    : ''
                                             }
                                         </Nav>
                                         <Tab.Content>
@@ -310,24 +309,23 @@ export default class ComprasCard extends Component {
                                                 {
                                                     compra.presupuestos ?
                                                         <ItemSlider items={compra.presupuestos} item='' />
-                                                    :''
-                                                }                                                
+                                                        : ''
+                                                }
                                             </Tab.Pane>
                                             <Tab.Pane eventKey="second">
                                                 {
                                                     compra.pagos ?
                                                         <ItemSlider items={compra.pagos} item='' />
-                                                    :''
-                                                }  
+                                                        : ''
+                                                }
                                             </Tab.Pane>
                                             <Tab.Pane eventKey="third">
                                                 {
                                                     compra.facturas ?
                                                         <ItemSlider items={this.setAdjuntosFacturas(compra.facturas)} item='' />
-                                                    :''
-                                                }  
+                                                        : ''
+                                                }
                                             </Tab.Pane>
-
                                         </Tab.Content>
                                     </Tab.Container>
                                 </Tab.Pane>
@@ -336,7 +334,6 @@ export default class ComprasCard extends Component {
                     </Row>
                 </Tab.Container>
             </div>
-
         )
     }
 }

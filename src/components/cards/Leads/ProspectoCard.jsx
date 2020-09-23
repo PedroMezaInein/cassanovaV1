@@ -1,13 +1,10 @@
 import React, { Component } from 'react'
 import { Card, Tab, Row, Col, Nav } from 'react-bootstrap'
 import Moment from 'react-moment'
-
 export default class ProspectoCard extends Component {
     render() {
-        
         const { prospecto } = this.props
         return (
-            
             <div className="col-md-12 mt-4">
                 <Tab.Container defaultActiveKey="first">
                     <Row>
@@ -26,18 +23,17 @@ export default class ProspectoCard extends Component {
                                     </Nav.Link>
                                 </Nav.Item>
                                 {
-                                    prospecto!==''?
-                                    prospecto.contactos.length >0 ?
-                                        <Nav.Item className="navi-item">
-                                            <Nav.Link className="navi-link px-3" eventKey="third" >
-                                                <span className="navi-icon"><i className="flaticon2-checking"></i></span>
-                                                <span className="navi-text font-size-lg">INFORMACIÓN DEL CONTACTO</span>
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                        :''
-                                        :''
+                                    prospecto !== '' ?
+                                        prospecto.contactos.length > 0 ?
+                                            <Nav.Item className="navi-item">
+                                                <Nav.Link className="navi-link px-3" eventKey="third" >
+                                                    <span className="navi-icon"><i className="flaticon2-checking"></i></span>
+                                                    <span className="navi-text font-size-lg">INFORMACIÓN DEL CONTACTO</span>
+                                                </Nav.Link>
+                                            </Nav.Item>
+                                            : ''
+                                        : ''
                                 }
-                                
                             </Nav>
                         </Col>
                         <Col md={9}>
@@ -51,7 +47,7 @@ export default class ProspectoCard extends Component {
                                                     <div className="col-7">
                                                         {
                                                             prospecto.estatus_prospecto ?
-                                                                <span style = {{color: prospecto.estatus_prospecto.color_texto, backgroundColor: prospecto.estatus_prospecto.color_fondo}} className="font-weight-bolder label label-inline">{prospecto.estatus_prospecto.estatus}</span>
+                                                                <span style={{ color: prospecto.estatus_prospecto.color_texto, backgroundColor: prospecto.estatus_prospecto.color_fondo }} className="font-weight-bolder label label-inline">{prospecto.estatus_prospecto.estatus}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -141,8 +137,8 @@ export default class ProspectoCard extends Component {
                                                                     return (
                                                                         <span key={key}>{contacto.success === 1 ? 'CONTACTADO' : contacto.success === 0 ? 'SIN RESPUESTA' : ''}</span>
                                                                     )
-                                                                }) : <span>-</span>
-
+                                                                }) 
+                                                                : <span>-</span>
                                                         }
                                                     </div>
                                                 </div>
@@ -152,10 +148,10 @@ export default class ProspectoCard extends Component {
                                                         {
                                                             prospecto.contactos ?
                                                                 prospecto.contactos.map((contacto, key) => {
-                                                                return (
-                                                                    <span key={key}>{contacto.tipo_contacto.tipo}</span>
-                                                                )
-                                                            }) : <span>-</span>
+                                                                    return (
+                                                                        <span key={key}>{contacto.tipo_contacto.tipo}</span>
+                                                                    )
+                                                                }) : <span>-</span>
                                                         }
                                                     </div>
                                                 </div>
@@ -166,7 +162,7 @@ export default class ProspectoCard extends Component {
                                                             prospecto.contactos ?
                                                                 prospecto.contactos.map((contacto, key) => {
                                                                     return (
-                                                                    <span key={key}><Moment format="DD/MM/YYYY">{contacto.updated_at}</Moment></span>
+                                                                        <span key={key}><Moment format="DD/MM/YYYY">{contacto.updated_at}</Moment></span>
                                                                     )
                                                                 }) : <span>-</span>
                                                         }
@@ -178,8 +174,8 @@ export default class ProspectoCard extends Component {
                                                         {
                                                             prospecto.contactos ?
                                                                 prospecto.contactos.map((contacto, key) => {
-                                                                return (
-                                                                    <span key={key}>{contacto.comentario}</span>
+                                                                    return (
+                                                                        <span key={key}>{contacto.comentario}</span>
                                                                     )
                                                                 }) : <span>-</span>
                                                         }
@@ -193,7 +189,6 @@ export default class ProspectoCard extends Component {
                         </Col>
                     </Row>
                 </Tab.Container>
-
             </div>
         )
     }
