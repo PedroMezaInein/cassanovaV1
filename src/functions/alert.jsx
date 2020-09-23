@@ -107,6 +107,22 @@ export function createAlert(title, text, action) {
     })
 }
 
+export function createAlertSA2(title, text, action) {
+    MySwal.fire({
+        title: title,
+        text: text,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Aceptar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true,
+    }).then((result) => {
+        if (result.value) {
+            action()
+        }
+    })
+}
+
 export function questionAlert(title, text, action) {
     MySwal.fire({
         title: title,

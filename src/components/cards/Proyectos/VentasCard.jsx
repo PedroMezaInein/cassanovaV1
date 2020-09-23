@@ -235,10 +235,10 @@ export default class VentasCard extends Component {
                                     </Card>
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="third">
-                                    <Tab.Container defaultActiveKey={venta.presupuestos != 0 ? "first" : venta.pagos != 0 ? "second" : venta.facturas != 0 ? "third" : ''}>
+                                    <Tab.Container defaultActiveKey={venta.presupuestos !== 0 ? "first" : venta.pagos !==0 ? "second" : venta.facturas !== 0 ? "third" : ''}>
                                         <Nav className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-tabs-bold nav-tabs-line-2x border-0">
                                             {
-                                                venta.presupuestos != 0 ?
+                                                venta.presupuestos !== 0 ?
                                                     <Nav.Item>
                                                         <Nav.Link className="pt-0" eventKey="first"
                                                         >
@@ -248,7 +248,7 @@ export default class VentasCard extends Component {
                                                     : ''
                                             }
                                             {
-                                                venta.pagos != 0 ?
+                                                venta.pagos !== 0 ?
                                                     <Nav.Item>
                                                         <Nav.Link className="pt-0" eventKey="second"
                                                         >
@@ -258,7 +258,7 @@ export default class VentasCard extends Component {
                                                     : ''
                                             }
                                             {
-                                                venta.facturas != 0 ?
+                                                venta.facturas !== 0 ?
                                                     <Nav.Item>
                                                         <Nav.Link className="pt-0" eventKey="third"
                                                         >

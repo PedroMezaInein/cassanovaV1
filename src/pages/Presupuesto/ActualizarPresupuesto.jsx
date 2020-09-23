@@ -10,7 +10,6 @@ import { ActualizarPresupuestoForm, AgregarConcepto } from "../../components/for
 import { Modal } from '../../components/singles'
 import FloatButtons from '../../components/singles/FloatButtons'
 import { save, deleteForm } from '../../redux/reducers/formulario'
-
 class ActualizarPresupuesto extends Component {
     state = {
         key: 'nuevo',
@@ -30,11 +29,11 @@ class ActualizarPresupuesto extends Component {
                 costo: '',
                 cantidad_preliminar: '',
                 desperdicio: '',
-                active:true,
+                active: true,
                 cantidad: 0,
                 importe: 0,
                 id: '',
-                mensajes:{
+                mensajes: {
                     active: false,
                     mensaje: ''
                 }
@@ -53,7 +52,6 @@ class ActualizarPresupuesto extends Component {
             conceptos: []
         },
     };
-
     openModal = () => {
         const { options } = this.state
         options.subpartidas = []
@@ -66,18 +64,15 @@ class ActualizarPresupuesto extends Component {
             formeditado: 0
         })
     }
-
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
         aux.map((element) => {
-            if(element !== 'conceptos' && element !== 'conceptosNuevos')
+            if (element !== 'conceptos' && element !== 'conceptosNuevos')
                 form[element] = ''
         })
         return form
     }
-
-
     handleClose = () => {
         const { modal, options } = this.state
         options.subpartidas = []
@@ -90,19 +85,16 @@ class ActualizarPresupuesto extends Component {
             form: this.clearForm()
         })
     }
-
     componentDidMount() {
         const { authUser: { user: { permisos: permisos } } } = this.props;
         const { history: { location: { pathname: pathname } } } = this.props;
         const { history, location: { state: state } } = this.props;
-
         const presupuesto = permisos.find(function (element, index) {
             const {
                 modulo: { url: url },
             } = element;
             return pathname === url + "/" + "update";
         });
-
         if (state) {
             if (state.presupuesto) {
                 const { presupuesto } = state
@@ -112,16 +104,14 @@ class ActualizarPresupuesto extends Component {
         if (!presupuesto) history.push("/");
         this.getOptionsAxios()
     }
-
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'presupuestos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close() 
-                const { empresas, proyectos, areas, partidas, proveedores, unidades, conceptos} = response.data
-                const { options, data} = this.state 
-
+                swal.close()
+                const { empresas, proyectos, areas, partidas, proveedores, unidades, conceptos } = response.data
+                const { options, data } = this.state
                 data.partidas = partidas
                 let aux = {}
                 conceptos.map((concepto) => {
@@ -133,7 +123,6 @@ class ActualizarPresupuesto extends Component {
                 options['partidas'] = setOptions(partidas, 'nombre', 'id')
                 options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
                 options['unidades'] = setOptions(unidades, 'nombre', 'id')
-
                 this.setState({
                     ... this.state,
                     options
@@ -152,22 +141,19 @@ class ActualizarPresupuesto extends Component {
             console.log(error, 'error')
         })
     }
-
     async addConceptoAxios() {
         const { access_token } = this.props.authUser
         const { form } = this.state
         await axios.post(URL_DEV + 'conceptos', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { concepto} = response.data
-
+                const { concepto } = response.data
                 this.addConceptoToPresupuestoAxios([concepto])
-                
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -176,30 +162,26 @@ class ActualizarPresupuesto extends Component {
             console.log(error, 'error')
         })
     }
-
     async addConceptoToPresupuestoAxios(conceptos) {
         const { access_token } = this.props.authUser
-        const { presupuesto} = this.state
+        const { presupuesto } = this.state
         let aux = {
             conceptos: conceptos
         }
-        await axios.post(URL_DEV + 'presupuestos/'+ presupuesto.id + '/conceptos', aux, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'presupuestos/' + presupuesto.id + '/conceptos', aux, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { presupuesto } = response.data
-                
                 this.getOnePresupuestoAxios(presupuesto.id)
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-
                 this.setState({
                     modal: false
                 })
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -208,7 +190,6 @@ class ActualizarPresupuesto extends Component {
             console.log(error, 'error')
         })
     }
-
     setOptions = (name, array) => {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
@@ -217,10 +198,9 @@ class ActualizarPresupuesto extends Component {
             options
         })
     }
-
     onChangeConceptos = (e) => {
         const { name, value } = e.target;
-        const { data, form, presupuesto} = this.state
+        const { data, form, presupuesto } = this.state
         switch (name) {
             case 'partida':
                 data.partidas.map((partida) => {
@@ -236,32 +216,31 @@ class ActualizarPresupuesto extends Component {
                         data.conceptos = subpartida.conceptos
                     }
                 })
-                let array=[]
-                data.conceptos.map((concepto)=>{
-                    let aux =false
-                    
-                    presupuesto.conceptos.map((concepto_form) =>{
-                        if(concepto){
-                            if(concepto.clave === concepto_form.concepto.clave){
-                                aux=true
+                let array = []
+                data.conceptos.map((concepto) => {
+                    let aux = false
+
+                    presupuesto.conceptos.map((concepto_form) => {
+                        if (concepto) {
+                            if (concepto.clave === concepto_form.concepto.clave) {
+                                aux = true
                             }
                         }
-                        
+
                     })
-                    if(!aux){
+                    if (!aux) {
                         array.push(concepto)
                     }
                 })
                 form.conceptosNuevos = []
-                array.map((element, key)=>{
+                array.map((element, key) => {
                     form.conceptosNuevos.push(element)
-                    form.conceptosNuevos[key].active=false
+                    form.conceptosNuevos[key].active = false
                 })
                 break;
             default:
                 break;
         }
-        
         form[name] = value;
         this.setState({
             ...this.state,
@@ -269,8 +248,7 @@ class ActualizarPresupuesto extends Component {
             data
         });
     };
-
-    checkButtonConceptos = (e, key)=> {
+    checkButtonConceptos = (e, key) => {
         const { checked } = e.target
         const { form } = this.state
         form.conceptosNuevos[key].active = checked
@@ -279,34 +257,31 @@ class ActualizarPresupuesto extends Component {
             form
         })
     }
-    
     onChange = (key, e, name) => {
         let { value } = e.target
         const { form, presupuesto } = this.state
-
-        
-        if(name === 'desperdicio'){
+        if (name === 'desperdicio') {
             value = value.replace('%', '')
         }
         form['conceptos'][key][name] = value
-        let cantidad = form['conceptos'][key]['cantidad_preliminar'] * (1 + (form['conceptos'][key]['desperdicio']/100))
+        let cantidad = form['conceptos'][key]['cantidad_preliminar'] * (1 + (form['conceptos'][key]['desperdicio'] / 100))
         cantidad = cantidad.toFixed(2)
         let importe = cantidad * form['conceptos'][key]['costo']
         importe = importe.toFixed(2)
         form['conceptos'][key]['cantidad'] = cantidad
         form['conceptos'][key]['importe'] = importe
-        if(name !== 'mensajes' && name !== 'desperdicio')
-            if(presupuesto.conceptos[key][name] !== form.conceptos[key][name]){
+        if (name !== 'mensajes' && name !== 'desperdicio')
+            if (presupuesto.conceptos[key][name] !== form.conceptos[key][name]) {
                 form.conceptos[key].mensajes.active = true
-            }else{
+            } else {
                 form.conceptos[key].mensajes.active = false
             }
-        if(name === 'desperdicio')
-            if(presupuesto.conceptos[key][name].toString() !== form.conceptos[key][name].toString()){
+        if (name === 'desperdicio')
+            if (presupuesto.conceptos[key][name].toString() !== form.conceptos[key][name].toString()) {
                 form.conceptos[key].mensajes.active = true
                 let aux = value ? value : 0
-                form.conceptos[key].mensajes.mensaje = ('Actualización del desperdicio a un '+ value + '%').toUpperCase()
-            }else{
+                form.conceptos[key].mensajes.mensaje = ('Actualización del desperdicio a un ' + value + '%').toUpperCase()
+            } else {
                 form.conceptos[key].mensajes.active = false
                 form.conceptos[key].mensajes.mensaje = ''
             }
@@ -315,93 +290,82 @@ class ActualizarPresupuesto extends Component {
             form
         })
     }
-
     checkButton = (key, e) => {
         const { name, checked } = e.target
         const { form, presupuesto } = this.state
-
         form.conceptos[key][name] = checked
-        
-        if(!checked){
+        if (!checked) {
             let pre = presupuesto.conceptos[key]
             let aux = { active: false, mensaje: '' }
-            this.onChange(key, {target:{value: pre.descripcion}}, 'descripcion')
-            this.onChange(key, {target:{value: pre.costo}}, 'costo')
-            this.onChange(key, {target:{value: pre.cantidad_preliminar}}, 'cantidad_preliminar')
-            this.onChange(key, {target:{value: '$'+pre.desperdicio}}, 'desperdicio')
-            this.onChange(key, {target:{value: aux}}, 'mensajes')
+            this.onChange(key, { target: { value: pre.descripcion } }, 'descripcion')
+            this.onChange(key, { target: { value: pre.costo } }, 'costo')
+            this.onChange(key, { target: { value: pre.cantidad_preliminar } }, 'cantidad_preliminar')
+            this.onChange(key, { target: { value: '$' + pre.desperdicio } }, 'desperdicio')
+            this.onChange(key, { target: { value: aux } }, 'mensajes')
         }
-        
         this.setState({
             ... this.state,
             form
         })
     }
-
     onSubmit = e => {
         e.preventDefault()
         waitAlert()
-
         this.updatePresupuestosAxios()
     }
-
     onSubmitConcept = e => {
         e.preventDefault()
         const { key, form } = this.state
         waitAlert()
-        if(key === 'nuevo')
+        if (key === 'nuevo')
             this.addConceptoAxios()
-        else{
+        else {
             let aux = []
-            form.conceptosNuevos.map( (concepto) => {
-                if(concepto.active)
+            form.conceptosNuevos.map((concepto) => {
+                if (concepto.active)
                     aux.push(concepto)
             })
             this.addConceptoToPresupuestoAxios(aux)
         }
     }
-
     async getOnePresupuestoAxios(id) {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'presupuestos/' + id, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 const { form } = this.state
                 const { presupuesto } = response.data
-                
                 let aux = []
                 presupuesto.conceptos.map((concepto) => {
                     let mensajeAux = {}
-                    if(concepto.mensaje){
-                        mensajeAux= {
+                    if (concepto.mensaje) {
+                        mensajeAux = {
                             active: true,
                             mensaje: concepto.mensaje
                         }
-                    }else{
-                        mensajeAux= {
+                    } else {
+                        mensajeAux = {
                             active: false,
                             mensaje: ''
                         }
                     }
-                    let bandera=false
-                    form.conceptos.map((elemento)=>{
-                        if(concepto.id === elemento.id){
-                            bandera=elemento
+                    let bandera = false
+                    form.conceptos.map((elemento) => {
+                        if (concepto.id === elemento.id) {
+                            bandera = elemento
                         }
                     })
-                    if(bandera){
+                    if (bandera) {
                         aux.push(
                             bandera
                         )
-                    
-                    }else{
+                    } else {
                         aux.push({
                             descripcion: concepto.descripcion,
                             costo: concepto.costo.toFixed(2),
                             cantidad_preliminar: concepto.cantidad_preliminar,
                             desperdicio: concepto.desperdicio,
-                            cantidad: (concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100))).toFixed(2),
-                            importe: ((concepto.cantidad_preliminar * ( 1  + (concepto.desperdicio/100))) * concepto.costo).toFixed(2),
+                            cantidad: (concepto.cantidad_preliminar * (1 + (concepto.desperdicio / 100))).toFixed(2),
+                            importe: ((concepto.cantidad_preliminar * (1 + (concepto.desperdicio / 100))) * concepto.costo).toFixed(2),
                             active: concepto.active ? true : false,
                             id: concepto.id,
                             mensajes: mensajeAux,
@@ -409,16 +373,13 @@ class ActualizarPresupuesto extends Component {
                         })
                     }
                 })
-
                 form.conceptos = aux
-
                 this.setState({
                     ... this.state,
                     presupuesto: presupuesto,
                     form,
                     formeditado: 1
                 })
-
             },
             (error) => {
                 console.log(error, 'error')
@@ -433,20 +394,14 @@ class ActualizarPresupuesto extends Component {
             console.log(error, 'error')
         })
     }
-
     async updatePresupuestosAxios() {
         const { access_token } = this.props.authUser
         const { form, presupuesto } = this.state
-
         await axios.put(URL_DEV + 'presupuestos/' + presupuesto.id, form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 const { presupuesto } = response.data
-                
                 this.getOnePresupuestoAxios(presupuesto.id)
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-
             },
             (error) => {
                 console.log(error, 'error')
@@ -461,7 +416,6 @@ class ActualizarPresupuesto extends Component {
             console.log(error, 'error')
         })
     }
-
     controlledTab = value => {
         this.setState({
             ... this.state,
@@ -469,7 +423,6 @@ class ActualizarPresupuesto extends Component {
             key: value
         })
     }
-
     save = () => {
         const { form } = this.state
         const { save } = this.props
@@ -483,7 +436,6 @@ class ActualizarPresupuesto extends Component {
             page: 'presupuesto/presupuesto/update'
         })
     }
-
     recover = () => {
         const { formulario, deleteForm } = this.props
         this.setState({
@@ -492,7 +444,6 @@ class ActualizarPresupuesto extends Component {
         })
         deleteForm()
     }
-
     render() {
         const { form, title, options, formeditado, presupuesto, modal, data, key } = this.state;
         const { formulario } = this.props
@@ -522,8 +473,7 @@ class ActualizarPresupuesto extends Component {
                         onSubmit={this.onSubmitConcept}
                     />
                 </Modal>
-
-                <FloatButtons 
+                <FloatButtons
                     save={this.save}
                     recover={this.recover}
                     formulario={formulario}

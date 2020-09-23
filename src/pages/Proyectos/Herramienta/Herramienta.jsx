@@ -12,21 +12,18 @@ import { Button } from '../../../components/form-components'
 import UbicacionHerramientaForm from '../../../components/forms/proyectos/UbicacionHerramientaForm';
 import { Tab, Tabs } from 'react-bootstrap';
 import TableForModals from '../../../components/tables/TableForModals';
-
 const $ = require('jquery');
-
 class Herramienta extends Component {
-
     state = {
-        modalDelete:false,
+        modalDelete: false,
         modalAdjuntos: false,
         modalUbicacion: false,
         modalDeleteUbicacion: false,
         active: 'historial',
         herramienta: '',
-        form:{
-            adjuntos:{
-                adjuntos:{
+        form: {
+            adjuntos: {
+                adjuntos: {
                     value: '',
                     placeholder: 'Adjuntos',
                     files: []
@@ -37,16 +34,15 @@ class Herramienta extends Component {
             ubicacion: '',
             comentario: ''
         },
-        data:{
+        data: {
             ubicaciones: []
         },
         ubicaciones: [],
         ubicacion: ''
     }
-
     setHerramientas = herramientas => {
         let aux = []
-        herramientas.map((herramienta)=>{
+        herramientas.map((herramienta) => {
             aux.push({
                 actions: this.setActions(herramienta),
                 empresa: renderToString(setTextTable(herramienta.empresa ? herramienta.empresa.name : 'Sin definir')),
@@ -61,7 +57,6 @@ class Herramienta extends Component {
         })
         return aux
     }
-
     setActions = herramienta => {
         let aux = []
         aux.push(
@@ -92,12 +87,12 @@ class Herramienta extends Component {
                 iconclass: 'flaticon-calendar',
                 action: 'ubicacion',
                 tooltip: { id: 'ubicacion', text: 'Ubicacion', type: 'error' }
-            },
+            }
         )
         return aux
     }
 
-    setActionsUbicaciones = ubicacion => {
+    setActionsUbicaciones = () => {
         let aux = []
         aux.push(
             {
@@ -110,10 +105,9 @@ class Herramienta extends Component {
         )
         return aux
     }
-
     setUbicaciones = ubicaciones => {
         let aux = []
-        ubicaciones.map( (ubicacion) => {
+        ubicaciones.map((ubicacion) => {
             aux.push({
                 actions: this.setActionsUbicaciones(ubicacion),
                 user: renderToString(setTextTable(ubicacion.user ? ubicacion.user.name : 'Sin definir')),
@@ -125,7 +119,6 @@ class Herramienta extends Component {
         })
         return aux
     }
-
     onChange = e => {
         const { value, name } = e.target
         const { form } = this.state
@@ -135,15 +128,13 @@ class Herramienta extends Component {
             form
         })
     }
-
     changePageEdit = (herramienta) => {
         const { history } = this.props
         history.push({
             pathname: '/proyectos/herramientas/edit',
-            state: { herramienta: herramienta}
+            state: { herramienta: herramienta }
         });
     }
-
     openModalDelete = herramienta => {
         this.setState({
             ... this.state,
@@ -151,11 +142,10 @@ class Herramienta extends Component {
             modalDelete: true
         })
     }
-
     openModalAdjuntos = herramienta => {
         const { form } = this.state
         let aux = []
-        herramienta.adjuntos.map((adjunto)=>{
+        herramienta.adjuntos.map((adjunto) => {
             aux.push({
                 name: adjunto.name,
                 url: adjunto.url,
@@ -170,11 +160,9 @@ class Herramienta extends Component {
             form
         })
     }
-
     openModalUbicacion = (herramienta) => {
         const { data } = this.state
         data.ubicaciones = herramienta.ubicaciones
-
         this.setState({
             ... this.state,
             herramienta: herramienta,
@@ -183,7 +171,6 @@ class Herramienta extends Component {
             ubicaciones: this.setUbicaciones(herramienta.ubicaciones)
         })
     }
-
     openModalDeleteUbicacion = ubicacion => {
         this.setState({
             ... this.state,
@@ -191,7 +178,6 @@ class Herramienta extends Component {
             ubicacion: ubicacion
         })
     }
-
     handleCloseDelete = () => {
         this.setState({
             ... this.state,
@@ -199,7 +185,6 @@ class Herramienta extends Component {
             herramienta: ''
         })
     }
-
     handleCloseAdjuntos = () => {
         const { form } = this.state
         form.adjuntos.adjuntos.files = []
@@ -210,7 +195,6 @@ class Herramienta extends Component {
             form
         })
     }
-
     handleCloseUbicacion = () => {
         this.setState({
             ... this.state,
@@ -218,7 +202,6 @@ class Herramienta extends Component {
             modalUbicacion: false
         })
     }
-
     handleCloseDeleteUbicacion = () => {
         this.setState({
             ... this.state,
@@ -226,7 +209,6 @@ class Herramienta extends Component {
             ubicacion: ''
         })
     }
-
     handleChange = (files, item) => {
         const { form } = this.state
         let aux = []
@@ -247,10 +229,9 @@ class Herramienta extends Component {
             form
         })
     }
-
     onSelect = value => {
         const { form } = this.state
-        if(value === 'nuevo'){
+        if (value === 'nuevo') {
             form.fecha = new Date()
             form.ubicacion = ''
             form.comentario = ''
@@ -261,22 +242,18 @@ class Herramienta extends Component {
             form
         })
     }
-
     onSubmit = e => {
         e.preventDefault()
         waitAlert()
         this.sendUbicacionAxios()
     }
-
     deleteFile = element => {
         deleteAlert('¿Deseas eliminar el archivo?', () => this.deleteAdjuntoAxios(element.id))
     }
-
-    async getHerramientasAxios(){
+    async getHerramientasAxios() {
         $('#kt_datatable_herramientas').DataTable().ajax.reload();
     }
-
-    async deleteHerramientaAxios(){
+    async deleteHerramientaAxios() {
         const { access_token } = this.props.authUser
         const { herramienta } = this.state
         await axios.delete(URL_DEV + 'herramientas/' + herramienta.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -297,11 +274,10 @@ class Herramienta extends Component {
             console.log(error, 'error')
         })
     }
-
-    async deleteUbicacionAxios(){
+    async deleteUbicacionAxios() {
         const { access_token } = this.props.authUser
         const { herramienta, ubicacion } = this.state
-        await axios.delete(URL_DEV + 'herramientas/' + herramienta.id +'/ubicacion/' + ubicacion.id , { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(URL_DEV + 'herramientas/' + herramienta.id + '/ubicacion/' + ubicacion.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.getHerramientasAxios()
                 doneAlert('Ubicación eliminada con éxito')
@@ -330,18 +306,17 @@ class Herramienta extends Component {
             console.log(error, 'error')
         })
     }
-
-    async deleteAdjuntoAxios(id){
+    async deleteAdjuntoAxios(id) {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form, herramienta } = this.state
-        await axios.delete(URL_DEV + 'herramientas/' + herramienta.id + '/adjuntos/' +id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(URL_DEV + 'herramientas/' + herramienta.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                
+
                 const { herramienta } = response.data
                 const { form } = this.state
                 let aux = []
-                herramienta.adjuntos.map((adj)=>{
+                herramienta.adjuntos.map((adj) => {
                     aux.push({
                         name: adj.name,
                         url: adj.url,
@@ -370,16 +345,15 @@ class Herramienta extends Component {
             console.log(error, 'error')
         })
     }
-
-    async sendAdjuntoAxios(){
+    async sendAdjuntoAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form, herramienta } = this.state
         const data = new FormData();
-        
+
         let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'fecha':
                     data.append(element, (new Date(form[element])).toDateString())
                     break
@@ -390,23 +364,22 @@ class Herramienta extends Component {
                     break
             }
         })
-
         aux = Object.keys(form.adjuntos)
-        aux.map( (element) => {
+        aux.map((element) => {
             for (var i = 0; i < form.adjuntos[element].files.length; i++) {
                 data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
         })
-        
+
         await axios.post(URL_DEV + 'herramientas/' + herramienta.id + '/adjuntos', data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                
+
                 const { herramienta } = response.data
                 const { form } = this.state
                 let aux = []
-                herramienta.adjuntos.map((adj)=>{
+                herramienta.adjuntos.map((adj) => {
                     aux.push({
                         name: adj.name,
                         url: adj.url,
@@ -435,13 +408,12 @@ class Herramienta extends Component {
             console.log(error, 'error')
         })
     }
-
-    async sendUbicacionAxios(){
+    async sendUbicacionAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form, herramienta } = this.state
-        
-        await axios.post(URL_DEV + 'herramientas/' + herramienta.id + '/ubicacion', form, { headers: {  Authorization: `Bearer ${access_token}` } }).then(
+
+        await axios.post(URL_DEV + 'herramientas/' + herramienta.id + '/ubicacion', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { herramienta } = response.data
                 let { form } = this.state
@@ -474,20 +446,19 @@ class Herramienta extends Component {
             console.log(error, 'error')
         })
     }
-
     render() {
         const { modalDelete, modalAdjuntos, modalUbicacion, modalDeleteUbicacion, form, active, data, ubicaciones } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
-                <NewTableServerRender 
-                    columns = { HERRAMIENTAS_COLUMNS }
-                    title = 'Herramientas'
-                    subtitle = 'Listado de herramientas'
-                    mostrar_boton = { true }
-                    abrir_modal = { false }
-                    url = '/proyectos/herramientas/add'
-                    mostrar_acciones = { true }
-                    actions = {
+                <NewTableServerRender
+                    columns={HERRAMIENTAS_COLUMNS}
+                    title='Herramientas'
+                    subtitle='Listado de herramientas'
+                    mostrar_boton={true}
+                    abrir_modal={false}
+                    url='/proyectos/herramientas/add'
+                    mostrar_acciones={true}
+                    actions={
                         {
                             'edit': { function: this.changePageEdit },
                             'delete': { function: this.openModalDelete },
@@ -495,42 +466,45 @@ class Herramienta extends Component {
                             'ubicacion': { function: this.openModalUbicacion }
                         }
                     }
-                    accessToken = { this.props.authUser.access_token }
-                    setter = { this.setHerramientas }
-                    urlRender = { URL_DEV + 'herramientas' }
-                    idTable = 'kt_datatable_herramientas'
-                    cardTable = 'cardTable'
-                    cardTableHeader = 'cardTableHeader'
-                    cardBody = 'cardBody'
-                    />
-                <ModalDelete title = '¿Estás seguro que deseas eliminar la herramienta?' show = { modalDelete }
-                    handleClose = { this.handleCloseDelete } 
-                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteHerramientaAxios() } }  />
+                    accessToken={this.props.authUser.access_token}
+                    setter={this.setHerramientas}
+                    urlRender={URL_DEV + 'herramientas'}
+                    idTable='kt_datatable_herramientas'
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
+                />
+                <ModalDelete title='¿Estás seguro que deseas eliminar la herramienta?' show={modalDelete}
+                    handleClose={this.handleCloseDelete}
+                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteHerramientaAxios() }} />
 
-                <Modal size="lg" title = "Adjuntos" show = { modalAdjuntos } handleClose = { this.handleCloseAdjuntos } >
-                    <ItemSlider items = { form.adjuntos.adjuntos.files } item = 'adjuntos' handleChange = { this.handleChange } 
-                        deleteFile = { this.deleteFile }/>
+                <Modal size="lg" title="Adjuntos" show={modalAdjuntos} handleClose={this.handleCloseAdjuntos} >
+                    <ItemSlider
+                        items={form.adjuntos.adjuntos.files}
+                        item='adjuntos'
+                        handleChange={this.handleChange}
+                        deleteFile={this.deleteFile}
+                    />
                     {
                         form.adjuntos.adjuntos.value ?
                             <div className="d-flex justify-content-center mt-2 mb-4">
                                 <Button icon='' text='ENVIAR'
-                                    onClick = { (e) => { e.preventDefault(); this.sendAdjuntoAxios()}  } />
+                                    onClick={(e) => { e.preventDefault(); this.sendAdjuntoAxios() }} />
                             </div>
-                        : ''
+                            : ''
                     }
                 </Modal>
-                <Modal size="xl" title = "Historial de ubicaciones" show = { modalUbicacion } handleClose = { this.handleCloseUbicacion } >
-                    <Tabs defaultActiveKey = "historial" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100"
-                        activeKey = { active } onSelect = { this.onSelect }>
+                <Modal size="xl" title="Historial de ubicaciones" show={modalUbicacion} handleClose={this.handleCloseUbicacion} >
+                    <Tabs defaultActiveKey="historial" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100"
+                        activeKey={active} onSelect={this.onSelect}>
                         <Tab eventKey="historial" title="Historial de ubicación">
                             <TableForModals
-                                columns = { UBICACIONES_HERRAMIENTAS_COLUMNS }
-                                data = { ubicaciones }
-                                hideSelector = { true }
-                                mostrar_acciones = { true }
-                                /* dataID = 'ubicaciones' */
-                                elements = { data.ubicaciones }
-                                actions = {
+                                columns={UBICACIONES_HERRAMIENTAS_COLUMNS}
+                                data={ubicaciones}
+                                hideSelector={true}
+                                mostrar_acciones={true}
+                                elements={data.ubicaciones}
+                                actions={
                                     {
                                         'delete': { function: this.openModalDeleteUbicacion },
                                     }
@@ -538,14 +512,17 @@ class Herramienta extends Component {
                             />
                         </Tab>
                         <Tab eventKey="nuevo" title="Nueva ubicación">
-                            <UbicacionHerramientaForm form = { form } onChange = { this.onChange } onSubmit = { this.onSubmit }  />
+                            <UbicacionHerramientaForm
+                                form={form}
+                                onChange={this.onChange}
+                                onSubmit={this.onSubmit}
+                            />
                         </Tab>
-                    </Tabs>        
+                    </Tabs>
                 </Modal>
-
-                <ModalDelete title = '¿Estás seguro que deseas eliminar la ubicación?' show = { modalDeleteUbicacion }
-                    handleClose = { this.handleCloseDeleteUbicacion } 
-                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteUbicacionAxios() } }  />
+                <ModalDelete title='¿Estás seguro que deseas eliminar la ubicación?' show={modalDeleteUbicacion}
+                    handleClose={this.handleCloseDeleteUbicacion}
+                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteUbicacionAxios() }} />
             </Layout>
         );
     }

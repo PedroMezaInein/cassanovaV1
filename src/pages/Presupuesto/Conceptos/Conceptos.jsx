@@ -38,7 +38,7 @@ class Conceptos extends Component {
         const { history } = this.props
         history.push({
             pathname: '/presupuesto/conceptos/edit',
-            state:{ concepto: concepto}
+            state: { concepto: concepto }
         })
     }
 
@@ -115,35 +115,31 @@ class Conceptos extends Component {
             {
                 text: 'Ver',
                 btnclass: 'info',
-                iconclass: 'flaticon2-expand',                  
+                iconclass: 'flaticon2-expand',
                 action: 'see',
-                tooltip: {id:'see', text:'Mostrar', type:'info'},
-            },
+                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
+            }
         )
         return aux
     }
-    
+
     async deleteConceptoAxios() {
         const { access_token } = this.props.authUser
         const { concepto } = this.state
         await axios.delete(URL_DEV + 'conceptos/' + concepto.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 this.getConceptosTable()
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La concepto fue registrado con éxito.')
-                
                 this.setState({
                     ... this.state,
                     modalDelete: false
                 })
-
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -153,40 +149,33 @@ class Conceptos extends Component {
         })
     }
 
-    async getConceptosTable(){
+    async getConceptosTable() {
         $('#kt_datatable_conceptos').DataTable().ajax.reload();
     }
-
-    async exportConceptosAxios(){
-
+    async exportConceptosAxios() {
         waitAlert()
-
         let aux = $('#kt_datatable_conceptos').DataTable().rows({ selected: true }).data();
         let longitud = aux.length
         let arreglo = []
-        for(let i = 0; i < longitud; i++){
+        for (let i = 0; i < longitud; i++) {
             arreglo.push(aux[i].id)
         }
-        
         const { access_token } = this.props.authUser
-        await axios.post(URL_DEV + 'exportar/conceptos', { selected: arreglo }, { responseType:'blob', headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'exportar/conceptos', { selected: arreglo }, { responseType: 'blob', headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
                 link.href = url;
                 link.setAttribute('download', 'conceptos.xlsx');
                 document.body.appendChild(link);
                 link.click();
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -197,16 +186,13 @@ class Conceptos extends Component {
     }
 
     render() {
-
         const { modalDelete, conceptos, modalSee, concepto } = this.state
-
         return (
             <Layout active={'presupuesto'}  {...this.props}>
-                
                 <NewTableServerRender
-                    columns={CONCEPTOS_COLUMNS} 
+                    columns={CONCEPTOS_COLUMNS}
                     data={conceptos}
-                    title='Conceptos' 
+                    title='Conceptos'
                     subtitle='Listado de conceptos'
                     mostrar_boton={true}
                     abrir_modal={false}
@@ -215,28 +201,29 @@ class Conceptos extends Component {
                     actions={{
                         'edit': { function: this.changePageEdit },
                         'delete': { function: this.openModalDelete },
-                        'see': { function: this.openModalSee },
-
+                        'see': { function: this.openModalSee }
                     }}
-                    exportar_boton={true} 
+                    exportar_boton={true}
                     onClickExport={() => this.exportConceptosAxios()}
-                    accessToken = { this.props.authUser.access_token }
-                    setter = { this.setConceptos }
-                    urlRender = {URL_DEV + 'conceptos'}
+                    accessToken={this.props.authUser.access_token}
+                    setter={this.setConceptos}
+                    urlRender={URL_DEV + 'conceptos'}
                     idTable='kt_datatable_conceptos'
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'
                     cardBody='cardBody'
-                    checkbox = { true } />
+                    checkbox={true} />
 
-                <ModalDelete 
-                    title="¿Estás seguro que deseas eliminar el concepto?" 
-                    show={modalDelete} 
-                    handleClose={this.handleCloseDelete} 
+                <ModalDelete
+                    title="¿Estás seguro que deseas eliminar el concepto?"
+                    show={modalDelete}
+                    handleClose={this.handleCloseDelete}
                     onClick={(e) => { e.preventDefault(); this.deleteConceptoAxios() }} />
 
-                <Modal size="lg" title="Concepto" show = { modalSee } handleClose = { this.handleCloseSee } >
-                    <ConceptoCard concepto={concepto}/>
+                <Modal size="lg" title="Concepto" show={modalSee} handleClose={this.handleCloseSee} >
+                    <ConceptoCard 
+                        concepto={concepto}
+                    />
                 </Modal>
             </Layout>
         )

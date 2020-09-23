@@ -162,6 +162,14 @@ export const LEADS_COLUMNS = [
         accessor: 'actions',
     },
     {
+        Header: 'Convertido',
+        accessor: 'convertido',
+    },
+    {
+        Header: 'Empresa',
+        accessor: 'empresa',
+    },
+    {
         Header: 'Nombre',
         accessor: 'nombre',
     },
@@ -178,10 +186,6 @@ export const LEADS_COLUMNS = [
         accessor: 'servicios',
     },
     {
-        Header: 'Empresa',
-        accessor: 'empresa',
-    },
-    {
         Header: 'Origen',
         accessor: 'origen',
     },
@@ -192,10 +196,6 @@ export const LEADS_COLUMNS = [
     {
         Header: 'Fecha',
         accessor: 'fecha',
-    },
-    {
-        Header: 'Convertido',
-        accessor: 'convertido',
     }
 ]
 
@@ -205,8 +205,8 @@ export const PROSPECTOS_COLUMNS = [
         accessor: 'actions',
     },
     {
-        Header: 'Lead',
-        accessor: 'lead',
+        Header: 'Estatus', //Estatus del prospecto
+        accessor: 'estatusProspecto',
     },
     {
         Header: 'Empresa',
@@ -225,23 +225,23 @@ export const PROSPECTOS_COLUMNS = [
         accessor: 'vendedor',
     },
     {
-        Header: 'Descripción del Prospecto', //Estaba: Descripción del prospecto
+        Header: 'Lead',
+        accessor: 'lead',
+    },
+    {
+        Header: 'Descripción del Prospecto',
         accessor: 'descripcion',
     },
     {
-        Header: 'Preferencia de contacto', //Estaba: Preferencia de contacto
+        Header: 'Preferencia de contacto',
         accessor: 'preferencia',
-    },
+    },    
     {
-        Header: 'Estatus del prospecto', //Estaba: Estatus del prospecto
-        accessor: 'estatusProspecto',
-    },
-    {
-        Header: 'Motivo contratación o cancelación', //Estaba: Motivo contratación o cancelación
+        Header: 'Motivo contratación o cancelación',
         accessor: 'motivo',
     },
     {
-        Header: 'Fecha de conversión', //Estaba:Fecha de conversión
+        Header: 'Fecha de conversión',
         accessor: 'fechaConversion',
     },
 ]
@@ -279,6 +279,10 @@ export const CLIENTES_COLUMNS = [
         accessor: 'empresa',
     },
     {
+        Header: 'Nombre',
+        accessor: 'nombre',
+    },
+    {
         Header: 'Dirección',
         accessor: 'direccion',
     },
@@ -286,10 +290,7 @@ export const CLIENTES_COLUMNS = [
         Header: 'Perfil',
         accessor: 'perfil',
     },
-    {
-        Header: 'Nombre',
-        accessor: 'nombre',
-    },
+    
     {
         Header: 'Puesto',
         accessor: 'puesto',

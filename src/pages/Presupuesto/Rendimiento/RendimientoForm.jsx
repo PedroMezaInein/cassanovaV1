@@ -7,16 +7,14 @@ import { errorAlert, forbiddenAccessAlert, waitAlert, doneAlert } from '../../..
 import Layout from '../../../components/layout/layout';
 import { Card } from 'react-bootstrap';
 import { RendimientoForm as RendimientoFormulario } from '../../../components/forms'
-
 class RendimientoForm extends Component {
-
     state = {
         title: 'Nuevo rendimiento',
         options: {
             proveedores: [],
             unidades: []
         },
-        formeditado:0,
+        formeditado: 0,
         form: {
             unidad: '',
             proveedor: '',
@@ -31,70 +29,65 @@ class RendimientoForm extends Component {
         },
         rendimiento: ''
     }
+    componentDidMount() {
+        const { authUser: { user: { permisos: permisos } } } = this.props
+        const { history: { location: { pathname: pathname } } } = this.props
+        const { match: { params: { action: action } } } = this.props
+        const { history, location: { state: state } } = this.props
 
-    componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
-        const { match : { params: { action: action } } } = this.props
-        const { history, location: { state: state} } = this.props
-        
-        const egresos = permisos.find(function(element, index) {
+        const egresos = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
             return pathname === url + '/' + action
         });
-        switch(action){
+        switch (action) {
             case 'add':
                 this.setState({
                     ... this.state,
                     title: 'Nuevo rendimiento',
-                    formeditado:0
+                    formeditado: 0
                 })
                 break;
             case 'edit':
-                if(state){
-                    if(state.rendimiento)
-                    {
+                if (state) {
+                    if (state.rendimiento) {
                         const { rendimiento } = state
                         const { form } = this.state
-                        if(rendimiento.unidad)
+                        if (rendimiento.unidad)
                             form.unidad = rendimiento.unidad.id.toString()
-                        if(rendimiento.proveedor)
+                        if (rendimiento.proveedor)
                             form.proveedor = rendimiento.proveedor.id.toString()
-                        
+
                         form.materiales = rendimiento.materiales
                         form.descripcion = rendimiento.descripcion
                         form.costo = rendimiento.costo
                         form.rendimiento = rendimiento.rendimiento
-
-                        if(rendimiento.adjunto)
-                        if(rendimiento.adjunto){
-                            form.adjunto.files = [{
-                                name: rendimiento.adjunto.name,
-                                url: rendimiento.adjunto.url
-                            }]
-                        }
-
+                        if (rendimiento.adjunto)
+                            if (rendimiento.adjunto) {
+                                form.adjunto.files = [{
+                                    name: rendimiento.adjunto.name,
+                                    url: rendimiento.adjunto.url
+                                }]
+                            }
                         this.setState({
                             ... this.state,
                             title: 'Editar rendimiento',
                             form,
                             rendimiento: rendimiento,
-                            formeditado:1
+                            formeditado: 1
                         })
                     }
                     else
                         history.push('/presupuesto/rendimiento')
-                }else
+                } else
                     history.push('/presupuesto/rendimiento')
                 break;
             default:
                 break;
         }
-        if(!egresos)
+        if (!egresos)
             history.push('/')
         this.getOptionsAxios()
     }
-
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
@@ -104,7 +97,6 @@ class RendimientoForm extends Component {
         else
             this.addRendimientoAxios()
     }
-
     onChange = e => {
         const { form } = this.state
         const { name, value } = e.target
@@ -114,7 +106,6 @@ class RendimientoForm extends Component {
             form
         })
     }
-
     onChangeAdjunto = e => {
         const { form } = this.state
         const { files, value, name } = e.target
@@ -136,7 +127,6 @@ class RendimientoForm extends Component {
             form
         })
     }
-
     clearFiles = (name, key) => {
         const { form } = this.state
         let aux = []
@@ -154,7 +144,6 @@ class RendimientoForm extends Component {
             form
         })
     }
-
     async getOptionsAxios() {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'rendimientos/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -170,9 +159,9 @@ class RendimientoForm extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -181,7 +170,6 @@ class RendimientoForm extends Component {
             console.log(error, 'error')
         })
     }
-
     async addRendimientoAxios() {
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -196,7 +184,7 @@ class RendimientoForm extends Component {
                     break
             }
         })
-        if(form.adjunto.value !== '') {
+        if (form.adjunto.value !== '') {
             for (var i = 0; i < form.adjunto.files.length; i++) {
                 data.append(`files_name_adjuntos[]`, form.adjunto.files[i].name)
                 data.append(`files_adjuntos[]`, form.adjunto.files[i].file)
@@ -204,9 +192,7 @@ class RendimientoForm extends Component {
         }
         await axios.post(URL_DEV + 'rendimientos', data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La rendimiento fue registrado con éxito.')
-
                 const { history } = this.props
                 history.push({
                     pathname: '/presupuesto/rendimiento'
@@ -214,9 +200,9 @@ class RendimientoForm extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -225,7 +211,6 @@ class RendimientoForm extends Component {
             console.log(error, 'error')
         })
     }
-
     async editRendimientoAxios() {
         const { access_token } = this.props.authUser
         const { form, rendimiento } = this.state
@@ -240,7 +225,7 @@ class RendimientoForm extends Component {
                     break
             }
         })
-        if(form.adjunto.value !== '') {
+        if (form.adjunto.value !== '') {
             for (var i = 0; i < form.adjunto.files.length; i++) {
                 data.append(`files_name_adjuntos[]`, form.adjunto.files[i].name)
                 data.append(`files_adjuntos[]`, form.adjunto.files[i].file)
@@ -249,7 +234,6 @@ class RendimientoForm extends Component {
         await axios.post(URL_DEV + 'rendimientos/update/' + rendimiento.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La rendimiento fue registrado con éxito.')
-
                 const { history } = this.props
                 history.push({
                     pathname: '/presupuesto/rendimiento'
@@ -257,9 +241,9 @@ class RendimientoForm extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -268,11 +252,10 @@ class RendimientoForm extends Component {
             console.log(error, 'error')
         })
     }
-
     render() {
-        const { formeditado, form, options, title} = this.state
+        const { formeditado, form, options, title } = this.state
         return (
-            <Layout active={'presupuesto'}  { ...this.props}>
+            <Layout active={'presupuesto'}  {...this.props}>
                 <Card className="card-custom">
                     <Card.Header>
                         <div className="card-title">
@@ -280,24 +263,22 @@ class RendimientoForm extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <RendimientoFormulario 
+                        <RendimientoFormulario
                             formeditado={formeditado}
-                            title = { title } 
-                            form = { form }
-                            onChange = { this.onChange } 
-                            onChangeAdjunto = { this.onChangeAdjunto } 
-                            clearFiles = { this.clearFiles } 
-                            options = { options } 
-                            onSubmit = {this.onSubmit}
-                            /> 
+                            title={title}
+                            form={form}
+                            onChange={this.onChange}
+                            onChangeAdjunto={this.onChangeAdjunto}
+                            clearFiles={this.clearFiles}
+                            options={options}
+                            onSubmit={this.onSubmit}
+                        />
                     </Card.Body>
                 </Card>
             </Layout>
         );
     }
 }
-
-
 const mapStateToProps = state => {
     return {
         authUser: state.authUser

@@ -3,47 +3,43 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, REMISION_COLUMNS } from '../../../constants'
-import { setTextTable, setDateTable, setArrayTable} from '../../../functions/setters'
+import { setTextTable, setDateTable, setArrayTable } from '../../../functions/setters'
 import { errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { Button } from '../../../components/form-components'
-import { faSync} from '@fortawesome/free-solid-svg-icons'
+import { faSync } from '@fortawesome/free-solid-svg-icons'
 import { RemisionCard } from '../../../components/cards'
 import NewTable from '../../../components/tables/NewTable'
-
-
-class Remisiones extends Component{
-
+class Remisiones extends Component {
     state = {
         modalDelete: false,
         modalSingle: false,
         title: 'Nueva remisión',
         remisiones: [],
         remision: '',
-        data:{
+        data: {
             remisiones: []
         },
-        formeditado:0,
+        formeditado: 0,
     }
-
-    componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
+    componentDidMount() {
+        const { authUser: { user: { permisos: permisos } } } = this.props
+        const { history: { location: { pathname: pathname } } } = this.props
         const { history } = this.props
-        const remisiones = permisos.find(function(element, index) {
+        const remisiones = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
             return pathname === url
         });
-        if(!remisiones)
+        if (!remisiones)
             history.push('/')
         this.getRemisionesAxios()
         let queryString = this.props.history.location.search
-        if(queryString){
+        if (queryString) {
             let params = new URLSearchParams(queryString)
             let id = parseInt(params.get("id"))
-            if(id){
-                
+            if (id) {
+
                 this.setState({
                     ... this.state,
                     modalSingle: true
@@ -52,15 +48,13 @@ class Remisiones extends Component{
             }
         }
     }
-    
-    openModalDelete = (remision) => {
+    openModalDelete = remision => {
         this.setState({
             ... this.state,
             modalDelete: true,
             remision: remision
         })
     }
-
     openModalSee = remision => {
         this.setState({
             ... this.state,
@@ -68,7 +62,6 @@ class Remisiones extends Component{
             remision: remision
         })
     }
-
     handleCloseSingle = () => {
         this.setState({
             ... this.state,
@@ -76,7 +69,6 @@ class Remisiones extends Component{
             remision: ''
         })
     }
-
     handleCloseDelete = () => {
         const { modalDelete } = this.state
         this.setState({
@@ -85,82 +77,77 @@ class Remisiones extends Component{
             remision: '',
         })
     }
-
     setRemisiones = remisiones => {
         let aux = []
-        remisiones.map( (remision) => {
+        remisiones.map((remision) => {
             aux.push(
                 {
                     actions: this.setActions(remision),
                     fecha: renderToString(setDateTable(remision.created_at)),
                     proyecto: renderToString(setTextTable(remision.proyecto ? remision.proyecto.nombre : '')),
-                    area: renderToString(setTextTable( remision.subarea ? remision.subarea.area ? remision.subarea.area.nombre : '' : '')),
-                    subarea: renderToString(setTextTable( remision.subarea ? remision.subarea.nombre : '')),
+                    area: renderToString(setTextTable(remision.subarea ? remision.subarea.area ? remision.subarea.area.nombre : '' : '')),
+                    subarea: renderToString(setTextTable(remision.subarea ? remision.subarea.nombre : '')),
                     descripcion: renderToString(setTextTable(remision.descripcion)),
-                    adjunto: remision.adjunto ? renderToString(setArrayTable([{text: 'Adjunto', url: remision.adjunto.url}])) : renderToString(setTextTable('Sin adjuntos')),
+                    adjunto: remision.adjunto ? renderToString(setArrayTable([{ text: 'Adjunto', url: remision.adjunto.url }])) : renderToString(setTextTable('Sin adjuntos')),
                     id: remision.id
                 }
             )
         })
         return aux
     }
-
-    setActions = remision => {
+    setActions = () => {
         let aux = []
-            aux.push(
-                {
-                    text: 'Editar',
-                    btnclass: 'success',
-                    iconclass: 'flaticon2-pen',
-                    action: 'edit',
-                    tooltip: {id:'edit', text:'Editar'},
-                },
-                {
-                    text: 'Eliminar',
-                    btnclass: 'danger',
-                    iconclass: 'flaticon2-rubbish-bin',                  
-                    action: 'delete',
-                    tooltip: {id:'delete', text:'Eliminar', type:'error'},
-                },
-                {
-                    text: 'Convertir&nbsp;a&nbsp;solicitud&nbsp;de&nbsp;compra',
-                    btnclass: 'primary',
-                    iconclass: 'flaticon2-refresh',                  
-                    action: 'convert',
-                    tooltip: {id:'convert', text:'Convertir', type:'success'},
-                },
-                {
-                    text: 'Ver',
-                    btnclass: 'primary',
-                    iconclass: 'flaticon2-expand',                  
-                    action: 'see',
-                    tooltip: {id:'see', text:'Mostrar', type:'success'},
-                },
+        aux.push(
+            {
+                text: 'Editar',
+                btnclass: 'success',
+                iconclass: 'flaticon2-pen',
+                action: 'edit',
+                tooltip: { id: 'edit', text: 'Editar' },
+            },
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',
+                action: 'delete',
+                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' },
+            },
+            {
+                text: 'Convertir&nbsp;a&nbsp;solicitud&nbsp;de&nbsp;compra',
+                btnclass: 'primary',
+                iconclass: 'flaticon2-refresh',
+                action: 'convert',
+                tooltip: { id: 'convert', text: 'Convertir', type: 'success' },
+            },
+            {
+                text: 'Ver',
+                btnclass: 'primary',
+                iconclass: 'flaticon2-expand',
+                action: 'see',
+                tooltip: { id: 'see', text: 'Mostrar', type: 'success' },
+            }
         )
         return aux
     }
-
     changePageConvert = remision => {
         const { history } = this.props
         history.push({
             pathname: '/proyectos/solicitud-compra/convert',
-            state: { remision: remision},
-            formeditado:1
+            state: { remision: remision },
+            formeditado: 1
         });
     }
-
     changePageEdit = remision => {
         const { history } = this.props
         history.push({
             pathname: '/proyectos/remision/edit',
-            state: { remision: remision},
-            formeditado:1
+            state: { remision: remision },
+            formeditado: 1
         });
     }
-
-    async getRemisionesAxios(){
+    async getRemisionesAxios() {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'remision', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'remision', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { remisiones } = response.data
                 const { data } = this.state
@@ -173,9 +160,9 @@ class Remisiones extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -184,10 +171,9 @@ class Remisiones extends Component{
             console.log(error, 'error')
         })
     }
-
-    async getRemisionAxios(id){
+    async getRemisionAxios(id) {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'remision/'+id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'remision/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { remision } = response.data
                 this.setState({
@@ -197,9 +183,9 @@ class Remisiones extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -208,31 +194,28 @@ class Remisiones extends Component{
             console.log(error, 'error')
         })
     }
-
-    async deleteRemisionAxios(){
+    async deleteRemisionAxios() {
         const { access_token } = this.props.authUser
         const { remision } = this.state
-        await axios.delete(URL_DEV + 'remision/' + remision.id, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.delete(URL_DEV + 'remision/' + remision.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { remisiones } = response.data
                 const { data } = this.state
                 data.remisiones = remisiones
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La remisión fue eliminada con éxito.')
-                
                 this.setState({
                     ... this.state,
                     remisiones: this.setRemisiones(remisiones),
-                    modalDelete:false,
+                    modalDelete: false,
                     remision: '',
                     data
                 })
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -241,56 +224,45 @@ class Remisiones extends Component{
             console.log(error, 'error')
         })
     }
-
-    render(){
-
+    render() {
         const { data, modalDelete, modalSingle, remisiones, remision } = this.state
-
-        return(
-            <Layout active={'proyectos'}  { ...this.props}>
-
-                <NewTable columns = { REMISION_COLUMNS } data = {remisiones} 
-                    title = 'Remisiones' subtitle = 'Listado de remisiones'
+        return (
+            <Layout active={'proyectos'}  {...this.props}>
+                <NewTable columns={REMISION_COLUMNS} data={remisiones}
+                    title='Remisiones' subtitle='Listado de remisiones'
                     mostrar_boton={true}
                     abrir_modal={false}
-                    url = '/proyectos/remision/add'
+                    url='/proyectos/remision/add'
                     mostrar_acciones={true}
-
-                    actions = {{
-                        'edit': {function: this.changePageEdit},
-                        'delete': {function: this.openModalDelete},
-                        'convert': {function: this.changePageConvert},
-                        'see': { function: this.openModalSee },
+                    actions={{
+                        'edit': { function: this.changePageEdit },
+                        'delete': { function: this.openModalDelete },
+                        'convert': { function: this.changePageConvert },
+                        'see': { function: this.openModalSee }
                     }}
-                    elements = { data.remisiones }
+                    elements={data.remisiones}
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'
                     cardBody='cardBody'
                 />
-
-                <ModalDelete title={"¿Estás seguro que deseas eliminar la remisión?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); this.deleteRemisionAxios() }}>
+                <ModalDelete title={"¿Estás seguro que deseas eliminar la remisión?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); this.deleteRemisionAxios() }}>
                 </ModalDelete>
-
-                <Modal size="xl" title="Remisión" show = { modalSingle } handleClose = { this.handleCloseSingle } >
-
-                    <RemisionCard data = { remision }>
+                <Modal size="xl" title="Remisión" show={modalSingle} handleClose={this.handleCloseSingle} >
+                    <RemisionCard data={remision}>
                         {
                             remision.convertido ? '' :
-                                    <Button pulse="pulse-ring" className="btn btn-icon btn-light-info pulse pulse-info" onClick={(e) => {e.preventDefault(); this.changePageConvert(remision)} } icon={faSync}
-                                        tooltip={{text:'COMPRAR'}} />
+                                <Button pulse="pulse-ring" className="btn btn-icon btn-light-info pulse pulse-info" onClick={(e) => { e.preventDefault(); this.changePageConvert(remision) }} icon={faSync}
+                                    tooltip={{ text: 'COMPRAR' }} />
                         }
-                        
                     </RemisionCard>
-                    
                 </Modal>
-
             </Layout>
         )
     }
 }
 
 const mapStateToProps = state => {
-    return{
+    return {
         authUser: state.authUser
     }
 }

@@ -7,7 +7,6 @@ import Layout from '../../../components/layout/layout'
 import { ConceptoForm } from '../../../components/forms'
 import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert } from '../../../functions/alert'
 import { Card } from 'react-bootstrap'
-
 class Conceptos extends Component {
 
     state = {
@@ -36,34 +35,30 @@ class Conceptos extends Component {
         concepto: ''
     }
     componentDidMount() {
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
-        const { match : { params: { action: action } } } = this.props
-        const { history, location: { state: state} } = this.props
-        const remisiones = permisos.find(function(element, index) {
+        const { authUser: { user: { permisos: permisos } } } = this.props
+        const { history: { location: { pathname: pathname } } } = this.props
+        const { match: { params: { action: action } } } = this.props
+        const { history, location: { state: state } } = this.props
+        const remisiones = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
             return pathname === url + '/' + action
         });
-        switch(action){
+        switch (action) {
             case 'add':
                 this.setState({
                     ... this.state,
                     title: 'Nuevo concepto',
-                    formeditado:0
+                    formeditado: 0
                 })
                 break;
             case 'edit':
-                if(state){
-                    if(state.concepto)
-                    {
+                if (state) {
+                    if (state.concepto) {
                         const { form, options } = this.state
                         const { concepto } = state
-
                         form.descripcion = concepto.descripcion
                         form.costo = concepto.costo
-
                         form.unidad = concepto.unidad.id.toString()
-
                         if (concepto.subpartida) {
                             if (concepto.subpartida.partida) {
                                 form.partida = concepto.subpartida.partida.id.toString()
@@ -74,7 +69,6 @@ class Conceptos extends Component {
                         }
                         if (concepto.proveedor)
                             form.proveedor = concepto.proveedor.id.toString()
-
                         this.setState({
                             ... this.state,
                             title: 'Editar concepto',
@@ -86,13 +80,13 @@ class Conceptos extends Component {
                     }
                     else
                         history.push('/presupuesto/conceptos')
-                }else
+                } else
                     history.push('/presupuesto/conceptos')
                 break;
             default:
                 break;
         }
-        if(!remisiones)
+        if (!remisiones)
             history.push('/')
         this.getOptionsAxios()
     }
@@ -151,9 +145,9 @@ class Conceptos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -168,18 +162,15 @@ class Conceptos extends Component {
         const { form } = this.state
         await axios.post(URL_DEV + 'conceptos', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La concepto fue registrado con éxito.')
-
                 const { history } = this.props
-                history.push({pathname: '/presupuesto/conceptos'})
-
+                history.push({ pathname: '/presupuesto/conceptos' })
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -194,17 +185,15 @@ class Conceptos extends Component {
         const { form, concepto } = this.state
         await axios.put(URL_DEV + 'conceptos/' + concepto.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La concepto fue editado con éxito.')
-
                 const { history } = this.props
-                history.push({pathname: '/presupuesto/conceptos'})
+                history.push({ pathname: '/presupuesto/conceptos' })
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -215,9 +204,7 @@ class Conceptos extends Component {
     }
 
     render() {
-
         const { title, form, options, formeditado } = this.state
-
         return (
             <Layout active={'presupuesto'}  {...this.props}>
                 <Card className="card-custom">
