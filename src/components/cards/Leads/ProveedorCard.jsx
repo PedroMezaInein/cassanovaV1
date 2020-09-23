@@ -5,7 +5,6 @@ export default class ProveedorCard extends Component {
 
     render() {
         const { proveedor } = this.props
-        console.log(proveedor)
         return (
             <div className="col-md-12 mt-4">
                 <Card className="card card-without-box-shadown border-0">

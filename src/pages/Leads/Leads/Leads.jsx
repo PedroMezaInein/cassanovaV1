@@ -159,7 +159,6 @@ class Leads extends Component {
 
     setActions = lead => {
         let aux = []
-        console.log(lead, 'lead')
         if(lead.contactado === 0)
             aux.push(
                 {

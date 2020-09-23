@@ -47,7 +47,6 @@ class Calendario extends Component {
     }
 
     handleDateClick = (arg) => { // bind with an arrow function
-        console.log(arg)
         /* alert(arg.dateStr) */
     }
     openModal = () => {
@@ -335,7 +334,6 @@ class Calendario extends Component {
 
     render() {
         const { events, form, title, formeditado, modal, key, modal_status, estatus, disponibles } = this.state
-        console.log(disponibles)
         return (
             <Layout active='rh'  {...this.props}>
                 <Card className="card-custom">

@@ -8,7 +8,6 @@ import NumberFormat from 'react-number-format'
 export default class CuentaCard extends Component {
     render() {
         const { cuenta } = this.props
-        console.log(cuenta)
         return (
             <div className="col-md-12">
                 <Card className="card card-without-box-shadown border-0">

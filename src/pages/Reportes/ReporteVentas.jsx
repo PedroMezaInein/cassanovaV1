@@ -237,7 +237,6 @@ class ReporteVentas extends Component {
             ... this.state,
             url: aux
         })
-        console.log(aux, 'aux')
         const blob = await pdf((
             <Document >
                 <Page size="A4" orientation = "landscape" wrap = { true } >

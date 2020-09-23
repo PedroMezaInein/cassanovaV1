@@ -6,7 +6,6 @@ import { ItemSlider } from '../../../components/singles'
 export default class EmpleadosCard extends Component {
     render() {
         const { rendimiento } = this.props
-        console.log(rendimiento)
         return (
             <div className="col-md-12 mt-4">
                 <Tab.Container defaultActiveKey="first">

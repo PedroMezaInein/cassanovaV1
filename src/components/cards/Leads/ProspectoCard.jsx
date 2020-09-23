@@ -6,7 +6,6 @@ export default class ProspectoCard extends Component {
     render() {
         
         const { prospecto } = this.props
-        console.log(prospecto)
         return (
             
             <div className="col-md-12 mt-4">

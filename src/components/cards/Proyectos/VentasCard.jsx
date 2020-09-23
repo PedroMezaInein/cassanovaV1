@@ -25,7 +25,6 @@ export default class VentasCard extends Component {
     }
     render() {
         const { venta } = this.props
-        console.log(venta)
         return (
             <div className="col-md-12 mt-4">
                 <Tab.Container defaultActiveKey="first">

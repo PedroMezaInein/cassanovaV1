@@ -7,7 +7,6 @@ import Card from 'react-bootstrap/Card'
 export default class ContratoCard extends Component {
     render() {
         const { contrato } = this.props
-        console.log(contrato)
         return (
             <div className="col-md-12">
                 <Card className="card card-without-box-shadown border-0">

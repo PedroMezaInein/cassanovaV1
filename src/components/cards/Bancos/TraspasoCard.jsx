@@ -9,7 +9,6 @@ import { ItemSlider } from '../../../components/singles'
 export default class TranspasoCard extends Component {
     render() {
         const { traspaso } = this.props
-        console.log(traspaso)
         return (
             <div className="col-md-12">
                 <Card className="card card-without-box-shadown border-0">

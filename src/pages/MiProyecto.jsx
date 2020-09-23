@@ -311,7 +311,6 @@ class MiProyecto extends Component {
             let params = new URLSearchParams(queryString)
             let id = parseInt(params.get("id"))
             if(id){
-                console.log(id, 'ID')
                 this.setState({
                     ... this.state,
                     id: id

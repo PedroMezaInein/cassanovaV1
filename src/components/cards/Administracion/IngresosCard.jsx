@@ -25,7 +25,6 @@ export default class IngresosCard extends Component {
     }
     render() {
         const { ingreso } = this.props
-        console.log(ingreso)
         return (
             <div className="col-md-12 mt-4">
                 <Tab.Container defaultActiveKey="first">

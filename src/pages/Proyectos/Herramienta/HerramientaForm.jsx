@@ -68,7 +68,6 @@ class HerramientaForm extends Component {
                         if(herramienta.adjuntos){
                             let aux = []
                             herramienta.adjuntos.map( (adjunto)=>{
-                                console.log(adjunto, 'adjunto')
                                 aux.push({
                                     name: adjunto.name,
                                     url: adjunto.url,

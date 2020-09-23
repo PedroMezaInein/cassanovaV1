@@ -185,7 +185,6 @@ class Herramienta extends Component {
     }
 
     openModalDeleteUbicacion = ubicacion => {
-        console.log(ubicacion, 'ubicacion')
         this.setState({
             ... this.state,
             modalDeleteUbicacion: true,

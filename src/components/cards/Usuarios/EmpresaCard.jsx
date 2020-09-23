@@ -36,7 +36,6 @@ export default class EmpresaCard extends Component {
     }
     render() {
         const { empresa } = this.props
-        console.log(empresa)
         return (
             <div className="col-md-12">
                 <Card className="card card-without-box-shadown border-0">

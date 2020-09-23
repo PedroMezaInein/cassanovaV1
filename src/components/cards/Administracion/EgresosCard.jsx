@@ -25,7 +25,6 @@ export default class EgresosCard extends Component {
     }
     render() {
         const { egreso } = this.props
-        console.log(egreso)
         return (
             <div className="col-md-12 mt-4">
                 <Tab.Container defaultActiveKey="first">

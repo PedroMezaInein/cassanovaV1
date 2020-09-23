@@ -7,7 +7,6 @@ export default class ProyectosCard extends Component {
     
     render() {
         const { proyecto } = this.props
-        console.log(proyecto)
         return (
             <div className="col-md-12 mt-4">
                 <Tab.Container defaultActiveKey="first">

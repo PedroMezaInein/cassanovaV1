@@ -144,14 +144,9 @@ class CalidadForm extends Component{
     }
 
     onChange = e => {
-        console.log('Hola')
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
-
-        console.log(form[name], 'formname')
-        console.log(name, 'name')
-        console.log(value, 'value')
         this.setState({
             ... this.state,
             form

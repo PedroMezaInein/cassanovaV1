@@ -5,7 +5,6 @@ import NumberFormat from 'react-number-format'
 export default class PreciosDiseñoCard extends Component {
     render() {
         const { precio } = this.props
-        console.log(precio)
         return (
             <div className="col-md-12 mt-4">
                 <Card className="card card-without-box-shadown border-0">
