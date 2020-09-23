@@ -271,10 +271,10 @@ export default class ComprasCard extends Component {
                                     </Card>
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="third">
-                                    <Tab.Container defaultActiveKey={compra.presupuestos != 0 ? "first" : compra.pagos != 0 ? "second" : compra.facturas != 0 ? "third" : ''}>
+                                    <Tab.Container defaultActiveKey={compra.presupuestos !== 0 ? "first" : compra.pagos !== 0 ? "second" : compra.facturas !== 0 ? "third" : ''}>
                                         <Nav className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-tabs-bold nav-tabs-line-2x border-0">
                                             {
-                                                compra.presupuestos != 0 ?
+                                                compra.presupuestos !== 0 ?
                                                     <Nav.Item>
                                                         <Nav.Link className="pt-0" eventKey="first"
                                                         >
@@ -284,7 +284,7 @@ export default class ComprasCard extends Component {
                                                     : ''
                                             }
                                             {
-                                                compra.pagos != 0 ?
+                                                compra.pagos !== 0 ?
                                                     <Nav.Item>
                                                         <Nav.Link className="pt-0" eventKey="second"
                                                         >
@@ -294,7 +294,7 @@ export default class ComprasCard extends Component {
                                                     : ''
                                             }
                                             {
-                                                compra.facturas != 0 ?
+                                                compra.facturas !== 0 ?
                                                     <Nav.Item>
                                                         <Nav.Link className="pt-0" eventKey="third"
                                                         >

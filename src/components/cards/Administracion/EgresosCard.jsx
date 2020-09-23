@@ -251,10 +251,10 @@ export default class EgresosCard extends Component {
                                     </Card>
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="third">
-                                    <Tab.Container defaultActiveKey={egreso.presupuestos != 0 ? "first" : egreso.pagos != 0 ? "second" : egreso.facturas != 0 ? "third" : ''}>
+                                    <Tab.Container defaultActiveKey={egreso.presupuestos !== 0 ? "first" : egreso.pagos !== 0 ? "second" : egreso.facturas !== 0 ? "third" : ''}>
                                         <Nav className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-tabs-bold nav-tabs-line-2x border-0">
                                             {
-                                                egreso.presupuestos != 0 ?
+                                                egreso.presupuestos !== 0 ?
                                                     <Nav.Item>
                                                         <Nav.Link className="pt-0" eventKey="first"
                                                         >
@@ -264,7 +264,7 @@ export default class EgresosCard extends Component {
                                                     : ''
                                             }
                                             {
-                                                egreso.pagos != 0 ?
+                                                egreso.pagos !== 0 ?
                                                     <Nav.Item>
                                                         <Nav.Link className="pt-0" eventKey="second"
                                                         >
@@ -274,7 +274,7 @@ export default class EgresosCard extends Component {
                                                     : ''
                                             }
                                             {
-                                                egreso.facturas != 0 ?
+                                                egreso.facturas !== 0 ?
                                                     <Nav.Item>
                                                         <Nav.Link className="pt-0" eventKey="third"
                                                         >

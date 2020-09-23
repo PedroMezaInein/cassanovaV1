@@ -215,10 +215,10 @@ export default class IngresosCard extends Component {
                                     </Card>
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="third">
-                                    <Tab.Container defaultActiveKey={ingreso.presupuestos != 0 ? "first" : ingreso.pagos != 0 ? "second" : ingreso.facturas != 0 ? "third" : ''}>
+                                    <Tab.Container defaultActiveKey={ingreso.presupuestos !== 0 ? "first" : ingreso.pagos !== 0 ? "second" : ingreso.facturas !== 0 ? "third" : ''}>
                                         <Nav className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-tabs-bold nav-tabs-line-2x border-0">
                                             {
-                                                ingreso.presupuestos != 0 ?
+                                                ingreso.presupuestos !== 0 ?
                                                     <Nav.Item>
                                                         <Nav.Link className="pt-0" eventKey="first"
                                                         >
@@ -228,7 +228,7 @@ export default class IngresosCard extends Component {
                                                     : ''
                                             }
                                             {
-                                                ingreso.pagos != 0 ?
+                                                ingreso.pagos !== 0 ?
                                                     <Nav.Item>
                                                         <Nav.Link className="pt-0" eventKey="second"
                                                         >
@@ -238,7 +238,7 @@ export default class IngresosCard extends Component {
                                                     : ''
                                             }
                                             {
-                                                ingreso.facturas != 0 ?
+                                                ingreso.facturas !== 0 ?
                                                     <Nav.Item>
                                                         <Nav.Link className="pt-0" eventKey="third"
                                                         >

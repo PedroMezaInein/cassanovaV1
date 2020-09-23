@@ -13,9 +13,7 @@ import ItemSlider from '../../../components/singles/ItemSlider'
 import { Nav, Tab, Col, Row, Card } from 'react-bootstrap'
 import { waitAlert, forbiddenAccessAlert, errorAlert, doneAlert } from '../../../functions/alert'
 import { EmpresaCard } from '../../../components/cards'
-
 class Empresas extends Component {
-
     state = {
         empresas: [],
         modalDelete: false,
@@ -63,13 +61,12 @@ class Empresas extends Component {
             }
         ],
         adjuntos: [],
-        defaultactivekey:"",
+        defaultactivekey: "",
     }
     constructor(props) {
         super(props)
         this.handleChange = this.handleChange.bind(this);
     }
-
     componentDidMount() {
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
@@ -82,7 +79,6 @@ class Empresas extends Component {
             history.push('/')
         this.getEmpresas()
     }
-
     async getEmpresas() {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'empresa', { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -94,9 +90,9 @@ class Empresas extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -105,8 +101,7 @@ class Empresas extends Component {
             console.log(error, 'error')
         })
     }
-
-    setEmpresas = (empresas_list) => {
+    setEmpresas = empresas_list => {
         const { data } = this.state
         data.empresas = empresas_list
         let empresas = []
@@ -116,7 +111,7 @@ class Empresas extends Component {
                 name: renderToString(setTextTable(empresa.name)),
                 razonSocial: renderToString(setTextTable(empresa.razon_social)),
                 rfc: renderToString(setTextTable(empresa.rfc)),
-                logo: renderToString(empresa.logos.length !== 0 ? <img className="img-empresa" src={empresa.logos[empresa.logos.length - 1].url } alt={empresa.name} /> : 'No hay logo'),
+                logo: renderToString(empresa.logos.length !== 0 ? <img className="img-empresa" src={empresa.logos[empresa.logos.length - 1].url} alt={empresa.name} /> : 'No hay logo'),
                 id: empresa.id
             }
         })
@@ -134,7 +129,6 @@ class Empresas extends Component {
             data
         })
     }
-
     setActions = () => {
         let aux = []
         aux.push(
@@ -151,7 +145,7 @@ class Empresas extends Component {
                 iconclass: 'flaticon2-rubbish-bin',
                 action: 'delete',
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
-            },            
+            },
             {
                 text: 'Imagen&nbsp;coorporativa',
                 btnclass: 'primary',
@@ -162,15 +156,14 @@ class Empresas extends Component {
             {
                 text: 'Ver',
                 btnclass: 'info',
-                iconclass: 'flaticon2-expand',                  
+                iconclass: 'flaticon2-expand',
                 action: 'see',
-                tooltip: {id:'see', text:'Mostrar', type:'info'},
-            },
+                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
+            }
         )
         return aux
     }
-
-    openModalDeleteEmpresa = (emp) => {
+    openModalDeleteEmpresa = emp => {
         this.setState({
             ... this.state,
             modalDelete: true,
@@ -178,19 +171,16 @@ class Empresas extends Component {
             formAction: 'Delete'
         })
     }
-
     changePageEdit = empresa => {
         const { history } = this.props
         history.push({
             pathname: '/usuarios/empresas/edit',
-            state: { empresa: empresa}
+            state: { empresa: empresa }
         });
     }
-
     openModalAdjuntos = empresa => {
         let { adjuntos } = this.state
-        let auxheaders = [
-        ]
+        // let auxheaders = []
 
         this.setState({
             ... this.state,
@@ -201,7 +191,6 @@ class Empresas extends Component {
             formeditado: 0,
         })
     }
-
     openModalSee = empresa => {
         this.setState({
             ... this.state,
@@ -209,7 +198,6 @@ class Empresas extends Component {
             empresa: empresa
         })
     }
-
     handleCloseSee = () => {
         this.setState({
             ... this.state,
@@ -217,13 +205,9 @@ class Empresas extends Component {
             empresa: ''
         })
     }
-
     setAdjuntosSlider = empresa => {
-
-        let auxheaders = [
-        ]
+        let auxheaders = []
         let aux = []
-
         auxheaders.map((element) => {
             aux.push({
                 id: element.name,
@@ -235,7 +219,6 @@ class Empresas extends Component {
         })
         return aux
     }
-
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -250,14 +233,12 @@ class Empresas extends Component {
         })
         return form
     }
-
     updateActiveTabContainer = active => {
         this.setState({
             ... this.state,
             subActiveKey: active
         })
     }
-
     handleDeleteModal = () => {
         const { modalDelete } = this.state
         this.setState({
@@ -267,8 +248,7 @@ class Empresas extends Component {
             formAction: ''
         })
     }
-
-    safeDeleteEmpresa = (e) => (empresa) => {
+    safeDeleteEmpresa = e => (empresa) => {
         this.deleteEmpresaAxios(empresa);
         this.setState({
             ... this.state,
@@ -277,21 +257,19 @@ class Empresas extends Component {
             formAction: ''
         })
     }
-
     async deleteEmpresaAxios(empresa) {
         const { access_token } = this.props.authUser
         await axios.delete(URL_DEV + 'empresa/' + empresa, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
                 const { data: { empresas: empresas } } = response
                 this.setEmpresas(empresas)
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito la empresa.')
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -300,7 +278,6 @@ class Empresas extends Component {
             console.log(error, 'error')
         })
     }
-
     async updateEmpresaAxios(empresa) {
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -313,15 +290,13 @@ class Empresas extends Component {
             (response) => {
                 const { data: { empresas: empresas } } = response
                 this.setEmpresas(empresas)
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Actualizaste con éxito la empresa.')
-
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -330,7 +305,6 @@ class Empresas extends Component {
             console.log(error, 'error')
         })
     }
-
     async addEmpresaAxios() {
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -343,15 +317,13 @@ class Empresas extends Component {
             (response) => {
                 const { data: { empresas: empresas } } = response
                 this.setEmpresas(empresas)
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Agregaste con éxito la empresa.')
-
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -360,8 +332,7 @@ class Empresas extends Component {
             console.log(error, 'error')
         })
     }
-
-    onChangeAdjuntoGrupo = (e) => {
+    onChangeAdjuntoGrupo = e => {
         const { form, showadjuntos } = this.state
         const { files, value, name } = e.target
         let adjunto = 0
@@ -376,21 +347,18 @@ class Empresas extends Component {
                 }
             )
         }
-        for(let i = 0; i < showadjuntos.length; i++){
-            if(showadjuntos[i].id === name){
+        for (let i = 0; i < showadjuntos.length; i++) {
+            if (showadjuntos[i].id === name) {
                 adjunto = i;
             }
         }
-
         showadjuntos[adjunto].value = value
         showadjuntos[adjunto].files = aux
-        
         this.setState({
             ... this.state,
             form
         })
     }
-
     handleChangeImages = (files, item) => {
         this.onChangeAdjuntoGrupo({ target: { name: item, value: files, files: files } })
         swal({
@@ -418,41 +386,35 @@ class Empresas extends Component {
             }
         })
     }
-
     async addAdjuntoAxios(name) {
         const { access_token } = this.props.authUser
-        const { form, empresa, showadjuntos } = this.state
+        const { empresa, showadjuntos } = this.state
         const data = new FormData();
         data.append('tipo', name)
         let adjunto = 0
-        for(let i = 0; i < showadjuntos.length; i++){
-            if(showadjuntos[i].id === name){
+        for (let i = 0; i < showadjuntos.length; i++) {
+            if (showadjuntos[i].id === name) {
                 adjunto = i;
             }
         }
-        showadjuntos[adjunto].files.map( (file) => {
+        showadjuntos[adjunto].files.map((file) => {
             data.append(`files_name_${showadjuntos[adjunto].id}[]`, file.name)
             data.append(`files_${showadjuntos[adjunto].id}[]`, file.file)
         })
-
         await axios.post(URL_DEV + 'empresa/' + empresa.id + '/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 const { empresas, empresa } = response.data
-
                 this.setEmpresas(empresas)
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Agregaste con éxito la empresa.')
-
                 this.setState({
                     empresa: empresa
                 })
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -461,8 +423,7 @@ class Empresas extends Component {
             console.log(error, 'error')
         })
     }
-
-    handleChange = (e) => {
+    handleChange = e => {
         e.preventDefault();
         const { name, value } = e.target
         const { form } = this.state
@@ -476,7 +437,6 @@ class Empresas extends Component {
                 img: img
             })
         }
-
         else {
             if (name === 'razonSocial') {
                 let cadena = value.replace(/,/g, '')
@@ -494,11 +454,8 @@ class Empresas extends Component {
                 })
             }
         }
-
-
     }
-
-    handleSubmit = (e) => {
+    handleSubmit = e => {
         e.preventDefault()
         const { empresa: { id: empresa } } = this.state
         this.updateEmpresaAxios(empresa);
@@ -507,15 +464,13 @@ class Empresas extends Component {
             empresa: {}
         })
     }
-
-    handleAddSubmit = (e) => {
+    handleAddSubmit = e => {
         e.preventDefault()
         this.addEmpresaAxios();
         this.setState({
             ... this.state,
         })
     }
-
     handleCloseAdjuntos = () => {
         const { modalAdjuntos } = this.state
         this.setState({
@@ -525,10 +480,9 @@ class Empresas extends Component {
             empresa: '',
         })
     }
-
     removeFile = (e) => {
         e.preventDefault()
-        const { name, logo, file, razon_social } = this.state.empresa
+        const { name, logo, razon_social } = this.state.empresa
         this.setState({
             ... this.state,
             form: {
@@ -540,7 +494,6 @@ class Empresas extends Component {
             img: ''
         })
     }
-
     deleteFile = element => {
         swal({
             title: '¿Deseas eliminar el archivo?',
@@ -566,23 +519,21 @@ class Empresas extends Component {
             }
         })
     }
-
     render() {
-        const { empresas, modalDelete, empresa, form, img, title, formAction, data, formeditado, modalAdjuntos, showadjuntos, defaultactivekey,modalSee } = this.state
+        const { empresas, modalDelete, empresa, data, modalAdjuntos, showadjuntos, defaultactivekey, modalSee } = this.state
         return (
             <Layout active={'usuarios'} {...this.props}>
-
                 <NewTable columns={EMPRESA_COLUMNS} data={empresas}
                     title='Empresas' subtitle='Listado de empresas'
                     mostrar_boton={true}
-                    abrir_modal={false}                    
-                    url = '/usuarios/empresas/add'
+                    abrir_modal={false}
+                    url='/usuarios/empresas/add'
                     mostrar_acciones={true}
 
                     actions={{
-                        'edit': {function: this.changePageEdit},
+                        'edit': { function: this.changePageEdit },
                         'delete': { function: this.openModalDeleteEmpresa },
-                        'adjuntos': { function: this.openModalAdjuntos },  
+                        'adjuntos': { function: this.openModalAdjuntos },
                         'see': { function: this.openModalSee },
 
                     }}
@@ -593,7 +544,6 @@ class Empresas extends Component {
                     cardBody='cardBody'
                 />
                 <Modal>
-
                 </Modal>
                 <Modal size="xl" title="Imagen corporativa" show={modalAdjuntos} handleClose={this.handleCloseAdjuntos} >
                     <div className="p-2">
@@ -626,7 +576,7 @@ class Empresas extends Component {
                                                                     {
                                                                         empresa ?
                                                                             empresa[adjunto.id] ?
-                                                                                <ItemSlider multiple = { false } items={ empresa[adjunto.id] } handleChange={this.handleChangeImages}
+                                                                                <ItemSlider multiple={false} items={empresa[adjunto.id]} handleChange={this.handleChangeImages}
                                                                                     item={adjunto.id} />
                                                                                 : ''
                                                                             : ''
@@ -644,12 +594,12 @@ class Empresas extends Component {
                         </Card>
                     </div>
                 </Modal>
-
                 <ModalDelete title={empresa === null ? "¿Estás seguro que deseas eliminar a " : "¿Estás seguro que deseas eliminar a " + empresa.name + " ?"} show={modalDelete} handleClose={this.handleDeleteModal} onClick={(e) => { this.safeDeleteEmpresa(e)(empresa.id) }}>
                 </ModalDelete>
-
-                <Modal size="lg" title="Empresa" show = { modalSee } handleClose = { this.handleCloseSee } >
-                    <EmpresaCard empresa={empresa}/>
+                <Modal size="lg" title="Empresa" show={modalSee} handleClose={this.handleCloseSee} >
+                    <EmpresaCard 
+                        empresa={empresa} 
+                    />
                 </Modal>
             </Layout>
         )
