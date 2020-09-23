@@ -123,7 +123,7 @@ export default class ClienteCard extends Component {
                                             <div className="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
                                                 <div className="symbol-label">
                                                     <span className="svg-icon svg-icon-lg svg-icon-info">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
+                                                        <SVG src={toAbsoluteUrl('/images/svg/Shield-user.svg')} />
                                                     </span>
                                                 </div>
                                             </div>

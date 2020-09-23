@@ -6,13 +6,16 @@ import { URL_DEV, PROVEEDORES_COLUMNS } from '../../../constants'
 import { setTextTable, setDateTable, setMoneyTable, setArrayTable} from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
-import { ModalDelete } from '../../../components/singles'
+import { ModalDelete, Modal} from '../../../components/singles'
 import NewTable from '../../../components/tables/NewTable'
+import { ProveedorCard } from '../../../components/cards'
+
 
 class Proveedor extends Component{
 
     state = {
         modalDelete: false,
+        modalSee: false,
         lead: '',
         proveedor: '',
         proveedores: [],
@@ -67,7 +70,7 @@ class Proveedor extends Component{
         return aux
     }
 
-    setActions = proveedor => {
+    setActions = () => {
         let aux = []
         aux.push(
             {
@@ -83,6 +86,13 @@ class Proveedor extends Component{
                 iconclass: 'flaticon2-rubbish-bin', 
                 action: 'delete',
                 tooltip: {id:'delete', text:'Eliminar', type:'error'}
+            },
+            {
+                text: 'Ver',
+                btnclass: 'info',
+                iconclass: 'flaticon2-expand',                  
+                action: 'see',
+                tooltip: {id:'see', text:'Mostrar', type:'info'},
             }
         )
         return aux
@@ -107,6 +117,22 @@ class Proveedor extends Component{
     handleCloseDelete = () => {
         this.setState({
             modalDelete: false,
+            proveedor: ''
+        })
+    }
+
+    openModalSee = proveedor => {
+        this.setState({
+            ... this.state,
+            modalSee: true,
+            proveedor: proveedor
+        })
+    }
+
+    handleCloseSee = () => {
+        this.setState({
+            ... this.state,
+            modalSee: false,
             proveedor: ''
         })
     }
@@ -173,7 +199,7 @@ class Proveedor extends Component{
 
     render(){
         
-        const { modalDelete, proveedores, data } = this.state
+        const { modalDelete, proveedores, data, modalSee, proveedor} = this.state
 
         return(
             <Layout active={'administracion'}  { ...this.props}>
@@ -186,7 +212,8 @@ class Proveedor extends Component{
                     mostrar_acciones={true}
                     actions={{
                         'edit': { function: this.changePageEdit },
-                        'delete': { function: this.openModalDelete }
+                        'delete': { function: this.openModalDelete },
+                        'see': { function: this.openModalSee },
                     }}
                     elements={data.proveedores}
                     cardTable='cardTable'
@@ -198,6 +225,9 @@ class Proveedor extends Component{
                 <ModalDelete title={"¿Deseas eliminar el proveedor?"}show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteProveedor() }}>
                 </ModalDelete>
                 
+                <Modal title="Proveedor" show = { modalSee } handleClose = { this.handleCloseSee } >
+                    <ProveedorCard proveedor={proveedor}/>
+                </Modal>
             </Layout>
         )
     }
