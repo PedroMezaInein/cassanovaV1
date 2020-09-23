@@ -6,7 +6,7 @@ import { Button } from '../../components/form-components'
 import axios from 'axios'
 import { URL_DEV, CLIENTES_COLUMNS, EMPTY_CLIENTE, CP_URL } from '../../constants'
 import Moment from 'react-moment'
-import { Small} from '../../components/texts'
+import { Small } from '../../components/texts'
 import { Form } from 'react-bootstrap'
 import { ClienteForm } from '../../components/forms'
 import { Modal } from '../../components/singles'
@@ -30,7 +30,7 @@ class Leads extends Component {
         data: {
             clientes: []
         },
-        formeditado:0,
+        formeditado: 0,
         colonias: []
     }
 
@@ -76,11 +76,11 @@ class Leads extends Component {
     onChange = event => {
         const { form } = this.state
         const { name, value } = event.target
-        if(name === 'empresa'){
+        if (name === 'empresa') {
             let cadena = value.replace(/,/g, '')
             cadena = cadena.replace(/\./g, '')
             form[name] = cadena
-        }else
+        } else
             form[name] = value
         this.setState({
             ... this.state,
@@ -127,7 +127,7 @@ class Leads extends Component {
             ... this.state,
             modal: true,
             typeForm: 'Add',
-            formeditado:0
+            formeditado: 0
         })
         this.clearForm('form', EMPTY_CLIENTE)
     }
@@ -167,7 +167,7 @@ class Leads extends Component {
             typeForm: 'Edit',
             form,
             cliente,
-            formeditado:1
+            formeditado: 1
         })
     }
 
@@ -209,7 +209,7 @@ class Leads extends Component {
             clientes: aux
         })
     }
-    setActions = cliente => {
+    setActions = () => {
         let aux = []
         aux.push(
             {
@@ -229,9 +229,9 @@ class Leads extends Component {
             {
                 text: 'Ver',
                 btnclass: 'info',
-                iconclass: 'flaticon2-expand',                  
+                iconclass: 'flaticon2-expand',
                 action: 'see',
-                tooltip: {id:'see', text:'Mostrar', type:'info'},
+                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
             }
         )
         return aux
@@ -292,9 +292,9 @@ class Leads extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -326,9 +326,9 @@ class Leads extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -347,7 +347,7 @@ class Leads extends Component {
                 const { data } = this.state
                 data.clientes = clientes
                 this.setClientes(clientes)
-                
+
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito al cliente.')
 
                 this.setState({
@@ -360,9 +360,9 @@ class Leads extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -393,9 +393,9 @@ class Leads extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -442,17 +442,17 @@ class Leads extends Component {
     onSubmit = e => {
         e.preventDefault();
         const { typeForm } = this.state
-        if(typeForm === 'Add'){
+        if (typeForm === 'Add') {
             this.submitForm(e)
-        }else{
+        } else {
             this.submitEditForm(e)
         }
     }
 
     render() {
-        const { clientes, modal, typeForm, form, estado, municipio, colonias, modalDelete, cliente, data, formeditado, modalSee} = this.state
+        const { clientes, modal, typeForm, form, estado, municipio, colonias, modalDelete, cliente, data, formeditado, modalSee } = this.state
         return (
-            <Layout active={'leads'}  {...this.props}>                
+            <Layout active={'leads'}  {...this.props}>
                 <NewTable columns={CLIENTES_COLUMNS} data={clientes}
                     title='Clientes' subtitle='Listado de clientes'
                     mostrar_boton={true}
@@ -472,16 +472,16 @@ class Leads extends Component {
 
                 <Modal size="xl" title={typeForm === 'Add' ? 'Registrar nuevo cliente' : 'Editar cliente'} show={modal} handleClose={this.handleCloseModal}>
                     <Form id="form-cliente"
-                        onSubmit = { 
-                                    (e) => {
-                                        e.preventDefault(); 
-                                        validateAlert(this.onSubmit, e, 'form-cliente')
-                                    }
-                                }>
+                        onSubmit={
+                            (e) => {
+                                e.preventDefault();
+                                validateAlert(this.onSubmit, e, 'form-cliente')
+                            }
+                        }>
                         <div className="">
-                            <ClienteForm 
+                            <ClienteForm
                                 formeditado={formeditado}
-                                onChange={this.onChange}                               
+                                onChange={this.onChange}
                                 form={form}
                                 changeCP={this.changeCP}
                                 estado={estado}
@@ -490,26 +490,31 @@ class Leads extends Component {
                                 updateColonia={this.updateColonia}
                             />
                         </div>
-                        <div className="mt-3 text-center">
-                            <Button icon='' className="mx-auto"
-                                onClick = { 
-                                    (e) => {
-                                        e.preventDefault(); 
-                                        validateAlert(this.onSubmit, e, 'form-cliente')
-                                    }
-                                }
-                                text="ENVIAR" />
+                        <div className="card-footer py-3 pr-1">
+                            <div className="row">
+                                <div className="col-lg-12 text-right pr-0 pb-0">
+                                    <Button icon='' className="btn btn-primary mr-2"
+                                        onClick={
+                                            (e) => {
+                                                e.preventDefault();
+                                                validateAlert(this.onSubmit, e, 'form-cliente')
+                                            }
+                                        }
+                                        text="ENVIAR"
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </Form>
                 </Modal>
-                <Modal size="xl" title= {cliente === null ? "¿Estás seguro que deseas eliminar a ": "¿Estás seguro que deseas eliminar a "+cliente.empresa +" ?"} show={modalDelete} handleClose={this.handleDeleteModal} >
+                <Modal size="lg" title={cliente === null ? "¿Estás seguro que deseas eliminar a " : "¿Estás seguro que deseas eliminar a " + cliente.empresa + " ?"} show={modalDelete} handleClose={this.handleDeleteModal} >
                     <div className="d-flex justify-content-center mt-3">
-                        <Button icon='' onClick={this.handleDeleteModal} text="CANCELAR" className={"btn btn-light-primary font-weight-bolder mr-3"}/>
+                        <Button icon='' onClick={this.handleDeleteModal} text="CANCELAR" className={"btn btn-light-primary font-weight-bolder mr-3"} />
                         <Button icon='' onClick={(e) => { this.safeDelete(e)(cliente.id) }} text="CONTINUAR" className={"btn btn-danger font-weight-bold mr-2"} />
                     </div>
                 </Modal>
-                <Modal size="lg" title="Cliente" show = { modalSee } handleClose = { this.handleCloseSee } >
-                    <ClienteCard cliente={cliente}/>
+                <Modal size="lg" title="Cliente" show={modalSee} handleClose={this.handleCloseSee} >
+                    <ClienteCard cliente={cliente} />
                 </Modal>
             </Layout>
         )

@@ -293,8 +293,13 @@ class ProveedorForm extends Component{
         const { form, title, options,formeditado } = this.state
         return(
             <Layout active={'leads'}  { ...this.props}>
-                <Card className="pt-0">
-                    <Card.Body>
+                <Card className="card-custom">
+                    <Card.Header>
+                        <div className="card-title">
+                            <h3 className="card-label">PROVEEDOR</h3>
+                        </div>
+                    </Card.Header>
+                    <Card.Body className="pt-0">
                         <ProveedorFormulario 
                             formeditado={formeditado}
                             title = { title } 
