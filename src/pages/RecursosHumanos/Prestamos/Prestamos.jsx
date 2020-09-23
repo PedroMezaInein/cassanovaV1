@@ -14,6 +14,7 @@ import Pagination from "react-js-pagination";
 import { AbonoPrestamosForm } from '../../../components/forms';
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
+import { PrestamosCard } from '../../../components/cards'
 
 const $ = require('jquery');
 
@@ -23,6 +24,7 @@ class Prestamos extends Component {
         modalDelete: false,
         modalAdjuntos: false,
         modalAbonos: false,
+        modalSee: false,
         form:{
             adjuntos:{
                 adjuntos:{
@@ -54,7 +56,7 @@ class Prestamos extends Component {
         return aux
     }
 
-    setActions = prestamo => {
+    setActions = () => {
         let aux = []
         aux.push(
             {
@@ -73,7 +75,7 @@ class Prestamos extends Component {
             },
             {
                 text: 'Adjuntos',
-                btnclass: 'primary',
+                btnclass: 'info',
                 iconclass: 'flaticon-attachment',
                 action: 'adjuntos',
                 tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
@@ -83,7 +85,15 @@ class Prestamos extends Component {
                 btnclass: 'primary',
                 iconclass: 'flaticon-coins',
                 action: 'abono'
+            },
+            {
+                text: 'Ver',
+                btnclass: 'dark',
+                iconclass: 'flaticon2-expand',                  
+                action: 'see',
+                tooltip: {id:'see', text:'Mostrar', type:'info'},
             }
+
         )
         return aux
     }
@@ -181,6 +191,21 @@ class Prestamos extends Component {
             prestamo: '',
             form,
             active: 'listado'
+        })
+    }
+    openModalSee = prestamo => {
+        this.setState({
+            ... this.state,
+            modalSee: true,
+            prestamo: prestamo
+        })
+    }
+
+    handleCloseSee = () => {
+        this.setState({
+            ... this.state,
+            modalSee: false,
+            prestamo: ''
         })
     }
 
@@ -411,7 +436,7 @@ class Prestamos extends Component {
     }
 
     render() {
-        const { modalDelete, form, modalAdjuntos, modalAbonos, active, prestamo, activePage, itemsPerPage } = this.state
+        const { modalDelete, form, modalAdjuntos, modalAbonos, active, prestamo, activePage, itemsPerPage, modalSee } = this.state
         return (
             <Layout active = 'rh' { ... this.props }>
                 <NewTableServerRender
@@ -427,7 +452,8 @@ class Prestamos extends Component {
                             'edit': { function: this.changePageEdit },
                             'delete': { function: this.openModalDelete },
                             'adjuntos': { function: this.openModalAdjuntos },
-                            'abono': { function: this.openModalAbonos }
+                            'abono': { function: this.openModalAbonos },
+                            'see': { function: this.openModalSee },
                         }
                     }
                     accessToken = { this.props.authUser.access_token }
@@ -617,6 +643,9 @@ class Prestamos extends Component {
                                 />
                         </Tab>
                     </Tabs>  
+                </Modal>
+                <Modal size="lg" title="Prestamo" show = { modalSee } handleClose = { this.handleCloseSee } >
+                    <PrestamosCard prestamo={prestamo}/>
                 </Modal>
             </Layout>
         );

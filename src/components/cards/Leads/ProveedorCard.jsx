@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import Moment from 'react-moment'
 import { Card } from 'react-bootstrap'
 
 export default class ProveedorCard extends Component {

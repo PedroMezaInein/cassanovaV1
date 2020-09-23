@@ -28,12 +28,12 @@ export default class componentName extends Component {
                     }
                 }
                 { ...props } >
-                <div className="form-group row form-group-marginless pt-4 justify-content-md-center">
+                <div className="form-group row form-group-marginless justify-content-md-center">
                     <div className="col-md-4">
                         <SelectSearch
                             formeditado = { formeditado }
                             options = { options.empleados }
-                            placeholder = 'EMPLEADOS'
+                            placeholder = 'EMPLEADO'
                             name = 'empleado'
                             value = { form.empleado }
                             onChange = { this.updateEmpleado }

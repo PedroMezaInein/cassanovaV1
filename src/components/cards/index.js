@@ -21,6 +21,8 @@ import facturacionCard from './Administracion/FacturacionCard'
 
 //RecursosHumanos
 import empleadosCard from './RecursosHumanos/EmpleadosCard'
+import prestamosCard from './RecursosHumanos/PrestamosCard'
+
 //Bancos
 import traspasoCard from './Bancos/TraspasoCard'
 import estadoCuentaCard from './Bancos/EstadoCuentaCard'
@@ -62,6 +64,7 @@ export const ContratoCard = contratoCard
 export const FacturacionCard = facturacionCard
 //RecursosHumanos
 export const EmpleadosCard = empleadosCard
+export const PrestamosCard = prestamosCard
 //Bancos
 export const TraspasoCard = traspasoCard
 export const EstadoCuentaCard = estadoCuentaCard
