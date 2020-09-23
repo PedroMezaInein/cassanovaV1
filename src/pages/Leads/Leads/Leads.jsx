@@ -14,7 +14,7 @@ import { Modal } from '../../../components/singles'
 import { RangeCalendar, Button } from '../../../components/form-components';
 
 // Functions
-import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert, createAlert } from '../../../functions/alert'
+import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert, createAlertSA2} from '../../../functions/alert'
 import { setTextTable, setContactoTable, setListTable, setDateTable, setLabelTable } from '../../../functions/setters';
 import { LeadCard } from '../../../components/cards';
 
@@ -41,10 +41,10 @@ class Leads extends Component {
         });
     }
 
-    openModalSafeConvert =  (lead) => {
+    openModalSafeConvert = lead => {
         const { history } = this.props
-        createAlert(
-            '¿Deseas convertir el lead?', 
+        createAlertSA2(
+            'LEAD A PROSPECTO', 
             `¿Deseas convertir el lead ${lead.nombre} en un prospecto?`, 
             () => 
                 history.push({
@@ -56,8 +56,8 @@ class Leads extends Component {
 
     openModalSafeConvertProveedor = lead => {
         const { history } = this.props
-        createAlert(
-            '¿Deseas convertir el lead?', 
+        createAlertSA2(
+            'LEAD A PROVEEDOR', 
             `¿Deseas convertir el lead ${lead.nombre} en un proveedor?`, 
             () => 
                 history.push({
@@ -185,16 +185,16 @@ class Leads extends Component {
                 {
                     text: 'Convertir&nbsp;en&nbsp;proveedor',
                     btnclass: 'info',
-                    iconclass: 'flaticon-user-ok',
+                    iconclass: 'flaticon2-lorry',
                     action: 'proveedor',
                     tooltip: {id:'proveedor', text:'Convertir en proveedor'}
                 },
                 {
                     text: 'Ver',
-                    btnclass: 'primary',
+                    btnclass: 'dark',
                     iconclass: 'flaticon2-expand',                  
                     action: 'see',
-                    tooltip: {id:'see', text:'Mostrar', type:'success'},
+                    tooltip: {id:'see', text:'Mostrar', type:'dark'},
                 },
             )
         
@@ -282,7 +282,6 @@ class Leads extends Component {
         const { modalDelete, modalExport, modalSingle, lead, form } = this.state
         return (
             <Layout active = 'leads'  { ...this.props } >
-
                 <NewTableServerRender
                     columns = { LEADS_COLUMNS }
                     title = 'Leads'
