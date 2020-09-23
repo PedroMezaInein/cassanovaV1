@@ -44,7 +44,7 @@ class AccordionEstadosResultados extends Component {
     openAccordion = (indiceClick) => {
         let { accordion } = this.state
         accordion.map((element, key) => {
-            if (indiceClick == key) {
+            if (indiceClick === key) {
                 element.isActive = element.isActive ? false : true
             }
             else {
