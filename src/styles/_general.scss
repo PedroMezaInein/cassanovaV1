@@ -390,3 +390,14 @@ a.nav-link {
         max-width: none;
     }
 }
+// /presupuesto/conceptos tr select
+#kt_datatable_conceptos.dataTable tbody tr.selected {
+    color: #ECF0F3 !important;
+    background-color: #ECF0F3 !important;
+}
+table.dataTable.display tbody > tr.selected > .sorting_1{
+    background-color:  #ECF0F3!important;
+}
+.dataTables_wrapper .dataTable tbody tr.selected td{
+    background-color:  #ECF0F3 !important;
+}
