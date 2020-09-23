@@ -13,6 +13,7 @@ import { Modal } from '../../components/singles'
 import NewTable from '../../components/tables/NewTable'
 import { setTextTable, setDateTable } from '../../functions/setters'
 import { validateAlert, doneAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
+import { ClienteCard } from '../../components/cards'
 
 class Leads extends Component {
 
@@ -20,6 +21,7 @@ class Leads extends Component {
         clientes: [],
         modal: false,
         modalDelete: false,
+        modalSee: false,
         cliente: '',
         form: EMPTY_CLIENTE,
         typeForm: 'Add',
@@ -169,6 +171,22 @@ class Leads extends Component {
         })
     }
 
+    openModalSee = cliente => {
+        this.setState({
+            ... this.state,
+            modalSee: true,
+            cliente: cliente
+        })
+    }
+
+    handleCloseSee = () => {
+        this.setState({
+            ... this.state,
+            modalSee: false,
+            cliente: ''
+        })
+    }
+
     setClientes = clientes => {
         let aux = [];
         clientes.map((cliente) => {
@@ -207,6 +225,13 @@ class Leads extends Component {
                 iconclass: 'flaticon2-rubbish-bin',
                 action: 'delete',
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
+            },
+            {
+                text: 'Ver',
+                btnclass: 'info',
+                iconclass: 'flaticon2-expand',                  
+                action: 'see',
+                tooltip: {id:'see', text:'Mostrar', type:'info'},
             }
         )
         return aux
@@ -425,10 +450,9 @@ class Leads extends Component {
     }
 
     render() {
-        const { clientes, modal, typeForm, form, estado, municipio, colonias, modalDelete, cliente, data, formeditado} = this.state
+        const { clientes, modal, typeForm, form, estado, municipio, colonias, modalDelete, cliente, data, formeditado, modalSee} = this.state
         return (
-            <Layout active={'leads'}  {...this.props}>
-                
+            <Layout active={'leads'}  {...this.props}>                
                 <NewTable columns={CLIENTES_COLUMNS} data={clientes}
                     title='Clientes' subtitle='Listado de clientes'
                     mostrar_boton={true}
@@ -437,7 +461,8 @@ class Leads extends Component {
                     onClick={this.openModal}
                     actions={{
                         'edit': { function: this.openModalEdit },
-                        'delete': { function: this.openModalDelete }
+                        'delete': { function: this.openModalDelete },
+                        'see': { function: this.openModalSee }
                     }}
                     elements={data.clientes}
                     cardTable='cardTable'
@@ -482,6 +507,9 @@ class Leads extends Component {
                         <Button icon='' onClick={this.handleDeleteModal} text="CANCELAR" className={"btn btn-light-primary font-weight-bolder mr-3"}/>
                         <Button icon='' onClick={(e) => { this.safeDelete(e)(cliente.id) }} text="CONTINUAR" className={"btn btn-danger font-weight-bold mr-2"} />
                     </div>
+                </Modal>
+                <Modal size="lg" title="Cliente" show = { modalSee } handleClose = { this.handleCloseSee } >
+                    <ClienteCard cliente={cliente}/>
                 </Modal>
             </Layout>
         )

@@ -247,7 +247,7 @@ class Compras extends Component {
                 iconclass: 'flaticon2-expand',                  
                 action: 'see',
                 tooltip: {id:'see', text:'Mostrar', type:'info'},
-            },
+            }
         )
 
         if (compra.factura) {
