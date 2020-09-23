@@ -36,7 +36,9 @@ const Clientes = Loader(() => import('./pages/Leads/Clientes') )
 
 const MiProyecto = Loader(() => import('./pages/MiProyecto') )
 
-const Cuentas = Loader(() => import('./pages/Bancos/Cuenta') )
+const Cuentas = Loader(() => import('./pages/Bancos/Cuenta/Cuenta') )
+const CuentasForm = Loader(() => import('./pages/Bancos/Cuenta/CuentaForm') )
+
 const EstadosCuenta = Loader(() => import('./pages/Bancos/EstadosCuenta') )
 const Traspasos = Loader(() => import('./pages/Bancos/Traspasos') )
 
@@ -252,6 +254,8 @@ class App extends Component{
                 <Route path = "/administracion/documentos/:action" exact component ={ DocumentosForm } />
 
                 <Route path = "/bancos/cuentas" exact component ={ Cuentas } />
+                <Route path = "/bancos/cuentas/:action" exact component ={ CuentasForm } />
+                
                 <Route path = "/bancos/estados-cuenta" exact component ={ EstadosCuenta } />
                 <Route path = "/bancos/traspasos" exact component ={ Traspasos } />
                 
