@@ -206,7 +206,7 @@ class Cuenta extends Component {
         const { history } = this.props
         const { key } = this.state
         history.push({
-            pathname: '/bancos/cuentas/edit?type='+key,
+            pathname: '/bancos/cuentas/edit',
             state: { cuenta: cuenta}
         });
     }
