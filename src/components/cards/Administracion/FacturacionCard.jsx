@@ -8,24 +8,22 @@ import { setLabelTable } from '../../../functions/setters'
 export default class FacturacionCard extends Component {
 
     setAdjuntosFacturas = () => {
-        const { factura } = this.props
+        const { factura } = this.props 
         let aux=[];
-        // if(factura===0){
-            // factura.xml.map((xml) => {
-            //     aux.push({
-            //         name: xml.folio +'-xml.xml',
-            //         url: xml.url
-            //     })
-            // })
-            // factura.pdf.map((pdf) => {
-            //     aux.push({
-            //         name: pdf.folio +'-pdf.pdf',
-            //         url: pdf.url
-            //     })
-            // })
-        // }else{
-            
-        // }
+        if(factura || factura.xml.length>0){
+            let xml = factura.xml
+            aux.push({
+                name: xml.folio +'-xml.xml',
+                url: xml.url
+            })
+        }
+        if(factura || factura.pdf.length>0){
+            let pdf = factura.pdf
+            aux.push({
+                name: pdf.folio +'-pdf.pdf',
+                url: pdf.url
+            })
+        }
         
         
         return aux
@@ -54,8 +52,7 @@ export default class FacturacionCard extends Component {
     }
 
     render() {
-        const { factura } = this.props
-        console.log(factura)
+        const { factura } = this.props 
         return (
             <div className="col-md-12 mt-4">
                 <Tab.Container defaultActiveKey="first">
@@ -76,14 +73,14 @@ export default class FacturacionCard extends Component {
                                 </Nav.Item>
                                 {
                                     // factura!==''?
-                                        // factura.pdf.length > 0 || factura.xml.length > 0 ?
+                                        factura.pdf  || factura.xml ?
                                             <Nav.Item className="navi-item">
                                                 <Nav.Link className="navi-link px-3" eventKey="third" >
                                                     <span className="navi-icon"><i className="flaticon2-checking"></i></span>
                                                     <span className="navi-text font-size-lg">Facturas</span>
                                                 </Nav.Link>
                                             </Nav.Item>
-                                        // :''
+                                        :''
                                     // :''
                                 }
                             </Nav>
