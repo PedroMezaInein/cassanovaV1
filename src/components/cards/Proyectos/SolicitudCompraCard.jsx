@@ -6,11 +6,11 @@ import { toAbsoluteUrl } from "../../../functions/routers"
 import Card from 'react-bootstrap/Card'
 export default class SolicitudCompraCard extends Component {
     render() {
-        const { data, children } = this.props
+        const { data, children, border } = this.props
         return (
             <div className="col-md-12">
                 <Card className="card card-without-box-shadown border-0">
-                    <div className=""> {/*  le quité border-nav mt-4 mb-5 */}
+                    <div className={border}> {/*  le quité border-nav mt-4 mb-5 */}
                         <div className="card-body d-flex align-items-center justify-content-between flex-wrap pb-2 pl-0 pr-0">
                             <div className="mr-2">
                                 {

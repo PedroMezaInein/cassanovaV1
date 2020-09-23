@@ -1290,7 +1290,7 @@ class Compras extends Component {
                     >
                         {
                             solicitud ?
-                                <SolicitudCompraCard solicitud={solicitud} formeditado={formeditado} />
+                                <SolicitudCompraCard solicitud={solicitud} formeditado={formeditado} border={"border-nav mt-4 mb-5"}/>
                                 : ''
                         }
                     </ComprasForm>
