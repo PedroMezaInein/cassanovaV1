@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import '../../styles/custom_datatable.css'
 import '../../styles/metronic/_datables.scss';
+import { isMobile } from "react-device-detect"
 
 const $ = require('jquery');
 $.DataTable = require('datatables.net');
@@ -151,9 +152,8 @@ class TableForModals extends Component {
                 /* 'defaultContent': '<button type="button" class="btn btn-primary btn-edit">Edit</button>' */
             }
             ],
-            lengthMenu: [[20, 30, 40, 50, -1], [20, 30, 40, 50, "Todos"]],
-            pageLength: 20
-
+            /* lengthMenu: [[20, 30, 40, 50, -1], [20, 30, 40, 50, "Todos"]], */
+            pageLength: isMobile ? 5 : 10
         });
         table.on('responsive-resize.dt', function (e, datatable, columns) {
             for (var i in columns) {
