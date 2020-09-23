@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Card } from 'react-bootstrap'
 import NumberFormat from 'react-number-format'
-
 export default class PreciosDiseñoCard extends Component {
     render() {
         const { precio } = this.props
@@ -115,7 +114,6 @@ export default class PreciosDiseñoCard extends Component {
                         </div>
                     </Card.Body>
                 </Card>
-
             </div>
         )
     }

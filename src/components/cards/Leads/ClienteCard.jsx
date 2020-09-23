@@ -3,7 +3,6 @@ import Moment from 'react-moment'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import Card from 'react-bootstrap/Card'
-
 export default class ClienteCard extends Component {
     render() {
         const { cliente } = this.props
@@ -15,16 +14,12 @@ export default class ClienteCard extends Component {
                             <div className="mr-2">
                                 {
                                     cliente.empresa ?
-                                        <>
                                             <p className="font-size-h3 mb-0">Empresa:&nbsp;<strong className="font-size-h4"> {cliente.empresa}</strong></p>
-                                        </>
                                         : ''
                                 }
                                 {
                                     cliente.nombre ?
-                                        <>
                                             <p className="font-size-h5 text-muted font-size-lg mt-0">Nombre:&nbsp;<strong className="font-size-h6"> {cliente.nombre} </strong></p>
-                                        </>
                                         : ''
                                 }
                             </div>

@@ -1,10 +1,8 @@
 import React, { Component } from 'react'
 import Moment from 'react-moment'
 import { Card, Tab, Row, Col, Nav } from 'react-bootstrap'
-import {ItemSlider} from '../../../components/singles'
-
+import { ItemSlider } from '../../../components/singles'
 export default class ProyectosCard extends Component {
-    
     render() {
         const { proyecto } = this.props
         return (
@@ -30,7 +28,7 @@ export default class ProyectosCard extends Component {
                                         <span className="navi-icon"><i className="flaticon2-calendar-1"></i></span>
                                         <span className="navi-text font-size-lg">Fechas e Imagen</span>
                                     </Nav.Link>
-                                </Nav.Item>  
+                                </Nav.Item>
                             </Nav>
                         </Col>
                         <Col md={9}>
@@ -74,8 +72,8 @@ export default class ProyectosCard extends Component {
                                                     <div className="col-8">
                                                         {
                                                             proyecto.contactos ?
-                                                                proyecto.contactos.map((contacto, key) => {                                                                        
-                                                                    return(
+                                                                proyecto.contactos.map((contacto, key) => {
+                                                                    return (
                                                                         <span key={key}>{contacto.correo}</span>
                                                                     )
                                                                 })
@@ -89,14 +87,14 @@ export default class ProyectosCard extends Component {
                                                         <ul className="pl-0 ml-4">
                                                             {
                                                                 proyecto.clientes ?
-                                                                    proyecto.clientes.map((cliente, key) => {                                                                        
-                                                                        return(
+                                                                    proyecto.clientes.map((cliente, key) => {
+                                                                        return (
                                                                             <li key={key}>
                                                                                 <span>{cliente.empresa}</span>
                                                                             </li>
                                                                         )
                                                                     })
-                                                                : <span>-</span>
+                                                                    : <span>-</span>
                                                             }
                                                         </ul>
                                                     </div>
@@ -164,7 +162,7 @@ export default class ProyectosCard extends Component {
                                     </Card>
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="third">
-                                <Card className="card card-without-box-shadown border-0">
+                                    <Card className="card card-without-box-shadown border-0">
                                         <Card.Body className="p-0">
                                             <div className="text-justify">
                                                 <div className="row pb-1">
@@ -214,7 +212,7 @@ export default class ProyectosCard extends Component {
                                                             proyecto.imagen ?
                                                                 <ItemSlider items={[proyecto.imagen]} item='' />
                                                                 : <span>-</span>
-                                                        } 
+                                                        }
                                                     </div>
                                                 </div>
                                             </div>
@@ -226,7 +224,6 @@ export default class ProyectosCard extends Component {
                     </Row>
                 </Tab.Container>
             </div>
-
         )
     }
 }

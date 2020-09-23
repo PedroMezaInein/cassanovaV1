@@ -5,7 +5,6 @@ import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import Card from 'react-bootstrap/Card'
 import { ItemSlider } from '../../../components/singles'
-
 export default class PrestamosCard extends Component {
     render() {
         const { prestamo } = this.props
@@ -136,17 +135,16 @@ export default class PrestamosCard extends Component {
                         }
                     </div>
                     {
-                            prestamo.adjuntos ?
-                                <div className="mt-2 d-flex justify-content-center">
-                                    <div className="col-md-6">
-                                        <ItemSlider items={prestamo.adjuntos} item='' />
-                                    </div>
+                        prestamo.adjuntos ?
+                            <div className="mt-2 d-flex justify-content-center">
+                                <div className="col-md-6">
+                                    <ItemSlider items={prestamo.adjuntos} item='' />
                                 </div>
-                                : ''
-                        }
+                            </div>
+                            : ''
+                    }
                 </Card>
             </div>
-
         )
     }
 }

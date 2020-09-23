@@ -15,126 +15,126 @@ export default class ContratoCard extends Component {
                             <div className="mr-2">
                                 {
                                     contrato.nombre ?
-                                            <p className="font-size-h3 mb-0">Nombre:&nbsp;<strong className="font-size-h4"> {contrato.nombre}</strong></p>
-                                    : ''
+                                        <p className="font-size-h3 mb-0">Nombre:&nbsp;<strong className="font-size-h4"> {contrato.nombre}</strong></p>
+                                        : ''
                                 }
                                 {
                                     contrato.cliente ?
                                         <p className="font-size-h5 text-muted font-size-lg mt-0">{contrato.tipo}:&nbsp;<strong className="font-size-h6"> {contrato.cliente.empresa} </strong></p>
-                                    : contrato.proveedor ?
-                                        <p className="font-size-h5 text-muted font-size-lg mt-0">{contrato.tipo}:&nbsp;<strong className="font-size-h6"> {contrato.proveedor.razon_social} </strong></p>
-                                    :''
+                                        : contrato.proveedor ?
+                                            <p className="font-size-h5 text-muted font-size-lg mt-0">{contrato.tipo}:&nbsp;<strong className="font-size-h6"> {contrato.proveedor.razon_social} </strong></p>
+                                            : ''
                                 }
                             </div>
                         </div>
                         <div className="separator separator-solid mb-3"></div>
-                            <div className="row row-paddingless mb-4">
-                                {
-                                    contrato.empresa ?
-                                        <div className="col-md-4">
-                                            <div className="d-flex align-items-start mr-2">
-                                                <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
-                                                    <div className="symbol-label">
-                                                        <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                                            <SVG src={toAbsoluteUrl('/images/svg/Building.svg')} />
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div className="font-size-h6 text-dark-75 font-weight-bolder">{contrato.empresa.name}</div>
-                                                    <div className="font-size-sm text-muted font-weight-bold mt-1">EMPRESA</div>
+                        <div className="row row-paddingless mb-4">
+                            {
+                                contrato.empresa ?
+                                    <div className="col-md-4">
+                                        <div className="d-flex align-items-start mr-2">
+                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
+                                                <div className="symbol-label">
+                                                    <span className="svg-icon svg-icon-lg svg-icon-primary">
+                                                        <SVG src={toAbsoluteUrl('/images/svg/Building.svg')} />
+                                                    </span>
                                                 </div>
                                             </div>
-                                        </div>
-                                        : ''
-                                }
-                                {
-                                    contrato.monto ?
-                                        <div className="col-md-4">
-                                            <div className="d-flex align-items-start mr-2">
-                                                <div className="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
-                                                    <div className="symbol-label">
-                                                        <span className="svg-icon svg-icon-lg svg-icon-info">
-                                                            <SVG src={toAbsoluteUrl('/images/svg/Money.svg')} />
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div className="font-size-h6 text-dark-75 font-weight-bolder">
-                                                        <NumberFormat
-                                                            value={contrato.monto}
-                                                            displayType={'text'}
-                                                            thousandSeparator={true}
-                                                            prefix={'$'}
-                                                            renderText={value => <div>{value}</div>}
-                                                        />
-                                                    </div>
-                                                    <div className="font-size-sm text-muted font-weight-bold mt-1">MONTO</div>
-                                                </div>
+                                            <div>
+                                                <div className="font-size-h6 text-dark-75 font-weight-bolder">{contrato.empresa.name}</div>
+                                                <div className="font-size-sm text-muted font-weight-bold mt-1">EMPRESA</div>
                                             </div>
                                         </div>
-                                        : ''
-                                }
-                                {
-                                    contrato.tipo_contrato ?
-                                        <div className="col-md-4">
-                                            <div className="d-flex align-items-start mr-2">
-                                                <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
-                                                    <div className="symbol-label">
-                                                        <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                                            <SVG src={toAbsoluteUrl('/images/svg/Tools.svg')} />
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div className="font-size-h6 text-dark-75 font-weight-bolder">{contrato.tipo_contrato.tipo}</div>
-                                                    <div className="font-size-sm text-muted font-weight-bold mt-1">TIPO DE CONTRATO</div>
+                                    </div>
+                                    : ''
+                            }
+                            {
+                                contrato.monto ?
+                                    <div className="col-md-4">
+                                        <div className="d-flex align-items-start mr-2">
+                                            <div className="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
+                                                <div className="symbol-label">
+                                                    <span className="svg-icon svg-icon-lg svg-icon-info">
+                                                        <SVG src={toAbsoluteUrl('/images/svg/Money.svg')} />
+                                                    </span>
                                                 </div>
                                             </div>
-                                        </div>
-                                        : ''
-                                }
-                            </div>
-                            <div className="row row-paddingless mb-4">
-                                {
-                                    contrato.fecha_inicio ?
-                                        <div className="col-md-4">
-                                            <div className="d-flex justify-content-start mr-2">
-                                                <div className="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
-                                                    <div className="symbol-label">
-                                                        <span className="svg-icon svg-icon-lg svg-icon-info">
-                                                            <SVG src={toAbsoluteUrl('/images/svg/Box1.svg')} />
-                                                        </span>
-                                                    </div>
+                                            <div>
+                                                <div className="font-size-h6 text-dark-75 font-weight-bolder">
+                                                    <NumberFormat
+                                                        value={contrato.monto}
+                                                        displayType={'text'}
+                                                        thousandSeparator={true}
+                                                        prefix={'$'}
+                                                        renderText={value => <div>{value}</div>}
+                                                    />
                                                 </div>
-                                                <div>
-                                                    <div className="font-size-h6 text-dark-75 font-weight-bolder"><Moment format="DD/MM/YYYY">{contrato.fecha_inicio}</Moment></div>
-                                                    <div className="font-size-sm text-muted font-weight-bold mt-1">FECHA DE INICIO</div>
-                                                </div>
+                                                <div className="font-size-sm text-muted font-weight-bold mt-1">MONTO</div>
                                             </div>
                                         </div>
-                                        : ''
-                                }
-                                {
-                                    contrato.fecha_fin ?
-                                        <div className="col-md-4">
-                                            <div className="d-flex justify-content-start mr-2">
-                                                <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
-                                                    <div className="symbol-label">
-                                                        <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                                            <SVG src={toAbsoluteUrl('/images/svg/Box1.svg')} />
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div className="font-size-h6 text-dark-75 font-weight-bolder"><Moment format="DD/MM/YYYY">{contrato.fecha_fin}</Moment></div>
-                                                    <div className="font-size-sm text-muted font-weight-bold mt-1">FECHA DE FINAL</div>
+                                    </div>
+                                    : ''
+                            }
+                            {
+                                contrato.tipo_contrato ?
+                                    <div className="col-md-4">
+                                        <div className="d-flex align-items-start mr-2">
+                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
+                                                <div className="symbol-label">
+                                                    <span className="svg-icon svg-icon-lg svg-icon-primary">
+                                                        <SVG src={toAbsoluteUrl('/images/svg/Tools.svg')} />
+                                                    </span>
                                                 </div>
                                             </div>
+                                            <div>
+                                                <div className="font-size-h6 text-dark-75 font-weight-bolder">{contrato.tipo_contrato.tipo}</div>
+                                                <div className="font-size-sm text-muted font-weight-bold mt-1">TIPO DE CONTRATO</div>
+                                            </div>
                                         </div>
-                                        : ''
-                                }                                
-                            </div>
+                                    </div>
+                                    : ''
+                            }
+                        </div>
+                        <div className="row row-paddingless mb-4">
+                            {
+                                contrato.fecha_inicio ?
+                                    <div className="col-md-4">
+                                        <div className="d-flex justify-content-start mr-2">
+                                            <div className="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
+                                                <div className="symbol-label">
+                                                    <span className="svg-icon svg-icon-lg svg-icon-info">
+                                                        <SVG src={toAbsoluteUrl('/images/svg/Box1.svg')} />
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div className="font-size-h6 text-dark-75 font-weight-bolder"><Moment format="DD/MM/YYYY">{contrato.fecha_inicio}</Moment></div>
+                                                <div className="font-size-sm text-muted font-weight-bold mt-1">FECHA DE INICIO</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    : ''
+                            }
+                            {
+                                contrato.fecha_fin ?
+                                    <div className="col-md-4">
+                                        <div className="d-flex justify-content-start mr-2">
+                                            <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
+                                                <div className="symbol-label">
+                                                    <span className="svg-icon svg-icon-lg svg-icon-primary">
+                                                        <SVG src={toAbsoluteUrl('/images/svg/Box1.svg')} />
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div className="font-size-h6 text-dark-75 font-weight-bolder"><Moment format="DD/MM/YYYY">{contrato.fecha_fin}</Moment></div>
+                                                <div className="font-size-sm text-muted font-weight-bold mt-1">FECHA DE FINAL</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    : ''
+                            }
+                        </div>
                         {
                             contrato.descripcion ?
                                 <div className="mt-5">
@@ -147,7 +147,6 @@ export default class ContratoCard extends Component {
                     </div>
                 </Card>
             </div>
-
         )
     }
 }

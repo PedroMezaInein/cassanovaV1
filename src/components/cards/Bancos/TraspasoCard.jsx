@@ -5,7 +5,6 @@ import Moment from 'react-moment'
 import { toAbsoluteUrl } from "../../../functions/routers"
 import Card from 'react-bootstrap/Card'
 import { ItemSlider } from '../../../components/singles'
-
 export default class TranspasoCard extends Component {
     render() {
         const { traspaso } = this.props
@@ -116,7 +115,6 @@ export default class TranspasoCard extends Component {
                     </div>
                 </Card>
             </div>
-
         )
     }
 }

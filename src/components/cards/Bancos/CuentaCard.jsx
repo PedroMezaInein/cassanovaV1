@@ -4,7 +4,6 @@ import Moment from 'react-moment'
 import { toAbsoluteUrl } from "../../../functions/routers"
 import Card from 'react-bootstrap/Card'
 import NumberFormat from 'react-number-format'
-
 export default class CuentaCard extends Component {
     render() {
         const { cuenta } = this.props
@@ -85,7 +84,6 @@ export default class CuentaCard extends Component {
                                     </div>
                                     : ''
                             }
-                            
                         </div>
                         <div className="row row-paddingless mb-4">
                             {
@@ -167,18 +165,18 @@ export default class CuentaCard extends Component {
                                                 </div>
                                             </div>
                                             <div className="text-justify">
-                                                        <ul className="list-inline mb-0 font-size-lg text-dark-75 font-weight-bolder">
-                                                            {
-                                                                cuenta.empresa ?
-                                                                    cuenta.empresa.map((empresa, key) => {                                                                        
-                                                                        return(
-                                                                            <li className="list-inline-item" key={key}>&#8226; {empresa.name}</li>
-                                                                        )
-                                                                    })
-                                                                : <span>-</span>
-                                                            }
-                                                        </ul>
-                                                    <div className="font-size-sm text-muted font-weight-bold mt-1">EMPRESA(S) </div>
+                                                <ul className="list-inline mb-0 font-size-lg text-dark-75 font-weight-bolder">
+                                                    {
+                                                        cuenta.empresa ?
+                                                            cuenta.empresa.map((empresa, key) => {
+                                                                return (
+                                                                    <li className="list-inline-item" key={key}>&#8226; {empresa.name}</li>
+                                                                )
+                                                            })
+                                                            : <span>-</span>
+                                                    }
+                                                </ul>
+                                                <div className="font-size-sm text-muted font-weight-bold mt-1">EMPRESA(S) </div>
                                             </div>
                                         </div>
                                     </div>
@@ -197,7 +195,6 @@ export default class CuentaCard extends Component {
                     </div>
                 </Card>
             </div>
-
         )
     }
 }

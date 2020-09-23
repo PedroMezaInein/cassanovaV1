@@ -4,7 +4,6 @@ import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import Card from 'react-bootstrap/Card'
 import { ItemSlider } from '../../../components/singles'
-
 export default class DocumentosCard extends Component {
     render() {
         const { documento } = this.props

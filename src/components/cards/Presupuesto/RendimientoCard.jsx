@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import NumberFormat from 'react-number-format'
 import { Card, Tab, Row, Col, Nav } from 'react-bootstrap'
 import { ItemSlider } from '../../../components/singles'
-
 export default class EmpleadosCard extends Component {
     render() {
         const { rendimiento } = this.props
@@ -26,7 +25,7 @@ export default class EmpleadosCard extends Component {
                                                 <span className="navi-text font-size-lg">Adjunto</span>
                                             </Nav.Link>
                                         </Nav.Item>
-                                    : ''
+                                        : ''
                                 }
                             </Nav>
                         </Col>
@@ -109,17 +108,16 @@ export default class EmpleadosCard extends Component {
                                     </Card>
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="second">
-                                        {
-                                            rendimiento.adjunto ?
-                                                <ItemSlider items={[rendimiento.adjunto]} item='' />
-                                                : ''
-                                        }
+                                    {
+                                        rendimiento.adjunto ?
+                                            <ItemSlider items={[rendimiento.adjunto]} item='' />
+                                            : ''
+                                    }
                                 </Tab.Pane>
                             </Tab.Content>
                         </Col>
                     </Row>
                 </Tab.Container>
-
             </div>
         )
     }

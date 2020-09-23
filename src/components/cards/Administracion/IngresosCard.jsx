@@ -2,21 +2,20 @@ import React, { Component } from 'react'
 import NumberFormat from 'react-number-format'
 import Moment from 'react-moment'
 import { Card, Tab, Row, Col, Nav } from 'react-bootstrap'
-import {ItemSlider} from '../../../components/singles'
-
+import { ItemSlider } from '../../../components/singles'
 export default class IngresosCard extends Component {
     setAdjuntosFacturas = facturas => {
-        let aux=[];
+        let aux = [];
         facturas.map((factura) => {
-            if(factura.xml){
+            if (factura.xml) {
                 aux.push({
-                    name: factura.folio +'-xml.xml',
+                    name: factura.folio + '-xml.xml',
                     url: factura.xml.url
                 })
             }
-            if(factura.pdf){
+            if (factura.pdf) {
                 aux.push({
-                    name: factura.folio +'-pdf.pdf',
+                    name: factura.folio + '-pdf.pdf',
                     url: factura.pdf.url
                 })
             }
@@ -44,16 +43,16 @@ export default class IngresosCard extends Component {
                                     </Nav.Link>
                                 </Nav.Item>
                                 {
-                                    ingreso!==''?
-                                    ingreso.presupuestos.length > 0 || ingreso.pagos.length > 0 || ingreso.facturas.length > 0 ?
+                                    ingreso !== '' ?
+                                        ingreso.presupuestos.length > 0 || ingreso.pagos.length > 0 || ingreso.facturas.length > 0 ?
                                             <Nav.Item className="navi-item">
                                                 <Nav.Link className="navi-link px-3" eventKey="third" >
                                                     <span className="navi-icon"><i className="flaticon2-checking"></i></span>
                                                     <span className="navi-text font-size-lg">Facturas</span>
                                                 </Nav.Link>
                                             </Nav.Item>
-                                        :''
-                                    :''
+                                            : ''
+                                        : ''
                                 }
                             </Nav>
                         </Col>
@@ -91,7 +90,7 @@ export default class IngresosCard extends Component {
                                                                 ingreso.subarea.area ?
                                                                     <span>{ingreso.subarea.area.nombre}</span>
                                                                     : <span>-</span>
-                                                            :''
+                                                                : ''
                                                         }
                                                     </div>
                                                 </div>
@@ -216,38 +215,37 @@ export default class IngresosCard extends Component {
                                     </Card>
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="third">
-                                    <Tab.Container defaultActiveKey={ingreso.presupuestos != 0 ? "first" : ingreso.pagos !=0 ? "second" : ingreso.facturas !=0 ? "third" :''}>
+                                    <Tab.Container defaultActiveKey={ingreso.presupuestos != 0 ? "first" : ingreso.pagos != 0 ? "second" : ingreso.facturas != 0 ? "third" : ''}>
                                         <Nav className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-tabs-bold nav-tabs-line-2x border-0">
-                                            {/* border-0 d-flex justify-content-end*/}
                                             {
-                                                ingreso.presupuestos != 0 ? 
-                                                <Nav.Item>
-                                                    <Nav.Link className="pt-0" eventKey="first"
-                                                    >
-                                                        <span className="nav-text font-weight-bold">PRESUPUESTO</span>
-                                                    </Nav.Link>
-                                                </Nav.Item>
-                                                :''                                                
+                                                ingreso.presupuestos != 0 ?
+                                                    <Nav.Item>
+                                                        <Nav.Link className="pt-0" eventKey="first"
+                                                        >
+                                                            <span className="nav-text font-weight-bold">PRESUPUESTO</span>
+                                                        </Nav.Link>
+                                                    </Nav.Item>
+                                                    : ''
                                             }
                                             {
                                                 ingreso.pagos != 0 ?
-                                                <Nav.Item>
-                                                    <Nav.Link className="pt-0" eventKey="second"
+                                                    <Nav.Item>
+                                                        <Nav.Link className="pt-0" eventKey="second"
                                                         >
-                                                        <span className="nav-text font-weight-bold">PAGO</span>
-                                                    </Nav.Link>
-                                                </Nav.Item>
-                                                :''                                                
+                                                            <span className="nav-text font-weight-bold">PAGO</span>
+                                                        </Nav.Link>
+                                                    </Nav.Item>
+                                                    : ''
                                             }
                                             {
                                                 ingreso.facturas != 0 ?
-                                                <Nav.Item>
-                                                    <Nav.Link className="pt-0" eventKey="third"
+                                                    <Nav.Item>
+                                                        <Nav.Link className="pt-0" eventKey="third"
                                                         >
-                                                        <span className="nav-text font-weight-bold">FACTURAS</span>
-                                                    </Nav.Link>
-                                                </Nav.Item>
-                                                :''
+                                                            <span className="nav-text font-weight-bold">FACTURAS</span>
+                                                        </Nav.Link>
+                                                    </Nav.Item>
+                                                    : ''
                                             }
                                         </Nav>
                                         <Tab.Content>
@@ -255,24 +253,23 @@ export default class IngresosCard extends Component {
                                                 {
                                                     ingreso.presupuestos ?
                                                         <ItemSlider items={ingreso.presupuestos} item='' />
-                                                    :''
-                                                }                                                
+                                                        : ''
+                                                }
                                             </Tab.Pane>
                                             <Tab.Pane eventKey="second">
                                                 {
                                                     ingreso.pagos ?
                                                         <ItemSlider items={ingreso.pagos} item='' />
-                                                    :''
-                                                }  
+                                                        : ''
+                                                }
                                             </Tab.Pane>
                                             <Tab.Pane eventKey="third">
                                                 {
                                                     ingreso.facturas ?
                                                         <ItemSlider items={this.setAdjuntosFacturas(ingreso.facturas)} item='' />
-                                                    :''
-                                                }  
+                                                        : ''
+                                                }
                                             </Tab.Pane>
-
                                         </Tab.Content>
                                     </Tab.Container>
                                 </Tab.Pane>
@@ -281,7 +278,6 @@ export default class IngresosCard extends Component {
                     </Row>
                 </Tab.Container>
             </div>
-
         )
     }
 }

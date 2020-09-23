@@ -419,7 +419,7 @@ class SolicitudCompraForm extends Component{
                                             </div>
                                             <Accordion.Collapse eventKey = { 0 } className="px-md-5 px-2" >
                                                 <div>
-                                                    <RemisionCard data = { remision }/>
+                                                    <RemisionCard data = { remision } border={"border-nav mt-4 mb-5"}/>
                                                 </div>
                                             </Accordion.Collapse>
                                         </Accordion>

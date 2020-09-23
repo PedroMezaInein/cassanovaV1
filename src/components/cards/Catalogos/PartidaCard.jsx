@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Card } from 'react-bootstrap'
-
 export default class PartidaCard extends Component {
     render() {
         const { partida } = this.props
@@ -50,7 +49,6 @@ export default class PartidaCard extends Component {
                         </div>
                     </Card.Body>
                 </Card>
-
             </div>
         )
     }

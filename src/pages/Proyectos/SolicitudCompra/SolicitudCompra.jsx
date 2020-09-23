@@ -281,7 +281,7 @@ class SolicitudCompra extends Component{
                 </ModalDelete>
                 
                 <Modal size="xl" title = "Solicitud de compra" show = { modalSingle } handleClose = { this.handleCloseSingle } >
-                    <SolicitudCompraCard data = { solicitud }>
+                    <SolicitudCompraCard data = { solicitud } >
                         {
                             solicitud.convertido ? '' :
                                     <Button pulse="pulse-ring" className="btn btn-icon btn-light-info pulse pulse-info" onClick={(e) => {e.preventDefault(); this.changePageConvert(solicitud)} } icon={faSync} 
