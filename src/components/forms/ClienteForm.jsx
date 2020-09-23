@@ -1,19 +1,23 @@
 import React, { Component } from 'react'
-import { SelectSearch, Input, InputNumber } from '../form-components'
+import { SelectSearch, Input, InputNumber, Button } from '../form-components'
 import { RFC } from '../../constants'
-
+import Form from 'react-bootstrap/Form'
+import { validateAlert } from '../../functions/alert'
 class ClienteForm extends Component {
 
-    constructor(props) {
-        super(props)
-    }
-
     render() {
-
-        const { form, onChange, changeCP, estado, municipio, colonias, updateColonia, formeditado } = this.props
+        const { form, onChange, changeCP, estado, municipio, colonias, updateColonia, formeditado, onSubmit, ...props } = this.props
         return (
-            <>
-                <div className="form-group row form-group-marginless mt-4">
+            <Form id="form-cliente"
+                onSubmit={
+                    (e) => {
+                        e.preventDefault();
+                        validateAlert(onSubmit, e, 'form-cliente')
+                    }
+                }
+                {...props}
+            >
+                <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Input
                             requirevalidation={1}
@@ -173,7 +177,22 @@ class ClienteForm extends Component {
                         />
                     </div>
                 </div>
-            </>
+                <div className="card-footer py-3 pr-1">
+                    <div className="row">
+                        <div className="col-lg-12 text-right pr-0 pb-0">
+                            <Button icon='' className="btn btn-primary mr-2"
+                                onClick={
+                                    (e) => {
+                                        e.preventDefault();
+                                        validateAlert(onSubmit, e, 'form-cliente')
+                                    }
+                                }
+                                text="ENVIAR"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </Form>
         )
     }
 
