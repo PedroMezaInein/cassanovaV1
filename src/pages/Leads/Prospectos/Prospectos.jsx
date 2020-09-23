@@ -436,7 +436,8 @@ class Leads extends Component {
                     columns = { PROSPECTOS_COLUMNS }
                     title = 'Prospectos'
                     subtitle = 'Listado de prospectos'
-                    mostrar_boton = { false }
+                    mostrar_boton = { true }
+                    url = '/leads/prospectos/add'
                     abrir_modal = { false }
                     mostrar_acciones = { true }
                     actions={{

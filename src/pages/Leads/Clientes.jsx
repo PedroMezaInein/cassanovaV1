@@ -8,12 +8,12 @@ import { URL_DEV, CLIENTES_COLUMNS, EMPTY_CLIENTE, CP_URL } from '../../constant
 import Moment from 'react-moment'
 import { Small } from '../../components/texts'
 import { Form } from 'react-bootstrap'
-import { ClienteForm } from '../../components/forms'
+import { ClienteForm, ProspectoForm} from '../../components/forms'
 import { Modal } from '../../components/singles'
 import NewTable from '../../components/tables/NewTable'
 import { setTextTable, setDateTable } from '../../functions/setters'
 import { validateAlert, doneAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
-import { ClienteCard } from '../../components/cards'
+import { ClienteCard} from '../../components/cards'
 
 class Leads extends Component {
 
@@ -22,6 +22,7 @@ class Leads extends Component {
         modal: false,
         modalDelete: false,
         modalSee: false,
+        modalProspecto: false,
         cliente: '',
         form: EMPTY_CLIENTE,
         typeForm: 'Add',
@@ -187,16 +188,33 @@ class Leads extends Component {
         })
     }
 
+    openModalAddProspecto = cliente => {
+        this.setState({
+            ... this.state,
+            modalProspecto: true,
+            cliente: cliente
+        })
+    }
+
+    handleCloseAddProspecto = () => {
+        this.setState({
+            ... this.state,
+            modalProspecto: false,
+            cliente: ''
+        })
+    }
+
     setClientes = clientes => {
         let aux = [];
         clientes.map((cliente) => {
+            console.log(cliente)
             aux.push(
                 {
                     actions: this.setActions(cliente),
                     empresa: renderToString(setTextTable(cliente.empresa)),
+                    nombre: renderToString(setTextTable(cliente.nombre)),
                     direccion: renderToString(this.setDireccion(cliente)),
                     perfil: renderToString(setTextTable(cliente.perfil)),
-                    nombre: renderToString(setTextTable(cliente.nombre)),
                     puesto: renderToString(setTextTable(cliente.puesto)),
                     rfc: renderToString(setTextTable(cliente.rfc)),
                     fecha: renderToString(setDateTable(cliente.created_at)),
@@ -227,8 +245,15 @@ class Leads extends Component {
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
             },
             {
-                text: 'Ver',
+                text: 'Agregar&nbsp;prospecto',
                 btnclass: 'info',
+                iconclass: 'flaticon2-user-1',
+                action: 'add_prospecto',
+                tooltip: { id: 'add_prospecto', text: 'Agregar prospecto' }
+            },
+            {
+                text: 'Ver',
+                btnclass: 'dark',
                 iconclass: 'flaticon2-expand',
                 action: 'see',
                 tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
@@ -450,7 +475,7 @@ class Leads extends Component {
     }
 
     render() {
-        const { clientes, modal, typeForm, form, estado, municipio, colonias, modalDelete, cliente, data, formeditado, modalSee } = this.state
+        const { clientes, modal, typeForm, form, estado, municipio, colonias, modalDelete, cliente, data, formeditado, modalSee, modalProspecto} = this.state
         return (
             <Layout active={'leads'}  {...this.props}>
                 <NewTable columns={CLIENTES_COLUMNS} data={clientes}
@@ -462,7 +487,8 @@ class Leads extends Component {
                     actions={{
                         'edit': { function: this.openModalEdit },
                         'delete': { function: this.openModalDelete },
-                        'see': { function: this.openModalSee }
+                        'see': { function: this.openModalSee },
+                        'add_prospecto': { function: this.openModalAddProspecto }
                     }}
                     elements={data.clientes}
                     cardTable='cardTable'
@@ -515,6 +541,12 @@ class Leads extends Component {
                 </Modal>
                 <Modal size="lg" title="Cliente" show={modalSee} handleClose={this.handleCloseSee} >
                     <ClienteCard cliente={cliente} />
+                </Modal>
+                <Modal size="xl" title="Agregar prospecto" show={modalProspecto} handleClose={this.handleCloseAddProspecto} >
+                    {/* <ProspectoForm
+                    
+                    /> */}
+                    Formulario prospecto
                 </Modal>
             </Layout>
         )
