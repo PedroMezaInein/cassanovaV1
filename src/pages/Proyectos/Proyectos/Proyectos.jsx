@@ -2,22 +2,20 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
-import { Modal, ModalDelete} from '../../../components/singles'
+import { Modal, ModalDelete } from '../../../components/singles'
 import { AvanceForm } from '../../../components/forms'
 import axios from 'axios'
 import { URL_DEV, PROYECTOS_COLUMNS, URL_ASSETS } from '../../../constants'
 import { Small } from '../../../components/texts'
 import swal from 'sweetalert'
-import { Card} from 'react-bootstrap'
+import { Card } from 'react-bootstrap'
 import { setTextTable, setDateTable, setArrayTable, setListTable } from '../../../functions/setters'
 import NewTable from '../../../components/tables/NewTable'
-import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert} from '../../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import ItemSlider from '../../../components/singles/ItemSlider'
-import {Nav, Tab, Col, Row} from 'react-bootstrap'
+import { Nav, Tab, Col, Row } from 'react-bootstrap'
 import { ProyectosCard } from '../../../components/cards'
-
 class Proyectos extends Component {
-
     state = {
         proyectos: [],
         title: 'Nuevo proyecto',
@@ -28,9 +26,9 @@ class Proyectos extends Component {
         modalAdjuntos: false,
         modalAvances: false,
         adjuntos: [],
-        primeravista:true,
-        defaultactivekey:"",
-        showadjuntos:[
+        primeravista: true,
+        defaultactivekey: "",
+        showadjuntos: [
             {
                 placeholder: 'Fotografías levantamiento',
                 id: 'fotografias_levantamiento',
@@ -101,7 +99,7 @@ class Proyectos extends Component {
         data: {
             proyectos: []
         },
-        formeditado:0,
+        formeditado: 0,
         form: {
             fechaInicio: new Date(),
             fechaFin: new Date(),
@@ -120,11 +118,11 @@ class Proyectos extends Component {
             descripcion: '',
             correos: [],
             correo: '',
-            adjuntos_grupo:[
+            adjuntos_grupo: [
                 {
                     text: 'Inicio y planeación',
                     id: 'inicio_y_planeacion',
-                    adjuntos:[
+                    adjuntos: [
                         {
                             placeholder: 'Fotografías levantamiento',
                             id: 'fotografias_levantamiento',
@@ -196,7 +194,7 @@ class Proyectos extends Component {
                 {
                     text: 'Ejecución de obra',
                     id: 'ejecucion_de_obra',
-                    adjuntos:[
+                    adjuntos: [
                         {
                             placeholder: 'Datos de cliente',
                             id: 'datos_de_cliente',
@@ -310,7 +308,7 @@ class Proyectos extends Component {
                 {
                     text: 'Entrega',
                     id: 'entrega',
-                    adjuntos:[
+                    adjuntos: [
                         {
                             placeholder: 'Catálogo de conceptos ASBUILT',
                             id: 'catalogo_de_conceptos_asbuilt',
@@ -388,7 +386,7 @@ class Proyectos extends Component {
                 {
                     text: 'Mantenimiento',
                     id: 'mantenimiento',
-                    adjuntos:[
+                    adjuntos: [
                         {
                             placeholder: 'Fallas y reparaciones por vicios ocultos',
                             id: 'fallas_y_reparaciones_por_vicios_ocultos',
@@ -409,7 +407,6 @@ class Proyectos extends Component {
                         },
                     ]
                 },
-
             ],
             adjuntos: {
                 image: {
@@ -418,7 +415,7 @@ class Proyectos extends Component {
                     files: []
                 }
             },
-            avances:[
+            avances: [
                 {
                     descripcion: '',
                     avance: '',
@@ -436,28 +433,25 @@ class Proyectos extends Component {
             colonias: []
         }
     }
-    
-    seleccionaradj (adjuntos){  
-        const {proyecto} = this.state;  
+
+    seleccionaradj(adjuntos) {
+        const { proyecto } = this.state;
         let newdefaultactivekey = "";
-        for(var i=0;i<adjuntos.length;i++)
-        { 
-            var adjunto = adjuntos[i]; 
-            if(proyecto[adjunto.id].length)
-            {
-                newdefaultactivekey=adjunto.id   
+        for (var i = 0; i < adjuntos.length; i++) {
+            var adjunto = adjuntos[i];
+            if (proyecto[adjunto.id].length) {
+                newdefaultactivekey = adjunto.id
                 break;
-            } 
-        } 
+            }
+        }
         this.setState({
             ... this.state,
-            primeravista:false,
-            defaultactivekey:newdefaultactivekey,
-            subActiveKey:newdefaultactivekey,
-            showadjuntos:adjuntos
+            primeravista: false,
+            defaultactivekey: newdefaultactivekey,
+            subActiveKey: newdefaultactivekey,
+            showadjuntos: adjuntos
         })
     }
-
     componentDidMount() {
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
@@ -470,43 +464,36 @@ class Proyectos extends Component {
             history.push('/')
         this.getProyectosAxios()
     }
-    
     updateActiveTabContainer = active => {
         this.setState({
             ... this.state,
             subActiveKey: active
         })
     }
-
-    openModalDelete = (proyecto) => {
+    openModalDelete = proyecto => {
         this.setState({
             ... this.state,
             proyecto: proyecto,
             modalDelete: true
         })
     }
-
-    changePageEdit = (proyecto) => {
+    changePageEdit = proyecto => {
         const { history } = this.props
         history.push({
             pathname: '/proyectos/proyectos/edit',
-            state: { proyecto: proyecto}
+            state: { proyecto: proyecto }
         });
     }
-
     openModalAvances = proyecto => {
-
         this.setState({
             ... this.state,
             modalAvances: true,
             title: 'Avances del proyecto',
             proyecto: proyecto,
             form: this.clearForm(),
-            formeditado:0,
+            formeditado: 0,
         })
-
     }
-
     openModalAdjuntos = proyecto => {
         let { adjuntos } = this.state
         let auxheaders = [
@@ -517,10 +504,9 @@ class Proyectos extends Component {
             adjuntos: this.setAdjuntosSlider(proyecto),
             proyecto: proyecto,
             form: this.clearForm(),
-            formeditado:0,
+            formeditado: 0,
         })
     }
-
     openModalSee = proyecto => {
         this.setState({
             ... this.state,
@@ -528,7 +514,6 @@ class Proyectos extends Component {
             proyecto: proyecto
         })
     }
-
     handleCloseSee = () => {
         this.setState({
             ... this.state,
@@ -537,12 +522,8 @@ class Proyectos extends Component {
         })
     }
     setAdjuntosSlider = proyecto => {
-
-        let auxheaders = [
-        ]
-
+        let auxheaders = []
         let aux = []
-
         auxheaders.map((element) => {
             aux.push({
                 id: element.name,
@@ -552,10 +533,8 @@ class Proyectos extends Component {
                 url: ''
             })
         })
-
         return aux
     }
-
     handleCloseAvances = () => {
         const { modalAvances } = this.state
         this.setState({
@@ -565,7 +544,6 @@ class Proyectos extends Component {
             proyecto: ''
         })
     }
-
     handleCloseDelete = () => {
         const { modalDelete } = this.state
         this.setState({
@@ -575,7 +553,6 @@ class Proyectos extends Component {
             prospecto: ''
         })
     }
-
     handleCloseAdjuntos = () => {
         const { modalAdjuntos } = this.state
         this.setState({
@@ -586,7 +563,6 @@ class Proyectos extends Component {
             form: this.clearForm()
         })
     }
-
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -596,18 +572,16 @@ class Proyectos extends Component {
             form
         })
     }
-
     onChangeAvance = (key, e, name) => {
         const { value } = e.target
         const { form } = this.state
-        form['avances'][key][name]  = value
+        form['avances'][key][name] = value
         this.setState({
             ...this.state,
             form
         })
-    
-    }
 
+    }
     onChangeAdjuntoAvance = (e, key, name) => {
         const { form } = this.state
         const { files, value } = e.target
@@ -629,7 +603,6 @@ class Proyectos extends Component {
             form
         })
     }
-
     onChangeAdjunto = e => {
         const { form } = this.state
         const { files, value, name } = e.target
@@ -651,8 +624,7 @@ class Proyectos extends Component {
             form
         })
     }
-
-    onChangeAdjuntoGrupo = (e) => {
+    onChangeAdjuntoGrupo = e => {
         const { form } = this.state
         const { files, value, name } = e.target
         let grupo = 0
@@ -668,24 +640,21 @@ class Proyectos extends Component {
                 }
             )
         }
-        for(let i = 0; i < form.adjuntos_grupo.length; i++){
-            for(let j = 0; j < form.adjuntos_grupo[i].adjuntos.length; j++){
-                if(form.adjuntos_grupo[i].adjuntos[j].id === name){
+        for (let i = 0; i < form.adjuntos_grupo.length; i++) {
+            for (let j = 0; j < form.adjuntos_grupo[i].adjuntos.length; j++) {
+                if (form.adjuntos_grupo[i].adjuntos[j].id === name) {
                     grupo = i;
                     adjunto = j;
                 }
             }
         }
-
         form.adjuntos_grupo[grupo].adjuntos[adjunto].value = value
         form.adjuntos_grupo[grupo].adjuntos[adjunto].files = aux
-        
         this.setState({
             ... this.state,
             form
         })
     }
-
     clearFiles = (name, key) => {
         const { form } = this.state
         let aux = []
@@ -703,15 +672,14 @@ class Proyectos extends Component {
             form
         })
     }
-
     clearFilesGrupo = (name, key) => {
         const { form } = this.state
         let aux = []
         let grupo = 0
         let adjunto = 0
-        for(let i = 0; i < form.adjuntos_grupo.length; i++){
-            for(let j = 0; j < form.adjuntos_grupo[i].adjuntos.length; j++){
-                if(form.adjuntos_grupo[i].adjuntos[j].id === name){
+        for (let i = 0; i < form.adjuntos_grupo.length; i++) {
+            for (let j = 0; j < form.adjuntos_grupo[i].adjuntos.length; j++) {
+                if (form.adjuntos_grupo[i].adjuntos[j].id === name) {
                     grupo = i;
                     adjunto = j;
                 }
@@ -731,7 +699,6 @@ class Proyectos extends Component {
             form
         })
     }
-
     clearFilesAvances = (name, key, _key) => {
         const { form } = this.state
         let aux = []
@@ -750,7 +717,6 @@ class Proyectos extends Component {
             form
         })
     }
-
     addRowAvance = () => {
         const { form } = this.state
         form.avances.push(
@@ -768,7 +734,6 @@ class Proyectos extends Component {
             form
         })
     }
-
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -805,15 +770,14 @@ class Proyectos extends Component {
             form.adjuntos[element].value = ''
             form.adjuntos[element].files = []
         })
-        form.adjuntos_grupo.map( (grupo) => {
-            grupo.adjuntos.map( (adjunto) => {
+        form.adjuntos_grupo.map((grupo) => {
+            grupo.adjuntos.map((adjunto) => {
                 adjunto.value = ''
                 adjunto.files = []
             })
         })
         return form
     }
-
     deleteFile = element => {
         swal({
             title: '¿Deseas eliminar el archivo?',
@@ -839,9 +803,8 @@ class Proyectos extends Component {
             }
         })
     }
-
     handleChange = (files, item) => {
-        
+
         this.onChangeAdjuntoGrupo({ target: { name: item, value: files, files: files } })
         swal({
             title: '¿Confirmas el envio de adjuntos?',
@@ -868,17 +831,14 @@ class Proyectos extends Component {
             }
         })
     }
-
     onSubmitAvance = e => {
         e.preventDefault()
         waitAlert();
         this.addAvanceAxios()
     }
-
     safeDelete = (e) => () => {
         this.deleteProyectoAxios()
     }
-
     setProyectos = proyectos => {
         let aux = []
         proyectos.map((proyecto) => {
@@ -903,7 +863,6 @@ class Proyectos extends Component {
         })
         return aux
     }
-
     setAdjuntosTable = proyecto => {
         return (
             <>
@@ -961,14 +920,13 @@ class Proyectos extends Component {
             {
                 text: 'Ver',
                 btnclass: 'dark',
-                iconclass: 'flaticon2-expand',                  
+                iconclass: 'flaticon2-expand',
                 action: 'see',
-                tooltip: {id:'see', text:'Mostrar', type:'info'},
-            },
+                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
+            }
         )
         return aux
     }
-
     setDireccionTable = proyecto => {
         return (
             <>
@@ -990,7 +948,6 @@ class Proyectos extends Component {
             </>
         )
     }
-
     async getProyectosAxios() {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'proyectos', { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -1003,14 +960,13 @@ class Proyectos extends Component {
                     options,
                     proyectos: this.setProyectos(proyectos),
                     data
-
                 })
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -1019,7 +975,6 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
-
     async getProyectoAdjuntosZip(array) {
         const { access_token } = this.props.authUser
         const { proyecto } = this.state
@@ -1028,18 +983,18 @@ class Proyectos extends Component {
         await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/adjuntos/zip', aux, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                const url =  URL_ASSETS+'/storage/adjuntos.zip'
+                const url = URL_ASSETS + '/storage/adjuntos.zip'
                 const link = document.createElement('a');
                 link.href = url;
-                link.setAttribute('download', proyecto.nombre+'.zip'); //or any other extension
+                link.setAttribute('download', proyecto.nombre + '.zip'); //or any other extension
                 document.body.appendChild(link);
                 link.click();
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -1048,7 +1003,6 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
-
     async deleteProyectoAxios() {
         const { access_token } = this.props.authUser
         const { proyecto } = this.state
@@ -1057,9 +1011,7 @@ class Proyectos extends Component {
                 const { proyectos } = response.data
                 const { data } = this.state
                 data.proyectos = proyectos
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue eliminado con éxito.')
-                
                 this.setState({
                     ...this.state,
                     proyectos: this.setProyectos(proyectos),
@@ -1070,9 +1022,9 @@ class Proyectos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -1081,7 +1033,6 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
-
     async deleteAdjuntoAxios(id) {
         const { access_token } = this.props.authUser
         const { proyecto } = this.state
@@ -1103,9 +1054,9 @@ class Proyectos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -1114,7 +1065,6 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
-
     async addAvanceAxios() {
         const { access_token } = this.props.authUser
         const { form, proyecto } = this.state
@@ -1138,7 +1088,7 @@ class Proyectos extends Component {
                     break
             }
         })
-        form.avances.map(( avance, key) => {
+        form.avances.map((avance, key) => {
             if (avance.adjuntos.value !== '') {
                 for (var i = 0; i < avance.adjuntos.files.length; i++) {
                     data.append(`files_name[]`, avance.adjuntos.files[i].name)
@@ -1148,19 +1098,16 @@ class Proyectos extends Component {
                 }
             }
         })
-        
+
         await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/avances', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 const { proyecto, proyectos, avance } = response.data
                 const { data } = this.state
                 data.proyectos = proyectos
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
-
-                var win = window.open( avance.pdf, '_blank');
+                var win = window.open(avance.pdf, '_blank');
                 win.focus();
-
                 this.setState({
                     ... this.state,
                     proyecto: proyecto,
@@ -1171,9 +1118,9 @@ class Proyectos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -1182,7 +1129,6 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
-
     async addProyectoAdjuntoAxios(name) {
         const { access_token } = this.props.authUser
         const { form, proyecto } = this.state
@@ -1190,28 +1136,24 @@ class Proyectos extends Component {
         data.append('tipo', name)
         let grupo = 0
         let adjunto = 0
-        for(let i = 0; i < form.adjuntos_grupo.length; i++){
-            for(let j = 0; j < form.adjuntos_grupo[i].adjuntos.length; j++){
-                if(form.adjuntos_grupo[i].adjuntos[j].id === name){
+        for (let i = 0; i < form.adjuntos_grupo.length; i++) {
+            for (let j = 0; j < form.adjuntos_grupo[i].adjuntos.length; j++) {
+                if (form.adjuntos_grupo[i].adjuntos[j].id === name) {
                     grupo = i;
                     adjunto = j;
                 }
             }
         }
-        form.adjuntos_grupo[grupo].adjuntos[adjunto].files.map( (file) => {
+        form.adjuntos_grupo[grupo].adjuntos[adjunto].files.map((file) => {
             data.append(`files_name_${form.adjuntos_grupo[grupo].adjuntos[adjunto].id}[]`, file.name)
             data.append(`files_${form.adjuntos_grupo[grupo].adjuntos[adjunto].id}[]`, file.file)
         })
-
         await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 const { proyecto, proyectos } = response.data
                 const { data } = this.state
                 data.proyectos = proyectos
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
-
                 this.setState({
                     ... this.state,
                     proyecto: proyecto,
@@ -1222,9 +1164,9 @@ class Proyectos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -1233,25 +1175,22 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
-    
     sendMail = avance => {
         waitAlert();
         this.sendMailAvanceAxios(avance);
     }
-
-    async sendMailAvanceAxios(avance){
+    async sendMailAvanceAxios(avance) {
         const { access_token } = this.props.authUser
         const { proyecto } = this.state
-        await axios.get(URL_DEV + 'proyectos/' + proyecto.id + '/avances/' + avance , { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'proyectos/' + proyecto.id + '/avances/' + avance, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue editado con éxito.')
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -1260,16 +1199,15 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
-
     render() {
-        const { modalDelete, modalAdjuntos, modalAvances, title, form, proyectos, proyecto, data, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey, modalSee} = this.state
+        const { modalDelete, modalAdjuntos, modalAvances, title, form, proyectos, proyecto, data, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey, modalSee } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
-                
-                <NewTable 
-                    columns={PROYECTOS_COLUMNS} 
+
+                <NewTable
+                    columns={PROYECTOS_COLUMNS}
                     data={proyectos}
-                    title='Proyectos' 
+                    title='Proyectos'
                     subtitle='Listado de proyectos'
                     mostrar_boton={true}
                     abrir_modal={false}
@@ -1287,76 +1225,76 @@ class Proyectos extends Component {
                     cardTableHeader='cardTableHeader'
                     cardBody='cardBody'
                 />
-                <ModalDelete title={"¿Estás seguro que deseas eliminar el proyecto?"}  show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { this.safeDelete(e)() }}>
+                <ModalDelete title={"¿Estás seguro que deseas eliminar el proyecto?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { this.safeDelete(e)() }}>
                 </ModalDelete>
 
-                <Modal size="xl" title = "Adjuntos del proyecto" show={modalAdjuntos} handleClose={this.handleCloseAdjuntos} >
+                <Modal size="xl" title="Adjuntos del proyecto" show={modalAdjuntos} handleClose={this.handleCloseAdjuntos} >
                     <div className="p-2">
-                        <Card className="card-custom card-without-box-shadown"> 
+                        <Card className="card-custom card-without-box-shadown">
                             <Card.Header className="pl-0 pr-0 justify-content-start">
-                                <Card.Title> 
+                                <Card.Title>
                                     <h3 className="text-dark"></h3>
                                 </Card.Title>
-                                    <div className="card-toolbar">
-                                        <Nav as="ul" className="nav nav-bold nav-pills">
-                                            {   
-                                                form.adjuntos_grupo.map( (grupo, key) => {
-                                                    return(
-                                                        <Nav.Item as="li" key = {key}>
-                                                            <Nav.Link data-toggle="tab" className={primeravista&&key===0?"active":""} eventKey={grupo.id} onClick = { () => {this.seleccionaradj(grupo.adjuntos) } }>{grupo.text}</Nav.Link>
-                                                        </Nav.Item>
-                                                    )
-                                                })
-                                            }                                            
-                                        </Nav>
-                                    </div>
+                                <div className="card-toolbar">
+                                    <Nav as="ul" className="nav nav-bold nav-pills">
+                                        {
+                                            form.adjuntos_grupo.map((grupo, key) => {
+                                                return (
+                                                    <Nav.Item as="li" key={key}>
+                                                        <Nav.Link data-toggle="tab" className={primeravista && key === 0 ? "active" : ""} eventKey={grupo.id} onClick={() => { this.seleccionaradj(grupo.adjuntos) }}>{grupo.text}</Nav.Link>
+                                                    </Nav.Item>
+                                                )
+                                            })
+                                        }
+                                    </Nav>
+                                </div>
                             </Card.Header>
                             <Card.Body>
-                                <Tab.Container id="left-tabs-example" activeKey = { subActiveKey ? subActiveKey : defaultactivekey } defaultActiveKey={defaultactivekey}
-                                            onSelect = { (select) => { this.updateActiveTabContainer(select) } }>
+                                <Tab.Container id="left-tabs-example" activeKey={subActiveKey ? subActiveKey : defaultactivekey} defaultActiveKey={defaultactivekey}
+                                    onSelect={(select) => { this.updateActiveTabContainer(select) }}>
                                     <Row>
                                         <Col md={4} className="navi navi-accent navi-hover navi-bold border-nav">
-											<Nav variant="pills" className="flex-column navi navi-hover navi-active">  
-                                                {   
-                                                    showadjuntos.map( (adjunto, key) => {
-                                                        return(
-                                                            <Nav.Item className="navi-item" key = {key}>
-                                                                <Nav.Link className="navi-link" eventKey = { adjunto.id }>
+                                            <Nav variant="pills" className="flex-column navi navi-hover navi-active">
+                                                {
+                                                    showadjuntos.map((adjunto, key) => {
+                                                        return (
+                                                            <Nav.Item className="navi-item" key={key}>
+                                                                <Nav.Link className="navi-link" eventKey={adjunto.id}>
                                                                     <span className="navi-text">{adjunto.placeholder}</span>
                                                                 </Nav.Link>
                                                             </Nav.Item>
                                                         )
                                                     })
                                                 }
-											</Nav>
-										</Col>
+                                            </Nav>
+                                        </Col>
                                         <Col md={8} className="align-self-center">
                                             <Tab.Content>
-                                                {   
-                                                    showadjuntos.map( (adjunto, key) => {
-                                                        return(
-                                                            <Tab.Pane key = {key} eventKey={adjunto.id} className="">
+                                                {
+                                                    showadjuntos.map((adjunto, key) => {
+                                                        return (
+                                                            <Tab.Pane key={key} eventKey={adjunto.id} className="">
                                                                 <>
                                                                     {
-                                                                        proyecto ? 
+                                                                        proyecto ?
                                                                             proyecto[adjunto.id] ?
                                                                                 proyecto[adjunto.id].length ?
                                                                                     <div className="mt-2 d-flex justify-content-center">
-                                                                                        <span className = 'btn btn-hover btn-text-success' onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.id]) }}>
+                                                                                        <span className='btn btn-hover btn-text-success' onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.id]) }}>
                                                                                             <i className="fas fa-file-archive"></i> Descargar ZIP
                                                                                         </span>
                                                                                     </div>
+                                                                                    : ''
                                                                                 : ''
                                                                             : ''
-                                                                        : ''
                                                                     }
                                                                     {
-                                                                        proyecto ? 
+                                                                        proyecto ?
                                                                             proyecto[adjunto.id] ?
-                                                                                <ItemSlider items = { proyecto[adjunto.id] }  handleChange = { this.handleChange }
-                                                                                    item = {adjunto.id} deleteFile = { this.deleteFile } />
-                                                                            : ''    
-                                                                        : ''
+                                                                                <ItemSlider items={proyecto[adjunto.id]} handleChange={this.handleChange}
+                                                                                    item={adjunto.id} deleteFile={this.deleteFile} />
+                                                                                : ''
+                                                                            : ''
                                                                     }
                                                                 </>
                                                             </Tab.Pane>
@@ -1366,18 +1304,29 @@ class Proyectos extends Component {
                                             </Tab.Content>
                                         </Col>
                                     </Row>
-                                </Tab.Container>         
+                                </Tab.Container>
                             </Card.Body>
                         </Card>
                     </div>
                 </Modal>
-                <Modal size="xl" title = { title } show = { modalAvances } handleClose = { this.handleCloseAvances }>
-                    <AvanceForm form = { form } onChangeAvance =  { this.onChangeAvance } onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance } 
-                        clearFilesAvances = { this.clearFilesAvances } addRowAvance = { this.addRowAvance } onSubmit = { this.onSubmitAvance }
-                        onChange = { this.onChange } proyecto = { proyecto } sendMail = { this.sendMail }  formeditado={formeditado} />
+                <Modal size="xl" title={title} show={modalAvances} handleClose={this.handleCloseAvances}>
+                    <AvanceForm
+                        form={form}
+                        onChangeAvance={this.onChangeAvance}
+                        onChangeAdjuntoAvance={this.onChangeAdjuntoAvance}
+                        clearFilesAvances={this.clearFilesAvances}
+                        addRowAvance={this.addRowAvance}
+                        onSubmit={this.onSubmitAvance}
+                        onChange={this.onChange}
+                        proyecto={proyecto}
+                        sendMail={this.sendMail}
+                        formeditado={formeditado}
+                    />
                 </Modal>
-                <Modal size="lg" title="Proyecto" show = { modalSee } handleClose = { this.handleCloseSee } >
-                    <ProyectosCard proyecto={proyecto}/>
+                <Modal size="lg" title="Proyecto" show={modalSee} handleClose={this.handleCloseSee} >
+                    <ProyectosCard
+                        proyecto={proyecto}
+                    />
                 </Modal>
             </Layout>
         )

@@ -1,26 +1,17 @@
-//React
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-
-// Componentes
 import { Card, Accordion } from 'react-bootstrap';
 import axios from 'axios';
 import swal from 'sweetalert';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
-
-// Components Propios
 import Layout from '../../../components/layout/layout'
 import { ProyectosForm as ProyectoFormulario } from '../../../components/forms'
 import { URL_DEV, CP_URL } from '../../../constants';
 import { Button } from '../../../components/form-components'
 import { ProyectoCard } from '../../../components/cards'
-
-// Funciones
 import { waitAlert, forbiddenAccessAlert, errorAlert, doneAlert } from '../../../functions/alert';
 import { setOptions } from '../../../functions/setters';
-
 class ProyectosForm extends Component {
-
     state = {
         title: 'Nuevo proyecto',
         prospecto: '',
@@ -30,10 +21,10 @@ class ProyectosForm extends Component {
             clientes: [],
             colonias: []
         },
-        data:{
+        data: {
             proyectos: []
         },
-        form:{
+        form: {
             fechaInicio: new Date(),
             fechaFin: new Date(),
             semana: '',
@@ -52,11 +43,11 @@ class ProyectosForm extends Component {
             correo: '',
             correos: [],
             clientes: [],
-            adjuntos_grupo:[
+            adjuntos_grupo: [
                 {
                     text: 'Inicio y planeación',
                     id: 'inicio_y_planeacion',
-                    adjuntos:[
+                    adjuntos: [
                         {
                             placeholder: 'Fotografías levantamiento',
                             id: 'fotografias_levantamiento',
@@ -128,7 +119,7 @@ class ProyectosForm extends Component {
                 {
                     text: 'Ejecución de obra',
                     id: 'ejecucion_de_obra',
-                    adjuntos:[
+                    adjuntos: [
                         {
                             placeholder: 'Datos de cliente',
                             id: 'datos_de_cliente',
@@ -242,7 +233,7 @@ class ProyectosForm extends Component {
                 {
                     text: 'Entrega',
                     id: 'entrega',
-                    adjuntos:[
+                    adjuntos: [
                         {
                             placeholder: 'Catálogo de conceptos ASBUILT',
                             id: 'catalogo_de_conceptos_asbuilt',
@@ -320,7 +311,7 @@ class ProyectosForm extends Component {
                 {
                     text: 'Mantenimiento',
                     id: 'mantenimiento',
-                    adjuntos:[
+                    adjuntos: [
                         {
                             placeholder: 'Fallas y reparaciones por vicios ocultos',
                             id: 'fallas_y_reparaciones_por_vicios_ocultos',
@@ -341,7 +332,6 @@ class ProyectosForm extends Component {
                         },
                     ]
                 },
-
             ],
             adjuntos: {
                 image: {
@@ -350,7 +340,7 @@ class ProyectosForm extends Component {
                     files: []
                 }
             },
-            avances:[
+            avances: [
                 {
                     descripcion: '',
                     avance: '',
@@ -363,47 +353,40 @@ class ProyectosForm extends Component {
             ]
         }
     }
-
-    componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
-        const { match : { params: { action: action } } } = this.props
-        const { history, location: { state: state} } = this.props
-        const remisiones = permisos.find(function(element, index) {
+    componentDidMount() {
+        const { authUser: { user: { permisos: permisos } } } = this.props
+        const { history: { location: { pathname: pathname } } } = this.props
+        const { match: { params: { action: action } } } = this.props
+        const { history, location: { state: state } } = this.props
+        const remisiones = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
             return pathname === url + '/' + action
         });
-        switch(action){
+        switch (action) {
             case 'add':
                 this.setState({
                     ... this.state,
                     title: 'Nuevo proyecto',
-                    formeditado:0
+                    formeditado: 0
                 })
                 break;
             case 'edit':
-                if(state){
-                    if(state.proyecto)
-                    {
+                if (state) {
+                    if (state.proyecto) {
                         const { proyecto } = state
                         const { form } = this.state
                         form.cp = proyecto.cp;
                         this.cpAxios(proyecto.cp)
                         form.calle = proyecto.calle
                         form.nombre = proyecto.nombre
-        
                         form.contacto = proyecto.contacto
                         form.numeroContacto = proyecto.numero_contacto
-
                         form.fechaInicio = new Date(proyecto.fecha_inicio)
                         form.fechaFin = new Date(proyecto.fecha_fin)
-
                         form.porcentaje = proyecto.porcentaje
                         form.descripcion = proyecto.descripcion
-
                         let aux = []
-
-                        if(proyecto.clientes){
+                        if (proyecto.clientes) {
                             proyecto.clientes.forEach(cliente => {
                                 aux.push(
                                     {
@@ -414,24 +397,19 @@ class ProyectosForm extends Component {
                             });
                             form.clientes = aux
                         }
-
                         if (proyecto.imagen) {
                             form.adjuntos.image.files = [{ name: proyecto.imagen.name, file: '', url: proyecto.imagen.url, key: 0 }]
                         }
-
-                        if(proyecto.empresa)     
+                        if (proyecto.empresa)
                             form.empresa = proyecto.empresa.id.toString()
-
                         form.colonia = proyecto.colonia
-                        
                         aux = []
-                        if(proyecto.contactos){
-                            proyecto.contactos.map( (contacto)=>{
+                        if (proyecto.contactos) {
+                            proyecto.contactos.map((contacto) => {
                                 aux.push(contacto.correo)
                             })
                             form.correos = aux
                         }
-
                         this.setState({
                             ... this.state,
                             proyecto: proyecto,
@@ -442,30 +420,26 @@ class ProyectosForm extends Component {
                     }
                     else
                         history.push('/proyectos/proyectos')
-                }else
+                } else
                     history.push('/proyectos/proyectos')
-
                 break;
             case 'convert':
-                if(state){
-                    if(state.prospecto)
-                    {
+                if (state) {
+                    if (state.prospecto) {
                         this.getProspectoAxios(state.prospecto.id)
                     }
                     else
                         history.push('/proyectos/proyectos')
-                }else
+                } else
                     history.push('/proyectos/proyectos')
                 break;
             default:
                 break;
         }
-        if(!remisiones)
+        if (!remisiones)
             history.push('/')
         this.getOptionsAxios()
     }
-
-    // Change adjuntos
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -497,8 +471,8 @@ class ProyectosForm extends Component {
     deleteOption = (element, array) => {
         let { form } = this.state
         let auxForm = []
-        form[array].map( ( elemento, key ) => {
-            if(element !== elemento){
+        form[array].map((elemento, key) => {
+            if (element !== elemento) {
                 auxForm.push(elemento)
             }
         })
@@ -511,8 +485,8 @@ class ProyectosForm extends Component {
     removeCorreo = value => {
         const { form } = this.state
         let aux = []
-        form.correos.map( (correo, key) => {
-            if(correo !== value){
+        form.correos.map((correo, key) => {
+            if (correo !== value) {
                 aux.push(correo)
             }
         })
@@ -565,18 +539,17 @@ class ProyectosForm extends Component {
                 }
             )
         }
-        for(let i = 0; i < form.adjuntos_grupo.length; i++){
-            for(let j = 0; j < form.adjuntos_grupo[i].adjuntos.length; j++){
-                if(form.adjuntos_grupo[i].adjuntos[j].id === name){
+        for (let i = 0; i < form.adjuntos_grupo.length; i++) {
+            for (let j = 0; j < form.adjuntos_grupo[i].adjuntos.length; j++) {
+                if (form.adjuntos_grupo[i].adjuntos[j].id === name) {
                     grupo = i;
                     adjunto = j;
                 }
             }
         }
-
         form.adjuntos_grupo[grupo].adjuntos[adjunto].value = value
         form.adjuntos_grupo[grupo].adjuntos[adjunto].files = aux
-        
+
         this.setState({
             ... this.state,
             form
@@ -604,9 +577,9 @@ class ProyectosForm extends Component {
         let aux = []
         let grupo = 0
         let adjunto = 0
-        for(let i = 0; i < form.adjuntos_grupo.length; i++){
-            for(let j = 0; j < form.adjuntos_grupo[i].adjuntos.length; j++){
-                if(form.adjuntos_grupo[i].adjuntos[j].id === name){
+        for (let i = 0; i < form.adjuntos_grupo.length; i++) {
+            for (let j = 0; j < form.adjuntos_grupo[i].adjuntos.length; j++) {
+                if (form.adjuntos_grupo[i].adjuntos[j].id === name) {
                     grupo = i;
                     adjunto = j;
                 }
@@ -626,8 +599,6 @@ class ProyectosForm extends Component {
             form
         })
     }
-
-    //Submits
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
@@ -637,21 +608,16 @@ class ProyectosForm extends Component {
         else
             this.addProyectoAxios()
     }
-
-    // Eventos asyncornos
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'proyectos/opciones', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                
                 const { clientes, empresas } = response.data
                 const { options } = this.state
-
                 options['clientes'] = setOptions(clientes, 'empresa', 'id')
                 options['empresas'] = setOptions(empresas, 'name', 'id')
-
                 this.setState({
                     ...this.state,
                     options
@@ -705,13 +671,13 @@ class ProyectosForm extends Component {
         if (prospecto) {
             data.append('prospecto', prospecto.id)
         }
-        form.adjuntos_grupo.map( (grupo) => {
-            grupo.adjuntos.map( (adjunto) => {
-                adjunto.files.map((file)=> {
+        form.adjuntos_grupo.map((grupo) => {
+            grupo.adjuntos.map((adjunto) => {
+                adjunto.files.map((file) => {
                     data.append(`files_name_${adjunto.id}[]`, file.name)
                     data.append(`files_${adjunto.id}[]`, file.file)
                 })
-                if(adjunto.files.length)
+                if (adjunto.files.length)
                     data.append('adjuntos[]', adjunto.id)
             })
         })
@@ -725,9 +691,9 @@ class ProyectosForm extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -753,7 +719,7 @@ class ProyectosForm extends Component {
                 case 'clientes':
                     data.append(element, JSON.stringify(form[element]))
                     break;
-                    
+
                 default:
                     data.append(element, form[element])
                     break
@@ -783,9 +749,9 @@ class ProyectosForm extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -818,9 +784,9 @@ class ProyectosForm extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -829,8 +795,6 @@ class ProyectosForm extends Component {
             console.log(error, 'error')
         })
     }
-
-    //CP
     async cpAxios(value) {
         await axios.get(CP_URL + value + '?type=simplified').then(
             (response) => {
@@ -853,13 +817,11 @@ class ProyectosForm extends Component {
                 }
             },
             (error) => {
-
             }
         ).catch((error) => {
             console.log('error catch', error)
         })
     }
-
     render() {
         const { title, form, options, formeditado, prospecto } = this.state
         return (
@@ -871,38 +833,38 @@ class ProyectosForm extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body className="pt-0">
-                        <ProyectoFormulario 
-                            title = { title } 
-                            form = { form }
-                            options = { options }
-                            formeditado = { formeditado } 
-                            onChange = { this.onChange }
-                            onChangeAdjunto = { this.onChangeAdjunto }
-                            deleteOption = { this.deleteOption }
-                            onChangeOptions = { this.onChangeOptions }
-                            clearFiles = { this.clearFiles }
-                            onChangeCP = { this.onChangeCP }
-                            onSubmit = { this.onSubmit }
-                            onChangeAdjuntoGrupo = { this.onChangeAdjuntoGrupo } 
-                            clearFilesGrupo = { this.clearFilesGrupo }
-                            removeCorreo = {this.removeCorreo}
+                        <ProyectoFormulario
+                            title={title}
+                            form={form}
+                            options={options}
+                            formeditado={formeditado}
+                            onChange={this.onChange}
+                            onChangeAdjunto={this.onChangeAdjunto}
+                            deleteOption={this.deleteOption}
+                            onChangeOptions={this.onChangeOptions}
+                            clearFiles={this.clearFiles}
+                            onChangeCP={this.onChangeCP}
+                            onSubmit={this.onSubmit}
+                            onChangeAdjuntoGrupo={this.onChangeAdjuntoGrupo}
+                            clearFilesGrupo={this.clearFilesGrupo}
+                            removeCorreo={this.removeCorreo}
                             className="px-3">
                             {
-                                prospecto !== '' ? 
+                                prospecto !== '' ?
                                     <Accordion>
                                         <div className="d-flex justify-content-end">
                                             <Accordion.Toggle as={Button} icon={faEye} pulse="pulse-ring" eventKey={0} className="btn btn-icon btn-light-info pulse pulse-info" />
                                         </div>
                                         <Accordion.Collapse eventKey={0} className="px-md-5 px-2" >
                                             <div>
-                                                <ProyectoCard data = { prospecto } />
+                                                <ProyectoCard data={prospecto} />
                                             </div>
                                         </Accordion.Collapse>
                                     </Accordion>
-                                : ''
+                                    : ''
                             }
                         </ProyectoFormulario>
-                    </Card.Body>    
+                    </Card.Body>
                 </Card>
             </Layout>
         );

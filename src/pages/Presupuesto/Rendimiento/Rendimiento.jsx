@@ -9,11 +9,8 @@ import { ModalDelete, Modal } from '../../../components/singles'
 import { doneAlert, forbiddenAccessAlert, errorAlert, waitAlert } from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { RendimientoCard } from '../../../components/cards'
-
 const $ = require('jquery');
-
 class Rendimientos extends Component {
-
     state = {
         modalDelete: false,
         modalSee: false,
@@ -21,7 +18,6 @@ class Rendimientos extends Component {
         rendimientos: [],
         rendimiento: ''
     }
-
     componentDidMount() {
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
@@ -33,7 +29,6 @@ class Rendimientos extends Component {
         if (!rendimientos)
             history.push('/')
     }
-
     changePageEdit = (rendimiento) => {
         const { history } = this.props
         history.push({
@@ -41,7 +36,6 @@ class Rendimientos extends Component {
             state: { rendimiento: rendimiento}
         });
     }
-
     openModalDelete = rendimiento => {
         this.setState({
             ... this.state,
@@ -49,7 +43,6 @@ class Rendimientos extends Component {
             rendimiento: rendimiento
         })
     }
-
     handleCloseDelete = () => {
         const { modalDelete } = this.state
         this.setState({
@@ -58,7 +51,6 @@ class Rendimientos extends Component {
             rendimiento: '',
         })
     }
-
     openModalSee = rendimiento => {
         this.setState({
             ... this.state,
@@ -66,7 +58,6 @@ class Rendimientos extends Component {
             rendimiento: rendimiento
         })
     }
-
     handleCloseSee = () => {
         this.setState({
             ... this.state,
@@ -74,7 +65,6 @@ class Rendimientos extends Component {
             rendimiento: ''
         })
     }
-
     setRendimientos = rendimientos => {
         let aux = []
         rendimientos.map((rendimiento) => {
@@ -93,7 +83,6 @@ class Rendimientos extends Component {
         })
         return aux
     }
-
     setActions = () => {
         let aux = []
         aux.push(
@@ -116,12 +105,11 @@ class Rendimientos extends Component {
                 btnclass: 'info',
                 iconclass: 'flaticon2-expand',                  
                 action: 'see',
-                tooltip: {id:'see', text:'Mostrar', type:'info'},
+                tooltip: {id:'see', text:'Mostrar', type:'info'}
             }
         )
         return aux
     }
-
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
@@ -131,20 +119,15 @@ class Rendimientos extends Component {
         else
             this.addRendimientoAxios()
     }
-
     async getRemisionesAxios() {
         var table = $('#kt_datatable_rendimiento').DataTable().ajax.reload();
     }
-
     async deleteRendimientoAxios() {
         const { access_token } = this.props.authUser
         const { rendimiento } = this.state
         await axios.delete(URL_DEV + 'rendimientos/' + rendimiento.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                // const { rendimientos } = response.data
-
-                doneAlert(response.data.message !== undefined ? response.data.message : 'La rendimiento fue registrado con éxito.')
-                
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La rendimiento fue registrado con éxito.')                
                 this.getRemisionesAxios()
                 this.setState({
                     ... this.state,
@@ -165,11 +148,8 @@ class Rendimientos extends Component {
             console.log(error, 'error')
         })
     }
-
     render() {
-
         const { modalDelete, modalSee, rendimiento} = this.state
-
         return (
             <Layout active={'presupuesto'}  {...this.props}>
                 <NewTableServerRender
@@ -195,9 +175,10 @@ class Rendimientos extends Component {
                     />
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el rendimiento?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); this.deleteRendimientoAxios() }}>
                 </ModalDelete>
-
                 <Modal size="lg" title="Rendimiento" show = { modalSee } handleClose = { this.handleCloseSee } >
-                    <RendimientoCard rendimiento={rendimiento}/>
+                    <RendimientoCard 
+                        rendimiento={rendimiento}
+                    />
                 </Modal>
             </Layout>
         )

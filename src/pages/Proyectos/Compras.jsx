@@ -244,9 +244,9 @@ class Compras extends Component {
             {
                 text: 'Ver',
                 btnclass: 'info',
-                iconclass: 'flaticon2-expand',                  
+                iconclass: 'flaticon2-expand',
                 action: 'see',
-                tooltip: {id:'see', text:'Mostrar', type:'info'},
+                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
             }
         )
 
@@ -538,8 +538,8 @@ class Compras extends Component {
                         }
 
                         let tipoRelacion = ''
-                        if(relacionados){
-                            if(relacionados.length){
+                        if (relacionados) {
+                            if (relacionados.length) {
                                 relacionados = relacionados[0]
                                 tipoRelacion = relacionados.attributes.TipoRelacion
                                 let uuidRelacionado = xml.getElementsByTagName('cfdi:CfdiRelacionado')[0]
@@ -579,8 +579,8 @@ class Compras extends Component {
                         });
                         let auxProveedor = ''
                         data.proveedores.find(function (element, index) {
-                            let cadena = obj.nombre_emisor.replace(' S. C.',  ' SC').toUpperCase()
-                            cadena = cadena.replace(',S.A.',  ' SA').toUpperCase()
+                            let cadena = obj.nombre_emisor.replace(' S. C.', ' SC').toUpperCase()
+                            cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
                             cadena = cadena.replace(/,/g, '').toUpperCase()
                             cadena = cadena.replace(/\./g, '').toUpperCase()
                             if (element.razon_social.toUpperCase() === obj.nombre_emisor.toUpperCase() ||
@@ -632,7 +632,6 @@ class Compras extends Component {
             form
         })
     }
-
     clearFiles = (name, key) => {
         const { form } = this.state
         let aux = []
@@ -652,7 +651,6 @@ class Compras extends Component {
             form
         })
     }
-
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
@@ -662,12 +660,10 @@ class Compras extends Component {
         else
             this.addCompraAxios()
     }
-
     deleteFactura = id => {
         waitAlert()
         this.deleteFacturaAxios(id)
     }
-
     async getOptionsAxios() {
         const { access_token } = this.props.authUser
         waitAlert()
@@ -675,7 +671,7 @@ class Compras extends Component {
             (response) => {
                 swal.close()
                 const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos,
-                        proveedores, formasPago, metodosPago, estatusFacturas } = response.data
+                    proveedores, formasPago, metodosPago, estatusFacturas } = response.data
                 const { options, data } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
@@ -708,18 +704,13 @@ class Compras extends Component {
             console.log(error, 'error')
         })
     }
-
     async getComprasAxios() {
         var table = $('#kt_datatable2_compras').DataTable().ajax.reload();
     }
-
-
     async addCompraAxios() {
-
         const { access_token } = this.props.authUser
         const { form } = this.state
         const data = new FormData();
-
         let aux = Object.keys(form)
         aux.map((element) => {
             switch (element) {
@@ -746,20 +737,15 @@ class Compras extends Component {
                 data.append('adjuntos[]', element)
             }
         })
-
         await axios.post(URL_DEV + 'compras', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 this.getComprasAxios()
-
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
                     modal: false
                 })
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-
             },
             (error) => {
                 console.log(error, 'error')
@@ -776,11 +762,9 @@ class Compras extends Component {
     }
 
     async addAdjuntoCompraAxios() {
-
         const { access_token } = this.props.authUser
         const { form, compra } = this.state
         const data = new FormData();
-
         let aux = Object.keys(form.adjuntos)
         aux.map((element) => {
             if (form.adjuntos[element].value !== '') {
@@ -791,17 +775,13 @@ class Compras extends Component {
                 data.append('adjuntos[]', element)
             }
         })
-
         data.append('id', compra.id)
-
         await axios.post(URL_DEV + 'compras/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 const { compra } = response.data
                 const { data } = this.state
                 data.adjuntos = compra.presupuestos.concat(compra.pagos)
                 this.getComprasAxios()
-
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
@@ -810,9 +790,7 @@ class Compras extends Component {
                     modal: false,
                     data
                 })
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-
             },
             (error) => {
                 console.log(error, 'error')
@@ -827,28 +805,20 @@ class Compras extends Component {
             console.log(error, 'error')
         })
     }
-
     async addProveedorAxios(obj) {
-
         const { access_token } = this.props.authUser
-
         const data = new FormData();
-
-        let cadena = obj.nombre_emisor.replace(' S. C.',  ' SC').toUpperCase()
-        cadena = cadena.replace(',S.A.',  ' SA').toUpperCase()
+        let cadena = obj.nombre_emisor.replace(' S. C.', ' SC').toUpperCase()
+        cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
         cadena = cadena.replace(/,/g, '').toUpperCase()
         cadena = cadena.replace(/\./g, '').toUpperCase()
         data.append('nombre', cadena)
         data.append('razonSocial', cadena)
         data.append('rfc', obj.rfc_emisor.toUpperCase())
-
         await axios.post(URL_DEV + 'proveedores', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 const { proveedores } = response.data
-
                 const { options, data, form } = this.state
-
                 options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
                 data.proveedores = proveedores
                 proveedores.map((proveedor) => {
@@ -856,14 +826,12 @@ class Compras extends Component {
                         form.proveedor = proveedor.id.toString()
                     }
                 })
-
                 this.setState({
                     ... this.state,
                     form,
                     data,
                     options
                 })
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
             },
             (error) => {
@@ -879,13 +847,10 @@ class Compras extends Component {
             console.log(error, 'error')
         })
     }
-
     async editCompraAxios() {
-
         const { access_token } = this.props.authUser
         const { form, compra } = this.state
         const data = new FormData();
-
         let aux = Object.keys(form)
         aux.map((element) => {
             switch (element) {
@@ -908,20 +873,15 @@ class Compras extends Component {
             }
             data.append('adjuntos[]', element)
         })
-
         await axios.post(URL_DEV + 'compras/update/' + compra.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 this.getComprasAxios()
-
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
                     modal: false
                 })
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-
             },
             (error) => {
                 console.log(error, 'error')
@@ -936,24 +896,18 @@ class Compras extends Component {
             console.log(error, 'error')
         })
     }
-
     async deleteCompraAxios() {
-
         const { access_token } = this.props.authUser
         const { compra } = this.state
         await axios.delete(URL_DEV + 'compras/' + compra.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 this.getComprasAxios()
-
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
                     modalDelete: false,
                 })
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue eliminado con éxito.')
-
             },
             (error) => {
                 console.log(error, 'error')
@@ -968,7 +922,6 @@ class Compras extends Component {
             console.log(error, 'error')
         })
     }
-
     async getSolicitudCompraAxios(id) {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'solicitud-compra/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -1047,13 +1000,10 @@ class Compras extends Component {
             console.log(error, 'error')
         })
     }
-
     async sendFacturaAxios() {
-
         const { access_token } = this.props.authUser
         const { form, compra } = this.state
         const data = new FormData();
-
         let aux = Object.keys(form)
         aux.map((element) => {
             switch (element) {
@@ -1077,12 +1027,9 @@ class Compras extends Component {
                 data.append('adjuntos[]', element)
             }
         })
-
         data.append('id', compra.id)
-
         await axios.post(URL_DEV + 'compras/factura', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 this.getComprasAxios()
                 const { compra } = response.data
                 let { porcentaje, form } = this.state
@@ -1097,9 +1044,7 @@ class Compras extends Component {
                     facturas: compra.facturas,
                     porcentaje
                 })
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-
             },
             (error) => {
                 console.log(error, 'error')
@@ -1114,7 +1059,6 @@ class Compras extends Component {
             console.log(error, 'error')
         })
     }
-
     async deleteAdjuntoAxios(id) {
         const { access_token } = this.props.authUser
         const { compra } = this.state
@@ -1124,7 +1068,6 @@ class Compras extends Component {
                 const { data } = this.state
                 data.adjuntos = compra.presupuestos.concat(compra.pagos)
                 this.getComprasAxios()
-
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
@@ -1132,9 +1075,7 @@ class Compras extends Component {
                     adjuntos: this.setAdjuntosTable(compra),
                     data
                 })
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-
             },
             (error) => {
                 console.log(error, 'error')
@@ -1151,7 +1092,6 @@ class Compras extends Component {
     }
 
     async deleteFacturaAxios(id) {
-
         const { access_token } = this.props.authUser
         const { compra } = this.state
         await axios.delete(URL_DEV + 'compras/' + compra.id + '/facturas/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -1168,9 +1108,7 @@ class Compras extends Component {
                     facturas: compra.facturas,
                     porcentaje
                 })
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-
             },
             (error) => {
                 console.log(error, 'error')
@@ -1185,16 +1123,14 @@ class Compras extends Component {
             console.log(error, 'error')
         })
     }
-
     async exportComprasAxios() {
-
         let headers = []
         let documento = ''
-        COMPRAS_COLUMNS.map( ( columna, key ) => {
-            if(columna !== 'actions' && columna !== 'adjuntos'){
+        COMPRAS_COLUMNS.map((columna, key) => {
+            if (columna !== 'actions' && columna !== 'adjuntos') {
                 documento = document.getElementById(columna.accessor)
-                if(documento){
-                    if(documento.value){
+                if (documento) {
+                    if (documento.value) {
                         headers.push({
                             name: columna.accessor,
                             value: documento.value
@@ -1203,22 +1139,17 @@ class Compras extends Component {
                 }
             }
         })
-
         waitAlert()
-
         const { access_token } = this.props.authUser
         await axios.post(URL_DEV + 'exportar/compras', { columnas: headers }, { responseType: 'blob', headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
                 link.href = url;
                 link.setAttribute('download', 'compras.xlsx');
                 document.body.appendChild(link);
                 link.click();
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-
             },
             (error) => {
                 console.log(error, 'error')
@@ -1233,19 +1164,11 @@ class Compras extends Component {
             console.log(error, 'error')
         })
     }
-
     render() {
-
         const {
-            modal, modalDelete, modalFacturas, modalAdjuntos,
-            title, form, options,
-            solicitud, compras, porcentaje, facturas, compra, data, formeditado, adjuntos,
-            modalSee
-        } = this.state
-
+            modal, modalDelete, modalFacturas, modalAdjuntos,title, form, options,solicitud, compras, porcentaje, facturas, compra, data, formeditado, adjuntos,modalSee} = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
-
                 <NewTableServerRender columns={COMPRAS_COLUMNS} data={compras}
                     title='Compras' subtitle='Listado de compras'
                     mostrar_boton={true}
@@ -1266,39 +1189,36 @@ class Compras extends Component {
                     setter={this.setCompras}
                     urlRender={URL_DEV + 'compras'}
                     idTable='kt_datatable2_compras'
-                    validateFactura = { true }
-                    tipo_validacion = 'compras'
+                    validateFactura={true}
+                    tipo_validacion='compras'
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'
                     cardBody='cardBody'
                 />
-
                 <Modal size="xl" title={title} show={modal} handleClose={this.handleClose} >
-                    <ComprasForm 
-                        options={options} 
-                        form={form} 
-                        setOptions={this.setOptions} 
-                        data={data} 
+                    <ComprasForm
+                        options={options}
+                        form={form}
+                        setOptions={this.setOptions}
+                        data={data}
                         title={title}
-                        onChange={this.onChange} 
-                        onChangeAdjunto={this.onChangeAdjunto} 
+                        onChange={this.onChange}
+                        onChangeAdjunto={this.onChangeAdjunto}
                         clearFiles={this.clearFiles}
-                        sendFactura={() => { this.sendFactura() }} 
-                        onSubmit={this.onSubmit} 
+                        sendFactura={() => { this.sendFactura() }}
+                        onSubmit={this.onSubmit}
                         formeditado={formeditado}
                         className="px-3"
                     >
                         {
                             solicitud ?
-                                <SolicitudCompraCard solicitud={solicitud} formeditado={formeditado} border={"border-nav mt-4 mb-5"}/>
+                                <SolicitudCompraCard solicitud={solicitud} formeditado={formeditado} border={"border-nav mt-4 mb-5"} />
                                 : ''
                         }
                     </ComprasForm>
                 </Modal>
-
                 <ModalDelete title={"¿Estás seguro que deseas eliminar la compra?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteCompraAxios() }}>
                 </ModalDelete>
-
                 <Modal size="xl" title={"Facturas"} show={modalFacturas} handleClose={this.handleCloseFacturas}>
                     <div className="form-group row form-group-marginless pt-4">
                         <div className="col-md-12">
@@ -1320,7 +1240,6 @@ class Compras extends Component {
                                     files={form['adjuntos']['factura']['files']}
                                     deleteAdjunto={this.clearFiles} multiple />
                             </div>
-
                             <div className="col-md-6 px-2">
                                 <Select
                                     requirevalidation={1}
@@ -1332,7 +1251,7 @@ class Compras extends Component {
                                     onChange={this.onChange}
                                     iconclass={"flaticon2-time"}
                                     messageinc="Incorrecto. Selecciona el estatus de compra."
-                                    />
+                                />
                             </div>
                             <div className="col-md-12 px-2 align-items-center d-flex">
                                 <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
@@ -1342,8 +1261,12 @@ class Compras extends Component {
                     <FacturaTable deleteFactura={this.deleteFactura} facturas={facturas} />
                 </Modal>
                 <Modal size="xl" title={"Adjuntos"} show={modalAdjuntos} handleClose={this.handleCloseAdjuntos}>
-                    <AdjuntosForm form={form} onChangeAdjunto={this.onChangeAdjunto} clearFiles={this.clearFiles}
-                        onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addAdjuntoCompraAxios() }} />
+                    <AdjuntosForm
+                        form={form}
+                        onChangeAdjunto={this.onChangeAdjunto}
+                        clearFiles={this.clearFiles}
+                        onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addAdjuntoCompraAxios() }}
+                    />
                     <TableForModals
                         columns={ADJUNTOS_COLUMNS}
                         data={adjuntos}
@@ -1356,9 +1279,10 @@ class Compras extends Component {
                         elements={data.adjuntos}
                     />
                 </Modal>
-
-                <Modal size="lg" title="Compra" show = { modalSee } handleClose = { this.handleCloseSee } >
-                    <ComprasCard compra={compra}/>
+                <Modal size="lg" title="Compra" show={modalSee} handleClose={this.handleCloseSee} >
+                    <ComprasCard
+                        compra={compra}
+                    />
                 </Modal>
             </Layout>
         )

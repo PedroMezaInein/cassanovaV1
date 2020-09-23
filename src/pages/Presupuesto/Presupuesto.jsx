@@ -3,21 +3,18 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV, PRESUPUESTO_COLUMNS, ADJUNTOS_PRESUPUESTOS_COLUMNS } from '../../constants'
-import { setOptions, setTextTable, setDateTable, setAdjuntosList} from '../../functions/setters'
+import { setOptions, setTextTable, setDateTable, setAdjuntosList } from '../../functions/setters'
 import Layout from '../../components/layout/layout'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
-import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert} from '../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from '../../functions/alert'
 import { renderToString } from 'react-dom/server'
 import { ModalDelete, Modal } from '../../components/singles'
 import TableForModals from '../../components/tables/TableForModals'
-
 const $ = require('jquery');
-
 class Presupuesto extends Component {
-
     state = {
-        formeditado:0,
-        modal:{
+        formeditado: 0,
+        modal: {
             form: false,
             delete: false,
             adjuntos: false,
@@ -28,24 +25,23 @@ class Presupuesto extends Component {
             proyecto: '',
             area: '',
             empresa: '',
-            fecha: new Date(),            
+            fecha: new Date(),
             tiempo_ejecucion: '',
             partida: '',
             subpartida: '',
         },
-        options: { 
+        options: {
             proyectos: [],
-            empresas:[],
+            empresas: [],
             areas: [],
             partidas: [],
             subpartidas: []
         },
-        data:{
+        data: {
             adjuntos: []
         },
         adjuntos: []
     }
-
     componentDidMount() {
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
@@ -56,9 +52,8 @@ class Presupuesto extends Component {
         });
         if (!presupuesto)
             history.push('/')
-            this.getOptionsAxios()
+        this.getOptionsAxios()
     }
-
     setOptions = (name, array) => {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
@@ -67,20 +62,18 @@ class Presupuesto extends Component {
             options
         })
     }
-
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'presupuestos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close() 
-                const { empresas, proyectos, areas, partidas} = response.data
-                const { options} = this.state 
+                swal.close()
+                const { empresas, proyectos, areas, partidas } = response.data
+                const { options } = this.state
                 options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
                 options['partidas'] = setOptions(partidas, 'nombre', 'id')
-
                 this.setState({
                     ... this.state,
                     options
@@ -99,32 +92,27 @@ class Presupuesto extends Component {
             console.log(error, 'error')
         })
     }
-
-    async deletePresupuestoAxios(){
+    async deletePresupuestoAxios() {
         const { access_token } = this.props.authUser
         const { presupuesto } = this.state
-        await axios.delete(URL_DEV + 'presupuestos/' + presupuesto.id, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.delete(URL_DEV + 'presupuestos/' + presupuesto.id, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { modal } = this.state
-
                 modal.delete = false
-
                 this.getPresupuestoAxios()
                 this.setState({
                     ... this.state,
                     modal,
                     presupuesto: '',
-                    
-                })
 
+                })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue eliminado con éxito.')
-                
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -133,7 +121,6 @@ class Presupuesto extends Component {
             console.log(error, 'error')
         })
     }
-
     openModalDelete = presupuesto => {
         const { modal } = this.state
         modal.delete = true
@@ -143,8 +130,7 @@ class Presupuesto extends Component {
             presupuesto: presupuesto
         })
     }
-
-    downloadPDF = presupuesto   => {
+    downloadPDF = presupuesto => {
         const { modal, data } = this.state
         data.adjuntos = presupuesto.pdfs
         modal.adjuntos = true
@@ -156,7 +142,6 @@ class Presupuesto extends Component {
             data
         })
     }
-
     handleClose = () => {
         const { modal, data } = this.state
         data.adjuntos = []
@@ -169,7 +154,6 @@ class Presupuesto extends Component {
             data
         })
     }
-
     handleCloseDelete = () => {
         const { modal } = this.state
         modal.delete = false
@@ -179,15 +163,14 @@ class Presupuesto extends Component {
             presupuesto: ''
         })
     }
-
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'fecha':
                     form[element] = new Date()
-                    break; 
+                    break;
                 default:
                     form[element] = ''
                     break;
@@ -195,7 +178,6 @@ class Presupuesto extends Component {
         })
         return form;
     }
-
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -205,7 +187,6 @@ class Presupuesto extends Component {
             form
         })
     }
-
     setAdjuntosTable = adjuntos => {
         let aux = []
         adjuntos.map((adjunto) => {
@@ -219,21 +200,19 @@ class Presupuesto extends Component {
         })
         return aux
     }
-
-    async getPresupuestoAxios(){
+    async getPresupuestoAxios() {
         var table = $('#kt_datatable2_presupuesto').DataTable().ajax.reload();
     }
-
     setPresupuestos = presupuestos => {
         let aux = []
-        if(presupuestos)
-            presupuestos.map( (presupuesto) => {
+        if (presupuestos)
+            presupuestos.map((presupuesto) => {
                 aux.push(
                     {
                         actions: this.setActions(presupuesto),
-                        proyecto: renderToString(setTextTable( presupuesto.proyecto ? presupuesto.proyecto.nombre : '')),
-                        empresa: renderToString(setTextTable( presupuesto.empresa ? presupuesto.empresa.name : '')),
-                        area: renderToString(setTextTable( presupuesto.area ? presupuesto.area.nombre : '')),
+                        proyecto: renderToString(setTextTable(presupuesto.proyecto ? presupuesto.proyecto.nombre : '')),
+                        empresa: renderToString(setTextTable(presupuesto.empresa ? presupuesto.empresa.name : '')),
+                        area: renderToString(setTextTable(presupuesto.area ? presupuesto.area.nombre : '')),
                         fecha: renderToString(setDateTable(presupuesto.fecha)),
                         tiempo_ejecucion: renderToString(setTextTable(presupuesto.tiempo_ejecucion)),
                         id: presupuesto.id,
@@ -243,7 +222,6 @@ class Presupuesto extends Component {
             })
         return aux
     }
-
     setActions = presupuesto => {
         let aux = []
         aux.push(
@@ -252,48 +230,44 @@ class Presupuesto extends Component {
                 btnclass: 'success',
                 iconclass: 'flaticon2-pen',
                 action: 'edit',
-                tooltip: {id:'edit', text:'Editar'},
+                tooltip: { id: 'edit', text: 'Editar' },
             },
             {
                 text: 'Ver&nbsp;presupuesto',
                 btnclass: 'primary',
-                iconclass: 'flaticon2-paper',                  
+                iconclass: 'flaticon2-paper',
                 action: 'finish',
-                tooltip: {id:'finish', text:'Ver presupuesto', type:'error'},
+                tooltip: { id: 'finish', text: 'Ver presupuesto', type: 'error' },
             }
         )
-        if(presupuesto.pdfs)
-            /* if(presupuesto.pdfs.lenght) */
-            {
-                aux.push(
-                    {
-                        text: 'Descargar&nbsp;presupuesto',
-                        btnclass: 'info',
-                        iconclass: 'flaticon2-download-1',                  
-                        action: 'download',
-                        tooltip: {id:'download', text:'Decargar presupuesto'},
-                    }
-                )
-            }
+        if (presupuesto.pdfs) {
+            aux.push(
+                {
+                    text: 'Descargar&nbsp;presupuesto',
+                    btnclass: 'info',
+                    iconclass: 'flaticon2-download-1',
+                    action: 'download',
+                    tooltip: { id: 'download', text: 'Decargar presupuesto' },
+                }
+            )
+        }
         aux.push(
             {
                 text: 'Eliminar',
                 btnclass: 'danger',
-                iconclass: 'flaticon2-rubbish-bin',                  
+                iconclass: 'flaticon2-rubbish-bin',
                 action: 'delete',
-                tooltip: {id:'delete', text:'Eliminar', type:'error'},
+                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' },
             },
         )
         return aux
     }
-
     changePageAdd = () => {
         const { history } = this.props
         history.push({
             pathname: '/presupuesto/presupuesto/add'
         });
     }
-
     openModalEdit = presupuesto => {
         const { history } = this.props
         history.push({
@@ -301,34 +275,31 @@ class Presupuesto extends Component {
             state: { presupuesto: presupuesto }
         });
     }
-
-    openUltimo= presupuesto => {
+    openUltimo = presupuesto => {
         const { history } = this.props
         history.push({
             pathname: '/presupuesto/presupuesto/finish',
             state: { presupuesto: presupuesto }
         });
     }
-
     render() {
 
-        const { modal, data, adjuntos} = this.state
-
+        const { modal, data, adjuntos } = this.state
         return (
-            <Layout active={'presupuesto'}  {...this.props}> 
-                <NewTableServerRender 
+            <Layout active={'presupuesto'}  {...this.props}>
+                <NewTableServerRender
                     columns={PRESUPUESTO_COLUMNS}
-                    title='Presupuesto' 
-                    subtitle='Listado de presupuestos' 
+                    title='Presupuesto'
+                    subtitle='Listado de presupuestos'
                     url='/presupuesto/presupuesto/add'
                     mostrar_boton={true}
                     abrir_modal={false}
                     mostrar_acciones={true}
-                    actions = {{
-                        'edit': {function: this.openModalEdit},
-                        'finish': {function: this.openUltimo},                        
-                        'delete': {function: this.openModalDelete},
-                        'download': { function: this.downloadPDF}
+                    actions={{
+                        'edit': { function: this.openModalEdit },
+                        'finish': { function: this.openUltimo },
+                        'delete': { function: this.openModalDelete },
+                        'download': { function: this.downloadPDF }
                     }}
                     idTable='kt_datatable2_presupuesto'
                     accessToken={this.props.authUser.access_token}
@@ -338,13 +309,13 @@ class Presupuesto extends Component {
                     cardTableHeader='cardTableHeader'
                     cardBody='cardBody'
                 />
-                <ModalDelete 
-                    title={"¿Estás seguro que deseas eliminar el presupuesto?"} 
-                    show = { modal.delete } 
-                    handleClose = { this.handleCloseDelete } 
-                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.deletePresupuestoAxios() }}
-                    />
-                <Modal show = { modal.adjuntos } handleClose = { this.handleClose } title = "Listado de presupuestos" >
+                <ModalDelete
+                    title={"¿Estás seguro que deseas eliminar el presupuesto?"}
+                    show={modal.delete}
+                    handleClose={this.handleCloseDelete}
+                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deletePresupuestoAxios() }}
+                />
+                <Modal show={modal.adjuntos} handleClose={this.handleClose} title="Listado de presupuestos" >
                     <TableForModals
                         columns={ADJUNTOS_PRESUPUESTOS_COLUMNS}
                         data={adjuntos}
@@ -355,8 +326,6 @@ class Presupuesto extends Component {
                     />
                 </Modal>
             </Layout>
-
-            
         )
     }
 }

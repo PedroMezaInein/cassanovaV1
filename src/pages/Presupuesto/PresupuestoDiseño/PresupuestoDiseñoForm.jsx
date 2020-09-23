@@ -8,11 +8,6 @@ import { setOptions } from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import { PresupuestoDiseñoForm as PresupuestoDiseñoFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
-import { Footer } from 'rsuite'
-import { fr } from 'date-fns/esm/locale'
-
-const $ = require('jquery');
-
 class PresupuestoDiseñoForm extends Component {
     state = {
         formeditado: 0,
@@ -89,9 +84,7 @@ class PresupuestoDiseñoForm extends Component {
         options: {
             empresas: [],
             precios: [],
-            esquemas: [],
-            // partidasInein: [],
-            // partidasIm: []
+            esquemas: []
         }
     }
 
@@ -118,7 +111,7 @@ class PresupuestoDiseñoForm extends Component {
                     if (state.presupuesto) {
                         const { presupuesto } = state
                         const { form, options, data } = this.state
-                        
+
                         form.empresa = presupuesto.empresa ? presupuesto.empresa.id.toString() : ''
                         form.m2 = presupuesto.precio ? presupuesto.precio.id.toString() : ''
                         form.esquema = presupuesto.esquema
@@ -128,7 +121,7 @@ class PresupuestoDiseñoForm extends Component {
                         form.descuento = presupuesto.descuento
                         form.proyecto = presupuesto.nombre_proyecto
                         let aux = []
-                        presupuesto.semanas.map( (semana, key) => {
+                        presupuesto.semanas.map((semana, key) => {
                             aux.push({
                                 lunes: semana.lunes,
                                 martes: semana.martes,
@@ -139,7 +132,7 @@ class PresupuestoDiseñoForm extends Component {
                                 domingo: semana.domingo
                             })
                         })
-                        if(aux.length === 0){
+                        if (aux.length === 0) {
                             aux.push({
                                 lunes: false,
                                 martes: false,
@@ -152,14 +145,14 @@ class PresupuestoDiseñoForm extends Component {
                         }
                         form.semanas = aux
                         aux = []
-                        presupuesto.conceptos.map( (concepto, key) => {
+                        presupuesto.conceptos.map((concepto, key) => {
                             aux.push({
-                                name: 'concepto'+(key+1),
+                                name: 'concepto' + (key + 1),
                                 value: concepto.dias,
                                 text: concepto.texto
                             })
                         })
-                        if(aux.length === 0){
+                        if (aux.length === 0) {
                             aux = [
                                 {
                                     value: '',
@@ -204,17 +197,16 @@ class PresupuestoDiseñoForm extends Component {
                         form.precio_inferior_mobiliario = presupuesto.precio_inferior_mobiliario
                         form.precio_superior_mobiliario = presupuesto.precio_superior_mobiliario
                         form.tiempo_ejecucion_construccion = presupuesto.tiempo_ejecucion_construccion
-                        if(presupuesto.precio){
-                            form.total = presupuesto.precio[presupuesto.esquema] * (1 - (presupuesto.descuento/100))
+                        if (presupuesto.precio) {
+                            form.total = presupuesto.precio[presupuesto.esquema] * (1 - (presupuesto.descuento / 100))
                         }
-                        if(presupuesto.empresa){
-                            if(presupuesto.empresa.name === 'INEIN'){
+                        if (presupuesto.empresa) {
+                            if (presupuesto.empresa.name === 'INEIN') {
                                 form.tipo_partida = 'partidasInein'
                             }
-                            if(presupuesto.empresa.name === 'INFRAESTRUCTURA MÉDICA')
+                            if (presupuesto.empresa.name === 'INFRAESTRUCTURA MÉDICA')
                                 form.tipo_partida = 'partidasIm'
                         }
-
                         this.setState({
                             ... this.state,
                             title: 'Editar presupuesto de diseño',
@@ -236,9 +228,6 @@ class PresupuestoDiseñoForm extends Component {
             history.push('/')
         this.getOptionsAxios()
     }
-
-
-
     setOptions = (name, array) => {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
@@ -247,17 +236,13 @@ class PresupuestoDiseñoForm extends Component {
             options
         })
     }
-
-    setPartidas = (partidas, nombrePartida, value) => {
+    setPartidas = (partidas, value) => {
         let checkBoxPartida = []
-        const { form } = this.state
-
         partidas.map((partida, key) => {
             checkBoxPartida.push({ checked: value, text: partida.nombre, id: partida.id })
         })
         return checkBoxPartida
     }
-
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -273,31 +258,29 @@ class PresupuestoDiseñoForm extends Component {
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['esquemas'] = setOptions(esquemas, 'nombre', 'id')
                 options['precios'] = setOptions(precios, 'm2', 'id')
-                /* options['partidasInein'] = this.setPartidas(partidasInein, 'partidasInein')
-                options['partidasIm'] = this.setPartidas(partidasIm, 'partidasIm') */
                 form.partidasInein = this.setPartidas(partidasInein, 'partidasInein', true)
                 form.partidasIm = this.setPartidas(partidasIm, 'partidasIm', true)
-                if(presupuesto){
+                if (presupuesto) {
                     form.partidasInein = this.setPartidas(partidasInein, 'partidasInein', false)
                     form.partidasIm = this.setPartidas(partidasIm, 'partidasIm', false)
-                    if(presupuesto.empresa){
-                        if(presupuesto.empresa.name === 'INEIN'){
+                    if (presupuesto.empresa) {
+                        if (presupuesto.empresa.name === 'INEIN') {
                             form.tipo_partida = 'partidasInein'
-                            presupuesto.partidas_inein.map( (partida_inein, key) => {
-                                if(partida_inein.partida)
-                                    form.partidasInein.map( ( element ) => {
-                                        if(element.id === partida_inein.partida.id){
+                            presupuesto.partidas_inein.map((partida_inein, key) => {
+                                if (partida_inein.partida)
+                                    form.partidasInein.map((element) => {
+                                        if (element.id === partida_inein.partida.id) {
                                             element.checked = true
                                         }
                                     })
                             })
                         }
-                        if(presupuesto.empresa.name === 'INFRAESTRUCTURA MÉDICA'){
+                        if (presupuesto.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
                             form.tipo_partida = 'partidasIm'
-                            presupuesto.partidas_im.map( (partida_im, key) => {
-                                if(partida_im.partida)
-                                    form.partidasIm.map( ( element ) => {
-                                        if(element.id === partida_im.partida.id){
+                            presupuesto.partidas_im.map((partida_im, key) => {
+                                if (partida_im.partida)
+                                    form.partidasIm.map((element) => {
+                                        if (element.id === partida_im.partida.id) {
                                             element.checked = true
                                         }
                                     })
@@ -338,25 +321,16 @@ class PresupuestoDiseñoForm extends Component {
 
                 const { presupuesto } = response.data
 
-                if(pdf)
-                    if(presupuesto.pdfs){
-                        /* const url =  presupuesto.pdfs[0].url
-                        const link = document.createElement('a');
-                        link.href = url;
-                        link.setAttribute('target', '_blank');
-                        link.click(); */
-                        var win = window.open( presupuesto.pdfs[0].url, '_blank');
+                if (pdf)
+                    if (presupuesto.pdfs) {
+                        var win = window.open(presupuesto.pdfs[0].url, '_blank');
                         win.focus();
                     }
-
                 const { history } = this.props
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La presupuesto fue eliminada con éxito.',)
-
                 history.push({
                     pathname: '/presupuesto/presupuesto-diseño'
                 });
-
             },
             (error) => {
                 console.log(error, 'error')
@@ -383,20 +357,13 @@ class PresupuestoDiseñoForm extends Component {
             (response) => {
                 const { presupuesto } = response.data
                 const { history } = this.props
-                
-                if(pdf)
-                    if(presupuesto.pdfs){
-                        var win = window.open( presupuesto.pdfs[0].url, '_blank');
+
+                if (pdf)
+                    if (presupuesto.pdfs) {
+                        var win = window.open(presupuesto.pdfs[0].url, '_blank');
                         win.focus();
-                        /* const url =  presupuesto.pdfs[0].url
-                        const link = document.createElement('a');
-                        link.href = url;
-                        link.setAttribute('target', '_blank');
-                        link.click(); */
                     }
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La presupuesto fue eliminada con éxito.',)
-
                 history.push({
                     pathname: '/presupuesto/presupuesto-diseño'
                 });
@@ -417,7 +384,7 @@ class PresupuestoDiseñoForm extends Component {
 
     checkButtonSemanas = (e, key, dia) => {
         const { form } = this.state
-        const { name, value, checked } = e.target
+        const { checked } = e.target
         form.semanas[key][dia] = checked
         let count = 0;
         let aux = Object.keys(
@@ -443,20 +410,17 @@ class PresupuestoDiseñoForm extends Component {
             form
         })
     }
-
     onChangeConceptos = (e, key) => {
-        const { name, value } = e.target
-        const { form } = this.state
+        const { value, form } = e.target
         form.conceptos[key].value = value
         this.setState({
             ... this.state,
             form
         })
     }
-
     onChange = e => {
         const { name, value } = e.target
-        const { form, data, presupuesto } = this.state
+        const { form, data } = this.state
         form[name] = value
         if (name === 'esquema') {
             form.conceptos.map((concepto) => {
@@ -513,13 +477,11 @@ class PresupuestoDiseñoForm extends Component {
                 domingo: false
             })
             aux.map((element, key) => {
-
                 if (key < modulo) {
                     form.semanas[form.semanas.length - 1][element] = true
                 } else {
                     form.semanas[form.semanas.length - 1][element] = false
                 }
-
             })
             if (modulo > 2) {
                 form.semanas.push({
@@ -532,37 +494,32 @@ class PresupuestoDiseñoForm extends Component {
                     domingo: false
                 })
             }
-
         }
-
-        if( name === 'esquema' || name === 'm2' || name === 'descuento'){
-            data.precios.map( (precio) => {
-                if(precio.id.toString() === form.m2)
-                    if(form.esquema)
-                        if(form.descuento){
-                            form.total = precio[form.esquema] * (1 -  (form.descuento/100))
-                        }else
+        if (name === 'esquema' || name === 'm2' || name === 'descuento') {
+            data.precios.map((precio) => {
+                if (precio.id.toString() === form.m2)
+                    if (form.esquema)
+                        if (form.descuento) {
+                            form.total = precio[form.esquema] * (1 - (form.descuento / 100))
+                        } else
                             form.total = precio[form.esquema]
             })
         }
-
         if (name === "empresa") {
-            data.empresas.map( (empresa) => {
-                if(empresa.id.toString() === value && empresa.name === 'INEIN'){
+            data.empresas.map((empresa) => {
+                if (empresa.id.toString() === value && empresa.name === 'INEIN') {
                     form.tipo_partida = 'partidasInein'
                 }
-                if(empresa.id.toString() === value && empresa.name === 'INFRAESTRUCTURA MÉDICA'){
+                if (empresa.id.toString() === value && empresa.name === 'INFRAESTRUCTURA MÉDICA') {
                     form.tipo_partida = 'partidasIm'
                 }
-            }) 
-
+            })
         }
         this.setState({
             ...this.state,
             form
         })
     }
-
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
@@ -571,7 +528,6 @@ class PresupuestoDiseñoForm extends Component {
         else
             this.addPresupuestoDiseñoAxios(false)
     }
-
     submitPDF = e => {
         e.preventDefault()
         const { title } = this.state
@@ -580,7 +536,6 @@ class PresupuestoDiseñoForm extends Component {
         else
             this.addPresupuestoDiseñoAxios(true)
     }
-
     handleChangeCheckbox = (array) => {
         const { form } = this.state
         form[form.tipo_partida] = array
@@ -589,10 +544,8 @@ class PresupuestoDiseñoForm extends Component {
             form: form
         })
     }
-
     render() {
         const { options, title, form, formeditado } = this.state
-
         return (
             <Layout active={'presupuesto'} {...this.props}>
                 <Card className="card-custom">
@@ -610,7 +563,7 @@ class PresupuestoDiseñoForm extends Component {
                             form={form}
                             onChange={this.onChange}
                             onSubmit={this.onSubmit}
-                            submitPDF = { this.submitPDF }
+                            submitPDF={this.submitPDF}
                             onChangeConceptos={this.onChangeConceptos}
                             checkButtonSemanas={this.checkButtonSemanas}
                             onChangeCheckboxes={this.handleChangeCheckbox}

@@ -7,7 +7,6 @@ import { setOptions } from "../../functions/setters";
 import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from "../../functions/alert";
 import Layout from "../../components/layout/layout";
 import { PresupuestoForm } from "../../components/forms";
-
 class AddPresupuestoForm extends Component {
     state = {
         formeditado: 0,
@@ -40,11 +39,9 @@ class AddPresupuestoForm extends Component {
             conceptos: []
         },
     };
-
     componentDidMount() {
         var elemento = document.getElementById("form-presupuesto");
         elemento.style.display = 'none';
-
         const {
             authUser: {
                 user: { permisos: permisos },
@@ -59,18 +56,15 @@ class AddPresupuestoForm extends Component {
             history,
             location: { state: state },
         } = this.props;
-
         const presupuesto = permisos.find(function (element, index) {
             const {
                 modulo: { url: url },
             } = element;
             return pathname === url + "/" + "add";
         });
-        
         if (!presupuesto) history.push("/");
         this.getOptionsAxios();
     }
-
     setOptions = (name, array) => {
         const { options } = this.state;
         options[name] = setOptions(array, "nombre", "id");
@@ -79,7 +73,6 @@ class AddPresupuestoForm extends Component {
             options,
         });
     };
-
     async getOptionsAxios() {
         waitAlert();
         const { access_token } = this.props.authUser;
@@ -108,7 +101,6 @@ class AddPresupuestoForm extends Component {
                     options["empresas"] = setOptions(empresas, "name", "id");
                     options["areas"] = setOptions(areas, "nombre", "id");
                     options["partidas"] = setOptions(partidas, "nombre", "id");
-
                     this.setState({
                         ...this.state,
                         options,
@@ -132,22 +124,17 @@ class AddPresupuestoForm extends Component {
                 console.log(error, "error");
             });
     }
-
     async addPresupuestosAxios() {
         const { access_token } = this.props.authUser
         const { form } = this.state
-
         await axios.post(URL_DEV + 'presupuestos', form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                
                 const { presupuesto } = response.data
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
-                
                 const { history } = this.props
                 history.push({
                     pathname: '/presupuesto/presupuesto/update',
-                    state: { presupuesto: presupuesto}
+                    state: { presupuesto: presupuesto }
                 });
             },
             (error) => {
@@ -186,7 +173,6 @@ class AddPresupuestoForm extends Component {
             default:
                 break;
         }
-
         const { form } = this.state;
         form[name] = value;
         this.setState({
@@ -195,7 +181,6 @@ class AddPresupuestoForm extends Component {
             data
         });
     };
-
     checkButton = e => {
         const { name, checked } = e.target
         const { form } = this.state
@@ -205,13 +190,11 @@ class AddPresupuestoForm extends Component {
             form
         })
     }
-
     onSubmit = e => {
         e.preventDefault()
         waitAlert()
         this.addPresupuestosAxios()
     }
-
     render() {
         const { form, title, options, formeditado, data } = this.state;
         return (
@@ -226,7 +209,6 @@ class AddPresupuestoForm extends Component {
                     setOptions={this.setOptions}
                     onSubmit={this.onSubmit}
                     data={data}
-                /* {... this.props} */
                 />
             </Layout>
         );
