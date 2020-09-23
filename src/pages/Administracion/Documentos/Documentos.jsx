@@ -9,6 +9,7 @@ import { setDateTable, setTextTable } from '../../../functions/setters'
 import { waitAlert, errorAlert, doneAlert, forbiddenAccessAlert, deleteAlert } from '../../../functions/alert'
 import axios from 'axios'
 import { Button } from '../../../components/form-components'
+import { DocumentosCard } from '../../../components/cards'
 
 
 const $ = require('jquery');
@@ -18,6 +19,7 @@ class Documentos extends Component {
     state = {
         modalDelete: false,
         modalAdjuntos: false,
+        modalSee: false,
         documento: '',
         form:{
             adjuntos:{
@@ -44,7 +46,7 @@ class Documentos extends Component {
         return aux
     }
 
-    setActions = herramienta => {
+    setActions = () => {
         let aux = []
         aux.push(
             {
@@ -68,6 +70,13 @@ class Documentos extends Component {
                 action: 'adjuntos',
                 tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
             },
+            {
+                text: 'Ver',
+                btnclass: 'info',
+                iconclass: 'flaticon2-expand',                  
+                action: 'see',
+                tooltip: {id:'see', text:'Mostrar', type:'info'},
+            }
         )
         return aux
     }
@@ -124,6 +133,22 @@ class Documentos extends Component {
             modalAdjuntos: true,
             form,
             documento: documento
+        })
+    }
+
+    openModalSee = documento => {
+        this.setState({
+            ... this.state,
+            modalSee: true,
+            documento: documento
+        })
+    }
+
+    handleCloseSee = () => {
+        this.setState({
+            ... this.state,
+            modalSee: false,
+            documento: ''
         })
     }
 
@@ -278,7 +303,7 @@ class Documentos extends Component {
     }
 
     render() {
-        const { modalDelete, modalAdjuntos, form } = this.state
+        const { modalDelete, modalAdjuntos, form, modalSee, documento } = this.state
         return (
             <Layout active={'administracion'}  {...this.props}>
                 <NewTableServerRender
@@ -293,7 +318,8 @@ class Documentos extends Component {
                         {
                             'edit': { function: this.changePageEdit },
                             'delete': { function: this.openModalDelete },
-                            'adjuntos': { function: this.openModalAdjuntos }
+                            'adjuntos': { function: this.openModalAdjuntos },
+                            'see': { function: this.openModalSee },
                         }
                     }
                     accessToken = { this.props.authUser.access_token }
@@ -317,6 +343,9 @@ class Documentos extends Component {
                             </div>
                         : ''
                     }
+                </Modal>
+                <Modal size="lg" title="Documentos" show = { modalSee } handleClose = { this.handleCloseSee } >
+                    <DocumentosCard documento={documento}/>
                 </Modal>
             </Layout>
         );

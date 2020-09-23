@@ -9,6 +9,7 @@ import { setDateTable, setTextTable } from '../../../functions/setters';
 import axios from 'axios'
 import { ModalDelete, Modal, ItemSlider } from '../../../components/singles';
 import { Button } from '../../../components/form-components'
+import { ImssCard } from '../../../components/cards'
 
 const $ = require('jquery');
 
@@ -42,7 +43,7 @@ class Imss extends Component {
         return aux
     }
 
-    setActions = imss => {
+    setActions = () => {
         let aux = []
         aux.push(
             {
@@ -66,6 +67,13 @@ class Imss extends Component {
                 action: 'adjuntos',
                 tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
             },
+            {
+                text: 'Ver',
+                btnclass: 'info',
+                iconclass: 'flaticon2-expand',                  
+                action: 'see',
+                tooltip: {id:'see', text:'Mostrar', type:'info'},
+            }
         )
         return aux
     }
@@ -147,6 +155,22 @@ class Imss extends Component {
             modalAdjuntos: true,
             form,
             imss: imss
+        })
+    }
+
+    openModalSee = imss => {
+        this.setState({
+            ... this.state,
+            modalSee: true,
+            imss: imss
+        })
+    }
+
+    handleCloseSee = () => {
+        this.setState({
+            ... this.state,
+            modalSee: false,
+            imss: ''
         })
     }
 
@@ -277,7 +301,7 @@ class Imss extends Component {
     }
 
     render() {
-        const { modalDelete, modalAdjuntos, form } = this.state
+        const { modalDelete, modalAdjuntos, form, modalSee, imss} = this.state
         return (
             <Layout active={'rh'} {...this.props}>
                 <NewTableServerRender
@@ -292,7 +316,8 @@ class Imss extends Component {
                         {
                             'edit': { function: this.changePageEdit },
                             'delete': { function: this.openModalDelete },
-                            'adjuntos': { function: this.openModalAdjuntos }
+                            'adjuntos': { function: this.openModalAdjuntos },
+                            'see': { function: this.openModalSee },
                         }
                     }
                     accessToken = { this.props.authUser.access_token }
@@ -316,6 +341,9 @@ class Imss extends Component {
                             </div>
                         : ''
                     }
+                </Modal>
+                <Modal size="lg" title="IMSS" show = { modalSee } handleClose = { this.handleCloseSee } >
+                    <ImssCard imss={imss}/>
                 </Modal>
             </Layout>
         );
