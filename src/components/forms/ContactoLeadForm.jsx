@@ -60,7 +60,7 @@ class ContactoLeadForm extends Component {
                             requirevalidation={0}
                             as='textarea'
                             name='descripcion'
-                            placeholder='DESCRIPCIÓN DEL CONTRATO'
+                            placeholder='DESCRIPCIÓN DEL CONTACTO'
                             onChange={onChangeContacto}
                             value={formContacto.descripcion}
                             rows='2'
