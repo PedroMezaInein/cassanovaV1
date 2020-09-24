@@ -15,19 +15,16 @@ import { AbonoPrestamosForm } from '../../../components/forms';
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import { PrestamosCard } from '../../../components/cards'
-
 const $ = require('jquery');
-
 class Prestamos extends Component {
-
     state = {
         modalDelete: false,
         modalAdjuntos: false,
         modalAbonos: false,
         modalSee: false,
-        form:{
-            adjuntos:{
-                adjuntos:{
+        form: {
+            adjuntos: {
+                adjuntos: {
                     files: [],
                     value: ''
                 }
@@ -38,10 +35,9 @@ class Prestamos extends Component {
         activePage: 1,
         itemsPerPage: 10
     }
-
     setPrestamos = prestamos => {
         let aux = []
-        prestamos.map( (prestamo) => {
+        prestamos.map((prestamo) => {
             aux.push({
                 actions: this.setActions(prestamo),
                 empleado: renderToString(setTextTable(prestamo.empleado ? prestamo.empleado.nombre : 'Sin definir')),
@@ -55,7 +51,6 @@ class Prestamos extends Component {
         })
         return aux
     }
-
     setActions = () => {
         let aux = []
         aux.push(
@@ -89,15 +84,13 @@ class Prestamos extends Component {
             {
                 text: 'Ver',
                 btnclass: 'dark',
-                iconclass: 'flaticon2-expand',                  
+                iconclass: 'flaticon2-expand',
                 action: 'see',
-                tooltip: {id:'see', text:'Mostrar', type:'info'},
+                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
             }
-
         )
         return aux
     }
-
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -107,8 +100,7 @@ class Prestamos extends Component {
             form
         })
     }
-
-    onChangePage(pageNumber){
+    onChangePage(pageNumber) {
         let { activePage } = this.state
         activePage = pageNumber
         this.setState({
@@ -116,21 +108,18 @@ class Prestamos extends Component {
             activePage
         })
     }
-
     onSubmit = e => {
         e.preventDefault();
         waitAlert()
         this.addAbonoAxios()
     }
-
     changePageEdit = prestamo => {
         const { history } = this.props
         history.push({
             pathname: '/rh/prestamos/edit',
-            state: { prestamo: prestamo}
+            state: { prestamo: prestamo }
         });
     }
-
     openModalDelete = prestamo => {
         this.setState({
             ... this.state,
@@ -138,7 +127,6 @@ class Prestamos extends Component {
             prestamo: prestamo
         })
     }
-
     handleCloseDelete = () => {
         this.setState({
             ... this.state,
@@ -146,11 +134,10 @@ class Prestamos extends Component {
             prestamo: ''
         })
     }
-
     openModalAdjuntos = prestamo => {
         const { form } = this.state
         let aux = []
-        prestamo.adjuntos.map((adj)=>{
+        prestamo.adjuntos.map((adj) => {
             aux.push(adj)
         })
         form.adjuntos.adjuntos.files = aux
@@ -161,7 +148,6 @@ class Prestamos extends Component {
             prestamo: prestamo
         })
     }
-
     handleCloseAdjuntos = () => {
         const { form } = this.state
         form.adjuntos.adjuntos.files = []
@@ -172,7 +158,6 @@ class Prestamos extends Component {
             prestamo: ''
         })
     }
-
     openModalAbonos = prestamo => {
         this.setState({
             ... this.state,
@@ -180,7 +165,6 @@ class Prestamos extends Component {
             prestamo: prestamo
         })
     }
-
     handleCloseAbonos = () => {
         const { form } = this.state
         form.fecha = new Date()
@@ -200,7 +184,6 @@ class Prestamos extends Component {
             prestamo: prestamo
         })
     }
-
     handleCloseSee = () => {
         this.setState({
             ... this.state,
@@ -208,7 +191,6 @@ class Prestamos extends Component {
             prestamo: ''
         })
     }
-
     handleChange = (files, item) => {
         const { form } = this.state
         let aux = []
@@ -229,19 +211,16 @@ class Prestamos extends Component {
             form
         })
     }
-
     deleteFile = element => {
         deleteAlert('¿Deseas eliminar el archivo?', () => this.deleteAdjuntoAxios(element.id))
     }
-
     deleteAbono = element => {
         deleteAlert('¿Deseas eliminar el abono?', () => this.deleteAbonoAxios(element))
     }
-
     setAdjuntos = adjuntos => {
         const { form } = this.state
         let aux = []
-        adjuntos.map( (adj) => {
+        adjuntos.map((adj) => {
             aux.push({
                 name: adj.name,
                 url: adj.url,
@@ -254,11 +233,9 @@ class Prestamos extends Component {
             form
         })
     }
-
     onSelect = value => {
         const { form } = this.state
-        if(value === 'nuevo'){
-
+        if (value === 'nuevo') {
         }
         this.setState({
             ... this.state,
@@ -266,12 +243,10 @@ class Prestamos extends Component {
             form
         })
     }
-
-    async getPrestamosAxios(){
+    async getPrestamosAxios() {
         $('#kt_datatable_prestamos').DataTable().ajax.reload();
     }
-
-    async deletePrestamoAxios(){
+    async deletePrestamoAxios() {
         const { access_token } = this.props.authUser
         const { prestamo } = this.state
         await axios.delete(URL_DEV + 'prestamos/' + prestamo.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -297,29 +272,25 @@ class Prestamos extends Component {
             console.log(error, 'error')
         })
     }
-
-    async sendAdjuntoAxios(){
+    async sendAdjuntoAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form, prestamo } = this.state
         const data = new FormData();
-        
         let aux = Object.keys(form.adjuntos)
-        aux.map( (element) => {
+        aux.map((element) => {
             for (var i = 0; i < form.adjuntos[element].files.length; i++) {
                 data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
         })
-        
         await axios.post(URL_DEV + 'prestamos/' + prestamo.id + '/adjuntos', data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                
                 const { prestamo } = response.data
                 const { form } = this.state
                 let aux = []
-                prestamo.adjuntos.map((adj)=>{
+                prestamo.adjuntos.map((adj) => {
                     aux.push({
                         name: adj.name,
                         url: adj.url,
@@ -349,13 +320,12 @@ class Prestamos extends Component {
         })
     }
 
-    async addAbonoAxios(){
+    async addAbonoAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form, prestamo } = this.state
         await axios.post(URL_DEV + 'prestamos/' + prestamo.id + '/abonos', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                
                 const { prestamo } = response.data
                 form.abono = 0;
                 form.fecha = new Date()
@@ -381,12 +351,11 @@ class Prestamos extends Component {
             console.log(error, 'error')
         })
     }
-
-    async deleteAdjuntoAxios(id){
+    async deleteAdjuntoAxios(id) {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form, prestamo } = this.state
-        await axios.delete(URL_DEV + 'prestamos/' + prestamo.id + '/adjuntos/' +id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(URL_DEV + 'prestamos/' + prestamo.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { prestamo } = response.data
                 this.setAdjuntos(prestamo.adjuntos)
@@ -406,12 +375,11 @@ class Prestamos extends Component {
             console.log(error, 'error')
         })
     }
-
-    async deleteAbonoAxios(abono){
+    async deleteAbonoAxios(abono) {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form, prestamo } = this.state
-        await axios.delete(URL_DEV + 'prestamos/' + prestamo.id + '/abonos/' +abono.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(URL_DEV + 'prestamos/' + prestamo.id + '/abonos/' + abono.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { prestamo } = response.data
                 this.setState({
@@ -434,20 +402,19 @@ class Prestamos extends Component {
             console.log(error, 'error')
         })
     }
-
     render() {
         const { modalDelete, form, modalAdjuntos, modalAbonos, active, prestamo, activePage, itemsPerPage, modalSee } = this.state
         return (
-            <Layout active = 'rh' { ... this.props }>
+            <Layout active='rh' {... this.props}>
                 <NewTableServerRender
-                    columns = { PRESTAMOS_COLUMNS }
-                    title = 'PRÉSTAMOS'
-                    subtitle = 'Listado de préstamos'
-                    mostrar_boton = { true }
-                    abrir_modal = { false }
-                    url = '/rh/prestamos/add'
-                    mostrar_acciones = { true }
-                    actions = {
+                    columns={PRESTAMOS_COLUMNS}
+                    title='PRÉSTAMOS'
+                    subtitle='Listado de préstamos'
+                    mostrar_boton={true}
+                    abrir_modal={false}
+                    url='/rh/prestamos/add'
+                    mostrar_acciones={true}
+                    actions={
                         {
                             'edit': { function: this.changePageEdit },
                             'delete': { function: this.openModalDelete },
@@ -456,31 +423,43 @@ class Prestamos extends Component {
                             'see': { function: this.openModalSee },
                         }
                     }
-                    accessToken = { this.props.authUser.access_token }
-                    setter = { this.setPrestamos }
-                    urlRender = { URL_DEV + 'prestamos' }
-                    idTable = 'kt_datatable_prestamos'
-                    cardTable = 'cardTable'
-                    cardTableHeader = 'cardTableHeader'
-                    cardBody = 'cardBody'/>
-                <ModalDelete title = '¿Estás seguro que deseas eliminar el préstamo?'
-                    show = { modalDelete } handleClose = { this.handleCloseDelete }
-                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.deletePrestamoAxios() } } />
-                <Modal size="lg" title = "Adjuntos" show = { modalAdjuntos } handleClose = { this.handleCloseAdjuntos } >
-                    <ItemSlider items = { form.adjuntos.adjuntos.files } item = 'adjuntos' handleChange = { this.handleChange } 
-                        deleteFile = { this.deleteFile }/>
+                    accessToken={this.props.authUser.access_token}
+                    setter={this.setPrestamos}
+                    urlRender={URL_DEV + 'prestamos'}
+                    idTable='kt_datatable_prestamos'
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
+                />
+                <ModalDelete
+                    title='¿Estás seguro que deseas eliminar el préstamo?'
+                    show={modalDelete}
+                    handleClose={this.handleCloseDelete}
+                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deletePrestamoAxios() }}
+                />
+                <Modal size="lg" title="Adjuntos" show={modalAdjuntos} handleClose={this.handleCloseAdjuntos} >
+                    <ItemSlider
+                        items={form.adjuntos.adjuntos.files}
+                        item='adjuntos'
+                        handleChange={this.handleChange}
+                        deleteFile={this.deleteFile}
+                    />
                     {
                         form.adjuntos.adjuntos.value !== '' ?
-                            <div className="d-flex justify-content-center mt-2 mb-4">
-                                <Button icon='' text='ENVIAR'
-                                    onClick = { (e) => { e.preventDefault(); this.sendAdjuntoAxios()}  } />
+                            <div className="card-footer py-3 pr-1 mt-4">
+                                <div className="row">
+                                    <div className="col-lg-12 text-right pr-0 pb-0">
+                                        <Button icon='' text='ENVIAR'
+                                            onClick={(e) => { e.preventDefault(); this.sendAdjuntoAxios() }} />
+                                    </div>
+                                </div>
                             </div>
-                        : ''
+                            : ''
                     }
                 </Modal>
-                <Modal size = 'lg' title = 'Abonos del préstamo' show = { modalAbonos } handleClose = { this.handleCloseAbonos }>
+                <Modal size='lg' title='Abonos del préstamo' show={modalAbonos} handleClose={this.handleCloseAbonos}>
                     {
-                        prestamo ? 
+                        prestamo ?
                             <div className="row mx-0">
                                 <div className="col-md-4">
                                     <div className="d-flex justify-content-start p-3">
@@ -540,12 +519,10 @@ class Prestamos extends Component {
                                     </div>
                                 </div>
                             </div>
-                            
-                        :''
+                            : ''
                     }
-                    
-                    <Tabs defaultActiveKey = "listado" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100"
-                        activeKey = { active } onSelect = { this.onSelect }>
+                    <Tabs defaultActiveKey="listado" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100"
+                        activeKey={active} onSelect={this.onSelect}>
                         <Tab eventKey="listado" title="Listado de abonos">
                             <div className="table-responsive d-flex justify-content-center">
                                 <table className="table table-head-custom table-borderless table-vertical-center w-100 my-3">
@@ -566,32 +543,32 @@ class Prestamos extends Component {
                                         {
                                             prestamo ?
                                                 prestamo.abonos.length === 0 ?
-                                                    <tr className = "border-bottom" >
+                                                    <tr className="border-bottom" >
                                                         <td colSpan="3" className="text-center">
-                                                            <span className="text-center text-dark-75 d-block font-size-lg"> 
+                                                            <span className="text-center text-dark-75 d-block font-size-lg">
                                                                 Aún no hay pagos registrados.
                                                             </span>
                                                         </td>
                                                     </tr>
-                                                :''
-                                            :''
+                                                    : ''
+                                                : ''
                                         }
                                         {
-                                            prestamo ? 
-                                                prestamo.abonos.map( (abono, key) => {
+                                            prestamo ?
+                                                prestamo.abonos.map((abono, key) => {
                                                     let limiteInferior = (activePage - 1) * itemsPerPage
                                                     let limiteSuperior = limiteInferior + (itemsPerPage - 1)
-                                                    if(prestamo.abonos.length < itemsPerPage || ( key >= limiteInferior && key <= limiteSuperior))
-                                                        return(
-                                                            <tr key = { key } className = "border-bottom" >
+                                                    if (prestamo.abonos.length < itemsPerPage || (key >= limiteInferior && key <= limiteSuperior))
+                                                        return (
+                                                            <tr key={key} className="border-bottom" >
                                                                 <td className="text-center">
                                                                     <button class="btn btn-actions-table btn-xs btn-icon btn-text-danger btn-hover-danger" title="Eliminar"
-                                                                        onClick = { (e) => { e.preventDefault(); this.deleteAbono(abono)} }>
+                                                                        onClick={(e) => { e.preventDefault(); this.deleteAbono(abono) }}>
                                                                         <i class="flaticon2-rubbish-bin"></i>
                                                                     </button>
                                                                 </td>
                                                                 <td>
-                                                                    <span className="text-center text-dark-75 d-block font-size-lg"> 
+                                                                    <span className="text-center text-dark-75 d-block font-size-lg">
                                                                         {
                                                                             setDateTable(abono.fecha)
                                                                         }
@@ -603,7 +580,7 @@ class Prestamos extends Component {
                                                             </tr>
                                                         )
                                                 })
-                                            : ''
+                                                : ''
                                         }
                                     </tbody>
                                 </table>
@@ -616,36 +593,36 @@ class Prestamos extends Component {
                                                 <Pagination
                                                     itemClass="page-item"
                                                     linkClass="page-link"
-                                                    firstPageText = 'Primero'
-                                                    lastPageText = 'Último'
-                                                    activePage = { activePage }
-                                                    itemsCountPerPage = { itemsPerPage }
-                                                    totalItemsCount = { prestamo.abonos.length }
-                                                    pageRangeDisplayed = { 5 }
+                                                    firstPageText='Primero'
+                                                    lastPageText='Último'
+                                                    activePage={activePage}
+                                                    itemsCountPerPage={itemsPerPage}
+                                                    totalItemsCount={prestamo.abonos.length}
+                                                    pageRangeDisplayed={5}
                                                     onChange={this.onChangePage.bind(this)}
                                                     itemClassLast="d-none"
                                                     itemClassFirst="d-none"
-                                                    nextPageText= { '>' }
-                                                    prevPageText= { '<' }
+                                                    nextPageText={'>'}
+                                                    prevPageText={'<'}
                                                 />
                                             </div>
+                                            : ''
                                         : ''
                                     : ''
-                                : ''
                             }
                         </Tab>
                         <Tab eventKey="nuevo" title="Nuevo abono">
                             <AbonoPrestamosForm
-                                form = { form }
-                                onChange = { this.onChange }
-                                onSubmit = { this.onSubmit }
-                                formeditado = { 0 }
-                                />
+                                form={form}
+                                onChange={this.onChange}
+                                onSubmit={this.onSubmit}
+                                formeditado={0}
+                            />
                         </Tab>
-                    </Tabs>  
+                    </Tabs>
                 </Modal>
-                <Modal size="lg" title="Prestamo" show = { modalSee } handleClose = { this.handleCloseSee } >
-                    <PrestamosCard prestamo={prestamo}/>
+                <Modal size="lg" title="Prestamo" show={modalSee} handleClose={this.handleCloseSee} >
+                    <PrestamosCard prestamo={prestamo} />
                 </Modal>
             </Layout>
         );
@@ -653,7 +630,7 @@ class Prestamos extends Component {
 }
 
 const mapStateToProps = state => {
-    return{
+    return {
         authUser: state.authUser
     }
 }

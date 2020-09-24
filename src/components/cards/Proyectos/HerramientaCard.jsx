@@ -107,12 +107,12 @@ export default class HerramientaCard extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="second">
                                     <Card className="card card-without-box-shadown border-0">
-                                        <Card.Body className="p-0"> 
-                                                        {
-                                                            herramienta.adjuntos ?
-                                                                <ItemSlider items={herramienta.adjuntos} item='' />
-                                                                : <span>-</span>
-                                                        }  
+                                        <Card.Body className="p-0">
+                                            {
+                                                herramienta.adjuntos ?
+                                                    <ItemSlider items={herramienta.adjuntos} item='' />
+                                                    : <span>-</span>
+                                            }
                                         </Card.Body>
                                     </Card>
                                 </Tab.Pane>

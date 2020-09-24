@@ -4,20 +4,17 @@ import { DATE } from '../../../constants';
 import { validateAlert } from '../../../functions/alert';
 import { SelectSearch, Calendar, Button } from '../../form-components';
 import { ItemSlider } from '../../singles';
-
 export default class componentName extends Component {
     updateEmpresa = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'empresa' } })
     }
-
     handleChangeDate = (date) => {
         const { onChange } = this.props
         onChange({ target: { name: 'fecha', value: date } })
     }
-
     render() {
-        const { form, formeditado, onChange, options, onSubmit, handleChange, deleteFile, ...props} = this.props
+        const { form, formeditado, onChange, options, onSubmit, handleChange, deleteFile, ...props } = this.props
         return (
             <>
                 <Form
@@ -27,45 +24,52 @@ export default class componentName extends Component {
                             validateAlert(onSubmit, e, 'wizard-3-content')
                         }
                     }
-                    { ...props } >
+                    {...props} >
                     <div className="form-group row form-group-marginless pt-4 justify-content-md-center">
                         <div className="col-md-4">
                             <SelectSearch
-                                formeditado = { formeditado }
-                                options = { options.empresas }
-                                placeholder = 'EMPRESA'
-                                name = 'empresa'
-                                value = { form.empresa }
-                                onChange = { this.updateEmpresa } 
-                                iconclass = 'fas fa-building'/>
+                                formeditado={formeditado}
+                                options={options.empresas}
+                                placeholder='EMPRESA'
+                                name='empresa'
+                                value={form.empresa}
+                                onChange={this.updateEmpresa}
+                                iconclass='fas fa-building' />
                         </div>
                         <div className="col-md-4">
                             <Calendar
-                                formeditado = { formeditado }
-                                onChangeCalendar = { this.handleChangeDate }
-                                placeholder = "FECHA"
-                                name = "fecha"
-                                value = { form.fecha}
-                                patterns = { DATE }
-                                iconclass = 'fas fa-calendar'
+                                formeditado={formeditado}
+                                onChangeCalendar={this.handleChangeDate}
+                                placeholder="FECHA"
+                                name="fecha"
+                                value={form.fecha}
+                                patterns={DATE}
+                                iconclass='fas fa-calendar'
                             />
                         </div>
                     </div>
                     <div className="form-group row form-group-marginless justify-content-center">
                         <div className="col-md-6">
                             <ItemSlider
-                                items = { form.adjuntos.adjuntos.files }
-                                item = 'adjuntos' handleChange = { handleChange }
-                                deleteFile = { deleteFile } />
+                                items={form.adjuntos.adjuntos.files}
+                                item='adjuntos' handleChange={handleChange}
+                                deleteFile={deleteFile} />
                         </div>
                     </div>
                     {
                         form.adjuntos.adjuntos.files.length > 0 ?
-                            <div className="d-flex justify-content-center mt-2 mb-4">
-                                <Button icon='' text='ENVIAR'
-                                    onClick = { (e) => { e.preventDefault(); onSubmit(e)}  } />
+                            <div className="card-footer py-3 pr-1">
+                                <div className="row">
+                                    <div className="col-lg-12 text-right pr-0 pb-0">
+                                        <Button
+                                            icon=''
+                                            text='ENVIAR'
+                                            onClick={(e) => { e.preventDefault(); onSubmit(e) }}
+                                        />
+                                    </div>
+                                </div>
                             </div>
-                        : ''
+                            : ''
                     }
                 </Form>
             </>

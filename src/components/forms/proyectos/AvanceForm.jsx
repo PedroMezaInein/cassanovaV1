@@ -4,13 +4,10 @@ import { Calendar, FileInput, Button, Input, InputMoney } from '../../form-compo
 import { Form, Accordion } from 'react-bootstrap'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import SliderImages from '../../singles/SliderImages'
-
 class AvanceForm extends Component {
-
     state = {
         activeKey: ''
     }
-
     handleChangeDateInicio = date => {
         const { onChange, form } = this.props
         if (form.fechaInicio > form.fechaFin) {
@@ -18,12 +15,10 @@ class AvanceForm extends Component {
         }
         onChange({ target: { name: 'fechaInicio', value: date } })
     }
-
     handleChangeDateFin = date => {
         const { onChange } = this.props
         onChange({ target: { name: 'fechaFin', value: date } })
     }
-
     handleAccordion = eventKey => {
         const { proyecto: { avances: avances } } = this.props;
         const { activeKey } = this.state
@@ -37,14 +32,12 @@ class AvanceForm extends Component {
             activeKey: aux
         })
     }
-
     render() {
         const { form, onChangeAdjuntoAvance, onChangeAvance, clearFilesAvances, addRowAvance, onChange, proyecto, sendMail, formeditado, ...props } = this.props
         const { activeKey } = this.state
         return (
             <>
                 <Form
-
                     {...props}
                 >
                     <div className="form-group row form-group-marginless pt-4">
@@ -90,7 +83,6 @@ class AvanceForm extends Component {
                         </div>
                     </div>
                     <div className="separator separator-dashed mt-1 mb-2"></div>
-
                     {
                         form.avances.map((avance, key) => {
                             return (
@@ -143,12 +135,15 @@ class AvanceForm extends Component {
                             )
                         })
                     }
-
                     <div className="d-flex justify-content-end my-2">
-                        <Button icon={faPlus} tooltip={{text:'NUEVO'}} onClick={addRowAvance} color='transparent' />
+                        <Button icon={faPlus} tooltip={{ text: 'NUEVO' }} onClick={addRowAvance} color='transparent' />
                     </div>
-                    <div className="d-flex justify-content-center mt-2 mb-4">
-                        <Button icon='' text='ENVIAR' type='submit' />
+                    <div className="card-footer py-3 pr-1">
+                        <div className="row">
+                            <div className="col-lg-12 text-right pr-0 pb-0">
+                                <Button icon='' text='ENVIAR' type='submit' />
+                            </div>
+                        </div>
                     </div>
                 </Form>
                 {
@@ -187,7 +182,6 @@ class AvanceForm extends Component {
                                                                                     ''
                                                                                 : ''
                                                                         }
-
                                                                     </div>
                                                                     <div>
                                                                         <SliderImages elements={avance.adjuntos} />

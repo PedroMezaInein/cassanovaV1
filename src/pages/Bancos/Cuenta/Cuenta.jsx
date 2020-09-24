@@ -21,21 +21,21 @@ class Cuenta extends Component {
     state = {
         key: 'bancos',
         keyEstados: 'listado',
-        modal:{
+        modal: {
             delete: false,
             see: false,
             estado: false
         },
         form: {
-            adjuntos:{
-                adjuntos:{
+            adjuntos: {
+                adjuntos: {
                     files: [],
                     value: ''
                 }
             },
             fecha: new Date()
         },
-        data:{
+        data: {
             estados: []
         },
         estados: [],
@@ -69,7 +69,7 @@ class Cuenta extends Component {
 
     controlledTabEstados = value => {
         const { form } = this.state
-        if(value === 'nuevo'){
+        if (value === 'nuevo') {
             form.adjuntos.adjuntos.files = []
             form.adjuntos.adjuntos.value = ''
             form.fecha = new Date()
@@ -129,9 +129,9 @@ class Cuenta extends Component {
             {
                 text: 'Ver',
                 btnclass: 'info',
-                iconclass: 'flaticon2-expand',                  
+                iconclass: 'flaticon2-expand',
                 action: 'see',
-                tooltip: {id:'see', text:'Mostrar', type:'info'},
+                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
             },
         )
         return aux
@@ -207,7 +207,7 @@ class Cuenta extends Component {
         const { key } = this.state
         history.push({
             pathname: '/bancos/cuentas/edit',
-            state: { cuenta: cuenta}
+            state: { cuenta: cuenta }
         });
     }
 
@@ -252,7 +252,7 @@ class Cuenta extends Component {
     }
 
     openModalEstado = cuenta => {
-        const { modal, data } = this.state 
+        const { modal, data } = this.state
         modal.estado = true
         data.estados = cuenta.estados
         this.setState({
@@ -265,7 +265,7 @@ class Cuenta extends Component {
     }
 
     handleCloseEstado = () => {
-        const { modal, data } = this.state 
+        const { modal, data } = this.state
         modal.estado = false
         data.estados = []
         this.setState({
@@ -321,14 +321,14 @@ class Cuenta extends Component {
         })
     }
 
-    async addEstadoAxios(){
+    async addEstadoAxios() {
 
         const { access_token } = this.props.authUser
         const { form, cuenta } = this.state
         const data = new FormData();
-        
+
         let aux = Object.keys(form.adjuntos)
-        aux.map( (element) => {
+        aux.map((element) => {
             for (var i = 0; i < form.adjuntos[element].files.length; i++) {
                 data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
@@ -337,10 +337,10 @@ class Cuenta extends Component {
         })
 
         data.append('id', cuenta.id)
-        
+
         await axios.post(URL_DEV + 'cuentas/estado', data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                
+
                 const { cuenta } = response.data
                 const { data, key, form } = this.state
                 data.estados = cuenta.estados
@@ -422,21 +422,21 @@ class Cuenta extends Component {
     render() {
         const { key, cuenta, modal, keyEstados, form, estados, data } = this.state
         return (
-            <Layout active = 'bancos' { ... this.props }>
-                <Tabs defaultActiveKey = 'bancos' activeKey = { key } 
-                    onSelect = { (value) => { this.controlledTab(value) } }>
-                    <Tab eventKey = 'bancos' title = 'Banco'>
+            <Layout active='bancos' {... this.props}>
+                <Tabs defaultActiveKey='bancos' activeKey={key}
+                    onSelect={(value) => { this.controlledTab(value) }}>
+                    <Tab eventKey='bancos' title='Banco'>
                         {
-                            key === 'bancos' ? 
+                            key === 'bancos' ?
                                 <NewTableServerRender
-                                    columns = { CUENTAS_COLUMNS }
-                                    title = 'Cuentas'
-                                    subtitle = 'Listado de cuentas'
-                                    mostrar_boton = { true }
-                                    abrir_modal = { false }
-                                    url = '/bancos/cuentas/add?type=bancos'
-                                    mostrar_acciones = { true }
-                                    actions = {
+                                    columns={CUENTAS_COLUMNS}
+                                    title='Cuentas'
+                                    subtitle='Listado de cuentas'
+                                    mostrar_boton={true}
+                                    abrir_modal={false}
+                                    url='/bancos/cuentas/add?type=bancos'
+                                    mostrar_acciones={true}
+                                    actions={
                                         {
                                             'edit': { function: this.changePageEdit },
                                             'delete': { function: this.openModalDelete },
@@ -444,104 +444,111 @@ class Cuenta extends Component {
                                             'see': { function: this.openModalSee },
                                         }
                                     }
-                                    accessToken = { this.props.authUser.access_token }
-                                    setter = { this.setCuentas }
-                                    urlRender = { URL_DEV + 'cuentas/cuentas' }
-                                    idTable = 'cuentas_bancos'
-                                    elementClass = 'estatus'
-                                    cardTable = 'cardTable_bancos'
-                                    cardTableHeader = 'cardTableHeader__bancos'
-                                    cardBody = 'cardBody_bancos'
-                                    isTab = { true }/>
-                            : ''
+                                    accessToken={this.props.authUser.access_token}
+                                    setter={this.setCuentas}
+                                    urlRender={URL_DEV + 'cuentas/cuentas'}
+                                    idTable='cuentas_bancos'
+                                    elementClass='estatus'
+                                    cardTable='cardTable_bancos'
+                                    cardTableHeader='cardTableHeader__bancos'
+                                    cardBody='cardBody_bancos'
+                                    isTab={true} />
+                                : ''
                         }
-                        
+
                     </Tab>
-                    <Tab eventKey = 'cajas' title = 'Caja chica'>
+                    <Tab eventKey='cajas' title='Caja chica'>
                         {
                             key === 'cajas' ?
                                 <NewTableServerRender
-                                    columns = { CUENTAS_COLUMNS }
-                                    title = 'Cajas chicas'
-                                    subtitle = 'Listado de cajas chicas'
-                                    mostrar_boton = { true }
-                                    abrir_modal  = { false }
-                                    url = '/bancos/cuentas/add?type=cajas'
-                                    mostrar_acciones = { true }
-                                    actions = {
+                                    columns={CUENTAS_COLUMNS}
+                                    title='Cajas chicas'
+                                    subtitle='Listado de cajas chicas'
+                                    mostrar_boton={true}
+                                    abrir_modal={false}
+                                    url='/bancos/cuentas/add?type=cajas'
+                                    mostrar_acciones={true}
+                                    actions={
                                         {
                                             'edit': { function: this.changePageEdit },
                                             'delete': { function: this.openModalDelete },
                                             'estado': { function: this.openModalEstado },
                                             'see': { function: this.openModalSee },
-                                    }}
-                                    accessToken = { this.props.authUser.access_token }
-                                    setter = { this.setCuentas }
-                                    urlRender = { URL_DEV + 'cuentas/cajas' }
-                                    idTable = 'cuentas_cajas'
-                                    elementClass = 'estatus'
-                                    cardTable = 'cardTable_caja'
-                                    cardTableHeader = 'cardTableHeader_caja'
-                                    cardBody = 'cardBody_caja'
-                                    isTab = { true } />
-                            : ''
+                                        }}
+                                    accessToken={this.props.authUser.access_token}
+                                    setter={this.setCuentas}
+                                    urlRender={URL_DEV + 'cuentas/cajas'}
+                                    idTable='cuentas_cajas'
+                                    elementClass='estatus'
+                                    cardTable='cardTable_caja'
+                                    cardTableHeader='cardTableHeader_caja'
+                                    cardBody='cardBody_caja'
+                                    isTab={true} />
+                                : ''
                         }
-                        
+
                     </Tab>
                 </Tabs>
 
-                <ModalDelete 
-                    title = { cuenta === null ? "¿Estás seguro que deseas eliminar la cuenta " : "¿Estás seguro que deseas eliminar la cuenta " + cuenta.nombre + " ?"}
-                    show = { modal.delete } handleClose = { this.handleCloseDelete }
-                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteCuentaAxios() } } />
+                <ModalDelete
+                    title={cuenta === null ? "¿Estás seguro que deseas eliminar la cuenta " : "¿Estás seguro que deseas eliminar la cuenta " + cuenta.nombre + " ?"}
+                    show={modal.delete} handleClose={this.handleCloseDelete}
+                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteCuentaAxios() }} />
 
-                <Modal size = 'lg' title = 'Cuenta' show = { modal.see } 
-                    handleClose = { this.handleCloseSee }>
-                    <CuentaCard cuenta = { cuenta } />
+                <Modal size='lg' title='Cuenta' show={modal.see}
+                    handleClose={this.handleCloseSee}>
+                    <CuentaCard cuenta={cuenta} />
                 </Modal>
 
-                <Modal size = "lg" title = { cuenta === null ? "Estados de cuenta" : "Estados de cuenta para " + cuenta.nombre } 
-                    show = { modal.estado } handleClose = { this.handleCloseEstado } >
-                    <Tabs defaultActiveKey = 'listado' activeKey = { keyEstados } 
-                        onSelect = { (value) => { this.controlledTabEstados(value) } }
+                <Modal size="lg" title={cuenta === null ? "Estados de cuenta" : "Estados de cuenta para " + cuenta.nombre}
+                    show={modal.estado} handleClose={this.handleCloseEstado} >
+                    <Tabs defaultActiveKey='listado' activeKey={keyEstados}
+                        onSelect={(value) => { this.controlledTabEstados(value) }}
                         className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100">
-                        <Tab eventKey = 'listado' title = 'Estados de cuenta'>
+                        <Tab eventKey='listado' title='Estados de cuenta'>
                             <TableForModals
-                                columns = { EDOS_CUENTAS_COLUMNS }
-                                data = { estados }
-                                mostrar_acciones = { true }
-                                actions = {
+                                columns={EDOS_CUENTAS_COLUMNS}
+                                data={estados}
+                                mostrar_acciones={true}
+                                actions={
                                     {
                                         'deleteAction': { function: this.openModalDeleteEstado }
                                     }
                                 }
-                                elements = { data.estados }
-                                idTable = 'kt_datatable_estado' />
+                                elements={data.estados}
+                                idTable='kt_datatable_estado' />
                         </Tab>
-                        <Tab eventKey = 'nuevo' title = 'Agregar estado de cuenta'>
+                        <Tab eventKey='nuevo' title='Agregar estado de cuenta'>
                             <Form >
                                 <div className="form-group row form-group-marginless pt-4 justify-content-center">
-                                    <div className = 'col-md-6'>
+                                    <div className='col-md-6'>
                                         <Calendar
-                                            onChangeCalendar = { this.onChangeCalendar }
-                                            placeholder = 'fecha'
-                                            name = 'fecha'
-                                            value = { form.fecha } />
+                                            onChangeCalendar={this.onChangeCalendar}
+                                            placeholder='fecha'
+                                            name='fecha'
+                                            value={form.fecha} />
                                     </div>
                                 </div>
                                 <div className="form-group row form-group-marginless justify-content-center">
-                                    <div className = 'col-md-6'>
-                                        <ItemSlider items = { form.adjuntos.adjuntos.files } item = 'adjuntos'
-                                            handleChange = { this.handleChange }/>
+                                    <div className='col-md-6'>
+                                        <ItemSlider items={form.adjuntos.adjuntos.files} item='adjuntos'
+                                            handleChange={this.handleChange} />
                                     </div>
                                 </div>
                                 {
                                     form.adjuntos.adjuntos.value ?
-                                        <div className="d-flex justify-content-center mt-2 mb-4">
-                                            <Button icon='' text='ENVIAR'
-                                                onClick = { (e) => { e.preventDefault(); waitAlert(); this.addEstadoAxios()}  } />
+                                        <div className="card-footer py-3 pr-1">
+                                            <div className="row">
+                                                <div className="col-lg-12 text-right pr-0 pb-0">
+                                                    <Button
+                                                        icon=''
+                                                        text='ENVIAR'
+                                                        onClick={(e) => { e.preventDefault(); waitAlert(); this.addEstadoAxios() }}
+                                                    />
+                                                </div>
+                                            </div>
                                         </div>
-                                    : ''
+                                        : ''
                                 }
                             </Form>
                         </Tab>
