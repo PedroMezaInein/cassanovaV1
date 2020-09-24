@@ -1,105 +1,157 @@
-.rdrDateRangePickerWrapper{
-    @include down-screen($md){
-        display: block!important;
-        text-align: center!important;
+.rdrInputRanges {
+    display: none !important;
+}
+
+.rdrStaticRange {
+    text-transform: uppercase;
+    border-bottom: 0px !important;
+}
+
+.rdrDateDisplayItem input {
+    text-transform: uppercase;
+}
+
+.rdrMonthAndYearPickers select {
+    text-transform: uppercase;
+}
+
+.rdrMonthAndYearPickers select:hover {
+    background-color: #EFF2F7 !important;
+}
+
+// Recuadros de rangos
+.rdrDateDisplay {
+    color: transparent !important;
+}
+
+.rdrSelected,
+.rdrInRange,
+.rdrStartEdge,
+.rdrEndEdge {
+    background-color: #E1F0FF !important;
+}
+
+.rdrDay:not(.rdrDayPassive) .rdrInRange~.rdrDayNumber span,
+.rdrDay:not(.rdrDayPassive) .rdrStartEdge~.rdrDayNumber span,
+.rdrDay:not(.rdrDayPassive) .rdrEndEdge~.rdrDayNumber span,
+.rdrDay:not(.rdrDayPassive) .rdrSelected~.rdrDayNumber span {
+    color: #2171c1 !important;
+}
+
+// Linea today
+.rdrDayToday:not(.rdrDayPassive) .rdrInRange~.rdrDayNumber span:after,
+.rdrDayToday:not(.rdrDayPassive) .rdrStartEdge~.rdrDayNumber span:after,
+.rdrDayToday:not(.rdrDayPassive) .rdrEndEdge~.rdrDayNumber span:after,
+.rdrDayToday:not(.rdrDayPassive) .rdrSelected~.rdrDayNumber span:after {
+    background: #2171c1 !important;
+}
+
+
+.rdrDateRangePickerWrapper {
+    @include down-screen($md) {
+        display: block !important;
+        text-align: center !important;
     }
-    @include screen($lg){
-        padding: 0.75rem 0.5rem!important;
+
+    @include screen($lg) {
+        padding: 0.75rem 0.5rem !important;
     }
-    @include screen($xxl){        
-        padding: 1.75rem 1.5rem!important;
+
+    @include screen($xxl) {
+        padding: 1.75rem 1.5rem !important;
     }
+
     border: 3px solid #F3F6F9;
     border-top-left-radius: 0.42rem;
     border-top-right-radius: 0.42rem;
 }
 
-.rdrCalendarWrapper{
-    &.rdrDateRangeWrapper{
-        @include down-screen($xs){
-            width: 271px !important;
-            padding: 6px;
-        }
-        @include down-screen($md){
+@include down-screen($md) {
+    .rdrCalendarWrapper {
+        &.rdrDateRangeWrapper {
             margin-top: 0.5rem;
-            font-size: 10px!important;
-        }   
-        @include screen($lg){
+            font-size: 9.8px !important;
+        }
+    }
+}
+
+@include down-screen($lg) {
+    .rdrCalendarWrapper {
+        &.rdrDateRangeWrapper {
             width: 283px;
         }
-        @include screen($xxl){
+    }
+}
+
+@include down-screen($xxl) {
+    .rdrCalendarWrapper {
+        &.rdrDateRangeWrapper {
             width: 334px;
         }
     }
 }
-.rdrDefinedRangesWrapper{
-    width: 135px!important;
-    align-self: center; 
+
+@include down-screen($xs) {
+    .rdrCalendarWrapper {
+        &.rdrDateRangeWrapper {
+            width: 246px !important;
+            padding: 6px;
+        }
+    }
+
+    .rdrNextButton i {
+        margin: 4px !important;
+    }
+
+    .rdrNextPrevButton i {
+        margin: 4px !important;
+    }
+
+    button.rdrNextPrevButton.rdrPprevButton {
+        margin-left: 0px;
+    }
+}
+
+.rdrDefinedRangesWrapper {
+    width: 135px !important;
+    align-self: center;
     margin-right: 13px;
-    border-right: solid 4px #eff2f7!important;
-    @include down-screen($xs){
-        border:0px!important;
+    border-right: solid 4px #eff2f7 !important;
+
+    @include down-screen($xs) {
+        border: 0px !important;
     }
-    @include down-screen($md){
+
+    @include down-screen($md) {
         border: 1px solid #eff2f7;
-        width: 100%!important;
+        width: 100% !important;
     }
-    @include screen($xxl){
-        width: 147px!important;
+
+    @include screen($xxl) {
+        width: 147px !important;
         margin-right: 33px;
     }
 }
 
-.rdrInputRanges{
-    display: none!important;
-}
-
-.rdrStaticRange{
-    text-transform: uppercase;
-    border-bottom:0px!important;
-}
-
-.rdrDateDisplayItem input{
-    text-transform: uppercase;
-}
-.rdrMonthAndYearPickers select{
-    text-transform: uppercase;
-}
-
-.rdrMonthAndYearPickers select:hover{
-    background-color: #EFF2F7!important;
-}
-// Recuadros de rangos
-.rdrDateDisplay {
-    color: transparent!important;
-}
-
-.rdrSelected, .rdrInRange, .rdrStartEdge, .rdrEndEdge{
-    background-color:#E1F0FF!important;
-}
-
-.rdrDay:not(.rdrDayPassive) .rdrInRange ~ .rdrDayNumber span, .rdrDay:not(.rdrDayPassive) .rdrStartEdge ~ .rdrDayNumber span, .rdrDay:not(.rdrDayPassive) .rdrEndEdge ~ .rdrDayNumber span, .rdrDay:not(.rdrDayPassive) .rdrSelected ~ .rdrDayNumber span{
-    color: #2171c1!important;
-}
-// Linea today
-.rdrDayToday:not(.rdrDayPassive) .rdrInRange ~ .rdrDayNumber span:after, .rdrDayToday:not(.rdrDayPassive) .rdrStartEdge ~ .rdrDayNumber span:after, .rdrDayToday:not(.rdrDayPassive) .rdrEndEdge ~ .rdrDayNumber span:after, .rdrDayToday:not(.rdrDayPassive) .rdrSelected ~ .rdrDayNumber span:after {
-    background: #2171c1!important;
-}
 
 // Inicio: Header opciones
-.rdrStaticRangeLabel{
-    @include down-screen($xs){
-        text-align: center!important;
+.rdrStaticRangeLabel {
+    @include down-screen($xs) {
+        text-align: center !important;
     }
-    @include down-screen($sm){
-        text-align: center!important;
+
+    @include down-screen($sm) {
+        text-align: center !important;
     }
+
     color: #849095;
 }
 
 // Border Hover
-span.rdrDayStartPreview, .rdrDayEndPreview, .rdrDayInPreview{
-    color:#2171c1!important;
+span.rdrDayStartPreview,
+.rdrDayEndPreview,
+.rdrDayInPreview {
+    color: #2171c1 !important;
 }
 
 // .rdrDayToday .rdrDayNumber span:after{
@@ -110,10 +162,11 @@ span.rdrDayStartPreview, .rdrDayEndPreview, .rdrDayInPreview{
 .rdrPprevButton i {
     border-color: transparent rgb(53, 126, 199) transparent transparent !important;
 }
-.rdrNextButton i{
+
+.rdrNextButton i {
     border-color: transparent transparent transparent rgb(53, 126, 199) !important;
 }
 
 .rdrNextPrevButton:hover {
-    background: #e1f0ff!important;
+    background: #e1f0ff !important;
 }
