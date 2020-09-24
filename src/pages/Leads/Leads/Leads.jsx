@@ -159,7 +159,7 @@ class Leads extends Component {
 
     setActions = lead => {
         let aux = []
-        if(lead.contactado === 0)
+        if(lead.contactado === 0){
             aux.push(
                 {
                     text: 'Editar',
@@ -197,8 +197,17 @@ class Leads extends Component {
                     tooltip: {id:'see', text:'Mostrar', type:'dark'},
                 },
             )
-        
-            return aux
+        }else
+            aux.push(
+                {
+                    text: 'Editar',
+                    btnclass: 'success',
+                    iconclass: 'flaticon2-pen',
+                    action: 'edit',
+                    tooltip: {id:'edit', text:'Editar'}
+                }
+            )
+        return aux
     }
 
     setLabel = lead => {
