@@ -10,11 +10,12 @@ import { Small } from '../../../components/texts'
 import swal from 'sweetalert'
 import { Card } from 'react-bootstrap'
 import { setTextTable, setDateTable, setArrayTable, setListTable } from '../../../functions/setters'
-import NewTable from '../../../components/tables/NewTable'
+import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Nav, Tab, Col, Row } from 'react-bootstrap'
 import { ProyectosCard } from '../../../components/cards'
+const $ = require('jquery');
 class Proyectos extends Component {
     state = {
         proyectos: [],
@@ -462,7 +463,7 @@ class Proyectos extends Component {
         })
         if (!proyectos)
             history.push('/')
-        this.getProyectosAxios()
+        // this.getProyectosAxios()
     }
     updateActiveTabContainer = active => {
         this.setState({
@@ -948,33 +949,6 @@ class Proyectos extends Component {
             </>
         )
     }
-    async getProyectosAxios() {
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'proyectos', { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { proyectos } = response.data
-                const { options, data } = this.state
-                data.proyectos = proyectos
-                this.setState({
-                    ...this.state,
-                    options,
-                    proyectos: this.setProyectos(proyectos),
-                    data
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
     async getProyectoAdjuntosZip(array) {
         const { access_token } = this.props.authUser
         const { proyecto } = this.state
@@ -1040,6 +1014,7 @@ class Proyectos extends Component {
             (response) => {
                 const { proyecto, proyectos } = response.data
                 const { data } = this.state
+                // this.getClientesAxios()
                 data.proyectos = proyectos
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
@@ -1199,20 +1174,23 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
+
+    async getProyectoAxios() {
+        $('#proyecto').DataTable().ajax.reload();
+    }
+
     render() {
         const { modalDelete, modalAdjuntos, modalAvances, title, form, proyectos, proyecto, data, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey, modalSee } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
-
-                <NewTable
+                <NewTableServerRender
                     columns={PROYECTOS_COLUMNS}
-                    data={proyectos}
                     title='Proyectos'
                     subtitle='Listado de proyectos'
                     mostrar_boton={true}
                     abrir_modal={false}
-                    mostrar_acciones={true}
                     url='/proyectos/proyectos/add'
+                    mostrar_acciones={true}
                     actions={{
                         'edit': { function: this.changePageEdit },
                         'delete': { function: this.openModalDelete },
@@ -1220,10 +1198,13 @@ class Proyectos extends Component {
                         'avances': { function: this.openModalAvances },
                         'see': { function: this.openModalSee }
                     }}
-                    elements={data.proyectos}
+                    accessToken={this.props.authUser.access_token}
+                    setter={this.setProyectos}
+                    urlRender={URL_DEV + 'proyectos'}
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'
                     cardBody='cardBody'
+                    idTable='cliente_table'
                 />
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el proyecto?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { this.safeDelete(e)() }}>
                 </ModalDelete>
