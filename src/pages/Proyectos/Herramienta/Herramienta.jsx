@@ -12,6 +12,8 @@ import { Button } from '../../../components/form-components'
 import UbicacionHerramientaForm from '../../../components/forms/proyectos/UbicacionHerramientaForm';
 import { Tab, Tabs } from 'react-bootstrap';
 import TableForModals from '../../../components/tables/TableForModals';
+import { HerramientaCard } from '../../../components/cards'
+
 const $ = require('jquery');
 class Herramienta extends Component {
     state = {
@@ -19,6 +21,7 @@ class Herramienta extends Component {
         modalAdjuntos: false,
         modalUbicacion: false,
         modalDeleteUbicacion: false,
+        modalSee: false,
         active: 'historial',
         herramienta: '',
         form: {
@@ -57,7 +60,7 @@ class Herramienta extends Component {
         })
         return aux
     }
-    setActions = herramienta => {
+    setActions = () => {
         let aux = []
         aux.push(
             {
@@ -83,10 +86,17 @@ class Herramienta extends Component {
             },
             {
                 text: 'Historial de ubicaciones',
-                btnclass: 'primary',
+                btnclass: 'info',
                 iconclass: 'flaticon-calendar',
                 action: 'ubicacion',
                 tooltip: { id: 'ubicacion', text: 'Ubicacion', type: 'error' }
+            },
+            {
+                text: 'Ver',
+                btnclass: 'dark',
+                iconclass: 'flaticon2-expand',
+                action: 'see',
+                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
             }
         )
         return aux
@@ -207,6 +217,22 @@ class Herramienta extends Component {
             ... this.state,
             modalDeleteUbicacion: false,
             ubicacion: ''
+        })
+    }
+
+    openModalSee = herramienta => {
+        this.setState({
+            ... this.state,
+            modalSee: true,
+            herramienta: herramienta
+        })
+    }
+
+    handleCloseSee = () => {
+        this.setState({
+            ... this.state,
+            modalSee: false,
+            herramienta: ''
         })
     }
     handleChange = (files, item) => {
@@ -447,7 +473,7 @@ class Herramienta extends Component {
         })
     }
     render() {
-        const { modalDelete, modalAdjuntos, modalUbicacion, modalDeleteUbicacion, form, active, data, ubicaciones } = this.state
+        const { modalDelete, modalAdjuntos, modalUbicacion, modalDeleteUbicacion, form, active, data, ubicaciones, modalSee, herramienta} = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <NewTableServerRender
@@ -463,7 +489,8 @@ class Herramienta extends Component {
                             'edit': { function: this.changePageEdit },
                             'delete': { function: this.openModalDelete },
                             'adjuntos': { function: this.openModalAdjuntos },
-                            'ubicacion': { function: this.openModalUbicacion }
+                            'ubicacion': { function: this.openModalUbicacion },
+                            'see': { function: this.openModalSee }
                         }
                     }
                     accessToken={this.props.authUser.access_token}
@@ -520,9 +547,17 @@ class Herramienta extends Component {
                         </Tab>
                     </Tabs>
                 </Modal>
-                <ModalDelete title='¿Estás seguro que deseas eliminar la ubicación?' show={modalDeleteUbicacion}
+                <ModalDelete 
+                    title='¿Estás seguro que deseas eliminar la ubicación?' 
+                    show={modalDeleteUbicacion}
                     handleClose={this.handleCloseDeleteUbicacion}
                     onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteUbicacionAxios() }} />
+
+                <Modal size="lg" title="Herramienta" show={modalSee} handleClose={this.handleCloseSee} >
+                    <HerramientaCard
+                        herramienta={herramienta}
+                    />
+                </Modal>
             </Layout>
         );
     }

@@ -13,6 +13,8 @@ import proyectoCard from './Proyectos/ProyectoCard'
 import comprasCard from './Proyectos/ComprasCard'
 import proyectosCard from './Proyectos/ProyectosCard'
 import ventasCard from './Proyectos/VentasCard'
+import herramientaCard from './Proyectos/HerramientaCard'
+
 //Administración
 import egresosCard from './Administracion/EgresosCard'
 import ingresosCard from './Administracion/IngresosCard'
@@ -60,6 +62,8 @@ export const ProyectoCard = proyectoCard
 export const ComprasCard = comprasCard
 export const ProyectosCard = proyectosCard
 export const VentasCard = ventasCard
+export const HerramientaCard = herramientaCard
+
 //Administración
 export const EgresosCard = egresosCard
 export const IngresosCard = ingresosCard
