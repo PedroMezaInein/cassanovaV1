@@ -33,9 +33,9 @@ class ContactoLeadForm extends Component {
         return (
             <div className="">
                 <div className="form-group row form-group-marginless pt-4">
-                    <div className="col-md-12">
-                        <p className="m-0">Selecciona el estatus del intento de contacto</p>
+                    <div className="col-md-4">
                         <RadioGroup
+                            placeholder="Selecciona el estatus del intento de contacto"
                             formeditado={formeditado}
                             name={'success'}
                             onChange={onChangeContacto}
@@ -54,10 +54,40 @@ class ContactoLeadForm extends Component {
                             value={formContacto.success}
                         />
                     </div>
+                    <div className="col-md-8">
+                        <Input
+                            formeditado={formeditado}
+                            requirevalidation={0}
+                            as='textarea'
+                            name='descripcion'
+                            placeholder='DESCRIPCIÓN DEL CONTRATO'
+                            onChange={onChangeContacto}
+                            value={formContacto.descripcion}
+                            rows='2'
+                            style={{ paddingLeft: "10px" }}
+                            messageinc="Incorrecto. Ingresa una descripción."
+                        />
+                    </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
+                        <Calendar
+                            formeditado={formeditado}
+                            onChangeCalendar={this.handleChangeDate}
+                            placeholder="FECHA DE CONTACTO"
+                            name="fechaContacto"
+                            value={formContacto.fechaContacto}
+                            patterns={DATE}
+                        />
+                        {/* <CalendarDay
+                            id="contacto_lead"
+                            date = {formContacto.fechaContacto} 
+                            onChange = { onChangeContacto } 
+                            name = 'fechaContacto'
+                        /> */}
+                    </div>
+                    <div className={newTipoContacto ? 'col-md-4' : 'col-md-8'}>
                         <SelectSearch
                             formeditado={formeditado}
                             requirevalidation={0}
@@ -78,40 +108,11 @@ class ContactoLeadForm extends Component {
                                 name="newTipoContacto"
                                 type="text"
                                 value={formContacto.newTipoContacto}
-                                placeholder="NUEVO TIPO DE CONTACTO" />
+                                placeholder="NUEVO TIPO DE CONTACTO"
+                                iconclass={"fas fa-mail-bulk"}
+                            />
                         </div>
                     }
-                    <div className="col-md-4">
-                        {/* <Calendar
-                            formeditado={formeditado}
-                            onChangeCalendar={this.handleChangeDate}
-                            placeholder="FECHA DE CONTACTO"
-                            name="fechaContacto"
-                            value={formContacto.fechaContacto}
-                            patterns={DATE}
-                        /> */}
-                        <CalendarDay
-                            date = {formContacto.fechaContacto} 
-                            onChange = { onChangeContacto } 
-                            name = 'fechaContacto'/>
-                    </div>
-                </div>
-                <div className="separator separator-dashed mt-1 mb-2"></div>
-                <div className="form-group row form-group-marginless">
-                    <div className="col-md-12">
-                        <Input
-                            formeditado={formeditado}
-                            requirevalidation={0}
-                            as='textarea'
-                            name='descripcion'
-                            placeholder='DESCRIPCIÓN DEL CONTRATO'
-                            onChange={onChangeContacto}
-                            value={formContacto.descripcion}
-                            rows='3'
-                            style={{ paddingLeft: "10px" }}
-                            messageinc="Incorrecto. Ingresa una descripción."
-                        />
-                    </div>
                 </div>
             </div>
         )

@@ -14,7 +14,7 @@ import { Button } from '../../../components/form-components'
 class ProspectosForm extends Component {
 
     state = {
-        title: '',
+        title: 'Nuevo prospecto',
         lead: '',
         prospecto: '',
         form: {
@@ -32,7 +32,7 @@ class ProspectosForm extends Component {
         },
         formContacto: {
             comentario: '',
-            fechaContacto: '',
+            fechaContacto: new Date(),
             success: 'Contactado',
             tipoContacto: '',
             newTipoContacto: ''
@@ -267,8 +267,26 @@ class ProspectosForm extends Component {
                 <Card className="card-custom">
                     <Card.Header>
                         <div className="card-title">
-                            <h3 className="card-label">PROSPECTOS</h3>
+                            <h3 className="card-label">{title}</h3>
                         </div>
+                        {
+                            title === 'Editar prospecto' ?
+                                <div class="card-toolbar">
+                                    <Button
+                                        // onClick={() => { changeEstatus('Cancelado') }}
+                                        className={"btn btn-icon btn-light-primary btn-sm mr-2 ml-auto"}
+                                        only_icon={"far fa-clock icon-md"}
+                                        tooltip={{ text: 'Detener' }}
+                                    />
+                                    <Button
+                                        // onClick={() => { openModalWithInput('Detenido') }}
+                                        className={"btn btn-icon btn-light-danger btn-sm"}
+                                        only_icon={"flaticon2-cross icon-nm"}
+                                        tooltip={{ text: 'Cancelar' }}
+                                    />
+                                </div>
+                                : ''
+                        }
                     </Card.Header>
                     <Card.Body className="pt-0">
                         <ProspectoFormulario
@@ -288,7 +306,7 @@ class ProspectosForm extends Component {
                                             <Accordion.Toggle as={Button} icon={faEye} pulse="pulse-ring" eventKey={0} className="btn btn-icon btn-light-info pulse pulse-info" />
                                         </div>
                                         <Accordion.Collapse eventKey={0} className="px-md-5 px-2" >
-                                            <LeadCard lead={lead} border={"border-nav mt-4 mb-5"}/>
+                                            <LeadCard lead={lead} border={"border-nav mt-4 mb-5"} />
                                         </Accordion.Collapse>
                                     </Accordion>
                                     : ''
