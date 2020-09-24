@@ -199,7 +199,30 @@ export function setListTable(arreglo, nombre) {
                 })
             }
         </ul>
+    )
+}
 
+export function setListTableLink(arreglo, nombre) {
+    return (
+        <ul>
+            {
+                arreglo.map((element,  key ) => { 
+                    return (
+                        <div key={key}>
+                            <li key={key}>
+                                <a href={element.url}>
+                                    <Small >
+                                        {
+                                            element[nombre]
+                                        }
+                                    </Small>
+                                </a>
+                            </li>
+                        </div>
+                    )
+                })
+            }
+        </ul>
     )
 }
 

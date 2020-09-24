@@ -279,6 +279,14 @@ export const CLIENTES_COLUMNS = [
         accessor: 'nombre',
     },
     {
+        Header: 'Contacto',
+        accessor: 'contacto',
+    },
+    {
+        Header: 'Proyecto',
+        accessor: 'proyecto',
+    },
+    {
         Header: 'Dirección',
         accessor: 'direccion',
     },

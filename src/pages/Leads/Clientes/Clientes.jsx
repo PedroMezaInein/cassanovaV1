@@ -7,7 +7,7 @@ import { URL_DEV, CLIENTES_COLUMNS} from '../../../constants'
 import { Small } from '../../../components/texts'
 import { Modal, ModalDelete } from '../../../components/singles'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { setTextTable, setDateTable } from '../../../functions/setters'
+import { setTextTable, setDateTable, setListTableLink } from '../../../functions/setters'
 import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import { ClienteCard } from '../../../components/cards'
 const $ = require('jquery');
@@ -43,6 +43,8 @@ class Leads extends Component {
                 actions: this.setActions(cliente),
                 empresa: renderToString(setTextTable(cliente.empresa)),
                 nombre: renderToString(setTextTable(cliente.nombre)),
+                contacto: renderToString(setTextTable(cliente.contacto)),
+                proyecto: renderToString(cliente.proyectos.length === 0 ? setTextTable("Sin definir") : setListTableLink(cliente.proyectos, "nombre",)),
                 direccion: renderToString(this.setDireccion(cliente)),
                 perfil: renderToString(setTextTable(cliente.perfil)),
                 puesto: renderToString(setTextTable(cliente.puesto)),
@@ -53,6 +55,8 @@ class Leads extends Component {
         })
         return aux
     }
+
+    
     setDireccion = cliente => {
         return (
             <>
