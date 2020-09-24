@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { SelectSearch, Input, InputNumber, Button } from '../form-components'
-import { RFC } from '../../constants'
+import { SelectSearch, Input, InputNumber, Button, InputPhone } from '../form-components'
+import { RFC, TEL } from '../../constants'
 import Form from 'react-bootstrap/Form'
 import { validateAlert } from '../../functions/alert'
 class ClienteForm extends Component {
@@ -75,7 +75,7 @@ class ClienteForm extends Component {
                             messageinc="Incorrecto. Ingresa el puesto del empleado."
                         />
                     </div>
-                    <div className="col-md-8">
+                    <div className="col-md-4">
                         <Input
                             requirevalidation={0}
                             formeditado={formeditado}
@@ -87,6 +87,21 @@ class ClienteForm extends Component {
                             onChange={onChange}
                             iconclass={"fas fa-user-tag"}
                             messageinc="Incorrecto. Ingresa el perfil."
+                        />
+                    </div>
+                    <div className="col-md-4">
+                        <InputPhone
+                            requirevalidation={0}
+                            thousandSeparator={false}
+                            prefix={''}
+                            name="contacto"
+                            value={form.contacto}
+                            placeholder="CONTACTO"
+                            onChange={onChange}
+                            iconclass={"fas fa-mobile-alt"}
+                            messageinc="Incorrecto. Ingresa el número de contacto."
+                            patterns={TEL}
+                            formeditado={formeditado}
                         />
                     </div>
                 </div>

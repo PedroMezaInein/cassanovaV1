@@ -28,7 +28,8 @@ class ClientesForm extends Component {
             colonia: '',
             calle: '',
             perfil: '',
-            rfc: ''
+            rfc: '',
+            contacto:''
         }
     }
     componentDidMount() {
