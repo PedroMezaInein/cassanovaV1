@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { InputMoney, SelectSearch, Input, Button, Calendar } from '../form-components'
+import { InputMoney, SelectSearch, Input, Button, Calendar } from '../../form-components'
 import { Form } from 'react-bootstrap'
-import { DATE } from '../../constants'
-import { validateAlert } from '../../functions/alert'
+import { DATE } from '../../../constants'
+import { validateAlert } from '../../../functions/alert'
+import ItemSlider from '../../singles/ItemSlider'
 
 class TareaForm extends Component {
 
@@ -23,7 +24,7 @@ class TareaForm extends Component {
 
     render() {
 
-        const { title, cuentas, form, onChange, onChangeAdjunto, deleteAdjunto, requirevalidation, onSubmit, formeditado, ...props } = this.props
+        const { title, options, form, onChange, onChangeAdjunto, deleteAdjunto, requirevalidation, onSubmit, formeditado, handleChange, deleteFile, ...props } = this.props
         return (
             <Form id="form-transpasos"
                 onSubmit={
@@ -35,31 +36,27 @@ class TareaForm extends Component {
                 {...props}
             >
                 <div className="form-group row form-group-marginless pt-4">
-                    <div className="col-md-6">
+                    <div className="col-md-3">
                         <SelectSearch
                             formeditado={formeditado}
-                            options={cuentas}
+                            options={options.cuentas}
                             value={form.origen}
                             onChange={this.updateOrigen}
                             placeholder="CUENTA ORIGEN"
                             iconclass={"far fa-credit-card"}
                         />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-3">
                         <SelectSearch
                             formeditado={formeditado}
-                            options={cuentas}
+                            options={options.cuentas}
                             value={form.destino}
                             onChange={this.updateDestino}
                             placeholder="CUENTA DESTINO"
                             iconclass={"far fa-credit-card"}
                         />
                     </div>
-                </div>
-
-                <div className="separator separator-dashed mt-1 mb-2"></div>
-                <div className="form-group row form-group-marginless">
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <InputMoney
                             requirevalidation={1}
                             formeditado={formeditado}
@@ -72,7 +69,7 @@ class TareaForm extends Component {
                             iconclass={" fas fa-money-check-alt"}
                         />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <Calendar
                             formeditado={formeditado}
                             onChangeCalendar={this.changeDate}
@@ -80,42 +77,6 @@ class TareaForm extends Component {
                             placeholder="FECHA DE TRASPASO"
                             patterns={DATE}
                         />
-                    </div>
-                    <div className="col-md-4">
-                        <div className="image-upload d-flex align-items-center">
-                            <div className="no-label pt-5">
-                                <input
-                                    requirevalidation={0}
-                                    formeditado={formeditado}
-                                    onChange={onChangeAdjunto}
-                                    value={form.adjunto}
-                                    name="adjunto"
-                                    type="file"
-                                    id="adjunto"
-                                    accept="application/pdf, image/*"
-                                    iconclass={"fas fa-paperclip"}
-                                />
-                            </div>
-                        </div>
-                        {
-                            form.adjuntoName &&
-                            <div className="">
-                                <div className="tagify form-control p-1 mt-1" tabIndex="-1" style={{ borderWidth: "0px" }}>
-                                    <div className="tagify__tag tagify__tag--primary tagify--noAnim">
-                                        <div
-                                            title="Borrar archivo"
-                                            className="tagify__tag__removeBtn"
-                                            role="button"
-                                            aria-label="remove tag"
-                                            onClick={(e) => { e.preventDefault(); deleteAdjunto() }}
-                                        >
-                                        </div>
-                                        <div><span className="tagify__tag-text p-1 white-space">{form.adjuntoName}</span></div>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-
                     </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
@@ -133,6 +94,15 @@ class TareaForm extends Component {
                             messageinc="Incorrecto. Ingresa el comentario."
                             style={{ paddingLeft: "10px" }}
                         />
+                    </div>
+                </div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless justify-content-center">
+                    <div className="col-md-6">
+                        <ItemSlider items = { form.adjuntos.adjuntos.files }
+                                item = 'adjuntos' handleChange = { handleChange }
+                                deleteFile = { deleteFile } 
+                                multiple = { false }/>
                     </div>
                 </div>
 
