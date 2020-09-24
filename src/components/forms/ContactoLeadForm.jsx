@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { RadioGroup, Calendar, SelectSearch, Input } from '../form-components'
+import { RadioGroup, Calendar, SelectSearch, Input, CalendarDay } from '../form-components'
 import { DATE } from '../../constants'
 
 class ContactoLeadForm extends Component {
@@ -82,14 +82,18 @@ class ContactoLeadForm extends Component {
                         </div>
                     }
                     <div className="col-md-4">
-                        <Calendar
+                        {/* <Calendar
                             formeditado={formeditado}
                             onChangeCalendar={this.handleChangeDate}
                             placeholder="FECHA DE CONTACTO"
                             name="fechaContacto"
                             value={formContacto.fechaContacto}
                             patterns={DATE}
-                        />
+                        /> */}
+                        <CalendarDay
+                            date = {formContacto.fechaContacto} 
+                            onChange = { onChangeContacto } 
+                            name = 'fechaContacto'/>
                     </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
