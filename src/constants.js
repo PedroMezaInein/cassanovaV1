@@ -213,10 +213,6 @@ export const PROSPECTOS_COLUMNS = [
         accessor: 'empresa',
     },
     {
-        Header: 'Cliente',
-        accessor: 'cliente',
-    },
-    {
         Header: 'Proyecto', //Estaba: Tipo de proyecto
         accessor: 'tipoProyecto',
     },
