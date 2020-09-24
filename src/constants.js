@@ -1875,16 +1875,16 @@ export const TICKETS_ESTATUS = [
         accessor: 'actions',
     },
     {
+        Header: 'Estatus',
+        accessor: 'estatus',
+    },
+    {
         Header: 'Fecha',
         accessor: 'fecha',
     },
     {
         Header: 'Partida',
         accessor: 'partida'
-    },
-    {
-        Header: 'Estatus',
-        accessor: 'estatus',
     },
     {
         Header: 'Tipo de trabajo',
