@@ -13,7 +13,6 @@ import UbicacionHerramientaForm from '../../../components/forms/proyectos/Ubicac
 import { Tab, Tabs } from 'react-bootstrap';
 import TableForModals from '../../../components/tables/TableForModals';
 import { HerramientaCard } from '../../../components/cards'
-
 const $ = require('jquery');
 class Herramienta extends Component {
     state = {
@@ -219,7 +218,6 @@ class Herramienta extends Component {
             ubicacion: ''
         })
     }
-
     openModalSee = herramienta => {
         this.setState({
             ... this.state,
@@ -227,7 +225,6 @@ class Herramienta extends Component {
             herramienta: herramienta
         })
     }
-
     handleCloseSee = () => {
         this.setState({
             ... this.state,
@@ -338,7 +335,6 @@ class Herramienta extends Component {
         const { form, herramienta } = this.state
         await axios.delete(URL_DEV + 'herramientas/' + herramienta.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 const { herramienta } = response.data
                 const { form } = this.state
                 let aux = []
@@ -376,7 +372,6 @@ class Herramienta extends Component {
         const { access_token } = this.props.authUser
         const { form, herramienta } = this.state
         const data = new FormData();
-
         let aux = Object.keys(form)
         aux.map((element) => {
             switch (element) {
@@ -398,10 +393,8 @@ class Herramienta extends Component {
             }
             data.append('adjuntos[]', element)
         })
-
         await axios.post(URL_DEV + 'herramientas/' + herramienta.id + '/adjuntos', data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 const { herramienta } = response.data
                 const { form } = this.state
                 let aux = []
@@ -438,7 +431,6 @@ class Herramienta extends Component {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form, herramienta } = this.state
-
         await axios.post(URL_DEV + 'herramientas/' + herramienta.id + '/ubicacion', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { herramienta } = response.data
@@ -473,7 +465,7 @@ class Herramienta extends Component {
         })
     }
     render() {
-        const { modalDelete, modalAdjuntos, modalUbicacion, modalDeleteUbicacion, form, active, data, ubicaciones, modalSee, herramienta} = this.state
+        const { modalDelete, modalAdjuntos, modalUbicacion, modalDeleteUbicacion, form, active, data, ubicaciones, modalSee, herramienta } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <NewTableServerRender
@@ -501,10 +493,12 @@ class Herramienta extends Component {
                     cardTableHeader='cardTableHeader'
                     cardBody='cardBody'
                 />
-                <ModalDelete title='¿Estás seguro que deseas eliminar la herramienta?' show={modalDelete}
+                <ModalDelete
+                    title='¿Estás seguro que deseas eliminar la herramienta?'
+                    show={modalDelete}
                     handleClose={this.handleCloseDelete}
-                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteHerramientaAxios() }} />
-
+                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteHerramientaAxios() }}
+                />
                 <Modal size="lg" title="Adjuntos" show={modalAdjuntos} handleClose={this.handleCloseAdjuntos} >
                     <ItemSlider
                         items={form.adjuntos.adjuntos.files}
@@ -514,9 +508,13 @@ class Herramienta extends Component {
                     />
                     {
                         form.adjuntos.adjuntos.value ?
-                            <div className="d-flex justify-content-center mt-2 mb-4">
-                                <Button icon='' text='ENVIAR'
-                                    onClick={(e) => { e.preventDefault(); this.sendAdjuntoAxios() }} />
+                            <div className="card-footer py-3 pr-1">
+                                <div className="row">
+                                    <div className="col-lg-12 text-right pr-0 pb-0">
+                                        <Button icon='' text='ENVIAR'
+                                            onClick={(e) => { e.preventDefault(); this.sendAdjuntoAxios() }} />
+                                    </div>
+                                </div>
                             </div>
                             : ''
                     }
@@ -547,12 +545,12 @@ class Herramienta extends Component {
                         </Tab>
                     </Tabs>
                 </Modal>
-                <ModalDelete 
-                    title='¿Estás seguro que deseas eliminar la ubicación?' 
+                <ModalDelete
+                    title='¿Estás seguro que deseas eliminar la ubicación?'
                     show={modalDeleteUbicacion}
                     handleClose={this.handleCloseDeleteUbicacion}
-                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteUbicacionAxios() }} />
-
+                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteUbicacionAxios() }} 
+                />
                 <Modal size="lg" title="Herramienta" show={modalSee} handleClose={this.handleCloseSee} >
                     <HerramientaCard
                         herramienta={herramienta}
