@@ -18,6 +18,7 @@ import selectSearchSinText from './SelectSearchSinText'
 import inputNumberSinText from './InputNumberSinText'
 import inputSinText from './InputSinText'
 import rangeCalendar from './RangeCalendar'
+import calendarDay from './CalendarDay'
 
 export const Button = button
 export const Input = input
@@ -39,3 +40,4 @@ export const SelectSearchSinText = selectSearchSinText
 export const InputNumberSinText = inputNumberSinText
 export const InputSinText = inputSinText
 export const RangeCalendar = rangeCalendar
+export const CalendarDay = calendarDay
