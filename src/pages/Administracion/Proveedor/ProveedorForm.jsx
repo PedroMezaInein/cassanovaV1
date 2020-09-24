@@ -7,8 +7,8 @@ import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from '../../..
 import Layout from '../../../components/layout/layout'
 import { ProveedorForm as ProveedorFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
-
-class ProveedorForm extends Component{
+import swal from 'sweetalert';
+class ProveedorForm extends Component {
 
     state = {
         title: 'Nuevo proveedor',
@@ -26,10 +26,10 @@ class ProveedorForm extends Component{
             area: '',
             subarea: ''
         },
-        data:{
+        data: {
             proveedores: []
         },
-        formeditado:0,
+        formeditado: 0,
         options: {
             areas: [],
             subareas: [],
@@ -38,70 +38,66 @@ class ProveedorForm extends Component{
         }
     }
 
-    componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
-        const { match : { params: { action: action } } } = this.props
-        const { history, location: { state: state} } = this.props
-        
-        const proveedores = permisos.find(function(element, index) {
+    componentDidMount() {
+        const { authUser: { user: { permisos: permisos } } } = this.props
+        const { history: { location: { pathname: pathname } } } = this.props
+        const { match: { params: { action: action } } } = this.props
+        const { history, location: { state: state } } = this.props
+        const proveedores = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
             return pathname === url + '/' + action
         })
-
-        switch(action){
+        switch (action) {
             case 'add':
                 this.setState({
                     ... this.state,
                     title: 'Nuevo proveedor',
-                    formeditado:0
+                    formeditado: 0
                 })
                 break;
             case 'edit':
-                if(state){
-                    if(state.proveedor)
-                    {
+                if (state) {
+                    if (state.proveedor) {
                         this.setProveedor(state.proveedor)
                         this.setState({
                             ... this.state,
                             title: 'Editar proveedor',
-                            formeditado:1
+                            formeditado: 1
                         })
                     }
                     else
                         history.push('/administracion/proveedores')
-                }else
+                } else
                     history.push('/administracion/proveedores')
                 break;
             case 'convert':
-                if(state){
-                    if(state.lead)
-                    {
+                if (state) {
+                    if (state.lead) {
                         this.setLead(state.lead)
                         this.setState({
                             ... this.state,
                             title: 'Convertir lead en proveedor',
-                            formeditado:1
+                            formeditado: 1
                         })
                     }
                     else
                         history.push('/administracion/proveedores')
-                }else
+                } else
                     history.push('/administracion/proveedores')
                 break;
             default:
                 break;
         }
-        if(!proveedores)
+        if (!proveedores)
             history.push('/')
-        this.getProveedoresAxios()
+        this.getOptionsAxios()
     }
 
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'tipo':
                 case 'banco':
                     form[element] = 0
@@ -115,14 +111,13 @@ class ProveedorForm extends Component{
     }
 
     onChange = e => {
-        const {form} = this.state
-        const {name, value} = e.target
-        
-        if(name === 'razonSocial'){
+        const { form } = this.state
+        const { name, value } = e.target
+        if (name === 'razonSocial') {
             let cadena = value.replace(/,/g, '')
             cadena = cadena.replace(/\./g, '')
             form[name] = cadena
-        }else
+        } else
             form[name] = value
         this.setState({
             ... this.state,
@@ -134,14 +129,14 @@ class ProveedorForm extends Component{
         e.preventDefault()
         const { title } = this.state
         waitAlert()
-        if(title === 'Editar proveedor')
+        if (title === 'Editar proveedor')
             this.updateProveedorAxios()
         else
             this.addProveedorAxios()
     }
 
     setOptions = (name, array) => {
-        const {options} = this.state
+        const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
             ... this.state,
@@ -150,28 +145,21 @@ class ProveedorForm extends Component{
     }
 
     setProveedor = proveedor => {
-
-        const { form, options} = this.state
-
+        const { form, options } = this.state
         form.nombre = proveedor.nombre
         form.razonSocial = proveedor.razon_social
         form.rfc = proveedor.rfc
         form.correo = proveedor.email
         form.telefono = proveedor.telefono
-
         form.cuenta = proveedor.cuenta
         form.numCuenta = proveedor.numero_cuenta
-
         form.banco = proveedor.banco ? proveedor.banco.id : 0
         form.tipo = proveedor.tipo_cuenta ? proveedor.tipo_cuenta.id : 0
-
-        if(proveedor.subarea)
-        {
+        if (proveedor.subarea) {
             form.area = proveedor.subarea.area.id.toString()
             options['subareas'] = setOptions(proveedor.subarea.area.subareas, 'nombre', 'id')
             form.subarea = proveedor.subarea.id.toString()
         }
-        
         this.setState({
             ... this.state,
             options,
@@ -181,41 +169,38 @@ class ProveedorForm extends Component{
     }
 
     setLead = lead => {
-
         const { form } = this.state
-
         form.nombre = lead.nombre
         form.correo = lead.email
         form.telefono = lead.telefono
         form.leadId = lead.id
-
         this.setState({
             ... this.state,
             form
         })
     }
 
-    async getProveedoresAxios(){
+    async getOptionsAxios() {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'proveedores', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        waitAlert()
+        await axios.get(URL_DEV + 'proveedores/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { areas, proveedores, bancos, tipos_cuentas } = response.data
-                const { data, options } = this.state
-                options.areas = setOptions(areas, 'nombre', 'id')
-                options.bancos = setSelectOptions(bancos, 'nombre')
-                options.tipos = setSelectOptions(tipos_cuentas, 'tipo')
-                data.proveedores = proveedores
+                swal.close()
+                const { areas, bancos, tipos_cuentas } = response.data
+                const { options } = this.state
+                options['areas'] = setOptions(areas, 'nombre', 'id')
+                options['bancos'] = setSelectOptions(bancos, 'nombre')
+                options['tipos'] = setSelectOptions(tipos_cuentas, 'tipo')
                 this.setState({
                     ... this.state,
-                    data,
                     options
                 })
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -225,51 +210,17 @@ class ProveedorForm extends Component{
         })
     }
 
-    async addProveedorAxios(){
+    async addProveedorAxios() {
         const { access_token } = this.props.authUser
         const { form } = this.state
-        await axios.post(URL_DEV + 'proveedores', form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'proveedores', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
                     title: ''
                 })
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El provedor fue registrado con éxito.')
-
-                const { history } = this.props
-                    history.push({
-                    pathname: '/administracion/proveedores'
-                });
-            },
-            (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-    async updateProveedorAxios(){
-        const { access_token } = this.props.authUser
-        const { form, proveedor } = this.state
-        await axios.put(URL_DEV + 'proveedores/' + proveedor.id, form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
-            (response) => {
-                this.setState({
-                    ... this.state,
-                    form: this.clearForm(),
-                    title: '',
-                })
-                
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El provedor fue registrado con éxito.')
-
                 const { history } = this.props
                 history.push({
                     pathname: '/administracion/proveedores'
@@ -277,9 +228,9 @@ class ProveedorForm extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -289,10 +240,40 @@ class ProveedorForm extends Component{
         })
     }
 
-    render(){
-        const { form, title, options,formeditado } = this.state
-        return(
-            <Layout active={'leads'}  { ...this.props}>
+    async updateProveedorAxios() {
+        const { access_token } = this.props.authUser
+        const { form, proveedor } = this.state
+        await axios.put(URL_DEV + 'proveedores/' + proveedor.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.setState({
+                    ... this.state,
+                    form: this.clearForm(),
+                    title: '',
+                })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El provedor fue registrado con éxito.')
+                const { history } = this.props
+                history.push({
+                    pathname: '/administracion/proveedores'
+                });
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    render() {
+        const { form, title, options, formeditado } = this.state
+        return (
+            <Layout active={'leads'}  {...this.props}>
                 <Card className="card-custom">
                     <Card.Header>
                         <div className="card-title">
@@ -300,26 +281,24 @@ class ProveedorForm extends Component{
                         </div>
                     </Card.Header>
                     <Card.Body className="pt-0">
-                        <ProveedorFormulario 
+                        <ProveedorFormulario
                             formeditado={formeditado}
-                            title = { title } 
-                            form = { form }
-                            onChange = { this.onChange } 
-                            options = { options } 
-                            setOptions = { this.setOptions } 
-                            onSubmit = {this.onSubmit}/> 
-
-                    </Card.Body>    
+                            title={title}
+                            form={form}
+                            onChange={this.onChange}
+                            options={options}
+                            setOptions={this.setOptions}
+                            onSubmit={this.onSubmit}
+                        />
+                    </Card.Body>
                 </Card>
-                
             </Layout>
         )
     }
 }
 
-
 const mapStateToProps = state => {
-    return{
+    return {
         authUser: state.authUser
     }
 }
