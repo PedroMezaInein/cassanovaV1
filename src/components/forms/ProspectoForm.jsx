@@ -166,7 +166,7 @@ class ProspectoForm extends Component {
                             <div id="wizard-1-content" className="pb-3 px-2" data-wizard-type="step-content" data-wizard-state="current">
                                 <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos de generales</h5>
                                 <div className="form-group row form-group-marginless">
-                                    <div className="col-md-4">
+                                    {/* <div className="col-md-4">
                                         <SelectSearch
                                             formeditado={formeditado}
                                             options={options.clientes}
@@ -175,7 +175,7 @@ class ProspectoForm extends Component {
                                             name="cliente"
                                             value={form.cliente}
                                             />
-                                    </div>
+                                    </div> */}
                                     <div className="col-md-4">
                                         <SelectSearch
                                             formeditado = { formeditado }
@@ -200,9 +200,6 @@ class ProspectoForm extends Component {
                                             messageinc="Incorrecto. Ingresa la preferencia de contacto."
                                         />
                                     </div>
-                                </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <SelectSearch
                                             formeditado = { formeditado }
@@ -213,6 +210,10 @@ class ProspectoForm extends Component {
                                             value = { form.estatusProspecto }
                                             />
                                     </div>
+                                </div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="form-group row form-group-marginless">
+                                    
                                     {
                                         newEstatusProspectos &&
                                             <div className="col-md-4">
@@ -304,25 +305,6 @@ class ProspectoForm extends Component {
                                 </div>
                             </div>
                             <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
-                                {
-                                    newClient ? 
-                                        <h5 className="mb-4 font-weight-bold text-dark">Información del nuevo cliente</h5>
-                                    : ''
-                                }
-                                {
-                                    newClient ?
-                                        <ClienteForm
-                                            onChange={onChangeCliente}
-                                            title='Información del cliente'
-                                            form={formCliente}
-                                            changeCP={this.changeCP}
-                                            estado={estado}
-                                            municipio={municipio}
-                                            colonias={colonias}
-                                            updateColonia={this.updateColonia}
-                                        />
-                                    : ''
-                                }
                                 <h5 className="mb-4 font-weight-bold text-dark">Información del contacto</h5>
 
                                 {

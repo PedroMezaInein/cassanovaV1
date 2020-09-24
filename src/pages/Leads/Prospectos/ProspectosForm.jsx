@@ -17,9 +17,6 @@ class ProspectosForm extends Component {
         title: '',
         lead: '',
         prospecto: '',
-        options: {
-            tiposContactos: []
-        },
         form: {
             descripcion: '',
             vendedor: '',
@@ -40,21 +37,8 @@ class ProspectosForm extends Component {
             tipoContacto: '',
             newTipoContacto: ''
         },
-        formCliente: {
-            empresa: '',
-            nombre: '',
-            puesto: '',
-            cp: '',
-            estado: '',
-            municipio: '',
-            colonia: '',
-            calle: '',
-            perfil: '',
-            rfc: ''
-        },
         options: {
             tiposContactos: [],
-            clientes: [],
             vendedores: [],
             estatusProspectos: [],
             tipoProyectos: []
@@ -97,9 +81,6 @@ class ProspectosForm extends Component {
                         if (prospecto.estatus_prospecto) {
                             form.estatusProspecto = prospecto.estatus_prospecto.id.toString()
                         }
-                        if (prospecto.cliente) {
-                            form.cliente = prospecto.cliente.id.toString()
-                        }
                         if (prospecto.tipo_proyecto) {
                             form.tipoProyecto = prospecto.tipo_proyecto.id.toString()
                         }
@@ -135,21 +116,11 @@ class ProspectosForm extends Component {
         })
     }
 
-    onChangeCliente = event => {
-        const { name, value } = event.target
-        const { formCliente } = this.state
-        formCliente[name] = value
-        this.setState({
-            ... this.setState({
-                formCliente
-            })
-        })
-    }
-
     onChangeContacto = event => {
         const { formContacto } = this.state
         const { name, value } = event.target
         formContacto[name] = value
+        console.log(name, value)
         this.setState({
             ... this.state,
             formContacto
@@ -158,8 +129,7 @@ class ProspectosForm extends Component {
 
     onSubmit = e => {
         e.preventDefault();
-        const { form, formCliente, formContacto, lead, title } = this.state
-        form['formCliente'] = formCliente;
+        const { form, formContacto, lead, title } = this.state
         form['lead'] = lead;
         form['formContacto'] = formContacto;
         if (title === 'Editar prospecto')
@@ -173,17 +143,13 @@ class ProspectosForm extends Component {
         await axios.get(URL_DEV + 'prospecto/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { options } = this.state
-                const { tiposContactos, clientes, vendedores, estatusProspectos, tipoProyectos } = response.data
+                const { tiposContactos, vendedores, estatusProspectos, tipoProyectos } = response.data
                 options.tiposContactos = setOptions(tiposContactos, 'tipo', 'id')
                 options.tiposContactos.push({
                     value: 'New', name: '+ Agregar nuevo'
                 })
                 options.tipoProyectos = setOptions(tipoProyectos, 'tipo', 'id')
                 options.tipoProyectos.push({
-                    value: 'New', name: '+ Agregar nuevo'
-                })
-                options.clientes = setOptions(clientes, 'empresa', 'id')
-                options.clientes.push({
                     value: 'New', name: '+ Agregar nuevo'
                 })
                 options.vendedores = setOptions(vendedores, 'name', 'id')
@@ -239,30 +205,6 @@ class ProspectosForm extends Component {
         const { prospecto } = this.state
         await axios.put(URL_DEV + 'prospecto/' + prospecto.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { options } = this.state
-                const { tiposContactos, clientes, vendedores, estatusProspectos, tipoProyectos } = response.data
-                options.tiposContactos = setOptions(tiposContactos, 'tipo', 'id')
-                options.tiposContactos.push({
-                    value: 'New', name: '+ Agregar nuevo'
-                })
-                options.tipoProyectos = setOptions(tipoProyectos, 'tipo', 'id')
-                options.tipoProyectos.push({
-                    value: 'New', name: '+ Agregar nuevo'
-                })
-                options.clientes = setOptions(clientes, 'empresa', 'id')
-                options.clientes.push({
-                    value: 'New', name: '+ Agregar nuevo'
-                })
-                options.vendedores = setOptions(vendedores, 'name', 'id')
-                options.estatusProspectos = setOptions(estatusProspectos, 'estatus', 'id')
-                options.estatusProspectos.push({
-                    value: 'New', name: '+ Agregar nuevo'
-                })
-                this.setState({
-                    ... this.state,
-                    options,
-                    title: '',
-                })
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste el prospecto con éxito.')
 
@@ -291,30 +233,6 @@ class ProspectosForm extends Component {
         const { access_token } = this.props.authUser
         await axios.post(URL_DEV + 'prospecto', data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { options } = this.state
-                const { tiposContactos, clientes, vendedores, estatusProspectos, tipoProyectos } = response.data
-                options.tiposContactos = setOptions(tiposContactos, 'tipo', 'id')
-                options.tiposContactos.push({
-                    value: 'New', name: '+ Agregar nuevo'
-                })
-                options.tipoProyectos = setOptions(tipoProyectos, 'tipo', 'id')
-                options.tipoProyectos.push({
-                    value: 'New', name: '+ Agregar nuevo'
-                })
-                options.clientes = setOptions(clientes, 'empresa', 'id')
-                options.clientes.push({
-                    value: 'New', name: '+ Agregar nuevo'
-                })
-                options.vendedores = setOptions(vendedores, 'name', 'id')
-                options.estatusProspectos = setOptions(estatusProspectos, 'estatus', 'id')
-                options.estatusProspectos.push({
-                    value: 'New', name: '+ Agregar nuevo'
-                })
-                this.setState({
-                    ... this.state,
-                    options,
-                    title: '',
-                })
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste el prospecto con éxito.')
 
@@ -358,10 +276,8 @@ class ProspectosForm extends Component {
                             className="px-3"
                             options={options}
                             form={form}
-                            formCliente={formCliente}
                             formContacto={formContacto}
                             onChange={this.onChange}
-                            onChangeCliente={this.onChangeCliente}
                             onChangeContacto={this.onChangeContacto}
                             onSubmit={this.onSubmit}
                             title={title} >
