@@ -11,11 +11,9 @@ import NewTableServerRender from '../../../components/tables/NewTableServerRende
 import TableForModals from '../../../components/tables/TableForModals';
 import { CUENTAS_COLUMNS, EDOS_CUENTAS_COLUMNS, URL_DEV } from '../../../constants';
 import { deleteAlert, doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert';
-import { setArrayTable, setDateTable, setListTable, setMoneyTable, setTextTable } from '../../../functions/setters';
+import { setArrayTable, setDateTable, setListTable, setMoneyTable, setTextTable, setLabelTable } from '../../../functions/setters';
 import axios from 'axios'
-
 const $ = require('jquery');
-
 class Cuenta extends Component {
 
     state = {
@@ -83,6 +81,7 @@ class Cuenta extends Component {
     }
 
     setCuentas = cuentas => {
+        console.log(cuentas)
         let aux = []
         cuentas.map((cuenta, key) => {
             aux.push({
@@ -93,13 +92,27 @@ class Cuenta extends Component {
                 descripcion: renderToString(setTextTable(cuenta.descripcion)),
                 banco: renderToString(setTextTable(cuenta.banco ? cuenta.banco.nombre : '')),
                 tipo: renderToString(setTextTable(cuenta.tipo ? cuenta.tipo.tipo : '')),
-                estatus: renderToString(setTextTable(cuenta.estatus ? cuenta.estatus.estatus : '')),
+                estatus: cuenta.estatus ? renderToString(this.setLabel(cuenta.estatus.estatus)) : '',
                 empresa: renderToString(setListTable(cuenta.empresa, 'name')),
                 fecha: renderToString(setDateTable(cuenta.created_at)),
                 id: cuenta.id
             })
         })
         return aux
+    }
+
+    setLabel = estatus => {
+        let text = {}
+        if(estatus==="Activo"){
+            text.letra = '#388E3C'
+            text.fondo = '#E8F5E9'
+            text.estatus = 'Activo'
+        }else{
+            text.letra = '#F64E60'
+            text.fondo = '#FFE2E5'
+            text.estatus = 'Inactivo'
+        }
+        return setLabelTable(text)
     }
 
     setActions = () => {
@@ -448,7 +461,6 @@ class Cuenta extends Component {
                                     setter={this.setCuentas}
                                     urlRender={URL_DEV + 'cuentas/cuentas'}
                                     idTable='cuentas_bancos'
-                                    elementClass='estatus'
                                     cardTable='cardTable_bancos'
                                     cardTableHeader='cardTableHeader__bancos'
                                     cardBody='cardBody_bancos'
@@ -479,7 +491,6 @@ class Cuenta extends Component {
                                     setter={this.setCuentas}
                                     urlRender={URL_DEV + 'cuentas/cajas'}
                                     idTable='cuentas_cajas'
-                                    elementClass='estatus'
                                     cardTable='cardTable_caja'
                                     cardTableHeader='cardTableHeader_caja'
                                     cardBody='cardBody_caja'
