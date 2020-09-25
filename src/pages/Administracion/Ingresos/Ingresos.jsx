@@ -17,18 +17,19 @@ import Select from '../../../components/form-components/Select'
 import AdjuntosForm from '../../../components/forms/AdjuntosForm'
 import TableForModals from '../../../components/tables/TableForModals'
 import { IngresosCard } from '../../../components/cards'
-
+import { Tab, Tabs } from 'react-bootstrap';
 const $ = require('jquery');
 class Ingresos extends Component {
 
     state = {
+        active:'facturas',
         selectValido:false,
         ingresos: [],
         title: 'Nuevo ingreso',
         ingreso: '',
         modalDelete: false,
         modalFacturas: false,
-        modalAskFacturas: false,
+        // modalAskFacturas: false,
         modalAdjuntos: false,
         modalSee: false,
         facturas: [],
@@ -415,19 +416,19 @@ class Ingresos extends Component {
                     action: 'facturas',
                     tooltip: { id: 'taxes', text: 'Facturas' },
                 },
-                {
-                    text: 'Pedir&nbsp;factura',
-                    btnclass: 'info',
-                    iconclass: 'flaticon-file-1',
-                    action: 'askFacturas',
-                    tooltip: { id: 'ask-taxes', text: 'Facturas' },
-                }
+                // {
+                //     text: 'Pedir&nbsp;factura',
+                //     btnclass: 'info',
+                //     iconclass: 'flaticon-file-1',
+                //     action: 'askFacturas',
+                //     tooltip: { id: 'ask-taxes', text: 'Facturas' },
+                // }
             )
         }
         return aux
     }
 
-    setActionsAdjuntos = adjunto => {
+    setActionsAdjuntos = () => {
         let aux = []
         aux.push(
             {
@@ -459,7 +460,10 @@ class Ingresos extends Component {
 
     openModalFacturas = (ingreso) => {
         let { porcentaje, form } = this.state
-        form = this.clearForm()
+        form.empresa = ingreso.empresa.id.toString()
+        form.cliente = ingreso.cliente.id.toString()
+        form.rfc = ingreso.cliente.rfc
+        // form = this.clearForm()
         form.estatusCompra = ingreso.estatus_compra.id
         porcentaje = 0
         ingreso.facturas.map((factura) => {
@@ -474,7 +478,7 @@ class Ingresos extends Component {
             facturas: ingreso.facturas,
             porcentaje,
             form,
-            formeditado:0
+            formeditado:1
         })
     }
 
@@ -489,28 +493,28 @@ class Ingresos extends Component {
         })
     }
 
-    openModalAskFactura = ingreso => {
-        const { form } = this.state
-        form.empresa = ingreso.empresa.id.toString()
-        form.cliente = ingreso.cliente.id.toString()
-        form.rfc = ingreso.cliente.rfc
-        this.setState({
-            ... this.state,
-            modalAskFactura: true,
-            ingreso: ingreso,
-            form,
-            formeditado:1
-        })
-    }
+    // openModalAskFactura = ingreso => {
+    //     const { form } = this.state
+    //     form.empresa = ingreso.empresa.id.toString()
+    //     form.cliente = ingreso.cliente.id.toString()
+    //     form.rfc = ingreso.cliente.rfc
+    //     this.setState({
+    //         ... this.state,
+    //         // modalAskFactura: true,
+    //         ingreso: ingreso,
+    //         form,
+    //         formeditado:1
+    //     })
+    // }
 
-    handleCloseAskFactura = () => {
-        this.setState({
-            ... this.state,
-            modalAskFactura: false,
-            ingreso: '',
-            form: this.clearForm()
-        })
-    }
+    // handleCloseAskFactura = () => {
+    //     this.setState({
+    //         ... this.state,
+    //         // modalAskFactura: false,
+    //         ingreso: '',
+    //         form: this.clearForm()
+    //     })
+    // }
 
     openModalAdjuntos = ingreso => {
         const { data } = this.state
@@ -752,7 +756,7 @@ class Ingresos extends Component {
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
-                    modalAskFactura: false
+                    // modalAskFactura: false
                 })
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
@@ -942,8 +946,19 @@ class Ingresos extends Component {
         })
     }
 
+    onSelect = value => {
+        const { form } = this.state
+        if (value === 'facturas') {
+        }
+        this.setState({
+            ... this.state,
+            active: value,
+            form
+        })
+    }
+
     render() {
-        const { ingresos, form, options, modalDelete, modalFacturas, modalAdjuntos, adjuntos, porcentaje, facturas, modalAskFactura, data, formeditado, modalSee, ingreso } = this.state
+        const { ingresos, form, options, modalDelete, modalFacturas, modalAdjuntos, adjuntos, porcentaje, facturas, modalAskFactura, data, formeditado, modalSee, ingreso, active} = this.state
         return (
             <Layout active={'administracion'}  {...this.props}>
                 
@@ -958,7 +973,7 @@ class Ingresos extends Component {
                         'edit': { function: this.changePageEdit },
                         'delete': { function: this.openModalDelete },
                         'facturas': { function: this.openModalFacturas },
-                        'askFacturas': { function: this.openModalAskFactura },
+                        // 'askFacturas': { function: this.openModalAskFactura },
                         'adjuntos': { function: this.openModalAdjuntos }, 
                         'see': { function: this.openModalSee },
                     }}
@@ -981,53 +996,74 @@ class Ingresos extends Component {
                 </ModalDelete>
 
                 <Modal size="xl" title={"Facturas"} show={modalFacturas} handleClose={this.handleCloseFacturas}>
-                <div className="form-group row form-group-marginless pt-4">
-                    <div className="col-md-12">
-                        <ProgressBar 
-                            animated label={`${porcentaje}`}
-                            variant={porcentaje > 100 ? 'danger' : porcentaje > 75 ? 'success' : 'warning'}
-                            now={porcentaje} 
-                        />
-                    </div>
-                </div>
-                    <Form onSubmit={(e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios(); }}>
-                        <div className="row mx-0">
-                            <div className="col-md-6 px-2">
-                                <FileInput
-                                    onChangeAdjunto={this.onChangeAdjunto}
-                                    placeholder={form['adjuntos']['factura']['placeholder']}
-                                    value={form['adjuntos']['factura']['value']}
-                                    name={'factura'}
-                                    id={'factura'}
-                                    accept="text/xml, application/pdf"
-                                    files={form['adjuntos']['factura']['files']}
-                                    deleteAdjunto={this.clearFiles} multiple />
-                            </div>
-                            <div className="col-md-6 px-2">
-                                <Select
-                                    requirevalidation={1}
-                                    formeditado={1}
-                                    placeholder="SELECCIONA EL ESTATUS DE COMPRA"
-                                    options={options.estatusCompras}
-                                    name="estatusCompra"
-                                    value={form.estatusCompra}
-                                    onChange={this.onChange}
-                                    iconclass={"flaticon2-time"}
-                                    messageinc="Incorrecto. Selecciona el estatus de compra."
+                    <Tabs defaultActiveKey="facturas" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100" activeKey={active} onSelect={this.onSelect}>
+                        <Tab eventKey="facturas" title="FACTURAS">
+                            {/* <div className="form-group row form-group-marginless pt-4">
+                                <div className="col-md-12">
+                                    <ProgressBar 
+                                        animated label={`${porcentaje}`}
+                                        variant={porcentaje > 100 ? 'danger' : porcentaje > 75 ? 'success' : 'warning'}
+                                        now={porcentaje} 
                                     />
-                            </div>
-                            <div className="col-md-12 px-2 align-items-center d-flex">
-                                <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
-                            </div>
-                        </div>
-                    </Form>
-                    <FacturaTable deleteFactura={this.deleteFactura} facturas={facturas} />
+                                </div>
+                            </div> */}
+                            <Form onSubmit={(e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios(); }}>
+                                <div className="form-group row form-group-marginless mt-4">
+                                    <div className="col-md-6 px-2">
+                                        <FileInput
+                                            onChangeAdjunto={this.onChangeAdjunto}
+                                            placeholder={form['adjuntos']['factura']['placeholder']}
+                                            value={form['adjuntos']['factura']['value']}
+                                            name={'factura'}
+                                            id={'factura'}
+                                            accept="text/xml, application/pdf"
+                                            files={form['adjuntos']['factura']['files']}
+                                            deleteAdjunto={this.clearFiles} multiple />
+                                    </div>
+                                    <div className="col-md-6 px-2">
+                                        <Select
+                                            requirevalidation={1}
+                                            formeditado={1}
+                                            placeholder="SELECCIONA EL ESTATUS DE COMPRA"
+                                            options={options.estatusCompras}
+                                            name="estatusCompra"
+                                            value={form.estatusCompra}
+                                            onChange={this.onChange}
+                                            iconclass={"flaticon2-time"}
+                                            messageinc="Incorrecto. Selecciona el estatus de compra."
+                                            />
+                                    </div>
+                                    <div className="col-md-12 px-2 align-items-center d-flex mt-4">
+                                        <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
+                                    </div>
+                                </div>
+                            </Form>
+                            <FacturaTable deleteFactura={this.deleteFactura} facturas={facturas} />
+                        </Tab>
+                        <Tab eventKey="solicitar" title="SOLICITAR FACTURA">
+                            <FacturaForm 
+                                className={"mt-4"}
+                                options={options}
+                                onChange={this.onChange}
+                                form={form}
+                                onSubmit={this.onSubmitAskFactura}
+                                formeditado={formeditado}
+                                data ={data}
+                            />
+                        </Tab>
+                    </Tabs>
                 </Modal>
 
-                <Modal size="xl" title={"Solicitud de factura"} show={modalAskFactura} handleClose={this.handleCloseAskFactura}>
-                    <FacturaForm options={options} onChange={this.onChange} form={form}
-                        onSubmit={this.onSubmitAskFactura} formeditado={formeditado} data ={data} />
-                </Modal>
+                {/* <Modal size="xl" title={"Solicitud de factura"} show={modalAskFactura} handleClose={this.handleCloseAskFactura}>
+                    <FacturaForm 
+                        options={options}
+                        onChange={this.onChange}
+                        form={form}
+                        onSubmit={this.onSubmitAskFactura}
+                        formeditado={formeditado}
+                        data ={data}
+                    />
+                </Modal> */}
 
                 <Modal size="xl" title={"Adjuntos"} show = { modalAdjuntos } handleClose = { this.handleCloseAdjuntos }>
                     <AdjuntosForm form = { form } onChangeAdjunto = { this.onChangeAdjunto } clearFiles = { this.clearFiles } 
