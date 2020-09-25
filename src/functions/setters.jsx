@@ -202,15 +202,16 @@ export function setListTable(arreglo, nombre) {
     )
 }
 
-export function setListTableLink(arreglo, nombre) {
+export function setListTableLinkProyecto(arreglo, nombre) {
+    console.log(arreglo)
     return (
-        <ul>
+        <ul className="text-dark-50">
             {
                 arreglo.map((element,  key ) => { 
                     return (
                         <div key={key}>
                             <li key={key}>
-                                <a href={element.url}>
+                                <a href={'/mi-proyecto?id='+element.id}  >
                                     <Small >
                                         {
                                             element[nombre]

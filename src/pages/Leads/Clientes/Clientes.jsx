@@ -7,7 +7,7 @@ import { URL_DEV, CLIENTES_COLUMNS} from '../../../constants'
 import { Small } from '../../../components/texts'
 import { Modal, ModalDelete } from '../../../components/singles'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { setTextTable, setDateTable, setListTableLink } from '../../../functions/setters'
+import { setTextTable, setDateTable, setListTableLinkProyecto } from '../../../functions/setters'
 import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import { ClienteCard } from '../../../components/cards'
 const $ = require('jquery');
@@ -44,7 +44,7 @@ class Leads extends Component {
                 empresa: renderToString(setTextTable(cliente.empresa)),
                 nombre: renderToString(setTextTable(cliente.nombre)),
                 contacto: renderToString(setTextTable(cliente.contacto)),
-                proyecto: renderToString(cliente.proyectos.length === 0 ? setTextTable("Sin definir") : setListTableLink(cliente.proyectos, "nombre",)),
+                proyecto: renderToString(cliente.proyectos.length === 0 ? setTextTable("Sin definir") : setListTableLinkProyecto(cliente.proyectos, "nombre")),
                 direccion: renderToString(this.setDireccion(cliente)),
                 perfil: renderToString(setTextTable(cliente.perfil)),
                 puesto: renderToString(setTextTable(cliente.puesto)),
@@ -240,7 +240,7 @@ class Leads extends Component {
                 <Modal size="lg" title="Cliente" show={modal.see} handleClose={this.handleCloseSee} >
                     <ClienteCard cliente={cliente} />
                 </Modal>
-                <Modal size="xl" title="Agregar prospecto" show={modal.prospecto} handleClose={this.handleCloseAddProspecto} >
+                <Modal title="Agregar prospecto" show={modal.prospecto} handleClose={this.handleCloseAddProspecto} >
                     {/* <ProspectoForm
                     
                     /> */}
