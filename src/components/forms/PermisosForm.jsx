@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import { URL_DEV } from '../../constants'
-import { ToggleButton, Button } from '../form-components' 
-import { Accordion, Card } from 'react-bootstrap' 
+import { ToggleButton, Button } from '../form-components'
+import { Accordion, Card } from 'react-bootstrap'
 import Form from 'react-bootstrap/Form'
 import { doneAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
 class PermisosForm extends Component {
@@ -131,9 +131,9 @@ class PermisosForm extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -162,9 +162,9 @@ class PermisosForm extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -239,7 +239,7 @@ class PermisosForm extends Component {
                     }
                 </Accordion>
                 <div className="d-flex justify-content-center my-3">
-                    <Button icon='' type="submit" text='CONFIRMAR' className={"btn btn-light-primary font-weight-bolder mr-3"} />
+                    <Button icon='' type="submit" text='CONFIRMAR' className={"btn btn-light-primary font-weight-bolder mr-3 pr-4"} />
                 </div>
             </form>
         )

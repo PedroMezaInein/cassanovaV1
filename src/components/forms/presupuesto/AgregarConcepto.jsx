@@ -60,7 +60,7 @@ class AgregarConcepto extends Component {
                     }
                 }
             >
-                <Tabs defaultActiveKey="nuevo" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100" activeKey={activeKey} onSelect = {onSelect}>
+                <Tabs defaultActiveKey="nuevo" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100" activeKey={activeKey} onSelect={onSelect}>
                     <Tab eventKey="nuevo" title="Nuevo concepto">
                         <div className="form-group row form-group-marginless pt-4">
                             <div className="col-md-4">
@@ -139,15 +139,19 @@ class AgregarConcepto extends Component {
                                 />
                             </div>
                         </div>
-                        <div className="d-flex justify-content-center my-3">
-                            <Button icon='' 
-                                onClick={
-                                    (e) => {
-                                        e.preventDefault();
-                                        validateAlert(onSubmit, e, 'form-presupuesto')
-                                    }
-                                }
-                                className="text-center mx-auto" text='AGREGAR' />
+                        <div className="card-footer py-3 pr-1">
+                            <div className="row">
+                                <div className="col-lg-12 text-right pr-0 pb-0">
+                                    <Button icon=''
+                                        onClick={
+                                            (e) => {
+                                                e.preventDefault();
+                                                validateAlert(onSubmit, e, 'form-presupuesto')
+                                            }
+                                        }
+                                        className="btn btn-primary mr-2" text='AGREGAR' />
+                                </div>
+                            </div>
                         </div>
                     </Tab>
                     <Tab eventKey="existente" title="Concepto existente">
@@ -246,15 +250,20 @@ class AgregarConcepto extends Component {
                                             }
                                         </div>
                                     </div>
-                                    <div className="d-flex justify-content-center my-3">
-                                        <Button icon='' 
-                                            onClick={
-                                                (e) => {
-                                                    e.preventDefault();
-                                                    validateAlert(onSubmit, e, 'form-presupuesto')
-                                                }
-                                            }
-                                            className="text-center mx-auto" text='AGREGAR' />
+                                    <div className="card-footer py-3 pr-1">
+                                        <div className="row">
+                                            <div className="col-lg-12 text-right pr-0 pb-0">
+                                                <Button icon=''
+                                                    onClick={
+                                                        (e) => {
+                                                            e.preventDefault();
+                                                            validateAlert(onSubmit, e, 'form-presupuesto')
+                                                        }
+                                                    }
+                                                    className="btn btn-primary mr-2" text='AGREGAR'
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
                                 </>
                                 : ''

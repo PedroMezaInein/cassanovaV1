@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { Form } from 'react-bootstrap' 
-import { Input, SelectSearch, Button, Calendar, InputMoney} from '../../form-components'
+import { Form } from 'react-bootstrap'
+import { Input, SelectSearch, Button, Calendar, InputMoney } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { RFC, EMAIL } from '../../../constants'
 
@@ -89,6 +89,7 @@ export default class FacturaForm extends Component {
                         />
                     </div>
                 </div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Input
@@ -125,8 +126,9 @@ export default class FacturaForm extends Component {
                         />
                     </div>
                 </div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <Input
                             formeditado={formeditado}
                             requirevalidation={1}
@@ -140,7 +142,7 @@ export default class FacturaForm extends Component {
                             patterns={EMAIL}
                         />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <SelectSearch
                             formeditado={formeditado}
                             options={options.metodosPago}
@@ -150,7 +152,7 @@ export default class FacturaForm extends Component {
                             onChange={this.updateMetodoPago}
                         />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <SelectSearch
                             formeditado={formeditado}
                             options={options.estatusFacturas}
@@ -160,9 +162,7 @@ export default class FacturaForm extends Component {
                             onChange={this.updateEstatusFactura}
                         />
                     </div>
-                </div>
-                <div className="form-group row form-group-marginless">
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <Calendar
                             formeditado={formeditado}
                             onChangeCalendar={this.changeDate}
@@ -172,18 +172,20 @@ export default class FacturaForm extends Component {
                         />
                     </div>
                 </div>
-
-                <div className="d-flex justify-content-center my-3">
-                    <Button icon='' 
-                        onClick={
-                            (e) => {
-                                e.preventDefault();
-                                validateAlert(onSubmit, e, 'form-solicitar-factura')
-                            }
-                        }
-                        className="text-center mx-auto" text='ENVIAR' />
+                <div className="card-footer py-3 pr-1">
+                    <div className="row">
+                        <div className="col-lg-12 text-right pr-0 pb-0">
+                            <Button icon=''
+                                onClick={
+                                    (e) => {
+                                        e.preventDefault();
+                                        validateAlert(onSubmit, e, 'form-solicitar-factura')
+                                    }
+                                }
+                                className="btn btn-primary mr-2" text='ENVIAR' />
+                        </div>
+                    </div>
                 </div>
-
             </Form>
         )
     }

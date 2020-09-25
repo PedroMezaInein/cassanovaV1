@@ -4,7 +4,6 @@ import { Input, SelectSearch, Button, Calendar, SelectSearchSinText } from '../.
 import { validateAlert } from '../../../functions/alert'
 import { DATE } from '../../../constants'
 import { setMoneyTableSinSmall } from '../../../functions/setters'
-
 class PresupuestoForm extends Component {
 
     updateProyecto = value => {
@@ -154,7 +153,7 @@ class PresupuestoForm extends Component {
                                                             {
                                                                 data.subpartidas.map((subpartida, key) => {
                                                                     return (
-                                                                        <div key = {key}>
+                                                                        <div key={key}>
                                                                             <div className="d-flex align-items-center bg-primary-o-20">
                                                                                 <div className="ml-4 font-weight-bolder text-primary font-size-lg mb-1 py-2">{subpartida.nombre}</div>
                                                                             </div>
@@ -220,14 +219,14 @@ class PresupuestoForm extends Component {
                                                     <a className="text-dark text-hover-primary font-weight-bold font-size-h4 mr-3"> CONCEPTOS SELECCIONADOS</a>
                                                 </div>
                                                 <div className="d-flex py-2">
-                                                        <Button 
-                                                            type="button" 
-                                                            className="btn btn-light-primary font-weight-bold mr-2" 
-                                                            onClick={() => { this.mostrarFormulario() }}
-                                                            tooltip={{text:'Mostrar formulario'}}
-                                                            text={"SIGUIENTE"}
-                                                            icon=''
-                                                        />
+                                                    <Button
+                                                        type="button"
+                                                        className="btn btn-light-primary font-weight-bold mr-2"
+                                                        onClick={() => { this.mostrarFormulario() }}
+                                                        tooltip={{ text: 'Mostrar formulario' }}
+                                                        text={"SIGUIENTE"}
+                                                        icon=''
+                                                    />
                                                 </div>
                                                 <Form id="form-presupuesto"
                                                     onSubmit={
@@ -310,15 +309,20 @@ class PresupuestoForm extends Component {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div className="d-flex justify-content-center my-3">
-                                                        <Button icon='' 
-                                                            onClick={
-                                                                (e) => {
-                                                                    e.preventDefault();
-                                                                    validateAlert(onSubmit, e, 'form-presupuesto')
-                                                                }
-                                                            }
-                                                            className="text-center mx-auto" text='ENVIAR Y CONTINUAR' />
+                                                    <div className="card-footer py-3 pr-1">
+                                                        <div className="row">
+                                                            <div className="col-lg-12 text-right pr-0 pb-0">
+                                                                <Button icon=''
+                                                                    onClick={
+                                                                        (e) => {
+                                                                            e.preventDefault();
+                                                                            validateAlert(onSubmit, e, 'form-presupuesto')
+                                                                        }
+                                                                    }
+                                                                    className="btn btn-primary mr-2" text='ENVIAR Y CONTINUAR'
+                                                                />
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </Form>
                                             </div>
