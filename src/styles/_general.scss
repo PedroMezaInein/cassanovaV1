@@ -401,3 +401,24 @@ table.dataTable.display tbody > tr.selected > .sorting_1{
 .dataTables_wrapper .dataTable tbody tr.selected td{
     background-color:  #ECF0F3 !important;
 }
+
+.bg-light-pink{
+    background-color: #F9E3F2 !important;
+}
+
+.text-pink{
+    color: #e44e93 !important;
+}
+
+.svg-icon.svg-icon-pink svg g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+    fill: #E83E8C !important; }
+
+.svg-icon.svg-icon-pink svg:hover g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease; }
+
+a.text-pink:hover, a.text-pink:focus {
+    color: #e6217c !important; 
+}

@@ -62,6 +62,7 @@ class AddPresupuestoForm extends Component {
             } = element;
             return pathname === url + "/" + "add";
         });
+        // console.log(state.prospecto)
         if (!presupuesto) history.push("/");
         this.getOptionsAxios();
     }

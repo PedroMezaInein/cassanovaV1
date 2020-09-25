@@ -3,7 +3,7 @@ import { renderToString } from 'react-dom/server'
 import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import { Button } from '../../../components/form-components'
-import { Modal, ModalDelete} from '../../../components/singles'
+import { Modal, ModalDelete } from '../../../components/singles'
 import { ContactoLeadForm } from '../../../components/forms'
 import axios from 'axios'
 import { URL_DEV, PROSPECTOS_COLUMNS, CONTACTO_COLUMNS } from '../../../constants'
@@ -13,15 +13,14 @@ import NewTableServerRender from '../../../components/tables/NewTableServerRende
 import TableForModals from '../../../components/tables/TableForModals'
 import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert'
 import { ProspectoCard } from '../../../components/cards'
-
+import { Tab, Tabs } from 'react-bootstrap';
+import SVG from "react-inlinesvg";
+import { toAbsoluteUrl } from "../../../functions/routers"
 const $ = require('jquery');
-
 class Leads extends Component {
-
     state = {
-        modal:{
+        modal: {
             convert: false,
-            historyContact: false,
             contactForm: false,
             delete: false,
             see: false,
@@ -35,7 +34,7 @@ class Leads extends Component {
         vendedores: '',
         estatusProspectos: '',
         tipoProyectos: '',
-        formContacto:{
+        formContacto: {
             comentario: '',
             fechaContacto: '',
             success: 'Contactado',
@@ -46,11 +45,11 @@ class Leads extends Component {
         data: {
             prospecto: []
         },
-        formeditado:0,
-        options:{
+        formeditado: 0,
+        options: {
             tiposContactos: []
-        }
-
+        },
+        active: 'nuevo',
     }
 
     componentDidMount() {
@@ -66,7 +65,6 @@ class Leads extends Component {
         this.getOptions();
     }
 
-    //Funciones botones
     openSafeDelete = (prospecto) => {
         const { modal } = this.state
         modal.delete = true
@@ -94,7 +92,7 @@ class Leads extends Component {
             ... this.state,
             prospecto,
             modal,
-            formeditado:0,
+            formeditado: 0,
             formContacto: this.clearContactForm()
         })
     }
@@ -110,14 +108,14 @@ class Leads extends Component {
         })
     }
 
-    activeModalHistory =  prospecto => {
+    activeModalHistory = prospecto => {
         const { modal } = this.state
-        modal.historyContact = true
+        modal.contactForm = true
         let aux = []
         prospecto.contactos.map((contacto) => {
             aux.push(
                 {
-                    usuario: renderToString(contacto ? contacto.user ? contacto.user.name  ? setTextTable(contacto.user.name) : '' : '' : ''),
+                    usuario: renderToString(contacto ? contacto.user ? contacto.user.name ? setTextTable(contacto.user.name) : '' : '' : ''),
                     fecha: renderToString(setDateTable(contacto.created_at)),
                     medio: renderToString(setTextTable(contacto ? contacto.tipo_contacto ? contacto.tipo_contacto.tipo ? contacto.tipo_contacto.tipo : '' : '' : '')),
                     estado: renderToString(setTextTable(contacto.success ? 'Contactado' : 'Sin respuesta')),
@@ -127,18 +125,10 @@ class Leads extends Component {
         })
         this.setState({
             ... this.state,
+            prospecto,
             modal,
-            contactHistory: aux
-        })
-    }
-
-    handleCloseHistoryModal = () => {
-        const { modal } = this.state
-        modal.historyContact = false
-        this.setState({
-            ... this.state,
-            modal,
-            contactHistory: []
+            contactHistory: aux,
+            formContacto: this.clearContactForm()
         })
     }
 
@@ -149,7 +139,7 @@ class Leads extends Component {
             ... this.state,
             modal,
             prospecto: prospecto,
-            formeditado:1
+            formeditado: 1
         })
     }
 
@@ -172,8 +162,8 @@ class Leads extends Component {
     }
 
     openModalSee = prospecto => {
-        const { modal} = this.state
-        modal.see =true
+        const { modal } = this.state
+        modal.see = true
         this.setState({
             ... this.state,
             modal,
@@ -182,8 +172,8 @@ class Leads extends Component {
     }
 
     handleCloseSee = () => {
-        const { modal} = this.state
-        modal.see =false
+        const { modal } = this.state
+        modal.see = false
         this.setState({
             ... this.state,
             modal,
@@ -191,12 +181,11 @@ class Leads extends Component {
         })
     }
 
-    // Clear form
     clearContactForm = () => {
         const { formContacto } = this.state
         let aux = Object.keys(formContacto)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'success':
                     formContacto[element] = 'Contactado'
                     break;
@@ -208,7 +197,6 @@ class Leads extends Component {
         return formContacto;
     }
 
-    // On change
     onChangeContacto = event => {
         const { formContacto } = this.state
         const { name, value } = event.target
@@ -225,7 +213,7 @@ class Leads extends Component {
             aux.push({
                 actions: this.setActions(prospecto),
                 lead: prospecto.lead ? renderToString(setContactoTable(prospecto.lead)) : '',
-                empresa: prospecto.lead ? prospecto.lead.empresa ?  renderToString(setTextTable(prospecto.lead.empresa.name)) : '' : '',
+                empresa: prospecto.lead ? prospecto.lead.empresa ? renderToString(setTextTable(prospecto.lead.empresa.name)) : '' : '',
                 cliente: prospecto.cliente ?
                     renderToString(setArrayTable([
                         { name: 'Nombre', text: prospecto.cliente.nombre },
@@ -233,20 +221,20 @@ class Leads extends Component {
                         { name: 'Empresa', text: prospecto.cliente.empresa },
                     ]))
                     : '',
-                tipoProyecto: prospecto.tipo_proyecto ?  renderToString(setTextTable(prospecto.tipo_proyecto.tipo)) : '',
-                descripcion:  renderToString(setTextTable(prospecto.descripcion)),
-                vendedor: prospecto.vendedor ?  renderToString(setTextTable(prospecto.vendedor.name)) : '',
-                preferencia:  renderToString(setTextTable(prospecto.preferencia)),
-                estatusProspecto: prospecto.estatus_prospecto ?  renderToString(this.setLabel(prospecto.estatus_prospecto)) : '',
-                motivo:  renderToString(setTextTable(prospecto.motivo)),
-                fechaConversion:  renderToString(setDateTable(prospecto.created_at)),
+                tipoProyecto: prospecto.tipo_proyecto ? renderToString(setTextTable(prospecto.tipo_proyecto.tipo)) : '',
+                descripcion: renderToString(setTextTable(prospecto.descripcion)),
+                vendedor: prospecto.vendedor ? renderToString(setTextTable(prospecto.vendedor.name)) : '',
+                preferencia: renderToString(setTextTable(prospecto.preferencia)),
+                estatusProspecto: prospecto.estatus_prospecto ? renderToString(this.setLabel(prospecto.estatus_prospecto)) : '',
+                motivo: renderToString(setTextTable(prospecto.motivo)),
+                fechaConversion: renderToString(setDateTable(prospecto.created_at)),
                 id: prospecto.id
             })
         })
         return aux
     }
 
-    setActions = prospecto => {
+    setActions = () => {
         let aux = []
         aux.push(
             {
@@ -254,48 +242,48 @@ class Leads extends Component {
                 btnclass: 'success',
                 iconclass: 'flaticon2-pen',
                 action: 'edit',
-                tooltip: {id:'edit', text:'Editar'}
+                tooltip: { id: 'edit', text: 'Editar' }
             },
             {
                 text: 'Eliminar',
                 btnclass: 'danger',
-                iconclass: 'flaticon2-rubbish-bin', 
+                iconclass: 'flaticon2-rubbish-bin',
                 action: 'delete',
-                tooltip: {id:'delete', text:'Eliminar', type:'error'}
+                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
             },
             {
                 text: 'Contacto',
                 btnclass: 'primary',
-                iconclass: 'flaticon-support', 
+                iconclass: 'flaticon-list-1',
                 action: 'contacto',
-                tooltip: {id:'contacto', text:'Contacto'}
-            },                
+                tooltip: { id: 'contacto', text: 'Contacto' }
+            },
             {
                 text: 'Convertir&nbsp;en&nbsp;proyecto',
                 btnclass: 'dark',
-                iconclass: 'flaticon-folder-1', 
+                iconclass: 'flaticon2-refresh',
                 action: 'convert',
-                tooltip: {id:'convert', text:'Convertir en proyecto'}
+                tooltip: { id: 'convert', text: 'Convertir en proyecto' }
             },
             {
                 text: 'Ver',
                 btnclass: 'info',
-                iconclass: 'flaticon2-expand',                  
+                iconclass: 'flaticon2-expand',
                 action: 'see',
-                tooltip: {id:'see', text:'Mostrar', type:'info'},
-            },
+                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
+            }
         )
-        if (prospecto.contactos.length > 0) {
-            aux.push(
-                {
-                    text: 'Historial&nbsp;de&nbsp;contacto',
-                    btnclass: 'primary',
-                    iconclass: 'flaticon-list-1', 
-                    action: 'historial',
-                    tooltip: {id:'historial', text:'Historial de contacto'}
-                }
-            )        
-        }
+        // if (prospecto.contactos.length > 0) {
+        //     aux.push(
+        //         {
+        //             text: 'Historial&nbsp;de&nbsp;contacto',
+        //             btnclass: 'primary',
+        //             iconclass: 'flaticon-list-1',
+        //             action: 'historial',
+        //             tooltip: { id: 'historial', text: 'Historial de contacto' }
+        //         }
+        //     )
+        // }
         return aux
     }
 
@@ -337,9 +325,9 @@ class Leads extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -349,7 +337,7 @@ class Leads extends Component {
         })
     }
 
-    async getProspectoAxios(){
+    async getProspectoAxios() {
         var table = $('#kt_datatable_prospectos').DataTable().ajax.reload();
     }
 
@@ -367,15 +355,13 @@ class Leads extends Component {
                     title: '',
                     prospecto: ''
                 })
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste el lead con éxito.')
-
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -390,33 +376,27 @@ class Leads extends Component {
         const { formContacto, prospecto } = this.state
         await axios.post(URL_DEV + 'prospecto/' + prospecto.id + '/contacto', formContacto, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 this.getProspectoAxios()
-
-                const { prospectos, tiposContactos } = response.data
+                const { tiposContactos } = response.data
                 const { modal, options } = this.state
-                
                 modal.contactForm = false
-
                 options.tiposContactos = setOptions(tiposContactos, 'tipo', 'id')
                 options.tiposContactos.push({
                     value: 'New', name: '+ Agregar nuevo'
                 })
-                
                 this.setState({
                     ... this.state,
                     modal,
                     prospecto: '',
                     options
                 })
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Convertiste con éxisto el lead.')
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -425,26 +405,45 @@ class Leads extends Component {
             console.log(error, 'error')
         })
     }
+    controlledTab = value => {
+        this.setState({
+            ... this.state,
+            formContacto: this.clearContactForm(),
+            active: value
+        })
+    }
 
+    changePageDesign = prospecto => {
+        const { history } = this.props
+        history.push({
+            pathname: '/presupuesto/presupuesto-diseño/add',
+            state: { prospecto: prospecto }
+        });
+    }
+
+    changePageObra = prospecto => {
+        const { history } = this.props
+        history.push({
+            pathname: '/presupuesto/presupuesto/add',
+            state: { prospecto: prospecto }
+        });
+    }
     render() {
-        const { modal, options, formContacto, prospecto, data, contactHistory} = this.state
-
+        const { modal, options, formContacto, prospecto, data, contactHistory, active } = this.state
         return (
             <Layout active={'leads'}  {...this.props}>
-
-                <NewTableServerRender 
-                    columns = { PROSPECTOS_COLUMNS }
-                    title = 'Prospectos'
-                    subtitle = 'Listado de prospectos'
-                    mostrar_boton = { true }
-                    url = '/leads/prospectos/add'
-                    abrir_modal = { false }
-                    mostrar_acciones = { true }
+                <NewTableServerRender
+                    columns={PROSPECTOS_COLUMNS}
+                    title='Prospectos'
+                    subtitle='Listado de prospectos'
+                    mostrar_boton={true}
+                    url='/leads/prospectos/add'
+                    abrir_modal={false}
+                    mostrar_acciones={true}
                     actions={{
                         'edit': { function: this.changePageEdit },
                         'delete': { function: this.openSafeDelete },
-                        'contacto': { function: this.activeFormContact },
-                        'historial': { function: this.activeModalHistory },
+                        'contacto': { function: this.activeModalHistory },
                         'convert': { function: this.openConvert },
                         'see': { function: this.openModalSee },
                     }}
@@ -454,67 +453,90 @@ class Leads extends Component {
                     urlRender={URL_DEV + 'prospecto'}
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'
-                    cardBody='cardBody'/>
-
-                
-                <Modal 
-                    size = "xl" 
-                    show = { modal.historyContact } 
-                    handleClose = { this.handleCloseHistoryModal } 
-                    title = { "Historial de contacto"} >
-                    {
-                        contactHistory &&
-                        <TableForModals
-                            mostrar_boton={false}
-                            abrir_modal={false}
-                            mostrar_acciones={false}
-                            columns={CONTACTO_COLUMNS} 
-                            data={contactHistory} 
-                            elements = { data.contactHistory }
-                        />
-                    }
-
-                </Modal>
-                <Modal 
-                    size = "xl" 
-                    title = "Agregar un nuevo contacto" 
-                    show = { modal.contactForm } 
-                    handleClose = { this.handleCloseFormContact } >
-                    <Form className="mx-3" onSubmit={this.submitContactForm}>
-                        <ContactoLeadForm 
-                            options = { options } 
-                            formContacto = { formContacto } 
-                            onChangeContacto = { this.onChangeContacto } />
-                            <div className="mt-3 text-center">
-                                <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
-                            </div>
-                    </Form>
-                </Modal> 
-
-                <ModalDelete 
-                    title = "¿Deseas eliminar el prospecto?" 
-                    show = { modal.delete } 
-                    handleClose = { this.handleDeleteModal }  
-                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteProspectoAxios() }} />
-
-                <Modal 
-                    size = "xl" 
-                    show = { modal.convert }
-                    handleClose = { this.handleCloseConvertModal }
-                    title = "¿Estás seguro que deseas convertir el prospecto en un proyecto?">
+                    cardBody='cardBody'
+                />
+                <Modal size="xl" title="Agregar un nuevo contacto" show={modal.contactForm} handleClose={this.handleCloseFormContact} >
+                    <div className="d-flex justify-content-center mt-4">
+                        <div className="row m-0">
+                            <a onClick={(e) => { e.preventDefault(); this.changePageDesign(prospecto) }} className="text-info font-weight-bold font-size-sm">
+                                <div className="bg-light-info rounded-sm mr-5 p-2">
+                                    <span className="svg-icon svg-icon-xl svg-icon-info mr-2">
+                                        <SVG src={toAbsoluteUrl('/images/svg/Pen-tool-vector.svg')} />
+                                    </span>
+                                    Presupuesto de diseño
+                                </div>
+                            </a>
+                            <a onClick={(e) => { e.preventDefault(); this.changePageObra(prospecto) }} className="text-pink font-weight-bold font-size-sm">
+                                <div className="bg-light-pink rounded-sm p-2">
+                                    <span className="svg-icon svg-icon-xl svg-icon-pink mr-2">
+                                        <SVG src={toAbsoluteUrl('/images/svg/Road-Cone.svg')} />
+                                    </span>
+                                    Presupuesto de obra
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <Tabs defaultActiveKey="nuevo" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100" activeKey={active} onSelect={this.controlledTab}>
+                        <Tab eventKey="nuevo" title="Agregar un nuevo contacto">
+                            <Form className="mx-3" onSubmit={this.submitContactForm}>
+                                <ContactoLeadForm
+                                    options={options}
+                                    formContacto={formContacto}
+                                    onChangeContacto={this.onChangeContacto} />
+                                <div className="mt-3 text-center">
+                                    <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
+                                </div>
+                            </Form>
+                        </Tab>
+                        {
+                            // prospecto !== ''?
+                                // contactHistory> 0 ?
+                                    <Tab eventKey="historial" title="Historial de contacto">
+                                        {
+                                            contactHistory &&
+                                            <div className="px-4">
+                                                <TableForModals
+                                                    mostrar_boton={false}
+                                                    abrir_modal={false}
+                                                    mostrar_acciones={false}
+                                                    columns={CONTACTO_COLUMNS}
+                                                    data={contactHistory}
+                                                    elements={data.contactHistory}
+                                                />
+                                            </div>
+                                        }
+                                    </Tab>
+                                // :''
+                            // :''
+                        }
+                        {
+                            
+                        }
+                    </Tabs>
+                </Modal >
+                <ModalDelete
+                    title="¿Deseas eliminar el prospecto?"
+                    show={modal.delete}
+                    handleClose={this.handleDeleteModal}
+                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteProspectoAxios() }}
+                />
+                <Modal
+                    size="xl"
+                    show={modal.convert}
+                    handleClose={this.handleCloseConvertModal}
+                    title="¿Estás seguro que deseas convertir el prospecto en un proyecto?">
                     <div className="d-flex justify-content-center mt-3">
                         <Button icon='' onClick={this.handleCloseConvertModal} text="CANCELAR" className="mr-3" className={"btn btn-light-primary font-weight-bolder mr-3"} />
-                        <Button icon='' onClick={(e) => { this.safeConvert(e)(prospecto) }} text="CONTINUAR" className={"btn btn-success font-weight-bold mr-2"}/>
+                        <Button icon='' onClick={(e) => { this.safeConvert(e)(prospecto) }} text="CONTINUAR" className={"btn btn-success font-weight-bold mr-2"} />
                     </div>
                 </Modal>
-                <Modal size="lg" title="Prospecto" show = { modal.see } handleClose = { this.handleCloseSee } >
-                    <ProspectoCard prospecto={prospecto}/>
+                <Modal size="lg" title="Prospecto" show={modal.see} handleClose={this.handleCloseSee} >
+                    <ProspectoCard prospecto={prospecto} />
                 </Modal>
-            </Layout>
+            </Layout >
         )
     }
 }
-
 
 const mapStateToProps = state => {
     return {
