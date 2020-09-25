@@ -203,7 +203,6 @@ export function setListTable(arreglo, nombre) {
 }
 
 export function setListTableLinkProyecto(arreglo, nombre) {
-    console.log(arreglo)
     return (
         <ul className="text-dark-50">
             {
