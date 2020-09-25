@@ -22,18 +22,6 @@ export default class ProspectoCard extends Component {
                                         <span className="navi-text font-size-lg">DESCRIPCIÓN Y MOTIVO</span>
                                     </Nav.Link>
                                 </Nav.Item>
-                                {
-                                    prospecto !== '' ?
-                                        prospecto.contactos.length > 0 ?
-                                            <Nav.Item className="navi-item">
-                                                <Nav.Link className="navi-link px-3" eventKey="third" >
-                                                    <span className="navi-icon"><i className="flaticon2-checking"></i></span>
-                                                    <span className="navi-text font-size-lg">INFORMACIÓN DEL CONTACTO</span>
-                                                </Nav.Link>
-                                            </Nav.Item>
-                                            : ''
-                                        : ''
-                                }
                             </Nav>
                         </Col>
                         <Col md={9}>
@@ -117,67 +105,6 @@ export default class ProspectoCard extends Component {
                                                             prospecto.motivo ?
                                                                 <span>{prospecto.motivo}</span>
                                                                 : <span>-</span>
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </Card.Body>
-                                    </Card>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey="third">
-                                    <Card className="card card-without-box-shadown border-0">
-                                        <Card.Body className="p-0">
-                                            <div className="text-justify">
-                                                <div className="row pb-1">
-                                                    <label className="col-5 font-weight-bolder text-primary">ESTATUS DEL INTENTO DE CONTACTO:</label>
-                                                    <div className="col-7">
-                                                        {
-                                                            prospecto.contactos ?
-                                                                prospecto.contactos.map((contacto, key) => {
-                                                                    return (
-                                                                        <span key={key}>{contacto.success === 1 ? 'CONTACTADO' : contacto.success === 0 ? 'SIN RESPUESTA' : ''}</span>
-                                                                    )
-                                                                }) 
-                                                                : <span>-</span>
-                                                        }
-                                                    </div>
-                                                </div>
-                                                <div className="row pb-1">
-                                                    <label className="col-5 font-weight-bolder text-primary">MEDIO DE CONTACTO:</label>
-                                                    <div className="col-7">
-                                                        {
-                                                            prospecto.contactos ?
-                                                                prospecto.contactos.map((contacto, key) => {
-                                                                    return (
-                                                                        <span key={key}>{contacto.tipo_contacto.tipo}</span>
-                                                                    )
-                                                                }) : <span>-</span>
-                                                        }
-                                                    </div>
-                                                </div>
-                                                <div className="row pb-1">
-                                                    <label className="col-5 font-weight-bolder text-primary">FECHA DE CONTACTO:</label>
-                                                    <div className="col-7">
-                                                        {
-                                                            prospecto.contactos ?
-                                                                prospecto.contactos.map((contacto, key) => {
-                                                                    return (
-                                                                        <span key={key}><Moment format="DD/MM/YYYY">{contacto.updated_at}</Moment></span>
-                                                                    )
-                                                                }) : <span>-</span>
-                                                        }
-                                                    </div>
-                                                </div>
-                                                <div className="row pb-1">
-                                                    <label className="col-5 font-weight-bolder text-primary align-self-center">DESCRIPCIÓN DEL CONTRATO:</label>
-                                                    <div className="col-7">
-                                                        {
-                                                            prospecto.contactos ?
-                                                                prospecto.contactos.map((contacto, key) => {
-                                                                    return (
-                                                                        <span key={key}>{contacto.comentario}</span>
-                                                                    )
-                                                                }) : <span>-</span>
                                                         }
                                                     </div>
                                                 </div>
