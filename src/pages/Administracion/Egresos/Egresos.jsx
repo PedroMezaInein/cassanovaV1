@@ -903,7 +903,7 @@ class egresos extends Component{
                 </ModalDelete>
 
                 <Modal size="xl" title={"Facturas"} show = { modalFacturas } handleClose = { this.handleCloseFacturas }>
-                    <div className="form-group row form-group-marginless pt-4">
+                    {/* <div className="form-group row form-group-marginless pt-4">
                         <div className="col-md-12">
                             <ProgressBar 
                                 animated 
@@ -911,9 +911,9 @@ class egresos extends Component{
                                 variant = { porcentaje > 100 ? 'danger' : porcentaje > 75 ? 'success' : 'warning'} 
                                 now = {porcentaje} />
                         </div>
-                    </div>
+                    </div> */}
                     <Form onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios();}}>
-                        <div className="row mx-0">
+                        <div className="row mx-0 pt-4">
                             <div className="col-md-6 px-2">
                                 <FileInput 
                                     onChangeAdjunto = { this.onChangeAdjunto } 
@@ -940,7 +940,7 @@ class egresos extends Component{
                                     />
                             </div>
                         </div>
-                        <div className="col-md-12 px-2 align-items-center d-flex">
+                        <div className="col-md-12 px-2 align-items-center d-flex mt-4">
                             <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
                         </div>
                     </Form>
