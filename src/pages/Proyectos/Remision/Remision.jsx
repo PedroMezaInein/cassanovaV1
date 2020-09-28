@@ -121,7 +121,7 @@ class Remisiones extends Component {
             },
             {
                 text: 'Ver',
-                btnclass: 'primary',
+                btnclass: 'dark',
                 iconclass: 'flaticon2-expand',
                 action: 'see',
                 tooltip: { id: 'see', text: 'Mostrar', type: 'success' },
