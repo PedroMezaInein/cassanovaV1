@@ -9,10 +9,8 @@ import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal } from '../../../components/singles'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { ProveedorCard } from '../../../components/cards'
-
 const $ = require('jquery');
 class Proveedor extends Component {
-
     state = {
         modalDelete: false,
         modalSee: false,
@@ -23,7 +21,6 @@ class Proveedor extends Component {
             proveedores: []
         }
     }
-
     componentDidMount() {
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
@@ -35,7 +32,6 @@ class Proveedor extends Component {
         if (!proveedor)
             history.push('/')
     }
-
     setProveedores = proveedores => {
         let aux = []
         proveedores.map((proveedor) => {
@@ -68,7 +64,6 @@ class Proveedor extends Component {
         })
         return aux
     }
-
     setActions = () => {
         let aux = []
         aux.push(
@@ -96,7 +91,6 @@ class Proveedor extends Component {
         )
         return aux
     }
-
     changePageEdit = (proveedor) => {
         const { history } = this.props
         history.push({
@@ -104,7 +98,6 @@ class Proveedor extends Component {
             state: { proveedor: proveedor }
         });
     }
-
     openModalDelete = proveedor => {
         this.setState({
             ... this.state,
@@ -112,14 +105,12 @@ class Proveedor extends Component {
             proveedor: proveedor
         })
     }
-
     handleCloseDelete = () => {
         this.setState({
             modalDelete: false,
             proveedor: ''
         })
     }
-
     openModalSee = proveedor => {
         this.setState({
             ... this.state,
@@ -127,7 +118,6 @@ class Proveedor extends Component {
             proveedor: proveedor
         })
     }
-
     handleCloseSee = () => {
         this.setState({
             ... this.state,
@@ -135,7 +125,6 @@ class Proveedor extends Component {
             proveedor: ''
         })
     }
-
     async deleteProveedor() {
         const { access_token } = this.props.authUser
         const { proveedor } = this.state
@@ -166,11 +155,9 @@ class Proveedor extends Component {
             console.log(error, 'error')
         })
     }
-
     async getProveedorAxios() {
         $('#proveedor_table').DataTable().ajax.reload();
     }
-
     render() {
         const { modalDelete, modalSee, proveedor } = this.state
         return (

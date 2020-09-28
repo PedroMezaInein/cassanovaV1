@@ -4,15 +4,13 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV, FLUJOS_COLUMNS } from '../../constants'
-import { setOptions, setTextTable, setMoneyTable} from '../../functions/setters'
+import { setOptions, setTextTable, setMoneyTable } from '../../functions/setters'
 import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Card } from 'react-bootstrap'
 import { FlujosForm } from '../../components/forms'
 import TableForModals from '../../components/tables/TableForModals'
-
 class Flujos extends Component {
-
     state = {
         form: {
             cuentas: [],
@@ -23,14 +21,13 @@ class Flujos extends Component {
         options: {
             cuentas: []
         },
-        data:{
+        data: {
             cuentas: [],
             flujos: []
         },
         flujos: [],
         total: []
     }
-
     componentDidMount() {
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
@@ -43,7 +40,6 @@ class Flujos extends Component {
             history.push('/')
         this.getFlujosAxios()
     }
-
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -53,7 +49,6 @@ class Flujos extends Component {
             form
         })
     }
-
     onChangeAndAdd = (e, arreglo) => {
         const { name, value } = e.target
         const { options, form } = this.state
@@ -74,7 +69,6 @@ class Flujos extends Component {
             options
         })
     }
-
     deleteOption = (option, arreglo) => {
         const { form, options } = this.state
         let aux = []
@@ -92,26 +86,23 @@ class Flujos extends Component {
             form
         })
     }
-
     arraySuma = (array, name) => {
         let aux = 0
-        array.map( (element) => {
+        array.map((element) => {
             aux = aux + element[name];
         })
         return aux
     }
-
     traspasosSuma = (array) => {
         let aux = 0
-        array.map( (element) => {
+        array.map((element) => {
             aux = aux + (element.traspasos_destino_count - element.traspasos_origen_count);
         })
         return aux
     }
-
     setFlujos = flujos => {
         let aux = []
-        if(flujos){
+        if (flujos) {
             aux.push({
                 ingresos: renderToString(setMoneyTable(this.arraySuma(flujos, 'ingresos_count'))),
                 egresos: renderToString(setMoneyTable(this.arraySuma(flujos, 'egresos_count'))),
@@ -129,7 +120,7 @@ class Flujos extends Component {
                 ),
                 cuenta: renderToString(setTextTable('Total')),
                 id: 0
-            })   
+            })
         }
         flujos.map((flujo) => {
             aux.push({
@@ -153,7 +144,6 @@ class Flujos extends Component {
         })
         return aux
     }
-
     clear = () => {
         const { data, form, options } = this.state
         options.cuentas = setOptions(data.cuentas, 'nombre', 'id')
@@ -170,16 +160,14 @@ class Flujos extends Component {
             data
         })
     }
-
     onSubmit = e => {
         e.preventDefault()
         waitAlert()
         this.askFlujosAxios()
     }
-
-    async getFlujosAxios(){
+    async getFlujosAxios() {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'flujos', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'flujos', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { cuentas } = response.data
                 const { options, data } = this.state
@@ -193,9 +181,9 @@ class Flujos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -204,11 +192,10 @@ class Flujos extends Component {
             console.log(error, 'error')
         })
     }
-
-    async askFlujosAxios(){
+    async askFlujosAxios() {
         const { access_token } = this.props.authUser
         const { form } = this.state
-        await axios.post(URL_DEV + 'flujos', form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'flujos', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { data } = this.state
                 const { flujos } = response.data
@@ -222,9 +209,9 @@ class Flujos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -233,7 +220,6 @@ class Flujos extends Component {
             console.log(error, 'error')
         })
     }
-
     render() {
         const { form, options, data, flujos, total } = this.state
         return (
@@ -245,17 +231,17 @@ class Flujos extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <FlujosForm form = { form } options = { options } onChange = { this.onChange }
-                            onSubmit = { this.onSubmit } onChangeAndAdd = { this.onChangeAndAdd } 
-                            deleteOption = { this.deleteOption } clear = { this.clear } onSubmit = { this.onSubmit } />
-                        <TableForModals 
-                            columns = { FLUJOS_COLUMNS } 
-                            data = { flujos }
-                            title = 'Flujos' 
-                            subtitle = 'Listado de flujos'
-                            mostrar_boton = { false }
-                            abrir_modal = { false }
-                            mostrar_acciones = { false }
+                        <FlujosForm form={form} options={options} onChange={this.onChange}
+                            onSubmit={this.onSubmit} onChangeAndAdd={this.onChangeAndAdd}
+                            deleteOption={this.deleteOption} clear={this.clear} onSubmit={this.onSubmit} />
+                        <TableForModals
+                            columns={FLUJOS_COLUMNS}
+                            data={flujos}
+                            title='Flujos'
+                            subtitle='Listado de flujos'
+                            mostrar_boton={false}
+                            abrir_modal={false}
+                            mostrar_acciones={false}
                             elements={data.flujos}
                         />
                     </Card.Body>
@@ -264,7 +250,6 @@ class Flujos extends Component {
         )
     }
 }
-
 
 const mapStateToProps = state => {
     return {

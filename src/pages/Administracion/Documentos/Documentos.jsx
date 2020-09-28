@@ -207,7 +207,6 @@ class Documentos extends Component {
             console.log(error, 'error')
         })
     }
-
     async sendAdjuntoAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -254,7 +253,6 @@ class Documentos extends Component {
             console.log(error, 'error')
         })
     }
-
     async deleteAdjuntoAxios(id) {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -279,7 +277,6 @@ class Documentos extends Component {
             console.log(error, 'error')
         })
     }
-
     render() {
         const { modalDelete, modalAdjuntos, form, modalSee, documento } = this.state
         return (
@@ -310,12 +307,12 @@ class Documentos extends Component {
                 />
                 <ModalDelete
                     title='¿Estás seguro que deseas eliminar el documento?'
-                    show={modalDelete} 
+                    show={modalDelete}
                     handleClose={this.handleCloseDelete}
                     onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteDocumentoAxios() }}
                 />
                 <Modal size="lg" title="Adjuntos" show={modalAdjuntos} handleClose={this.handleCloseAdjuntos}>
-                    <ItemSlider 
+                    <ItemSlider
                         items={form.adjuntos.adjuntos.files}
                         item='adjuntos'
                         handleChange={this.handleChange}

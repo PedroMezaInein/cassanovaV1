@@ -6,17 +6,15 @@ import axios from 'axios'
 import { URL_DEV, FACTURAS_COLUMNS } from '../../constants'
 import { Small, B } from '../../components/texts'
 import { setTextTable, setMoneyTable, setDateTable, setOptions, setLabelTable } from '../../functions/setters'
-import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert, createAlert} from '../../functions/alert'
-import { Modal, ItemSlider} from '../../components/singles'
+import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert, createAlert } from '../../functions/alert'
+import { Modal, ItemSlider } from '../../components/singles'
 import { Button, FileInput } from '../../components/form-components'
 import swal from 'sweetalert'
-import { Tabs, Tab,Form } from 'react-bootstrap'
+import { Tabs, Tab, Form } from 'react-bootstrap'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { FacturacionCard } from '../../components/cards'
-
 const $ = require('jquery');
 class Facturacion extends Component {
-
     state = {
         formeditado: 0,
         modalFacturas: false,
@@ -27,11 +25,11 @@ class Facturacion extends Component {
         data: {
             facturas: []
         },
-        options:{
-            empresas:[],
-            cuentas:[],
-            areas:[],
-            subareas:[],
+        options: {
+            empresas: [],
+            cuentas: [],
+            areas: [],
+            subareas: [],
             clientes: [],
             proyectos: [],
             formasPago: [],
@@ -42,7 +40,7 @@ class Facturacion extends Component {
         form: {
             facturaObject: '',
             adjuntos: {
-                factura:{
+                factura: {
                     value: '',
                     placeholder: 'Factura',
                     files: []
@@ -57,7 +55,6 @@ class Facturacion extends Component {
         tipo: 'Ventas',
         key: 'ventas'
     }
-
     componentDidMount() {
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
@@ -71,15 +68,13 @@ class Facturacion extends Component {
             history.push('/')
         this.getOptionsAxios()
     }
-
-    async getOptionsAxios(){
+    async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'facturas/options', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'facturas/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empresas, clientes} = response.data
+                const { empresas, clientes } = response.data
                 const { data } = this.state
-                
                 data.clientes = clientes
                 data.empresas = empresas
                 swal.close()
@@ -90,9 +85,9 @@ class Facturacion extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -101,7 +96,6 @@ class Facturacion extends Component {
             console.log(error, 'error')
         })
     }
-    
     setFactura = facturas => {
         let aux = []
         facturas.map((factura) => {
@@ -129,7 +123,6 @@ class Facturacion extends Component {
         })
         return aux
     }
-
     openModalSee = factura => {
         this.setState({
             ... this.state,
@@ -137,7 +130,6 @@ class Facturacion extends Component {
             factura: factura
         })
     }
-
     handleCloseSee = () => {
         this.setState({
             ... this.state,
@@ -145,19 +137,17 @@ class Facturacion extends Component {
             factura: ''
         })
     }
-
     setActions = factura => {
         let aux = []
         aux.push(
             {
                 text: 'Ver',
                 btnclass: 'primary',
-                iconclass: 'flaticon2-expand',                  
+                iconclass: 'flaticon2-expand',
                 action: 'see',
-                tooltip: {id:'see', text:'Mostrar', type:'primary'},
+                tooltip: { id: 'see', text: 'Mostrar', type: 'primary' },
             },
         )
-
         if (!factura.cancelada) {
             aux.push(
                 {
@@ -168,8 +158,7 @@ class Facturacion extends Component {
                     tooltip: { id: 'delete-Adjunto', text: 'Eliminar', type: 'error' },
                 })
         }
-
-        if(factura.cancelada){
+        if (factura.cancelada) {
             aux.push(
                 {
                     text: 'Mostrar adjuntos',
@@ -179,10 +168,8 @@ class Facturacion extends Component {
                     tooltip: { id: 'delete-Adjunto', text: 'Eliminar', type: 'error' },
                 })
         }
-
         return aux
     }
-
     setLabelTable = objeto => {
         let restante = objeto.total - objeto.ventas_compras_count - objeto.ingresos_egresos_count
         let text = {}
@@ -201,11 +188,8 @@ class Facturacion extends Component {
                 text.estatus = 'PENDIENTE'
             }
         }
-
         return setLabelTable(text)
     }
-
-
     setAdjuntosTable = factura => {
         return (
             <div>
@@ -231,7 +215,6 @@ class Facturacion extends Component {
             </div>
         )
     }
-
     setInfoTable = (rfc, nombre) => {
         return (
             <div>
@@ -255,20 +238,16 @@ class Facturacion extends Component {
             </div>
         )
     }
-
     cancelarFactura = (factura) => {
         const { form } = this.state
-
         let aux = []
-        factura.adjuntos_cancelados.map((adjunto)=> {
+        factura.adjuntos_cancelados.map((adjunto) => {
             aux.push({
                 name: adjunto.name,
                 url: adjunto.url
             })
         })
-
         form.adjuntos.adjuntos.files = aux
-
         this.setState({
             ... this.state,
             modalCancelar: true,
@@ -289,7 +268,7 @@ class Facturacion extends Component {
                             placeholder: 'Ingresa los adjuntos',
                             files: []
                         },
-                        factura:{
+                        factura: {
                             value: '',
                             placeholder: 'Factura',
                             files: []
@@ -303,11 +282,9 @@ class Facturacion extends Component {
         })
         return form;
     }
-
     handleChange = (files, item) => {
         this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
     }
-    
     onChangeAdjunto = e => {
         const { form } = this.state
         const { files, value, name } = e.target
@@ -329,7 +306,6 @@ class Facturacion extends Component {
             form
         })
     }
-
     async cancelarFacturaAxios() {
         const { access_token } = this.props.authUser
         const { form, factura } = this.state
@@ -375,7 +351,6 @@ class Facturacion extends Component {
             console.log(error, 'error')
         })
     }
-
     async getFacturas() {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'facturas', { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -401,7 +376,6 @@ class Facturacion extends Component {
             console.log(error, 'error')
         })
     }
-
     handleClose = () => {
         const { modalCancelar } = this.state
         this.setState({
@@ -410,13 +384,11 @@ class Facturacion extends Component {
             form: this.clearForm()
         })
     }
-
     onSubmit = e => {
         e.preventDefault()
         waitAlert()
         this.cancelarFacturaAxios(e)
     }
-
     openModal = () => {
         this.setState({
             ... this.state,
@@ -427,7 +399,6 @@ class Facturacion extends Component {
             formeditado: 0
         })
     }
-
     handleCloseFacturas = () => {
         const { modalFacturas } = this.state
         this.setState({
@@ -436,19 +407,17 @@ class Facturacion extends Component {
             // form: this.clearForm()
         })
     }
-
     onChangeAdjuntoFacturas = e => {
         const { form, data } = this.state
         const { files, value, name } = e.target
         let aux = []
-        for(let counter = 0; counter < files.length; counter ++){
-            if(name === 'factura')
-            {
+        for (let counter = 0; counter < files.length; counter++) {
+            if (name === 'factura') {
                 let extension = files[counter].name.slice((Math.max(0, files[counter].name.lastIndexOf(".")) || Infinity) + 1);
-                if(extension.toUpperCase() === 'XML'){
+                if (extension.toUpperCase() === 'XML') {
                     waitAlert()
                     const reader = new FileReader()
-                    reader.onload = async (e) => { 
+                    reader.onload = async (e) => {
                         const text = (e.target.result)
                         var XMLParser = require('react-xml-parser');
                         var xml = new XMLParser().parseFromString(text);
@@ -478,8 +447,8 @@ class Facturacion extends Component {
                             serie: xml.attributes.Serie ? xml.attributes.Serie : '',
                         }
                         let tipoRelacion = ''
-                        if(relacionados){
-                            if(relacionados.length){
+                        if (relacionados) {
+                            if (relacionados.length) {
                                 relacionados = relacionados[0]
                                 tipoRelacion = relacionados.attributes.TipoRelacion
                                 let uuidRelacionado = xml.getElementsByTagName('cfdi:CfdiRelacionado')[0]
@@ -488,55 +457,53 @@ class Facturacion extends Component {
                                 obj.uuid_relacionado = uuidRelacionado
                             }
                         }
-                        if(obj.numero_certificado === ''){
+                        if (obj.numero_certificado === '') {
                             let NoCertificado = text.search('NoCertificado="')
-                            if(NoCertificado)
-                                obj.numero_certificado = text.substring(NoCertificado+15, NoCertificado + 35)
+                            if (NoCertificado)
+                                obj.numero_certificado = text.substring(NoCertificado + 15, NoCertificado + 35)
                         }
-                        if(obj.subtotal === ''){
+                        if (obj.subtotal === '') {
                             let Subtotal = text.search('SubTotal="')
-                            if(Subtotal)
-                                Subtotal = text.substring(Subtotal+10)
-                                aux = Subtotal.search('"')
-                                Subtotal = Subtotal.substring(0,aux)
-                                obj.subtotal = Subtotal
+                            if (Subtotal)
+                                Subtotal = text.substring(Subtotal + 10)
+                            aux = Subtotal.search('"')
+                            Subtotal = Subtotal.substring(0, aux)
+                            obj.subtotal = Subtotal
                         }
-                        if(obj.fecha === ''){
+                        if (obj.fecha === '') {
                             let Fecha = text.search('Fecha="')
-                            if(Fecha)
-                                Fecha = text.substring(Fecha+7)
-                                aux = Fecha.search('"')
-                                Fecha = Fecha.substring(0,aux)
-                                obj.fecha = Fecha
+                            if (Fecha)
+                                Fecha = text.substring(Fecha + 7)
+                            aux = Fecha.search('"')
+                            Fecha = Fecha.substring(0, aux)
+                            obj.fecha = Fecha
                         }
                         let auxEmpresa = ''
-                        data.empresas.find(function(element, index) {
-                            if(element.rfc === obj.rfc_emisor){
+                        data.empresas.find(function (element, index) {
+                            if (element.rfc === obj.rfc_emisor) {
                                 auxEmpresa = element
                             }
                         });
                         let auxCliente = ''
-                        data.clientes.find(function(element, index) {
-                            let cadena = obj.nombre_receptor.replace(' S. C.',  ' SC').toUpperCase()
-                            cadena = cadena.replace(',S.A.',  ' SA').toUpperCase()
+                        data.clientes.find(function (element, index) {
+                            let cadena = obj.nombre_receptor.replace(' S. C.', ' SC').toUpperCase()
+                            cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
                             cadena = cadena.replace(/,/g, '').toUpperCase()
                             cadena = cadena.replace(/\./g, '').toUpperCase()
                             if (element.empresa === obj.nombre_receptor ||
-                                element.empresa === cadena){
+                                element.empresa === cadena) {
                                 auxCliente = element
                             }
                         });
-                        if(auxEmpresa){
-                            
-                        }else{
+                        if (auxEmpresa) {
+                        } else {
                             errorAlert('No existe la empresa')
                         }
-                        if(auxCliente){
-                            
-                        }else{
+                        if (auxCliente) {
+                        } else {
                             createAlert('No existe el cliente', '¿Lo quieres crear?', () => this.addClienteAxios(obj))
                         }
-                        if(auxEmpresa && auxCliente){
+                        if (auxEmpresa && auxCliente) {
                             swal.close()
                         }
                         form.facturaObject = obj
@@ -552,7 +519,7 @@ class Facturacion extends Component {
                 {
                     name: files[counter].name,
                     file: files[counter],
-                    url: URL.createObjectURL(files[counter]) ,
+                    url: URL.createObjectURL(files[counter]),
                     key: counter
                 }
             )
@@ -564,7 +531,6 @@ class Facturacion extends Component {
             form
         })
     }
-
     setOptions = (name, array) => {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
@@ -573,18 +539,17 @@ class Facturacion extends Component {
             options
         })
     }
-    
     clearFiles = (name, key) => {
         const { form } = this.state
         let aux = []
-        for(let counter = 0; counter < form['adjuntos'][name].files.length; counter ++){
-            if(counter !== key){
+        for (let counter = 0; counter < form['adjuntos'][name].files.length; counter++) {
+            if (counter !== key) {
                 aux.push(form['adjuntos'][name].files[counter])
             }
         }
-        if(aux.length < 1){
+        if (aux.length < 1) {
             form['adjuntos'][name].value = ''
-            if(name === 'factura')
+            if (name === 'factura')
                 form['facturaObject'] = ''
         }
         form['adjuntos'][name].files = aux
@@ -592,16 +557,13 @@ class Facturacion extends Component {
             ... this.state,
             form
         })
-    }    
-
+    }
     async getComprasAxios() {
         $('#kt_datatable_compras').DataTable().ajax.reload();
     }
-
     async getVentasAxios() {
         $('#kt_datatable_ventas').DataTable().ajax.reload();
     }
-
     controlledTab = value => {
         if (value === 'compras') {
             this.getComprasAxios()
@@ -614,13 +576,11 @@ class Facturacion extends Component {
             key: value
         })
     }
-
-    async sendFacturaAxios(){
+    async sendFacturaAxios() {
         waitAlert();
         const { access_token } = this.props.authUser
         const { form } = this.state
         const data = new FormData();
-
         let aux = Object.keys(form)
         aux.map((element) => {
             switch (element) {
@@ -645,17 +605,13 @@ class Facturacion extends Component {
         })
         await axios.post(URL_DEV + 'facturas/new', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 this.getVentasAxios()
-
                 this.setState({
                     ... this.state,
                     form: this.clearForm(),
                     modalFacturas: false
                 })
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-
             },
             (error) => {
                 console.log(error, 'error')
@@ -670,42 +626,34 @@ class Facturacion extends Component {
             console.log(error, 'error')
         })
     }
-
     async addClienteAxios(obj) {
         const { access_token } = this.props.authUser
         const data = new FormData();
-        
-        let cadena = obj.nombre_receptor.replace(' S. C.',  ' SC').toUpperCase()
-        cadena = cadena.replace(',S.A.',  ' SA').toUpperCase()
+        let cadena = obj.nombre_receptor.replace(' S. C.', ' SC').toUpperCase()
+        cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
         cadena = cadena.replace(/,/g, '').toUpperCase()
         cadena = cadena.replace(/\./g, '').toUpperCase()
         data.append('empresa', cadena)
         data.append('nombre', cadena)
         data.append('rfc', obj.rfc_receptor.toUpperCase())
-
-        await axios.post(URL_DEV + 'cliente', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'cliente', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 const { clientes } = response.data
-
                 const { options, data, form } = this.state
-
                 options.clientes = []
                 options['clientes'] = setOptions(clientes, 'empresa', 'id')
                 data.clientes = clientes
-                clientes.map( (cliente) => {
-                    if(cliente.empresa === cadena){
+                clientes.map((cliente) => {
+                    if (cliente.empresa === cadena) {
                         form.cliente = cliente.empresa
                     }
                 })
-
                 this.setState({
                     ... this.state,
                     form,
                     data,
                     options
                 })
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
             },
             (error) => {
@@ -721,9 +669,8 @@ class Facturacion extends Component {
             console.log(error, 'error')
         })
     }
-
     render() {
-        const { factura, modalSee, modalCancelar, form, modalFacturas, key} = this.state
+        const { factura, modalSee, modalCancelar, form, modalFacturas, key } = this.state
         return (
             <Layout active={'administracion'}  {...this.props}>
                 <Tabs defaultActiveKey="ventas" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
@@ -787,14 +734,14 @@ class Facturacion extends Component {
                             items={form.adjuntos.adjuntos.files}
                             handleChange={this.handleChange}
                             item="adjuntos"
-                            multiple = {true}
+                            multiple={true}
                         />
                     </div>
                     <div className="card-footer py-3 pr-1">
                         <div className="row">
                             <div className="col-lg-12 text-right pr-0 pb-0">
-                                <Button text='ENVIAR' 
-                                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.cancelarFacturaAxios() }}
+                                <Button text='ENVIAR'
+                                    onClick={(e) => { e.preventDefault(); waitAlert(); this.cancelarFacturaAxios() }}
                                     className="btn btn-primary mr-2" />
                             </div>
                         </div>
@@ -821,16 +768,15 @@ class Facturacion extends Component {
                         <div className="card-footer py-3 pr-1">
                             <div className="row">
                                 <div className="col-lg-12 text-right pr-0 pb-0">
-                                    <Button icon='' className="mx-auto" type="submit" text="ENVIAR" 
-                                        onClick = { (e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios();}}/>
+                                    <Button icon='' className="mx-auto" type="submit" text="ENVIAR"
+                                        onClick={(e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios(); }} />
                                 </div>
                             </div>
                         </div>
-
                     </Form>
                 </Modal>
-                <Modal size="lg" title="Factura" show = { modalSee } handleClose = { this.handleCloseSee } >
-                    <FacturacionCard factura={factura}/>
+                <Modal size="lg" title="Factura" show={modalSee} handleClose={this.handleCloseSee} >
+                    <FacturacionCard factura={factura} />
                 </Modal>
             </Layout>
         )

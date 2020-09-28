@@ -8,20 +8,18 @@ import swal from 'sweetalert';
 import { setOptions } from '../../../functions/setters';
 import { Card } from 'react-bootstrap';
 import { DocumentosForm as DocumentosFormulario } from '../../../components/forms'
-
 class DocumentosForm extends Component {
-
     state = {
         title: 'Documento nuevo',
         formeditado: 0,
-        options:{
+        options: {
             empresas: []
         },
-        form:{
+        form: {
             empresa: '',
             nombre: '',
-            adjuntos:{
-                adjuntos:{
+            adjuntos: {
+                adjuntos: {
                     value: '',
                     placeholder: 'Adjuntos',
                     files: []
@@ -30,36 +28,34 @@ class DocumentosForm extends Component {
         },
         documento: ''
     }
-
-    componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
-        const { match : { params: { action: action } } } = this.props
-        const { history, location: { state: state} } = this.props
-        const remisiones = permisos.find(function(element, index) {
+    componentDidMount() {
+        const { authUser: { user: { permisos: permisos } } } = this.props
+        const { history: { location: { pathname: pathname } } } = this.props
+        const { match: { params: { action: action } } } = this.props
+        const { history, location: { state: state } } = this.props
+        const remisiones = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
             return pathname === url + '/' + action
         });
-        switch(action){
+        switch (action) {
             case 'add':
                 this.setState({
                     ... this.state,
                     title: 'Documento nuevo',
-                    formeditado:0
+                    formeditado: 0
                 })
                 break;
             case 'edit':
-                if(state){
-                    if(state.documento)
-                    {
+                if (state) {
+                    if (state.documento) {
                         const { documento } = state
                         const { form } = this.state
-                        if(documento.empresa)
+                        if (documento.empresa)
                             form.empresa = documento.empresa.id.toString()
                         form.nombre = documento.nombre
                         let aux = []
-                        if(documento.adjuntos){
-                            documento.adjuntos.map((adj)=>{
+                        if (documento.adjuntos) {
+                            documento.adjuntos.map((adj) => {
                                 aux.push({
                                     url: adj.url,
                                     name: adj.name,
@@ -70,24 +66,23 @@ class DocumentosForm extends Component {
                         form.adjuntos.adjuntos.files = aux
                         this.setState({
                             ... this.state,
-                            form, 
+                            form,
                             title: 'Editar documento',
                             documento: documento
                         })
                     }
                     else
                         history.push('/proyectos/herramientas')
-                }else
+                } else
                     history.push('/proyectos/herramientas')
                 break;
             default:
                 break;
         }
-        if(!remisiones)
+        if (!remisiones)
             history.push('/')
         this.getOptionsAxios()
     }
-
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -97,7 +92,6 @@ class DocumentosForm extends Component {
             form
         })
     }
-
     handleChange = (files, item) => {
         const { form } = this.state
         let aux = []
@@ -118,11 +112,10 @@ class DocumentosForm extends Component {
             form
         })
     }
-
     setAdjuntos = adjuntos => {
         const { form } = this.state
         let aux = []
-        adjuntos.map( (adj) => {
+        adjuntos.map((adj) => {
             aux.push({
                 name: adj.name,
                 url: adj.url,
@@ -135,59 +128,52 @@ class DocumentosForm extends Component {
             form
         })
     }
-
     deleteFile = element => {
         deleteAlert('¿Deseas eliminar el archivo?', () => this.deleteAdjuntoAxios(element.id))
     }
-
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
         waitAlert()
-        if(title === 'Editar documento')
+        if (title === 'Editar documento')
             this.editHerramientaAxios()
         else
             this.createDocumentoAxios()
     }
-
-    async getOptionsAxios(){
+    async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get( URL_DEV + 'documentos/options', { headers: { Authorization: `Bearer ${access_token}` } } ).then(
-            ( response ) => {
+        await axios.get(URL_DEV + 'documentos/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
                 swal.close()
                 const { empresas } = response.data
                 const { options } = this.state
-
                 options.empresas = setOptions(empresas, 'name', 'id')
-
                 this.setState({
                     ... this.state,
                     options
                 })
             },
-            ( error ) => {
+            (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401)
+                if (error.response.status === 401)
                     forbiddenAccessAlert();
                 else
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
             }
-        ).catch( (error) => {
+        ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-
-    async createDocumentoAxios(){
+    async createDocumentoAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form } = this.state
         const data = new FormData();
-        
         let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'adjuntos':
                     break;
                 default:
@@ -195,16 +181,14 @@ class DocumentosForm extends Component {
                     break
             }
         })
-
         aux = Object.keys(form.adjuntos)
-        aux.map( (element) => {
+        aux.map((element) => {
             for (var i = 0; i < form.adjuntos[element].files.length; i++) {
                 data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
         })
-        
         await axios.post(URL_DEV + 'documentos', data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { history } = this.props
@@ -226,16 +210,14 @@ class DocumentosForm extends Component {
             console.log(error, 'error')
         })
     }
-
-    async editHerramientaAxios(){
+    async editHerramientaAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form, documento } = this.state
         const data = new FormData();
-        
         let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'adjuntos':
                     break;
                 default:
@@ -243,9 +225,8 @@ class DocumentosForm extends Component {
                     break
             }
         })
-
         aux = Object.keys(form.adjuntos)
-        aux.map( (element) => {
+        aux.map((element) => {
             for (var i = 0; i < form.adjuntos[element].files.length; i++) {
                 data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
@@ -273,12 +254,11 @@ class DocumentosForm extends Component {
             console.log(error, 'error')
         })
     }
-
-    async deleteAdjuntoAxios(id){
+    async deleteAdjuntoAxios(id) {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form, state, documento } = this.state
-        await axios.delete(URL_DEV + 'documentos/' + documento.id + '/adjuntos/' +id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(URL_DEV + 'documentos/' + documento.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { documento } = response.data
                 this.setAdjuntos(documento.adjuntos)
@@ -297,7 +277,6 @@ class DocumentosForm extends Component {
             console.log(error, 'error')
         })
     }
-
     render() {
         const { title, form, options, formeditado } = this.state
         return (
@@ -306,17 +285,20 @@ class DocumentosForm extends Component {
                     <Card.Header>
                         <div className="card-custom">
                             <h3 className="card-label">
-                                { title }
+                                {title}
                             </h3>
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <DocumentosFormulario form = { form } 
-                            formeditado = { formeditado }
-                            options = { options } onChange = { this.onChange } 
-                            handleChange = { this.handleChange } 
-                            deleteFile = { this.deleteFile } 
-                            onSubmit = { this.onSubmit } />
+                        <DocumentosFormulario 
+                            form={form}
+                            formeditado={formeditado}
+                            options={options} 
+                            onChange={this.onChange}
+                            handleChange={this.handleChange}
+                            deleteFile={this.deleteFile}
+                            onSubmit={this.onSubmit}
+                        />
                     </Card.Body>
                 </Card>
             </Layout>

@@ -9,7 +9,6 @@ import { ProveedorForm as ProveedorFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
 import swal from 'sweetalert';
 class ProveedorForm extends Component {
-
     state = {
         title: 'Nuevo proveedor',
         form: {
@@ -37,7 +36,6 @@ class ProveedorForm extends Component {
             tipos: []
         }
     }
-
     componentDidMount() {
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
@@ -92,7 +90,6 @@ class ProveedorForm extends Component {
             history.push('/')
         this.getOptionsAxios()
     }
-
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -109,7 +106,6 @@ class ProveedorForm extends Component {
         })
         return form;
     }
-
     onChange = e => {
         const { form } = this.state
         const { name, value } = e.target
@@ -124,7 +120,6 @@ class ProveedorForm extends Component {
             form
         })
     }
-
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
@@ -134,7 +129,6 @@ class ProveedorForm extends Component {
         else
             this.addProveedorAxios()
     }
-
     setOptions = (name, array) => {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
@@ -143,7 +137,6 @@ class ProveedorForm extends Component {
             options
         })
     }
-
     setProveedor = proveedor => {
         const { form, options } = this.state
         form.nombre = proveedor.nombre
@@ -167,7 +160,6 @@ class ProveedorForm extends Component {
             form
         })
     }
-
     setLead = lead => {
         const { form } = this.state
         form.nombre = lead.nombre
@@ -179,7 +171,6 @@ class ProveedorForm extends Component {
             form
         })
     }
-
     async getOptionsAxios() {
         const { access_token } = this.props.authUser
         waitAlert()
@@ -209,7 +200,6 @@ class ProveedorForm extends Component {
             console.log(error, 'error')
         })
     }
-
     async addProveedorAxios() {
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -239,7 +229,6 @@ class ProveedorForm extends Component {
             console.log(error, 'error')
         })
     }
-
     async updateProveedorAxios() {
         const { access_token } = this.props.authUser
         const { form, proveedor } = this.state
@@ -269,7 +258,6 @@ class ProveedorForm extends Component {
             console.log(error, 'error')
         })
     }
-
     render() {
         const { form, title, options, formeditado } = this.state
         return (

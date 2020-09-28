@@ -3,69 +3,62 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV } from '../../../constants'
-import { setOptions, setSelectOptions} from '../../../functions/setters'
+import { setOptions, setSelectOptions } from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert, doneAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { IngresosForm as IngresosFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
-
-class IngresosForm extends Component{
-
+class IngresosForm extends Component {
     state = {
         ingresos: [],
         ingreso: '',
         title: 'Nuevo ingreso',
-        options:{
+        options: {
             empresas: [],
             cuentas: [],
-            areas:[],
-            subareas:[],
-            tiposPagos:[],
-            tiposImpuestos:[],
-            estatusCompras:[],
+            areas: [],
+            subareas: [],
+            tiposPagos: [],
+            tiposImpuestos: [],
+            estatusCompras: [],
             clientes: [],
         },
-        data:{
-            clientes:[],
+        data: {
+            clientes: [],
             empresas: []
         },
-        formeditado:0,
-        form:{
+        formeditado: 0,
+        form: {
             factura: 'Sin factura',
-            
             rfc: '',
             cliente: '',
             empresa: '',
             cuenta: '',
-            area:'',
+            area: '',
             subarea: '',
             total: '',
             descripcion: '',
             facturaObject: '',
-
             fileFactura: {
                 value: '',
                 adjuntos: [],
             },
-
             tipoPago: 0,
             tipoImpuesto: 0,
             estatusCompra: 0,
-            
             fecha: new Date(),
-
-            adjuntos:{
-                factura:{
+            adjuntos: {
+                factura: {
                     value: '',
                     placeholder: 'Factura',
                     files: []
                 },
-                pago:{
+                pago: {
                     value: '',
                     placeholder: 'Pago',
                     files: []
                 },
-                presupuesto:{
+                presupuesto: {
                     value: '',
                     placeholder: 'Presupuesto',
                     files: []
@@ -73,38 +66,34 @@ class IngresosForm extends Component{
             }
         }
     }
-
-    componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
-        const { match : { params: { action: action } } } = this.props
-        const { history, location: { state: state} } = this.props
-        
-        const ingresos = permisos.find(function(element, index) {
+    componentDidMount() {
+        const { authUser: { user: { permisos: permisos } } } = this.props
+        const { history: { location: { pathname: pathname } } } = this.props
+        const { match: { params: { action: action } } } = this.props
+        const { history, location: { state: state } } = this.props
+        const ingresos = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
             return pathname === url + '/' + action
         })
-
-        switch(action){
+        switch (action) {
             case 'add':
                 this.setState({
                     ... this.state,
                     title: 'Nuevo ingreso',
-                    formeditado:0
+                    formeditado: 0
                 })
                 break;
             case 'edit':
-                if(state){
-                    if(state.ingreso)
-                    {
+                if (state) {
+                    if (state.ingreso) {
                         const { ingreso } = state
                         const { form, options } = this.state
-                        if(ingreso.empresa){
+                        if (ingreso.empresa) {
                             form.empresa = ingreso.empresa.id.toString()
                             options['cuentas'] = setOptions(ingreso.empresa.cuentas, 'nombre', 'id')
                             form.cuenta = ingreso.cuenta.id.toString()
                         }
-                        if(ingreso.subarea){
+                        if (ingreso.subarea) {
                             form.area = ingreso.subarea.area.id.toString()
                             options['subareas'] = setOptions(ingreso.subarea.area.subareas, 'nombre', 'id')
                             form.subarea = ingreso.subarea.id.toString()
@@ -116,16 +105,16 @@ class IngresosForm extends Component{
                         form.total = ingreso.monto
                         form.fecha = new Date(ingreso.created_at)
                         form.descripcion = ingreso.descripcion
-                        if(ingreso.cliente){
+                        if (ingreso.cliente) {
                             form.cliente = ingreso.cliente.id.toString()
                             form.rfc = ingreso.cliente.rfc
                         }
-                        if(ingreso.pago){
+                        if (ingreso.pago) {
                             form.adjuntos.pago.files = [{
                                 name: ingreso.pago.name, url: ingreso.pago.url
                             }]
                         }
-                        if(ingreso.presupuesto){
+                        if (ingreso.presupuesto) {
                             form.adjuntos.presupuesto.files = [{
                                 name: ingreso.presupuesto.name, url: ingreso.presupuesto.url
                             }]
@@ -136,44 +125,41 @@ class IngresosForm extends Component{
                             form,
                             options,
                             ingreso: ingreso,
-                            formeditado:1
+                            formeditado: 1
                         })
                     }
                     else
                         history.push('/administracion/ingresos')
-                }else
+                } else
                     history.push('/administracion/ingresos')
                 break;
             default:
                 break;
         }
-        if(!ingresos)
+        if (!ingresos)
             history.push('/')
         this.getOptionsAxios()
     }
-
     onChange = e => {
-        const {form} = this.state
-        const {name, value} = e.target
+        const { form } = this.state
+        const { name, value } = e.target
         form[name] = value
         this.setState({
             ... this.state,
             form
         })
     }
-
     onChangeAdjunto = e => {
         const { form, data, options } = this.state
         const { files, value, name } = e.target
         let aux = []
-        for(let counter = 0; counter < files.length; counter ++){
-            if(name === 'factura')
-            {
+        for (let counter = 0; counter < files.length; counter++) {
+            if (name === 'factura') {
                 let extension = files[counter].name.slice((Math.max(0, files[counter].name.lastIndexOf(".")) || Infinity) + 1);
-                if(extension.toUpperCase() === 'XML'){
+                if (extension.toUpperCase() === 'XML') {
                     waitAlert()
                     const reader = new FileReader()
-                    reader.onload = async (e) => { 
+                    reader.onload = async (e) => {
                         const text = (e.target.result)
                         var XMLParser = require('react-xml-parser');
                         var xml = new XMLParser().parseFromString(text);
@@ -203,8 +189,8 @@ class IngresosForm extends Component{
                             serie: xml.attributes.Serie ? xml.attributes.Serie : '',
                         }
                         let tipoRelacion = ''
-                        if(relacionados){
-                            if(relacionados.length){
+                        if (relacionados) {
+                            if (relacionados.length) {
                                 relacionados = relacionados[0]
                                 tipoRelacion = relacionados.attributes.TipoRelacion
                                 let uuidRelacionado = xml.getElementsByTagName('cfdi:CfdiRelacionado')[0]
@@ -213,57 +199,57 @@ class IngresosForm extends Component{
                                 obj.uuid_relacionado = uuidRelacionado
                             }
                         }
-                        if(obj.numero_certificado === ''){
+                        if (obj.numero_certificado === '') {
                             let NoCertificado = text.search('NoCertificado="')
-                            if(NoCertificado)
-                                obj.numero_certificado = text.substring(NoCertificado+15, NoCertificado + 35)
+                            if (NoCertificado)
+                                obj.numero_certificado = text.substring(NoCertificado + 15, NoCertificado + 35)
                         }
                         let aux = ''
-                        if(obj.subtotal === ''){
+                        if (obj.subtotal === '') {
                             let Subtotal = text.search('SubTotal="')
-                            if(Subtotal)
-                                Subtotal = text.substring(Subtotal+10)
-                                aux = Subtotal.search('"')
-                                Subtotal = Subtotal.substring(0,aux)
-                                obj.subtotal = Subtotal
+                            if (Subtotal)
+                                Subtotal = text.substring(Subtotal + 10)
+                            aux = Subtotal.search('"')
+                            Subtotal = Subtotal.substring(0, aux)
+                            obj.subtotal = Subtotal
                         }
-                        if(obj.fecha === ''){
+                        if (obj.fecha === '') {
                             let Fecha = text.search('Fecha="')
-                            if(Fecha)
-                                Fecha = text.substring(Fecha+7)
-                                aux = Fecha.search('"')
-                                Fecha = Fecha.substring(0,aux)
-                                obj.fecha = Fecha
+                            if (Fecha)
+                                Fecha = text.substring(Fecha + 7)
+                            aux = Fecha.search('"')
+                            Fecha = Fecha.substring(0, aux)
+                            obj.fecha = Fecha
                         }
                         let auxEmpresa = ''
-                        data.empresas.find(function(element, index) {
-                            if(element.rfc === obj.rfc_emisor){
+                        data.empresas.find(function (element, index) {
+                            if (element.rfc === obj.rfc_emisor) {
                                 auxEmpresa = element
                             }
                         });
                         let auxCliente = ''
-                        data.clientes.find(function(element, index) {
-                            let cadena = obj.nombre_receptor.replace(' S. C.',  ' SC').toUpperCase()
-                            cadena = cadena.replace(',S.A.',  ' SA').toUpperCase()
+                        data.clientes.find(function (element, index) {
+                            let cadena = obj.nombre_receptor.replace(' S. C.', ' SC').toUpperCase()
+                            cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
                             cadena = cadena.replace(/,/g, '').toUpperCase()
                             cadena = cadena.replace(/\./g, '').toUpperCase()
-                            if(element.empresa.toUpperCase() === obj.nombre_receptor.toUpperCase() ||
-                                element.empresa.toUpperCase() === cadena){
+                            if (element.empresa.toUpperCase() === obj.nombre_receptor.toUpperCase() ||
+                                element.empresa.toUpperCase() === cadena) {
                                 auxCliente = element
                             }
                         });
-                        if(auxEmpresa){
+                        if (auxEmpresa) {
                             options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')
                             form.empresa = auxEmpresa.name
-                        }else{
+                        } else {
                             errorAlert('No existe la empresa')
                         }
-                        if(auxCliente){
+                        if (auxCliente) {
                             form.cliente = auxCliente.empresa
-                        }else{
+                        } else {
                             createAlert('No existe el cliente', '¿Lo quieres crear?', () => this.addClienteAxios(obj))
                         }
-                        if(auxEmpresa && auxCliente){
+                        if (auxEmpresa && auxCliente) {
                             swal.close()
                         }
                         form.facturaObject = obj
@@ -281,7 +267,7 @@ class IngresosForm extends Component{
                 {
                     name: files[counter].name,
                     file: files[counter],
-                    url: URL.createObjectURL(files[counter]) ,
+                    url: URL.createObjectURL(files[counter]),
                     key: counter
                 }
             )
@@ -293,18 +279,17 @@ class IngresosForm extends Component{
             form
         })
     }
-
     clearFiles = (name, key) => {
         const { form } = this.state
         let aux = []
-        for(let counter = 0; counter < form['adjuntos'][name].files.length; counter ++){
-            if(counter !== key){
+        for (let counter = 0; counter < form['adjuntos'][name].files.length; counter++) {
+            if (counter !== key) {
                 aux.push(form['adjuntos'][name].files[counter])
             }
         }
-        if(aux.length < 1){
+        if (aux.length < 1) {
             form['adjuntos'][name].value = ''
-            if(name === 'factura')
+            if (name === 'factura')
                 form['facturaObject'] = ''
         }
         form['adjuntos'][name].files = aux
@@ -313,12 +298,11 @@ class IngresosForm extends Component{
             form
         })
     }
-
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'tipoImpuesto':
                 case 'tipoPago':
                 case 'estatusCompra':
@@ -332,17 +316,17 @@ class IngresosForm extends Component{
                     break;
                 case 'adjuntos':
                     form[element] = {
-                        factura:{
+                        factura: {
                             value: '',
                             placeholder: 'Factura',
                             files: []
                         },
-                        pago:{
+                        pago: {
                             value: '',
                             placeholder: 'Pago',
                             files: []
                         },
-                        presupuesto:{
+                        presupuesto: {
                             value: '',
                             placeholder: 'Presupuesto',
                             files: []
@@ -356,38 +340,35 @@ class IngresosForm extends Component{
         })
         return form;
     }
-
     setOptions = (name, array) => {
-        const {options} = this.state
+        const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
             ... this.state,
             options
         })
     }
-
     onSubmit = e => {
         e.preventDefault()
-        const{ title } = this.state
+        const { title } = this.state
         waitAlert()
-        if(title === 'Editar ingreso'){
+        if (title === 'Editar ingreso') {
             this.editIngresoAxios()
-        }else
+        } else
             this.addIngresoAxios()
     }
-
-    async getOptionsAxios(){
+    async getOptionsAxios() {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'ingresos/options', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'ingresos/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { clientes, empresas, areas, tiposPagos, tiposImpuestos, estatusCompras } = response.data
                 const { options, data } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
                 options['clientes'] = setOptions(clientes, 'empresa', 'id')
-                options['tiposPagos'] = setSelectOptions( tiposPagos, 'tipo' )
-                options['tiposImpuestos'] = setSelectOptions( tiposImpuestos, 'tipo' )
-                options['estatusCompras'] = setSelectOptions( estatusCompras, 'estatus' )
+                options['tiposPagos'] = setSelectOptions(tiposPagos, 'tipo')
+                options['tiposImpuestos'] = setSelectOptions(tiposImpuestos, 'tipo')
+                options['estatusCompras'] = setSelectOptions(estatusCompras, 'estatus')
                 data.clientes = clientes
                 data.empresas = empresas
                 this.setState({
@@ -398,9 +379,9 @@ class IngresosForm extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -409,16 +390,13 @@ class IngresosForm extends Component{
             console.log(error, 'error')
         })
     }
-
-    async addIngresoAxios(){
-        
+    async addIngresoAxios() {
         const { access_token } = this.props.authUser
         const { form } = this.state
         const data = new FormData();
-        
         let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'fecha':
                     data.append(element, (new Date(form[element])).toDateString())
                     break
@@ -433,8 +411,8 @@ class IngresosForm extends Component{
             }
         })
         aux = Object.keys(form.adjuntos)
-        aux.map( (element) => {
-            if(form.adjuntos[element].value !== ''){
+        aux.map((element) => {
+            if (form.adjuntos[element].value !== '') {
                 for (var i = 0; i < form.adjuntos[element].files.length; i++) {
                     data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
                     data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
@@ -442,26 +420,23 @@ class IngresosForm extends Component{
                 data.append('adjuntos[]', element)
             }
         })
-
-        await axios.post(URL_DEV + 'ingresos', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'ingresos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.setState({
                     ... this.state,
                     form: this.clearForm()
                 })
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
-
                 const { history } = this.props
-                    history.push({
+                history.push({
                     pathname: '/administracion/ingresos'
                 });
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -470,16 +445,13 @@ class IngresosForm extends Component{
             console.log(error, 'error')
         })
     }
-
-    async editIngresoAxios(){
-
+    async editIngresoAxios() {
         const { access_token } = this.props.authUser
         const { form, ingreso } = this.state
         const data = new FormData();
-        
         let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'fecha':
                     data.append(element, (new Date(form[element])).toDateString())
                     break
@@ -492,23 +464,20 @@ class IngresosForm extends Component{
             }
         })
         aux = Object.keys(form.adjuntos)
-        aux.map( (element) => {
+        aux.map((element) => {
             for (var i = 0; i < form.adjuntos[element].files.length; i++) {
                 data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
         })
-        
-        await axios.post(URL_DEV + 'ingresos/update/' + ingreso.id, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'ingresos/update/' + ingreso.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.setState({
                     ... this.state,
                     form: this.clearForm()
                 })
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
-
                 const { history } = this.props
                 history.push({
                     pathname: '/administracion/ingresos'
@@ -516,9 +485,9 @@ class IngresosForm extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -527,52 +496,41 @@ class IngresosForm extends Component{
             console.log(error, 'error')
         })
     }
-
-    async addClienteAxios(obj){
-
+    async addClienteAxios(obj) {
         const { access_token } = this.props.authUser
-
         const data = new FormData();
-
-        
-        let cadena = obj.nombre_receptor.replace(' S. C.',  ' SC').toUpperCase()
-        cadena = cadena.replace(',S.A.',  ' SA').toUpperCase()
+        let cadena = obj.nombre_receptor.replace(' S. C.', ' SC').toUpperCase()
+        cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
         cadena = cadena.replace(/,/g, '').toUpperCase()
         cadena = cadena.replace(/\./g, '').toUpperCase()
         data.append('empresa', cadena)
         data.append('nombre', cadena)
         data.append('rfc', obj.rfc_receptor.toUpperCase())
-
-        await axios.post(URL_DEV + 'cliente', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'cliente', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 const { clientes } = response.data
-
                 const { options, data, form } = this.state
-
                 options.clientes = []
                 options['clientes'] = setOptions(clientes, 'empresa', 'id')
                 data.clientes = clientes
-                clientes.map( (cliente) => {
-                    if(cliente.empresa === cadena){
+                clientes.map((cliente) => {
+                    if (cliente.empresa === cadena) {
                         form.cliente = cliente.empresa
                     }
                 })
-
                 this.setState({
                     ... this.state,
                     form,
                     data,
                     options
                 })
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -581,11 +539,10 @@ class IngresosForm extends Component{
             console.log(error, 'error')
         })
     }
-    
-    render(){
+    render() {
         const { form, title, options, formeditado, data } = this.state
-        return(
-            <Layout active={'administracion'}  { ...this.props}>
+        return (
+            <Layout active={'administracion'}  {...this.props}>
                 <Card className="card-custom">
                     <Card.Header>
                         <div className="card-title">
@@ -593,18 +550,18 @@ class IngresosForm extends Component{
                         </div>
                     </Card.Header>
                     <Card.Body className="pt-0">
-                    <IngresosFormulario 
-                        formeditado={formeditado}
-                        className = "px-3"
-                        title = { title } 
-                        form = { form }
-                        onChange = { this.onChange } 
-                        onChangeAdjunto = { this.onChangeAdjunto } 
-                        clearFiles = { this.clearFiles } 
-                        options = { options } 
-                        setOptions = { this.setOptions } 
-                        onSubmit = {this.onSubmit}
-                        data = { data } /> 
+                        <IngresosFormulario
+                            formeditado={formeditado}
+                            className="px-3"
+                            title={title}
+                            form={form}
+                            onChange={this.onChange}
+                            onChangeAdjunto={this.onChangeAdjunto}
+                            clearFiles={this.clearFiles}
+                            options={options}
+                            setOptions={this.setOptions}
+                            onSubmit={this.onSubmit}
+                            data={data} />
                     </Card.Body>
                 </Card>
             </Layout>
@@ -613,7 +570,7 @@ class IngresosForm extends Component{
 }
 
 const mapStateToProps = state => {
-    return{
+    return {
         authUser: state.authUser
     }
 }

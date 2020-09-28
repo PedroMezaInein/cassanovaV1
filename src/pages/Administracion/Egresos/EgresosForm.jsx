@@ -5,90 +5,81 @@ import swal from 'sweetalert'
 import { URL_DEV } from '../../../constants'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert, doneAlert } from '../../../functions/alert'
-import Layout from '../../../components/layout/layout' 
+import Layout from '../../../components/layout/layout'
 import { EgresosForm as EgresosFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
-
-class EgresosForm extends Component{
-
+class EgresosForm extends Component {
     state = {
         title: 'Nuevo egreso',
-        options:{
-            empresas:[],
-            cuentas:[],
-            areas:[],
-            subareas:[],
-            tiposPagos:[],
-            tiposImpuestos:[],
-            estatusCompras:[],
+        options: {
+            empresas: [],
+            cuentas: [],
+            areas: [],
+            subareas: [],
+            tiposPagos: [],
+            tiposImpuestos: [],
+            estatusCompras: [],
             proveedores: [],
-        },form:{
+        }, form: {
             factura: 'Sin factura',
-            
             rfc: '',
             proveedor: '',
             empresa: '',
             cuenta: '',
-            area:'',
+            area: '',
             subarea: '',
             total: '',
             comision: '',
             descripcion: '',
             facturaObject: '',
-
             tipoPago: 0,
             tipoImpuesto: 0,
             estatusCompra: 0,
-            
             fecha: new Date(),
-            
-            adjuntos:{
-                factura:{
+            adjuntos: {
+                factura: {
                     value: '',
                     placeholder: 'Factura',
                     files: []
                 },
-                pago:{
+                pago: {
                     value: '',
                     placeholder: 'Pago',
                     files: []
                 },
-                presupuesto:{
+                presupuesto: {
                     value: '',
                     placeholder: 'Presupuesto',
                     files: []
                 }
             }
         },
-        data:{
-            proveedores:[],
+        data: {
+            proveedores: [],
             empresas: []
         },
-        formeditado:0
+        formeditado: 0
     }
-
     onChange = e => {
-        const {form} = this.state
-        const {name, value} = e.target
+        const { form } = this.state
+        const { name, value } = e.target
         form[name] = value
         this.setState({
             ... this.state,
             form
         })
     }
-
     onChangeAdjunto = e => {
         const { form, data, options } = this.state
         const { files, value, name } = e.target
         let aux = []
-        for(let counter = 0; counter < files.length; counter ++){
-            if(name === 'factura')
-            {
+        for (let counter = 0; counter < files.length; counter++) {
+            if (name === 'factura') {
                 let extension = files[counter].name.slice((Math.max(0, files[counter].name.lastIndexOf(".")) || Infinity) + 1);
-                if(extension.toUpperCase() === 'XML'){
+                if (extension.toUpperCase() === 'XML') {
                     waitAlert()
                     const reader = new FileReader()
-                    reader.onload = async (e) => { 
+                    reader.onload = async (e) => {
                         const text = (e.target.result)
                         var XMLParser = require('react-xml-parser');
                         var xml = new XMLParser().parseFromString(text);
@@ -118,8 +109,8 @@ class EgresosForm extends Component{
                             serie: xml.attributes.Serie ? xml.attributes.Serie : '',
                         }
                         let tipoRelacion = ''
-                        if(relacionados){
-                            if(relacionados.length){
+                        if (relacionados) {
+                            if (relacionados.length) {
                                 relacionados = relacionados[0]
                                 tipoRelacion = relacionados.attributes.TipoRelacion
                                 let uuidRelacionado = xml.getElementsByTagName('cfdi:CfdiRelacionado')[0]
@@ -128,57 +119,57 @@ class EgresosForm extends Component{
                                 obj.uuid_relacionado = uuidRelacionado
                             }
                         }
-                        if(obj.numero_certificado === ''){
+                        if (obj.numero_certificado === '') {
                             let NoCertificado = text.search('NoCertificado="')
-                            if(NoCertificado)
-                                obj.numero_certificado = text.substring(NoCertificado+15, NoCertificado + 35)
+                            if (NoCertificado)
+                                obj.numero_certificado = text.substring(NoCertificado + 15, NoCertificado + 35)
                         }
                         let aux = ''
-                        if(obj.subtotal === ''){
+                        if (obj.subtotal === '') {
                             let Subtotal = text.search('SubTotal="')
-                            if(Subtotal)
-                                Subtotal = text.substring(Subtotal+10)
-                                aux = Subtotal.search('"')
-                                Subtotal = Subtotal.substring(0,aux)
-                                obj.subtotal = Subtotal
+                            if (Subtotal)
+                                Subtotal = text.substring(Subtotal + 10)
+                            aux = Subtotal.search('"')
+                            Subtotal = Subtotal.substring(0, aux)
+                            obj.subtotal = Subtotal
                         }
-                        if(obj.fecha === ''){
+                        if (obj.fecha === '') {
                             let Fecha = text.search('Fecha="')
-                            if(Fecha)
-                                Fecha = text.substring(Fecha+7)
-                                aux = Fecha.search('"')
-                                Fecha = Fecha.substring(0,aux)
-                                obj.fecha = Fecha
+                            if (Fecha)
+                                Fecha = text.substring(Fecha + 7)
+                            aux = Fecha.search('"')
+                            Fecha = Fecha.substring(0, aux)
+                            obj.fecha = Fecha
                         }
                         let auxEmpresa = ''
-                        data.empresas.find(function(element, index) {
-                            if(element.rfc === obj.rfc_receptor){
+                        data.empresas.find(function (element, index) {
+                            if (element.rfc === obj.rfc_receptor) {
                                 auxEmpresa = element
                             }
                         });
                         let auxProveedor = ''
-                        data.proveedores.find(function(element, index) {
-                            let cadena = obj.nombre_emisor.replace(' S. C.',  ' SC').toUpperCase()
-                            cadena = cadena.replace(',S.A.',  ' SA').toUpperCase()
+                        data.proveedores.find(function (element, index) {
+                            let cadena = obj.nombre_emisor.replace(' S. C.', ' SC').toUpperCase()
+                            cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
                             cadena = cadena.replace(/,/g, '').toUpperCase()
                             cadena = cadena.replace(/\./g, '').toUpperCase()
                             if (element.razon_social.toUpperCase() === obj.nombre_emisor.toUpperCase() ||
-                                element.razon_social.toUpperCase() === cadena){
-                                    auxProveedor = element
+                                element.razon_social.toUpperCase() === cadena) {
+                                auxProveedor = element
                             }
                         });
-                        if(auxEmpresa){
+                        if (auxEmpresa) {
                             options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')
                             form.empresa = auxEmpresa.name
-                        }else{
+                        } else {
                             errorAlert('No existe la empresa')
                         }
-                        if(auxProveedor){
+                        if (auxProveedor) {
                             form.proveedor = auxProveedor.id.toString()
-                        }else{
+                        } else {
                             createAlert('No existe el proveedor', '¿Lo quieres crear?', () => this.addProveedorAxios(obj))
                         }
-                        if(auxEmpresa && auxProveedor){
+                        if (auxEmpresa && auxProveedor) {
                             swal.close()
                         }
                         form.facturaObject = obj
@@ -196,7 +187,7 @@ class EgresosForm extends Component{
                 {
                     name: files[counter].name,
                     file: files[counter],
-                    url: URL.createObjectURL(files[counter]) ,
+                    url: URL.createObjectURL(files[counter]),
                     key: counter
                 }
             )
@@ -208,18 +199,17 @@ class EgresosForm extends Component{
             form
         })
     }
-
     clearFiles = (name, key) => {
         const { form } = this.state
         let aux = []
-        for(let counter = 0; counter < form['adjuntos'][name].files.length; counter ++){
-            if(counter !== key){
+        for (let counter = 0; counter < form['adjuntos'][name].files.length; counter++) {
+            if (counter !== key) {
                 aux.push(form['adjuntos'][name].files[counter])
             }
         }
-        if(aux.length < 1){
+        if (aux.length < 1) {
             form['adjuntos'][name].value = ''
-            if(name === 'factura')
+            if (name === 'factura')
                 form['facturaObject'] = ''
         }
         form['adjuntos'][name].files = aux
@@ -228,12 +218,11 @@ class EgresosForm extends Component{
             form
         })
     }
-
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'tipoImpuesto':
                 case 'tipoPago':
                 case 'estatusCompra':
@@ -247,17 +236,17 @@ class EgresosForm extends Component{
                     break;
                 case 'adjuntos':
                     form[element] = {
-                        factura:{
+                        factura: {
                             value: '',
                             placeholder: 'Factura',
                             files: []
                         },
-                        pago:{
+                        pago: {
                             value: '',
                             placeholder: 'Pago',
                             files: []
                         },
-                        presupuesto:{
+                        presupuesto: {
                             value: '',
                             placeholder: 'Presupuesto',
                             files: []
@@ -271,52 +260,47 @@ class EgresosForm extends Component{
         })
         return form;
     }
-
     onSubmit = e => {
         e.preventDefault()
-        const{ title } = this.state
+        const { title } = this.state
         waitAlert()
-        if(title === 'Editar egreso'){
+        if (title === 'Editar egreso') {
             this.editEgresoAxios()
-        }else
+        } else
             this.addEgresoAxios()
     }
-
-    componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
-        const { match : { params: { action: action } } } = this.props
-        const { history, location: { state: state} } = this.props
-        
-        const egresos = permisos.find(function(element, index) {
+    componentDidMount() {
+        const { authUser: { user: { permisos: permisos } } } = this.props
+        const { history: { location: { pathname: pathname } } } = this.props
+        const { match: { params: { action: action } } } = this.props
+        const { history, location: { state: state } } = this.props
+        const egresos = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
             return pathname === url + '/' + action
         });
-        switch(action){
+        switch (action) {
             case 'add':
                 this.setState({
                     ... this.state,
                     title: 'Nuevo egreso',
-                    formeditado:0
+                    formeditado: 0
                 })
                 break;
             case 'edit':
-                if(state){
-                    if(state.egreso)
-                    {
+                if (state) {
+                    if (state.egreso) {
                         const { egreso } = state
                         const { form, options } = this.state
-                        if(egreso.empresa){
+                        if (egreso.empresa) {
                             form.empresa = egreso.empresa.id.toString()
                             options['cuentas'] = setOptions(egreso.empresa.cuentas, 'nombre', 'id')
                             form.cuenta = egreso.cuenta.id.toString()
                         }
-                        if(egreso.subarea){
+                        if (egreso.subarea) {
                             form.area = egreso.subarea.area.id.toString()
                             options['subareas'] = setOptions(egreso.subarea.area.subareas, 'nombre', 'id')
                             form.subarea = egreso.subarea.id.toString()
                         }
-                        
                         form.tipoPago = egreso.tipo_pago ? egreso.tipo_pago.id : 0
                         form.tipoImpuesto = egreso.tipo_impuesto ? egreso.tipo_impuesto.id : 0
                         form.estatusCompra = egreso.estatus_compra ? egreso.estatus_compra.id : 0
@@ -325,16 +309,16 @@ class EgresosForm extends Component{
                         form.descripcion = egreso.descripcion
                         form.comision = egreso.comision
                         form.factura = egreso.factura ? 'Con factura' : 'Sin factura'
-                        if(egreso.proveedor){
+                        if (egreso.proveedor) {
                             form.proveedor = egreso.proveedor.id.toString()
                             form.rfc = egreso.proveedor.rfc
                         }
-                        if(egreso.pago){
+                        if (egreso.pago) {
                             form.adjuntos.pago.files = [{
                                 name: egreso.pago.name, url: egreso.pago.url
                             }]
                         }
-                        if(egreso.presupuesto){
+                        if (egreso.presupuesto) {
                             form.adjuntos.presupuesto.files = [{
                                 name: egreso.presupuesto.name, url: egreso.presupuesto.url
                             }]
@@ -345,44 +329,42 @@ class EgresosForm extends Component{
                             form,
                             options,
                             egreso: egreso,
-                            formeditado:1
+                            formeditado: 1
                         })
                     }
                     else
                         history.push('/administracion/egresos')
-                }else
+                } else
                     history.push('/administracion/egresos')
                 break;
             default:
                 break;
         }
-        if(!egresos)
+        if (!egresos)
             history.push('/')
         this.getEgresosAxios()
     }
-
     setOptions = (name, array) => {
-        const {options} = this.state
+        const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
             ... this.state,
             options
         })
     }
-
-    async getEgresosAxios(){
+    async getEgresosAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'egresos/options', { responseType:'json', headers: {Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'egresos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { proveedores, empresas, areas, tiposPagos, tiposImpuestos, estatusCompras } = response.data
                 const { options, data } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
                 options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
-                options['tiposPagos'] = setSelectOptions( tiposPagos, 'tipo' )
-                options['tiposImpuestos'] = setSelectOptions( tiposImpuestos, 'tipo' )
-                options['estatusCompras'] = setSelectOptions( estatusCompras, 'estatus' )
+                options['tiposPagos'] = setSelectOptions(tiposPagos, 'tipo')
+                options['tiposImpuestos'] = setSelectOptions(tiposImpuestos, 'tipo')
+                options['estatusCompras'] = setSelectOptions(estatusCompras, 'estatus')
                 data.proveedores = proveedores
                 data.empresas = empresas
                 this.setState({
@@ -394,9 +376,9 @@ class EgresosForm extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -405,16 +387,13 @@ class EgresosForm extends Component{
             console.log(error, 'error')
         })
     }
-
-    async addEgresoAxios(){
-        
+    async addEgresoAxios() {
         const { access_token } = this.props.authUser
         const { form } = this.state
         const data = new FormData();
-        
         let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'fecha':
                     data.append(element, (new Date(form[element])).toDateString())
                     break
@@ -429,8 +408,8 @@ class EgresosForm extends Component{
             }
         })
         aux = Object.keys(form.adjuntos)
-        aux.map( (element) => {
-            if(form.adjuntos[element].value !== ''){
+        aux.map((element) => {
+            if (form.adjuntos[element].value !== '') {
                 for (var i = 0; i < form.adjuntos[element].files.length; i++) {
                     data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
                     data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
@@ -438,27 +417,24 @@ class EgresosForm extends Component{
                 data.append('adjuntos[]', element)
             }
         })
-
-        await axios.post(URL_DEV + 'egresos', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'egresos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.setState({
                     ... this.state,
                     modal: false,
                     form: this.clearForm()
                 })
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
-                
                 const { history } = this.props
-                    history.push({
+                history.push({
                     pathname: '/administracion/egresos'
                 });
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -467,16 +443,13 @@ class EgresosForm extends Component{
             console.log(error, 'error')
         })
     }
-
-    async editEgresoAxios(){
-
+    async editEgresoAxios() {
         const { access_token } = this.props.authUser
         const { form, egreso } = this.state
         const data = new FormData();
-        
         let aux = Object.keys(form)
-        aux.map( (element) => {
-            switch(element){
+        aux.map((element) => {
+            switch (element) {
                 case 'fecha':
                     data.append(element, (new Date(form[element])).toDateString())
                     break
@@ -489,34 +462,31 @@ class EgresosForm extends Component{
             }
         })
         aux = Object.keys(form.adjuntos)
-        aux.map( (element) => {
+        aux.map((element) => {
             for (var i = 0; i < form.adjuntos[element].files.length; i++) {
                 data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
         })
-        
-        await axios.post(URL_DEV + 'egresos/update/' + egreso.id, data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'egresos/update/' + egreso.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.setState({
                     ... this.state,
                     modal: false,
                     form: this.clearForm()
                 })
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
-                
                 const { history } = this.props
-                    history.push({
+                history.push({
                     pathname: '/administracion/egresos'
                 });
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -525,51 +495,40 @@ class EgresosForm extends Component{
             console.log(error, 'error')
         })
     }
-
-    async addProveedorAxios(obj){
-
+    async addProveedorAxios(obj) {
         const { access_token } = this.props.authUser
-
         const data = new FormData();
-
-        let cadena = obj.nombre_emisor.replace(' S. C.',  ' SC').toUpperCase()
-        cadena = cadena.replace(',S.A.',  ' SA').toUpperCase()
+        let cadena = obj.nombre_emisor.replace(' S. C.', ' SC').toUpperCase()
+        cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
         cadena = cadena.replace(/,/g, '').toUpperCase()
         cadena = cadena.replace(/\./g, '').toUpperCase()
         data.append('nombre', cadena)
         data.append('razonSocial', cadena)
         data.append('rfc', obj.rfc_emisor.toUpperCase())
-
-        await axios.post(URL_DEV + 'proveedores', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'proveedores', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 const { proveedores } = response.data
-
                 const { options, data, form } = this.state
-
                 options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
                 data.proveedores = proveedores
-                proveedores.map( (proveedor) => {
-                    if(proveedor.razon_social === cadena){
+                proveedores.map((proveedor) => {
+                    if (proveedor.razon_social === cadena) {
                         form.proveedor = proveedor.id.toString()
                     }
                 })
-
                 this.setState({
                     ... this.state,
                     form,
                     data,
                     options
                 })
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -579,10 +538,10 @@ class EgresosForm extends Component{
         })
     }
 
-    render(){
+    render() {
         const { form, title, options, formeditado, data } = this.state
-        return(
-            <Layout active={'administracion'}  { ...this.props}>
+        return (
+            <Layout active={'administracion'}  {...this.props}>
                 <Card className="card-custom">
                     <Card.Header>
                         <div className="card-title">
@@ -590,28 +549,28 @@ class EgresosForm extends Component{
                         </div>
                     </Card.Header>
                     <Card.Body className="pt-0">
-                        <EgresosFormulario 
-                            className = "px-3"
+                        <EgresosFormulario
+                            className="px-3"
                             formeditado={formeditado}
-                            title = { title } 
-                            form = { form }
-                            onChange = { this.onChange } 
-                            onChangeAdjunto = { this.onChangeAdjunto } 
-                            clearFiles = { this.clearFiles } 
-                            options = { options } 
-                            setOptions = { this.setOptions } 
-                            onSubmit = {this.onSubmit}
-                            data = {data}/> 
+                            title={title}
+                            form={form}
+                            onChange={this.onChange}
+                            onChangeAdjunto={this.onChangeAdjunto}
+                            clearFiles={this.clearFiles}
+                            options={options}
+                            setOptions={this.setOptions}
+                            onSubmit={this.onSubmit}
+                            data={data} 
+                        />
                     </Card.Body>
                 </Card>
-                
             </Layout>
         )
     }
 }
 
 const mapStateToProps = state => {
-    return{
+    return {
         authUser: state.authUser
     }
 }
