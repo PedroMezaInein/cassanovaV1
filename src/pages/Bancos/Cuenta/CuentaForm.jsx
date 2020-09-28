@@ -8,9 +8,7 @@ import { Card } from 'react-bootstrap';
 import { CuentaForm as CuentaFormulario } from '../../../components/forms'
 import swal from 'sweetalert';
 import { setOptions, setSelectOptions } from '../../../functions/setters';
-
 class CuentaForm extends Component {
-
     state = {
         title: 'Nueva cuenta',
         formeditado: 0,
@@ -21,7 +19,7 @@ class CuentaForm extends Component {
             tipos: []
         },
         tipo: '',
-        form:{
+        form: {
             nombre: '',
             numero: '',
             estatus: 0,
@@ -33,55 +31,50 @@ class CuentaForm extends Component {
             descripcion: ''
         }
     }
-
-    componentDidMount(){
+    componentDidMount() {
         let queryString = this.props.history.location.search
         let tipo = ''
-        if(queryString){
+        if (queryString) {
             let params = new URLSearchParams(queryString)
             let type = params.get("type")
-            if(type){
+            if (type) {
                 tipo = type
             }
         }
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
-        const { match : { params: { action: action } } } = this.props
-        const { history, location: { state: state} } = this.props
-        const modulo = permisos.find(function(element, index) {
+        const { authUser: { user: { permisos: permisos } } } = this.props
+        const { history: { location: { pathname: pathname } } } = this.props
+        const { match: { params: { action: action } } } = this.props
+        const { history, location: { state: state } } = this.props
+        const modulo = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
             return pathname === url + '/' + action
         });
-        if(!modulo)
+        if (!modulo)
             history.push('/')
         this.getOptionsAxios(tipo)
-        switch(action){
+        switch (action) {
             case 'add':
                 this.setState({
                     ... this.state,
                     title: 'Nueva cuenta',
-                    formeditado:0
+                    formeditado: 0
                 })
                 break;
             case 'edit':
-                if(state){
-                    if(state.cuenta)
-                    {
-
-                        const { form, options } = this.state
+                if (state) {
+                    if (state.cuenta) {
+                        const { form } = this.state
                         const { cuenta } = state
-
                         form.nombre = cuenta.nombre
                         form.numero = cuenta.numero
-                        if(cuenta.estatus)
+                        if (cuenta.estatus)
                             form.estatus = cuenta.estatus.id
-                        if(cuenta.tipo)
+                        if (cuenta.tipo)
                             form.tipo = cuenta.tipo.id.toString()
-                        if(cuenta.empresa_principal_id)
+                        if (cuenta.empresa_principal_id)
                             form.empresa_principal = cuenta.empresa_principal_id.toString()
-                        
-                        if(cuenta.empresa)
-                            cuenta.empresa.map((emp)=>{
+                        if (cuenta.empresa)
+                            cuenta.empresa.map((emp) => {
                                 this.onChange({ target: { value: emp.id.toString(), name: 'empresa' } })
                                 form.empresas.push({
                                     id: emp.id,
@@ -89,47 +82,44 @@ class CuentaForm extends Component {
                                 })
                             })
                         form.descripcion = cuenta.descripcion
-
                         this.setState({
                             /* ... this.state, */
                             title: 'Editar cuenta',
-                            formeditado:1,
+                            formeditado: 1,
                             form,
                             cuenta: cuenta
                         })
                     }
                     else
                         history.push('/bancos/cuentas')
-                }else
+                } else
                     history.push('/bancos/cuentas')
                 break;
             default:
                 break;
         }
     }
-
     onSubmit = e => {
         e.preventDefault()
         waitAlert()
         const { title } = this.state
-        if(title === 'Editar cuenta')
+        if (title === 'Editar cuenta')
             this.editCuentaAxios()
         else
             this.addCuentaAxios()
     }
-
     onChange = e => {
         const { name, value } = e.target
         const { form, options } = this.state
-        if(name === 'empresa'){
-            options.empresas.map( (empresa) => {
-                if(value.toString() === empresa.value){
+        if (name === 'empresa') {
+            options.empresas.map((empresa) => {
+                if (value.toString() === empresa.value) {
                     let aux = true
-                    form.empresas.map( (element)=>{
-                        if(value.toString() === element.id.toString())
+                    form.empresas.map((element) => {
+                        if (value.toString() === element.id.toString())
                             aux = false
                     })
-                    if(aux)
+                    if (aux)
                         form.empresas.push({
                             text: empresa.name,
                             id: empresa.value
@@ -143,12 +133,11 @@ class CuentaForm extends Component {
             form
         })
     }
-
     removeEmpresa = empresa => {
         const { form } = this.state
         let aux = []
-        form.empresas.map( (element) => {
-            if(element !== empresa)
+        form.empresas.map((element) => {
+            if (element !== empresa)
                 aux.push(element)
         })
         form.empresas = aux
@@ -157,7 +146,6 @@ class CuentaForm extends Component {
             form
         })
     }
-
     async getOptionsAxios(tipo) {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -167,36 +155,36 @@ class CuentaForm extends Component {
                 const { bancos, estatus, tipos, empresas } = response.data
                 const { options, cuenta } = this.state
                 let aux = []
-                if(tipo === 'bancos'){
+                if (tipo === 'bancos') {
                     bancos.map((banco) => {
                         if (banco.nombre !== 'CAJA CHICA')
                             aux.push(banco)
                     })
                 }
-                if(tipo === 'cajas'){
+                if (tipo === 'cajas') {
                     bancos.map((banco) => {
-                        if (banco.nombre === 'CAJA CHICA'){
+                        if (banco.nombre === 'CAJA CHICA') {
                             aux.push(banco)
                             this.onChange({ target: { value: banco.id.toString(), name: 'banco' } })
                         }
                     })
-                    tipos.map( (element) => {
-                        if(element.tipo === 'EFECTIVO'){
+                    tipos.map((element) => {
+                        if (element.tipo === 'EFECTIVO') {
                             this.onChange({ target: { value: element.id.toString(), name: 'tipo' } })
                         }
                     })
                 }
-                if(cuenta){
-                    if(cuenta.banco){
-                        if(cuenta.banco.nombre === 'CAJA CHICA'){
+                if (cuenta) {
+                    if (cuenta.banco) {
+                        if (cuenta.banco.nombre === 'CAJA CHICA') {
                             tipo = 'cajas'
                             bancos.map((banco) => {
-                                if (banco.nombre === 'CAJA CHICA'){
+                                if (banco.nombre === 'CAJA CHICA') {
                                     aux.push(banco)
                                     this.onChange({ target: { value: banco.id.toString(), name: 'banco' } })
                                 }
                             })
-                        }else{
+                        } else {
                             tipo = 'bancos'
                             bancos.map((banco) => {
                                 if (banco.nombre !== 'CAJA CHICA')
@@ -206,8 +194,7 @@ class CuentaForm extends Component {
                         }
                     }
                 }
-
-                if(aux.length === 0)
+                if (aux.length === 0)
                     aux = bancos
                 options.bancos = setOptions(aux, 'nombre', 'id')
                 options.tipos = setOptions(tipos, 'tipo', 'id')
@@ -232,7 +219,6 @@ class CuentaForm extends Component {
             console.log(error, 'error')
         })
     }
-
     async addCuentaAxios() {
         const { access_token } = this.props.authUser
         let { form } = this.state
@@ -240,13 +226,11 @@ class CuentaForm extends Component {
         form.tipoBanco = tipo === 'cajas' ? 'Caja chica' : ''
         await axios.post(URL_DEV + 'cuentas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                
                 const { history } = this.props
                 history.push({
                     pathname: '/bancos/cuentas'
                 });
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Cuenta agregada con éxito.')
-                
             },
             (error) => {
                 console.log(error, 'error')
@@ -261,18 +245,15 @@ class CuentaForm extends Component {
             console.log(error, 'error')
         })
     }
-
     async editCuentaAxios() {
         const { access_token } = this.props.authUser
         const { cuenta, form } = this.state
         await axios.put(URL_DEV + 'cuentas/' + cuenta.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 const { history } = this.props
                 history.push({
                     pathname: '/bancos/cuentas'
                 });
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Cuenta editada con éxito.')
             },
             (error) => {
@@ -288,26 +269,27 @@ class CuentaForm extends Component {
             console.log(error, 'error')
         })
     }
-
     render() {
         const { title, tipo, options, form, formeditado } = this.state
         return (
-            <Layout active = 'bancos' { ...this.props }>
+            <Layout active='bancos' {...this.props}>
                 <Card>
                     <Card.Header>
                         <div className="card-custom">
                             <h3 className="card-label">
-                                { title }
+                                {title}
                             </h3>
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <CuentaFormulario options = { options }
-                            formeditado = { formeditado }
-                            form = { form } onChange = { this.onChange } 
-                            removeEmpresa = { this.removeEmpresa } 
-                            onSubmit = { this.onSubmit } 
-                            tipo = { tipo } />
+                        <CuentaFormulario
+                            options={options}
+                            formeditado={formeditado}
+                            form={form} onChange={this.onChange}
+                            removeEmpresa={this.removeEmpresa}
+                            onSubmit={this.onSubmit}
+                            tipo={tipo} 
+                        />
                     </Card.Body>
                 </Card>
             </Layout>
@@ -316,7 +298,7 @@ class CuentaForm extends Component {
 }
 
 const mapStateToProps = (state) => {
-    return { authUser: state.authUser }   
+    return { authUser: state.authUser }
 }
 
 const mapDispatchToProps = dispatch => ({

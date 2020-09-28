@@ -8,7 +8,6 @@ import Layout from '../../components/layout/layout'
 import { CalidadView } from '../../components/forms'
 import { Form } from 'react-bootstrap'
 class CalidadForm extends Component {
-
     state = {
         ticket: '',
         form: {
@@ -49,7 +48,6 @@ class CalidadForm extends Component {
         });
         this.getTicketsOptions()
         switch (action) {
-
             case 'see':
                 if (state) {
                     if (state.calidad) {
@@ -77,7 +75,6 @@ class CalidadForm extends Component {
         if (!remisiones)
             history.push('/')
     }
-
     setForm = ticket => {
         const { form } = this.state
         let aux = []
@@ -116,7 +113,6 @@ class CalidadForm extends Component {
         form.recibe = ticket.recibe
         return form
     }
-
     onChangeAdjunto = e => {
         const { form } = this.state
         const { files, value, name } = e.target
@@ -138,7 +134,6 @@ class CalidadForm extends Component {
             form
         })
     }
-
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -148,24 +143,20 @@ class CalidadForm extends Component {
             form
         })
     }
-
     handleChange = (files, item) => {
         if (item === 'presupuesto')
             questionAlert('¿DESEAS ENVIAR EL PRESUPUESTO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.sendPresupuestoTicketAxios(files, item))
         else
             this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
     }
-
     deleteFile = element => {
         deleteAlert('¿Deseas eliminar el archivo?', () => this.deleteAdjuntoAxios(element.id))
     }
-
     changeEstatus = estatus => {
         const { ticket } = this.state
         // this.changeEstatusAxios({id: ticket.id, estatus: estatus})
         questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
     }
-
     openModalWithInput = estatus => {
         const { ticket } = this.state
         // this.changeEstatusAxios({id: ticket.id, estatus: estatus})
@@ -181,25 +172,20 @@ class CalidadForm extends Component {
             </div>
         )
     }
-
     onSubmit = e => {
         e.preventDefault();
         this.saveProcesoTicketAxios('')
     }
-
     generateEmail = value => {
         this.saveProcesoTicketAxios(value)
     }
-
     async deleteAdjuntoAxios(id) {
         const { access_token } = this.props.authUser
         const { ticket } = this.state
         await axios.delete(URL_DEV + 'calidad/' + ticket.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { ticket } = response.data
-
                 window.history.replaceState(ticket, 'calidad')
-
                 this.setState({
                     ... this.state,
                     ticket: ticket,
@@ -220,15 +206,11 @@ class CalidadForm extends Component {
             console.log(error, 'error')
         })
     }
-
     async saveProcesoTicketAxios(email) {
-
         waitAlert()
-
         const { access_token } = this.props.authUser
         const { ticket, form } = this.state
         const data = new FormData();
-
         let aux = Object.keys(form)
         aux.map((element) => {
             switch (element) {
@@ -254,13 +236,10 @@ class CalidadForm extends Component {
         })
         if (email !== '')
             data.append('email', email)
-
         await axios.post(URL_DEV + 'calidad/proceso/' + ticket.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { ticket } = response.data
-
                 window.history.replaceState(ticket, 'calidad')
-
                 this.setState({
                     ... this.state,
                     ticket: ticket,
@@ -281,17 +260,12 @@ class CalidadForm extends Component {
             console.log(error, 'error')
         })
     }
-
     async sendPresupuestoTicketAxios(files, item) {
-
         this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
-
         waitAlert()
-
         const { access_token } = this.props.authUser
         const { ticket, form } = this.state
         const data = new FormData();
-
         let aux = Object.keys(form.adjuntos)
         aux.map((element) => {
             if (form.adjuntos[element].value !== '') {
@@ -305,9 +279,7 @@ class CalidadForm extends Component {
         await axios.post(URL_DEV + 'calidad/presupuesto/' + ticket.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { ticket } = response.data
-
                 window.history.replaceState(ticket, 'calidad')
-
                 this.setState({
                     ... this.state,
                     ticket: ticket,
@@ -328,15 +300,12 @@ class CalidadForm extends Component {
             console.log(error, 'error')
         })
     }
-
     async changeEstatusAxios(data) {
         const { access_token } = this.props.authUser
         await axios.put(URL_DEV + 'calidad/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { ticket } = response.data
-
                 window.history.replaceState(ticket, 'calidad')
-
                 this.setState({
                     ... this.state,
                     ticket: ticket,
@@ -359,16 +328,13 @@ class CalidadForm extends Component {
             console.log(error, 'error')
         })
     }
-
     async cancelTicket(data) {
         const { access_token } = this.props.authUser
         data.motivo = document.getElementById('motivo').value
         await axios.put(URL_DEV + 'calidad/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { ticket } = response.data
-
                 window.history.replaceState(ticket, 'calidad')
-
                 this.setState({
                     ... this.state,
                     ticket: ticket,
@@ -391,7 +357,6 @@ class CalidadForm extends Component {
             console.log(error, 'error')
         })
     }
-
     async getTicketsOptions() {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'calidad/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -417,11 +382,8 @@ class CalidadForm extends Component {
             console.log(error, 'error')
         })
     }
-
     render() {
-
         const { ticket, form, options } = this.state
-
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <CalidadView
@@ -434,7 +396,8 @@ class CalidadForm extends Component {
                     onSubmit={this.onSubmit}
                     generateEmail={this.generateEmail}
                     openModalWithInput={this.openModalWithInput}
-                    deleteFile={this.deleteFile} />
+                    deleteFile={this.deleteFile}
+                />
             </Layout>
         )
     }

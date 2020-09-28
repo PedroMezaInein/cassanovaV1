@@ -15,7 +15,6 @@ import { setArrayTable, setDateTable, setListTable, setMoneyTable, setTextTable,
 import axios from 'axios'
 const $ = require('jquery');
 class Cuenta extends Component {
-
     state = {
         key: 'bancos',
         keyEstados: 'listado',
@@ -39,7 +38,6 @@ class Cuenta extends Component {
         estados: [],
         cuenta: ''
     }
-
     componentDidMount() {
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
@@ -51,7 +49,6 @@ class Cuenta extends Component {
         if (!modulo)
             history.push('/')
     }
-
     controlledTab = value => {
         if (value === 'bancos') {
             this.getBancosAxios()
@@ -64,7 +61,6 @@ class Cuenta extends Component {
             key: value
         })
     }
-
     controlledTabEstados = value => {
         const { form } = this.state
         if (value === 'nuevo') {
@@ -72,14 +68,12 @@ class Cuenta extends Component {
             form.adjuntos.adjuntos.value = ''
             form.fecha = new Date()
         }
-
         this.setState({
             ... this.state,
             keyEstados: value,
             form
         })
     }
-
     setCuentas = cuentas => {
         console.log(cuentas)
         let aux = []
@@ -100,21 +94,19 @@ class Cuenta extends Component {
         })
         return aux
     }
-
     setLabel = estatus => {
         let text = {}
-        if(estatus==="Activo"){
+        if (estatus === "Activo") {
             text.letra = '#388E3C'
             text.fondo = '#E8F5E9'
             text.estatus = 'Activo'
-        }else{
+        } else {
             text.letra = '#F64E60'
             text.fondo = '#FFE2E5'
             text.estatus = 'Inactivo'
         }
         return setLabelTable(text)
     }
-
     setActions = () => {
         let aux = []
         aux.push(
@@ -149,7 +141,6 @@ class Cuenta extends Component {
         )
         return aux
     }
-
     setEstados = estados => {
         let aux = []
         estados.map((estado, key) => {
@@ -162,7 +153,6 @@ class Cuenta extends Component {
         })
         return aux
     }
-
     setActionsEstado = () => {
         let aux = []
         aux.push(
@@ -176,7 +166,6 @@ class Cuenta extends Component {
         )
         return aux
     }
-
     onChangeCalendar = date => {
         const { form } = this.state
         form.fecha = date
@@ -185,7 +174,6 @@ class Cuenta extends Component {
             form
         })
     }
-
     handleChange = (files, item) => {
         const { form } = this.state
         let aux = []
@@ -206,15 +194,12 @@ class Cuenta extends Component {
             form
         })
     }
-
     async getBancosAxios() {
         $('#cuentas_bancos').DataTable().ajax.reload();
     }
-
     async getCajasAxios() {
         $('#cuentas_cajas').DataTable().ajax.reload();
     }
-
     changePageEdit = cuenta => {
         const { history } = this.props
         history.push({
@@ -222,7 +207,6 @@ class Cuenta extends Component {
             state: { cuenta: cuenta }
         });
     }
-
     openModalDelete = cuenta => {
         const { modal } = this.state
         modal.delete = true
@@ -232,7 +216,6 @@ class Cuenta extends Component {
             cuenta: cuenta
         })
     }
-
     handleCloseDelete = () => {
         const { modal } = this.state
         modal.delete = false
@@ -242,7 +225,6 @@ class Cuenta extends Component {
             cuenta: ''
         })
     }
-
     openModalSee = cuenta => {
         const { modal } = this.state
         modal.see = true
@@ -252,7 +234,6 @@ class Cuenta extends Component {
             cuenta: cuenta
         })
     }
-
     handleCloseSee = () => {
         const { modal } = this.state
         modal.see = false
@@ -262,7 +243,6 @@ class Cuenta extends Component {
             cuenta: ''
         })
     }
-
     openModalEstado = cuenta => {
         const { modal, data } = this.state
         modal.estado = true
@@ -275,7 +255,6 @@ class Cuenta extends Component {
             estados: this.setEstados(cuenta.estados)
         })
     }
-
     handleCloseEstado = () => {
         const { modal, data } = this.state
         modal.estado = false
@@ -288,36 +267,28 @@ class Cuenta extends Component {
             estados: []
         })
     }
-
     openModalDeleteEstado = estado => {
         deleteAlert('¿Deseas eliminar el estado de cuenta?', () => this.deleteEstadoCuentaAxios(estado))
     }
-
     async deleteCuentaAxios() {
         const { access_token } = this.props.authUser
         const { cuenta } = this.state
         await axios.delete(URL_DEV + 'cuentas/' + cuenta.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 const { key, modal } = this.state
-
                 if (key === 'bancos') {
                     this.getBancosAxios()
                 }
                 if (key === 'cajas') {
                     this.getCajasAxios()
                 }
-
                 modal.delete = false
-
                 this.setState({
                     ... this.state,
                     modal,
                     cuenta: ''
                 })
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Cuenta eliminada con éxito.')
-
             },
             (error) => {
                 console.log(error, 'error')
@@ -332,13 +303,10 @@ class Cuenta extends Component {
             console.log(error, 'error')
         })
     }
-
     async addEstadoAxios() {
-
         const { access_token } = this.props.authUser
         const { form, cuenta } = this.state
         const data = new FormData();
-
         let aux = Object.keys(form.adjuntos)
         aux.map((element) => {
             for (var i = 0; i < form.adjuntos[element].files.length; i++) {
@@ -347,27 +315,21 @@ class Cuenta extends Component {
             }
             data.append('adjuntos[]', element)
         })
-
         data.append('id', cuenta.id)
-
         await axios.post(URL_DEV + 'cuentas/estado', data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 const { cuenta } = response.data
                 const { data, key, form } = this.state
                 data.estados = cuenta.estados
-
                 if (key === 'bancos') {
                     this.getBancosAxios()
                 }
                 if (key === 'cajas') {
                     this.getCajasAxios()
                 }
-
                 form.adjuntos.adjuntos.files = []
                 form.adjuntos.adjuntos.value = ''
                 form.fecha = new Date()
-
                 this.setState({
                     ... this.state,
                     form,
@@ -376,7 +338,6 @@ class Cuenta extends Component {
                     data,
                     keyEstados: 'listado'
                 })
-
                 doneAlert('Adjunto creado con éxito')
             },
             (error) => {
@@ -392,7 +353,6 @@ class Cuenta extends Component {
             console.log(error, 'error')
         })
     }
-
     async deleteEstadoCuentaAxios(estado) {
         const { access_token } = this.props.authUser
         const { cuenta } = this.state
@@ -401,20 +361,17 @@ class Cuenta extends Component {
                 const { cuenta } = response.data
                 const { data, key } = this.state
                 data.estados = cuenta.estados
-
                 if (key === 'bancos') {
                     this.getBancosAxios()
                 }
                 if (key === 'cajas') {
                     this.getCajasAxios()
                 }
-
                 this.setState({
                     ... this.state,
                     data,
                     estados: this.setEstados(cuenta.estados)
                 })
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Estado de cuenta eliminado con éxito.')
             },
             (error) => {
@@ -430,7 +387,6 @@ class Cuenta extends Component {
             console.log(error, 'error')
         })
     }
-
     render() {
         const { key, cuenta, modal, keyEstados, form, estados, data } = this.state
         return (
@@ -466,7 +422,6 @@ class Cuenta extends Component {
                                     isTab={true} />
                                 : ''
                         }
-
                     </Tab>
                     <Tab eventKey='cajas' title='Caja chica'>
                         {
@@ -496,25 +451,19 @@ class Cuenta extends Component {
                                     isTab={true} />
                                 : ''
                         }
-
                     </Tab>
                 </Tabs>
-
                 <ModalDelete
                     title={cuenta === null ? "¿Estás seguro que deseas eliminar la cuenta " : "¿Estás seguro que deseas eliminar la cuenta " + cuenta.nombre + " ?"}
-                    show={modal.delete} handleClose={this.handleCloseDelete}
-                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteCuentaAxios() }} />
-
-                <Modal size='lg' title='Cuenta' show={modal.see}
-                    handleClose={this.handleCloseSee}>
+                    show={modal.delete}
+                    handleClose={this.handleCloseDelete}
+                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteCuentaAxios() }}
+                />
+                <Modal size='lg' title='Cuenta' show={modal.see} handleClose={this.handleCloseSee}>
                     <CuentaCard cuenta={cuenta} />
                 </Modal>
-
-                <Modal size="lg" title={cuenta === null ? "Estados de cuenta" : "Estados de cuenta para " + cuenta.nombre}
-                    show={modal.estado} handleClose={this.handleCloseEstado} >
-                    <Tabs defaultActiveKey='listado' activeKey={keyEstados}
-                        onSelect={(value) => { this.controlledTabEstados(value) }}
-                        className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100">
+                <Modal size="lg" title={cuenta === null ? "Estados de cuenta" : "Estados de cuenta para " + cuenta.nombre} show={modal.estado} handleClose={this.handleCloseEstado} >
+                    <Tabs defaultActiveKey='listado' activeKey={keyEstados} onSelect={(value) => { this.controlledTabEstados(value) }} className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100">
                         <Tab eventKey='listado' title='Estados de cuenta'>
                             <TableForModals
                                 columns={EDOS_CUENTAS_COLUMNS}
@@ -526,7 +475,8 @@ class Cuenta extends Component {
                                     }
                                 }
                                 elements={data.estados}
-                                idTable='kt_datatable_estado' />
+                                idTable='kt_datatable_estado'
+                            />
                         </Tab>
                         <Tab eventKey='nuevo' title='Agregar estado de cuenta'>
                             <Form >

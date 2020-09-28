@@ -4,18 +4,16 @@ import { connect } from 'react-redux'
 import { Button, SelectSearch, Calendar } from '../../components/form-components'
 import { Modal, ModalDelete } from '../../components/singles'
 import axios from 'axios'
-import { URL_DEV, EDOS_CUENTAS_COLUMNS_2} from '../../constants'
+import { URL_DEV, EDOS_CUENTAS_COLUMNS_2 } from '../../constants'
 import Moment from 'react-moment'
 import { Small, B } from '../../components/texts'
 import { Form } from 'react-bootstrap'
 import NewTable from '../../components/tables/NewTable'
 import { renderToString } from 'react-dom/server'
-import { waitAlert, doneAlert, errorAlert, forbiddenAccessAlert} from '../../functions/alert'
-import { setTextTable, setDateTable, setArrayTable} from '../../functions/setters'
+import { waitAlert, doneAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
+import { setTextTable, setDateTable, setArrayTable } from '../../functions/setters'
 import { EstadoCuentaCard } from '../../components/cards'
-
 class EstadosCuenta extends Component {
-
     state = {
         modal: false,
         modalSee: false,
@@ -31,7 +29,6 @@ class EstadosCuenta extends Component {
             estados: []
         }
     }
-
     componentDidMount() {
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
@@ -44,12 +41,10 @@ class EstadosCuenta extends Component {
             history.push('/')
         this.getEstadosCuenta()
     }
-
     setEstados = estados => {
         let aux = []
         estados.map((estado, key) => {
             aux.push({
-
                 actions: this.setActions(estado),
                 identificador: renderToString(setTextTable(estado.id)),
                 cuenta: estado.cuenta ?
@@ -60,9 +55,7 @@ class EstadosCuenta extends Component {
                         ]
                     ))
                     : '',
-
                 estado: renderToString(setArrayTable([{ url: estado.adjunto.url, text: estado.adjunto.name }])),
-
                 fecha: renderToString(setDateTable(estado.created_at)),
                 id: estado.id
             })
@@ -72,8 +65,6 @@ class EstadosCuenta extends Component {
             estados: aux
         })
     }
-
-
     setActions = () => {
         let aux = []
         aux.push(
@@ -87,14 +78,13 @@ class EstadosCuenta extends Component {
             {
                 text: 'Ver',
                 btnclass: 'info',
-                iconclass: 'flaticon2-expand',                  
+                iconclass: 'flaticon2-expand',
                 action: 'see',
-                tooltip: {id:'see', text:'Mostrar', type:'info'},
+                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
             },
         )
         return aux
     }
-
     setLinks = value => {
         return (
             <a href={value.url} target="_blank">
@@ -141,7 +131,6 @@ class EstadosCuenta extends Component {
             </Small>
         )
     }
-
     onChangeAdjunto = (e) => {
         this.setState({
             ... this.state,
@@ -172,7 +161,6 @@ class EstadosCuenta extends Component {
             this.addEstadoAxios()
         }
     }
-
     handleClose = () => {
         const { modal } = this.state
         this.setState({
@@ -218,7 +206,6 @@ class EstadosCuenta extends Component {
             estado: estado
         })
     }
-
     handleCloseSee = () => {
         this.setState({
             ... this.state,
@@ -226,7 +213,6 @@ class EstadosCuenta extends Component {
             estado: ''
         })
     }
-
     async getEstadosCuenta() {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'estados-cuentas', { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -243,13 +229,12 @@ class EstadosCuenta extends Component {
                     ... this.state,
                     cuentas: aux
                 })
-
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -285,9 +270,9 @@ class EstadosCuenta extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -315,9 +300,9 @@ class EstadosCuenta extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -327,10 +312,9 @@ class EstadosCuenta extends Component {
         })
     }
     render() {
-        const { modal, modalDelete, adjunto, adjuntoName, cuentas, cuenta, estados, fecha, data, modalSee, estado} = this.state
+        const { modal, modalDelete, adjunto, adjuntoName, cuentas, cuenta, estados, fecha, data, modalSee, estado } = this.state
         return (
             <Layout active={'bancos'}  {...this.props}>
-
                 <NewTable columns={EDOS_CUENTAS_COLUMNS_2} data={estados}
                     title='Estados de cuenta' subtitle='Listado de estados de cuenta'
                     mostrar_boton={true}
@@ -347,10 +331,14 @@ class EstadosCuenta extends Component {
                     cardTableHeader='cardTableHeader'
                     cardBody='cardBody'
                 />
-                <ModalDelete title={"¿Estás seguro que deseas eliminar el estado de cuenta?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteEstadoAxios() }}>
+                <ModalDelete 
+                    title={"¿Estás seguro que deseas eliminar el estado de cuenta?"}
+                    show={modalDelete}
+                    handleClose={this.handleCloseDelete}
+                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteEstadoAxios() }}
+                >
                 </ModalDelete>
                 <Modal size="xl" title={"Agregar estado de cuenta"} show={modal} handleClose={this.handleClose} >
-
                     <Form onSubmit={this.submitForm}>
                         <div className="form-group row form-group-marginless pt-4">
                             <div className="col-md-8">
@@ -393,7 +381,6 @@ class EstadosCuenta extends Component {
                                 </div>
                             </div>
                             {
-
                                 adjuntoName &&
                                 <div className="col-md-8">
                                     <div className="tagify form-control p-1" tabIndex="-1" style={{ borderWidth: "0px" }}>
@@ -412,7 +399,6 @@ class EstadosCuenta extends Component {
                                 </div>
                             }
                         </div>
-
                         <div className="row mx-0">
                             <div className="col-md-12 text-center mt-3">
                                 <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
@@ -420,8 +406,8 @@ class EstadosCuenta extends Component {
                         </div>
                     </Form>
                 </Modal>
-                <Modal size="lg" title="Estado de cuenta" show = { modalSee } handleClose = { this.handleCloseSee } >
-                    <EstadoCuentaCard estado={estado}/>
+                <Modal size="lg" title="Estado de cuenta" show={modalSee} handleClose={this.handleCloseSee} >
+                    <EstadoCuentaCard estado={estado} />
                 </Modal>
             </Layout>
         )
