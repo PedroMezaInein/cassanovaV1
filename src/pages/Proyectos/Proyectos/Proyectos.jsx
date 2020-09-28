@@ -1180,7 +1180,7 @@ class Proyectos extends Component {
     }
 
     render() {
-        const { modalDelete, modalAdjuntos, modalAvances, title, form, proyectos, proyecto, data, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey, modalSee } = this.state
+        const { modalDelete, modalAdjuntos, modalAvances, title, form, proyecto, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey, modalSee } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <NewTableServerRender

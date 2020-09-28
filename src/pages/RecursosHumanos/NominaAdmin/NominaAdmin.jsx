@@ -179,7 +179,7 @@ class NominaAdmin extends Component {
     async deleteNominaAdminAxios(){
         waitAlert()
         const { access_token } = this.props.authUser
-        const { form, nomina} = this.state
+        const { nomina} = this.state
         
         await axios.delete(URL_DEV + 'rh/nomina-administrativa/' + nomina.id, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -235,7 +235,7 @@ class NominaAdmin extends Component {
             (response) => {
 
                 const { nomina } = response.data
-                const { data, key } = this.state
+                const { data } = this.state
                 data.adjuntos = nomina.adjuntos
                 this.getNominasAxios()
 
@@ -270,7 +270,7 @@ class NominaAdmin extends Component {
         await axios.delete(URL_DEV + 'rh/nomina-administrativa/' + nomina.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { nomina } = response.data
-                const { data, key } = this.state
+                const { data } = this.state
                 data.adjuntos = nomina.adjuntos
                 this.getNominasAxios()
                 this.setState({

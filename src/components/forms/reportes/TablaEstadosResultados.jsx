@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import Moment from 'react-moment'
 import { setMoneyTableSinSmall } from '../../../functions/setters'
 import Pagination from "react-js-pagination";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
 class TablaEstadosResultados extends Component {
 

@@ -381,7 +381,7 @@ class Facturacion extends Component {
         await axios.get(URL_DEV + 'facturas', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { data } = this.state
-                const { facturas, facturasVentas } = response.data
+                const { facturasVentas } = response.data
                 data.facturas = facturasVentas
                 this.setState({
                     facturas: this.setFactura(facturasVentas),
@@ -438,7 +438,7 @@ class Facturacion extends Component {
     }
 
     onChangeAdjuntoFacturas = e => {
-        const { form, data, options } = this.state
+        const { form, data } = this.state
         const { files, value, name } = e.target
         let aux = []
         for(let counter = 0; counter < files.length; counter ++){

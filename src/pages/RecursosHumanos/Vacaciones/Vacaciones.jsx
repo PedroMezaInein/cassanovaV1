@@ -147,7 +147,7 @@ class Vacaciones extends Component {
         const { form } = this.state
         await axios.post(URL_DEV + 'vacaciones/admin', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empleados, vacaciones, vacaciones_espera, vacacion } = response.data
+                const { empleados, vacaciones, vacaciones_espera } = response.data
                 let aux = []
                 let mes = ''
                 let dia = ''

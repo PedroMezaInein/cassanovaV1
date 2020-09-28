@@ -286,7 +286,7 @@ class PrestamosForm extends Component {
     async deleteAdjuntoAxios(id){
         waitAlert()
         const { access_token } = this.props.authUser
-        const { form, prestamo } = this.state
+        const { prestamo } = this.state
         await axios.delete(URL_DEV + 'prestamos/' + prestamo.id + '/adjuntos/' +id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { prestamo } = response.data

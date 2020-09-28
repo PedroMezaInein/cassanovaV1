@@ -38,7 +38,7 @@ class LeadsForm extends Component {
         const { history : { location: { pathname: pathname } } } = this.props
         const { match : { params: { action: action } } } = this.props
         const { history, location: { state: state} } = this.props
-        const remisiones = permisos.find(function(element, index) {
+        const lead = permisos.find(function(element, index) {
             const { modulo: { url: url } } = element
             return pathname === url + '/' + action
         });

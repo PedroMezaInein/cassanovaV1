@@ -217,7 +217,6 @@ class Cuenta extends Component {
 
     changePageEdit = cuenta => {
         const { history } = this.props
-        const { key } = this.state
         history.push({
             pathname: '/bancos/cuentas/edit',
             state: { cuenta: cuenta }

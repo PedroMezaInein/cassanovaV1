@@ -260,7 +260,7 @@ class ProspectosForm extends Component {
 
     render() {
 
-        const { options, form, formCliente, formContacto, title, formeditado, lead } = this.state
+        const { options, form, formContacto, title, formeditado, lead } = this.state
 
         return (
             <Layout active={'leads'}  {...this.props}>

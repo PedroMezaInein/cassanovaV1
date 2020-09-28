@@ -167,7 +167,7 @@ class CalidadForm extends Component {
     }
 
     openModalWithInput = estatus => {
-        const { ticket, form } = this.state
+        const { ticket } = this.state
         // this.changeEstatusAxios({id: ticket.id, estatus: estatus})
         questionAlert2('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.cancelTicket({ id: ticket.id, estatus: estatus }),
             <div>

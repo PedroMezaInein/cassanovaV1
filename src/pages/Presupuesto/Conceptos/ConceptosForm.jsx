@@ -134,7 +134,7 @@ class Conceptos extends Component {
         await axios.get(URL_DEV + 'conceptos/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { unidades, partidas, proveedores } = response.data
-                const { options, data } = this.state
+                const { options } = this.state
                 options['unidades'] = setOptions(unidades, 'nombre', 'id')
                 options['partidas'] = setOptions(partidas, 'nombre', 'id')
                 options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')

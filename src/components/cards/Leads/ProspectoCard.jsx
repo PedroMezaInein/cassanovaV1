@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Card, Tab, Row, Col, Nav } from 'react-bootstrap'
-import Moment from 'react-moment'
 export default class ProspectoCard extends Component {
     render() {
         const { prospecto } = this.props
