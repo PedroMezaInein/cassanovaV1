@@ -53,7 +53,6 @@ class RemisionForm extends Component {
                     if (state.remision) {
                         const { form, options } = this.state
                         const { remision } = state
-
                         form.proyecto = remision.proyecto ? remision.proyecto.id.toString() : ''
                         if (remision.subarea) {
                             if (remision.subarea.area) {
