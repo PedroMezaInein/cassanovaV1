@@ -368,7 +368,7 @@ class SolicitudVenta extends Component{
                     tooltip: {id:'convert', text:'Convertir', type:'success'},
                 },
                 {
-                    text: 'Ver',
+                    text: 'Mostrar&nbsp;información',
                     btnclass: 'primary',
                     iconclass: 'flaticon2-magnifier-tool',                  
                     action: 'see',

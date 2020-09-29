@@ -141,7 +141,7 @@ class Facturacion extends Component {
         let aux = []
         aux.push(
             {
-                text: 'Ver',
+                text: 'Mostrar&nbsp;información',
                 btnclass: 'primary',
                 iconclass: 'flaticon2-magnifier-tool',
                 action: 'see',

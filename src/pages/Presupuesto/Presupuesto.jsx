@@ -240,7 +240,7 @@ class Presupuesto extends Component {
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' },
             },
             {
-                text: 'Ver&nbsp;presupuesto',
+                text: 'Mostrar&nbsp;presupuesto',
                 btnclass: 'primary',
                 iconclass: 'flaticon2-magnifier-tool',
                 action: 'finish',

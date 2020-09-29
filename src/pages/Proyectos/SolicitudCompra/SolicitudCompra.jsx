@@ -121,7 +121,7 @@ class SolicitudCompra extends Component {
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' },
             },
             {
-                text: 'Ver',
+                text: 'Mostrar&nbsp;información',
                 btnclass: 'primary',
                 iconclass: 'flaticon2-magnifier-tool',
                 action: 'see',
