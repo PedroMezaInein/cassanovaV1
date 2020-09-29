@@ -15,7 +15,7 @@ class SolicitarVacacionesForm extends Component {
     }
 
     render() {
-        const { onSubmit, form, onChange, onChangeRange, formeditado } = this.props
+        const { onSubmit, form, onChange, onChangeRange, formeditado, disabledDates } = this.props
         return (
             <Form id="form-calendario"
                 onSubmit={
@@ -29,6 +29,7 @@ class SolicitarVacacionesForm extends Component {
                 <div className = "d-flex justify-content-center p-2">
                     <RangeCalendar
                         onChange = { this.updateRangeCalendar }
+                        disabledDates = { disabledDates }
                         start = { form.fechaInicio }
                         end = { form.fechaFin }/>
                 </div>
