@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import Layout from '../../../components/layout/layout'
-import { errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
+import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert, deleteAlert } from '../../../functions/alert'
 import { setOptions } from '../../../functions/setters'
 import { Card, Accordion } from 'react-bootstrap'
 import { ProspectoForm as ProspectoFormulario } from '../../../components/forms'
@@ -35,7 +35,14 @@ class ProspectosForm extends Component {
             fechaContacto: new Date(),
             success: 'Contactado',
             tipoContacto: '',
-            newTipoContacto: ''
+            newTipoContacto: '',
+            adjuntos:{
+                adjuntos:{
+                    files: [],
+                    value: '',
+                    placeholder: 'Adjuntos'
+                }
+            }
         },
         options: {
             tiposContactos: [],
@@ -257,6 +264,59 @@ class ProspectosForm extends Component {
         })
     }
 
+    handleChange = (files, item) => {
+        const { formContacto } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        formContacto['adjuntos'][item].value = files
+        formContacto['adjuntos'][item].files = aux
+        this.setState({
+            ... this.state,
+            formContacto
+        })
+    }
+    deleteFile = element => {
+        deleteAlert('¿Deseas eliminar el archivo?', () => this.deleteAdjuntoAxios(element.id))
+    }
+
+    async deleteAdjuntoAxios() {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { prospecto } = this.state
+        await axios.delete(URL_DEV + 'prospecto/' + prospecto.id + '/adjuntos', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { formContacto } = this.state
+                formContacto.adjuntos.adjuntos.files = []
+                formContacto.adjuntos.adjuntos.aux = ''
+                this.setState({
+                    ... this.state,
+                    formContacto
+                })
+                doneAlert('Adjunto eliminado con éxito')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
 
     render() {
 
@@ -298,7 +358,10 @@ class ProspectosForm extends Component {
                             onChange={this.onChange}
                             onChangeContacto={this.onChangeContacto}
                             onSubmit={this.onSubmit}
-                            title={title} >
+                            title={title}
+                            handleChange={this.handleChange}
+                            deleteFile={this.deleteFile}
+                            >
                             {
                                 lead ?
                                     <Accordion>

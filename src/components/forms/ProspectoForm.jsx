@@ -30,7 +30,7 @@ class ProspectoForm extends Component {
     }
 
     render() {
-        const { title, form, formCliente, children, vendedores, estatusProspectos, clientes, tipoProyecto, estatusContratacion, tiposContactos, onChange, onChangeCliente, onChangeContacto, formContacto, onSubmit, formeditado, options, ...props } = this.props
+        const { title, form, formCliente, children, vendedores, estatusProspectos, clientes, tipoProyecto, estatusContratacion, tiposContactos, onChange, onChangeCliente, onChangeContacto, formContacto, onSubmit, formeditado, options, handleChange, deleteFile, ...props } = this.props
         const { newTipoProyecto, } = this.state
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
@@ -187,6 +187,8 @@ class ProspectoForm extends Component {
                                         options={options}
                                         formContacto={formContacto}
                                         onChangeContacto={onChangeContacto}
+                                        handleChange={handleChange}
+                                        deleteFile={deleteFile}
                                     />
                                 }
                                 <div className="border-top mt-3 pt-3">

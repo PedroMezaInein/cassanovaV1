@@ -39,7 +39,14 @@ class Leads extends Component {
             fechaContacto: '',
             success: 'Contactado',
             tipoContacto: '',
-            newTipoContacto: ''
+            newTipoContacto: '',
+            adjuntos:{
+                adjuntos:{
+                    files: [],
+                    value: '',
+                    placeholder: 'Adjuntos'
+                }
+            }
         },
         contactHistory: [],
         data: {
@@ -128,7 +135,7 @@ class Leads extends Component {
             prospecto,
             modal,
             contactHistory: aux,
-            formContacto: this.clearContactForm()
+            // formContacto: this.clearContactForm()
         })
     }
 
@@ -428,6 +435,28 @@ class Leads extends Component {
             state: { prospecto: prospecto }
         });
     }
+
+    handleChange = (files, item) => {
+        const { formContacto } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        formContacto['adjuntos'][item].value = files
+        formContacto['adjuntos'][item].files = aux
+        this.setState({
+            ... this.state,
+            formContacto
+        })
+    }
+
     render() {
         const { modal, options, formContacto, prospecto, data, contactHistory, active } = this.state
         return (
@@ -482,7 +511,9 @@ class Leads extends Component {
                                 <ContactoLeadForm
                                     options={options}
                                     formContacto={formContacto}
-                                    onChangeContacto={this.onChangeContacto} />
+                                    onChangeContacto={this.onChangeContacto}
+                                    handleChange = { this.handleChange }
+                                />
                                 <div className="mt-3 text-center">
                                     <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
                                 </div>

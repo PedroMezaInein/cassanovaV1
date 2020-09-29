@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { RadioGroup, Calendar, SelectSearch, Input, CalendarDay } from '../form-components'
 import { DATE } from '../../constants'
+import { ItemSlider } from '../../components/singles'
 
 class ContactoLeadForm extends Component {
 
@@ -28,7 +29,7 @@ class ContactoLeadForm extends Component {
     }
 
     render() {
-        const { options, formContacto, onChangeContacto, formeditado } = this.props
+        const { options, formContacto, onChangeContacto, formeditado, handleChange,deleteFile} = this.props
         const { newTipoContacto } = this.state
         return (
             <div className="">
@@ -113,6 +114,18 @@ class ContactoLeadForm extends Component {
                             />
                         </div>
                     }
+                </div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless justify-content-center">
+                    <div className="col-md-4">
+                        <ItemSlider 
+                            items={formContacto.adjuntos.adjuntos.files}
+                            item='adjuntos' 
+                            handleChange={handleChange}
+                            deleteFile={deleteFile}
+                            multiple={true}
+                        />
+                    </div>
                 </div>
             </div>
         )
