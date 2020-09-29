@@ -10,7 +10,7 @@ class DropZone extends Component{
     }
 
     render(){
-        const { children, handleChange, multiple, ...props } = this.props
+        const { children, handleChange, multiple, accept,...props } = this.props
         
         return(
             <Dropzone { ... props} 
@@ -19,6 +19,8 @@ class DropZone extends Component{
                 {({ getRootProps, getInputProps }) => {
                     let aux = getInputProps()
                     aux.multiple = multiple;
+                    if(accept)
+                        aux.accept = accept
                     return (<div {...getRootProps({ className: "dropzone dropzone-default dropzone-primary dz-clickable col-md-10" })}>
                         <input {...aux} />
                         {

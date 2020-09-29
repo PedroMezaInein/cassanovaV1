@@ -131,6 +131,7 @@
       "react-tooltip": "^4.2.3",
       "react-window": "1.8.5",
       "react-xml-parser": "^1.1.6",
+      "read-excel-file": "^4.0.7",
       "redux": "^4.0.5",
       "redux-persist": "6.0.0",
       "redux-saga": "1.1.3",

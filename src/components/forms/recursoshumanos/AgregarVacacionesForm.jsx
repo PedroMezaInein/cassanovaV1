@@ -1,26 +1,23 @@
 import React, { Component } from 'react'
 import { validateAlert } from '../../../functions/alert'
 import { Form } from 'react-bootstrap'
-import { Button, Calendar, SelectSearch } from '../../form-components'
+import { Button, Calendar, SelectSearch, RangeCalendar } from '../../form-components'
 import { DATE } from '../../../constants'
 
 class AgregarVacacionesForm extends Component {
 
-    handleChangeDateInicio = date => {
-        const { onChange, form } = this.props
-        if (date > form.fechaFin) {
-            onChange({ target: { value: date, name: 'fechaFin' } })
-        }
-        onChange({ target: { value: date, name: 'fechaInicio' } })
-    }
-    handleChangeDateFin = date => {
+    updateRangeCalendar = range => {
+        const { startDate, endDate } = range
         const { onChange } = this.props
-        onChange({ target: { value: date, name: 'fechaFin' } })
+        onChange({ target: { value: startDate, name: 'fechaInicio' } })
+        onChange({ target: { value: endDate, name: 'fechaFin' } })
     }
+
     updateEmpleado = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'empleado' } })
     }
+
     render() {
         const { onSubmit, form, onChange, formeditado, options } = this.props
         return (
@@ -32,37 +29,8 @@ class AgregarVacacionesForm extends Component {
                     }
                 }
             >
-                <div className="form-group row form-group-marginless">
-                    <div className="col-md-4">
-                        <Calendar
-                            formeditado={formeditado}
-                            onChangeCalendar={this.handleChangeDateInicio}
-                            placeholder="FECHA DE INICIO"
-                            name="fechaInicio"
-                            value={form.fechaInicio}
-                            selectsStart
-                            startDate={form.fechaInicio}
-                            endDate={form.fechaFin}
-                            iconclass={"far fa-calendar-alt"}
-                            patterns={DATE}
-                        />
-                    </div>
-                    <div className="col-md-4">
-                        <Calendar
-                            formeditado={formeditado}
-                            onChangeCalendar={this.handleChangeDateFin}
-                            placeholder="FECHA FINAL"
-                            name="fechaFin"
-                            value={form.fechaFin}
-                            selectsEnd
-                            startDate={form.fechaInicio}
-                            endDate={form.fechaFin}
-                            minDate={form.fechaInicio}
-                            iconclass={"far fa-calendar-alt"}
-                            patterns={DATE}
-                        />
-                    </div>
-                    <div className="col-md-4">
+                <div className="form-group row form-group-marginless justify-content-center">
+                    <div className="col-md-6">
                         <SelectSearch
                             options={options.empleados}
                             placeholder="SELECCIONA EL EMPLEADO"
@@ -73,6 +41,13 @@ class AgregarVacacionesForm extends Component {
                             formeditado={formeditado}
                         />
                     </div>
+                </div>
+
+                <div className = "d-flex justify-content-center p-2">
+                    <RangeCalendar
+                        onChange = { this.updateRangeCalendar }
+                        start = { form.fechaInicio }
+                        end = { form.fechaFin }/>
                 </div>
 
                 <div className="mt-3 text-center">

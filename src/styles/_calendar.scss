@@ -19,6 +19,16 @@
     }
 }
 
+.feriados {
+    color: #FFA800;
+    background-color: #FFF4DE;
+    border-color: transparent;
+
+    i {
+        color: #FFA800;
+    }
+}
+
 a.fc-daygrid-event.fc-daygrid-block-event.fc-h-event.fc-event.fc-event-start.fc-event-end.fc-event-past {
     border-color: white;
 }
