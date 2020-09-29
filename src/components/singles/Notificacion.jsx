@@ -12,6 +12,12 @@ class Notificacion extends Component {
                 return toAbsoluteUrl('/images/svg/notificaciones/tarea.svg');
             case 'ticket':
                 return toAbsoluteUrl('/images/svg/notificaciones/ticket.svg');
+            case 'vacaciones':
+                return toAbsoluteUrl('/images/svg/notificaciones/vacaciones.svg');
+            case 'solicitud vacaciones':
+                return toAbsoluteUrl('/images/svg/notificaciones/solicitud-vacaciones.svg');
+            case 'cancel':
+                return toAbsoluteUrl('/images/svg/notificaciones/cancelar.svg');
             default:
                 return toAbsoluteUrl('/images/svg/portapapeles.svg');
         }
