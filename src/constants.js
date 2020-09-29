@@ -840,11 +840,11 @@ export const PROYECTOS_COLUMNS = [
     {
         Header: 'Descripción',
         accessor: 'descripcion'
-    },
+    }/* ,
     {
         Header: 'Adjuntos',
         accessor: 'adjuntos'
-    }
+    } */
 ]
 
 
