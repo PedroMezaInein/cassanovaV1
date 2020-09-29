@@ -185,18 +185,6 @@ class PresupuestoDiseño extends Component {
                 tooltip: { id: 'edit', text: 'Editar' }
             }
         )
-        if (presupuesto.pdfs)
-            if (presupuesto.pdfs.length) {
-                aux.push(
-                    {
-                        text: 'Descargar&nbsp;presupuesto',
-                        btnclass: 'info',
-                        iconclass: 'flaticon2-download-1',
-                        action: 'download',
-                        tooltip: { id: 'download', text: 'Decargar presupuesto' },
-                    }
-                )
-            }
         aux.push(
             {
                 text: 'Eliminar',
@@ -206,6 +194,19 @@ class PresupuestoDiseño extends Component {
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' },
             }
         )
+        if (presupuesto.pdfs)
+            if (presupuesto.pdfs.length) {
+                aux.push(
+                    {
+                        text: 'Descargar&nbsp;presupuesto',
+                        btnclass: 'primary',
+                        iconclass: 'flaticon2-download-1',
+                        action: 'download',
+                        tooltip: { id: 'download', text: 'Decargar presupuesto' },
+                    }
+                )
+            }
+
         return aux
     }
 
@@ -241,7 +242,8 @@ class PresupuestoDiseño extends Component {
                     title='¿Desea eliminar el presupuesto?'
                     show={modal.delete}
                     handleClose={this.handleCloseModalDelete}
-                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deletePresupuestoAdminAxios() }} />
+                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deletePresupuestoAdminAxios() }}
+                />
                 <Modal show={modal.adjuntos} handleClose={this.handleClose} title="Listado de presupuestos" >
                     <TableForModals
                         columns={ADJUNTOS_PRESUPUESTOS_COLUMNS}

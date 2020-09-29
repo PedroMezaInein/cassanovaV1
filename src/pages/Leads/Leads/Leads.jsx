@@ -176,26 +176,26 @@ class Leads extends Component {
                     tooltip: {id:'delete', text:'Eliminar', type:'error'}
                 },
                 {
-                    text: 'Convertir&nbsp;a&nbsp;prospecto',
+                    text: 'Ver',
                     btnclass: 'primary',
+                    iconclass: 'flaticon2-magnifier-tool',                  
+                    action: 'see',
+                    tooltip: {id:'see', text:'Mostrar', type:'dark'},
+                },
+                {
+                    text: 'Convertir&nbsp;a&nbsp;prospecto',
+                    btnclass: 'info',
                     iconclass: 'flaticon2-user-1',
                     action: 'prospecto',
                     tooltip: {id:'prospecto', text:'Convertir en prospecto'}
                 },
                 {
                     text: 'Convertir&nbsp;en&nbsp;proveedor',
-                    btnclass: 'info',
+                    btnclass: 'dark',
                     iconclass: 'flaticon2-lorry',
                     action: 'proveedor',
                     tooltip: {id:'proveedor', text:'Convertir en proveedor'}
-                },
-                {
-                    text: 'Ver',
-                    btnclass: 'dark',
-                    iconclass: 'flaticon2-expand',                  
-                    action: 'see',
-                    tooltip: {id:'see', text:'Mostrar', type:'dark'},
-                },
+                }
             )
         }else
             aux.push(

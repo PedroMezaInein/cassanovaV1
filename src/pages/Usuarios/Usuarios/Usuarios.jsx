@@ -394,18 +394,18 @@ class Usuarios extends Component {
                     tooltip: {id:'delete', text:'Eliminar', type:'error'},
                 },
                 {
-                    text: 'Permisos',
+                    text: 'Ver',
                     btnclass: 'primary',
+                    iconclass: 'flaticon2-magnifier-tool',                  
+                    action: 'see',
+                    tooltip: {id:'see', text:'Mostrar', type:'info'},
+                },
+                {
+                    text: 'Permisos',
+                    btnclass: 'info',
                     iconclass: 'flaticon2-accept',
                     action: 'permisos',
                     tooltip: { id: 'permisos', text: 'Permisos' }
-                },
-                {
-                    text: 'Ver',
-                    btnclass: 'info',
-                    iconclass: 'flaticon2-expand',                  
-                    action: 'see',
-                    tooltip: {id:'see', text:'Mostrar', type:'info'},
                 }
         ) 
         return aux 

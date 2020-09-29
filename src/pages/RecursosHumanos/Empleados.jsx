@@ -658,7 +658,7 @@ class Empleados extends Component {
         return aux
     }
 
-    setActions= empleado => {
+    setActions= () => {
         let aux = []
             aux.push(
                 {
@@ -676,19 +676,19 @@ class Empleados extends Component {
                     tooltip: {id:'delete', text:'Eliminar', type:'error'},
                 },
                 {
-                    text: 'Adjuntos',
-                    btnclass: 'primary',
-                    iconclass: 'flaticon-attachment',
-                    action: 'adjuntos',
-                    tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
-                },
-                {
                     text: 'Ver',
-                    btnclass: 'info',
-                    iconclass: 'flaticon2-expand',                  
+                    btnclass: 'primary',
+                    iconclass: 'flaticon2-magnifier-tool',                  
                     action: 'see',
                     tooltip: {id:'see', text:'Mostrar', type:'info'},
                 },
+                {
+                    text: 'Adjuntos',
+                    btnclass: 'info',
+                    iconclass: 'flaticon-attachment',
+                    action: 'adjuntos',
+                    tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
+                }
         ) 
         return aux 
     }

@@ -447,18 +447,18 @@ class Contratos extends Component {
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
             },
             {
-                text: 'Adjuntos',
+                text: 'Ver',
                 btnclass: 'primary',
+                iconclass: 'flaticon2-magnifier-tool',
+                action: 'see',
+                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
+            },
+            {
+                text: 'Adjuntos',
+                btnclass: 'info',
                 iconclass: 'flaticon-attachment',
                 action: 'adjuntos',
                 tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
-            },
-            {
-                text: 'Ver',
-                btnclass: 'info',
-                iconclass: 'flaticon2-expand',
-                action: 'see',
-                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
             }
         )
         return aux
@@ -481,19 +481,20 @@ class Contratos extends Component {
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
             },
             {
-                text: 'Adjuntos',
+                text: 'Ver',
                 btnclass: 'primary',
+                iconclass: 'flaticon2-magnifier-tool',
+                action: 'see',
+                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
+            },
+            {
+                text: 'Adjuntos',
+                btnclass: 'info',
                 iconclass: 'flaticon-attachment',
                 action: 'adjuntos',
                 tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
-            },
-            {
-                text: 'Ver',
-                btnclass: 'info',
-                iconclass: 'flaticon2-expand',
-                action: 'see',
-                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
             }
+            
         )
         return aux
     }

@@ -252,9 +252,16 @@ class Leads extends Component {
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
             },
             {
-                text: 'Contacto',
+                text: 'Ver',
                 btnclass: 'primary',
-                iconclass: 'flaticon-list-1',
+                iconclass: 'flaticon2-magnifier-tool',
+                action: 'see',
+                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
+            },
+            {
+                text: 'Contacto',
+                btnclass: 'info',
+                iconclass: 'flaticon2-paper',
                 action: 'contacto',
                 tooltip: { id: 'contacto', text: 'Contacto' }
             },
@@ -264,13 +271,6 @@ class Leads extends Component {
                 iconclass: 'flaticon2-refresh',
                 action: 'convert',
                 tooltip: { id: 'convert', text: 'Convertir en proyecto' }
-            },
-            {
-                text: 'Ver',
-                btnclass: 'info',
-                iconclass: 'flaticon2-expand',
-                action: 'see',
-                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
             }
         )
         // if (prospecto.contactos.length > 0) {

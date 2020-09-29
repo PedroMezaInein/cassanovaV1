@@ -35,9 +35,9 @@ class Calidad extends Component {
             aux.push(
                 {
                     actions: this.setActions(calidad),
+                    estatus: renderToString(setLabelTable(calidad.estatus_ticket)),
                     proyectos: renderToString(setTextTable(calidad.proyecto ? calidad.proyecto.nombre : '')),
                     cliente: renderToString(setTextTable(calidad.usuario ? calidad.usuario.name : '')),
-                    estatus: renderToString(setLabelTable(calidad.estatus_ticket)),
                     tipo_trabajo: renderToString(setTextTable(calidad.tipo_trabajo ? calidad.tipo_trabajo.tipo : '')),
                     fecha: renderToString(setDateTable(calidad.created_at)),
                     descripcion: renderToString(setTextTable(calidad.descripcion)),
@@ -54,7 +54,7 @@ class Calidad extends Component {
             {
                 text: 'Ver',
                 btnclass: 'primary',
-                iconclass: 'flaticon2-expand',
+                iconclass: 'flaticon2-magnifier-tool',
                 action: 'see',
                 tooltip: { id: 'see', text: 'Mostrar', type: 'success' },
             }

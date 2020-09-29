@@ -593,18 +593,18 @@ class NominaObra extends Component {
                 tooltip: {id:'delete', text:'Eliminar', type:'error'},
             },
             {
-                text: 'Adjuntos',
+                text: 'Mostrar',
                 btnclass: 'primary',
+                iconclass: 'flaticon2-magnifier-tool',
+                action: 'show',
+                tooltip: { id: 'show', text: 'Mostrar'}
+            },
+            {
+                text: 'Adjuntos',
+                btnclass: 'info',
                 iconclass: 'flaticon-attachment',
                 action: 'adjuntos',
                 tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
-            },
-            {
-                text: 'Mostrar',
-                btnclass: 'primary',
-                iconclass: 'flaticon-eye',
-                action: 'show',
-                tooltip: { id: 'show', text: 'Mostrar'}
             }
         )
         return aux

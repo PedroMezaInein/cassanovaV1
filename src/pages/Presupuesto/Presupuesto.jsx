@@ -233,9 +233,16 @@ class Presupuesto extends Component {
                 tooltip: { id: 'edit', text: 'Editar' },
             },
             {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',
+                action: 'delete',
+                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' },
+            },
+            {
                 text: 'Ver&nbsp;presupuesto',
                 btnclass: 'primary',
-                iconclass: 'flaticon2-paper',
+                iconclass: 'flaticon2-magnifier-tool',
                 action: 'finish',
                 tooltip: { id: 'finish', text: 'Ver presupuesto', type: 'error' },
             }
@@ -251,15 +258,6 @@ class Presupuesto extends Component {
                 }
             )
         }
-        aux.push(
-            {
-                text: 'Eliminar',
-                btnclass: 'danger',
-                iconclass: 'flaticon2-rubbish-bin',
-                action: 'delete',
-                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' },
-            },
-        )
         return aux
     }
     changePageAdd = () => {

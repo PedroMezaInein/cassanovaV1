@@ -905,25 +905,25 @@ class Proyectos extends Component {
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
             },
             {
-                text: 'Adjuntos',
+                text: 'Ver',
                 btnclass: 'primary',
+                iconclass: 'flaticon2-magnifier-tool',
+                action: 'see',
+                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
+            },
+            {
+                text: 'Adjuntos',
+                btnclass: 'info',
                 iconclass: 'flaticon-attachment',
                 action: 'adjuntos',
                 tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
             },
             {
                 text: 'Avances',
-                btnclass: 'info',
+                btnclass: 'dark',
                 iconclass: 'flaticon2-photo-camera',
                 action: 'avances',
                 tooltip: { id: 'avances', text: 'Avances' }
-            },
-            {
-                text: 'Ver',
-                btnclass: 'dark',
-                iconclass: 'flaticon2-expand',
-                action: 'see',
-                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
             }
         )
         return aux

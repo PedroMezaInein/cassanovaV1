@@ -77,8 +77,8 @@ class EstadosCuenta extends Component {
             },
             {
                 text: 'Ver',
-                btnclass: 'info',
-                iconclass: 'flaticon2-expand',
+                btnclass: 'primary',
+                iconclass: 'flaticon2-magnifier-tool',
                 action: 'see',
                 tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
             },

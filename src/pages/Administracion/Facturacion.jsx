@@ -143,7 +143,7 @@ class Facturacion extends Component {
             {
                 text: 'Ver',
                 btnclass: 'primary',
-                iconclass: 'flaticon2-expand',
+                iconclass: 'flaticon2-magnifier-tool',
                 action: 'see',
                 tooltip: { id: 'see', text: 'Mostrar', type: 'primary' },
             },
@@ -161,8 +161,8 @@ class Facturacion extends Component {
         if (factura.cancelada) {
             aux.push(
                 {
-                    text: 'Mostrar adjuntos',
-                    btnclass: 'success',
+                    text: 'Mostrar&nbsp;adjuntos',
+                    btnclass: 'info',
                     iconclass: "flaticon-attachment",
                     action: 'cancelarFactura',
                     tooltip: { id: 'delete-Adjunto', text: 'Eliminar', type: 'error' },

@@ -235,18 +235,18 @@ class Compras extends Component {
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' },
             },
             {
-                text: 'Adjuntos',
+                text: 'Ver',
                 btnclass: 'primary',
+                iconclass: 'flaticon2-magnifier-tool',
+                action: 'see',
+                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
+            },
+            {
+                text: 'Adjuntos',
+                btnclass: 'info',
                 iconclass: 'flaticon-attachment',
                 action: 'adjuntos',
                 tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
-            },
-            {
-                text: 'Ver',
-                btnclass: 'info',
-                iconclass: 'flaticon2-expand',
-                action: 'see',
-                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
             }
         )
 
@@ -254,8 +254,8 @@ class Compras extends Component {
             aux.push(
                 {
                     text: 'Facturas',
-                    btnclass: 'primary',
-                    iconclass: 'flaticon2-medical-records',
+                    btnclass: 'dark',
+                    iconclass: 'flaticon2-paper',
                     action: 'facturas',
                     tooltip: { id: 'taxes', text: 'Facturas' },
                 }
