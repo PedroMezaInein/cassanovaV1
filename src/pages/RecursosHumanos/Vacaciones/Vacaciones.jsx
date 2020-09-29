@@ -18,6 +18,7 @@ import Dropdown from 'react-bootstrap/Dropdown'
 import { AgregarVacacionesForm } from "../../../components/forms";
 import { Button } from '../../../components/form-components'
 import readXlsxFile from 'read-excel-file'
+import moment from 'moment'
 
 class Vacaciones extends Component {
 
@@ -43,6 +44,7 @@ class Vacaciones extends Component {
         options:{
             empleados: []
         },
+        disabledDates: []
     }
 
     componentDidMount() {
@@ -89,7 +91,7 @@ class Vacaciones extends Component {
                 const { empleados, vacaciones, vacaciones_espera, feriados } = response.data
                 const { options } = this.state
                 options['empleados'] = setOptions(empleados, 'nombre', 'id')
-
+                let aux2 = []
                 let aux = []
                 let mes = ''
                 let dia = ''
@@ -124,16 +126,19 @@ class Vacaciones extends Component {
                         title: feriado.texto,
                         start: feriado.fecha,
                         end: feriado.fecha,
-                        iconClass: 'fas fa-calendar-check icon-md',
+                        /* iconClass: 'fas fa-calendar-check icon-md', */
+                        iconClass: 'fas fa-calendar-day icon-md',
                         containerClass: 'feriados'
                     })
+                    var start = moment(feriado.fecha).toDate();
+                    aux2.push(start)
                 })
-
 
                 this.setState({
                     ... this.state,
                     events: aux,
-                    espera: vacaciones_espera
+                    espera: vacaciones_espera,
+                    disabledDates: aux2
                 })
 
             },
@@ -349,7 +354,7 @@ class Vacaciones extends Component {
     }
 
     render() {
-        const { events, espera, modal, form, title, modal_add_vacaciones, formeditado, options, modal_add_feriados } = this.state
+        const { events, espera, modal, form, title, modal_add_vacaciones, formeditado, options, modal_add_feriados, disabledDates } = this.state
         return (
             <Layout active='rh'  {...this.props}>
                 <Card className="card-custom">
@@ -472,6 +477,7 @@ class Vacaciones extends Component {
                 </Modal>
                 <Modal size={"lg"} title={title} show={modal_add_vacaciones} handleClose={this.handleCloseAddVacaciones}>
                     <AgregarVacacionesForm
+                        disabledDates = { disabledDates }
                             formeditado={formeditado}
                             form={form}
                             onChange={this.onChange}
