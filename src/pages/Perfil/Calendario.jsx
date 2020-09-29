@@ -17,6 +17,7 @@ import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { string } from 'prop-types';
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
+import moment from 'moment'
 class Calendario extends Component {
 
     state = {
@@ -31,7 +32,8 @@ class Calendario extends Component {
             fechaInicio: new Date(),
             fechaFin: new Date(),
         },
-        estatus: []
+        estatus: [],
+        disabledDates: []
     };
 
     componentDidMount() {
@@ -247,6 +249,7 @@ class Calendario extends Component {
             (response) => {
                 const { empleados, vacaciones, empleado, user_vacaciones, feriados } = response.data
                 let aux = []
+                let aux2 = []
                 let mes = ''
                 let dia = ''
                 let año = new Date().getFullYear();
@@ -283,6 +286,8 @@ class Calendario extends Component {
                         iconClass: 'fas fa-calendar-check icon-md',
                         containerClass: 'feriados'
                     })
+                    var start = moment(feriado.fecha).toDate();
+                    aux2.push(start)
                 })
 
                 this.setState({
@@ -291,7 +296,8 @@ class Calendario extends Component {
                     empleado: empleado,
                     vacaciones_totales: user_vacaciones,
                     disponibles: this.getDiasDisponibles(empleado, user_vacaciones),
-                    estatus: this.getVacaciones(empleado, user_vacaciones)
+                    estatus: this.getVacaciones(empleado, user_vacaciones),
+                    disabledDates: aux2
                 })
 
             },
@@ -310,7 +316,7 @@ class Calendario extends Component {
     }
 
     render() {
-        const { events, form, title, formeditado, modal, key, modal_status, estatus, disponibles } = this.state
+        const { events, form, title, formeditado, modal, key, modal_status, estatus, disponibles, disabledDates } = this.state
         return (
             <Layout active='rh'  {...this.props}>
                 <Card className="card-custom">
@@ -341,6 +347,7 @@ class Calendario extends Component {
                             formeditado={formeditado}
                             form={form}
                             onChange={this.onChange}
+                            disabledDates = { disabledDates }
                             onSubmit={(e) => { e.preventDefault(); waitAlert(); this.askVacationAxios() }}
                         />
                     </Modal>
