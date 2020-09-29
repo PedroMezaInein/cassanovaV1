@@ -88,8 +88,10 @@ class RangeCalendar extends Component {
 
     render() {
         const { range } = this.state
+        const { disabledDates } = this.props
         return (
             <DateRangePicker
+                disabledDates = { disabledDates }
                 onChange={ (item) => { this.updateRange(item)} }
                 showSelectionPreview = { true }
                 moveRangeOnFirstSelection = { false }
