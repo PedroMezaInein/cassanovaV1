@@ -170,3 +170,11 @@ span.rdrDayStartPreview,
 .rdrNextPrevButton:hover {
     background: #e1f0ff !important;
 }
+
+.rdrDayDisabled{
+    background-color: #FFF4DE!important;
+    border-radius: 0.75em!important;
+    span{
+        color: #FFA800!important;
+    }
+}

@@ -25,15 +25,19 @@ class Notificacion extends Component {
     render() {
         const { data } = this.props
         return (
-            <div>
-                <span className="svg-icon svg-icon-lg svg-icon-success mx-3">
-                    <SVG src = { this.setIcon(data.tipo) } />
-                </span>
-                <span>
-                    {
-                        data.texto
-                    }
-                </span>
+            <div className="row mx-0">
+                <div className="col-3 d-flex justify-content-center align-items-center">
+                    <span className="svg-icon svg-icon-lg svg-icon-success mx-2">
+                        <SVG src = { this.setIcon(data.tipo) } />
+                    </span>
+                </div>
+                <div className="col-9">
+                    <div className="text-center">
+                        {
+                            data.texto
+                        }
+                    </div>
+                </div>
             </div>
         );
     }

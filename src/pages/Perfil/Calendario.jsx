@@ -17,6 +17,7 @@ import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { string } from 'prop-types';
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
+import moment from 'moment'
 class Calendario extends Component {
 
     state = {
@@ -31,7 +32,8 @@ class Calendario extends Component {
             fechaInicio: new Date(),
             fechaFin: new Date(),
         },
-        estatus: []
+        estatus: [],
+        disabledDates: []
     };
 
     componentDidMount() {
@@ -221,45 +223,11 @@ class Calendario extends Component {
         const { form } = this.state
         await axios.post(URL_DEV + 'vacaciones', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empleados, vacaciones, empleado, user_vacaciones } = response.data
-                let aux = []
-                let mes = ''
-                let dia = ''
-                let año = new Date().getFullYear();
-                empleados.map((empleado, key) => {
-                    mes = empleado.rfc.substr(6, 2);
-                    dia = empleado.rfc.substr(8, 2);
-                    for (let x = -5; x <= 5; x++) {
-                        aux.push({
-                            title: empleado.nombre,
-                            start: Number(Number(año) + Number(x)) + '-' + mes + '-' + dia,
-                            end: Number(Number(año) + Number(x)) + '-' + mes + '-' + dia,
-                            iconClass: 'fas fa-birthday-cake',
-                            containerClass: 'cumpleaños'
-                        })
-                    }
-                })
-                vacaciones.map((vacacion) => {
-                    if (vacacion.estatus === 'Aceptadas')
-                        aux.push({
-                            title: vacacion.empleado.nombre,
-                            start: vacacion.fecha_inicio,
-                            end: vacacion.fecha_fin,
-                            iconClass: 'fas fa-umbrella-beach',
-                            containerClass: 'vacaciones'
-                        })
-                })
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Vacaciones solicitadas con éxito.')
-                this.setState({
-                    ... this.state,
-                    modal: false,
-                    events: aux,
-                    empleado: empleado,
-                    vacaciones_totales: user_vacaciones,
-                    disponibles: this.getDiasDisponibles(empleado, user_vacaciones),
-                    estatus: this.getVacaciones(empleado, user_vacaciones)
-                })
+                this.getVacacionesAxios();
+                this.handleClose();
+                
             },
             (error) => {
                 console.log(error, 'error')
@@ -279,8 +247,9 @@ class Calendario extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'vacaciones', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empleados, vacaciones, empleado, user_vacaciones } = response.data
+                const { empleados, vacaciones, empleado, user_vacaciones, feriados } = response.data
                 let aux = []
+                let aux2 = []
                 let mes = ''
                 let dia = ''
                 let año = new Date().getFullYear();
@@ -308,13 +277,27 @@ class Calendario extends Component {
                         })
                 })
 
+                feriados.map((feriado) => {
+                    aux.push({
+                        shortName: "Feriados",
+                        title: feriado.texto,
+                        start: feriado.fecha,
+                        end: feriado.fecha,
+                        iconClass: 'fas fa-calendar-check icon-md',
+                        containerClass: 'feriados'
+                    })
+                    var start = moment(feriado.fecha).toDate();
+                    aux2.push(start)
+                })
+
                 this.setState({
                     ... this.state,
                     events: aux,
                     empleado: empleado,
                     vacaciones_totales: user_vacaciones,
                     disponibles: this.getDiasDisponibles(empleado, user_vacaciones),
-                    estatus: this.getVacaciones(empleado, user_vacaciones)
+                    estatus: this.getVacaciones(empleado, user_vacaciones),
+                    disabledDates: aux2
                 })
 
             },
@@ -333,7 +316,7 @@ class Calendario extends Component {
     }
 
     render() {
-        const { events, form, title, formeditado, modal, key, modal_status, estatus, disponibles } = this.state
+        const { events, form, title, formeditado, modal, key, modal_status, estatus, disponibles, disabledDates } = this.state
         return (
             <Layout active='rh'  {...this.props}>
                 <Card className="card-custom">
@@ -359,11 +342,12 @@ class Calendario extends Component {
                             
                         </div>
                     </Card.Header>
-                    <Modal title={title} show={modal} handleClose={this.handleClose}>
+                    <Modal title={title} show={modal} handleClose={this.handleClose} size = "lg">
                         <SolicitarVacacionesForm
                             formeditado={formeditado}
                             form={form}
                             onChange={this.onChange}
+                            disabledDates = { disabledDates }
                             onSubmit={(e) => { e.preventDefault(); waitAlert(); this.askVacationAxios() }}
                         />
                     </Modal>
