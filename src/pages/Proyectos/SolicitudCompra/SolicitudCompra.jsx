@@ -123,13 +123,13 @@ class SolicitudCompra extends Component {
             {
                 text: 'Ver',
                 btnclass: 'primary',
-                iconclass: 'flaticon2-expand',
+                iconclass: 'flaticon2-magnifier-tool',
                 action: 'see',
                 tooltip: { id: 'see', text: 'Mostrar', type: 'success' },
             },
             {
                 text: 'Convertir&nbsp;a&nbsp;compra',
-                btnclass: 'primary',
+                btnclass: 'info',
                 iconclass: 'flaticon2-refresh',
                 action: 'convert',
                 tooltip: { id: 'convert', text: 'Convertir', type: 'success' },

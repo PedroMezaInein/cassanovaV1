@@ -1910,16 +1910,16 @@ export const PROYECTOS_TICKETS = [
         accessor: 'actions',
     },
     {
+        Header: 'Estatus',
+        accessor: 'estatus',
+    },
+    {
         Header: 'Proyecto',
         accessor: 'proyectos',
     },
     {
         Header: 'Cliente',
         accessor: 'cliente'
-    },
-    {
-        Header: 'Estatus',
-        accessor: 'estatus',
     },
     {
         Header: 'Tipo de trabajo',

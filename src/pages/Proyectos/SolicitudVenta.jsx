@@ -370,7 +370,7 @@ class SolicitudVenta extends Component{
                 {
                     text: 'Ver',
                     btnclass: 'primary',
-                    iconclass: 'flaticon2-expand',                  
+                    iconclass: 'flaticon2-magnifier-tool',                  
                     action: 'see',
                     tooltip: {id:'see', text:'Mostrar', type:'success'},
                 },

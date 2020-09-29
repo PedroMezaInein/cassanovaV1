@@ -77,25 +77,25 @@ class Herramienta extends Component {
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
             },
             {
-                text: 'Adjuntos',
+                text: 'Ver',
                 btnclass: 'primary',
+                iconclass: 'flaticon2-magnifier-tool',
+                action: 'see',
+                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
+            },
+            {
+                text: 'Adjuntos',
+                btnclass: 'info',
                 iconclass: 'flaticon-attachment',
                 action: 'adjuntos',
                 tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
             },
             {
                 text: 'Historial de ubicaciones',
-                btnclass: 'info',
+                btnclass: 'dark',
                 iconclass: 'flaticon-calendar',
                 action: 'ubicacion',
                 tooltip: { id: 'ubicacion', text: 'Ubicacion', type: 'error' }
-            },
-            {
-                text: 'Ver',
-                btnclass: 'dark',
-                iconclass: 'flaticon2-expand',
-                action: 'see',
-                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
             }
         )
         return aux

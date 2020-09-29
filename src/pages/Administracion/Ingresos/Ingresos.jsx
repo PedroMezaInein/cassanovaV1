@@ -382,26 +382,26 @@ class Ingresos extends Component {
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' },
             },
             {
-                text: 'Adjuntos',
-                btnclass: 'primary',
-                iconclass: 'flaticon-attachment',
-                action: 'adjuntos',
-                tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
-            },
-            {
                 text: 'Ver',
-                btnclass: 'dark',
-                iconclass: 'flaticon2-expand',
+                btnclass: 'primary',
+                iconclass: 'flaticon2-magnifier-tool',
                 action: 'see',
                 tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
             },
+            {
+                text: 'Adjuntos',
+                btnclass: 'info',
+                iconclass: 'flaticon-attachment',
+                action: 'adjuntos',
+                tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
+            }
         )
         if (ingreso.factura) {
             aux.push(
                 {
                     text: 'Facturas',
-                    btnclass: 'primary',
-                    iconclass: 'flaticon2-medical-records',
+                    btnclass: 'dark',
+                    iconclass: 'flaticon2-paper',
                     action: 'facturas',
                     tooltip: { id: 'taxes', text: 'Facturas' },
                 },

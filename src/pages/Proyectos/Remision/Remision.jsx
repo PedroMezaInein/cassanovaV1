@@ -113,18 +113,18 @@ class Remisiones extends Component {
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' },
             },
             {
-                text: 'Convertir&nbsp;a&nbsp;solicitud&nbsp;de&nbsp;compra',
+                text: 'Ver',
                 btnclass: 'primary',
+                iconclass: 'flaticon2-magnifier-tool',
+                action: 'see',
+                tooltip: { id: 'see', text: 'Mostrar', type: 'success' },
+            },
+            {
+                text: 'Convertir&nbsp;a&nbsp;solicitud&nbsp;de&nbsp;compra',
+                btnclass: 'info',
                 iconclass: 'flaticon2-refresh',
                 action: 'convert',
                 tooltip: { id: 'convert', text: 'Convertir', type: 'success' },
-            },
-            {
-                text: 'Ver',
-                btnclass: 'dark',
-                iconclass: 'flaticon2-expand',
-                action: 'see',
-                tooltip: { id: 'see', text: 'Mostrar', type: 'success' },
             }
         )
         return aux

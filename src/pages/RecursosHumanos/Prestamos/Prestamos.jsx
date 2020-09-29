@@ -69,6 +69,13 @@ class Prestamos extends Component {
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
             },
             {
+                text: 'Ver',
+                btnclass: 'primary',
+                iconclass: 'flaticon2-magnifier-tool',
+                action: 'see',
+                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
+            },
+            {
                 text: 'Adjuntos',
                 btnclass: 'info',
                 iconclass: 'flaticon-attachment',
@@ -77,16 +84,9 @@ class Prestamos extends Component {
             },
             {
                 text: 'Abonos',
-                btnclass: 'primary',
-                iconclass: 'flaticon-coins',
-                action: 'abono'
-            },
-            {
-                text: 'Ver',
                 btnclass: 'dark',
-                iconclass: 'flaticon2-expand',
-                action: 'see',
-                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
+                iconclass: 'flaticon2-notepad',
+                action: 'abono'
             }
         )
         return aux

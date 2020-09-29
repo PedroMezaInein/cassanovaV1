@@ -125,19 +125,19 @@ class Cuenta extends Component {
                 tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
             },
             {
-                text: 'Agregar&nbsp;estado&nbsp;de&nbsp;cuenta',
-                btnclass: 'primary',
-                iconclass: 'flaticon2-infographic',
-                action: 'estado',
-                tooltip: { id: 'estado', text: 'Agregar estados de cuenta', type: 'error' }
-            },
-            {
                 text: 'Ver',
-                btnclass: 'info',
-                iconclass: 'flaticon2-expand',
+                btnclass: 'primary',
+                iconclass: 'flaticon2-magnifier-tool',
                 action: 'see',
                 tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
             },
+            {
+                text: 'Agregar&nbsp;estado&nbsp;de&nbsp;cuenta',
+                btnclass: 'info',
+                iconclass: 'flaticon2-infographic',
+                action: 'estado',
+                tooltip: { id: 'estado', text: 'Agregar estados de cuenta', type: 'error' }
+            }
         )
         return aux
     }
