@@ -341,7 +341,7 @@ class Vacaciones extends Component {
 
     downloadPlantilla = () => {
         const link = document.createElement('a');
-        const url = URL_ASSETS + '/storage/plantillas/feriados.xlsx'
+        const url = 'https://admin-proyectos.s3.us-east-2.amazonaws.com/plantillas/feriados.xlsx'
         link.href = url;
         document.body.appendChild(link);
         link.click();
