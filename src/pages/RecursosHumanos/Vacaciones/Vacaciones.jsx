@@ -8,7 +8,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
 import esLocale from '@fullcalendar/core/locales/es';
 import { forbiddenAccessAlert, errorAlert, createAlert, doneAlert, waitAlert } from '../../../functions/alert';
-import { URL_DEV } from '../../../constants';
+import { URL_ASSETS, URL_DEV } from '../../../constants';
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { setDateTableLG, setOptions } from '../../../functions/setters';
@@ -339,6 +339,15 @@ class Vacaciones extends Component {
         })
     }
 
+    downloadPlantilla = () => {
+        const link = document.createElement('a');
+        const url = URL_ASSETS + '/storage/plantillas/feriados.xlsx'
+        link.href = url;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
     render() {
         const { events, espera, modal, form, title, modal_add_vacaciones, formeditado, options, modal_add_feriados } = this.state
         return (
@@ -471,6 +480,14 @@ class Vacaciones extends Component {
                         />
                 </Modal>
                 <Modal size = 'lg' title = { title } show = { modal_add_feriados } handleClose = { this.handleCloseAddFeriados }>
+                    <div className="d-flex m-2 justify-content-end">
+                        <Button
+                            onClick = { () => { this.downloadPlantilla() } }
+                            className = "btn btn-icon btn-light-primary btn-sm mr-2 ml-auto"
+                            only_icon = "fas fa-file-excel icon-md"
+                            tooltip = { { text: 'Descargar plantilla' } }
+                            />
+                    </div>
                     <div>
                         <ItemSlider items = { form.adjuntos.adjuntos.files } item = 'adjuntos' 
                             multiple = { false } handleChange = { this.handleChange }
