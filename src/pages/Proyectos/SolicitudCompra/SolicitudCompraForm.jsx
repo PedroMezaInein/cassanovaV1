@@ -360,7 +360,7 @@ class SolicitudCompraForm extends Component {
                 <Card className="card-custom">
                     <Card.Header>
                         <div className="card-title">
-                            <h3 className="card-label">SOLICITUD DE COMPRA</h3>
+                            <h3 className="card-label">{title}</h3>
                         </div>
                     </Card.Header>
                     <Card.Body className="pt-0">
