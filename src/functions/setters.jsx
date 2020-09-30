@@ -209,14 +209,29 @@ export function setListTableLinkProyecto(arreglo, nombre) {
                 arreglo.map((element,  key ) => { 
                     return (
                         <div key={key}>
-                            <li key={key}>
-                                <a href={'/mi-proyecto?id='+element.id}  >
+                            <li key={key} className="py-2">
+                                <a href={'/mi-proyecto?id='+element.id} className="mr-2" >
                                     <Small >
                                         {
                                             element[nombre]
                                         }
                                     </Small>
+                                    
                                 </a>
+                                {
+                                    element.estatus ?
+                                        <>
+                                            <span className="label label-lg bg- label-inline font-weight-bold p-2" 
+                                                style={{
+                                                    color: `${element.estatus.letra}`,
+                                                    backgroundColor: `${element.estatus.fondo}`,
+                                                    fontSize: "75%"
+                                                }} >
+                                                {element.estatus.estatus}
+                                            </span>
+                                        </>
+                                    :''
+                                }
                             </li>
                         </div>
                     )

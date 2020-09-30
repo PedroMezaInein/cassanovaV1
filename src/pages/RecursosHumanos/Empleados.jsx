@@ -51,6 +51,7 @@ class Empleados extends Component {
             fecha_alta_imss: '',
             numero_alta_imss: '',
             nomina_imss: 0.0,
+            nomina_extras: 0.0,
             salario_hr: 0.0,
             salario_hr_extra: 0.0,
             adjuntos:{
@@ -116,6 +117,7 @@ class Empleados extends Component {
         form.tipo_empleado = empleado.tipo_empleado
         form.estatus_empleado = empleado.estatus_empleado
         form.nomina_imss = empleado.nomina_imss
+        form.nomina_extras = empleado.nomina_extras
         form.salario_hr = empleado.salario_hr
         form.salario_hr_extra = empleado.salario_hr_extra
         if(empleado.empresa){

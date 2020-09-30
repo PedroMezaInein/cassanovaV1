@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { Input, SelectSearch, Button, Calendar, FileInput, InputNumber, InputPhone } from '../../form-components'
+import { Input, SelectSearch, Button, Calendar, FileInput, InputNumber, InputPhone, ToggleButton, SelectSearchTrue } from '../../form-components'
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import { faPlus} from '@fortawesome/free-solid-svg-icons'
 import { DATE, TEL, EMAIL } from '../../../constants'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
-import SelectSearchTrue from '../../form-components/SelectSearchTrue';
 
 function CustomToggle({ children, eventKey }) {
 
@@ -96,8 +95,19 @@ class ProyectosForm extends Component {
         onChange({ target: { name: 'colonia', value: value } })
     }
 
+    updateEstatus = value => {
+        const { onChange } = this.props
+        onChange({ target: { name: 'estatus', value: value } })
+    }
+
+    handleToggler = e => {
+        const { name, checked } = e.target
+        const { onChange } = this.props
+        onChange({ target: { name: name, value: checked } })
+    }
+
     render() {
-        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, removeCorreo, formeditado, deleteOption, onChangeOptions, ...props } = this.props
+        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, removeCorreo, formeditado, deleteOption, onChangeOptions, action, ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -277,6 +287,88 @@ class ProyectosForm extends Component {
                                                 )
                                             })
                                         }
+                                    </div>
+                                </div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="form-group row form-group-marginless">
+                                    {
+                                        action === 'edit' ?
+                                            <div className="col-md-4">
+                                                <SelectSearch
+                                                    formeditado = { formeditado }
+                                                    options = { options.estatus }
+                                                    placeholder = "SELECCIONA EL ESTADO"
+                                                    name = "cliente"
+                                                    value={form.estatus}
+                                                    onChange = { this.updateEstatus }
+                                                    iconclass={"far fa-user"}
+                                                />
+                                            </div>
+                                        :''
+                                    }
+                                    <div className = 'col-md-8'>
+                                        <div className="d-flex">
+                                            <div className="mr-5">
+                                                <div className="text-center">
+                                                    <p className="font-size-sm font-weight-bold">FASE 1</p>
+                                                </div>
+                                                <div className="d-flex justify-content-center">
+                                                    <Form.Group>
+                                                        <div className="checkbox-list pt-2">
+                                                            <label className="checkbox checkbox-outline checkbox-outline-2x checkbox-primary">
+                                                                <input
+                                                                    name = 'fase1'
+                                                                    type="checkbox"
+                                                                    checked = { form.fase1 }
+                                                                    onChange={e => this.handleToggler(e)}
+                                                                    />
+                                                                <span></span>
+                                                            </label>
+                                                        </div>
+                                                    </Form.Group>
+                                                </div>
+                                            </div>
+                                            <div className="mr-5">
+                                                <div className="text-center">
+                                                    <p className="font-size-sm font-weight-bold">FASE 2</p>
+                                                </div>
+                                                <div className="d-flex justify-content-center">
+                                                    <Form.Group>
+                                                        <div className="checkbox-list pt-2">
+                                                            <label className="checkbox checkbox-outline checkbox-outline-2x checkbox-primary">
+                                                                <input
+                                                                    name = 'fase2'
+                                                                    type="checkbox"
+                                                                    checked = { form.fase2 }
+                                                                    onChange={e => this.handleToggler(e)}
+                                                                    />
+                                                                <span></span>
+                                                            </label>
+                                                        </div>
+                                                    </Form.Group>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div className="text-center">
+                                                    <p className="font-size-sm font-weight-bold">FASE 3</p>
+                                                </div>
+                                                <div className="d-flex justify-content-center">
+                                                    <Form.Group>
+                                                        <div className="checkbox-list pt-2">
+                                                            <label className="checkbox checkbox-outline checkbox-outline-2x checkbox-primary">
+                                                                <input
+                                                                    name = 'fase3'
+                                                                    type="checkbox"
+                                                                    checked = { form.fase3 }
+                                                                    onChange={e => this.handleToggler(e)}
+                                                                    />
+                                                                <span></span>
+                                                            </label>
+                                                        </div>
+                                                    </Form.Group>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">

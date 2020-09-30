@@ -181,6 +181,7 @@ class PermisosForm extends Component {
                 <Accordion activeKey={activeKey} className="accordion accordion-light">
                     {
                         grupos !== null && grupos.map((grupo, key) => {
+                            console.log(grupo, 'grupo')
                             return (
                                 <div key={key}>
                                     <Card>
@@ -195,6 +196,7 @@ class PermisosForm extends Component {
                                                     leftKnobColor={"#FFF"}
                                                     rightKnobColor={"#2171c1"}
                                                 />
+                                                
                                                 <div className="card-title collapsed pl-2">{grupo.nombre}</div>
 
                                             </div>

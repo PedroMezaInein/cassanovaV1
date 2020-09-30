@@ -511,7 +511,22 @@ class EmpleadosForm extends Component {
                                                         />
                                                     </div>
                                                 </>
-                                            : ''
+                                            :
+                                                <div className="col-md-4">
+                                                    <InputNumber
+                                                        requirevalidation={0}
+                                                        formeditado={formeditado}
+                                                        onChange={onChange}
+                                                        name="nomina_extras"
+                                                        type="text"
+                                                        value={form.nomina_extras}
+                                                        placeholder="Restante de nómina"
+                                                        iconclass={"fas fa-money-check-alt"}
+                                                        messageinc="Incorrecto. Ingresa el restante de nómina."
+                                                        thousandSeparator={true} 
+                                                        prefix={'$'}
+                                                    />
+                                                </div>
                                     }
                                     
                                 </div>
