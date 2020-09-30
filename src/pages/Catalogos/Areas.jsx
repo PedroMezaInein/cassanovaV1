@@ -9,6 +9,7 @@ import { Modal, ModalDelete } from '../../components/singles'
 import axios from 'axios'
 import { AreaCard } from '../../components/cards'
 import NewTable from '../../components/tables/NewTable'
+import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../functions/alert'
 import { setTextTable, setListTable} from '../../functions/setters'
 import { Tabs, Tab } from 'react-bootstrap'
@@ -23,27 +24,14 @@ class Areas extends Component {
             subarea: '',
             subareas: []
         },
-        data: {
-            areas: [],
-            areasVentas: [],
-            areasEgresos: []
-        },
         formeditado:0,
-        areas: [],
-        areasVentas: [],
-        areasEgresos: [],
         modal: false,
         modalDelete: false,
         modalSee: false,
         title: 'Nueva área',
         area: '',
         tipo: 'compras',
-        key: 'compras',
-        aux: {
-            compras: true,
-            egresos: true,
-            ventas: true
-        },
+        key: 'compras'
     }
     
     componentDidMount() {
@@ -56,7 +44,6 @@ class Areas extends Component {
         });
         if (!areas)
             history.push('/')
-        this.getAreasAxios()
     }
 
     addSubarea = () => {
@@ -141,32 +128,6 @@ class Areas extends Component {
             },
         )
         return aux
-    }
-
-    setTextTable = text => {
-        return (
-            <Small>
-                {text}
-            </Small>
-        )
-    }
-
-    setListTable = lista => {
-        return (
-            <ul>
-                {
-                    lista.map((element) => {
-                        return (
-                            <li>
-                                <Small>
-                                    {element.nombre}
-                                </Small>
-                            </li>
-                        )
-                    })
-                }
-            </ul>
-        )
     }
 
     clearForm = () => {
@@ -335,37 +296,6 @@ class Areas extends Component {
         this.deleteAreaAxios()
     }
 
-    async getAreasAxios() {
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'areas', { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { data } = this.state
-                const { areas, areasVentas, areasEgresos } = response.data
-                data.areas = areas
-                data.areasVentas = areasVentas
-                data.areasEgresos = areasEgresos
-                this.setState({
-                    ... this.state,
-                    areas: this.setAreas(areas),
-                    areasVentas: this.setAreas(areasVentas),
-                    areasEgresos: this.setAreas(areasEgresos),
-                    data
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
     async addAreaAxios() {
         const { access_token } = this.props.authUser
         const { form, tipo } = this.state
@@ -376,11 +306,8 @@ class Areas extends Component {
         })
         await axios.post(URL_DEV + 'areas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { areas, areasVentas, areasEgresos } = response.data
-                const { data } = this.state
-                data.areas = areas
-                data.areasVentas = areasVentas
-                data.areasEgresos = areasEgresos
+                const { key } = this.state
+                this.controlledTab(key)
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito una nueva área.')
                 
@@ -388,10 +315,6 @@ class Areas extends Component {
                     ... this.state,
                     modal: false,
                     form: this.clearForm(),
-                    areas: this.setAreas(areas),
-                    areasVentas: this.setAreas(areasVentas),
-                    areasEgresos: this.setAreas(areasEgresos),
-                    data
                 })
 
             },
@@ -414,11 +337,9 @@ class Areas extends Component {
         const { form, area } = this.state
         await axios.put(URL_DEV + 'areas/' + area.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { areas, areasVentas, areasEgresos } = response.data
-                const { data } = this.state
-                data.areas = areas
-                data.areasVentas = areasVentas
-                data.areasEgresos = areasEgresos
+
+                const { key } = this.state
+                this.controlledTab(key)
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el área.')
                 
@@ -426,10 +347,6 @@ class Areas extends Component {
                     ... this.state,
                     modal: false,
                     form: this.clearForm(),
-                    areas: this.setAreas(areas),
-                    areasVentas: this.setAreas(areasVentas),
-                    areasEgresos: this.setAreas(areasEgresos),
-                    data,
                     area: ''
                 })
 
@@ -453,23 +370,17 @@ class Areas extends Component {
         const { area } = this.state
         await axios.delete(URL_DEV + 'areas/' + area.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { areas, areasVentas, areasEgresos } = response.data
-                const { data } = this.state
-                data.areas = areas
-                data.areasVentas = areasVentas
-                data.areasEgresos = areasEgresos
 
+                const { key } = this.state
+                this.controlledTab(key)
+                
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito el área.')
                 
                 this.setState({
                     ... this.state,
                     modalDelete: false,
                     form: this.clearForm(),
-                    areas: this.setAreas(areas),
-                    areasVentas: this.setAreas(areasVentas),
-                    areasEgresos: this.setAreas(areasEgresos),
                     area: '',
-                    data
                 })
 
             },
@@ -500,121 +411,115 @@ class Areas extends Component {
     }
 
     controlledTab = value => {
-        const { aux } = this.state
-        let auxiliar = ''
         switch(value){
-            case 'egresos':
-                auxiliar = {
-                    compras: false,
-                    egresos: true,
-                    ventas: false
-                };
-            break;
             case 'compras':
-                auxiliar = {
-                    compras: true,
-                    egresos: false,
-                    ventas: false
-                };
-            break;
+                this.getComprasAxios();
+                break;
             case 'ventas':
-                auxiliar = {
-                    compras: false,
-                    egresos: false,
-                    ventas: true
-                };
-            break;
+                this.getVentasAxios();
+                break;
+            case 'egresos':
+                this.getEgresosAxios();
+                break;
         }
         this.setState({
             ... this.state,
-            aux: auxiliar,
             key: value
         })
     }
 
     render() {
-        const { form, areas, areasVentas, modal, modalDelete, title, data, formeditado, areasEgresos, key, aux, modalSee, area} = this.state
+        const { form, modal, modalDelete, title, data, formeditado, key, modalSee, area} = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
                 <Tabs id="tabsAreas" defaultActiveKey="compras" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
                     <Tab eventKey="compras" title="Compras" >
                         {
                             key === 'compras' ?
-                                <NewTable columns={AREAS_COLUMNS} data={areas}
-                                    title='Áreas' subtitle='Listado de áreas'
-                                    mostrar_boton={true}
-                                    abrir_modal={true}
-                                    mostrar_acciones={true}
-                                    onClick={this.openModal}
-                                    actions={{
-                                        'edit': { function: this.openModalEdit },
-                                        'delete': { function: this.openModalDelete },
-                                        'see': { function: this.openModalSee },
-                                    }}
-                                    elements={data.areas}
-                                    idTable='kt_datatable_compras'
-                                    cardTable='cardTable_compras'
-                                    cardTableHeader='cardTableHeader_compras'
-                                    cardBody='cardBody_compras'
-                                    isTab={true}
-                                    aux={aux.compras}                        
-                                />
+                                <NewTableServerRender
+                                    columns = { AREAS_COLUMNS }
+                                    title = 'Áreas' 
+                                    subtitle = 'Listado de áreas'
+                                    mostrar_boton = { true }
+                                    abrir_modal = { true }
+                                    mostrar_acciones = { true }
+                                    onClick = { this.openModal }
+                                    actions = {
+                                        {
+                                            'edit': { function: this.openModalEdit },
+                                            'delete': { function: this.openModalDelete },
+                                            'see': { function: this.openModalSee },
+                                        }
+                                    }
+                                    accessToken = { this.props.authUser.access_token }
+                                    setter =  {this.setAreas }
+                                    urlRender = { URL_DEV + 'areas/compras'}
+                                    idTable = 'kt_datatable_compras'
+                                    cardTable = 'cardTable_compras'
+                                    cardTableHeader = 'cardTableHeader_compras'
+                                    cardBody = 'cardBody_compras'
+                                    isTab = {true}
+                                    />
                             : ''
                         }
                     </Tab>
                     <Tab eventKey="ventas" title="Ventas e ingresos">
                         {
                             key === 'ventas' ?
-                                <NewTable
-                                    columns={AREAS_COLUMNS}
-                                    data={areasVentas}
-                                    title='Áreas'
-                                    subtitle='Listado de áreas'
-                                    mostrar_boton={true}
-                                    abrir_modal={true}
-                                    mostrar_acciones={true}
-                                    onClick={this.openModalVentas}
-                                    actions={{
-                                        'edit': { function: this.openModalEditVentas },
-                                        'delete': { function: this.openModalDelete },
-                                        'see': { function: this.openModalSee },
-                                    }}
-                                    elements={data.areasVentas}
+                                <NewTableServerRender
+                                    columns = { AREAS_COLUMNS }
+                                    title = 'Áreas' 
+                                    subtitle = 'Listado de áreas'
+                                    mostrar_boton = { true }
+                                    abrir_modal = { true }
+                                    mostrar_acciones = { true }
+                                    onClick = { this.openModalVentas }
+                                    actions = {
+                                        {
+                                            'edit': { function: this.openModalEditVentas },
+                                            'delete': { function: this.openModalDelete },
+                                            'see': { function: this.openModalSee },
+                                        }
+                                    }
+                                    accessToken = { this.props.authUser.access_token }
+                                    setter =  {this.setAreas }
+                                    urlRender = { URL_DEV + 'areas/ventas'}
                                     idTable='kt_datatable_ventas'
                                     cardTable='cardTable_ventas'
                                     cardTableHeader='cardTableHeader_ventas'
                                     cardBody='cardBody_ventas'
-                                    isTab={true}
-                                    aux={aux.ventas}
-                                />
+                                    isTab = {true}
+                                    />
                             : ''
                         }
                     </Tab>
                     <Tab eventKey="egresos" title="Egresos">
                         {
                             key === 'egresos' ?
-                                <NewTable
-                                    columns={AREAS_COLUMNS}
-                                    data={areasEgresos}
-                                    title='Áreas'
-                                    subtitle='Listado de áreas'
-                                    mostrar_boton={true}
-                                    abrir_modal={true}
-                                    mostrar_acciones={true}
-                                    onClick={this.openModalEgresos}
-                                    actions={{
-                                        'edit': { function: this.openModalEditEgresos },
-                                        'delete': { function: this.openModalDelete },
-                                        'see': { function: this.openModalSee },
-                                    }}
-                                    elements={data.areasEgresos}
+                                <NewTableServerRender
+                                    columns = { AREAS_COLUMNS }
+                                    title = 'Áreas' 
+                                    subtitle = 'Listado de áreas'
+                                    mostrar_boton = { true }
+                                    abrir_modal = { true }
+                                    mostrar_acciones = { true }
+                                    onClick = { this.openModalEgresos }
+                                    actions = {
+                                        {
+                                            'edit': { function: this.openModalEditEgresos },
+                                            'delete': { function: this.openModalDelete },
+                                            'see': { function: this.openModalSee },
+                                        }
+                                    }
+                                    accessToken = { this.props.authUser.access_token }
+                                    setter =  {this.setAreas }
+                                    urlRender = { URL_DEV + 'areas/egresos'}
                                     idTable='kt_datatable_egresos'
                                     cardTable='cardTable_egresos'
                                     cardTableHeader='cardTableHeader_egresos'
                                     cardBody='cardBody_egresos'
-                                    isTab={true}
-                                    aux={aux.egresos}
-                                />
+                                    isTab = {true}
+                                    />
                             : ''
                         }
                         
