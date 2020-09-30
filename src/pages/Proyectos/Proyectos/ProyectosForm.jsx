@@ -9,7 +9,7 @@ import { ProyectosForm as ProyectoFormulario } from '../../../components/forms'
 import { URL_DEV, CP_URL } from '../../../constants';
 import { Button } from '../../../components/form-components'
 import { ProyectoCard } from '../../../components/cards'
-import { waitAlert, forbiddenAccessAlert, errorAlert, doneAlert } from '../../../functions/alert';
+import { waitAlert, forbiddenAccessAlert, errorAlert, doneAlert, questionAlert } from '../../../functions/alert';
 import { setOptions } from '../../../functions/setters';
 class ProyectosForm extends Component {
     state = {
@@ -624,6 +624,42 @@ class ProyectosForm extends Component {
         else
             this.addProyectoAxios()
     }
+
+    changeEstatus = estatus =>  {
+        const { proyecto } = this.state
+        estatus === 'Detenido'?
+            questionAlert('¿ESTÁS SEGURO?', 'DETENDRÁS EL PROYECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
+        :
+            questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR TEMINADO EL PROYECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
+    }
+
+    async changeEstatusAxios(estatus){
+        waitAlert()
+        const { proyecto } = this.state
+        const { access_token } = this.props.authUser
+        await axios.put(`${URL_DEV}proyectos/${proyecto.id}/estatus`,{estatus: estatus}, { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                swal.close()
+                doneAlert('Estado actualizado con éxito')
+                const { history } = this.props
+                history.push({
+                    pathname: '/proyectos/proyectos'
+                });
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -849,6 +885,24 @@ class ProyectosForm extends Component {
                         <div className="card-title">
                             <h3 className="card-label">{title}</h3>
                         </div>
+                        {
+                            title === 'Editar proyecto' ?
+                                <div class="card-toolbar">
+                                    <Button
+                                        onClick={() => { this.changeEstatus('Detenido') }}
+                                        className={"btn btn-icon btn-light-primary btn-sm mr-2 ml-auto"}
+                                        only_icon={"far fa-clock icon-md"}
+                                        tooltip={{ text: 'Detener' }}
+                                    />
+                                    <Button
+                                        onClick={() => { this.changeEstatus('Terminado') }}
+                                        className={"btn btn-icon btn-light-success btn-sm"}
+                                        only_icon={"fas fa-check-square icon-md"}
+                                        tooltip={{ text: 'Terminar' }}
+                                    />
+                                </div>
+                                : ''
+                        }
                     </Card.Header>
                     <Card.Body className="pt-0">
                         <ProyectoFormulario

@@ -806,6 +806,10 @@ export const PROYECTOS_COLUMNS = [
         accessor: 'actions',
     },
     {
+        Header: 'Estatus',
+        accessor: 'status'
+    },
+    {
         Header: 'Nombre',
         accessor: 'nombre'
     },
@@ -840,6 +844,10 @@ export const PROYECTOS_COLUMNS = [
     {
         Header: 'Descripción',
         accessor: 'descripcion'
+    },
+    {
+        Header: 'Fases',
+        accessor: 'fases'
     }/* ,
     {
         Header: 'Adjuntos',
