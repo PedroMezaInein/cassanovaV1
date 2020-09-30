@@ -140,7 +140,7 @@ class SolicitudCompra extends Component {
     changePageConvert = solicitud => {
         const { history } = this.props
         history.push({
-            pathname: '/proyectos/compras',
+            pathname: '/proyectos/compras/convert',
             state: { solicitud: solicitud },
             formeditado: 1
         });
@@ -232,7 +232,7 @@ class SolicitudCompra extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
-    }
+    }    
     render() {
         const { modalDelete, modalSingle, solicitudes, solicitud, data } = this.state
         return (
