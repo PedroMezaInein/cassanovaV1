@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import { URL_DEV } from './constants';
 import { logout, login } from './redux/reducers/auth_user'
-import swal from 'sweetalert' 
+import swal from 'sweetalert'
 
 const Loader = x => Loadable({
     loading: Loading,
@@ -90,7 +90,9 @@ const Utilidad = Loader(() => import('./pages/Proyectos/Utilidad') )
 const SolicitudCompra = Loader(() => import('./pages/Proyectos/SolicitudCompra/SolicitudCompra') )
 const SolicitudCompraForm = Loader(() => import('./pages/Proyectos/SolicitudCompra/SolicitudCompraForm') )
 
-const SolicitudVenta = Loader(() => import('./pages/Proyectos/SolicitudVenta') )
+// const SolicitudVenta = Loader(() => import('./pages/Proyectos/SolicitudVenta') )
+const SolicitudVenta = Loader(() => import('./pages/Proyectos/SolicitudVenta/SolicitudVenta') )
+const SolicitudVentaForm = Loader(() => import('./pages/Proyectos/SolicitudVenta/SolicitudVentaForm') )
 
 const Remision = Loader(() => import('./pages/Proyectos/Remision/Remision') )
 const RemisionForm = Loader(() => import('./pages/Proyectos/Remision/RemisionForm') )
@@ -247,8 +249,11 @@ class App extends Component{
 
                 <Route path = "/proyectos/solicitud-compra" exact component ={ SolicitudCompra } />
                 <Route path = "/proyectos/solicitud-compra/:action" exact component ={ SolicitudCompraForm } />
-                
+
                 <Route path = "/proyectos/solicitud-venta" exact component ={ SolicitudVenta } />
+                <Route path = "/proyectos/solicitud-venta/:action" exact component ={ SolicitudVentaForm } />
+                
+                {/* <Route path = "/proyectos/solicitud-venta" exact component ={ SolicitudVenta } /> */}
 
                 <Route path = "/proyectos/herramientas" exact component ={ Herramienta } />
                 <Route path = "/proyectos/herramientas/:action" exact component ={ HerramientaForm } />
