@@ -4,47 +4,37 @@ import axios from 'axios'
 import swal from 'sweetalert'
 import { URL_DEV } from '../../../constants'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert, doneAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, createAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
-import { IngresosForm as IngresosFormulario } from '../../../components/forms'
+import { ComprasForm as ComprasFormulario } from '../../../components/forms'
+import { SolicitudCompraCard } from '../../../components/cards'
 import { Card } from 'react-bootstrap'
-class IngresosForm extends Component {
+class ComprasForm extends Component {
     state = {
-        ingresos: [],
-        ingreso: '',
-        title: 'Nuevo ingreso',
-        options: {
-            empresas: [],
-            cuentas: [],
-            areas: [],
-            subareas: [],
-            tiposPagos: [],
-            tiposImpuestos: [],
-            estatusCompras: [],
-            clientes: [],
-        },
-        data: {
-            clientes: [],
-            empresas: []
-        },
-        formeditado: 0,
+        title: 'Nueva compra',
         form: {
             factura: 'Sin factura',
+            facturaObject: '',
+            contrato: '',
             rfc: '',
+            total: '',
             cliente: '',
+            proveedor: '',
+            proyecto: '',
             empresa: '',
             cuenta: '',
             area: '',
             subarea: '',
-            total: '',
-            descripcion: '',
-            facturaObject: '',
-            fileFactura: {
-                value: '',
-                adjuntos: [],
-            },
-            tipoPago: 0,
+            comision: '',
+            solicitud: '',
+            //Factura
+            formaPago: '',
+            metodoPago: '',
+            estatusPago: '',
+            //Fin factura
+            tipoAdjunto: 'presupuesto',
             tipoImpuesto: 0,
+            tipoPago: 0,
             estatusCompra: 0,
             fecha: new Date(),
             adjuntos: {
@@ -64,81 +54,39 @@ class IngresosForm extends Component {
                     files: []
                 }
             }
-        }
-    }
-    componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
-        const { match: { params: { action: action } } } = this.props
-        const { history, location: { state: state } } = this.props
-        const ingresos = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
-            return pathname === url + '/' + action
-        })
-        switch (action) {
-            case 'add':
-                this.setState({
-                    ... this.state,
-                    title: 'Nuevo ingreso',
-                    formeditado: 0
-                })
-                break;
-            case 'edit':
-                if (state) {
-                    if (state.ingreso) {
-                        const { ingreso } = state
-                        const { form, options } = this.state
-                        if (ingreso.empresa) {
-                            form.empresa = ingreso.empresa.id.toString()
-                            options['cuentas'] = setOptions(ingreso.empresa.cuentas, 'nombre', 'id')
-                            form.cuenta = ingreso.cuenta.id.toString()
-                        }
-                        if (ingreso.subarea) {
-                            form.area = ingreso.subarea.area.id.toString()
-                            options['subareas'] = setOptions(ingreso.subarea.area.subareas, 'nombre', 'id')
-                            form.subarea = ingreso.subarea.id.toString()
-                        }
-                        form.factura = ingreso.factura ? 'Con factura' : 'Sin factura'
-                        form.tipoPago = ingreso.tipo_pago ? ingreso.tipo_pago.id : 0
-                        form.tipoImpuesto = ingreso.tipo_impuesto ? ingreso.tipo_impuesto.id : 0
-                        form.estatusCompra = ingreso.estatus_compra ? ingreso.estatus_compra.id : 0
-                        form.total = ingreso.monto
-                        form.fecha = new Date(ingreso.created_at)
-                        form.descripcion = ingreso.descripcion
-                        if (ingreso.cliente) {
-                            form.cliente = ingreso.cliente.id.toString()
-                            form.rfc = ingreso.cliente.rfc
-                        }
-                        if (ingreso.pago) {
-                            form.adjuntos.pago.files = [{
-                                name: ingreso.pago.name, url: ingreso.pago.url
-                            }]
-                        }
-                        if (ingreso.presupuesto) {
-                            form.adjuntos.presupuesto.files = [{
-                                name: ingreso.presupuesto.name, url: ingreso.presupuesto.url
-                            }]
-                        }
-                        this.setState({
-                            ... this.state,
-                            title: 'Editar ingreso',
-                            form,
-                            options,
-                            ingreso: ingreso,
-                            formeditado: 1
-                        })
-                    }
-                    else
-                        history.push('/administracion/ingresos')
-                } else
-                    history.push('/administracion/ingresos')
-                break;
-            default:
-                break;
-        }
-        if (!ingresos)
-            history.push('/')
-        this.getOptionsAxios()
+        },
+        options: {
+            empresas: [],
+            cuentas: [],
+            areas: [],
+            subareas: [],
+            clientes: [],
+            proyectos: [],
+            proveedores: [],
+            tiposImpuestos: [],
+            tiposPagos: [],
+            estatusCompras: [],
+            formasPago: [],
+            metodosPago: [],
+            estatusFacturas: [],
+            contratos: []
+        },
+        data: {
+            clientes: [],
+            empresas: [],
+            cuentas: [],
+            proyectos: [],
+            proveedores: [],
+            compras: [],
+            adjuntos: []
+        },
+        formeditado: 0,
+        solicitud: '',
+        compras: [],
+        compra: '',
+        porcentaje: '',
+        facturas: [],
+        adjuntos: []
     }
     onChange = e => {
         const { form } = this.state
@@ -167,7 +115,12 @@ class IngresosForm extends Component {
                         const receptor = xml.getElementsByTagName('cfdi:Receptor')[0]
                         const timbreFiscalDigital = xml.getElementsByTagName('tfd:TimbreFiscalDigital')[0]
                         const concepto = xml.getElementsByTagName('cfdi:Concepto')[0]
+                        const conceptos = xml.getElementsByTagName('cfdi:Concepto')
                         let relacionados = xml.getElementsByTagName('cfdi:CfdiRelacionados')
+                        let desc = ''
+                        conceptos.forEach(element => {
+                            desc = desc + element.attributes.Descripcion + '. ';
+                        });
                         let obj = {
                             rfc_receptor: receptor.attributes.Rfc ? receptor.attributes.Rfc : '',
                             nombre_receptor: receptor.attributes.Nombre ? receptor.attributes.Nombre : '',
@@ -184,7 +137,7 @@ class IngresosForm extends Component {
                             tipo_cambio: xml.attributes.TipoCambio ? xml.attributes.TipoCambio : '',
                             moneda: xml.attributes.Moneda ? xml.attributes.Moneda : '',
                             numero_certificado: timbreFiscalDigital.attributes.UUID ? timbreFiscalDigital.attributes.UUID : '',
-                            descripcion: concepto.attributes.Descripcion,
+                            descripcion: desc,
                             folio: xml.attributes.Folio ? xml.attributes.Folio : '',
                             serie: xml.attributes.Serie ? xml.attributes.Serie : '',
                         }
@@ -223,19 +176,19 @@ class IngresosForm extends Component {
                         }
                         let auxEmpresa = ''
                         data.empresas.find(function (element, index) {
-                            if (element.rfc === obj.rfc_emisor) {
+                            if (element.rfc === obj.rfc_receptor) {
                                 auxEmpresa = element
                             }
                         });
-                        let auxCliente = ''
-                        data.clientes.find(function (element, index) {
-                            let cadena = obj.nombre_receptor.replace(' S. C.', ' SC').toUpperCase()
+                        let auxProveedor = ''
+                        data.proveedores.find(function (element, index) {
+                            let cadena = obj.nombre_emisor.replace(' S. C.', ' SC').toUpperCase()
                             cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
                             cadena = cadena.replace(/,/g, '').toUpperCase()
                             cadena = cadena.replace(/\./g, '').toUpperCase()
-                            if (element.empresa.toUpperCase() === obj.nombre_receptor.toUpperCase() ||
-                                element.empresa.toUpperCase() === cadena) {
-                                auxCliente = element
+                            if (element.razon_social.toUpperCase() === obj.nombre_emisor.toUpperCase() ||
+                                element.razon_social.toUpperCase() === cadena) {
+                                auxProveedor = element
                             }
                         });
                         if (auxEmpresa) {
@@ -244,16 +197,19 @@ class IngresosForm extends Component {
                         } else {
                             errorAlert('No existe la empresa')
                         }
-                        if (auxCliente) {
-                            form.cliente = auxCliente.empresa
+                        if (auxProveedor) {
+                            form.proveedor = auxProveedor.id.toString()
+                            if (auxProveedor.contratos) {
+                                options['contratos'] = setOptions(auxProveedor.contratos, 'nombre', 'id')
+                            }
                         } else {
-                            createAlert('No existe el cliente', '¿Lo quieres crear?', () => this.addClienteAxios(obj))
+                            createAlert('No existe el proveedor', '¿Lo quieres crear?', () => this.addProveedorAxios(obj))
                         }
-                        if (auxEmpresa && auxCliente) {
+                        if (auxEmpresa && auxProveedor) {
                             swal.close()
                         }
                         form.facturaObject = obj
-                        form.rfc = obj.rfc_receptor
+                        form.rfc = obj.rfc_emisor
                         this.setState({
                             ... this.state,
                             options,
@@ -303,6 +259,9 @@ class IngresosForm extends Component {
         let aux = Object.keys(form)
         aux.map((element) => {
             switch (element) {
+                case 'tipoAdjunto':
+                    form[element] = 'presupuesto'
+                    break;
                 case 'tipoImpuesto':
                 case 'tipoPago':
                 case 'estatusCompra':
@@ -340,6 +299,111 @@ class IngresosForm extends Component {
         })
         return form;
     }
+    onSubmit = e => {
+        e.preventDefault()
+        const { title } = this.state
+        waitAlert()
+        if (title === 'Editar compra')
+            this.editCompraAxios()
+        else
+            this.addCompraAxios()
+    }
+    componentDidMount() {
+        const { authUser: { user: { permisos: permisos } } } = this.props
+        const { history: { location: { pathname: pathname } } } = this.props
+        const { match: { params: { action: action } } } = this.props
+        const { history, location: { state: state } } = this.props
+        const egresos = permisos.find(function (element, index) {
+            const { modulo: { url: url } } = element
+            return pathname === url + '/' + action
+        });
+        switch (action) {
+            case 'add':
+                this.setState({
+                    ... this.state,
+                    title: 'Nueva compra',
+                    formeditado: 0
+                })
+                break;
+            case 'edit':
+                if (state) {
+                    if (state.compra) {
+                        const { compra } = state
+                        const { form, options } = this.state
+                        form.factura = compra.factura ? 'Con factura' : 'Sin factura'
+                        if (compra.proyecto) {
+                            if (compra.proyecto.clientes) {
+                                form.proyecto = compra.proyecto.id.toString()
+                            }
+                        }
+                        if (compra.empresa) {
+                            form.empresa = compra.empresa.id.toString()
+                            options['cuentas'] = setOptions(compra.empresa.cuentas, 'nombre', 'id')
+                            if (compra.cuenta)
+                                form.cuenta = compra.cuenta.id.toString()
+                        }
+                        if (compra.subarea) {
+                            form.area = compra.subarea.area.id.toString()
+                            options['subareas'] = setOptions(compra.subarea.area.subareas, 'nombre', 'id')
+                            form.subarea = compra.subarea.id.toString()
+                        }
+                        form.tipoPago = compra.tipo_pago ? compra.tipo_pago.id : 0
+                        form.tipoImpuesto = compra.tipo_impuesto ? compra.tipo_impuesto.id : 0
+                        form.estatusCompra = compra.estatus_compra ? compra.estatus_compra.id : 0
+                        form.total = compra.monto
+                        form.fecha = new Date(compra.created_at)
+                        form.descripcion = compra.descripcion
+                        form.comision = compra.comision
+                        if (compra.proveedor) {
+                            options['contratos'] = setOptions(compra.proveedor.contratos, 'nombre', 'id')
+                            form.proveedor = compra.proveedor.id.toString()
+                            form.rfc = compra.proveedor.rfc
+                            if (compra.contrato) {
+                                form.contrato = compra.contrato.id.toString()
+                            }
+                        }
+                        if (compra.pago) {
+                            form.adjuntos.pago.files = [{
+                                name: compra.pago.name, url: compra.pago.url
+                            }]
+                        }
+                        if (compra.presupuesto) {
+                            form.adjuntos.presupuesto.files = [{
+                                name: compra.presupuesto.name, url: compra.presupuesto.url
+                            }]
+                        }
+                        this.setState({
+                            ... this.state,
+                            title: 'Editar compra',
+                            form,
+                            options,
+                            compra: compra,
+                            formeditado: 1
+                        })
+                    }
+                    else
+                        history.push('/proyectos/compras')
+                } else
+                    history.push('/proyectos/compras')
+                break;
+            case 'convert': 
+                if (state) {
+                    if (state.solicitud) {
+                        this.getSolicitudCompraAxios(state.solicitud.id)
+                    }
+                }
+                this.setState({
+                    ... this.state,
+                    formeditado: 1
+                })
+                break;
+            default:
+                break;
+        }
+        if (!egresos)
+            history.push('/')
+        this.getOptionsAxios()
+    }
     setOptions = (name, array) => {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
@@ -348,28 +412,26 @@ class IngresosForm extends Component {
             options
         })
     }
-    onSubmit = e => {
-        e.preventDefault()
-        const { title } = this.state
-        waitAlert()
-        if (title === 'Editar ingreso') {
-            this.editIngresoAxios()
-        } else
-            this.addIngresoAxios()
-    }
     async getOptionsAxios() {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'ingresos/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        waitAlert()
+        await axios.get(URL_DEV + 'compras/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { clientes, empresas, areas, tiposPagos, tiposImpuestos, estatusCompras } = response.data
+                swal.close()
+                const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos,
+                    proveedores, formasPago, metodosPago, estatusFacturas } = response.data
                 const { options, data } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
+                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
-                options['clientes'] = setOptions(clientes, 'empresa', 'id')
+                options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
                 options['tiposPagos'] = setSelectOptions(tiposPagos, 'tipo')
                 options['tiposImpuestos'] = setSelectOptions(tiposImpuestos, 'tipo')
                 options['estatusCompras'] = setSelectOptions(estatusCompras, 'estatus')
-                data.clientes = clientes
+                options['estatusFacturas'] = setOptions(estatusFacturas, 'estatus', 'id')
+                options['formasPago'] = setOptions(formasPago, 'nombre', 'id')
+                options['metodosPago'] = setOptions(metodosPago, 'nombre', 'id')
+                data.proveedores = proveedores
                 data.empresas = empresas
                 this.setState({
                     ... this.state,
@@ -390,7 +452,7 @@ class IngresosForm extends Component {
             console.log(error, 'error')
         })
     }
-    async addIngresoAxios() {
+    async addCompraAxios() {
         const { access_token } = this.props.authUser
         const { form } = this.state
         const data = new FormData();
@@ -420,16 +482,17 @@ class IngresosForm extends Component {
                 data.append('adjuntos[]', element)
             }
         })
-        await axios.post(URL_DEV + 'ingresos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'compras', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                this.getOptionsAxios()
                 this.setState({
                     ... this.state,
-                    form: this.clearForm()
+                    form: this.clearForm(),
                 })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
                 const { history } = this.props
                 history.push({
-                    pathname: '/administracion/ingresos'
+                    pathname: '/proyectos/compras'
                 });
             },
             (error) => {
@@ -445,9 +508,9 @@ class IngresosForm extends Component {
             console.log(error, 'error')
         })
     }
-    async editIngresoAxios() {
+    async editCompraAxios() {
         const { access_token } = this.props.authUser
-        const { form, ingreso } = this.state
+        const { form, compra } = this.state
         const data = new FormData();
         let aux = Object.keys(form)
         aux.map((element) => {
@@ -471,16 +534,17 @@ class IngresosForm extends Component {
             }
             data.append('adjuntos[]', element)
         })
-        await axios.post(URL_DEV + 'ingresos/update/' + ingreso.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'compras/update/' + compra.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                this.getOptionsAxios()
                 this.setState({
                     ... this.state,
-                    form: this.clearForm()
+                    form: this.clearForm(),
                 })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
                 const { history } = this.props
                 history.push({
-                    pathname: '/administracion/ingresos'
+                    pathname: '/proyectos/compras'
                 });
             },
             (error) => {
@@ -496,26 +560,25 @@ class IngresosForm extends Component {
             console.log(error, 'error')
         })
     }
-    async addClienteAxios(obj) {
+    async addProveedorAxios(obj) {
         const { access_token } = this.props.authUser
         const data = new FormData();
-        let cadena = obj.nombre_receptor.replace(' S. C.', ' SC').toUpperCase()
+        let cadena = obj.nombre_emisor.replace(' S. C.', ' SC').toUpperCase()
         cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
         cadena = cadena.replace(/,/g, '').toUpperCase()
         cadena = cadena.replace(/\./g, '').toUpperCase()
-        data.append('empresa', cadena)
         data.append('nombre', cadena)
-        data.append('rfc', obj.rfc_receptor.toUpperCase())
-        await axios.post(URL_DEV + 'cliente', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        data.append('razonSocial', cadena)
+        data.append('rfc', obj.rfc_emisor.toUpperCase())
+        await axios.post(URL_DEV + 'proveedores', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { clientes } = response.data
+                const { proveedores } = response.data
                 const { options, data, form } = this.state
-                options.clientes = []
-                options['clientes'] = setOptions(clientes, 'empresa', 'id')
-                data.clientes = clientes
-                clientes.map((cliente) => {
-                    if (cliente.empresa === cadena) {
-                        form.cliente = cliente.empresa
+                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
+                data.proveedores = proveedores
+                proveedores.map((proveedor) => {
+                    if (proveedor.razon_social === cadena) {
+                        form.proveedor = proveedor.id.toString()
                     }
                 })
                 this.setState({
@@ -539,10 +602,88 @@ class IngresosForm extends Component {
             console.log(error, 'error')
         })
     }
+    async getSolicitudCompraAxios(id) {
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'solicitud-compra/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { solicitud } = response.data
+                const { options, form } = this.state
+                form.solicitud = solicitud.id
+                form.factura = solicitud.factura ? 'Con factura' : 'Sin factura'
+                if (solicitud.factura) {
+                    let aux = ''
+                    options.tiposImpuestos.find(function (element, index) {
+                        if (element.text === 'IVA')
+                            aux = element.value
+                    });
+                    form.tipoImpuesto = aux
+                }
+                if (solicitud.proveedor) {
+                    form.proveedor = solicitud.proveedor.id.toString()
+                    form.rfc = solicitud.proveedor.rfc
+                    if (solicitud.proveedor.contratos) {
+                        options['contratos'] = setOptions(solicitud.proveedor.contratos, 'nombre', 'id')
+                    }
+                }
+                if (solicitud.proyecto) {
+                    if (solicitud.proyecto.clientes) {
+                        if (solicitud.proyecto.clientes.proyectos) {
+                            options['proyectos'] = setOptions(solicitud.proyecto.clientes.proyectos, 'nombre', 'id')
+                            form.proyecto = solicitud.proyecto.id.toString()
+                        }
+                    }
+                }
+                if (solicitud.empresa) {
+                    if (solicitud.empresa.cuentas) {
+                        options['cuentas'] = setOptions(solicitud.empresa.cuentas, 'nombre', 'id')
+                        form.empresa = solicitud.empresa.id.toString()
+                    }
+                }
+                if (solicitud.subarea) {
+                    if (solicitud.subarea.area) {
+                        if (solicitud.subarea.area.subareas) {
+                            options['subareas'] = setOptions(solicitud.subarea.area.subareas, 'nombre', 'id')
+                            form.area = solicitud.subarea.area.id.toString()
+                            form.subarea = solicitud.subarea.id.toString()
+                        }
+                    }
+                }
+                if (solicitud.tipo_pago) {
+                    form.tipoPago = solicitud.tipo_pago.id
+                }
+                if (solicitud.monto) {
+                    form.total = solicitud.monto
+                }
+                if (solicitud.descripcion) {
+                    form.descripcion = solicitud.descripcion
+                }
+                this.setState({
+                    ... this.state,
+                    title: 'Convierte la solicitud de compra',
+                    solicitud: solicitud,
+                    modal: true,
+                    form,
+                    options,
+                    formeditado: 1
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
-        const { form, title, options, formeditado, data } = this.state
+        const { title, form, options, solicitud, data, formeditado } = this.state
         return (
-            <Layout active={'administracion'}  {...this.props}>
+            <Layout active={'proyectos'}  {...this.props}>
                 <Card className="card-custom">
                     <Card.Header>
                         <div className="card-title">
@@ -550,18 +691,26 @@ class IngresosForm extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body className="pt-0">
-                        <IngresosFormulario
-                            formeditado={formeditado}
-                            className="px-3"
-                            title={title}
+                        <ComprasFormulario
+                            options={options}
                             form={form}
+                            setOptions={this.setOptions}
+                            data={data}
+                            title={title}
                             onChange={this.onChange}
                             onChangeAdjunto={this.onChangeAdjunto}
                             clearFiles={this.clearFiles}
-                            options={options}
-                            setOptions={this.setOptions}
+                            sendFactura={() => { this.sendFactura() }}
                             onSubmit={this.onSubmit}
-                            data={data} />
+                            formeditado={formeditado}
+                            className="px-3"
+                        >
+                            {
+                                solicitud ?
+                                    <SolicitudCompraCard solicitud={solicitud} formeditado={formeditado} border={"border-nav mt-4 mb-5"} />
+                                    : ''
+                            }
+                        </ComprasFormulario>
                     </Card.Body>
                 </Card>
             </Layout>
@@ -578,4 +727,4 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(IngresosForm);
+export default connect(mapStateToProps, mapDispatchToProps)(ComprasForm);
