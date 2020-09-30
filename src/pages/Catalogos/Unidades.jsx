@@ -2,16 +2,15 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import { URL_DEV, UNIDADES_COLUMNS,} from '../../constants'
-import { setTextTable} from '../../functions/setters'
+import { URL_DEV, UNIDADES_COLUMNS, } from '../../constants'
+import { setTextTable } from '../../functions/setters'
 import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Modal, ModalDelete } from '../../components/singles'
 import { UnidadForm } from '../../components/forms'
-import NewTable from '../../components/tables/NewTable'
-
+import NewTableServerRender from '../../components/tables/NewTableServerRender'
+const $ = require('jquery');
 class Unidades extends Component {
-
     state = {
         form: {
             unidad: '',
@@ -19,9 +18,9 @@ class Unidades extends Component {
         data: {
             unidades: []
         },
-        formeditado:0,
+        formeditado: 0,
         unidades: [],
-        modal:{
+        modal: {
             form: false,
             delete: false,
         },
@@ -39,7 +38,7 @@ class Unidades extends Component {
         });
         if (!areas)
             history.push('/')
-        this.getUnidadesAxios()
+        // this.getUnidadesAxios()
     }
 
     onChange = e => {
@@ -64,7 +63,7 @@ class Unidades extends Component {
         return aux
     }
 
-    setActions = unidad => {
+    setActions = () => {
         let aux = []
         aux.push(
             {
@@ -125,7 +124,7 @@ class Unidades extends Component {
             modal,
             title: 'Nueva unidad',
             form: this.clearForm(),
-            formeditado:0,
+            formeditado: 0,
         })
     }
 
@@ -147,7 +146,7 @@ class Unidades extends Component {
             title: 'Editar unidad',
             unidad: unidad,
             form,
-            formeditado:1
+            formeditado: 1
         })
     }
 
@@ -179,9 +178,9 @@ class Unidades extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -202,7 +201,7 @@ class Unidades extends Component {
                 data.unidades = unidades
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito una nueva área.')
-                
+
                 this.setState({
                     ... this.state,
                     modal,
@@ -214,9 +213,9 @@ class Unidades extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -234,9 +233,9 @@ class Unidades extends Component {
                 const { unidades } = response.data
                 data.unidades = unidades
                 modal.form = false
-                
+
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el área.')
-                
+
                 this.setState({
                     ... this.state,
                     modal,
@@ -248,9 +247,9 @@ class Unidades extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -265,27 +264,27 @@ class Unidades extends Component {
         const { unidad, modal, data } = this.state
         await axios.delete(URL_DEV + 'unidades/' + unidad.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { unidades } = response.data
-                data.unidades = unidades
-                modal.delete = false
+                const { modal } = this.state
+                // data.unidades = unidades
+                // modal.delete = false
+                this.getUnidadesAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito la unidad.')
+                modal.delete=false
 
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito el área.')
-                
                 this.setState({
                     ... this.state,
                     modal,
-                    form: this.clearForm(),
-                    unidades: this.setUnidades(unidades),
+                    // form: this.clearForm(),
+                    // unidades: this.setUnidades(unidades),
                     unidad: '',
-                    data
+                    // data
                 })
-
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -295,14 +294,18 @@ class Unidades extends Component {
         })
     }
 
+    async getUnidadesAxios() {
+        var table = $('#kt_datatable_unidades').DataTable().ajax.reload();
+    }
+
     render() {
-        const { form, unidades, modal, title, data, formeditado} = this.state
+        const { form, unidades, modal, title, data, formeditado } = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
-                <NewTable 
-                    columns = { UNIDADES_COLUMNS } 
-                    data = { unidades }
-                    title = 'Unidades' 
+                <NewTableServerRender
+                    columns={UNIDADES_COLUMNS}
+                    // data = { unidades }
+                    title='Unidades'
                     subtitle='Listado de unidades'
                     mostrar_boton={true}
                     abrir_modal={true}
@@ -312,18 +315,24 @@ class Unidades extends Component {
                         'edit': { function: this.openModalEdit },
                         'delete': { function: this.openModalDelete }
                     }}
-                    elements={data.unidades}
-                    idTable = 'kt_datatable_catalogos'
+                    idTable='kt_datatable_unidades'
+                    accessToken={this.props.authUser.access_token}
+                    setter={this.setUnidades}
+                    urlRender={URL_DEV + 'unidades'}
+                    // elements={data.unidades}
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'
                     cardBody='cardBody'
                 />
-
-                <Modal size="xl" show={modal.form} title = {title} handleClose={this.handleClose}>
-                    <UnidadForm form = { form } onChange = { this.onChange }
-                        onSubmit = { this.onSubmit } formeditado={formeditado} />
+                <Modal size="xl" show={modal.form} title={title} handleClose={this.handleClose}>
+                    <UnidadForm
+                        form={form}
+                        onChange={this.onChange}
+                        onSubmit={this.onSubmit}
+                        formeditado={formeditado}
+                    />
                 </Modal>
-                <ModalDelete title={"¿Estás seguro que deseas eliminar la unidad?"} show = { modal.delete } handleClose = { this.handleCloseDelete } onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteUnidadAxios() }}>
+                <ModalDelete title={"¿Estás seguro que deseas eliminar la unidad?"} show={modal.delete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteUnidadAxios() }}>
                 </ModalDelete>
             </Layout>
         )

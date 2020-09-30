@@ -126,7 +126,10 @@ const NominaObraSingle = Loader(() => import('./pages/RecursosHumanos/NominaObra
 const NominaAdmin = Loader(() => import('./pages/RecursosHumanos/NominaAdmin/NominaAdmin') )
 const NominaAdminForm = Loader(() => import('./pages/RecursosHumanos/NominaAdmin/NominaAdminForm') )
 const NominaAdminSingle = Loader(() => import('./pages/RecursosHumanos/NominaAdmin/NominaAdminSingle') )
-const Empleados = Loader(() => import('./pages/RecursosHumanos/Empleados') )
+
+// const Empleados = Loader(() => import('./pages/RecursosHumanos/Empleados') )
+const Empleados = Loader( () => import('./pages/RecursosHumanos/Empleados/Empleados') )
+const EmpleadosForm = Loader( () => import('./pages/RecursosHumanos/Empleados/EmpleadosForm') )
 
 const Imss = Loader( () => import('./pages/RecursosHumanos/Imss/Imss') )
 const ImssForm = Loader( () => import('./pages/RecursosHumanos/Imss/ImssForm') )
@@ -319,7 +322,9 @@ class App extends Component{
                 <Route path = "/rh/nomina-admin" exact component ={ NominaAdmin } />
                 <Route path = "/rh/nomina-admin/:action" exact component ={ NominaAdminForm } />
                 <Route path = "/rh/nomina-admin/single/:id" exact component ={ NominaAdminSingle } />
+                {/* <Route path = "/rh/empleados" exact component ={ Empleados } /> */}
                 <Route path = "/rh/empleados" exact component ={ Empleados } />
+                <Route path = "/rh/empleados/:action" exact component ={ EmpleadosForm } />
                 <Route path = "/rh/vacaciones" exact component ={ Vacaciones } />
 
                 <Route path = "/rh/imss" exact component ={ Imss } />

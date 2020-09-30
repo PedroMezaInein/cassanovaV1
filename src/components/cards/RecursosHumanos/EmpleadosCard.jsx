@@ -5,6 +5,7 @@ import { Card, Tab, Row, Col, Nav } from 'react-bootstrap'
 export default class EmpleadosCard extends Component {
     render() {
         const { empleado } = this.props
+        console.log(empleado)
         return (
             <div className="col-md-12 mt-4">
                 <Tab.Container defaultActiveKey="first">
@@ -261,6 +262,28 @@ export default class EmpleadosCard extends Component {
                                                         }
                                                     </div>
                                                 </div>
+                                                {
+                                                    empleado.tipo_empleado ==="Administrativo"?
+                                                    <div className="row pb-1">
+                                                        <label className="col-5 font-weight-bolder text-primary">RESTANTE DE NÓMINA:</label>
+                                                        <div className="col-7">
+                                                            {
+                                                                empleado.nomina_imss ?
+                                                                    <span>
+                                                                        <NumberFormat
+                                                                            value={empleado.nomina_extras}
+                                                                            displayType={'text'}
+                                                                            thousandSeparator={true}
+                                                                            prefix={'$'}
+                                                                            renderText={value => <div>{value}</div>}
+                                                                        />
+                                                                    </span>
+                                                                    : <span>-</span>
+                                                            }
+                                                        </div>
+                                                    </div> 
+                                                :''
+                                                }
                                             </div>
                                         </Card.Body>
                                     </Card>
