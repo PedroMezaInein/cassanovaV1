@@ -8,7 +8,7 @@ import axios from 'axios'
 import { URL_DEV, PROYECTOS_COLUMNS, URL_ASSETS } from '../../../constants'
 import { Small } from '../../../components/texts'
 import swal from 'sweetalert'
-import { Card } from 'react-bootstrap'
+import { Card, Tabs } from 'react-bootstrap'
 import { setTextTable, setDateTable, setArrayTable, setListTable, setLabelTable } from '../../../functions/setters'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
@@ -19,6 +19,7 @@ const $ = require('jquery');
 class Proyectos extends Component {
     state = {
         proyectos: [],
+        key: 'all',
         title: 'Nuevo proyecto',
         prospecto: '',
         proyecto: '',
@@ -1191,33 +1192,165 @@ class Proyectos extends Component {
         $('#proyecto').DataTable().ajax.reload();
     }
 
+    async getProyectoFase1Axios() {
+        $('#proyecto_fase1').DataTable().ajax.reload();
+    }
+    async getProyectoFase2Axios() {
+        $('#proyecto_fase2').DataTable().ajax.reload();
+    }
+    async getProyectoFase3Axios() {
+        $('#proyecto_fase3').DataTable().ajax.reload();
+    }
+
+    controlledTab = value => {
+        switch(value){
+            case 'all':
+                this.getProyectoAxios();
+                break;
+            case 'fase1':
+                this.getProyectoFase1Axios();
+                break;
+            case 'fase2':
+                this.getProyectoFase2Axios();
+                break;
+            case 'fase3':
+                this.getProyectoFase3Axios();
+                break;
+        }
+        this.setState({
+            ... this.state,
+            key: value
+        })
+    }
+
     render() {
-        const { modalDelete, modalAdjuntos, modalAvances, title, form, proyecto, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey, modalSee } = this.state
+        const { modalDelete, modalAdjuntos, modalAvances, title, form, proyecto, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey, modalSee, key } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
-                <NewTableServerRender
-                    columns={PROYECTOS_COLUMNS}
-                    title='Proyectos'
-                    subtitle='Listado de proyectos'
-                    mostrar_boton={true}
-                    abrir_modal={false}
-                    url='/proyectos/proyectos/add'
-                    mostrar_acciones={true}
-                    actions={{
-                        'edit': { function: this.changePageEdit },
-                        'delete': { function: this.openModalDelete },
-                        'adjuntos': { function: this.openModalAdjuntos },
-                        'avances': { function: this.openModalAvances },
-                        'see': { function: this.openModalSee }
-                    }}
-                    accessToken={this.props.authUser.access_token}
-                    setter={this.setProyectos}
-                    urlRender={URL_DEV + 'proyectos'}
-                    cardTable='cardTable'
-                    cardTableHeader='cardTableHeader'
-                    cardBody='cardBody'
-                    idTable='cliente_table'
-                />
+                <Tabs defaultActiveKey = 'all' activeKey = { key }
+                    onSelect={(value) => { this.controlledTab(value) }}>
+                    <Tab eventKey = 'all' title = "Todas las fases">
+                        {
+                            key === 'all' ?
+                                <NewTableServerRender
+                                    columns={PROYECTOS_COLUMNS}
+                                    title='Proyectos'
+                                    subtitle='Listado de proyectos'
+                                    mostrar_boton={true}
+                                    abrir_modal={false}
+                                    url='/proyectos/proyectos/add'
+                                    mostrar_acciones={true}
+                                    actions={{
+                                        'edit': { function: this.changePageEdit },
+                                        'delete': { function: this.openModalDelete },
+                                        'adjuntos': { function: this.openModalAdjuntos },
+                                        'avances': { function: this.openModalAvances },
+                                        'see': { function: this.openModalSee }
+                                    }}
+                                    accessToken={this.props.authUser.access_token}
+                                    setter={this.setProyectos}
+                                    urlRender={URL_DEV + 'proyectos/proyectos'}
+                                    cardTable='cardTable'
+                                    cardTableHeader='cardTableHeader'
+                                    cardBody='cardBody'
+                                    idTable='proyecto'
+                                    isTab={true}
+                                />
+                            : ''
+                        }
+                    </Tab>
+                    <Tab eventKey = 'fase1' title = "FASE 1">
+                        {
+                            key === 'fase1' ?
+                                <NewTableServerRender
+                                    columns={PROYECTOS_COLUMNS}
+                                    title='Proyectos'
+                                    subtitle='Listado de proyectos'
+                                    mostrar_boton={true}
+                                    abrir_modal={false}
+                                    url='/proyectos/proyectos/add'
+                                    mostrar_acciones={true}
+                                    actions={{
+                                        'edit': { function: this.changePageEdit },
+                                        'delete': { function: this.openModalDelete },
+                                        'adjuntos': { function: this.openModalAdjuntos },
+                                        'avances': { function: this.openModalAvances },
+                                        'see': { function: this.openModalSee }
+                                    }}
+                                    accessToken={this.props.authUser.access_token}
+                                    setter={this.setProyectos}
+                                    urlRender={URL_DEV + 'proyectos/proyectos/1'}
+                                    cardTable='cardTable'
+                                    cardTableHeader='cardTableHeader'
+                                    cardBody='cardBody'
+                                    idTable='proyecto_fase1'
+                                    isTab={true}
+                                />
+                            : ''
+                        }
+                    </Tab>
+                    <Tab eventKey = 'fase2' title = "FASE 2">
+                        {
+                            key === 'fase2' ?
+                                <NewTableServerRender
+                                    columns={PROYECTOS_COLUMNS}
+                                    title='Proyectos'
+                                    subtitle='Listado de proyectos'
+                                    mostrar_boton={true}
+                                    abrir_modal={false}
+                                    url='/proyectos/proyectos/add'
+                                    mostrar_acciones={true}
+                                    actions={{
+                                        'edit': { function: this.changePageEdit },
+                                        'delete': { function: this.openModalDelete },
+                                        'adjuntos': { function: this.openModalAdjuntos },
+                                        'avances': { function: this.openModalAvances },
+                                        'see': { function: this.openModalSee }
+                                    }}
+                                    accessToken={this.props.authUser.access_token}
+                                    setter={this.setProyectos}
+                                    urlRender={URL_DEV + 'proyectos/proyectos/2'}
+                                    cardTable='cardTable'
+                                    cardTableHeader='cardTableHeader'
+                                    cardBody='cardBody'
+                                    idTable='proyecto_fase2'
+                                    isTab={true}
+                                />
+                            : ''
+                        }
+                    </Tab>
+                    <Tab eventKey = 'fase3' title = "FASE 3">
+                        {
+                            key === 'fase3' ?
+                                <NewTableServerRender
+                                    columns={PROYECTOS_COLUMNS}
+                                    title='Proyectos'
+                                    subtitle='Listado de proyectos'
+                                    mostrar_boton={true}
+                                    abrir_modal={false}
+                                    url='/proyectos/proyectos/add'
+                                    mostrar_acciones={true}
+                                    actions={{
+                                        'edit': { function: this.changePageEdit },
+                                        'delete': { function: this.openModalDelete },
+                                        'adjuntos': { function: this.openModalAdjuntos },
+                                        'avances': { function: this.openModalAvances },
+                                        'see': { function: this.openModalSee }
+                                    }}
+                                    accessToken={this.props.authUser.access_token}
+                                    setter={this.setProyectos}
+                                    urlRender={URL_DEV + 'proyectos/proyectos/3'}
+                                    cardTable='cardTable'
+                                    cardTableHeader='cardTableHeader'
+                                    cardBody='cardBody'
+                                    idTable='proyecto_fase3'
+                                    isTab={true}
+                                />
+                            : ''
+                        }
+                    </Tab>
+                </Tabs>
+                
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el proyecto?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { this.safeDelete(e)() }}>
                 </ModalDelete>
 
