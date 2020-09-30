@@ -135,7 +135,7 @@ class Leads extends Component {
             prospecto,
             modal,
             contactHistory: aux,
-            // formContacto: this.clearContactForm()
+            formContacto: this.clearContactForm()
         })
     }
 

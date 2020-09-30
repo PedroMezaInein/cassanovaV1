@@ -284,44 +284,8 @@ class ProspectosForm extends Component {
             formContacto
         })
     }
-    deleteFile = element => {
-        deleteAlert('¿Deseas eliminar el archivo?', () => this.deleteAdjuntoAxios(element.id))
-    }
-
-    async deleteAdjuntoAxios() {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        const { prospecto } = this.state
-        await axios.delete(URL_DEV + 'prospecto/' + prospecto.id + '/adjuntos', { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { formContacto } = this.state
-                formContacto.adjuntos.adjuntos.files = []
-                formContacto.adjuntos.adjuntos.aux = ''
-                this.setState({
-                    ... this.state,
-                    formContacto
-                })
-                doneAlert('Adjunto eliminado con éxito')
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-
     render() {
-
         const { options, form, formContacto, title, formeditado, lead } = this.state
-
         return (
             <Layout active={'leads'}  {...this.props}>
                 <Card className="card-custom">
@@ -360,7 +324,6 @@ class ProspectosForm extends Component {
                             onSubmit={this.onSubmit}
                             title={title}
                             handleChange={this.handleChange}
-                            deleteFile={this.deleteFile}
                             >
                             {
                                 lead ?
