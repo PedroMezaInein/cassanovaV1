@@ -196,6 +196,15 @@ class Leads extends Component {
                 case 'success':
                     formContacto[element] = 'Contactado'
                     break;
+                case 'adjuntos':
+                    formContacto[element] = {
+                        adjuntos:{
+                            files: [],
+                            value: '',
+                            placeholder: 'Adjuntos'
+                        }
+                    }
+                    break;
                 default:
                     formContacto[element] = ''
                     break;

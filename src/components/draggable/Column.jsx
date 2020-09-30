@@ -35,7 +35,7 @@ class Column extends Component {
         const { mobileState } = this.state
         return (
             <div className="kanban-container">
-                <div className="kanban-board" data-id="_inprocess" style={{ width: "250px", marginLeft: "0px", marginRight: "0px" }}>
+                <div className="kanban-board" data-id="_inprocess" style={{ width: "90%", minWidth: "250px", marginLeft: "0px", marginRight: "0px" }}>
 
                     <div className="position-relative">
                         <header className="kanban-board-header light-primary">
