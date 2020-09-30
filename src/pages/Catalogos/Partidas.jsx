@@ -20,11 +20,7 @@ class Partidas extends Component {
             subpartida: '',
             subpartidas: []
         },
-        data: {
-            partidas: []
-        },
         formeditado:0,
-        partidas: [],
         modal:{
             form: false,
             delete: false,
