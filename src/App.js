@@ -80,7 +80,10 @@ const ProyectosForm = Loader(() => import('./pages/Proyectos/Proyectos/Proyectos
 const Compras = Loader(() => import('./pages/Proyectos/Compras/Compras') )
 const ComprasForm = Loader(() => import('./pages/Proyectos/Compras/ComprasForm') )
 
-const Ventas = Loader(() => import('./pages/Proyectos/Ventas') )
+const Ventas = Loader(() => import('./pages/Proyectos/Ventas/Ventas') )
+const VentasForm = Loader(() => import('./pages/Proyectos/Ventas/VentasForm') )
+
+// const Ventas = Loader(() => import('./pages/Proyectos/Ventas') )
 // const Compras = Loader(() => import('./pages/Proyectos/Compras') )
 const Utilidad = Loader(() => import('./pages/Proyectos/Utilidad') )
 
@@ -229,7 +232,7 @@ class App extends Component{
                 <Route path = "/proyectos/proyectos" exact component ={ Proyectos } />
                 <Route path = "/proyectos/proyectos/:action" exact component ={ ProyectosForm } />
 
-                <Route path = "/proyectos/ventas" exact component ={ Ventas } />
+                {/* <Route path = "/proyectos/ventas" exact component ={ Ventas } /> */}
                 {/* <Route path = "/proyectos/compras" exact component ={ Compras } /> */}
                 <Route path = "/proyectos/utilidad" exact component ={ Utilidad } />
                 
@@ -238,6 +241,9 @@ class App extends Component{
 
                 <Route path = "/proyectos/compras" exact component ={ Compras } />
                 <Route path = "/proyectos/compras/:action" exact component ={ ComprasForm } />
+
+                <Route path = "/proyectos/ventas" exact component ={ Ventas } />
+                <Route path = "/proyectos/ventas/:action" exact component ={ VentasForm } />
 
                 <Route path = "/proyectos/solicitud-compra" exact component ={ SolicitudCompra } />
                 <Route path = "/proyectos/solicitud-compra/:action" exact component ={ SolicitudCompraForm } />
