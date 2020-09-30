@@ -29,7 +29,7 @@ class ContactoLeadForm extends Component {
     }
 
     render() {
-        const { options, formContacto, onChangeContacto, formeditado, handleChange,deleteFile} = this.props
+        const { options, formContacto, onChangeContacto, formeditado, handleChange} = this.props
         const { newTipoContacto } = this.state
         return (
             <div className="">
@@ -122,7 +122,6 @@ class ContactoLeadForm extends Component {
                             items={formContacto.adjuntos.adjuntos.files}
                             item='adjuntos' 
                             handleChange={handleChange}
-                            deleteFile={deleteFile}
                             multiple={true}
                         />
                     </div>
