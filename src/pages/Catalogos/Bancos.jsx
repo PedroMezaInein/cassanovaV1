@@ -8,19 +8,16 @@ import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../fu
 import Layout from '../../components/layout/layout'
 import { Modal, ModalDelete } from '../../components/singles'
 import { BancoForm } from '../../components/forms'
-import NewTable from '../../components/tables/NewTable'
+import NewTableServerRender from '../../components/tables/NewTableServerRender'
 
+const $ = require('jquery');
 class Bancos extends Component {
 
     state = {
         form: {
             nombre: '',
         },
-        data: {
-            bancos: []
-        },
         formeditado:0,
-        bancos: [],
         modal:{
             form: false,
             delete: false,
@@ -39,7 +36,6 @@ class Bancos extends Component {
         });
         if (!areas)
             history.push('/')
-        this.getBancosAxios()
     }
 
     onChange = e => {
@@ -161,30 +157,7 @@ class Bancos extends Component {
     }
 
     async getBancosAxios() {
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'bancos', { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { data } = this.state
-                const { bancos } = response.data
-                data.bancos = bancos
-                this.setState({
-                    ... this.state,
-                    bancos: this.setBancos(bancos),
-                    data
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
+        $('#kt_datatable_catalogos').DataTable().ajax.reload();
     }
 
     async addBancoAxios() {
@@ -192,19 +165,17 @@ class Bancos extends Component {
         const { form } = this.state
         await axios.post(URL_DEV + 'bancos', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { bancos } = response.data
-                const { data, modal } = this.state
+                const { modal } = this.state
                 modal.form = false
-                data.bancos = bancos
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito una nueva área.')
                 
+                this.getBancosAxios()
+
                 this.setState({
                     ... this.state,
                     modal,
-                    form: this.clearForm(),
-                    bancos: this.setBancos(bancos),
-                    data
+                    form: this.clearForm()
                 })
 
             },
@@ -227,9 +198,10 @@ class Bancos extends Component {
         const { form, banco, data, modal } = this.state
         await axios.put(URL_DEV + 'bancos/' + banco.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { bancos } = response.data
-                data.bancos = bancos
+
                 modal.form = false
+
+                this.getBancosAxios()
                 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el área.')
                 
@@ -237,7 +209,6 @@ class Bancos extends Component {
                     ... this.state,
                     modal,
                     form: this.clearForm(),
-                    bancos: this.setBancos(bancos),
                     banco: ''
                 })
 
@@ -261,9 +232,10 @@ class Bancos extends Component {
         const { banco, modal, data } = this.state
         await axios.delete(URL_DEV + 'bancos/' + banco.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { bancos } = response.data
-                data.bancos = bancos
+
                 modal.delete = false
+
+                this.getBancosAxios()
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito el área.')
                 
@@ -271,9 +243,7 @@ class Bancos extends Component {
                     ... this.state,
                     modal,
                     form: this.clearForm(),
-                    bancos: this.setBancos(bancos),
                     banco: '',
-                    data
                 })
 
             },
@@ -292,12 +262,11 @@ class Bancos extends Component {
     }
 
     render() {
-        const { form, bancos, modal, title, data, formeditado} = this.state
+        const { form, modal, title, formeditado} = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
-                <NewTable 
+                <NewTableServerRender 
                     columns = { BANCOS_COLUMNS } 
-                    data = { bancos }
                     title = 'Bancos' 
                     subtitle='Listado de bancos'
                     mostrar_boton={true}
@@ -308,11 +277,13 @@ class Bancos extends Component {
                         'edit': { function: this.openModalEdit },
                         'delete': { function: this.openModalDelete }
                     }}
-                    elements={data.bancos}
                     idTable = 'kt_datatable_catalogos'
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'
                     cardBody='cardBody'
+                    accessToken = { this.props.authUser.access_token }
+                    setter =  {this.setBancos }
+                    urlRender = { URL_DEV + 'bancos'}
                 />
 
                 <Modal size="xl" show={modal.form} title = {title} handleClose={this.handleClose}>
