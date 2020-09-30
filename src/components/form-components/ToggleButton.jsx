@@ -5,7 +5,7 @@ import { Toggle } from "react-toggle-component";
 class ToggleButton extends Component{
 
     render(){
-        const { leftBG, rightBG, borderColor, rightKnobColor, leftKnobColor, knobColor} = this.props
+        const { leftBG, rightBG, borderColor, rightKnobColor, leftKnobColor, knobColor, ...props} = this.props
         return( 
             <Toggle
                 leftBackgroundColor={leftBG ? leftBG: ''}
@@ -14,7 +14,7 @@ class ToggleButton extends Component{
                 knobColor={knobColor ? knobColor: ''}
                 leftKnobColor={leftKnobColor ? leftKnobColor: ''}
                 rightKnobColor={rightKnobColor ? rightKnobColor: ''}
-                { ... this.props }
+                { ... props }
             /> 
         )
     }

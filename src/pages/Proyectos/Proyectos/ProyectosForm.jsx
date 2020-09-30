@@ -13,13 +13,15 @@ import { waitAlert, forbiddenAccessAlert, errorAlert, doneAlert } from '../../..
 import { setOptions } from '../../../functions/setters';
 class ProyectosForm extends Component {
     state = {
+        action: '',
         title: 'Nuevo proyecto',
         prospecto: '',
         formeditado: 1,
         options: {
             empresas: [],
             clientes: [],
-            colonias: []
+            colonias: [],
+            estatus: [],
         },
         data: {
             proyectos: []
@@ -27,6 +29,10 @@ class ProyectosForm extends Component {
         form: {
             fechaInicio: new Date(),
             fechaFin: new Date(),
+            estatus:'',
+            fase1: false,
+            fase2: false,
+            fase3: false,
             semana: '',
             nombre: '',
             cliente: '',
@@ -367,7 +373,8 @@ class ProyectosForm extends Component {
                 this.setState({
                     ... this.state,
                     title: 'Nuevo proyecto',
-                    formeditado: 0
+                    formeditado: 0,
+                    action: 'add'
                 })
                 break;
             case 'edit':
@@ -400,6 +407,14 @@ class ProyectosForm extends Component {
                         if (proyecto.imagen) {
                             form.adjuntos.image.files = [{ name: proyecto.imagen.name, file: '', url: proyecto.imagen.url, key: 0 }]
                         }
+                        if (proyecto.estatus) {
+                            form.estatus = proyecto.estatus.id.toString();
+                        }
+                        form.fase1 = proyecto.fase1 === 0 ? false : true
+                        form.fase2 = proyecto.fase2 === 0 ? false : true
+                        form.fase3 = proyecto.fase3 === 0 ? false : true
+                        console.log(form, 'form')
+                        console.log(proyecto, 'prouecto')
                         if (proyecto.empresa)
                             form.empresa = proyecto.empresa.id.toString()
                         form.colonia = proyecto.colonia
@@ -415,7 +430,8 @@ class ProyectosForm extends Component {
                             proyecto: proyecto,
                             form,
                             formeditado: 1,
-                            title: 'Editar proyecto'
+                            title: 'Editar proyecto',
+                            action: 'edit'
                         })
                     }
                     else
@@ -614,10 +630,11 @@ class ProyectosForm extends Component {
         await axios.get(URL_DEV + 'proyectos/opciones', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                const { clientes, empresas } = response.data
+                const { clientes, empresas, estatus } = response.data
                 const { options } = this.state
                 options['clientes'] = setOptions(clientes, 'empresa', 'id')
                 options['empresas'] = setOptions(empresas, 'name', 'id')
+                options['estatus'] = setOptions(estatus, 'estatus', 'id')
                 this.setState({
                     ...this.state,
                     options
@@ -779,7 +796,8 @@ class ProyectosForm extends Component {
                     ... this.state,
                     prospecto: prospecto,
                     form,
-                    title: 'Convertir Prospecto'
+                    title: 'Convertir Prospecto',
+                    action: 'convert'
                 })
             },
             (error) => {
@@ -823,7 +841,7 @@ class ProyectosForm extends Component {
         })
     }
     render() {
-        const { title, form, options, formeditado, prospecto } = this.state
+        const { title, form, options, formeditado, prospecto, action } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <Card className="card-custom">
@@ -834,6 +852,7 @@ class ProyectosForm extends Component {
                     </Card.Header>
                     <Card.Body className="pt-0">
                         <ProyectoFormulario
+                            action = { action }
                             title={title}
                             form={form}
                             options={options}
