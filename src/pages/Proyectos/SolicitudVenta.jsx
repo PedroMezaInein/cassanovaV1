@@ -239,7 +239,7 @@ class SolicitudVenta extends Component{
     changePageConvert = solicitud => {
         const { history } = this.props
         history.push({
-            pathname: '/proyectos/ventas',
+            pathname: '/proyectos/ventas/convert',
             state: { solicitud: solicitud},
             formeditado:1
         });
