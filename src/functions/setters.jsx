@@ -185,6 +185,7 @@ export function setListTable(arreglo, nombre) {
         <ul>
             {
                 arreglo.map((element,  key ) => { 
+                    console.log(element, nombre)
                     return (
                         <div  key={key}>
                             <li key={key}>

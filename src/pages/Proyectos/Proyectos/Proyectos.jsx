@@ -9,7 +9,7 @@ import { URL_DEV, PROYECTOS_COLUMNS, URL_ASSETS } from '../../../constants'
 import { Small } from '../../../components/texts'
 import swal from 'sweetalert'
 import { Card } from 'react-bootstrap'
-import { setTextTable, setDateTable, setArrayTable, setListTable } from '../../../functions/setters'
+import { setTextTable, setDateTable, setArrayTable, setListTable, setLabelTable } from '../../../functions/setters'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import ItemSlider from '../../../components/singles/ItemSlider'
@@ -845,6 +845,7 @@ class Proyectos extends Component {
         proyectos.map((proyecto) => {
             aux.push({
                 actions: this.setActions(proyecto),
+                status: renderToString(setLabelTable(proyecto.estatus)),
                 nombre: renderToString(setTextTable(proyecto.nombre)),
                 cliente: renderToString(setListTable(proyecto.clientes, 'empresa')),
                 direccion: renderToString(this.setDireccionTable(proyecto)),
@@ -859,9 +860,20 @@ class Proyectos extends Component {
                 descripcion: renderToString(setTextTable(proyecto.descripcion)),
                 fechaFin: renderToString(proyecto.fecha_fin !== null ? setDateTable(proyecto.fecha_fin) : setTextTable('Sin definir')),
                 adjuntos: renderToString(this.setAdjuntosTable(proyecto)),
+                fases: renderToString(setListTable(this.setFasesList(proyecto), 'text')),
                 id: proyecto.id
             })
         })
+        return aux
+    }
+    setFasesList = proyecto => {
+        let aux = [];
+        if(proyecto.fase1)
+            aux.push({text: 'FASE 1'})
+        if(proyecto.fase2)
+            aux.push({text: 'FASE 2'})
+        if(proyecto.fase3)
+            aux.push({text: 'FASE 3'})
         return aux
     }
     setAdjuntosTable = proyecto => {
