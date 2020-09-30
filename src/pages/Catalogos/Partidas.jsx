@@ -8,9 +8,10 @@ import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../fu
 import Layout from '../../components/layout/layout'
 import { Modal, ModalDelete } from '../../components/singles'
 import { PartidaForm } from '../../components/forms'
-import NewTable from '../../components/tables/NewTable'
+import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { PartidaCard } from '../../components/cards'
 
+const $ = require('jquery');
 class Partidas extends Component {
 
     state = {
@@ -43,7 +44,6 @@ class Partidas extends Component {
         });
         if (!areas)
             history.push('/')
-        this.getPartidaAxios()
     }
 
     addSubpartida = () => {
@@ -252,30 +252,7 @@ class Partidas extends Component {
     }
 
     async getPartidaAxios() {
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'partidas', { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { data } = this.state
-                const { partidas } = response.data
-                data.partidas = partidas
-                this.setState({
-                    ... this.state,
-                    partidas: this.setPartidas(partidas),
-                    data
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
+        $('#kt_datatable_partidas').DataTable().ajax.reload();
     }
 
     async addPartidaAxios() {
@@ -283,10 +260,11 @@ class Partidas extends Component {
         const { form } = this.state
         await axios.post(URL_DEV + 'partidas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { partidas } = response.data
-                const { data, modal } = this.state
+                
+                const { modal } = this.state
                 modal.form = false
-                data.partidas = partidas
+
+                this.getPartidaAxios()
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito una nueva área.')
 
@@ -294,8 +272,6 @@ class Partidas extends Component {
                     ... this.state,
                     modal,
                     form: this.clearForm(),
-                    partidas: this.setPartidas(partidas),
-                    data
                 })
 
             },
@@ -318,17 +294,17 @@ class Partidas extends Component {
         const { form, partida, data, modal } = this.state
         await axios.put(URL_DEV + 'partidas/' + partida.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { partidas } = response.data
-                data.partidas = partidas
+                const { modal } = this.state
                 modal.form = false
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el área.')
+
+                this.getPartidaAxios()
 
                 this.setState({
                     ... this.state,
                     modal,
                     form: this.clearForm(),
-                    partidas: this.setPartidas(partidas),
                     partida: ''
                 })
 
@@ -352,19 +328,18 @@ class Partidas extends Component {
         const { partida, modal, data } = this.state
         await axios.delete(URL_DEV + 'partidas/' + partida.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { partidas } = response.data
-                data.partidas = partidas
+                const { modal } = this.state
                 modal.delete = false
                 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito el área.')
                 
+                this.getPartidaAxios()
+
                 this.setState({
                     ... this.state,
                     modal,
                     form: this.clearForm(),
-                    partidas: this.setPartidas(partidas),
                     partida: '',
-                    data
                 })
 
             },
@@ -386,25 +361,28 @@ class Partidas extends Component {
         const { form, partidas, modal, title, data, formeditado, partida} = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
-                <NewTable 
+                <NewTableServerRender 
                     columns = { PARTIDAS_COLUMNS } 
-                    data = { partidas }
                     title = 'Partidas' 
-                    subtitle='Listado de partidas'
-                    mostrar_boton={true}
-                    abrir_modal={true}
-                    mostrar_acciones={true}
-                    onClick={this.openModal}
-                    actions={{
-                        'edit': { function: this.openModalEdit },
-                        'delete': { function: this.openModalDelete },
-                        'see': { function: this.openModalSee },
-                    }}
-                    elements={data.partidas}
+                    subtitle ='Listado de partidas'
+                    mostrar_boton = { true }
+                    abrir_modal = { true }
+                    mostrar_acciones = { true }
+                    onClick = { this.openModal }
+                    actions = {
+                        {
+                            'edit': { function: this.openModalEdit },
+                            'delete': { function: this.openModalDelete },
+                            'see': { function: this.openModalSee },
+                        }
+                    }
                     idTable = 'kt_datatable_partidas'
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'
                     cardBody='cardBody'
+                    accessToken = { this.props.authUser.access_token }
+                    setter =  {this.setPartidas }
+                    urlRender = { URL_DEV + 'partidas'}
                 />
 
                 <Modal size="xl" show={modal.form} title = {title} handleClose={this.handleClose}>
