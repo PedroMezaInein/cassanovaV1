@@ -105,7 +105,7 @@ class SolicitudCompraForm extends Component {
         }
         if (!remisiones)
             history.push('/')
-        this.getSolicitudesCompraAxios()
+        this.getOptionsAxios()
     }
     onChange = e => {
         const { form } = this.state
@@ -228,9 +228,9 @@ class SolicitudCompraForm extends Component {
         aux.options = options
         return aux
     }
-    async getSolicitudesCompraAxios() {
+    async getOptionsAxios() {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'solicitud-compra', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'solicitud-compra/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { empresas, areas, tiposPagos, proveedores, proyectos } = response.data
                 const { options } = this.state
