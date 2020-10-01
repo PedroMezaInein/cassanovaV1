@@ -9,7 +9,7 @@ import { ProyectosForm as ProyectoFormulario } from '../../../components/forms'
 import { URL_DEV, CP_URL } from '../../../constants';
 import { Button } from '../../../components/form-components'
 import { ProyectoCard } from '../../../components/cards'
-import { waitAlert, forbiddenAccessAlert, errorAlert, doneAlert, questionAlert } from '../../../functions/alert';
+import { waitAlert, forbiddenAccessAlert, errorAlert, doneAlert, questionAlert,deleteAlert } from '../../../functions/alert';
 import { setOptions } from '../../../functions/setters';
 class ProyectosForm extends Component {
     state = {
@@ -876,6 +876,57 @@ class ProyectosForm extends Component {
             console.log('error catch', error)
         })
     }
+    handleChange = (files, item) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+    deleteFile = element => {
+        deleteAlert('¿Deseas eliminar el archivo?', () => this.deleteAdjuntoAxios(element.id))
+    }
+    async deleteAdjuntoAxios() {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { estado } = this.state
+        await axios.delete(URL_DEV + 'estados-cuenta/' + estado.id + '/adjuntos', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { form } = this.state
+                form.adjuntos.adjuntos.files = []
+                form.adjuntos.adjuntos.aux = ''
+                this.setState({
+                    ... this.state,
+                    form
+                })
+                doneAlert('Adjunto eliminado con éxito')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
         const { title, form, options, formeditado, prospecto, action } = this.state
         return (
@@ -921,6 +972,8 @@ class ProyectosForm extends Component {
                             onChangeAdjuntoGrupo={this.onChangeAdjuntoGrupo}
                             clearFilesGrupo={this.clearFilesGrupo}
                             removeCorreo={this.removeCorreo}
+                            handleChange={this.handleChange}
+                            deleteFile={this.deleteFile}
                             className="px-3">
                             {
                                 prospecto !== '' ?
