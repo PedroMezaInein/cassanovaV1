@@ -899,11 +899,11 @@ class ProyectosForm extends Component {
     deleteFile = element => {
         deleteAlert('¿Deseas eliminar el archivo?', () => this.deleteAdjuntoAxios(element.id))
     }
-    async deleteAdjuntoAxios() {
+    async deleteAdjuntoAxios(id) {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { estado } = this.state
-        await axios.delete(URL_DEV + 'estados-cuenta/' + estado.id + '/adjuntos', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { proyecto } = this.state
+        await axios.delete(URL_DEV + 'proyectos/' + proyecto.id + '/adjuntos/'+ id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { form } = this.state
                 form.adjuntos.adjuntos.files = []
