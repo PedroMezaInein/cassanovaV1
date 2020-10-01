@@ -4,21 +4,20 @@ import { connect } from 'react-redux'
 import { Modal, ModalDelete } from '../../../components/singles'
 import axios from 'axios'
 import { URL_DEV, EDOS_CUENTAS_COLUMNS_2 } from '../../../constants'
-import NewTable from '../../../components/tables/NewTable'
+import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { renderToString } from 'react-dom/server'
 import { waitAlert, doneAlert, errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
 import { setTextTable, setDateTable, setArrayTable } from '../../../functions/setters'
 import { EstadoCuentaCard } from '../../../components/cards'
+const $ = require('jquery');
 class EstadosCuenta extends Component {
     state = {
-        modalSee: false,
-        adjunto: '',
-        adjuntoName: '',
-        adjuntoFile: '',
-        modalDelete: false,
+        modal: {
+            delete: false,
+            see: false
+        },
         cuentas: [],
         cuenta: '',
-        fecha: new Date(),
         estados: [],
         data: {
             estados: []
@@ -34,7 +33,7 @@ class EstadosCuenta extends Component {
         });
         if (!estados)
             history.push('/')
-        this.getEstadosCuenta()
+        // this.getEstadosCuenta()
     }
     setEstados = estados => {
         let aux = []
@@ -81,84 +80,89 @@ class EstadosCuenta extends Component {
         return aux
     }
     openModalDelete = estado => {
+        const { modal } = this.state
+        modal.delete = false
         this.setState({
             ... this.state,
-            modalDelete: true,
+            modal,
             estado: estado
         })
     }
     handleCloseDelete = () => {
-        const { modalDelete } = this.state
+        const { modal } = this.state
+        modal.delete = false
         this.setState({
             ... this.state,
-            modalDelete: !modalDelete,
+            modal,
             estado: ''
         })
     }
     openModalSee = estado => {
+        const { modal } = this.state
+        modal.see = false
         this.setState({
             ... this.state,
-            modalSee: true,
+            modal,
             estado: estado
         })
     }
     handleCloseSee = () => {
+        const { modal } = this.state
+        modal.see = false
         this.setState({
             ... this.state,
-            modalSee: false,
+            modal,
             estado: ''
         })
     }
-    changePageEdit = estado => {
-        const { history } = this.props
-        history.push({
-            pathname: '/bancos/estados-cuenta/edit',
-            state: { estado: estado}
-        });
+    async getEstadosCuentaAxios() {
+        $('#kt_datatable_estados_cuenta').DataTable().ajax.reload();
     }
-    async getEstadosCuenta() {
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'estados-cuentas', { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { estados, cuentas } = response.data
-                const { data } = this.state
-                data.estados = estados
-                this.setEstados(estados)
-                let aux = []
-                cuentas.map((element, key) => {
-                    aux.push({ value: element.numero, name: element.nombre })
-                })
-                this.setState({
-                    ... this.state,
-                    cuentas: aux
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }    
+    // async getEstadosCuenta() {
+    //     const { access_token } = this.props.authUser
+    //     await axios.get(URL_DEV + 'estados-cuentas', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+    //         (response) => {
+    //             const { estados, cuentas } = response.data
+    //             const { data } = this.state
+    //             data.estados = estados
+    //             this.setEstados(estados)
+    //             let aux = []
+    //             cuentas.map((element, key) => {
+    //                 aux.push({ value: element.numero, name: element.nombre })
+    //             })
+    //             this.setState({
+    //                 ... this.state,
+    //                 cuentas: aux
+    //             })
+    //         },
+    //         (error) => {
+    //             console.log(error, 'error')
+    //             if (error.response.status === 401) {
+    //                 forbiddenAccessAlert()
+    //             } else {
+    //                 errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+    //             }
+    //         }
+    //     ).catch((error) => {
+    //         errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+    //         console.log(error, 'error')
+    //     })
+    // }
     async deleteEstadoAxios() {
         const { access_token } = this.props.authUser
         const { estado } = this.state
         await axios.delete(URL_DEV + 'cuentas/' + estado.cuenta.id + '/estado/' + estado.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                this.getEstadosCuentaAxios()
                 const { estados } = response.data
-                const { data } = this.state
-                data.estados = estados
+                const { modal } = this.state
+                modal.delete = false
+                // data.estados = estados
                 this.setState({
                     ... this.state,
-                    modalDelete: false,
+                    modal,
                     estado: '',
-                    data
+                    // data
                 })
                 this.setEstados(estados)
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste el estado de cuenta')
@@ -177,12 +181,12 @@ class EstadosCuenta extends Component {
         })
     }
     render() {
-        const { modalDelete, estados, data, modalSee, estado } = this.state
+        const { modal, estado } = this.state
         return (
             <Layout active={'bancos'}  {...this.props}>
-                <NewTable 
+                <NewTableServerRender
                     columns={EDOS_CUENTAS_COLUMNS_2}
-                    data={estados}
+                    // data={estados}
                     title='Estados de cuenta'
                     subtitle='Listado de estados de cuenta'
                     mostrar_boton={true}
@@ -190,23 +194,26 @@ class EstadosCuenta extends Component {
                     url = '/bancos/estados-cuenta/add'
                     mostrar_acciones={true}
                     actions={{
-                        'delete': { function: this.changePageEdit },
+                        'delete': { function: this.openModalDelete },
                         'see': { function: this.openModalSee },
                     }}
-                    elements={data.estados}
+                    accessToken={this.props.authUser.access_token}
+                    setter={this.setEstados}
+                    urlRender={URL_DEV + 'estados-cuentas'}
                     idTable='kt_datatable_estados_cuenta'
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'
                     cardBody='cardBody'
+                    // elements={data.estados}
                 />
                 <ModalDelete 
                     title={"¿Estás seguro que deseas eliminar el estado de cuenta?"}
-                    show={modalDelete}
+                    show={modal.delete}
                     handleClose={this.handleCloseDelete}
                     onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteEstadoAxios() }}
                 >
                 </ModalDelete>
-                <Modal size="lg" title="Estado de cuenta" show={modalSee} handleClose={this.handleCloseSee} >
+                <Modal size="lg" title="Estado de cuenta" show={modal.see} handleClose={this.handleCloseSee} >
                     <EstadoCuentaCard estado={estado} />
                 </Modal>
             </Layout>

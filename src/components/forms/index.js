@@ -8,6 +8,7 @@ import contactoLeadForm from './ContactoLeadForm'
 import clienteForm from './ClienteForm'
 import cuentaForm from './bancos/CuentaForm'
 import traspasoForm from './bancos/TraspasoForm'
+import estadosCuentaForm from './bancos/EstadosCuentaForm'
 import ingresosForm from './administracion/IngresosForm'
 import egresosForm from './administracion/EgresosForm'
 import proveedorForm from './administracion/ProveedorForm'
@@ -69,6 +70,7 @@ export const ContactoLeadForm = contactoLeadForm
 export const ClienteForm = clienteForm
 export const CuentaForm = cuentaForm
 export const TraspasoForm = traspasoForm
+export const EstadosCuentaForm = estadosCuentaForm
 export const IngresosForm = ingresosForm
 export const EgresosForm = egresosForm
 export const ProveedorForm = proveedorForm
