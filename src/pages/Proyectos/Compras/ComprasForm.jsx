@@ -604,7 +604,7 @@ class ComprasForm extends Component {
     }
     async getSolicitudCompraAxios(id) {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'solicitud-compra/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'solicitud-compra/single/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { solicitud } = response.data
                 const { options, form } = this.state

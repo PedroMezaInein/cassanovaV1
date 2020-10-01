@@ -10,17 +10,14 @@ import { Modal, ModalDelete } from '../../../components/singles'
 import { Button } from '../../../components/form-components'
 import { faSync } from '@fortawesome/free-solid-svg-icons'
 import { SolicitudCompraCard } from '../../../components/cards'
-import NewTable from '../../../components/tables/NewTable'
+import NewTableServerRender from '../../../components/tables/NewTableServerRender'
+const $ = require('jquery');
 class SolicitudCompra extends Component {
     state = {
         modalDelete: false,
         modalSingle: false,
         title: 'Nueva solicitud de compra',
         solicitud: '',
-        solicitudes: [],
-        data: {
-            solicitudes: []
-        }
     }
     componentDidMount() {
         const { authUser: { user: { permisos: permisos } } } = this.props
@@ -45,7 +42,6 @@ class SolicitudCompra extends Component {
                 this.getSolicitudCompraAxios(id)
             }
         }
-        this.getSolicitudesCompraAxios()
     }
     openModalDelete = solicitud => {
         this.setState({
@@ -88,7 +84,7 @@ class SolicitudCompra extends Component {
                     actions: this.setActions(solicitud),
                     proyecto: renderToString(setTextTable(solicitud.proyecto ? solicitud.proyecto.nombre : '')),
                     empresa: renderToString(setTextTable(solicitud.empresa ? solicitud.empresa.name : '')),
-                    proveedor: renderToString(setTextTable(solicitud.proveedor ? solicitud.proveedor.nombre : '')),
+                    proveedor: renderToString(setTextTable(solicitud.proveedor ? solicitud.proveedor.razon_social : '')),
                     factura: renderToString(setTextTable(solicitud.factura ? 'Con factura' : 'Sin factura')),
                     monto: renderToString(setMoneyTable(solicitud.monto)),
                     tipoPago: renderToString(setTextTable(solicitud.tipo_pago ? solicitud.tipo_pago.tipo : '')),
@@ -96,7 +92,7 @@ class SolicitudCompra extends Component {
                     area: renderToString(setTextTable(solicitud.subarea ? solicitud.subarea.area ? solicitud.subarea.area.nombre : '' : '')),
                     subarea: renderToString(setTextTable(solicitud.subarea ? solicitud.subarea.nombre : '')),
                     fecha: renderToString(setDateTable(solicitud.created_at)),
-                    adjunto: solicitud.adjunto ? renderToString(setArrayTable([{ text: 'Adjunto', url: solicitud.adjunto.url }])) : renderToString(setTextTable('Sin adjuntos')),
+                    adjunto: solicitud.adjunto ? renderToString(setArrayTable([{ text: solicitud.adjunto.name, url: solicitud.adjunto.url }])) : renderToString(setTextTable('Sin adjuntos')),
                     id: solicitud.id
                 }
             )
@@ -141,47 +137,22 @@ class SolicitudCompra extends Component {
         const { history } = this.props
         history.push({
             pathname: '/proyectos/compras/convert',
-            state: { solicitud: solicitud },
-            formeditado: 1
+            state: { solicitud: solicitud }
         });
     }
     changePageEdit = solicitud => {
         const { history } = this.props
         history.push({
             pathname: '/proyectos/solicitud-compra/edit',
-            state: { solicitud: solicitud },
-            formeditado: 1
+            state: { solicitud: solicitud }
         });
     }
     async getSolicitudesCompraAxios() {
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'solicitud-compra', { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { solicitudes } = response.data
-                const { data } = this.state
-                data.solicitudes = solicitudes
-                this.setState({
-                    ... this.state,
-                    solicitudes: this.setSolicitudes(solicitudes),
-                    data
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
+        $('#kt_datatable_solicitudes_compras').DataTable().ajax.reload();
     }
     async getSolicitudCompraAxios(id) {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'solicitud-compra/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'solicitud-compra/single/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { solicitud } = response.data
                 this.setState({
@@ -207,17 +178,16 @@ class SolicitudCompra extends Component {
         const { solicitud } = this.state
         await axios.delete(URL_DEV + 'solicitud-compra/' + solicitud.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { solicitudes } = response.data
-                const { data } = this.state
-                data.solicitudes = solicitudes
+
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud fue registrado con éxito.')
+
+                this.getSolicitudesCompraAxios()
+
                 this.setState({
                     ... this.state,
                     modalDelete: false,
-                    data,
                     title: 'Nueva solicitud de compra',
-                    solicitud: '',
-                    solicitudes: this.setSolicitudes(solicitudes)
+                    solicitud: ''
                 })
             },
             (error) => {
@@ -234,26 +204,32 @@ class SolicitudCompra extends Component {
         })
     }    
     render() {
-        const { modalDelete, modalSingle, solicitudes, solicitud, data } = this.state
+        const { modalDelete, modalSingle, solicitud } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
-                <NewTable columns={SOLICITUD_COMPRA_COLUMNS} data={solicitudes}
-                    title='Solicitudes de compra' subtitle='Listado de solicitudes de compra'
-                    mostrar_boton={true}
-                    abrir_modal={false}
-                    url='/proyectos/solicitud-compra/add'
-                    mostrar_acciones={true}
-
-                    actions={{
-                        'edit': { function: this.changePageEdit },
-                        'delete': { function: this.openModalDelete },
-                        'convert': { function: this.changePageConvert },
-                        'see': { function: this.openModalSee }
-                    }}
-                    elements={data.solicitudes}
+                <NewTableServerRender 
+                    columns = { SOLICITUD_COMPRA_COLUMNS } 
+                    title = 'Solicitudes de compra' 
+                    subtitle = 'Listado de solicitudes de compra'
+                    mostrar_boton = { true }
+                    abrir_modal = { false }
+                    url = '/proyectos/solicitud-compra/add'
+                    mostrar_acciones = { true }
+                    actions = {
+                        {
+                            'edit': { function: this.changePageEdit },
+                            'delete': { function: this.openModalDelete },
+                            'convert': { function: this.changePageConvert },
+                            'see': { function: this.openModalSee }
+                        }
+                    }
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'
                     cardBody='cardBody'
+                    idTable = 'kt_datatable_solicitudes_compras'
+                    accessToken = { this.props.authUser.access_token }
+                    setter = { this.setSolicitudes }
+                    urlRender = { URL_DEV + 'solicitud-compra' }
                 />
                 <ModalDelete title={"¿Quieres eliminar la solicitud de compra?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); this.deleteSolicitudAxios() }}>
                 </ModalDelete>
