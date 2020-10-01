@@ -33,7 +33,6 @@ class EstadosCuenta extends Component {
         });
         if (!estados)
             history.push('/')
-        // this.getEstadosCuenta()
     }
     setEstados = estados => {
         let aux = []
@@ -54,10 +53,7 @@ class EstadosCuenta extends Component {
                 id: estado.id
             })
         })
-        this.setState({
-            ... this.state,
-            estados: aux
-        })
+        return aux
     }
     setActions = () => {
         let aux = []
@@ -81,7 +77,7 @@ class EstadosCuenta extends Component {
     }
     openModalDelete = estado => {
         const { modal } = this.state
-        modal.delete = false
+        modal.delete = true
         this.setState({
             ... this.state,
             modal,
@@ -99,7 +95,7 @@ class EstadosCuenta extends Component {
     }
     openModalSee = estado => {
         const { modal } = this.state
-        modal.see = false
+        modal.see = true
         this.setState({
             ... this.state,
             modal,
@@ -118,53 +114,19 @@ class EstadosCuenta extends Component {
     async getEstadosCuentaAxios() {
         $('#kt_datatable_estados_cuenta').DataTable().ajax.reload();
     }
-    // async getEstadosCuenta() {
-    //     const { access_token } = this.props.authUser
-    //     await axios.get(URL_DEV + 'estados-cuentas', { headers: { Authorization: `Bearer ${access_token}` } }).then(
-    //         (response) => {
-    //             const { estados, cuentas } = response.data
-    //             const { data } = this.state
-    //             data.estados = estados
-    //             this.setEstados(estados)
-    //             let aux = []
-    //             cuentas.map((element, key) => {
-    //                 aux.push({ value: element.numero, name: element.nombre })
-    //             })
-    //             this.setState({
-    //                 ... this.state,
-    //                 cuentas: aux
-    //             })
-    //         },
-    //         (error) => {
-    //             console.log(error, 'error')
-    //             if (error.response.status === 401) {
-    //                 forbiddenAccessAlert()
-    //             } else {
-    //                 errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-    //             }
-    //         }
-    //     ).catch((error) => {
-    //         errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-    //         console.log(error, 'error')
-    //     })
-    // }
     async deleteEstadoAxios() {
         const { access_token } = this.props.authUser
         const { estado } = this.state
         await axios.delete(URL_DEV + 'cuentas/' + estado.cuenta.id + '/estado/' + estado.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.getEstadosCuentaAxios()
-                const { estados } = response.data
                 const { modal } = this.state
                 modal.delete = false
-                // data.estados = estados
                 this.setState({
                     ... this.state,
                     modal,
-                    estado: '',
-                    // data
+                    estado: ''
                 })
-                this.setEstados(estados)
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste el estado de cuenta')
             },
             (error) => {
@@ -186,7 +148,6 @@ class EstadosCuenta extends Component {
             <Layout active={'bancos'}  {...this.props}>
                 <NewTableServerRender
                     columns={EDOS_CUENTAS_COLUMNS_2}
-                    // data={estados}
                     title='Estados de cuenta'
                     subtitle='Listado de estados de cuenta'
                     mostrar_boton={true}
@@ -204,15 +165,13 @@ class EstadosCuenta extends Component {
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'
                     cardBody='cardBody'
-                    // elements={data.estados}
                 />
                 <ModalDelete 
                     title={"¿Estás seguro que deseas eliminar el estado de cuenta?"}
                     show={modal.delete}
                     handleClose={this.handleCloseDelete}
                     onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteEstadoAxios() }}
-                >
-                </ModalDelete>
+                />
                 <Modal size="lg" title="Estado de cuenta" show={modal.see} handleClose={this.handleCloseSee} >
                     <EstadoCuentaCard estado={estado} />
                 </Modal>
