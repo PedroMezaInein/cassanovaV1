@@ -3,9 +3,7 @@ import { Form } from 'react-bootstrap'
 import { SelectSearch, Button, Input, Calendar, InputMoney, FileInput } from '../../form-components'
 import { DATE } from '../../../constants'
 import { validateAlert } from '../../../functions/alert'
-
 class ContratoForm extends Component {
-
     handleChangeDateInicio = date => {
         const { onChange } = this.props
         onChange({ target: { value: date, name: 'fechaInicio' } })
@@ -14,27 +12,22 @@ class ContratoForm extends Component {
         const { onChange } = this.props
         onChange({ target: { value: date, name: 'fechaFin' } })
     }
-
     updateEmpresa = value => {
         const { onChange, setOptions } = this.props
         onChange({ target: { value: value, name: 'empresa' } })
     }
-
     updateCliente = value => {
         const { onChange, setOptions } = this.props
         onChange({ target: { value: value, name: 'cliente' } })
     }
-
     updateTipoContrato = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'tipoContrato' } })
     }
-
     updateProveedor = value => {
         const { onChange, setOptions } = this.props
         onChange({ target: { value: value, name: 'proveedor' } })
     }
-
     render() {
         const { title, options, form, onChange, tipo, onSubmit, formeditado, clearFiles, onChangeAdjunto, ...props } = this.props
         return (
@@ -46,8 +39,7 @@ class ContratoForm extends Component {
                     }
                 }
                 {...props}>
-                <div className="form-group row form-group-marginless pt-4">
-
+                <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Input
                             requirevalidation={1}
@@ -60,7 +52,6 @@ class ContratoForm extends Component {
                             messageinc="Incorrecto. Ingresa el nombre."
                         />
                     </div>
-
                     <div className="col-md-4">
                         {
                             tipo === 'Cliente' ?
@@ -96,7 +87,6 @@ class ContratoForm extends Component {
                             iconclass={"far fa-building"}
                         />
                     </div>
-
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
@@ -142,7 +132,6 @@ class ContratoForm extends Component {
                             patterns={DATE}
                         />
                     </div>
-
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
@@ -177,7 +166,6 @@ class ContratoForm extends Component {
                                 />
                             </div>
                     }
-
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
@@ -196,16 +184,19 @@ class ContratoForm extends Component {
                         />
                     </div>
                 </div>
-                <div className="separator separator-dashed mt-1 mb-2"></div>
-                <div className="mt-3 text-center">
-                    <Button icon='' className="mx-auto" 
-                        onClick={
-                            (e) => {
-                                e.preventDefault();
-                                validateAlert(onSubmit, e, 'form-contrato')
-                            }
-                        }
-                        text="ENVIAR" />
+                <div className="card-footer py-3 pr-1">
+                    <div className="row">
+                        <div className="col-lg-12 text-right pr-0 pb-0">
+                            <Button icon='' className="btn btn-primary mr-2"
+                                onClick={
+                                    (e) => {
+                                        e.preventDefault();
+                                        validateAlert(onSubmit, e, 'form-contrato')
+                                    }
+                                }
+                                text="ENVIAR" />
+                        </div>
+                    </div>
                 </div>
             </Form>
         )

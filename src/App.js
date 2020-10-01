@@ -66,8 +66,11 @@ const IngresosForm = Loader(() => import('./pages/Administracion/Ingresos/Ingres
 const Egresos = Loader(() => import('./pages/Administracion/Egresos/Egresos') )
 const EgresosForm = Loader(() => import('./pages/Administracion/Egresos/EgresosForm') )
 
+// const Contratos = Loader(() => import('./pages/Administracion/Contratos') )
+const Contratos = Loader(() => import('./pages/Administracion/Contratos/Contratos') )
+const ContratosForm = Loader(() => import('./pages/Administracion/Contratos/ContratosForm') )
+
 const Facturacion = Loader(() => import('./pages/Administracion/Facturacion') )
-const Contratos = Loader(() => import('./pages/Administracion/Contratos') )
 const Flujos = Loader(() => import('./pages/Administracion/Flujos') )
 
 const Proveedores = Loader(() => import('./pages/Administracion/Proveedor/Proveedor') )
@@ -269,8 +272,11 @@ class App extends Component{
                 <Route path = "/administracion/ingresos" exact component ={ Ingresos } />
                 <Route path = "/administracion/ingresos/:action" exact component ={ IngresosForm } />
                 
-                <Route path = "/administracion/facturacion" exact component ={ Facturacion } />
+                {/* <Route path = "/administracion/contratos" exact component ={ Contratos } /> */}
                 <Route path = "/administracion/contratos" exact component ={ Contratos } />
+                <Route path = "/administracion/contratos/:action" exact component ={ ContratosForm } />
+                
+                <Route path = "/administracion/facturacion" exact component ={ Facturacion } />
                 <Route path = "/administracion/flujos" exact component ={ Flujos } />
 
                 <Route path = "/administracion/proveedores" exact component ={ Proveedores } />

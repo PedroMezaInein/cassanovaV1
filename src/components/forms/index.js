@@ -12,6 +12,7 @@ import estadosCuentaForm from './bancos/EstadosCuentaForm'
 import ingresosForm from './administracion/IngresosForm'
 import egresosForm from './administracion/EgresosForm'
 import proveedorForm from './administracion/ProveedorForm'
+import contratoForm from './administracion/ContratoForm'
 import areasForm from './catalogos/AreaForm'
 import partidaForm from './catalogos/PartidaForm'
 import unidadForm from './catalogos/UnidadForm'
@@ -74,6 +75,7 @@ export const EstadosCuentaForm = estadosCuentaForm
 export const IngresosForm = ingresosForm
 export const EgresosForm = egresosForm
 export const ProveedorForm = proveedorForm
+export const ContratoForm = contratoForm
 export const AreasForm = areasForm
 export const PartidaForm = partidaForm
 export const UnidadForm = unidadForm
