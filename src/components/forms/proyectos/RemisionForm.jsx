@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { Input, FileInput, SelectSearch, Button, Calendar } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
+import ItemSlider from '../../singles/ItemSlider'
 
 class ConceptoForm extends Component {
 
@@ -35,7 +36,7 @@ class ConceptoForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, requirevalidation, onSubmit, formeditado, ...props } = this.props
+        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, requirevalidation, onSubmit, formeditado, handleChange, deleteFile, ...props } = this.props
         return (
             <Form id="form-remision"
                 onSubmit={
@@ -47,7 +48,7 @@ class ConceptoForm extends Component {
 
                 {...props}>
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <SelectSearch
                             requirevalidation={1}
                             formeditado={formeditado}
@@ -59,7 +60,7 @@ class ConceptoForm extends Component {
                             iconclass={"far fa-folder-open"}
                         />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <Calendar
                             onChangeCalendar={this.handleChangeDate}
                             placeholder="FECHA"
@@ -68,7 +69,7 @@ class ConceptoForm extends Component {
                             iconclass={"far fa-calendar-alt"}
                         />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <SelectSearch
                             requirevalidation={1}
                             formeditado={formeditado}
@@ -80,12 +81,9 @@ class ConceptoForm extends Component {
                             iconclass={"far fa-window-maximize"}
                         />
                     </div>
-                </div>
-                <div className="separator separator-dashed mt-1 mb-2"></div>
-                <div className="form-group row form-group-marginless">
                     {
                         form.area ?
-                            <div className="col-md-4">
+                            <div className="col-md-3">
                                 <SelectSearch
                                     requirevalidation={0}
                                     formeditado={formeditado}
@@ -99,21 +97,7 @@ class ConceptoForm extends Component {
                             </div>
                             : ''
                     }
-                    <div className="col-md-8">
-                        <FileInput
-                            requirevalidation={0}
-                            formeditado={formeditado}
-                            onChangeAdjunto={onChangeAdjunto}
-                            placeholder={form.adjuntos.adjunto.placeholder}
-                            value={form.adjuntos.adjunto.value}
-                            name='adjunto' id='adjunto'
-                            accept="image/*, application/pdf"
-                            files={form.adjuntos.adjunto.files}
-                            deleteAdjunto={clearFiles} multiple
-                        />
-                    </div>
                 </div>
-
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-12">
@@ -122,12 +106,25 @@ class ConceptoForm extends Component {
                             formeditado={formeditado}
                             as="textarea"
                             placeholder="DESCRIPCIÓN"
-                            rows="3" value={form.descripcion}
+                            rows="3" 
+                            value={form.descripcion === null ? '' : form.descripcion}
                             name="descripcion"
                             onChange={onChange}
                             messageinc="Incorrecto. Ingresa una descripción."
                             style={{ paddingLeft: "10px" }}
                         />
+                    </div>
+                </div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless justify-content-center">
+                    <div className="col-md-8">
+                        <ItemSlider
+                            items = { form.adjuntos.adjunto.files}
+                            item = 'adjunto' 
+                            handleChange = { handleChange }
+                            deleteFile = { deleteFile }
+                            multiple = { false }
+                            />
                     </div>
                 </div>
 

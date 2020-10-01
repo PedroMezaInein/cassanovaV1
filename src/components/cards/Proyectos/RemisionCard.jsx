@@ -3,6 +3,7 @@ import Moment from 'react-moment'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import Card from 'react-bootstrap/Card'
+import ItemSlider from '../../singles/ItemSlider';
 export default class RemisionCard extends Component {
     render() {
         const { data, children, border} = this.props
@@ -142,6 +143,14 @@ export default class RemisionCard extends Component {
                                 </div>
                                 : ''
                         }
+                        {
+                            data.adjunto ?
+                                <div className="py-2">
+                                    <ItemSlider items = { [data.adjunto] } />
+                                </div>
+                            :''
+                        }
+                        
                     </div>
                 </Card>
             </div>

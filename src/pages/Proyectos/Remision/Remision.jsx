@@ -10,17 +10,14 @@ import { Modal, ModalDelete } from '../../../components/singles'
 import { Button } from '../../../components/form-components'
 import { faSync } from '@fortawesome/free-solid-svg-icons'
 import { RemisionCard } from '../../../components/cards'
-import NewTable from '../../../components/tables/NewTable'
+import NewTableServerRender from '../../../components/tables/NewTableServerRender'
+const $ = require('jquery');
 class Remisiones extends Component {
     state = {
         modalDelete: false,
         modalSingle: false,
         title: 'Nueva remisión',
-        remisiones: [],
         remision: '',
-        data: {
-            remisiones: []
-        },
         formeditado: 0,
     }
     componentDidMount() {
@@ -33,17 +30,11 @@ class Remisiones extends Component {
         });
         if (!remisiones)
             history.push('/')
-        this.getRemisionesAxios()
         let queryString = this.props.history.location.search
         if (queryString) {
             let params = new URLSearchParams(queryString)
             let id = parseInt(params.get("id"))
             if (id) {
-
-                this.setState({
-                    ... this.state,
-                    modalSingle: true
-                })
                 this.getRemisionAxios(id)
             }
         }
@@ -88,7 +79,7 @@ class Remisiones extends Component {
                     area: renderToString(setTextTable(remision.subarea ? remision.subarea.area ? remision.subarea.area.nombre : '' : '')),
                     subarea: renderToString(setTextTable(remision.subarea ? remision.subarea.nombre : '')),
                     descripcion: renderToString(setTextTable(remision.descripcion)),
-                    adjunto: remision.adjunto ? renderToString(setArrayTable([{ text: 'Adjunto', url: remision.adjunto.url }])) : renderToString(setTextTable('Sin adjuntos')),
+                    adjunto: remision.adjunto ? renderToString(setArrayTable([{ text: remision.adjunto.name, url: remision.adjunto.url }])) : renderToString(setTextTable('Sin adjuntos')),
                     id: remision.id
                 }
             )
@@ -146,30 +137,7 @@ class Remisiones extends Component {
         });
     }
     async getRemisionesAxios() {
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'remision', { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { remisiones } = response.data
-                const { data } = this.state
-                data.remisiones = remisiones
-                this.setState({
-                    ... this.state,
-                    remisiones: this.setRemisiones(remisiones),
-                    data
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
+        $('#kt_datatable_remisiones').DataTable().ajax.reload();
     }
     async getRemisionAxios(id) {
         const { access_token } = this.props.authUser
@@ -178,6 +146,7 @@ class Remisiones extends Component {
                 const { remision } = response.data
                 this.setState({
                     ... this.state,
+                    modalSingle: true,
                     remision: remision,
                 })
             },
@@ -199,16 +168,12 @@ class Remisiones extends Component {
         const { remision } = this.state
         await axios.delete(URL_DEV + 'remision/' + remision.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { remisiones } = response.data
-                const { data } = this.state
-                data.remisiones = remisiones
+                this.getRemisionesAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La remisión fue eliminada con éxito.')
                 this.setState({
                     ... this.state,
-                    remisiones: this.setRemisiones(remisiones),
                     modalDelete: false,
                     remision: '',
-                    data
                 })
             },
             (error) => {
@@ -225,28 +190,38 @@ class Remisiones extends Component {
         })
     }
     render() {
-        const { data, modalDelete, modalSingle, remisiones, remision } = this.state
+        const { modalDelete, modalSingle, remision } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
-                <NewTable columns={REMISION_COLUMNS} data={remisiones}
-                    title='Remisiones' subtitle='Listado de remisiones'
-                    mostrar_boton={true}
-                    abrir_modal={false}
-                    url='/proyectos/remision/add'
-                    mostrar_acciones={true}
-                    actions={{
-                        'edit': { function: this.changePageEdit },
-                        'delete': { function: this.openModalDelete },
-                        'convert': { function: this.changePageConvert },
-                        'see': { function: this.openModalSee }
-                    }}
-                    elements={data.remisiones}
-                    cardTable='cardTable'
-                    cardTableHeader='cardTableHeader'
-                    cardBody='cardBody'
+                <NewTableServerRender 
+                    columns = { REMISION_COLUMNS }
+                    title = 'Remisiones' 
+                    subtitle = 'Listado de remisiones'
+                    mostrar_boton = { true }
+                    abrir_modal = { false }
+                    url = '/proyectos/remision/add'
+                    mostrar_acciones = { true }
+                    actions = {
+                        {
+                            'edit': { function: this.changePageEdit },
+                            'delete': { function: this.openModalDelete },
+                            'convert': { function: this.changePageConvert },
+                            'see': { function: this.openModalSee }
+                        }
+                    }
+                    cardTable = 'cardTable'
+                    cardTableHeader = 'cardTableHeader'
+                    cardBody = 'cardBody'
+                    idTable = 'kt_datatable_remisiones'
+                    accessToken={this.props.authUser.access_token}
+                    setter={this.setRemisiones}
+                    urlRender={URL_DEV + 'remision'}
                 />
-                <ModalDelete title={"¿Estás seguro que deseas eliminar la remisión?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); this.deleteRemisionAxios() }}>
-                </ModalDelete>
+                <ModalDelete 
+                    title = "¿Estás seguro que deseas eliminar la remisión?" 
+                    show = { modalDelete } 
+                    handleClose = { this.handleCloseDelete } 
+                    onClick = { (e) => { e.preventDefault(); this.deleteRemisionAxios() }} />
                 <Modal size="xl" title="Remisión" show={modalSingle} handleClose={this.handleCloseSingle} >
                     <RemisionCard data={remision}>
                         {

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { setOptions } from '../../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert, deleteAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { RemisionForm as RemisionFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
@@ -66,9 +66,7 @@ class RemisionForm extends Component {
                         form.fecha = new Date(remision.created_at)
                         form.descripcion = remision.descripcion
                         if (remision.adjunto) {
-                            form.adjuntos.adjunto.files = [{
-                                name: remision.adjunto.name, url: remision.adjunto.url
-                            }]
+                            form.adjuntos.adjunto.files = [remision.adjunto]
                         }
                         this.setState({
                             ... this.state,
@@ -89,7 +87,7 @@ class RemisionForm extends Component {
         }
         if (!remisiones)
             history.push('/')
-        this.getRemisionesAxios()
+        this.getOptionsAxios()
     }
     onChange = e => {
         const { form } = this.state
@@ -155,9 +153,32 @@ class RemisionForm extends Component {
             options
         })
     }
-    async getRemisionesAxios() {
+    handleChange = (files, item) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
+    deleteFile = element => {
+        deleteAlert('¿Deseas eliminar el archivo?', () => this.deleteAdjuntoAxios())
+    }
+    async getOptionsAxios() {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'remision', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'remision/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { proyectos, areas } = response.data
                 const { options } = this.state
@@ -275,6 +296,35 @@ class RemisionForm extends Component {
             console.log(error, 'error')
         })
     }
+    async deleteAdjuntoAxios() {
+        const { access_token } = this.props.authUser
+        const { remision } = this.state
+        await axios.delete(URL_DEV + 'remision/' + remision.id + '/adjuntos' , { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { form } = this.state
+                form.adjuntos.adjunto.files = []
+                form.adjuntos.adjunto.value = ''
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
+
+                this.setState({
+                    ... this.state,
+                    form
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
         const { form, title, options } = this.state
         return (
@@ -295,6 +345,8 @@ class RemisionForm extends Component {
                             onSubmit={this.onSubmit}
                             onChangeAdjunto={this.onChangeAdjunto}
                             clearFiles={this.clearFiles}
+                            handleChange = { this.handleChange }
+                            deleteFile = { this.deleteFile }
                         />
                     </Card.Body>
                 </Card>
