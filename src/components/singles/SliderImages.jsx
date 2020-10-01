@@ -1,14 +1,10 @@
 import React, { Component } from 'react'
-import { faCaretSquareLeft, faCaretSquareRight } from '@fortawesome/free-solid-svg-icons'
-import { P } from '../texts'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
+import SVG from "react-inlinesvg";
+import { toAbsoluteUrl } from "../../functions/routers"
 class SliderImages extends Component {
-
     state = {
         active: 0
     }
-
     sliderBack = () => {
         const { elements } = this.props
         let { active } = this.state
@@ -21,7 +17,6 @@ class SliderImages extends Component {
             active
         })
     }
-
     sliderNext = () => {
         const { elements } = this.props
         let { active } = this.state
@@ -34,34 +29,41 @@ class SliderImages extends Component {
             active
         })
     }
-
     render() {
         const { active } = this.state
         const { elements, ...props } = this.props
         return (
             <>
-                <div className="d-flex w-100 align-items-center">
+                <div className="d-flex justify-content-center align-items-center">
                     <div className="cursor" onClick={(e) => { e.preventDefault(); this.sliderBack(); }}>
-                        <FontAwesomeIcon icon={faCaretSquareLeft} className="mr-2 text-color__dark-blue" />
+                        <div className="btn btn-default font-weight-bold small-button">
+                            <span className="svg-icon svg-icon-lg mr-0">
+                                <SVG src={toAbsoluteUrl('/images/svg/double-arrow-left.svg')} />
+                            </span>
+                        </div>
                     </div>
-                    <div className="w-100 text-center px-2">
+                    <div className="w-50 text-center px-2">
                         {
                             elements[active].descripcion ?
                                 <>
                                     <div>
-                                        <img src={elements[active].adjunto.url} className="img-fluid w-100 my-2" />
+                                        <img src={elements[active].adjunto.url} className="p-2 rounded pdfview-img"/>
                                     </div>
-                                    <P color="dark-blue">
+                                    <p className="font-weight-bolder font-size-lg">
                                         {
                                             elements[active].descripcion
                                         }
-                                    </P>
+                                    </p>
                                 </>
                                 : ''
                         }
                     </div>
                     <div className="cursor" onClick={(e) => { e.preventDefault(); this.sliderNext(); }}>
-                        <FontAwesomeIcon icon={faCaretSquareRight} className="mr-2 text-color__dark-blue" />
+                        <div className="btn btn-default font-weight-bold small-button">
+                            <span className="svg-icon svg-icon-lg mr-0">
+                                <SVG src={toAbsoluteUrl('/images/svg/double-arrow-right.svg')} />
+                            </span>
+                        </div>
                     </div>
                 </div>
             </>

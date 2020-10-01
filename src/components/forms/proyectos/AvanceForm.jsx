@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
 import { P } from '../../texts'
-import { Calendar, FileInput, Button, Input, InputMoney } from '../../form-components'
-import { Form, Accordion } from 'react-bootstrap'
+import { Calendar, FileInput, Button, InputSinText, InputMoneySinText, Input } from '../../form-components'
+import { Form, Accordion, Card } from 'react-bootstrap'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import SliderImages from '../../singles/SliderImages'
+import ItemSlider from '../../singles/ItemSlider'
+import SVG from "react-inlinesvg";
+import { toAbsoluteUrl } from "../../../functions/routers"
 class AvanceForm extends Component {
     state = {
         activeKey: ''
@@ -33,14 +36,14 @@ class AvanceForm extends Component {
         })
     }
     render() {
-        const { form, onChangeAdjuntoAvance, onChangeAvance, clearFilesAvances, addRowAvance, onChange, proyecto, sendMail, formeditado, ...props } = this.props
+        const { form, onChangeAdjuntoAvance, onChangeAvance, clearFilesAvances, addRowAvance, onChange, proyecto, sendMail, formeditado, deleteFile, handleChange, ...props } = this.props
         const { activeKey } = this.state
         return (
             <>
                 <Form
                     {...props}
                 >
-                    <div className="form-group row form-group-marginless pt-4">
+                    <div className="form-group row form-group-marginless pt-4 border-nav m-3">
                         <div className="col-md-4">
                             <Input
                                 requirevalidation={1}
@@ -82,66 +85,92 @@ class AvanceForm extends Component {
                             />
                         </div>
                     </div>
-                    <div className="separator separator-dashed mt-1 mb-2"></div>
+                    <div className="mr-3">
+                        <div className="d-flex justify-content-end my-2">
+                            <Button
+                                pulse="pulse-ring"
+                                className="btn btn-icon btn-light-info pulse pulse-info"
+                                onClick={addRowAvance}
+                                icon={faPlus}
+                                tooltip={{ text: 'Agregar nuevo' }}
+                            />
+                        </div>
+                    </div>
                     {
                         form.avances.map((avance, key) => {
                             return (
                                 <>
-                                    <div className="form-group row form-group-marginless" key={key}>
-                                        <div className="col-md-4">
-                                            <FileInput
-                                                requirevalidation={0}
-                                                formeditado={formeditado}
-                                                onChangeAdjunto={e => onChangeAdjuntoAvance(e, key, 'adjuntos')}
-                                                placeholder={form['avances'][key]['adjuntos']['placeholder']}
-                                                value={form['avances'][key]['adjuntos']['value']}
-                                                name={`${key}-avance`} id={`${key}-avance`}
-                                                accept="image/*"
-                                                files={form['avances'][key]['adjuntos']['files']}
-                                                _key={key}
-                                                deleteAdjuntoAvance={clearFilesAvances}
-                                                multiple
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <Input
-                                                requirevalidation={1}
-                                                formeditado={formeditado}
-                                                as="textarea"
-                                                rows="1"
-                                                placeholder="DESCRIPCIÓN"
-                                                name="descripcion"
-                                                value={form['avances'][key]['descripcion']}
-                                                onChange={e => onChangeAvance(key, e, 'descripcion')}
-                                                messageinc="Incorrecto. Ingresa la descripción."
-                                                style={{ paddingLeft: "10px" }}
-                                            />
-                                        </div>
-                                        <div className="col-md-2">
-                                            <InputMoney
-                                                requirevalidation={1}
-                                                formeditado={formeditado}
-                                                thousandSeparator={false}
-                                                prefix={'%'}
-                                                name="avance"
-                                                value={form.avance}
-                                                onChange={e => onChangeAvance(key, e, 'avance')}
-                                                placeholder="% DE AVANCE"
-                                                iconclass={"fas fa-percent"} />
-                                        </div>
+                                    <div className="m-4" key={key}>
+                                        <table className="w-100">
+                                            <tbody>
+                                                <tr>
+                                                    <td rowSpan="2" className="w-400px p-4">
+                                                        <FileInput
+                                                            requirevalidation={0}
+                                                            formeditado={formeditado}
+                                                            onChangeAdjunto={e => onChangeAdjuntoAvance(e, key, 'adjuntos')}
+                                                            placeholder={form['avances'][key]['adjuntos']['placeholder']}
+                                                            value={form['avances'][key]['adjuntos']['value']}
+                                                            name={`${key}-avance`} id={`${key}-avance`}
+                                                            accept="image/*"
+                                                            files={form['avances'][key]['adjuntos']['files']}
+                                                            _key={key}
+                                                            deleteAdjuntoAvance={clearFilesAvances}
+                                                            multiple
+                                                        />
+                                                        {/* <ItemSlider
+                                                            items={form['avances'][key]['adjuntos']['files']}
+                                                            item='adjuntos' 
+                                                            handleChange={handleChange}
+                                                            deleteFile={deleteFile}
+                                                            multiple={true} 
+                                                        /> */}
+                                                    </td>
+                                                    <td>
+                                                        <div className="d-flex justify-content-end">
+                                                            <InputMoneySinText
+                                                                requirevalidation={1}
+                                                                formeditado={formeditado}
+                                                                thousandSeparator={false}
+                                                                prefix={'%'}
+                                                                name="avance"
+                                                                value={form.avance}
+                                                                onChange={e => onChangeAvance(key, e, 'avance')}
+                                                                placeholder="% DE AVANCE"
+                                                                iconclass={"fas fa-percent"}
+                                                                customstyle={{ width: '110px', borderRadius: 0, fontSize: '1rem', padding: '0.65rem 1rem' }}
+                                                            />
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <InputSinText
+                                                            requirevalidation={1}
+                                                            formeditado={formeditado}
+                                                            as="textarea"
+                                                            rows="3"
+                                                            placeholder="DESCRIPCIÓN"
+                                                            name="descripcion"
+                                                            value={form['avances'][key]['descripcion']}
+                                                            onChange={e => onChangeAvance(key, e, 'descripcion')}
+                                                            messageinc="Incorrecto. Ingresa la descripción."
+                                                            style={{ paddingLeft: "10px" }}
+                                                            customstyle={{ borderRadius: 0, fontSize: '1rem', padding: '0.65rem 1rem' }}
+                                                        />
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
-                                    <div className="separator separator-dashed mt-1 mb-2"></div>
                                 </>
                             )
                         })
                     }
-                    <div className="d-flex justify-content-end my-2">
-                        <Button icon={faPlus} tooltip={{ text: 'NUEVO' }} onClick={addRowAvance} color='transparent' />
-                    </div>
                     <div className="card-footer py-3 pr-1">
                         <div className="row">
                             <div className="col-lg-12 text-right pr-0 pb-0">
-                                <Button icon='' text='ENVIAR' type='submit' />
+                                <Button icon='' text='ENVIAR' type='submit' className="btn btn-primary mr-2" />
                             </div>
                         </div>
                     </div>
@@ -150,51 +179,60 @@ class AvanceForm extends Component {
                     proyecto ?
                         proyecto.avances ?
                             proyecto.avances.length ?
-                                <div className="my-2">
-                                    <Accordion activeKey={activeKey} >
+                            <div className="d-flex justify-content-center">
+                                <div className="col-md-7">
+                                    <Accordion activeKey={activeKey} className="accordion accordion-solid">
                                         {
                                             proyecto.avances.map((avance, key) => {
                                                 return (
                                                     <>
-                                                        <div className="mt-2" key={key}>
-                                                            <div className="d-flex justify-content-between">
-                                                                <div className="d-flex align-items-center">
-                                                                    <P className="mb-0 mx-2 " >
-                                                                        {avance.semana}
-                                                                    </P>
+                                                        <Card key={key}>
+                                                            <Accordion.Toggle as={Card.Header} eventKey={avance.id} onClick={() => this.handleAccordion(avance.id)}>
+                                                                <div className="card-title">
+                                                                    <div className="text-center">{avance.semana}</div>
                                                                 </div>
-                                                                <Accordion.Toggle as={Button} eventKey={avance.id} className={"small-button "}
-                                                                    color="transparent" icon={faPlus} text='' onClick={() => this.handleAccordion(avance.id)} />
-                                                            </div>
+                                                            </Accordion.Toggle>
                                                             <Accordion.Collapse eventKey={avance.id}>
-                                                                <div>
-                                                                    <div className="d-flex justify-content-center">
-                                                                        <a className='btn btn-hover btn-text-blue' href={avance.pdf} target="_blank">
-                                                                            <i className="flaticon-file-2"></i> Descargar PDF
-                                                                        </a>
-                                                                        {
-                                                                            proyecto ?
-                                                                                proyecto.contactos.length ?
-                                                                                    <span className='btn btn-hover btn-text-blue' onClick={(e) => { e.preventDefault(); sendMail(avance.id) }}>
-                                                                                        <i className="fas fa-envelope-open"></i> Enviar por correo
-                                                                                    </span>
-                                                                                    :
-                                                                                    ''
-                                                                                : ''
-                                                                        }
-                                                                    </div>
+                                                                <Card.Body>
                                                                     <div>
-                                                                        <SliderImages elements={avance.adjuntos} />
+                                                                        <div className="d-flex justify-content-center">
+                                                                            <a href={avance.pdf} target="_blank" className="text-info font-weight-bold font-size-sm">
+                                                                                <div className="bg-light-info rounded-sm mr-5 p-2">
+                                                                                    <span className="svg-icon svg-icon-xl svg-icon-info mr-2">
+                                                                                        <SVG src={toAbsoluteUrl('/images/svg/Download.svg')} />
+                                                                                    </span>
+                                                                                    Descargar PDF
+                                                                                </div>
+                                                                            </a>
+                                                                            {
+                                                                                proyecto ?
+                                                                                    proyecto.contactos.length ?
+                                                                                        <a onClick={(e) => { e.preventDefault(); sendMail(avance.id) }} className="text-pink font-weight-bold font-size-sm">
+                                                                                            <div className="bg-light-pink rounded-sm mr-5 p-2">
+                                                                                                <span className="svg-icon svg-icon-xl svg-icon-pink mr-2">
+                                                                                                    <SVG src={toAbsoluteUrl('/images/svg/Mail-notification.svg')} />
+                                                                                                </span>
+                                                                                                Enviar por correo
+                                                                                            </div>
+                                                                                        </a>
+                                                                                        :
+                                                                                        ''
+                                                                                    : ''
+                                                                            }
+                                                                        </div>
+                                                                        <div>
+                                                                            <SliderImages elements={avance.adjuntos} />
+                                                                        </div>
                                                                     </div>
-                                                                </div>
+                                                                </Card.Body>
                                                             </Accordion.Collapse>
-                                                        </div>
-                                                        <hr />
+                                                        </Card>
                                                     </>
                                                 )
                                             })
                                         }
                                     </Accordion>
+                                </div>
                                 </div>
                                 : ''
                             : ''
