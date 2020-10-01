@@ -2,9 +2,7 @@ import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { Input, Button } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
-
 class BancoForm extends Component {
-
     render() {
         const { title, form, onChange, onSubmit, formeditado, ...props } = this.props
         return (
@@ -31,15 +29,19 @@ class BancoForm extends Component {
                         />
                     </div>
                 </div>
-                <div className="mt-3 text-center">
-                    <Button icon='' className="mx-auto" 
-                        onClick = {
-                            (e) => {
-                                e.preventDefault();
-                                validateAlert(onSubmit, e, 'form-banco')
-                            }
-                        }
-                        text="ENVIAR" />
+                <div className="card-footer py-3 pr-1">
+                    <div className="row">
+                        <div className="col-lg-12 text-right pr-0 pb-0">
+                            <Button icon='' className="btn btn-primary mr-2"
+                                onClick={
+                                    (e) => {
+                                        e.preventDefault();
+                                        validateAlert(onSubmit, e, 'form-banco')
+                                    }
+                                }
+                                text="ENVIAR" />
+                        </div>
+                    </div>
                 </div>
             </Form>
         )

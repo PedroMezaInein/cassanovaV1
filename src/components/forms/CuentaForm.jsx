@@ -2,9 +2,7 @@ import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 import { Input, Select, Button, InputNumber } from '../form-components'
 import { validateAlert } from '../../functions/alert'
-
 class CuentaForm extends Component {
-
     render() {
         const { bancos, estatus, tipos, title, form, onChange, onChangeEmpresa, updateEmpresa, empresas, empresas2, onSubmit, formeditado, tipo, ...props } = this.props
         return (
@@ -127,8 +125,6 @@ class CuentaForm extends Component {
                         :
                         ''
                 }
-
-
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <Select
@@ -199,15 +195,19 @@ class CuentaForm extends Component {
                         />
                     </div>
                 </div>
-                <div className="mt-3 text-center">
-                    <Button icon='' className="mx-auto" 
-                        onClick={
-                            (e) => {
-                                e.preventDefault();
-                                validateAlert(onSubmit, e, 'form-cuenta')
-                            }
-                        }
-                        text="ENVIAR" />
+                <div className="card-footer py-3 pr-1">
+                    <div className="row">
+                        <div className="col-lg-12 text-right pr-0 pb-0">
+                            <Button icon='' className="btn btn-primary mr-2"
+                                onClick={
+                                    (e) => {
+                                        e.preventDefault();
+                                        validateAlert(onSubmit, e, 'form-cuenta')
+                                    }
+                                }
+                                text="ENVIAR" />
+                        </div>
+                    </div>
                 </div>
             </Form>
         )
