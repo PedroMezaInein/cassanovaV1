@@ -6,17 +6,10 @@ import { URL_DEV, UTILIDADES_COLUMNS} from '../../constants'
 import { setTextTable, setMoneyTable, setPercentTable} from '../../functions/setters'
 import { errorAlert, forbiddenAccessAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
-import NewTable from '../../components/tables/NewTable'
+import NewTableServerRender from '../../components/tables/NewTableServerRender'
+const $ = require('jquery');
 
 class Utilidad extends Component {
-
-    state = {
-        utilidades: [],
-        data:{
-            utilidades: []
-        }
-    }
-
     componentDidMount() { 
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
@@ -27,7 +20,6 @@ class Utilidad extends Component {
         })
         if (!proyectos)
             history.push('/')
-        this.getUtilidadesAxios()
     }
 
     setUtilidades = utilidades => {
@@ -48,48 +40,26 @@ class Utilidad extends Component {
     }
 
     async getUtilidadesAxios(){
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'proyectos/utilidad', { headers: {Authorization:`Bearer ${access_token}`}}).then(
-            (response) => {
-                const { utilidades } = response.data
-                const { data } = this.state
-                data.utilidades = utilidades
-                this.setState({
-                    utilidades: this.setUtilidades(utilidades),
-                    data
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
+        $('#kt_datatable_utilidad').DataTable().ajax.reload();
     }
 
     render() {
-        const { utilidades, data } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
-                <NewTable 
+                <NewTableServerRender
                     columns = { UTILIDADES_COLUMNS } 
-                    data = { utilidades }
                     title = 'Utilidad' 
                     subtitle = 'Listado de utilidad por proyecto'
                     mostrar_boton = { false }
                     abrir_modal = { false }
                     mostrar_acciones = { false }
-                    elements = { data.utilidades }
                     idTable = 'kt_datatable_utilidad'
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'
                     cardBody='cardBody'
+                    accessToken = { this.props.authUser.access_token }
+                    setter =  {this.setUtilidades }
+                    urlRender = { URL_DEV + 'proyectos/utilidad'}
                 />
             </Layout>
         )

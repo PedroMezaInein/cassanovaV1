@@ -8,7 +8,9 @@ import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../fu
 import Layout from '../../components/layout/layout'
 import { Modal, ModalDelete } from '../../components/singles'
 import { TipoForm } from '../../components/forms'
-import NewTable from '../../components/tables/NewTable'
+import NewTableServerRender from '../../components/tables/NewTableServerRender'
+
+const $ = require('jquery');
 
 class TiposContratos extends Component {
 
@@ -16,11 +18,7 @@ class TiposContratos extends Component {
         form: {
             tipo: '',
         },
-        data: {
-            tipos: []
-        },
         formeditado:0,
-        tipos: [],
         modal:{
             form: false,
             delete: false,
@@ -39,7 +37,6 @@ class TiposContratos extends Component {
         });
         if (!areas)
             history.push('/')
-        this.getTiposContratosAxios()
     }
 
     onChange = e => {
@@ -165,30 +162,7 @@ class TiposContratos extends Component {
     }
 
     async getTiposContratosAxios() {
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'tipos-contratos', { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { data } = this.state
-                const { tipos } = response.data
-                data.tipos = tipos
-                this.setState({
-                    ... this.state,
-                    tipos: this.setTipos(tipos),
-                    data
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
+        $('#kt_datatable_contratos').DataTable().ajax.reload();
     }
 
     async addTipoContratoAxios() {
@@ -196,19 +170,17 @@ class TiposContratos extends Component {
         const { form } = this.state
         await axios.post(URL_DEV + 'tipos-contratos', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { tipos } = response.data
-                const { data, modal } = this.state
+                const { modal } = this.state
                 modal.form = false
-                data.tipos = tipos
-
+                
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito una Nuevo área.')
+
+                this.getTiposContratosAxios()
                 
                 this.setState({
                     ... this.state,
                     modal,
-                    form: this.clearForm(),
-                    tipos: this.setTipos(tipos),
-                    data
+                    form: this.clearForm()
                 })
 
             },
@@ -231,17 +203,16 @@ class TiposContratos extends Component {
         const { form, tipo, data, modal } = this.state
         await axios.put(URL_DEV + 'tipos-contratos/' + tipo.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { tipos } = response.data
-                data.tipos = tipos
                 modal.form = false
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el área.')
+
+                this.getTiposContratosAxios()
 
                 this.setState({
                     ... this.state,
                     modal,
                     form: this.clearForm(),
-                    tipos: this.setTipos(tipos),
                     tipo: ''
                 })
 
@@ -265,19 +236,17 @@ class TiposContratos extends Component {
         const { tipo, modal, data } = this.state
         await axios.delete(URL_DEV + 'tipos-contratos/' + tipo.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { tipos } = response.data
-                data.tipos = tipos
                 modal.delete = false
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito el área.')
+
+                this.getTiposContratosAxios()
                 
                 this.setState({
                     ... this.state,
                     modal,
                     form: this.clearForm(),
-                    tipos: this.setTipos(tipos),
-                    tipo: '',
-                    data
+                    tipo: ''
                 })
 
             },
@@ -296,27 +265,30 @@ class TiposContratos extends Component {
     }
 
     render() {
-        const { form, tipos, modal, title, data, formeditado} = this.state
+        const { form, modal, title, formeditado } = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
-                <NewTable 
+                <NewTableServerRender 
                     columns = { TIPOS_COLUMNS } 
-                    data = { tipos }
                     title = 'Tipos de contratos' 
-                    subtitle='Listado de los tipos de contrato'
-                    mostrar_boton={true}
-                    abrir_modal={true}
-                    mostrar_acciones={true}
-                    onClick={this.openModal}
-                    actions={{
-                        'edit': { function: this.openModalEdit },
-                        'delete': { function: this.openModalDelete }
-                    }}
-                    elements={data.tipos}
+                    subtitle = 'Listado de los tipos de contrato'
+                    mostrar_boton = { true }
+                    abrir_modal = { true }
+                    mostrar_acciones = { true }
+                    onClick = { this.openModal }
+                    actions = {
+                        {
+                            'edit': { function: this.openModalEdit },
+                            'delete': { function: this.openModalDelete }
+                        }
+                    }
                     idTable = 'kt_datatable_contratos'
-                    cardTable='cardTable'
-                    cardTableHeader='cardTableHeader'
-                    cardBody='cardBody'
+                    cardTable = 'cardTable'
+                    cardTableHeader = 'cardTableHeader'
+                    cardBody = 'cardBody'
+                    accessToken = { this.props.authUser.access_token }
+                    setter =  {this.setTipos }
+                    urlRender = { URL_DEV + 'tipos-contratos'}
                 />
 
                 <Modal size="xl" show={modal.form} title = {title} handleClose={this.handleClose}>
