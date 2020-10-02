@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { Input, Calendar, SelectSearch, Button, FileInput, InputMoneySinText, SelectSearchSinText } from '../../form-components'
+import { Input, Calendar, SelectSearch, Button, InputMoneySinText, SelectSearchSinText } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { DATE } from '../../../constants'
 import { setMoneyTableForNominas } from '../../../functions/setters'
 import { Card } from 'react-bootstrap'
-
+import { ItemSlider } from '../../../components/singles';
 class NominaAdminForm extends Component {
 
     handleChangeDateInicio = date => {
@@ -84,7 +84,7 @@ class NominaAdminForm extends Component {
 
 
     render() {
-        const { options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, onChange, onChangeAdjunto, clearFiles, form, onSubmit, formeditado, title } = this.props
+        const { options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, onChange, onChangeAdjunto, clearFiles, form, onSubmit, formeditado, title, handleChange} = this.props
         
         return (
             <Card className="card card-custom gutter-b example example-compact">
@@ -102,7 +102,7 @@ class NominaAdminForm extends Component {
                     }
                 >
                     <Card.Body>
-                        <div className="form-group row form-group-marginless pt-4">
+                        <div className="form-group row form-group-marginless">
                             <div className="col-md-6">
                                 <Input
                                     requirevalidation={1}
@@ -115,7 +115,6 @@ class NominaAdminForm extends Component {
                                     messageinc="Incorrecto. Ingresa el periodo de nómina Administrativa."
                                 />
                             </div>
-
                             <div className="col-md-6">
                                 <SelectSearch
                                     formeditado={formeditado}
@@ -165,9 +164,9 @@ class NominaAdminForm extends Component {
                             title !== 'Editar nómina administrativa' ?
                                 <>
                                     <div className="separator separator-dashed mt-1 mb-2"></div>
-                                    <div className="form-group row form-group-marginless">
-                                        <div className="col-md-12">
-                                            <FileInput
+                                    <div className="form-group row form-group-marginless d-flex justify-content-center">
+                                        <div className="col-md-4 text-center">
+                                            {/* <FileInput
                                                 requirevalidation={0}
                                                 formeditado={formeditado}
                                                 onChangeAdjunto={onChangeAdjunto}
@@ -179,6 +178,13 @@ class NominaAdminForm extends Component {
                                                 files={form.adjuntos.adjunto.files}
                                                 deleteAdjunto={clearFiles}
                                                 multiple
+                                            /> */}
+                                            <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.adjunto.placeholder}</label>
+                                            <ItemSlider
+                                                items={form.adjuntos.adjunto.files}
+                                                item='adjunto'
+                                                handleChange={handleChange}
+                                                multiple={true}
                                             />
                                         </div>
                                     </div>

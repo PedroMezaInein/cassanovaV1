@@ -312,27 +312,27 @@ class NominaAdminForm extends Component {
         })
     }
 
-    onChangeAdjunto = e => {
-        const { form } = this.state
-        const { files, value, name } = e.target
-        let aux = []
-        for (let counter = 0; counter < files.length; counter++) {
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
-                }
-            )
-        }
-        form.adjuntos[name].value = value
-        form.adjuntos[name].files = aux
-        this.setState({
-            ... this.state,
-            form
-        })
-    }
+    // onChangeAdjunto = e => {
+    //     const { form } = this.state
+    //     const { files, value, name } = e.target
+    //     let aux = []
+    //     for (let counter = 0; counter < files.length; counter++) {
+    //         aux.push(
+    //             {
+    //                 name: files[counter].name,
+    //                 file: files[counter],
+    //                 url: URL.createObjectURL(files[counter]),
+    //                 key: counter
+    //             }
+    //         )
+    //     }
+    //     form.adjuntos[name].value = value
+    //     form.adjuntos[name].files = aux
+    //     this.setState({
+    //         ... this.state,
+    //         form
+    //     })
+    // }
 
     onSubmit = e => {
         e.preventDefault()
@@ -388,9 +388,29 @@ class NominaAdminForm extends Component {
             form
         })
     }
+    handleChange = (files, item) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
 
     render() {
-        const { modal, options, title, form, formeditado, adjuntos, data } = this.state
+        const { options, title, form, formeditado } = this.state
 
         return (
             <Layout active={'rh'} {...this.props}>
@@ -404,10 +424,11 @@ class NominaAdminForm extends Component {
                     deleteRowNominaAdmin={this.deleteRowNominaAdmin}
                     onChangeNominasAdmin={this.onChangeNominasAdmin}
                     onChange={this.onChange}
-                    onChangeAdjunto={this.onChangeAdjunto}
+                    // onChangeAdjunto={this.onChangeAdjunto}
                     clearFiles={this.clearFiles}
                     onSubmit={this.onSubmit}
-                    />
+                    handleChange={this.handleChange}
+                />
             </Layout>
         )
     }

@@ -186,27 +186,27 @@ class ContratosForm extends Component {
             form
         })
     }
-    onChangeAdjunto = e => {
-        const { form } = this.state
-        const { files, value, name } = e.target
-        let aux = []
-        for (let counter = 0; counter < files.length; counter++) {
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
-                }
-            )
-        }
-        form.adjuntos[name].value = value
-        form.adjuntos[name].files = aux
-        this.setState({
-            ... this.state,
-            form
-        })
-    }
+    // onChangeAdjunto = e => {
+    //     const { form } = this.state
+    //     const { files, value, name } = e.target
+    //     let aux = []
+    //     for (let counter = 0; counter < files.length; counter++) {
+    //         aux.push(
+    //             {
+    //                 name: files[counter].name,
+    //                 file: files[counter],
+    //                 url: URL.createObjectURL(files[counter]),
+    //                 key: counter
+    //             }
+    //         )
+    //     }
+    //     form.adjuntos[name].value = value
+    //     form.adjuntos[name].files = aux
+    //     this.setState({
+    //         ... this.state,
+    //         form
+    //     })
+    // }
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -311,6 +311,26 @@ class ContratosForm extends Component {
             console.log(error, 'error')
         })
     }
+    handleChange = (files, item) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
     render() {
         const { title, options, form, tipo, formeditado } = this.state
         return (
@@ -329,9 +349,10 @@ class ContratosForm extends Component {
                             onChange={this.onChange}
                             onSubmit={this.onSubmit}
                             formeditado={formeditado}
-                            onChangeAdjunto={this.onChangeAdjunto}
+                            // onChangeAdjunto={this.onChangeAdjunto}
                             clearFiles={this.clearFiles}
                             title={title}
+                            handleChange={this.handleChange}
                         />
                     </Card.Body>
                 </Card>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap' 
-import { Input, Select, SelectSearch, Button, Calendar, InputMoney, RadioGroup, FileInput } from '../../form-components'
+import { Input, Select, SelectSearch, Button, Calendar, InputMoney, RadioGroup } from '../../form-components'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
 import { ItemSlider } from '../../../components/singles';
@@ -257,7 +257,7 @@ class SolicitudCompraForm extends Component {
                                             value={form.factura}
                                         />
                                     </div>
-                                    <div className="col-md-6">
+                                    <div className="col-md-4 text-center">
                                         {/* <FileInput
                                             requirevalidation={0}
                                             formeditado={formeditado}
@@ -269,6 +269,7 @@ class SolicitudCompraForm extends Component {
                                             files={form.adjuntos.adjunto.files}
                                             deleteAdjunto={clearFiles} multiple
                                         /> */}
+                                        <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.adjunto.placeholder}</label>
                                         <ItemSlider
                                             items={form.adjuntos.adjunto.files}
                                             item='adjunto'

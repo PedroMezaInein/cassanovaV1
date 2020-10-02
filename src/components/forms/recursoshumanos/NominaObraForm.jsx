@@ -5,7 +5,7 @@ import { validateAlert } from '../../../functions/alert'
 import { DATE } from '../../../constants'
 import { setMoneyTableForNominas } from '../../../functions/setters'
 import { Card } from 'react-bootstrap'
-
+import { ItemSlider } from '../../../components/singles';
 class NominaObraForm extends Component {
 
     handleChangeDateInicio = date => {
@@ -90,7 +90,7 @@ class NominaObraForm extends Component {
 
 
     render() {
-        const { options, addRowNominaObra, deleteRowNominaObra, onChangeNominasObra, onChange, clearFiles, onChangeAdjunto, form, onSubmit, formeditado, title } = this.props
+        const { options, addRowNominaObra, deleteRowNominaObra, onChangeNominasObra, onChange, clearFiles, onChangeAdjunto, form, onSubmit, formeditado, title, handleChange} = this.props
         return (
             <Card className="card card-custom gutter-b example example-compact">
                 <Card.Header>
@@ -108,7 +108,7 @@ class NominaObraForm extends Component {
                 >
                     <Card.Body>
                         <div className="form-group row form-group-marginless">
-                            <div className="col-md-4">
+                            <div className="col-md-3">
                                 <Input
                                     requirevalidation={1}
                                     formeditado={formeditado}
@@ -120,7 +120,7 @@ class NominaObraForm extends Component {
                                     messageinc="Incorrecto. Ingresa el periodo de nómina de obra."
                                 />
                             </div>
-                            <div className="col-md-4">
+                            <div className="col-md-3">
                                 <Calendar
                                     formeditado={formeditado}
                                     onChangeCalendar={this.handleChangeDateInicio}
@@ -134,7 +134,7 @@ class NominaObraForm extends Component {
                                     patterns={DATE}
                                 />
                             </div>
-                            <div className="col-md-4">
+                            <div className="col-md-3">
                                 <Calendar
                                     formeditado={formeditado}
                                     onChangeCalendar={this.handleChangeDateFin}
@@ -149,10 +149,7 @@ class NominaObraForm extends Component {
                                     patterns={DATE}
                                 />
                             </div>
-                        </div>
-                        <div className="separator separator-dashed mt-1 mb-2"></div>
-                        <div className="form-group row form-group-marginless">
-                            <div className="col-md-4">
+                            <div className="col-md-3">
                                 <SelectSearch
                                     formeditado={formeditado}
                                     options={options.empresas}
@@ -163,11 +160,14 @@ class NominaObraForm extends Component {
                                     iconclass={"far fa-building"}
                                 />
                             </div>
+                        </div>
+                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                        <div className="form-group row form-group-marginless d-flex justify-content-center">
                             {
                                 title !== 'Editar nómina obra' ?
                                     <>
-                                        <div className="col-md-4">
-                                            <FileInput
+                                        <div className="col-md-4 text-center">
+                                            {/* <FileInput
                                                 requirevalidation={0}
                                                 formeditado={formeditado}
                                                 onChangeAdjunto={onChangeAdjunto}
@@ -179,8 +179,16 @@ class NominaObraForm extends Component {
                                                 files={form.adjuntos.adjunto.files}
                                                 deleteAdjunto={clearFiles}
                                                 multiple
+                                            /> */}
+                                            <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.adjunto.placeholder}</label>
+                                            <ItemSlider
+                                                items={form.adjuntos.adjunto.files}
+                                                item='adjunto'
+                                                handleChange={handleChange}
+                                                multiple={true}
                                             />
                                         </div>
+                                        
                                     </>
                                     : ''
                             }

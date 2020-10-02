@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { Input, SelectSearch, Button, Calendar, FileInput, InputNumber, InputPhone, SelectSearchTrue } from '../../form-components'
-import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
+import { Input, SelectSearch, Button, Calendar, InputNumber, InputPhone, SelectSearchTrue } from '../../form-components'
 import { faPlus} from '@fortawesome/free-solid-svg-icons'
 import { DATE, TEL, EMAIL } from '../../../constants'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
@@ -507,8 +506,8 @@ class ProyectosForm extends Component {
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless justify-content-center mt-3">
-                                    <div className="col-md-6 text-center">
-                                    <label className = "col-form-label">IMAGEN</label>
+                                    <div className="col-md-4 text-center">
+                                    <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.image.placeholder}</label>
                                         <ItemSlider
                                             items={form.adjuntos.image.files}
                                             item='image' 
