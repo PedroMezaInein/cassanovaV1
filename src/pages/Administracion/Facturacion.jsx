@@ -740,7 +740,9 @@ class Facturacion extends Component {
                     <div className="card-footer py-3 pr-1">
                         <div className="row">
                             <div className="col-lg-12 text-right pr-0 pb-0">
-                                <Button text='ENVIAR'
+                                <Button 
+                                    icon=''
+                                    text='ENVIAR'
                                     onClick={(e) => { e.preventDefault(); waitAlert(); this.cancelarFacturaAxios() }}
                                     className="btn btn-primary mr-2" />
                             </div>

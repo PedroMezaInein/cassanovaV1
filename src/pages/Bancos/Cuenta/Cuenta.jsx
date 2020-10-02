@@ -75,7 +75,6 @@ class Cuenta extends Component {
         })
     }
     setCuentas = cuentas => {
-        console.log(cuentas)
         let aux = []
         cuentas.map((cuenta, key) => {
             aux.push({

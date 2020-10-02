@@ -92,13 +92,15 @@ class CalidadView extends Component {
                                             data.estatus_ticket ?
                                                 data.estatus_ticket.estatus === 'En revisión' ?
                                                     <>
-                                                        <Button 
+                                                        <Button
+                                                            icon=''
                                                             onClick={() => { changeEstatus('Aceptado') }} 
                                                             className={"btn btn-icon btn-light-success success2 btn-sm mr-2 ml-auto"}
                                                             only_icon={"flaticon2-check-mark icon-sm"}
                                                             tooltip={{text:'Aceptar'}}
                                                         />
-                                                        <Button 
+                                                        <Button
+                                                            icon=''
                                                             onClick={() => { openModalWithInput('Rechazado') }}
                                                             className={"btn btn-icon btn-light-danger btn-sm pulse pulse-danger"}
                                                             only_icon={"flaticon2-cross icon-sm"}

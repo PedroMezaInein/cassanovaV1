@@ -45,7 +45,8 @@ class FlujosForm extends Component {
                         /> 
                     </div>
                     <div className="col-md-1 d-flex justify-content-center align-items-center mt-4">
-                        <Button 
+                        <Button
+                            icon=''
                             className="btn btn-icon btn-light-primary" 
                             onClick={this.mostrarTodasCuentas}
                             only_icon={"flaticon2-plus icon-sm"}
@@ -109,7 +110,7 @@ class FlujosForm extends Component {
                 <div className="separator separator-dashed mt-1"></div>
                 <div className="mt-3 text-center mb-4">
                     <Button icon='' className="btn btn-light-primary font-weight-bold mr-2" type="submit" text="MOSTRAR" />
-                    <Button onClick={clear} className="btn btn-light-danger font-weight-bold mr-2" text="LIMPIAR" />
+                    <Button icon='' onClick={clear} className="btn btn-light-danger font-weight-bold mr-2" text="LIMPIAR" />
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2 mt-2"></div>
             </Form>

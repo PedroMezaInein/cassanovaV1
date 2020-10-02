@@ -337,20 +337,23 @@ class ProspectosForm extends Component {
                         </div>
                         {
                             title === 'Editar prospecto' ?
-                                <div class="card-toolbar">
+                                <div className="card-toolbar">
                                     <Button
+                                        icon=''
                                         onClick={() => { this.changeEstatus('Detenido') }}
                                         className={"btn btn-icon btn-light-info btn-sm mr-2 ml-auto"}
                                         only_icon={"far fa-clock icon-md"}
                                         tooltip={{ text: 'DETENER' }}
                                     />
                                     <Button
+                                        icon=''
                                         onClick={() => { this.changeEstatus('Cancelado') }}
                                         className={"btn btn-icon btn-light-danger btn-sm mr-2"}
                                         only_icon={"fas fa-times icon-md"}
                                         tooltip={{ text: 'CANCELAR' }}
                                     />
                                     <Button
+                                        icon=''
                                         onClick={() => { this.changeEstatus('Contratado') }}
                                         className={"btn btn-icon btn-light-warning btn-sm"}
                                         only_icon={"fas fa-user-check icon-md"}
