@@ -413,8 +413,6 @@ class ProyectosForm extends Component {
                         form.fase1 = proyecto.fase1 === 0 ? false : true
                         form.fase2 = proyecto.fase2 === 0 ? false : true
                         form.fase3 = proyecto.fase3 === 0 ? false : true
-                        console.log(form, 'form')
-                        console.log(proyecto, 'prouecto')
                         if (proyecto.empresa)
                             form.empresa = proyecto.empresa.id.toString()
                         form.colonia = proyecto.colonia
@@ -938,7 +936,7 @@ class ProyectosForm extends Component {
                         </div>
                         {
                             title === 'Editar proyecto' ?
-                                <div class="card-toolbar">
+                                <div className="card-toolbar">
                                     <Button
                                         icon=''
                                         onClick={() => { this.changeEstatus('Detenido') }}

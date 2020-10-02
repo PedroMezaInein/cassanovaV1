@@ -100,7 +100,6 @@ class PresupuestoDiseñoForm extends Component {
         });
         switch (action) {
             case 'add':
-                // console.log(state.prospecto)
                 this.setState({
                     ... this.state,
                     title: 'Agregar presupuesto de diseño',
