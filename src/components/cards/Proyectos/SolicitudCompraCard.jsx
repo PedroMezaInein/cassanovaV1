@@ -48,7 +48,7 @@ export default class SolicitudCompraCard extends Component {
                                                     <NumberFormat
                                                         value={data.monto}
                                                         displayType={'text'}
-                                                        thousandseparator={true}
+                                                        thousandSeparator={true}
                                                         prefix={'$'}
                                                         renderText={value => <div>{value}</div>}
                                                     />

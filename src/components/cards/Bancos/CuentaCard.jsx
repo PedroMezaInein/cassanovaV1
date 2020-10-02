@@ -140,7 +140,7 @@ export default class CuentaCard extends Component {
                                                     <NumberFormat
                                                         value={cuenta.balance}
                                                         displayType={'text'}
-                                                        thousandseparator={true}
+                                                        thousandSeparator={true}
                                                         prefix={'$'}
                                                         renderText={value => <div>{value}</div>}
                                                     />

@@ -148,7 +148,7 @@ export function setMoneyTable(value) {
     let cantidad = 0
     cantidad = parseFloat(value).toFixed(2)
     return (
-        <NumberFormat value={cantidad} displayType={'text'} thousandseparator={true} prefix={'$'}
+        <NumberFormat value={cantidad} displayType={'text'} thousandSeparator={true} prefix={'$'}
             renderText={cantidad => <Small> {cantidad} </Small>} />
     )
 }
@@ -157,7 +157,7 @@ export function setMoneyTableSinSmall(value) {
     let cantidad = 0
     cantidad = parseFloat(value).toFixed(2)
     return (
-        <NumberFormat value={cantidad} displayType={'text'} thousandseparator={true} prefix={'$'}
+        <NumberFormat value={cantidad} displayType={'text'} thousandSeparator={true} prefix={'$'}
             renderText={cantidad => <div> {cantidad} </div>} />
     )
 }
@@ -166,7 +166,7 @@ export function setMoneyTableForNominas(value) {
     let cantidad = 0
     cantidad = parseFloat(value).toFixed(2)
     return (
-        <NumberFormat value={cantidad} displayType={'text'} thousandseparator={true} prefix={'$'}
+        <NumberFormat value={cantidad} displayType={'text'} thousandSeparator={true} prefix={'$'}
             renderText={cantidad => <p className="font-weight-bolder mb-0" style={{fontSize: "1.01rem"}}> {cantidad} </p>} />
     )
 }
@@ -175,7 +175,7 @@ export function setPercentTable(value) {
     let cantidad = 0
     cantidad = parseFloat(value).toFixed(2)
     return (
-        <NumberFormat value={cantidad} displayType={'text'} thousandseparator={false} prefix={''}
+        <NumberFormat value={cantidad} displayType={'text'} thousandSeparator={false} prefix={''}
             renderText={cantidad => <Small> {cantidad} %</Small>} />
     )
 }

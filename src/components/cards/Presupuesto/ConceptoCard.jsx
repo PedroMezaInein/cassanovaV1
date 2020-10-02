@@ -63,7 +63,7 @@ export default class ConceptoCard extends Component {
                                                     <NumberFormat
                                                         value={concepto.costo}
                                                         displayType={'text'}
-                                                        thousandseparator={true}
+                                                        thousandSeparator={true}
                                                         prefix={'$'}
                                                         renderText={value => <div>{value}</div>}
                                                     />
