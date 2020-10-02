@@ -287,11 +287,10 @@ class ProspectosForm extends Component {
     }
 
     changeEstatus = estatus =>  {
-        const { proyecto } = this.state
         estatus === 'Detenido'?
-            questionAlert('¿ESTÁS SEGURO?', 'DETENDRÁS EL PROYECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
+            questionAlert('¿ESTÁS SEGURO?', 'DETENDRÁS EL PROSPECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
         :
-            questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR TEMINADO EL PROYECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
+            questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR TEMINADO EL PROSPECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
     }
 
     async changeEstatusAxios(estatus){
@@ -338,13 +337,13 @@ class ProspectosForm extends Component {
                                         onClick={() => { this.changeEstatus('Detenido') }}
                                         className={"btn btn-icon btn-light-info btn-sm mr-2 ml-auto"}
                                         only_icon={"far fa-clock icon-md"}
-                                        tooltip={{ text: 'Detener' }}
+                                        tooltip={{ text: 'DETENER' }}
                                     />
                                     <Button
-                                        onClick={() => { this.changeEstatus('Terminado') }}
-                                        className={"btn btn-icon btn-light-primary btn-sm"}
-                                        only_icon={"fas fa-check icon-md"}
-                                        tooltip={{ text: 'Terminar' }}
+                                        onClick={() => { this.changeEstatus('Cancelado') }}
+                                        className={"btn btn-icon btn-light-danger btn-sm"}
+                                        only_icon={"fas fa-times icon-md"}
+                                        tooltip={{ text: 'CANCELAR' }}
                                     />
                                 </div>
                                 : ''
