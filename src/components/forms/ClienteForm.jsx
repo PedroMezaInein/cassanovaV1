@@ -92,7 +92,7 @@ class ClienteForm extends Component {
                     <div className="col-md-4">
                         <InputPhone
                             requirevalidation={0}
-                            thousandSeparator={false}
+                            thousandseparator={0}
                             prefix={''}
                             name="contacto"
                             value={form.contacto}

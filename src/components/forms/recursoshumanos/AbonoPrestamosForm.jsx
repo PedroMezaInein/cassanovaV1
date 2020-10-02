@@ -40,7 +40,7 @@ export default class componentName extends Component {
                             type="text"
                             placeholder="ABONO"
                             iconclass="fas fa-dollar-sign"
-                            thousandSeparator={true}
+                            thousandseparator={1}
                             messageinc="Incorrecto. Ingresa el monto." />
                     </div>
                 </div>

@@ -74,7 +74,7 @@ export default class EmpleadosCard extends Component {
                                                                     <NumberFormat
                                                                         value={rendimiento.costo}
                                                                         displayType={'text'}
-                                                                        thousandSeparator={true}
+                                                                        thousandseparator={1}
                                                                         prefix={'$'}
                                                                         renderText={value => <div>{value}</div>}
                                                                     />

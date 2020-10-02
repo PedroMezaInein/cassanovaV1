@@ -66,7 +66,7 @@ class InputMoneySinText extends Component {
 
     }
     render() {
-        const { placeholder, value, prefix, thousandSeparator, customstyle, identificador } = this.props
+        const { placeholder, value, prefix, thousandseparator, customstyle, identificador } = this.props
         const { inputMoneyValido } = this.state
 
         return (
@@ -74,7 +74,7 @@ class InputMoneySinText extends Component {
                 id={identificador}
                 value={value}
                 displayType={'input'}
-                thousandSeparator={thousandSeparator ? thousandSeparator : false}
+                thousandseparator={thousandseparator ? thousandseparator : 0}
                 prefix={prefix}
                 className={inputMoneyValido ? " form-control form-control-sm is-valid sin_icono text-uppercase" : " form-control form-control-sm is-invalid sin_icono text-uppercase"}
                 renderText={value => <div> {value} </div>}

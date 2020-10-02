@@ -243,7 +243,7 @@ class ActualizarPresupuestoForm extends Component {
                                                         name = " desperdicio "
                                                         value = { desperdicio }
                                                         onChange = { this.onChangeDesperdicio }
-                                                        thousandSeparator = { true }
+                                                        thousandseparator = { 1 }
                                                         prefix = { '%' } 
                                                         customstyle={{borderColor: "#e5eaee"}}
                                                     />
@@ -358,7 +358,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                     name="costo"
                                                                     value={form['conceptos'][key]['costo']}
                                                                     onChange={e => onChange(key, e, 'costo')}
-                                                                    thousandSeparator={true}
+                                                                    thousandseparator={1}
                                                                     typeformat="###########" 
                                                                     disabled = { !form.conceptos[key].active }
                                                                     customstyle={{borderColor: "#e5eaee"}}
@@ -372,7 +372,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                     name="cantidad_preliminar"
                                                                     value={form['conceptos'][key]['cantidad_preliminar']}
                                                                     onChange={e => onChange(key, e, 'cantidad_preliminar')}
-                                                                    thousandSeparator={true}
+                                                                    thousandseparator={1}
                                                                     typeformat="###########"
                                                                     disabled = { !form.conceptos[key].active } 
                                                                     customstyle={{borderColor: "#e5eaee"}}
@@ -386,7 +386,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                     name="desperdicio"
                                                                     value={form['conceptos'][key]['desperdicio']}
                                                                     onChange={e => onChange(key, e, 'desperdicio')}
-                                                                    thousandSeparator={true}
+                                                                    thousandseparator={1}
                                                                     prefix={'%'} 
                                                                     disabled = { !form.conceptos[key].active }
                                                                     customstyle={{borderColor: "#e5eaee"}}

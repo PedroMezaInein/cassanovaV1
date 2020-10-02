@@ -58,7 +58,7 @@ export default class PrestamosCard extends Component {
                                                     <NumberFormat
                                                         value={prestamo.monto}
                                                         displayType={'text'}
-                                                        thousandSeparator={true}
+                                                        thousandseparator={1}
                                                         prefix={'$'}
                                                         renderText={value => <div>{value}</div>}
                                                     />
@@ -85,7 +85,7 @@ export default class PrestamosCard extends Component {
                                                     <NumberFormat
                                                         value={prestamo.acumulado}
                                                         displayType={'text'}
-                                                        thousandSeparator={true}
+                                                        thousandseparator={1}
                                                         prefix={'$'}
                                                         renderText={value => <div>{value}</div>}
                                                     />
@@ -112,7 +112,7 @@ export default class PrestamosCard extends Component {
                                                     <NumberFormat
                                                         value={prestamo.restante}
                                                         displayType={'text'}
-                                                        thousandSeparator={true}
+                                                        thousandseparator={1}
                                                         prefix={'$'}
                                                         renderText={value => <div>{value}</div>}
                                                     />

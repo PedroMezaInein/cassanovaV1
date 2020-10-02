@@ -402,7 +402,7 @@ class ComprasForm extends Component {
                                         <InputMoney 
                                             requirevalidation={1}
                                             formeditado={formeditado}
-                                            thousandSeparator={true} 
+                                            thousandseparator={1} 
                                             placeholder="MONTO" 
                                             value={form.total} 
                                             name="total" 
@@ -414,7 +414,7 @@ class ComprasForm extends Component {
                                         <InputMoney 
                                             requirevalidation={0}
                                             formeditado={formeditado}
-                                            thousandSeparator={true} 
+                                            thousandseparator={1} 
                                             placeholder="COMISIÓN" 
                                             value={form.comision} 
                                             name="comision" 

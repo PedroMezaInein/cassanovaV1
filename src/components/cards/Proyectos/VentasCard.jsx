@@ -181,7 +181,7 @@ export default class VentasCard extends Component {
                                                                     <NumberFormat
                                                                         value={venta.total}
                                                                         displayType={'text'}
-                                                                        thousandSeparator={true}
+                                                                        thousandseparator={1}
                                                                         prefix={'$'}
                                                                         renderText={value => <div>{value}</div>}
                                                                     />

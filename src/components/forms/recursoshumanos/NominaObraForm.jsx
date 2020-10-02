@@ -242,7 +242,7 @@ class NominaObraForm extends Component {
                                                         name="salario_hr"
                                                         value={form['nominasObra'][key]['salario_hr']}
                                                         onChange={e => onChangeNominasObra(key, e, 'salario_hr')}
-                                                        thousandSeparator={true}
+                                                        thousandseparator={1}
                                                         prefix={'$'}
                                                     />
                                                 </td>
@@ -254,7 +254,7 @@ class NominaObraForm extends Component {
                                                         name="hr_trabajadas"
                                                         value={form['nominasObra'][key]['hr_trabajadas']}
                                                         onChange={e => onChangeNominasObra(key, e, 'hr_trabajadas')}
-                                                        thousandSeparator={true}
+                                                        thousandseparator={1}
                                                         typeformat="###########"
                                                     />
                                                 </td>
@@ -266,7 +266,7 @@ class NominaObraForm extends Component {
                                                         name="salario_hr_extra"
                                                         value={form['nominasObra'][key]['salario_hr_extra']}
                                                         onChange={e => onChangeNominasObra(key, e, 'salario_hr_extra')}
-                                                        thousandSeparator={true}
+                                                        thousandseparator={1}
                                                         prefix={'$'}
                                                     />
                                                 </td>
@@ -278,7 +278,7 @@ class NominaObraForm extends Component {
                                                         name="hr_extra"
                                                         value={form['nominasObra'][key]['hr_extra']}
                                                         onChange={e => onChangeNominasObra(key, e, 'hr_extra')}
-                                                        thousandSeparator={true}
+                                                        thousandseparator={1}
                                                         typeformat="###########"
                                                     />
                                                 </td>
@@ -290,7 +290,7 @@ class NominaObraForm extends Component {
                                                         name="nominImss"
                                                         value={form['nominasObra'][key]['nominImss']}
                                                         onChange={e => onChangeNominasObra(key, e, 'nominImss')}
-                                                        thousandSeparator={true}
+                                                        thousandseparator={1}
                                                         prefix={'$'}
                                                     />
                                                 </td>
@@ -302,7 +302,7 @@ class NominaObraForm extends Component {
                                                         name="restanteNomina"
                                                         value={form['nominasObra'][key]['restanteNomina']}
                                                         onChange={e => onChangeNominasObra(key, e, 'restanteNomina')}
-                                                        thousandSeparator={true}
+                                                        thousandseparator={1}
                                                         prefix={'$'}
                                                     />
                                                 </td>
@@ -314,7 +314,7 @@ class NominaObraForm extends Component {
                                                         name="extras"
                                                         value={form['nominasObra'][key]['extras']}
                                                         onChange={e => onChangeNominasObra(key, e, 'extras')}
-                                                        thousandSeparator={true}
+                                                        thousandseparator={1}
                                                         prefix={'$'}
                                                     />
                                                 </td>

@@ -74,7 +74,7 @@ class InputPhone extends Component {
 
 
     render() {
-        const { error, onChange, placeholder, iconclass, messageinc, value, thousandSeparator, ...props } = this.props
+        const { error, onChange, placeholder, iconclass, messageinc, value, thousandseparator, ...props } = this.props
         const { inputPhone } = this.state
 
         return (
@@ -87,7 +87,7 @@ class InputPhone extends Component {
                     <NumberFormat
                         value={value}
                         displayType={'input'}
-                        thousandSeparator={thousandSeparator ? thousandSeparator : false}
+                        thousandseparator={thousandseparator ? thousandseparator : 0}
                         renderText={value => <div> {value} </div>}
                         onValueChange={(values) => this.onChange(values)}
 

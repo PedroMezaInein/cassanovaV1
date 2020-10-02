@@ -141,7 +141,7 @@ class SolicitudCompraForm extends Component {
                                         <InputMoney
                                             requirevalidation={1}
                                             formeditado={formeditado}
-                                            thousandSeparator={true}
+                                            thousandseparator={1}
                                             placeholder="MONTO"
                                             value={form.total}
                                             name="total" onChange={onChange}

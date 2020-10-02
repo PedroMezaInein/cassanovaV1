@@ -211,7 +211,7 @@ export default class ComprasCard extends Component {
                                                                     <NumberFormat
                                                                         value={compra.monto}
                                                                         displayType={'text'}
-                                                                        thousandSeparator={true}
+                                                                        thousandseparator={1}
                                                                         prefix={'$'}
                                                                         renderText={value => <div>{value}</div>}
                                                                     />
@@ -229,7 +229,7 @@ export default class ComprasCard extends Component {
                                                                     <NumberFormat
                                                                         value={compra.comision}
                                                                         displayType={'text'}
-                                                                        thousandSeparator={true}
+                                                                        thousandseparator={1}
                                                                         prefix={'$'}
                                                                         renderText={value => <div>{value}</div>}
                                                                     />
@@ -247,7 +247,7 @@ export default class ComprasCard extends Component {
                                                                     <NumberFormat
                                                                         value={compra.total}
                                                                         displayType={'text'}
-                                                                        thousandSeparator={true}
+                                                                        thousandseparator={1}
                                                                         prefix={'$'}
                                                                         renderText={value => <div>{value}</div>}
                                                                     />

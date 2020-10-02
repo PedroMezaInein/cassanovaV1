@@ -44,7 +44,7 @@ export default class TranspasoCard extends Component {
                                                     <NumberFormat
                                                         value={traspaso.cantidad}
                                                         displayType={'text'}
-                                                        thousandSeparator={true}
+                                                        thousandseparator={1}
                                                         prefix={'$'}
                                                         renderText={value => <div>{value}</div>}
                                                     />

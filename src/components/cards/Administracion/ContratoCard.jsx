@@ -64,7 +64,7 @@ export default class ContratoCard extends Component {
                                                     <NumberFormat
                                                         value={contrato.monto}
                                                         displayType={'text'}
-                                                        thousandSeparator={true}
+                                                        thousandseparator={1}
                                                         prefix={'$'}
                                                         renderText={value => <div>{value}</div>}
                                                     />

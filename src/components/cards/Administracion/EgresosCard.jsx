@@ -201,7 +201,7 @@ export default class EgresosCard extends Component {
                                                                     <NumberFormat
                                                                         value={egreso.monto}
                                                                         displayType={'text'}
-                                                                        thousandSeparator={true}
+                                                                        thousandseparator={1}
                                                                         prefix={'$'}
                                                                         renderText={value => <div>{value}</div>}
                                                                     />
@@ -219,7 +219,7 @@ export default class EgresosCard extends Component {
                                                                     <NumberFormat
                                                                         value={egreso.comision}
                                                                         displayType={'text'}
-                                                                        thousandSeparator={true}
+                                                                        thousandseparator={1}
                                                                         prefix={'$'}
                                                                         renderText={value => <div>{value}</div>}
                                                                     />
@@ -237,7 +237,7 @@ export default class EgresosCard extends Component {
                                                                     <NumberFormat
                                                                         value={egreso.total}
                                                                         displayType={'text'}
-                                                                        thousandSeparator={true}
+                                                                        thousandseparator={1}
                                                                         prefix={'$'}
                                                                         renderText={value => <div>{value}</div>}
                                                                     />

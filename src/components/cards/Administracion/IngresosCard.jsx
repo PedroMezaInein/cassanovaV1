@@ -171,7 +171,7 @@ export default class IngresosCard extends Component {
                                                                     <NumberFormat
                                                                         value={ingreso.total}
                                                                         displayType={'text'}
-                                                                        thousandSeparator={true}
+                                                                        thousandseparator={1}
                                                                         prefix={'$'}
                                                                         renderText={value => <div>{value}</div>}
                                                                     />

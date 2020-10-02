@@ -208,7 +208,7 @@ class ProyectosForm extends Component {
                                         <InputPhone
                                             requirevalidation={1}
                                             formeditado={formeditado}
-                                            thousandSeparator={false}
+                                            thousandseparator={0}
                                             prefix={''}
                                             name="numeroContacto"
                                             value={form.numeroContacto}
@@ -288,7 +288,7 @@ class ProyectosForm extends Component {
                                         <Input
                                             requirevalidation={0}
                                             formeditado={formeditado}
-                                            thousandSeparator={false}
+                                            thousandseparator={0}
                                             prefix={''}
                                             name="correo"
                                             value={form.correo}
