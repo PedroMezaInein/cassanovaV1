@@ -28,7 +28,7 @@ export default class PreciosDiseñoCard extends Component {
                                                 <NumberFormat
                                                     value={precio.precio_m2}
                                                     displayType={'text'}
-                                                    thousandseparator={1}
+                                                    thousandseparator={true}
                                                     prefix={'$'}
                                                     renderText={value => <div>{value}</div>}
                                                 />
@@ -46,7 +46,7 @@ export default class PreciosDiseñoCard extends Component {
                                                 <NumberFormat
                                                     value={precio.esquema_1}
                                                     displayType={'text'}
-                                                    thousandseparator={1}
+                                                    thousandseparator={true}
                                                     prefix={'$'}
                                                     renderText={value => <div>{value}</div>}
                                                 />
@@ -74,7 +74,7 @@ export default class PreciosDiseñoCard extends Component {
                                                 <NumberFormat
                                                     value={precio.esquema_2}
                                                     displayType={'text'}
-                                                    thousandseparator={1}
+                                                    thousandseparator={true}
                                                     prefix={'$'}
                                                     renderText={value => <div>{value}</div>}
                                                 />
@@ -102,7 +102,7 @@ export default class PreciosDiseñoCard extends Component {
                                                 <NumberFormat
                                                     value={precio.esquema_3}
                                                     displayType={'text'}
-                                                    thousandseparator={1}
+                                                    thousandseparator={true}
                                                     prefix={'$'}
                                                     renderText={value => <div>{value}</div>}
                                                 />

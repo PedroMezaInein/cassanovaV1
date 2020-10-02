@@ -54,7 +54,7 @@ class RendimientoForm extends Component {
                         <InputMoney
                             requirevalidation={1}
                             formeditado={formeditado}
-                            thousandseparator={1}
+                            thousandseparator={true}
                             placeholder="COSTO"
                             value={form.costo}
                             name="costo"

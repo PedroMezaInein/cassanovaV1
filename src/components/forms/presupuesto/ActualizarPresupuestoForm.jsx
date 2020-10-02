@@ -358,7 +358,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                     name="costo"
                                                                     value={form['conceptos'][key]['costo']}
                                                                     onChange={e => onChange(key, e, 'costo')}
-                                                                    thousandseparator={1}
+                                                                    thousandseparator={true}
                                                                     typeformat="###########" 
                                                                     disabled = { !form.conceptos[key].active }
                                                                     customstyle={{borderColor: "#e5eaee"}}
@@ -372,7 +372,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                     name="cantidad_preliminar"
                                                                     value={form['conceptos'][key]['cantidad_preliminar']}
                                                                     onChange={e => onChange(key, e, 'cantidad_preliminar')}
-                                                                    thousandseparator={1}
+                                                                    thousandseparator={true}
                                                                     typeformat="###########"
                                                                     disabled = { !form.conceptos[key].active } 
                                                                     customstyle={{borderColor: "#e5eaee"}}
@@ -386,7 +386,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                     name="desperdicio"
                                                                     value={form['conceptos'][key]['desperdicio']}
                                                                     onChange={e => onChange(key, e, 'desperdicio')}
-                                                                    thousandseparator={1}
+                                                                    thousandseparator={true}
                                                                     prefix={'%'} 
                                                                     disabled = { !form.conceptos[key].active }
                                                                     customstyle={{borderColor: "#e5eaee"}}

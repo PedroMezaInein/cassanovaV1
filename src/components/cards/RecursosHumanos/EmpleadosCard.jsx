@@ -252,7 +252,7 @@ export default class EmpleadosCard extends Component {
                                                                     <NumberFormat
                                                                         value={empleado.nomina_imss}
                                                                         displayType={'text'}
-                                                                        thousandseparator={1}
+                                                                        thousandseparator={true}
                                                                         prefix={'$'}
                                                                         renderText={value => <div>{value}</div>}
                                                                     />
@@ -272,7 +272,7 @@ export default class EmpleadosCard extends Component {
                                                                         <NumberFormat
                                                                             value={empleado.nomina_extras}
                                                                             displayType={'text'}
-                                                                            thousandseparator={1}
+                                                                            thousandseparator={true}
                                                                             prefix={'$'}
                                                                             renderText={value => <div>{value}</div>}
                                                                         />

@@ -31,7 +31,7 @@ class AreaForm extends Component {
                             type = "text"
                             placeholder = "M2"
                             iconclass={"fas fa-ruler-combined"}
-                            thousandseparator={1}
+                            thousandseparator={true}
                             messageinc = "Incorrecto. Ingresa los M2."
                         />
                     </div>
@@ -46,7 +46,7 @@ class AreaForm extends Component {
                             placeholder = "Precio por M2"
                             iconclass = {"fas fa-dollar-sign"}
                             prefix="$"
-                            thousandseparator={1}
+                            thousandseparator={true}
                             messageinc = "Incorrecto. Ingresa el precio por m2."/>
                     </div>
                     <div className="col-md-4">
@@ -60,7 +60,7 @@ class AreaForm extends Component {
                             placeholder = "Esquema 1"
                             iconclass = {"fas fa-camera-retro"}
                             prefix="$"
-                            thousandseparator={1}
+                            thousandseparator={true}
                             messageinc = "Incorrecto. Ingresa el esquema 1."/>
                     </div>
                 </div>
@@ -90,7 +90,7 @@ class AreaForm extends Component {
                             placeholder = "Esquema 2"
                             prefix={'$'}
                             iconclass = {"fas fa-cubes"}
-                            thousandseparator={1}
+                            thousandseparator={true}
                             messageinc = "Incorrecto. Ingresa el esquema 2."/>
                     </div>
                     <div className="col-md-3">
@@ -117,7 +117,7 @@ class AreaForm extends Component {
                             placeholder = "Esquema 3"
                             prefix={'$'}
                             iconclass = {"flaticon2-laptop"}
-                            thousandseparator={1}
+                            thousandseparator={true}
                             messageinc = "Incorrecto. Ingresa el esquema 3."/>
                     </div>
                 </div>

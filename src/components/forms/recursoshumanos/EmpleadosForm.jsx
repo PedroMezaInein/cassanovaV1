@@ -155,7 +155,7 @@ class EmpleadosForm extends Component {
                                             iconclass={"fas fa-mobile-alt"}
                                             patterns={TEL}
                                             messageinc="Incorrecto. Ingresa el número de teléfono."
-                                            thousandseparator={0}
+                                            thousandseparator={false}
                                             prefix={''}
                                         />
                                     </div>
@@ -472,7 +472,7 @@ class EmpleadosForm extends Component {
                                             placeholder="Nomina IMSS"
                                             iconclass={"fas fa-money-check-alt"}
                                             messageinc="Incorrecto. Ingresa la nomina imss."
-                                            thousandseparator={1} 
+                                            thousandseparator={true} 
                                             prefix={'$'}
                                         />
                                     </div>
@@ -491,7 +491,7 @@ class EmpleadosForm extends Component {
                                                             placeholder="Salario por hora"
                                                             iconclass={"fas fa-money-check-alt"}
                                                             messageinc="Incorrecto. Ingresa el salario por hora."
-                                                            thousandseparator={1} 
+                                                            thousandseparator={true} 
                                                             prefix={'$'}
                                                         />
                                                     </div>
@@ -506,7 +506,7 @@ class EmpleadosForm extends Component {
                                                             placeholder="Salario por hora extra"
                                                             iconclass={"fas fa-money-check-alt"}
                                                             messageinc="Incorrecto. Ingresa el salario por hora extra."
-                                                            thousandseparator={1} 
+                                                            thousandseparator={true} 
                                                             prefix={'$'}
                                                         />
                                                     </div>
@@ -523,7 +523,7 @@ class EmpleadosForm extends Component {
                                                         placeholder="Restante de nómina"
                                                         iconclass={"fas fa-money-check-alt"}
                                                         messageinc="Incorrecto. Ingresa el restante de nómina."
-                                                        thousandseparator={1} 
+                                                        thousandseparator={true} 
                                                         prefix={'$'}
                                                     />
                                                 </div>

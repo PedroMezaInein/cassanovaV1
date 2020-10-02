@@ -894,37 +894,6 @@ class ProyectosForm extends Component {
             form
         })
     }
-    deleteFile = element => {
-        deleteAlert('¿Deseas eliminar el archivo?', () => this.deleteAdjuntoAxios(element.id))
-    }
-    async deleteAdjuntoAxios(id) {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        const { proyecto } = this.state
-        await axios.delete(URL_DEV + 'proyectos/' + proyecto.id + '/adjuntos/'+ id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { form } = this.state
-                form.adjuntos.adjuntos.files = []
-                form.adjuntos.adjuntos.aux = ''
-                this.setState({
-                    ... this.state,
-                    form
-                })
-                doneAlert('Adjunto eliminado con éxito')
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
     render() {
         const { title, form, options, formeditado, prospecto, action } = this.state
         return (
@@ -973,7 +942,6 @@ class ProyectosForm extends Component {
                             clearFilesGrupo={this.clearFilesGrupo}
                             removeCorreo={this.removeCorreo}
                             handleChange={this.handleChange}
-                            deleteFile={this.deleteFile}
                             className="px-3">
                             {
                                 prospecto !== '' ?

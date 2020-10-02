@@ -87,7 +87,7 @@ class InputPhone extends Component {
                     <NumberFormat
                         value={value}
                         displayType={'input'}
-                        thousandseparator={thousandseparator ? thousandseparator : 0}
+                        thousandSeparator={thousandseparator ? thousandseparator : false}
                         renderText={value => <div> {value} </div>}
                         onValueChange={(values) => this.onChange(values)}
 

@@ -131,7 +131,7 @@ class AvanceForm extends Component {
                                                             <InputMoneySinText
                                                                 requirevalidation={1}
                                                                 formeditado={formeditado}
-                                                                thousandseparator={0}
+                                                                thousandseparator={false}
                                                                 prefix={'%'}
                                                                 name="avance"
                                                                 value={form.avance}

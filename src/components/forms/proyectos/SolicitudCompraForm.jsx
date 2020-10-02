@@ -3,7 +3,7 @@ import { Form } from 'react-bootstrap'
 import { Input, Select, SelectSearch, Button, Calendar, InputMoney, RadioGroup, FileInput } from '../../form-components'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
-
+import { ItemSlider } from '../../../components/singles';
 
 class SolicitudCompraForm extends Component {
 
@@ -58,7 +58,7 @@ class SolicitudCompraForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, children, onChangeAdjunto, clearFiles, onSubmit, formeditado, ...props } = this.props
+        const { title, options, form, onChange, children, onChangeAdjunto, clearFiles, onSubmit, formeditado, handleChange,  ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -141,7 +141,7 @@ class SolicitudCompraForm extends Component {
                                         <InputMoney
                                             requirevalidation={1}
                                             formeditado={formeditado}
-                                            thousandseparator={1}
+                                            thousandseparator={true}
                                             placeholder="MONTO"
                                             value={form.total}
                                             name="total" onChange={onChange}
@@ -237,7 +237,7 @@ class SolicitudCompraForm extends Component {
                             <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
                                 <h5 className="mb-4 font-weight-bold text-dark">Selecciona el presupuesto</h5>
                                 <div className="form-group row form-group-marginless mb-0">
-                                    <div className="col-md-4">
+                                    <div className="col-md-6 d-flex align-items-center d-flex justify-content-center">
                                         <RadioGroup
                                             name='factura'
                                             onChange={onChange}
@@ -257,8 +257,8 @@ class SolicitudCompraForm extends Component {
                                             value={form.factura}
                                         />
                                     </div>
-                                    <div className="col-md-4">
-                                        <FileInput
+                                    <div className="col-md-6">
+                                        {/* <FileInput
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             onChangeAdjunto={onChangeAdjunto}
@@ -268,6 +268,12 @@ class SolicitudCompraForm extends Component {
                                             accept="image/*, application/pdf"
                                             files={form.adjuntos.adjunto.files}
                                             deleteAdjunto={clearFiles} multiple
+                                        /> */}
+                                        <ItemSlider
+                                            items={form.adjuntos.adjunto.files}
+                                            item='adjunto'
+                                            handleChange={handleChange}
+                                            multiple={true}
                                         />
                                     </div>
                                 </div>

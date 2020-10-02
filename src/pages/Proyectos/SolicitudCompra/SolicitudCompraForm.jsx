@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
-import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert } from '../../../functions/alert'
+import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert, deleteAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { SolicitudCompraForm as SolicitudCompraFormulario } from '../../../components/forms'
 import { Card, Accordion } from 'react-bootstrap'
@@ -353,6 +353,26 @@ class SolicitudCompraForm extends Component {
             console.log(error, 'error')
         })
     }
+    handleChange = (files, item) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
     render() {
         const { form, title, options, remision, formeditado } = this.state
         return (
@@ -375,6 +395,7 @@ class SolicitudCompraForm extends Component {
                             clearFiles={this.clearFiles}
                             formeditado={formeditado}
                             className="px-3"
+                            handleChange={this.handleChange}
                         >
                             {
                                 remision !== '' ?

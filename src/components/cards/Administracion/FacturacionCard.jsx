@@ -186,7 +186,7 @@ export default class FacturacionCard extends Component {
                                                                     <NumberFormat
                                                                         value={factura.subtotal}
                                                                         displayType={'text'}
-                                                                        thousandseparator={1}
+                                                                        thousandseparator={true}
                                                                         prefix={'$'}
                                                                         renderText={value => <div>{value}</div>}
                                                                     />
@@ -204,7 +204,7 @@ export default class FacturacionCard extends Component {
                                                                     <NumberFormat
                                                                         value={factura.total}
                                                                         displayType={'text'}
-                                                                        thousandseparator={1}
+                                                                        thousandseparator={true}
                                                                         prefix={'$'}
                                                                         renderText={value => <div>{value}</div>}
                                                                     />
@@ -222,7 +222,7 @@ export default class FacturacionCard extends Component {
                                                                     <NumberFormat
                                                                         value={factura.ventas_compras_count + factura.ingresos_egresos_count}
                                                                         displayType={'text'}
-                                                                        thousandseparator={1}
+                                                                        thousandseparator={true}
                                                                         prefix={'$'}
                                                                         renderText={value => <div>{value}</div>}
                                                                     />
@@ -240,7 +240,7 @@ export default class FacturacionCard extends Component {
                                                                     <NumberFormat
                                                                         value={factura.total - factura.ventas_compras_count - factura.ingresos_egresos_count}
                                                                         displayType={'text'}
-                                                                        thousandseparator={1}
+                                                                        thousandseparator={true}
                                                                         prefix={'$'}
                                                                         renderText={value => <div>{value}</div>}
                                                                     />

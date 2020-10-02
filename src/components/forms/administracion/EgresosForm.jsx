@@ -371,7 +371,7 @@ class EgresosForm extends Component {
                                         <InputMoney
                                             requirevalidation={1}
                                             formeditado={formeditado}
-                                            thousandseparator={1}
+                                            thousandseparator={true}
                                             placeholder="MONTO"
                                             value={form.total}
                                             name="total"
@@ -384,7 +384,7 @@ class EgresosForm extends Component {
                                         <InputMoney
                                             requirevalidation={0}
                                             formeditado={formeditado}
-                                            thousandseparator={1}
+                                            thousandseparator={true}
                                             placeholder="COMISIÓN"
                                             value={form.comision}
                                             name="comision"

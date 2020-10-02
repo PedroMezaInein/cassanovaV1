@@ -91,7 +91,7 @@ class ProveedorForm extends Component {
                     <div className="col-md-4">
                         <InputPhone
                             requirevalidation={0}
-                            thousandseparator={0}
+                            thousandseparator={false}
                             prefix={''}
                             name="telefono"
                             value={form.telefono}

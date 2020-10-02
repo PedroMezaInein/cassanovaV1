@@ -94,7 +94,7 @@ class ContratoForm extends Component {
                         <InputMoney
                             requirevalidation={1}
                             formeditado={formeditado}
-                            thousandseparator={1}
+                            thousandseparator={true}
                             prefix={'$'}
                             name="monto"
                             value={form.monto}

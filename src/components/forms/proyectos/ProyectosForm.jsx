@@ -84,7 +84,7 @@ class ProyectosForm extends Component {
     }
 
     render() {
-        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, removeCorreo, formeditado, deleteOption, onChangeOptions, action,handleChange,deleteFile,  ...props } = this.props
+        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, removeCorreo, formeditado, deleteOption, onChangeOptions, action,handleChange,  ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -208,7 +208,7 @@ class ProyectosForm extends Component {
                                         <InputPhone
                                             requirevalidation={1}
                                             formeditado={formeditado}
-                                            thousandseparator={0}
+                                            thousandseparator={false}
                                             prefix={''}
                                             name="numeroContacto"
                                             value={form.numeroContacto}
@@ -288,7 +288,7 @@ class ProyectosForm extends Component {
                                         <Input
                                             requirevalidation={0}
                                             formeditado={formeditado}
-                                            thousandseparator={0}
+                                            thousandseparator={false}
                                             prefix={''}
                                             name="correo"
                                             value={form.correo}
@@ -513,7 +513,6 @@ class ProyectosForm extends Component {
                                             items={form.adjuntos.image.files}
                                             item='image' 
                                             handleChange={handleChange}
-                                            deleteFile={deleteFile}
                                             multiple={false} 
                                         />
                                     </div>

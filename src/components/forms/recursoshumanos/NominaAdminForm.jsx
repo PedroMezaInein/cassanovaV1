@@ -225,7 +225,7 @@ class NominaAdminForm extends Component {
                                                         name="nominImss"
                                                         value={form['nominasAdmin'][key]['nominImss']}
                                                         onChange={e => onChangeNominasAdmin(key, e, 'nominImss')}
-                                                        thousandseparator={1}
+                                                        thousandseparator={true}
                                                         prefix={'$'}
                                                         customstyle={{ minWidth: "160px" }}
                                                     />
@@ -237,7 +237,7 @@ class NominaAdminForm extends Component {
                                                         name="restanteNomina"
                                                         value={form['nominasAdmin'][key]['restanteNomina']}
                                                         onChange={e => onChangeNominasAdmin(key, e, 'restanteNomina')}
-                                                        thousandseparator={1}
+                                                        thousandseparator={true}
                                                         prefix={'$'}
                                                         customstyle={{ minWidth: "160px" }}
                                                     />
@@ -249,7 +249,7 @@ class NominaAdminForm extends Component {
                                                         name="extras"
                                                         value={form['nominasAdmin'][key]['extras']}
                                                         onChange={e => onChangeNominasAdmin(key, e, 'extras')}
-                                                        thousandseparator={1}
+                                                        thousandseparator={true}
                                                         prefix={'$'}
                                                         customstyle={{ minWidth: "160px" }}
                                                     />

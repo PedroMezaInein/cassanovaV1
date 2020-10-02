@@ -147,7 +147,7 @@ class PresupuestoDiseñoForm extends Component {
                                             placeholder="DESCUENTO"
                                             value={form.descuento}
                                             iconclass={"fas fa-percentage"}
-                                            thousandseparator={1}
+                                            thousandseparator={true}
                                             onChange={onChange}
                                             prefix={'%'}
                                             messageinc="Incorrecto. Ingresa el porcentaje."
@@ -164,7 +164,7 @@ class PresupuestoDiseñoForm extends Component {
                                             placeholder="Total"
                                             value={form.total}
                                             iconclass={"fas fa-dollar-sign"}
-                                            thousandseparator={1}
+                                            thousandseparator={true}
                                             disabled={true}
                                         />
                                     </div>
@@ -317,7 +317,7 @@ class PresupuestoDiseñoForm extends Component {
                                             onChange={onChange}
                                             messageinc="Incorrecto. Ingresa el precio paramétrico de construcción inferior."
                                             iconclass={"fas fa-dollar-sign"}
-                                            thousandseparator={1}
+                                            thousandseparator={true}
                                         />
                                     </div>
                                     <div className="col-md-4">
@@ -330,7 +330,7 @@ class PresupuestoDiseñoForm extends Component {
                                             onChange={onChange}
                                             messageinc="Incorrecto. Ingresa el precio paramétrico de construcción superior."
                                             iconclass={"fas fa-dollar-sign"}
-                                            thousandseparator={1}
+                                            thousandseparator={true}
                                         />
                                     </div>
                                     <div className="col-md-4">
@@ -357,7 +357,7 @@ class PresupuestoDiseñoForm extends Component {
                                             onChange={onChange}
                                             messageinc="Incorrecto. Ingresa el precio paramétrico de mobiliario inferior."
                                             iconclass={"fas fa-dollar-sign"}
-                                            thousandseparator={1}
+                                            thousandseparator={true}
                                         />
                                     </div>
                                     <div className="col-md-4">
@@ -370,7 +370,7 @@ class PresupuestoDiseñoForm extends Component {
                                             onChange={onChange}
                                             messageinc="Incorrecto. Ingresa el precio paramétrico de mobiliario superior."
                                             iconclass={"fas fa-dollar-sign"}
-                                            thousandseparator={1}
+                                            thousandseparator={true}
                                         />
                                     </div>
                                 </div>
