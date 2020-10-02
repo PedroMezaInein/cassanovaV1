@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 import { Button, FileInput } from '../form-components'
-
+import { ItemSlider } from '../../components/singles';
 class AdjuntosForm extends Component{
     
     activateButton = () => {
@@ -35,7 +35,15 @@ class AdjuntosForm extends Component{
                                                 accept = "text/xml, application/pdf, image/*" 
                                                 files = { form['adjuntos']['presupuesto']['files'] }
                                                 deleteAdjunto = { clearFiles } 
-                                                multiple/>
+                                                multiple
+                                            />
+                                            {/* <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.presupuesto.placeholder}</label>
+                                            <ItemSlider
+                                                items={form.adjuntos.presupuesto.files}
+                                                item='adjunto'
+                                                handleChange={handleChange}
+                                                multiple={true}
+                                            /> */}
                                         </div>
                                         <div className="col-md-12 px-2">
                                             <FileInput 
@@ -47,7 +55,15 @@ class AdjuntosForm extends Component{
                                                 accept = "text/xml, application/pdf, image/*" 
                                                 files = { form['adjuntos']['pago']['files'] }
                                                 deleteAdjunto = { clearFiles } 
-                                                multiple/>
+                                                multiple
+                                            />
+                                            {/* <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.pago.placeholder}</label>
+                                            <ItemSlider
+                                                items={form.adjuntos.pago.files}
+                                                item='adjunto'
+                                                handleChange={handleChange}
+                                                multiple={true}
+                                            /> */}
                                         </div>
                                     </>
                                 :
@@ -63,7 +79,8 @@ class AdjuntosForm extends Component{
                                                     accept = "text/xml, application/pdf, image/*" 
                                                     files = { form['adjuntos'][adjunto]['files'] }
                                                     deleteAdjunto = { clearFiles } 
-                                                    multiple/>
+                                                    multiple
+                                                />
                                             </div>
                                         )
                                     })
