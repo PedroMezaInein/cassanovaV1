@@ -48,7 +48,7 @@ class ConceptoForm extends Component {
 
                 {...props}>
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-3">
+                    <div className={form.area.length ?'col-md-3':'col-md-4'}>
                         <SelectSearch
                             requirevalidation={1}
                             formeditado={formeditado}
@@ -60,7 +60,7 @@ class ConceptoForm extends Component {
                             iconclass={"far fa-folder-open"}
                         />
                     </div>
-                    <div className="col-md-3">
+                    <div className={form.area.length ?'col-md-3':'col-md-4'}>
                         <Calendar
                             onChangeCalendar={this.handleChangeDate}
                             placeholder="FECHA"
@@ -69,7 +69,7 @@ class ConceptoForm extends Component {
                             iconclass={"far fa-calendar-alt"}
                         />
                     </div>
-                    <div className="col-md-3">
+                    <div className={form.area.length ?'col-md-3':'col-md-4'}>
                         <SelectSearch
                             requirevalidation={1}
                             formeditado={formeditado}
