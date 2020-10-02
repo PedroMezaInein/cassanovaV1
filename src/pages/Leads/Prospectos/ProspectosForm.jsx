@@ -287,10 +287,15 @@ class ProspectosForm extends Component {
     }
 
     changeEstatus = estatus =>  {
-        estatus === 'Detenido'?
+        if(estatus === 'Detenido'){
             questionAlert('¿ESTÁS SEGURO?', 'DETENDRÁS EL PROSPECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
-        :
-            questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR TEMINADO EL PROSPECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
+        }
+        if(estatus === 'Cancelado' ){
+            questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR CANCELADO EL PROSPECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
+        }
+        if(estatus === 'Contratado'){
+            questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR CONTRATADO EL PROSPECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
+        }
     }
 
     async changeEstatusAxios(estatus){
@@ -341,9 +346,15 @@ class ProspectosForm extends Component {
                                     />
                                     <Button
                                         onClick={() => { this.changeEstatus('Cancelado') }}
-                                        className={"btn btn-icon btn-light-danger btn-sm"}
+                                        className={"btn btn-icon btn-light-danger btn-sm mr-2"}
                                         only_icon={"fas fa-times icon-md"}
                                         tooltip={{ text: 'CANCELAR' }}
+                                    />
+                                    <Button
+                                        onClick={() => { this.changeEstatus('Contratado') }}
+                                        className={"btn btn-icon btn-light-warning btn-sm"}
+                                        only_icon={"fas fa-user-check icon-md"}
+                                        tooltip={{ text: 'CONTRATADO' }}
                                     />
                                 </div>
                                 : ''
