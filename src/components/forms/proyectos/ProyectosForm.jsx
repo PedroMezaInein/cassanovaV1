@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { Input, SelectSearch, Button, Calendar, FileInput, InputNumber, InputPhone, SelectSearchTrue } from '../../form-components'
-import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
+import { Input, SelectSearch, Button, Calendar, InputNumber, InputPhone, SelectSearchTrue } from '../../form-components'
 import { faPlus} from '@fortawesome/free-solid-svg-icons'
 import { DATE, TEL, EMAIL } from '../../../constants'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
@@ -84,7 +83,7 @@ class ProyectosForm extends Component {
     }
 
     render() {
-        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, removeCorreo, formeditado, deleteOption, onChangeOptions, action,handleChange,deleteFile,  ...props } = this.props
+        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, removeCorreo, formeditado, deleteOption, onChangeOptions, action,handleChange,  ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -208,7 +207,7 @@ class ProyectosForm extends Component {
                                         <InputPhone
                                             requirevalidation={1}
                                             formeditado={formeditado}
-                                            thousandSeparator={false}
+                                            thousandseparator={false}
                                             prefix={''}
                                             name="numeroContacto"
                                             value={form.numeroContacto}
@@ -288,7 +287,7 @@ class ProyectosForm extends Component {
                                         <Input
                                             requirevalidation={0}
                                             formeditado={formeditado}
-                                            thousandSeparator={false}
+                                            thousandseparator={false}
                                             prefix={''}
                                             name="correo"
                                             value={form.correo}
@@ -507,13 +506,12 @@ class ProyectosForm extends Component {
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless justify-content-center mt-3">
-                                    <div className="col-md-6 text-center">
-                                    <label className = "col-form-label">IMAGEN</label>
+                                    <div className="col-md-4 text-center">
+                                    <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.image.placeholder}</label>
                                         <ItemSlider
                                             items={form.adjuntos.image.files}
                                             item='image' 
                                             handleChange={handleChange}
-                                            deleteFile={deleteFile}
                                             multiple={false} 
                                         />
                                     </div>

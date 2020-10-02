@@ -130,7 +130,7 @@ class AgregarConcepto extends Component {
                                 <InputMoney
                                     requirevalidation={1}
                                     formeditado={formeditado}
-                                    thousandSeparator={true}
+                                    thousandseparator={true}
                                     placeholder="COSTO"
                                     value={form.costo}
                                     name="costo"

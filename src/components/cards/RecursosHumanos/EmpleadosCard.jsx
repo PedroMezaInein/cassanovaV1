@@ -5,7 +5,6 @@ import { Card, Tab, Row, Col, Nav } from 'react-bootstrap'
 export default class EmpleadosCard extends Component {
     render() {
         const { empleado } = this.props
-        console.log(empleado)
         return (
             <div className="col-md-12 mt-4">
                 <Tab.Container defaultActiveKey="first">

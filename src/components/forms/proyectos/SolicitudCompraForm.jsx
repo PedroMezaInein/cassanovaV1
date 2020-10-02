@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap' 
-import { Input, Select, SelectSearch, Button, Calendar, InputMoney, RadioGroup, FileInput } from '../../form-components'
+import { Input, Select, SelectSearch, Button, Calendar, InputMoney, RadioGroup } from '../../form-components'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
-
+import { ItemSlider } from '../../../components/singles';
 
 class SolicitudCompraForm extends Component {
 
@@ -58,7 +58,7 @@ class SolicitudCompraForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, children, onChangeAdjunto, clearFiles, onSubmit, formeditado, ...props } = this.props
+        const { title, options, form, onChange, children, onChangeAdjunto, clearFiles, onSubmit, formeditado, handleChange,  ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -141,7 +141,7 @@ class SolicitudCompraForm extends Component {
                                         <InputMoney
                                             requirevalidation={1}
                                             formeditado={formeditado}
-                                            thousandSeparator={true}
+                                            thousandseparator={true}
                                             placeholder="MONTO"
                                             value={form.total}
                                             name="total" onChange={onChange}
@@ -173,7 +173,7 @@ class SolicitudCompraForm extends Component {
                             <div id="wizard-2-content" className="pb-3" data-wizard-type="step-content">
                                 <h5 className="mb-4 font-weight-bold text-dark">Selecciona el área y fecha</h5>
                                 <div className="form-group row form-group-marginless">
-                                    <div className="col-md-4">
+                                    <div className={form.area.length ?'col-md-4':'col-md-6'}>
                                         <Calendar
                                             onChangeCalendar={this.handleChangeDate}
                                             placeholder="FECHA"
@@ -181,7 +181,7 @@ class SolicitudCompraForm extends Component {
                                             value={form.fecha}
                                         />
                                     </div>
-                                    <div className="col-md-4">
+                                    <div className={form.area.length ?'col-md-4':'col-md-6'}>
                                         <SelectSearch
                                             requirevalidation={1}
                                             formeditado={formeditado}
@@ -194,7 +194,7 @@ class SolicitudCompraForm extends Component {
                                     </div>
                                     {
                                         form.area ?
-                                            <div className="col-md-4">
+                                            <div className={form.area.length ?'col-md-4':'col-md-6'}>
                                                 <SelectSearch
                                                     requirevalidation={1}
                                                     formeditado={formeditado}
@@ -237,7 +237,7 @@ class SolicitudCompraForm extends Component {
                             <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
                                 <h5 className="mb-4 font-weight-bold text-dark">Selecciona el presupuesto</h5>
                                 <div className="form-group row form-group-marginless mb-0">
-                                    <div className="col-md-4">
+                                    <div className="col-md-6 d-flex align-items-center d-flex justify-content-center">
                                         <RadioGroup
                                             name='factura'
                                             onChange={onChange}
@@ -257,8 +257,8 @@ class SolicitudCompraForm extends Component {
                                             value={form.factura}
                                         />
                                     </div>
-                                    <div className="col-md-4">
-                                        <FileInput
+                                    <div className="col-md-4 text-center">
+                                        {/* <FileInput
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             onChangeAdjunto={onChangeAdjunto}
@@ -268,6 +268,13 @@ class SolicitudCompraForm extends Component {
                                             accept="image/*, application/pdf"
                                             files={form.adjuntos.adjunto.files}
                                             deleteAdjunto={clearFiles} multiple
+                                        /> */}
+                                        <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.adjunto.placeholder}</label>
+                                        <ItemSlider
+                                            items={form.adjuntos.adjunto.files}
+                                            item='adjunto'
+                                            handleChange={handleChange}
+                                            multiple={true}
                                         />
                                     </div>
                                 </div>

@@ -5,7 +5,7 @@ import { validateAlert } from '../../../functions/alert'
 import { DATE } from '../../../constants'
 import { setMoneyTableForNominas } from '../../../functions/setters'
 import { Card } from 'react-bootstrap'
-
+import { ItemSlider } from '../../../components/singles';
 class NominaObraForm extends Component {
 
     handleChangeDateInicio = date => {
@@ -90,7 +90,7 @@ class NominaObraForm extends Component {
 
 
     render() {
-        const { options, addRowNominaObra, deleteRowNominaObra, onChangeNominasObra, onChange, clearFiles, onChangeAdjunto, form, onSubmit, formeditado, title } = this.props
+        const { options, addRowNominaObra, deleteRowNominaObra, onChangeNominasObra, onChange, clearFiles, onChangeAdjunto, form, onSubmit, formeditado, title, handleChange} = this.props
         return (
             <Card className="card card-custom gutter-b example example-compact">
                 <Card.Header>
@@ -108,7 +108,7 @@ class NominaObraForm extends Component {
                 >
                     <Card.Body>
                         <div className="form-group row form-group-marginless">
-                            <div className="col-md-4">
+                            <div className="col-md-3">
                                 <Input
                                     requirevalidation={1}
                                     formeditado={formeditado}
@@ -120,7 +120,7 @@ class NominaObraForm extends Component {
                                     messageinc="Incorrecto. Ingresa el periodo de nómina de obra."
                                 />
                             </div>
-                            <div className="col-md-4">
+                            <div className="col-md-3">
                                 <Calendar
                                     formeditado={formeditado}
                                     onChangeCalendar={this.handleChangeDateInicio}
@@ -134,7 +134,7 @@ class NominaObraForm extends Component {
                                     patterns={DATE}
                                 />
                             </div>
-                            <div className="col-md-4">
+                            <div className="col-md-3">
                                 <Calendar
                                     formeditado={formeditado}
                                     onChangeCalendar={this.handleChangeDateFin}
@@ -149,10 +149,7 @@ class NominaObraForm extends Component {
                                     patterns={DATE}
                                 />
                             </div>
-                        </div>
-                        <div className="separator separator-dashed mt-1 mb-2"></div>
-                        <div className="form-group row form-group-marginless">
-                            <div className="col-md-4">
+                            <div className="col-md-3">
                                 <SelectSearch
                                     formeditado={formeditado}
                                     options={options.empresas}
@@ -163,11 +160,14 @@ class NominaObraForm extends Component {
                                     iconclass={"far fa-building"}
                                 />
                             </div>
+                        </div>
+                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                        <div className="form-group row form-group-marginless d-flex justify-content-center">
                             {
                                 title !== 'Editar nómina obra' ?
                                     <>
-                                        <div className="col-md-4">
-                                            <FileInput
+                                        <div className="col-md-4 text-center">
+                                            {/* <FileInput
                                                 requirevalidation={0}
                                                 formeditado={formeditado}
                                                 onChangeAdjunto={onChangeAdjunto}
@@ -179,8 +179,16 @@ class NominaObraForm extends Component {
                                                 files={form.adjuntos.adjunto.files}
                                                 deleteAdjunto={clearFiles}
                                                 multiple
+                                            /> */}
+                                            <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.adjunto.placeholder}</label>
+                                            <ItemSlider
+                                                items={form.adjuntos.adjunto.files}
+                                                item='adjunto'
+                                                handleChange={handleChange}
+                                                multiple={true}
                                             />
                                         </div>
+                                        
                                     </>
                                     : ''
                             }
@@ -242,7 +250,7 @@ class NominaObraForm extends Component {
                                                         name="salario_hr"
                                                         value={form['nominasObra'][key]['salario_hr']}
                                                         onChange={e => onChangeNominasObra(key, e, 'salario_hr')}
-                                                        thousandSeparator={true}
+                                                        thousandseparator={true}
                                                         prefix={'$'}
                                                     />
                                                 </td>
@@ -254,7 +262,7 @@ class NominaObraForm extends Component {
                                                         name="hr_trabajadas"
                                                         value={form['nominasObra'][key]['hr_trabajadas']}
                                                         onChange={e => onChangeNominasObra(key, e, 'hr_trabajadas')}
-                                                        thousandSeparator={true}
+                                                        thousandseparator={true}
                                                         typeformat="###########"
                                                     />
                                                 </td>
@@ -266,7 +274,7 @@ class NominaObraForm extends Component {
                                                         name="salario_hr_extra"
                                                         value={form['nominasObra'][key]['salario_hr_extra']}
                                                         onChange={e => onChangeNominasObra(key, e, 'salario_hr_extra')}
-                                                        thousandSeparator={true}
+                                                        thousandseparator={true}
                                                         prefix={'$'}
                                                     />
                                                 </td>
@@ -278,7 +286,7 @@ class NominaObraForm extends Component {
                                                         name="hr_extra"
                                                         value={form['nominasObra'][key]['hr_extra']}
                                                         onChange={e => onChangeNominasObra(key, e, 'hr_extra')}
-                                                        thousandSeparator={true}
+                                                        thousandseparator={true}
                                                         typeformat="###########"
                                                     />
                                                 </td>
@@ -290,7 +298,7 @@ class NominaObraForm extends Component {
                                                         name="nominImss"
                                                         value={form['nominasObra'][key]['nominImss']}
                                                         onChange={e => onChangeNominasObra(key, e, 'nominImss')}
-                                                        thousandSeparator={true}
+                                                        thousandseparator={true}
                                                         prefix={'$'}
                                                     />
                                                 </td>
@@ -302,7 +310,7 @@ class NominaObraForm extends Component {
                                                         name="restanteNomina"
                                                         value={form['nominasObra'][key]['restanteNomina']}
                                                         onChange={e => onChangeNominasObra(key, e, 'restanteNomina')}
-                                                        thousandSeparator={true}
+                                                        thousandseparator={true}
                                                         prefix={'$'}
                                                     />
                                                 </td>
@@ -314,7 +322,7 @@ class NominaObraForm extends Component {
                                                         name="extras"
                                                         value={form['nominasObra'][key]['extras']}
                                                         onChange={e => onChangeNominasObra(key, e, 'extras')}
-                                                        thousandSeparator={true}
+                                                        thousandseparator={true}
                                                         prefix={'$'}
                                                     />
                                                 </td>

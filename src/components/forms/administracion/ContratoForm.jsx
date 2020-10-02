@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { SelectSearch, Button, Input, Calendar, InputMoney, FileInput } from '../../form-components'
+import { SelectSearch, Button, Input, Calendar, InputMoney } from '../../form-components'
 import { DATE } from '../../../constants'
 import { validateAlert } from '../../../functions/alert'
+import { ItemSlider } from '../../../components/singles';
 class ContratoForm extends Component {
     handleChangeDateInicio = date => {
         const { onChange } = this.props
@@ -29,7 +30,7 @@ class ContratoForm extends Component {
         onChange({ target: { value: value, name: 'proveedor' } })
     }
     render() {
-        const { title, options, form, onChange, tipo, onSubmit, formeditado, clearFiles, onChangeAdjunto, ...props } = this.props
+        const { title, options, form, onChange, tipo, onSubmit, formeditado, clearFiles, onChangeAdjunto,handleChange, ...props } = this.props
         return (
             <Form id="form-contrato"
                 onSubmit={
@@ -90,11 +91,11 @@ class ContratoForm extends Component {
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <InputMoney
                             requirevalidation={1}
                             formeditado={formeditado}
-                            thousandSeparator={true}
+                            thousandseparator={true}
                             prefix={'$'}
                             name="monto"
                             value={form.monto}
@@ -103,7 +104,7 @@ class ContratoForm extends Component {
                             iconclass={"fas fa-money-bill-wave-alt"}
                         />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <Calendar
                             formeditado={formeditado}
                             onChangeCalendar={this.handleChangeDateInicio}
@@ -117,7 +118,7 @@ class ContratoForm extends Component {
                             patterns={DATE}
                         />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <Calendar
                             formeditado={formeditado}
                             onChangeCalendar={this.handleChangeDateFin}
@@ -132,10 +133,7 @@ class ContratoForm extends Component {
                             patterns={DATE}
                         />
                     </div>
-                </div>
-                <div className="separator separator-dashed mt-1 mb-2"></div>
-                <div className="form-group row form-group-marginless">
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <SelectSearch
                             formeditado={formeditado}
                             options={options.tiposContratos}
@@ -146,26 +144,6 @@ class ContratoForm extends Component {
                             iconclass={"fas fa-pen-fancy"}
                         />
                     </div>
-                    {
-                        title === 'Editar contrato de cliente' || title === 'Editar contrato de proveedor'
-                            ? ''
-                            :
-                            <div className="col-md-8">
-                                <FileInput
-                                    requirevalidation={0}
-                                    formeditado={formeditado}
-                                    onChangeAdjunto={onChangeAdjunto}
-                                    placeholder={form.adjuntos.adjunto.placeholder}
-                                    value={form.adjuntos.adjunto.value}
-                                    name='adjunto'
-                                    id='adjunto'
-                                    accept="image/*, application/pdf"
-                                    files={form.adjuntos.adjunto.files}
-                                    deleteAdjunto={clearFiles}
-                                    multiple
-                                />
-                            </div>
-                    }
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
@@ -183,6 +161,36 @@ class ContratoForm extends Component {
                             style={{ paddingLeft: "10px" }}
                         />
                     </div>
+                </div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless d-flex justify-content-center">
+                    {
+                        title === 'Editar contrato de cliente' || title === 'Editar contrato de proveedor'
+                            ? ''
+                            :
+                            <div className="col-md-4 text-center">
+                                {/* <FileInput
+                                    requirevalidation={0}
+                                    formeditado={formeditado}
+                                    onChangeAdjunto={onChangeAdjunto}
+                                    placeholder={form.adjuntos.adjunto.placeholder}
+                                    value={form.adjuntos.adjunto.value}
+                                    name='adjunto'
+                                    id='adjunto'
+                                    accept="image/*, application/pdf"
+                                    files={form.adjuntos.adjunto.files}
+                                    deleteAdjunto={clearFiles}
+                                    multiple
+                                /> */}
+                                <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.adjunto.placeholder}</label>
+                                <ItemSlider
+                                    items={form.adjuntos.adjunto.files}
+                                    item='adjunto'
+                                    handleChange={handleChange}
+                                    multiple={true}
+                                />
+                            </div>
+                    }
                 </div>
                 <div className="card-footer py-3 pr-1">
                     <div className="row">

@@ -38,6 +38,23 @@ export default class ProyectosCard extends Component {
                                         <Card.Body className="p-0">
                                             <div className="text-justify">
                                                 <div className="row pb-1">
+                                                    <div className="col d-flex justify-content-end">
+                                                        {
+                                                            proyecto.estatus ?
+                                                            <>
+                                                                <span className="label label-lg bg- label-inline font-weight-bold py-2" style={{
+                                                                    color: `${proyecto.estatus.letra}`,
+                                                                    backgroundColor: `${proyecto.estatus.fondo}`,
+                                                                    fontSize: "75%"
+                                                                }} >
+                                                                    {proyecto.estatus.estatus}
+                                                                </span>
+                                                            </>
+                                                                : <span>-</span>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div className="row pb-1">
                                                     <label className="col-4 font-weight-bolder text-primary">NOMBRE DEL PROYECTO:</label>
                                                     <div className="col-8">
                                                         {
@@ -95,6 +112,33 @@ export default class ProyectosCard extends Component {
                                                                         )
                                                                     })
                                                                     : <span>-</span>
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div className="row pb-1">
+                                                    <label className="col-4 font-weight-bolder text-primary align-self-center">FASES:</label>
+                                                    <div className="col-8">
+                                                        {
+                                                            proyecto.fase3 === 0 && proyecto.fase2 === 0 && proyecto.fase1=== 0   ?
+                                                                <span>-</span>
+                                                                : ''
+                                                        }
+                                                        <ul className="pl-0 ml-4">
+                                                            {
+                                                                proyecto.fase1 ?
+                                                                    <li><span>Fase 1</span></li>
+                                                                : ''
+                                                            }
+                                                            {
+                                                                proyecto.fase2 ?
+                                                                <li><span>Fase 2</span></li>
+                                                            :''
+                                                            }
+                                                            {
+                                                                proyecto.fase3 ?
+                                                                    <li><span>Fase 3</span></li>
+                                                                    : ''
                                                             }
                                                         </ul>
                                                     </div>

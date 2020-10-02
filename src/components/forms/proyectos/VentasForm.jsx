@@ -415,7 +415,7 @@ class VentasForm extends Component {
                                         <InputMoney
                                             requirevalidation={1}
                                             formeditado={formeditado}
-                                            thousandSeparator={true}
+                                            thousandseparator={true}
                                             placeholder="MONTO"
                                             value={form.total}
                                             name="total"

@@ -74,7 +74,7 @@ class LeadForm extends Component {
                             iconclass={"fas fa-mobile-alt"}
                             patterns={TEL}
                             messageinc="Incorrecto. Ingresa el número de teléfono."
-                            thousandSeparator={false}
+                            thousandseparator={false}
                             prefix={''}
                         />
                     </div>

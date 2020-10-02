@@ -55,7 +55,7 @@ export default class componentName extends Component {
                             type="text"
                             placeholder="MONTO"
                             iconclass="fas fa-dollar-sign"
-                            thousandSeparator={true}
+                            thousandseparator={true}
                             messageinc="Incorrecto. Ingresa el monto." />
                     </div>
                 </div>

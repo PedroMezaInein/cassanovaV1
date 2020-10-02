@@ -72,7 +72,7 @@ class InputMoney extends Component {
 
     }
     render() {
-        const { placeholder, value, prefix, thousandSeparator, iconclass, customstyle} = this.props
+        const { placeholder, value, prefix, thousandseparator, iconclass, customstyle} = this.props
         const { inputMoneyValido } = this.state
 
         return (
@@ -88,7 +88,7 @@ class InputMoney extends Component {
                     <NumberFormat
                         value={value}
                         displayType={'input'}
-                        thousandSeparator={thousandSeparator ? thousandSeparator : false}
+                        thousandSeparator={thousandseparator ? thousandseparator : false}
                         prefix={prefix}
                         className={inputMoneyValido ? " form-control is-valid text-uppercase" : " form-control is-invalid text-uppercase"}
                         renderText={value => <div> {value} </div>}

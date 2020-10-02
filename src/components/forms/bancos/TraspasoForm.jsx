@@ -54,7 +54,7 @@ class TareaForm extends Component {
                         <InputMoney
                             requirevalidation={1}
                             formeditado={formeditado}
-                            thousandSeparator={true}
+                            thousandseparator={true}
                             prefix={'$'}
                             name="cantidad"
                             value={form.cantidad}

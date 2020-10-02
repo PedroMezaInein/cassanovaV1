@@ -1,21 +1,13 @@
 import React, { Component } from 'react'
-import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import Layout from '../../../components/layout/layout'
-import { Modal, ModalDelete } from '../../../components/singles'
-import { NOMINA_OBRA_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS } from '../../../constants'
-import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { AdjuntosForm } from '../../../components/forms'
-import { setOptions, setDateTable, setMoneyTable, setTextTable, setAdjuntosList } from '../../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, deleteAlert, doneAlert } from '../../../functions/alert'
-import TableForModals from '../../../components/tables/TableForModals'
+import { URL_DEV } from '../../../constants'
+import { setOptions } from '../../../functions/setters'
+import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import { NominaObraForm as NominaObraFormulario } from '../../../components/forms'
-import { Card } from 'react-bootstrap'
-
 const $ = require('jquery');
-
 class NominaObraForm extends Component {
     state = {
         formeditado: 0,
@@ -53,13 +45,11 @@ class NominaObraForm extends Component {
             empresas: []
         }
     }
-
     componentDidMount() {
         const { authUser: { user: { permisos: permisos } } } = this.props
         const { history: { location: { pathname: pathname } } } = this.props
         const { match: { params: { action: action } } } = this.props
         const { history, location: { state: state } } = this.props
-
         const nominaOmbra = permisos.find(function (element, index) {
             const { modulo: { url: url } } = element
             return pathname === url + '/' + action
@@ -81,7 +71,6 @@ class NominaObraForm extends Component {
                         form.empresa = nomina.empresa ? nomina.empresa.id.toString() : ''
                         form.fechaInicio = new Date(nomina.fecha_inicio)
                         form.fechaFin = nomina.fecha_fin ? new Date(nomina.fecha_fin) : ''
-
                         let aux = []
                         nomina.nominas_obras.map((nom, key) => {
                             aux.push(
@@ -98,7 +87,6 @@ class NominaObraForm extends Component {
                                 }
                             )
                         })
-
                         if (aux.length) {
                             form.nominasObra = aux
                         } else {
@@ -135,8 +123,6 @@ class NominaObraForm extends Component {
             history.push('/')
         this.getOptionsAxios()
     }
-
-
     setOptions = (name, array) => {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
@@ -145,7 +131,6 @@ class NominaObraForm extends Component {
             options
         })
     }
-
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -158,7 +143,6 @@ class NominaObraForm extends Component {
                 options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
                 options['usuarios'] = setOptions(usuarios, 'nombre', 'id')
                 options['empresas'] = setOptions(empresas, 'name', 'id')
-
                 this.setState({
                     ... this.state,
                     options,
@@ -178,13 +162,11 @@ class NominaObraForm extends Component {
             console.log(error, 'error')
         })
     }
-
     async addNominaObraAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form } = this.state
         const data = new FormData();
-
         let aux = Object.keys(form)
         aux.map((element) => {
             switch (element) {
@@ -214,15 +196,11 @@ class NominaObraForm extends Component {
         })
         await axios.post(URL_DEV + 'rh/nomina-obra', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 const { history } = this.props
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La nomina fue modificado con éxito.')
-
                 history.push({
                     pathname: '/rh/nomina-obras'
                 });
-
             },
             (error) => {
                 console.log(error, 'error')
@@ -237,18 +215,14 @@ class NominaObraForm extends Component {
             console.log(error, 'error')
         })
     }
-
     async updateNominaObraAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form, nomina } = this.state
-
         await axios.put(URL_DEV + 'rh/nomina-obra/' + nomina.id, form, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { history } = this.props
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La nomina fue modificado con éxito.')
-
                 history.push({
                     pathname: '/rh/nomina-obras'
                 });
@@ -266,7 +240,6 @@ class NominaObraForm extends Component {
             console.log(error, 'error')
         })
     }
-
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -299,7 +272,6 @@ class NominaObraForm extends Component {
         })
         return form;
     }
-
     clearFiles = (name, key) => {
         const { form } = this.state
         let aux = []
@@ -317,7 +289,6 @@ class NominaObraForm extends Component {
             form
         })
     }
-
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -327,29 +298,27 @@ class NominaObraForm extends Component {
             form
         })
     }
-
-    onChangeAdjunto = e => {
-        const { form } = this.state
-        const { files, value, name } = e.target
-        let aux = []
-        for (let counter = 0; counter < files.length; counter++) {
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
-                }
-            )
-        }
-        form.adjuntos[name].value = value
-        form.adjuntos[name].files = aux
-        this.setState({
-            ... this.state,
-            form
-        })
-    }
-
+    // onChangeAdjunto = e => {
+    //     const { form } = this.state
+    //     const { files, value, name } = e.target
+    //     let aux = []
+    //     for (let counter = 0; counter < files.length; counter++) {
+    //         aux.push(
+    //             {
+    //                 name: files[counter].name,
+    //                 file: files[counter],
+    //                 url: URL.createObjectURL(files[counter]),
+    //                 key: counter
+    //             }
+    //         )
+    //     }
+    //     form.adjuntos[name].value = value
+    //     form.adjuntos[name].files = aux
+    //     this.setState({
+    //         ... this.state,
+    //         form
+    //     })
+    // }
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
@@ -358,28 +327,26 @@ class NominaObraForm extends Component {
         else
             this.addNominaObraAxios()
     }
-
     onChangeNominasObra = (key, e, name) => {
         const { value } = e.target
-        const { form, data} = this.state
-        
+        const { form, data } = this.state
         form['nominasObra'][key][name] = value
-        if(name === 'usuario'){
-            data.usuarios.map( (empleado) => {
-                if(value.toString() === empleado.id.toString()){
+        if (name === 'usuario') {
+            data.usuarios.map((empleado) => {
+                if (value.toString() === empleado.id.toString()) {
                     form['nominasObra'][key].nominImss = empleado.nomina_imss
                     form['nominasObra'][key].salario_hr = empleado.salario_hr
                     form['nominasObra'][key].salario_hr_extra = empleado.salario_hr_extra
                 }
-            }) 
-        }else{
-            if(name === 'salario_hr' || name === 'hr_trabajadas' || name === 'nominImss' ){
-                if(form['nominasObra'][key].salario_hr !== '' && form['nominasObra'][key].hr_trabajadas  !== '' && form['nominasObra'][key].nominImss  !== ''){
+            })
+        } else {
+            if (name === 'salario_hr' || name === 'hr_trabajadas' || name === 'nominImss') {
+                if (form['nominasObra'][key].salario_hr !== '' && form['nominasObra'][key].hr_trabajadas !== '' && form['nominasObra'][key].nominImss !== '') {
                     form['nominasObra'][key].restanteNomina = (parseFloat(form['nominasObra'][key].hr_trabajadas) * parseFloat(form['nominasObra'][key].salario_hr)) - form['nominasObra'][key].nominImss
                 }
             }
-            if(name === 'salario_hr_extra' || name === 'hr_extra'){
-                if(form['nominasObra'][key].salario_hr_extra !== '' && form['nominasObra'][key].hr_extra  !== ''){
+            if (name === 'salario_hr_extra' || name === 'hr_extra') {
+                if (form['nominasObra'][key].salario_hr_extra !== '' && form['nominasObra'][key].hr_extra !== '') {
                     form['nominasObra'][key].extras = parseFloat(form['nominasObra'][key].hr_extra) * parseFloat(form['nominasObra'][key].salario_hr_extra)
                 }
             }
@@ -389,12 +356,10 @@ class NominaObraForm extends Component {
             form
         })
     }
-
     addRowNominaObra = () => {
         const { form } = this.state
         form.nominasObra.push(
             {
-                
                 usuario: '',
                 proyecto: '',
                 salario_hr: '',
@@ -411,7 +376,6 @@ class NominaObraForm extends Component {
             form
         })
     }
-
     deleteRowNominaObra = () => {
         const { form } = this.state
         form.nominasObra.pop()
@@ -420,17 +384,33 @@ class NominaObraForm extends Component {
             form
         })
     }
-
     async getNominasAxios() {
         var table = $('#kt_datatable2_nomina_obra').DataTable().ajax.reload();
     }
-
+    handleChange = (files, item) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
     render() {
-        const { modal, options, title, form, formeditado, adjuntos, data } = this.state
-
+        const { options, title, form, formeditado } = this.state
         return (
             <Layout active={'rh'} {...this.props}>
-                
                 <NominaObraFormulario
                     title={title}
                     formeditado={formeditado}
@@ -441,11 +421,11 @@ class NominaObraForm extends Component {
                     deleteRowNominaObra={this.deleteRowNominaObra}
                     onChangeNominasObra={this.onChangeNominasObra}
                     onChange={this.onChange}
-                    onChangeAdjunto={this.onChangeAdjunto}
+                    // onChangeAdjunto={this.onChangeAdjunto}
                     clearFiles={this.clearFiles}
                     onSubmit={this.onSubmit}
-                    /> 
-
+                    handleChange={this.handleChange}
+                />
             </Layout>
         )
     }

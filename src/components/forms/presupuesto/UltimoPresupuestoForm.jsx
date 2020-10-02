@@ -296,7 +296,7 @@ class ActualizarPresupuestoForm extends Component {
                                                         name=" margen "
                                                         value={margen}
                                                         onChange={this.onChangeDesperdicio}
-                                                        thousandSeparator={true}
+                                                        thousandseparator={true}
                                                         prefix={'%'} 
                                                         customstyle={{borderColor: "#e5eaee", width: "57px"}}
                                                     />
@@ -415,7 +415,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                     name="costo"
                                                                     value={form['conceptos'][key]['costo']}
                                                                     onChange={e => onChange(key, e, 'costo')}
-                                                                    thousandSeparator={true}
+                                                                    thousandseparator={true}
                                                                     typeformat="###########"
                                                                     disabled={!form.conceptos[key].active} 
                                                                     customstyle={{borderColor: "#e5eaee"}}
@@ -430,7 +430,7 @@ class ActualizarPresupuestoForm extends Component {
                                                                     name="margen"
                                                                     value={form['conceptos'][key]['margen']}
                                                                     onChange={e => onChange(key, e, 'margen')}
-                                                                    thousandSeparator={true}
+                                                                    thousandseparator={true}
                                                                     prefix={'%'}
                                                                     disabled={!form.conceptos[key].active}
                                                                     customstyle={{borderColor: "#e5eaee", width: "57px"}}

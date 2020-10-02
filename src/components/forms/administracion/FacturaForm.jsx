@@ -107,7 +107,7 @@ export default class FacturaForm extends Component {
                         <InputMoney
                             requirevalidation={1}
                             formeditado={formeditado}
-                            thousandSeparator={true}
+                            thousandseparator={true}
                             placeholder="MONTO CON IVA"
                             value={form.total}
                             name="total"

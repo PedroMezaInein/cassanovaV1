@@ -178,27 +178,27 @@ class SolicitudVentaForm extends Component {
             form
         })
     }
-    onChangeAdjunto = e => {
-        const { form } = this.state
-        const { files, value, name } = e.target
-        let aux = []
-        for (let counter = 0; counter < files.length; counter++) {
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
-                }
-            )
-        }
-        form['adjuntos'][name].value = value
-        form['adjuntos'][name].files = aux
-        this.setState({
-            ... this.state,
-            form
-        })
-    }
+    // onChangeAdjunto = e => {
+    //     const { form } = this.state
+    //     const { files, value, name } = e.target
+    //     let aux = []
+    //     for (let counter = 0; counter < files.length; counter++) {
+    //         aux.push(
+    //             {
+    //                 name: files[counter].name,
+    //                 file: files[counter],
+    //                 url: URL.createObjectURL(files[counter]),
+    //                 key: counter
+    //             }
+    //         )
+    //     }
+    //     form['adjuntos'][name].value = value
+    //     form['adjuntos'][name].files = aux
+    //     this.setState({
+    //         ... this.state,
+    //         form
+    //     })
+    // }
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
@@ -368,6 +368,26 @@ class SolicitudVentaForm extends Component {
             console.log(error, 'error')
         })
     }
+    handleChange = (files, item) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
     render() {
         const { title, form, options, formeditado } = this.state
         return (
@@ -385,11 +405,12 @@ class SolicitudVentaForm extends Component {
                             options={options}
                             setOptions={this.setOptions}
                             onChange={this.onChange}
-                            onChangeAdjunto={this.onChangeAdjunto}
+                            // onChangeAdjunto={this.onChangeAdjunto}
                             clearFiles={this.clearFiles}
                             onSubmit={this.onSubmit}
                             formeditado={formeditado}
                             className="px-3"
+                            handleChange={this.handleChange}
                         />
                     </Card.Body>
                 </Card>
