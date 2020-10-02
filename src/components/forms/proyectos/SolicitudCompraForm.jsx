@@ -173,7 +173,7 @@ class SolicitudCompraForm extends Component {
                             <div id="wizard-2-content" className="pb-3" data-wizard-type="step-content">
                                 <h5 className="mb-4 font-weight-bold text-dark">Selecciona el área y fecha</h5>
                                 <div className="form-group row form-group-marginless">
-                                    <div className="col-md-4">
+                                    <div className={form.area.length ?'col-md-4':'col-md-6'}>
                                         <Calendar
                                             onChangeCalendar={this.handleChangeDate}
                                             placeholder="FECHA"
@@ -181,7 +181,7 @@ class SolicitudCompraForm extends Component {
                                             value={form.fecha}
                                         />
                                     </div>
-                                    <div className="col-md-4">
+                                    <div className={form.area.length ?'col-md-4':'col-md-6'}>
                                         <SelectSearch
                                             requirevalidation={1}
                                             formeditado={formeditado}
@@ -194,7 +194,7 @@ class SolicitudCompraForm extends Component {
                                     </div>
                                     {
                                         form.area ?
-                                            <div className="col-md-4">
+                                            <div className={form.area.length ?'col-md-4':'col-md-6'}>
                                                 <SelectSearch
                                                     requirevalidation={1}
                                                     formeditado={formeditado}
