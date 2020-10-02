@@ -875,6 +875,8 @@ class Proyectos extends Component {
             aux.push({text: 'FASE 2'})
         if(proyecto.fase3)
             aux.push({text: 'FASE 3'})
+        if(proyecto.fase3 === 0 && proyecto.fase2 === 0 && proyecto.fase1=== 0)
+            aux.push({text: 'SIN FASES'})
         return aux
     }
     setAdjuntosTable = proyecto => {
