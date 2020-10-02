@@ -11,26 +11,37 @@ class FlujosReportesForm extends Component {
     }
 
     render() {
-        const { form, onChangeRange, options } = this.props
+        const { form, onChangeRange, onChangeRangeRef, options } = this.props
         return (
             <Form>
-                <div className="">
-                    <SelectSearch
-                        name='empresa'
-                        options={options.empresas}
-                        placeholder='SELECCIONA LA(S) EMPRESA(S)'
-                        value={form.empresa}
-                        onChange={this.updateEmpresa}
-                        iconclass={"far fa-building"}
-                        messageinc="Incorrecto. Selecciona la(s) empresa(s)."
-                    />
+                <div className="row mx-0  justify-content-center">
+                    <div className="col-md-6">
+                        <SelectSearch
+                            name='empresa'
+                            options={options.empresas}
+                            placeholder='SELECCIONA LA(S) EMPRESA(S)'
+                            value={form.empresa}
+                            onChange={this.updateEmpresa}
+                            iconclass={"far fa-building"}
+                            messageinc="Incorrecto. Selecciona la(s) empresa(s)."
+                        />
+                    </div>
                 </div>
-                <div className="text-center mt-4">
-                    <RangeCalendar
-                        onChange={onChangeRange}
-                        start={form.fechaInicio}
-                        end={form.fechaFin}
-                    />
+                <div className="row mx-0 mt-5 mb-3 justify-content-center">
+                    <div className="col-md-6 text-center">
+                        <RangeCalendar
+                            onChange={onChangeRange}
+                            start={form.fechaInicio}
+                            end={form.fechaFin}
+                        />
+                    </div>
+                    <div className="col-md-6 text-center">
+                        <RangeCalendar
+                            onChange={onChangeRangeRef}
+                            start={form.fechaInicioRef}
+                            end={form.fechaFinRef}
+                        />
+                    </div>
                 </div>
             </Form>
         )

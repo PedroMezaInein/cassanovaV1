@@ -23,6 +23,24 @@ export const COLORES_GRAFICAS = [
     '#28A745'
 ]
 
+export const COLORES_GRAFICAS_2 = [
+    '#002D41',
+    '#15B1D7',
+    '#03749C',
+    '#023D67',
+    '#FDD600',
+    '#D44206',
+    '#F97304',
+    '#720F03',
+    '#E08132',
+    '#E9AE0B',
+    '#BEB286',
+    '#306266',
+    '#F79ECC',
+    '#AD96E4',
+    '#6D045A'
+]
+
 // DEV
 /* export const URL_DEV = 'http://127.0.0.1:8000/api/';
 export const URL_ASSETS = 'http://127.0.0.1:8000'; */
