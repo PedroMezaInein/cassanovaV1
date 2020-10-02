@@ -941,14 +941,14 @@ class ProyectosForm extends Component {
                                 <div class="card-toolbar">
                                     <Button
                                         onClick={() => { this.changeEstatus('Detenido') }}
-                                        className={"btn btn-icon btn-light-primary btn-sm mr-2 ml-auto"}
+                                        className={"btn btn-icon btn-light-danger btn-sm mr-2 ml-auto"}
                                         only_icon={"far fa-clock icon-md"}
                                         tooltip={{ text: 'Detener' }}
                                     />
                                     <Button
                                         onClick={() => { this.changeEstatus('Terminado') }}
-                                        className={"btn btn-icon btn-light-success btn-sm"}
-                                        only_icon={"fas fa-check-square icon-md"}
+                                        className={"btn btn-icon btn-light-primary btn-sm"}
+                                        only_icon={"fas fa-check icon-md"}
                                         tooltip={{ text: 'Terminar' }}
                                     />
                                 </div>

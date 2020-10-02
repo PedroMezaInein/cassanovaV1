@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
+import swal from 'sweetalert';
 import { URL_DEV } from '../../../constants'
 import Layout from '../../../components/layout/layout'
-import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert, deleteAlert } from '../../../functions/alert'
+import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert, deleteAlert, questionAlert} from '../../../functions/alert'
 import { setOptions } from '../../../functions/setters'
 import { Card, Accordion } from 'react-bootstrap'
 import { ProspectoForm as ProspectoFormulario } from '../../../components/forms'
@@ -284,6 +285,43 @@ class ProspectosForm extends Component {
             formContacto
         })
     }
+
+    changeEstatus = estatus =>  {
+        const { proyecto } = this.state
+        estatus === 'Detenido'?
+            questionAlert('¿ESTÁS SEGURO?', 'DETENDRÁS EL PROYECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
+        :
+            questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR TEMINADO EL PROYECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
+    }
+
+    async changeEstatusAxios(estatus){
+        waitAlert()
+        const { prospecto } = this.state
+        const { access_token } = this.props.authUser
+        await axios.put(`${URL_DEV}prospecto/${prospecto.id}/estatus`,{estatus: estatus}, { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                swal.close()
+                doneAlert('Estado actualizado con éxito')
+                const { history } = this.props
+                history.push({
+                    pathname: '/leads/prospectos'
+                });
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+
     render() {
         const { options, form, formContacto, title, formeditado, lead } = this.state
         return (
@@ -297,16 +335,16 @@ class ProspectosForm extends Component {
                             title === 'Editar prospecto' ?
                                 <div class="card-toolbar">
                                     <Button
-                                        // onClick={() => { changeEstatus('Cancelado') }}
-                                        className={"btn btn-icon btn-light-primary btn-sm mr-2 ml-auto"}
+                                        onClick={() => { this.changeEstatus('Detenido') }}
+                                        className={"btn btn-icon btn-light-info btn-sm mr-2 ml-auto"}
                                         only_icon={"far fa-clock icon-md"}
                                         tooltip={{ text: 'Detener' }}
                                     />
                                     <Button
-                                        // onClick={() => { openModalWithInput('Detenido') }}
-                                        className={"btn btn-icon btn-light-danger btn-sm"}
-                                        only_icon={"flaticon2-cross icon-nm"}
-                                        tooltip={{ text: 'Cancelar' }}
+                                        onClick={() => { this.changeEstatus('Terminado') }}
+                                        className={"btn btn-icon btn-light-primary btn-sm"}
+                                        only_icon={"fas fa-check icon-md"}
+                                        tooltip={{ text: 'Terminar' }}
                                     />
                                 </div>
                                 : ''
