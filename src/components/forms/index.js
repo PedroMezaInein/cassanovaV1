@@ -49,7 +49,8 @@ import partidasDiseñoForm from './catalogos/PartidasDiseñoForm'
 import calidadView from './calidad/CalidadView' 
 import procesoTicketForm from './calidad/ProcesoTicketForm'
 import agregarVacacionesForm from './recursoshumanos/AgregarVacacionesForm'
-import flujosReportesForm from './reportes/FlujosReportesForm'
+import flujosReportesVentas from './reportes/FlujosReportesVentas'
+import flujosReportes from './reportes/FlujosReportes'
 import tablaReportes from './reportes/TablaReportes'
 import accordionEstadosResultados from './reportes/AccordionEstadosResultados'
 import tablaEstadosResultados from './reportes/TablaEstadosResultados'
@@ -111,7 +112,8 @@ export const PartidasDiseñoForm = partidasDiseñoForm
 export const CalidadView = calidadView
 export const AgregarVacacionesForm = agregarVacacionesForm
 export const ProcesoTicketForm = procesoTicketForm
-export const FlujosReportesForm = flujosReportesForm
+export const FlujosReportesVentas = flujosReportesVentas
+export const FlujosReportes = flujosReportes
 export const TablaReportes = tablaReportes
 export const AccordionEstadosResultados = accordionEstadosResultados
 export const TablaEstadosResultados = tablaEstadosResultados
