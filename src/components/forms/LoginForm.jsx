@@ -137,7 +137,7 @@ class LoginForm extends React.Component {
 
             <form className="form pt-5" onSubmit={this.handleSubmit}>
                 <div className="form-group">
-                    <input className={"form-control h-auto text-white bg-white-o-9 rounded-pill border-0 py-3 pl-4"}
+                    <input className={"form-control h-auto text-white bg-white-o-9 rounded-pill border-0 py-3 pl-4 font-size-sm"}
                         type="text"
                         placeholder="INGRESA TU CORREO ELECRÓNICO"
                         required
@@ -147,14 +147,14 @@ class LoginForm extends React.Component {
                     />
                     {
                         this.state.error.email !== '' &&
-                        <label className="text-white">
+                        <div className="text-white mt-4 font-size-sm">
                             {this.state.error.email}
-                        </label>
+                        </div>
                     }
                 </div>
 
                 <div className="form-group">
-                    <input className={"form-control h-auto text-white bg-white-o-9 rounded-pill border-0 py-3  pl-4"}
+                    <input className={"form-control h-auto text-white bg-white-o-9 rounded-pill border-0 py-3 pl-4 font-size-sm"}
                         type={this.state.showPassword ? 'text' : 'password'}
                         placeholder="INGRESA TU CONTRASEÑA"
                         required
@@ -165,13 +165,13 @@ class LoginForm extends React.Component {
                 </div>
                 {
                     this.state.error.password !== '' &&
-                    <label className="text-white">
+                    <div className="text-white font-size-sm">
                         {this.state.error.password}
-                    </label>
+                    </div>
                 }
 
-                <div className="form-group text-center mt-10 pt-5">
-                    <button className="btn btn-transparent-white font-weight-bold font-weight-bold opacity-90 pl-4 pr-4"
+                <div className="form-group text-center mt-10 pt-4">
+                    <button className="btn btn-transparent-white font-weight-bold font-weight-bold opacity-90 pl-4 pr-4 font-size-sm"
                         type="submit"
                         disabled={
                             this.state.form.email === '' ||
