@@ -2,48 +2,27 @@ import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 import { Input, Button, Select, SelectSearchTrue } from '../form-components'
 import { EMAIL } from '../../constants'
-
 class RegisterUserForm extends Component {
-
     updateDepartamento = value => {
-        const { onChange, onChangeOptions, options, form } = this.props
+        const { onChange, onChangeAndAdd, options } = this.props
         options.departamentos.map((departamento) => {
-            if (departamento.value === value) {
-                let aux = false;
-                form.departamentos.map((departamento) => {
-                    if (departamento.value === value)
-                        aux = true
-                })
-                if (!aux)
-                    onChangeOptions({ target: { value: departamento.value, name: 'departamento' } }, 'departamentos')
-            }
-
+            if (departamento.value === value)
+                onChangeAndAdd({ target: { value: departamento.value, name: 'departamento' } }, 'departamentos')
         })
         onChange({ target: { value: value, name: 'departamento' } })
     }
-
     updateProyecto = value => {
-        const { onChange, onChangeOptions, options, form } = this.props
+        const { onChange, onChangeAndAdd, options } = this.props
         options.proyectos.map((proyecto) => {
-            if (proyecto.value === value) {
-                let aux = false;
-                form.proyectos.map((proyecto) => {
-                    if (proyecto.value === value)
-                        aux = true
-                })
-                if (!aux)
-                    onChangeOptions({ target: { value: proyecto.value, name: 'proyecto' } }, 'proyectos')
-            }
-
+            if (proyecto.value === value)
+                onChangeAndAdd({ target: { value: proyecto.value, name: 'proyecto' } }, 'proyectos')
         })
         onChange({ target: { value: value, name: 'proyecto' } })
     }
-
     updateEmpleado = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'empleado' } })
     }
-
     render() {
         const { options, form, onChange, deleteOption, onChangeOptions, formeditado, ...props } = this.props
         return (
@@ -102,7 +81,6 @@ class RegisterUserForm extends Component {
                                     onChange={this.updateDepartamento}
                                     iconclass={"fas fa-layer-group"}
                                     formeditado={formeditado}
-
                                 />
                             </div>
                             <div className="col-md-4">
@@ -123,7 +101,7 @@ class RegisterUserForm extends Component {
                                             {
                                                 form.departamentos.map((departamento, key) => {
                                                     return (
-                                                        <div key={key} className="tagify form-control p-1 col-md-3 px-2 d-flex justify-content-center align-items-center" tabIndex="-1" style={{ borderWidth: "0px" }}>
+                                                        <div key={key} className="tagify form-control p-1 col-md-6 px-2 d-flex justify-content-center align-items-center" tabIndex="-1" style={{ borderWidth: "0px" }}>
                                                             <div className="tagify__tag tagify__tag--primary tagify--noAnim">
                                                                 <div
                                                                     title="Borrar archivo"
@@ -167,7 +145,7 @@ class RegisterUserForm extends Component {
                                             {
                                                 form.proyectos.map((proyecto, key) => {
                                                     return (
-                                                        <div key={key} className="tagify form-control p-1 col-md-3 px-2 d-flex justify-content-center align-items-center" tabIndex="-1" style={{ borderWidth: "0px" }}>
+                                                        <div key={key} className="tagify form-control p-1 col-md-4 px-2 d-flex justify-content-center align-items-center" tabIndex="-1" style={{ borderWidth: "0px" }}>
                                                             <div className="tagify__tag tagify__tag--primary tagify--noAnim">
                                                                 <div
                                                                     title="Borrar archivo"

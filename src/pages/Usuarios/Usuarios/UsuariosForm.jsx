@@ -353,6 +353,46 @@ class UsuariosForm extends Component {
         })
     }
 
+    // deleteOption = (option, arreglo) => {
+    //     const { form, options } = this.state
+    //     let aux = []
+    //     form[arreglo].map((element, key) => {
+    //         if (option.value.toString() !== element.value.toString()) {
+    //             aux.push(element)
+    //         } else {
+    //             options[arreglo].push(element)
+    //         }
+    //     })
+    //     form[arreglo] = aux
+    //     this.setState({
+    //         ... this.state,
+    //         options,
+    //         form
+    //     })
+    // }
+    onChangeAndAdd = (e, arreglo) => {
+        const { value } = e.target
+        const { options, form } = this.state
+        let auxArray = form[arreglo]
+        let aux = []
+        options[arreglo].find(function (_aux) {
+            if (_aux.value.toString() === value.toString()) {
+                auxArray.push(_aux)
+            } else {
+                aux.push(_aux)
+            }
+        })
+        options[arreglo] = aux
+        form[arreglo] = auxArray
+        // console.log(aux, 'aux') // Almacena las opciones no seleccionadas
+        // console.log(auxArray, 'auxArray') // Almacena las opciones ya seleccionadas
+        this.setState({
+            ... this.state,
+            form,
+            options
+        })
+    }
+
     async getAdministradorAxios() {
         $('#admin_table').DataTable().ajax.reload();
     }
@@ -407,7 +447,7 @@ class UsuariosForm extends Component {
             form: formulario.form
         })
         deleteForm()
-    }
+    }    
 
     render(){
         const { title, form, options, formeditado} = this.state
@@ -428,6 +468,7 @@ class UsuariosForm extends Component {
                             onChange = { this.onChange }
                             onChangeOptions =  { this.onChangeOptions }
                             deleteOption = { this.deleteOption }
+                            onChangeAndAdd={this.onChangeAndAdd}
                         />
                     </Card.Body>
                 </Card>
