@@ -374,6 +374,11 @@ class ReporteVentas extends Component {
                 let arrayData = []
                 let arrayLabes2 = []
                 let arrayData2 = []
+                let colors = []
+                let colors2 = []
+                origenes.map((origen, index)=>{
+                    origen.color = COLORES_GRAFICAS_2[index]
+                })
                 origenes.map( (origen) => {
                     contador = 0
                     contador2 = 0
@@ -385,6 +390,7 @@ class ReporteVentas extends Component {
                     if(contador)
                     {
                         arrayLabes.push(origen.origen.toUpperCase())
+                        colors.push(origen.color)
                         arrayData.push(contador)
                     }
                     leadsAnteriores.map((lead)=> {
@@ -395,11 +401,10 @@ class ReporteVentas extends Component {
                     if(contador2)
                     {
                         arrayLabes2.push(origen.origen.toUpperCase())
+                        colors2.push(origen.color)
                         arrayData2.push(contador2)
                     }
                 })
-
-                let colors = this.getBG(arrayData.length);
 
                 data.totalOrigenes = {
                     labels: arrayLabes,
@@ -410,14 +415,12 @@ class ReporteVentas extends Component {
                     }]
                 }
 
-                colors = this.getBG(arrayData2.length);
-
                 data.totalOrigenesAnteriores = {
                     labels: arrayLabes2,
                     datasets: [{
                         data: arrayData2,
-                        backgroundColor: colors,
-                        hoverBackgroundColor: this.setOpacity(colors),
+                        backgroundColor: colors2,
+                        hoverBackgroundColor: this.setOpacity(colors2),
                     }]
                 }
 
@@ -427,6 +430,12 @@ class ReporteVentas extends Component {
                 arrayData = []
                 arrayLabes2 = []
                 arrayData2 = []
+                colors = []
+                colors2 = []
+
+                servicios.map((servicio, index)=>{
+                    servicio.color = COLORES_GRAFICAS_2[index]
+                })
                 
                 servicios.map( (servicio) => {
                     contador = 0
@@ -441,6 +450,7 @@ class ReporteVentas extends Component {
                     if(contador)
                     {
                         arrayLabes.push(servicio.servicio.toUpperCase())
+                        colors.push(servicio.color)
                         arrayData.push(contador)
                     }
                     leadsAnteriores.map( (lead) => {
@@ -453,11 +463,10 @@ class ReporteVentas extends Component {
                     if(contador2)
                     {
                         arrayLabes2.push(servicio.servicio.toUpperCase())
+                        colors2.push(servicio.color)
                         arrayData2.push(contador2)
                     }
                 })
-
-                colors = this.getBG(arrayData.length);
 
                 data.servicios = {
                     labels: arrayLabes,
@@ -468,13 +477,12 @@ class ReporteVentas extends Component {
                     }]
                 }
 
-                colors = this.getBG(arrayData2.length);
                 data.serviciosAnteriores = {
                     labels: arrayLabes2,
                     datasets: [{
                         data: arrayData2,
-                        backgroundColor: colors,
-                        hoverBackgroundColor: this.setOpacity(colors),
+                        backgroundColor: colors2,
+                        hoverBackgroundColor: this.setOpacity(colors2),
                     }]
                 }
 
@@ -523,6 +531,11 @@ class ReporteVentas extends Component {
                 contador = 0
                 arrayLabes = []
                 arrayData = []
+                colors = []
+
+                estatus.map( (element, index) => {
+                    element.color = COLORES_GRAFICAS_2[index]
+                })
 
                 estatus.map( (element) => {
                     contador = 0
@@ -539,11 +552,10 @@ class ReporteVentas extends Component {
                     if(contador)
                     {
                         arrayLabes.push(element.estatus.toUpperCase())
+                        colors.push(element.color)
                         arrayData.push(contador)
                     }
                 })
-
-                colors = this.getBG(arrayData.length);
 
                 data.estatusProspectos = {
                     labels: arrayLabes,
