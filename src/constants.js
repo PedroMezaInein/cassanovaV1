@@ -41,6 +41,10 @@ export const COLORES_GRAFICAS_2 = [
     '#6D045A'
 ]
 
+export const INEIN_RED = '#D8005A'
+export const IM_AZUL = '#7096c1'
+export const IM_DORADO = '#bdab71'
+
 // DEV
 /* export const URL_DEV = 'http://127.0.0.1:8000/api/';
 export const URL_ASSETS = 'http://127.0.0.1:8000'; */
