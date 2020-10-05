@@ -152,9 +152,9 @@ class AccordionEstadosResultados extends Component {
                 {
                     accordion.map((element, key) => {
                         return (
-                            <div className="card" key={key} style={{width:"450px"}}>
+                            <div className="card w-auto mt-4" key={key} id="card-accordion">
                                 <div className="card-header" >
-                                    <div className={(element.isActive) ? 'card-title text-primary collapsed' : 'card-title text-dark-50'} onClick={() => { this.openAccordion(key) }}>
+                                    <div className={(element.isActive) ? 'card-title text-primary rounded-0 collapsed' : 'card-title text-dark-50 rounded-0'} onClick={() => { this.openAccordion(key) }}>
                                         <div className="card-label">
                                             <i className={(element.isActive) ? element.icono + ' text-primary' : element.icono + ' text-dark-50'}>
                                             </i> {element.nombre}
