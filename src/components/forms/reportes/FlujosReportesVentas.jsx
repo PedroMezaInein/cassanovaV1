@@ -15,7 +15,7 @@ class FlujosReportesForm extends Component {
         return (
             <Form>
                 <div className="row mx-0  justify-content-center">
-                    <div className="col-md-6">
+                    <div className="col-md-4">
                         <SelectSearch
                             name='empresa'
                             options={options.empresas}
@@ -29,6 +29,9 @@ class FlujosReportesForm extends Component {
                 </div>
                 <div className="row mx-0 mt-5 mb-3 justify-content-center">
                     <div className="col-md-6 text-center">
+                        <div>
+                            <label class="col-form-label text-center">Fechas del reporte</label>
+                        </div>
                         <RangeCalendar
                             onChange={onChangeRange}
                             start={form.fechaInicio}
@@ -36,6 +39,9 @@ class FlujosReportesForm extends Component {
                         />
                     </div>
                     <div className="col-md-6 text-center">
+                        <div>
+                            <label class="col-form-label text-center">Fechas de referencia</label>
+                        </div>
                         <RangeCalendar
                             onChange={onChangeRangeRef}
                             start={form.fechaInicioRef}
