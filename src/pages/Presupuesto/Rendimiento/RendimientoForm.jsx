@@ -24,7 +24,8 @@ class RendimientoForm extends Component {
             rendimiento: '',
             adjunto: {
                 value: '',
-                files: []
+                files: [],
+                placeholder:'adjunto'
             }
         },
         rendimiento: ''
@@ -106,27 +107,27 @@ class RendimientoForm extends Component {
             form
         })
     }
-    onChangeAdjunto = e => {
-        const { form } = this.state
-        const { files, value, name } = e.target
-        let aux = []
-        for (let counter = 0; counter < files.length; counter++) {
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
-                }
-            )
-        }
-        form[name].value = value
-        form[name].files = aux
-        this.setState({
-            ... this.state,
-            form
-        })
-    }
+    // onChangeAdjunto = e => {
+    //     const { form } = this.state
+    //     const { files, value, name } = e.target
+    //     let aux = []
+    //     for (let counter = 0; counter < files.length; counter++) {
+    //         aux.push(
+    //             {
+    //                 name: files[counter].name,
+    //                 file: files[counter],
+    //                 url: URL.createObjectURL(files[counter]),
+    //                 key: counter
+    //             }
+    //         )
+    //     }
+    //     form[name].value = value
+    //     form[name].files = aux
+    //     this.setState({
+    //         ... this.state,
+    //         form
+    //     })
+    // }
     clearFiles = (name, key) => {
         const { form } = this.state
         let aux = []
@@ -252,6 +253,26 @@ class RendimientoForm extends Component {
             console.log(error, 'error')
         })
     }
+    handleChange = (files, item) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjunto'].value = files
+        form['adjunto'].files = aux
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
     render() {
         const { formeditado, form, options, title } = this.state
         return (
@@ -268,10 +289,11 @@ class RendimientoForm extends Component {
                             title={title}
                             form={form}
                             onChange={this.onChange}
-                            onChangeAdjunto={this.onChangeAdjunto}
+                            // onChangeAdjunto={this.onChangeAdjunto}
                             clearFiles={this.clearFiles}
                             options={options}
                             onSubmit={this.onSubmit}
+                            handleChange={this.handleChange}
                         />
                     </Card.Body>
                 </Card>

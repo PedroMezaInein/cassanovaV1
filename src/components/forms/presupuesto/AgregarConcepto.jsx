@@ -63,7 +63,7 @@ class AgregarConcepto extends Component {
                 <Tabs defaultActiveKey="nuevo" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100" activeKey={activeKey} onSelect={onSelect}>
                     <Tab eventKey="nuevo" title="Nuevo concepto">
                         <div className="form-group row form-group-marginless pt-4">
-                            <div className="col-md-4">
+                            <div className={form.partida.length ?'col-md-4':'col-md-6'}>
                                 <SelectSearch
                                     formeditado={formeditado}
                                     options={options.partidas}
@@ -74,18 +74,22 @@ class AgregarConcepto extends Component {
                                     iconclass={" fas fa-book"}
                                 />
                             </div>
-                            <div className="col-md-4">
-                                <SelectSearch
-                                    formeditado={formeditado}
-                                    options={options.subpartidas}
-                                    placeholder="SELECCIONA LA SUBPARTIDA"
-                                    name="subpartida"
-                                    value={form.subpartida}
-                                    onChange={this.updateSubpartida}
-                                    iconclass={" fas fa-book"}
-                                />
-                            </div>
-                            <div className="col-md-4">
+                            {
+                                form.partida ?
+                                    <div className={form.partida.length ?'col-md-4':'col-md-6'}>
+                                        <SelectSearch
+                                            formeditado={formeditado}
+                                            options={options.subpartidas}
+                                            placeholder="SELECCIONA LA SUBPARTIDA"
+                                            name="subpartida"
+                                            value={form.subpartida}
+                                            onChange={this.updateSubpartida}
+                                            iconclass={" fas fa-book"}
+                                        />
+                                    </div>
+                                :''
+                            }
+                            <div className={form.partida.length ?'col-md-4':'col-md-6'}>
                                 <SelectSearch
                                     formeditado={formeditado}
                                     options={options.unidades}
@@ -156,7 +160,7 @@ class AgregarConcepto extends Component {
                     </Tab>
                     <Tab eventKey="existente" title="Concepto existente">
                         <div className="form-group row form-group-marginless pt-4">
-                            <div className="col-md-6">
+                            <div className={form.partida.length ?'col-md-6':'col-md-12'}>
                                 <SelectSearch
                                     formeditado={formeditado}
                                     options={options.partidas}
@@ -167,17 +171,21 @@ class AgregarConcepto extends Component {
                                     iconclass={" fas fa-book"}
                                 />
                             </div>
-                            <div className="col-md-6">
-                                <SelectSearch
-                                    formeditado={formeditado}
-                                    options={options.subpartidas}
-                                    placeholder="SELECCIONA LA SUBPARTIDA"
-                                    name="subpartida"
-                                    value={form.subpartida}
-                                    onChange={this.updateSubpartida}
-                                    iconclass={" fas fa-book"}
-                                />
-                            </div>
+                            {
+                                form.partida ?
+                                    <div className={form.partida.length ?'col-md-6':'col-md-12'}>
+                                        <SelectSearch
+                                            formeditado={formeditado}
+                                            options={options.subpartidas}
+                                            placeholder="SELECCIONA LA SUBPARTIDA"
+                                            name="subpartida"
+                                            value={form.subpartida}
+                                            onChange={this.updateSubpartida}
+                                            iconclass={" fas fa-book"}
+                                        />
+                                    </div>
+                                :''
+                            }
                         </div>
                         {
                             form.partida ?
