@@ -4,7 +4,7 @@ import { Form } from 'react-bootstrap'
 import { RFC, DATE } from '../../../constants'
 import {openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
-
+import { ItemSlider } from '../../../components/singles';
 class ComprasForm extends Component {
 
     updateCliente = value => {
@@ -269,7 +269,7 @@ class ComprasForm extends Component {
                             <div id="wizard-2-content" className="pb-3" data-wizard-type="step-content">
                                 <h5 className="mb-4 font-weight-bold text-dark">Selecciona el área y fecha</h5>
                                 <div className="form-group row form-group-marginless">
-                                    <div className="col-md-4">
+                                    <div className={form.area.length ?'col-md-4':'col-md-6'}>
                                         <Calendar 
                                             formeditado={formeditado}
                                             onChangeCalendar={this.handleChangeDate}
@@ -279,7 +279,7 @@ class ComprasForm extends Component {
                                             patterns={DATE}
                                         />
                                     </div>
-                                    <div className="col-md-4">
+                                    <div className={form.area.length ?'col-md-4':'col-md-6'}>
                                         <SelectSearch 
                                             formeditado={formeditado}
                                             options={options.areas} 
@@ -452,6 +452,13 @@ class ComprasForm extends Component {
                                                         deleteAdjunto={clearFiles} 
                                                         multiple
                                                     />
+                                                    {/* <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.presupuesto.placeholder}</label>
+                                                    <ItemSlider
+                                                        items={form.adjuntos.presupuesto.files}
+                                                        item='adjunto'
+                                                        handleChange={handleChange}
+                                                        multiple={true}
+                                                    /> */}
                                                 </div>
                                                 <div className="col-md-6">
                                                     <FileInput
@@ -465,6 +472,13 @@ class ComprasForm extends Component {
                                                         deleteAdjunto={clearFiles}
                                                         multiple
                                                     />
+                                                    {/* <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.pago.placeholder}</label>
+                                                    <ItemSlider
+                                                        items={form.adjuntos.pago.files}
+                                                        item='adjunto'
+                                                        handleChange={handleChange}
+                                                        multiple={true}
+                                                    /> */}
                                                 </div>
                                             </div>
                                         </>

@@ -48,7 +48,7 @@ class ConceptoForm extends Component {
                 {...props}
             >
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-4">
+                    <div className={form.partida.length ?'col-md-4':'col-md-6'}>
                         <SelectSearch
                             formeditado={formeditado}
                             options={options.partidas}
@@ -59,18 +59,22 @@ class ConceptoForm extends Component {
                             iconclass={" fas fa-book"}
                         />
                     </div>
-                    <div className="col-md-4">
-                        <SelectSearch
-                            formeditado={formeditado}
-                            options={options.subpartidas}
-                            placeholder="SELECCIONA LA SUBPARTIDA"
-                            name="subpartida"
-                            value={form.subpartida}
-                            onChange={this.updateSubpartida}
-                            iconclass={" fas fa-book"}
-                        />
-                    </div>
-                    <div className="col-md-4">
+                    {
+                        form.partida ?
+                            <div className={form.partida.length ?'col-md-4':'col-md-6'}>
+                                <SelectSearch
+                                    formeditado={formeditado}
+                                    options={options.subpartidas}
+                                    placeholder="SELECCIONA LA SUBPARTIDA"
+                                    name="subpartida"
+                                    value={form.subpartida}
+                                    onChange={this.updateSubpartida}
+                                    iconclass={" fas fa-book"}
+                                />
+                            </div>
+                        :''
+                    }
+                    <div className={form.partida.length ?'col-md-4':'col-md-6'}>
                         <SelectSearch
                             formeditado={formeditado}
                             options={options.unidades}

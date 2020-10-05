@@ -20,7 +20,7 @@ class DocumentosForm extends Component {
                         }
                     }
                     {...props} >
-                    <div className="form-group row form-group-marginless pt-4 justify-content-md-center">
+                    <div className="form-group row form-group-marginless justify-content-md-center">
                         <div className="col-md-4">
                             <SelectSearch
                                 formeditado={formeditado}

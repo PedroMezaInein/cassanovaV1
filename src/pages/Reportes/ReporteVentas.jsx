@@ -12,7 +12,7 @@ import { pdf } from '@react-pdf/renderer'
 import {Pie} from 'react-chartjs-2';
 import "chartjs-plugin-datalabels";
 import { setLabelTable, setOptions } from '../../functions/setters';
-import FlujosReportesForm from '../../components/forms/reportes/FlujosReportesForm';
+import FlujosReportesVentas from '../../components/forms/reportes/FlujosReportesVentas';
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState, convertToRaw } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
@@ -585,6 +585,7 @@ class ReporteVentas extends Component {
                     left !== null ?
                         <div>
                             <Button
+                                icon=''
                                 onClick={() => { this.changeTabe(left) }}
                                 className = "btn btn-icon btn-primary-info btn-sm mr-2 ml-auto"
                                 only_icon={"fas fa-chevron-circle-left icon-md"}
@@ -597,6 +598,7 @@ class ReporteVentas extends Component {
                     right !== null ?
                         <div>
                             <Button
+                                icon=''
                                 onClick={() => { this.changeTabe(right) }}
                                 className = "btn btn-icon btn-primary-info btn-sm mr-2 ml-auto"
                                 only_icon={"fas fa-chevron-circle-right icon-md"}
@@ -609,7 +611,8 @@ class ReporteVentas extends Component {
                     generar !== null ?
                         <div>
                             <Button
-                                onClick={ (e) => { e.preventDefault(); this.generarPDF() }}
+                                icon=''
+                                onClick={ (e) => { e.preventDefault(); waitAlert(); this.generarPDF() }}
                                 className = "btn btn-icon btn-light-success btn-sm mr-2 ml-auto"
                                 only_icon={"far fas fa-file-pdf icon-md"}
                                 tooltip={{ text: 'GENERAR PDF' }}
@@ -639,7 +642,7 @@ class ReporteVentas extends Component {
                     <Card.Body>
                         <div className="row mx-0">
                             <div className="col-md-12">                                
-                                <FlujosReportesForm
+                                <FlujosReportesVentas
                                     form = { form }
                                     options = { this.state.options }
                                     onChangeRange = { this.onChangeRange }
