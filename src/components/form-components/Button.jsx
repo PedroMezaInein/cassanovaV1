@@ -22,8 +22,11 @@ export default class button extends Component {
                                     <i className={only_icon}></i>
                                 }
                                 {
-                                    icon !== '' && <FontAwesomeIcon icon={icon} />
-                                }   <span className={pulse}></span>
+                                    icon !== undefined ?
+                                        <FontAwesomeIcon icon={icon} />
+                                    : ''
+                                }
+                                <span className={pulse}></span>
 
                                 {text}
                                 {children}
