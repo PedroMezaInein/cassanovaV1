@@ -1,180 +1,24 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Layout from '../../components/layout/layout'
-import { Card, Nav, Tab, Tabs } from 'react-bootstrap'
-import { Button } from '../../components/form-components';
+import { Card, Tab } from 'react-bootstrap'
+import { Button, InputSinText } from '../../components/form-components';
 import moment from 'moment'
 import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
 import swal from 'sweetalert'
 import { COLORES_GRAFICAS_2, URL_DEV } from '../../constants'
 import axios from 'axios'
-import { Page, Text, View, Document, StyleSheet, pdf, Image } from '@react-pdf/renderer'
-import {ItemSlider} from '../../components/singles'
+import { pdf } from '@react-pdf/renderer'
 import {Pie} from 'react-chartjs-2';
 import "chartjs-plugin-datalabels";
-import { generateColor } from '../../functions/functions';
 import { setLabelTable, setOptions } from '../../functions/setters';
 import FlujosReportesVentas from '../../components/forms/reportes/FlujosReportesVentas';
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState, convertToRaw } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import Input from '../../components/form-components/Input';
-import InputSinText from '../../components/form-components/InputSinText';
 import draftToMarkdown from 'draftjs-to-markdown';
-import INEIN from '../../assets/logos/inein.png'
-
-const styles = StyleSheet.create({
-    dot:{
-        width: 3,
-        height: 3,
-        borderRadius: 0.5,
-        backgroundColor: '#D8005A'
-    },
-    pagina: {
-        backgroundColor: '#D8005A'
-    },
-    pagina2: {
-        backgroundColor: '#565656'
-    },
-    page: {
-        paddingTop: '40px',
-        paddingBottom: '40px',
-        paddingRight: '35px',
-        paddingLeft: '35px',
-        height: '97%',
-        backgroundColor: 'white'
-    },
-    paginacion:{
-        color: 'red',
-        fontWeight: 'bold',
-        fontSize: 30
-    },
-    titulo:{
-        color: '#535353',
-        fontSize: 20,
-        paddingLeft: 20,
-        fontWeight: 'bold',
-    },
-    texto:{
-        marginTop: '0.5rem',
-        color: '#535353',
-        fontSize: 15
-    },
-    table: {
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column'
-    },
-    tableRow:{
-        display: 'flex',
-        flexDirection: 'row'
-    },
-    tableRowHeader:{
-        display: 'flex',
-        flexDirection: 'row',
-        backgroundColor: '#D8005A'
-    },
-    tableRowBodyNon:{
-        display: 'flex',
-        flexDirection: 'row',
-        backgroundColor: '#E6E6E6'
-    },
-    tableRowBodyPar:{
-        display: 'flex',
-        flexDirection: 'row',
-        backgroundColor: 'white'
-    },
-    cell: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignContent: 'center',
-        textAlign: 'center',
-        flexWrap: 'wrap',
-        width: '50%'
-    }, 
-    cellListaDot: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignContent: 'center',
-        textAlign: 'center',
-        flexWrap: 'wrap',
-        width: '5%'
-    }, 
-    cellLista:{
-        display: 'flex',
-        justifyContent: 'flex-start',
-        flexWrap: 'wrap',
-        width: '95%'
-    },
-    cell20: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignContent: 'center',
-        textAlign: 'center',
-        flexWrap: 'wrap',
-        width: '22%'
-    }, 
-    cell40: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignContent: 'center',
-        textAlign: 'center',
-        flexWrap: 'wrap',
-        width: '34%'
-    }, 
-    headerText:{
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: 15,
-        paddingTop:3,
-        paddingBottom: 3
-    },
-    bodyText:{
-        fontWeight: 100,
-        fontSize: 12,
-        paddingTop:1,
-        paddingBottom: 1
-    },
-    imagenCentrada:{
-        width: '70%',
-        textAlign: 'center',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        marginTop: 120
-    },
-    imagenDoble:{
-        width: '90%',
-        textAlign: 'center',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        marginBottom: 40,
-        marginTop: 100
-    },
-    lineaNegra:{
-        backgroundColor: '#323232',
-        position: 'absolute',
-        height: '70%',
-        width: '10px',
-        top: 0,
-        left: 20
-    },
-    lineaRoja:{
-        backgroundColor: '#D8005A',
-        position: 'absolute',
-        height: '70%',
-        width: '10px',
-        bottom: 0,
-        right: 20
-    },
-    logoPortada:{
-        position: 'absolute',
-        width: '60%',
-        left: '20%',
-        right: '20%',
-        height: 'auto',
-        top: '25%',
-    }
-});
+import ReporteVentasInein from '../../components/pdfs/ReporteVentasInein'
+import ReporteVentasIm from '../../components/pdfs/ReporteVentasIm'
 
 const options = {
     plugins: {
@@ -219,6 +63,7 @@ class ReporteVentas extends Component {
 
     state = {
         editorState: EditorState.createEmpty(),
+        empresa : '',
         url: [],
         form:{
             fechaInicio: null,
@@ -293,14 +138,24 @@ class ReporteVentas extends Component {
 
     onChange = e => {
         const { name, value } = e.target
-        const { form } = this.state
+        const { form, options } = this.state
+        let { empresa } = this.state
         form[name] = value
+        
         if(form.empresa !== '' && form.fechaInicio !== null && form.fechaFin !== null && form.fechaInicioRef !== null && form.fechaFinRef !== null){
             this.getReporteVentasAxios()
         }
+        if(name === 'empresa'){
+            options.empresas.map((emp)=>{
+                
+                if(emp.value === value)
+                    empresa = emp.name
+            })
+        }
         this.setState({
             ... this.state,
-            form
+            form,
+            empresa
         })
     }
 
@@ -317,7 +172,6 @@ class ReporteVentas extends Component {
     getBG = tamaño => {
         let aux = []
         for(let i = 0; i < tamaño; i++){
-            /* aux.push(generateColor()) */
             aux.push(
                 COLORES_GRAFICAS_2[i]
             )
@@ -356,424 +210,84 @@ class ReporteVentas extends Component {
         return año
     }
 
+    setReporte = ( images, lista ) => {
+        const { empresa, form  } = this.state
+        switch(empresa){
+            case 'INEIN':
+                return(
+                    <ReporteVentasInein form = { form } images = { images }
+                        lista = { lista } />
+                )
+            case 'INFRAESTRUCTURA MÉDICA':
+                return(
+                    <ReporteVentasIm form = { form } images = { images }
+                        lista = { lista } />
+                )
+        }
+    }
+
+    setColor = () => {
+        const { empresa } = this.state
+        switch(empresa){
+            case 'INEIN':
+                return '#D8005A'
+            case 'INFRAESTRUCTURA MÉDICA':
+                return '#7096c1'
+        }
+    }
+
     async generarPDF(){
+        waitAlert()
         let aux = []
         const { leads, form } = this.state
-        aux.push({
-            name: 'total',
-            url: this.chartTotalReference.current.chartInstance.toBase64Image()
-        })
-        aux.push({
-            name: 'total-anteriores',
-            url: this.chartTotalAnterioresReference.current.chartInstance.toBase64Image()
-        })
-        aux.push({
-            name: 'origenes',
-            url: this.chartTotalOrigenesReference.current.chartInstance.toBase64Image()
-        })
-        aux.push({
-            name: 'origenes-anteriores',
-            url: this.chartTotalOrigenesAnterioresReference.current.chartInstance.toBase64Image()
-        })
-        aux.push({
-            name: 'servicios',
-            url: this.chartServiciosReference.current.chartInstance.toBase64Image()
-        })
-        aux.push({
-            name: 'servicios-anteriores',
-            url: this.chartServiciosAnterioresReference.current.chartInstance.toBase64Image()
-        })
-        aux.push({
-            name: 'tipos',
-            url: this.chartTiposReference.current.chartInstance.toBase64Image()
-        })
-        aux.push({
-            name: 'tipos-anteriores',
-            url: this.chartTiposAnterioresReference.current.chartInstance.toBase64Image()
-        })
-        aux.push({
-            name: 'prospectos',
-            url: this.chartProspectosReference.current.chartInstance.toBase64Image()
-        })
-        aux.push({
-            name: 'estatus-prospectos',
-            url: this.chartEstatusProspectosReference.current.chartInstance.toBase64Image()
-        })
-        this.setState({
-            ... this.state,
-            url: aux
-        })
+        aux.push(
+            {
+                name: 'total',
+                url: this.chartTotalReference.current.chartInstance.toBase64Image()
+            },
+            {
+                name: 'total-anteriores',
+                url: this.chartTotalAnterioresReference.current.chartInstance.toBase64Image()
+            },
+            {
+                name: 'origenes',
+                url: this.chartTotalOrigenesReference.current.chartInstance.toBase64Image()
+            },
+            {
+                name: 'origenes-anteriores',
+                url: this.chartTotalOrigenesAnterioresReference.current.chartInstance.toBase64Image()
+            },
+            {
+                name: 'servicios',
+                url: this.chartServiciosReference.current.chartInstance.toBase64Image()
+            },
+            {
+                name: 'servicios-anteriores',
+                url: this.chartServiciosAnterioresReference.current.chartInstance.toBase64Image()
+            },
+            {
+                name: 'tipos',
+                url: this.chartTiposReference.current.chartInstance.toBase64Image()
+            },
+            {
+                name: 'tipos-anteriores',
+                url: this.chartTiposAnterioresReference.current.chartInstance.toBase64Image()
+            },
+            {
+                name: 'prospectos',
+                url: this.chartProspectosReference.current.chartInstance.toBase64Image()
+            },
+            {
+                name: 'estatus-prospectos',
+                url: this.chartEstatusProspectosReference.current.chartInstance.toBase64Image()
+            }
+        )
         let lista = draftToMarkdown(convertToRaw(this.state.editorState.getCurrentContent()))
+        lista = lista.toUpperCase();
         lista = lista.replace(/\n|\r/g, "");
         lista = lista.split('-')
-        console.log(lista, 'lisata')
         const blob = await pdf((
-            <Document >
-                <Page style = {{ position: 'relative', height: '100%' }} size="A4" orientation = "landscape">
-                    <View style = { styles.lineaNegra }>
-                    </View>
-                    <View style = { styles.lineaRoja }>
-                    </View>
-                    <Image src = { INEIN } style = { styles.logoPortada } />
-                    <View style = {{ marginTop: '80%' }} >
-                        <Text>
-                            REPORTE DE VENTAS
-                        </Text>
-                        <Text>
-                            AGOSTO 01 - AGOSTO 31
-                        </Text>
-                        <Text>
-                            2020
-                        </Text>
-                    </View>
-                </Page>
-                <Page style = { styles.pagina2 } size="A4" orientation = "landscape">
-                    <View style = { styles.page } >
-                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
-                            <View >
-                                <Text style = { styles.paginacion}>01</Text>
-                            </View>
-                            <View>
-                                <Text style = { styles.titulo }>    
-                                    ENTRADA TOTAL DE LEADS
-                                </Text>
-                            </View>
-                        </View>
-                        <Image style = { styles.imagenCentrada }  src = { aux[0].url }/>
-                    </View>
-                </Page>
-                <Page style = { styles.pagina } size="A4" orientation = "landscape" >
-                    <View style = { styles.page } >
-                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
-                            <View >
-                                <Text style = { styles.paginacion}>02</Text>
-                            </View>
-                            <View>
-                                <Text style = { styles.titulo }>    
-                                    COMPARATIVA LEADS ACTUALES VS { this.getLastMonth() }
-                                </Text>
-                            </View>
-                        </View>
-                        <View style = { styles.table}  >
-                            <View style = { styles.tableRow } >
-                                <View style = { styles.cell }>
-                                    <View styles = {{ marginTop: 50 }}>
-                                        <Image style = { styles.imagenDoble } src = { aux[0].url }/>
-                                        <Text styles = { styles.texto }>
-                                            { this.getMonth() }
-                                        </Text>
-                                    </View>
-                                </View>
-                                <View style = { styles.cell }>
-                                    <View styles = {{ marginTop: 50 }}>
-                                        <Image style = { styles.imagenDoble } src = { aux[1].url }/>
-                                        <Text styles = { styles.texto }>
-                                            { this.getLastMonth() }
-                                        </Text>
-                                    </View>
-                                </View>
-                            </View>
-                        </View>
-                    </View>
-                </Page>
-                <Page style = { styles.pagina2 } size="A4" orientation = "landscape">
-                    <View style = { styles.page } >
-                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
-                            <View >
-                                <Text style = { styles.paginacion}>03</Text>
-                            </View>
-                            <View>
-                                <Text style = { styles.titulo }>    
-                                    ORIGEN DE LEADS
-                                </Text>
-                            </View>
-                        </View>
-                        <Image style = { styles.imagenCentrada }  src = { aux[2].url }/>
-                    </View>
-                </Page>
-                <Page style = { styles.pagina } size="A4" orientation = "landscape" >
-                    <View style = { styles.page } >
-                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
-                            <View >
-                                <Text style = { styles.paginacion}>04</Text>
-                            </View>
-                            <View>
-                                <Text style = { styles.titulo }>    
-                                    COMPARATIVA ORIGEN LEADS ACTUALES VS { this.getLastMonth() }
-                                </Text>
-                            </View>
-                        </View>
-                        <View style = { styles.table}  >
-                            <View style = { styles.tableRow } >
-                                <View style = { styles.cell }>
-                                    <View styles = {{ marginTop: 50 }}>
-                                        <Image style = { styles.imagenDoble } src = { aux[2].url }/>
-                                        <Text styles = { styles.texto }>
-                                            { this.getMonth() }
-                                        </Text>
-                                    </View>
-                                </View>
-                                <View style = { styles.cell }>
-                                    <View styles = {{ marginTop: 50 }}>
-                                        <Image style = { styles.imagenDoble } src = { aux[3].url }/>
-                                        <Text styles = { styles.texto }>
-                                            { this.getLastMonth() }
-                                        </Text>
-                                    </View>
-                                </View>
-                            </View>
-                        </View>
-                    </View>
-                </Page>
-                <Page style = { styles.pagina2 } size="A4" orientation = "landscape">
-                    <View style = { styles.page } >
-                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
-                            <View >
-                                <Text style = { styles.paginacion}>05</Text>
-                            </View>
-                            <View>
-                                <Text style = { styles.titulo }>    
-                                    SERVICIOS SOLICITADOS
-                                </Text>
-                            </View>
-                        </View>
-                        <Image style = { styles.imagenCentrada }  src = { aux[4].url }/>
-                    </View>
-                </Page>
-                <Page style = { styles.pagina } size="A4" orientation = "landscape" >
-                    <View style = { styles.page } >
-                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
-                            <View >
-                                <Text style = { styles.paginacion}>06</Text>
-                            </View>
-                            <View>
-                                <Text style = { styles.titulo }>    
-                                    COMPARATIVA SERVICIOS SOLICITADOS VS { this.getLastMonth() }
-                                </Text>
-                            </View>
-                        </View>
-                        <View style = { styles.table}  >
-                            <View style = { styles.tableRow } >
-                                <View style = { styles.cell }>
-                                    <View styles = {{ marginTop: 50 }}>
-                                        <Image style = { styles.imagenDoble } src = { aux[4].url }/>
-                                        <Text styles = { styles.texto }>
-                                            { this.getMonth() }
-                                        </Text>
-                                    </View>
-                                </View>
-                                <View style = { styles.cell }>
-                                    <View styles = {{ marginTop: 50 }}>
-                                        <Image style = { styles.imagenDoble } src = { aux[5].url }/>
-                                        <Text styles = { styles.texto }>
-                                            { this.getLastMonth() }
-                                        </Text>
-                                    </View>
-                                </View>
-                            </View>
-                        </View>
-                    </View>
-                </Page>
-                <Page style = { styles.pagina2 } size="A4" orientation = "landscape">
-                    <View style = { styles.page } >
-                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
-                            <View >
-                                <Text style = { styles.paginacion}>07</Text>
-                            </View>
-                            <View>
-                                <Text style = { styles.titulo }>    
-                                    TIPO DE LEAD
-                                </Text>
-                            </View>
-                        </View>
-                        <Image style = { styles.imagenCentrada }  src = { aux[6].url }/>
-                    </View>
-                </Page>
-                <Page style = { styles.pagina } size="A4" orientation = "landscape" >
-                    <View style = { styles.page } >
-                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
-                            <View >
-                                <Text style = { styles.paginacion}>08</Text>
-                            </View>
-                            <View>
-                                <Text style = { styles.titulo }>    
-                                    COMPARATIVA TIPO LEADS VS { this.getLastMonth() }
-                                </Text>
-                            </View>
-                        </View>
-                        <View style = { styles.table}  >
-                            <View style = { styles.tableRow } >
-                                <View style = { styles.cell }>
-                                    <View styles = {{ marginTop: 50 }}>
-                                        <Image style = { styles.imagenDoble } src = { aux[6].url }/>
-                                        <Text styles = { styles.texto }>
-                                            { this.getMonth() }
-                                        </Text>
-                                    </View>
-                                </View>
-                                <View style = { styles.cell }>
-                                    <View styles = {{ marginTop: 50 }}>
-                                        <Image style = { styles.imagenDoble } src = { aux[7].url }/>
-                                        <Text styles = { styles.texto }>
-                                            { this.getLastMonth() }
-                                        </Text>
-                                    </View>
-                                </View>
-                            </View>
-                        </View>
-                    </View>
-                </Page>
-                <Page style = { styles.pagina2 } size="A4" orientation = "landscape">
-                    <View style = { styles.page } >
-                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
-                            <View >
-                                <Text style = { styles.paginacion}>09</Text>
-                            </View>
-                            <View>
-                                <Text style = { styles.titulo }>    
-                                    TOTAL DE PROSPECTOS
-                                </Text>
-                            </View>
-                        </View>
-                        <Image style = { styles.imagenCentrada }  src = { aux[8].url }/>
-                    </View>
-                </Page>
-                <Page style = { styles.pagina } size="A4" orientation = "landscape">
-                    <View style = { styles.page } >
-                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
-                            <View >
-                                <Text style = { styles.paginacion}>10</Text>
-                            </View>
-                            <View>
-                                <Text style = { styles.titulo }>    
-                                    STATUS DE PROSPECTOS
-                                </Text>
-                            </View>
-                        </View>
-                        <Image style = { styles.imagenCentrada }  src = { aux[9].url }/>
-                    </View>
-                </Page>
-                <Page style = { styles.pagina2 } size="A4" orientation = "landscape">
-                    <View style = { styles.page } >
-                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
-                            <View >
-                                <Text style = { styles.paginacion}>11</Text>
-                            </View>
-                            <View>
-                                <Text style = { styles.titulo }>    
-                                    OBSERVACIONES DE PROSPECTOS
-                                </Text>
-                            </View>
-                        </View>
-                        <View style = {{ marginTop: 40}}>
-                            <View style = { styles.table}  >
-                                <View style = { styles.tableRowHeader } >
-                                    <View style = { styles.cell20 }>
-                                        <Text style = { styles.headerText } >
-                                            NOMBRE DEL LEAD
-                                        </Text>
-                                    </View>
-                                    <View style = { styles.cell20 }>
-                                        <Text style = { styles.headerText } >
-                                            PROYECTO
-                                        </Text>
-                                    </View>
-                                    <View style = { styles.cell40 }>
-                                        <Text style = { styles.headerText } >
-                                            OBSERVACIONES
-                                        </Text>
-                                    </View>
-                                    <View style = { styles.cell20 }>
-                                        <Text style = { styles.headerText } >
-                                            STATUS
-                                        </Text>
-                                    </View>
-                                </View>
-                                {
-                                    this.state.form.leads.map( (lead, index) =>{
-                                        if(lead.prospecto)
-                                            return(
-                                                <View style = { this.setStyleRowBody(index) } >
-                                                    <View style = { styles.cell20 }>
-                                                        <Text style = { styles.bodyText } >
-                                                            {
-                                                                lead.nombre
-                                                            }
-                                                        </Text>
-                                                    </View>
-                                                    <View style = { styles.cell20 }>
-                                                        <Text style = { styles.bodyText } >
-                                                            {
-                                                                lead.servicios.map((serv)=> {
-                                                                    return serv.servicio
-                                                                })
-                                                            }
-                                                        </Text>
-                                                    </View>
-                                                    <View style = { styles.cell40 }>
-                                                        <Text style = { styles.bodyText } >
-                                                            {
-                                                                lead.observacion
-                                                            }
-                                                        </Text>
-                                                    </View>
-                                                    <View style = { styles.cell20 }>
-                                                        <Text style = { styles.bodyText } >
-                                                            {
-                                                                lead.prospecto.estatus_prospecto ?
-                                                                    lead.prospecto.estatus_prospecto.estatus
-                                                                :''
-                                                            }
-                                                        </Text>
-                                                    </View>
-                                                </View>
-                                            )
-                                    })
-                                }
-                            </View>
-                        </View>
-                        
-                    </View>
-                </Page>
-
-                <Page style = { styles.pagina } size="A4" orientation = "landscape">
-                    <View style = { styles.page } >
-                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
-                            <View >
-                                <Text style = { styles.paginacion}>12</Text>
-                            </View>
-                            <View>
-                                <Text style = { styles.titulo }>    
-                                    CONCLUSIONES
-                                </Text>
-                            </View>
-                        </View>
-                        <View style = { styles.table, { paddingTop: 50 } }  >
-                            {
-                                lista.map((element)=>{
-                                    if(element !== '')
-                                    return(
-                                        <View style = { styles.tableRow} >
-                                            <View style = { styles.cellListaDot }>
-                                                <View style = { styles.dot } >
-                                                    
-                                                </View>
-                                            </View>
-                                            <View style = { styles.cellLista }>
-                                                <Text>
-                                                    {
-                                                        element
-                                                    }
-                                                </Text>
-                                            </View>
-                                        </View>
-                                    )
-                                })
-                            }
-                        </View>
-                    </View>
-                </Page>
-            </Document>
+            this.setReporte( aux, lista )
         )).toBlob();
         form.adjuntos.reportes.files = [
             {
@@ -781,20 +295,14 @@ class ReporteVentas extends Component {
                 url: URL.createObjectURL(blob)
             }
         ]
+        if(form.adjuntos.reportes.files.length > 0)
+            window.open(form.adjuntos.reportes.files[0].url, '_blank');
         swal.close()
         this.setState({
             ... this.state,
-            form
+            form,
+            url: aux
         })
-    }
-
-    setStyleRowBody = index => {
-        if(index === 0)
-            return styles.tableRowBodyNon
-        if(index % 2)
-            return styles.tableRowBodyPar
-        else
-            return styles.tableRowBodyNon
     }
 
     async getOptionsAxios() {
@@ -835,29 +343,29 @@ class ReporteVentas extends Component {
         await axios.post(URL_DEV + 'reportes/ventas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { leads, leadsAnteriores, servicios, origenes, estatus } = response.data
-                const { data, form } = this.state
+                const { data, form, empresa } = this.state
                 data.total = {
-                    labels: ['Total'],
+                    labels: ['TOTAL'],
                     datasets: [{
                         data: [leads.length],
                         backgroundColor: [
-                            '#D8005A',
+                            this.setColor()
                         ],
                         hoverBackgroundColor: [
-                            '#D8005AD9',
+                            this.setColor()+'D9'
                         ]
                     }]
                 }
 
                 data.totalAnteriores = {
-                    labels: ['Total'],
+                    labels: ['TOTAL'],
                     datasets: [{
                         data: [leadsAnteriores.length],
                         backgroundColor: [
-                            '#D8005A',
+                            this.setColor()
                         ],
                         hoverBackgroundColor: [
-                            '#D8005AD9',
+                            this.setColor()+'D9'
                         ]
                     }]
                 }
@@ -878,7 +386,7 @@ class ReporteVentas extends Component {
                     })
                     if(contador)
                     {
-                        arrayLabes.push(origen.origen)
+                        arrayLabes.push(origen.origen.toUpperCase())
                         arrayData.push(contador)
                     }
                     leadsAnteriores.map((lead)=> {
@@ -888,7 +396,7 @@ class ReporteVentas extends Component {
                     })
                     if(contador2)
                     {
-                        arrayLabes2.push(origen.origen)
+                        arrayLabes2.push(origen.origen.toUpperCase())
                         arrayData2.push(contador2)
                     }
                 })
@@ -934,7 +442,7 @@ class ReporteVentas extends Component {
                     })
                     if(contador)
                     {
-                        arrayLabes.push(servicio.servicio)
+                        arrayLabes.push(servicio.servicio.toUpperCase())
                         arrayData.push(contador)
                     }
                     leadsAnteriores.map( (lead) => {
@@ -946,7 +454,7 @@ class ReporteVentas extends Component {
                     })
                     if(contador2)
                     {
-                        arrayLabes2.push(servicio.servicio)
+                        arrayLabes2.push(servicio.servicio.toUpperCase())
                         arrayData2.push(contador2)
                     }
                 })
@@ -985,7 +493,7 @@ class ReporteVentas extends Component {
                 colors = this.getBG(2);
 
                 data.tipos = {
-                    labels: ['basura', 'potencial'],
+                    labels: ['BASURA', 'POTENCIAL'],
                     datasets: [{
                         data: [contador, contador2],
                         backgroundColor: colors,
@@ -1006,7 +514,7 @@ class ReporteVentas extends Component {
                 colors = this.getBG(2);
 
                 data.tiposAnteriores = {
-                    labels: ['basura', 'potencial'],
+                    labels: ['BASURA', 'POTENCIAL'],
                     datasets: [{
                         data: [contador, contador2],
                         backgroundColor: colors,
@@ -1032,7 +540,7 @@ class ReporteVentas extends Component {
                     })
                     if(contador)
                     {
-                        arrayLabes.push(element.estatus)
+                        arrayLabes.push(element.estatus.toUpperCase())
                         arrayData.push(contador)
                     }
                 })
@@ -1052,7 +560,6 @@ class ReporteVentas extends Component {
                 contador2 = 0
                 
                 leads.map((lead)=>{
-                    console.log(lead.contactado, 'contactado')
                     if(lead.contactado === 1)
                         contador++
                     else
@@ -1062,7 +569,7 @@ class ReporteVentas extends Component {
                 colors = ['#388E3C', '#F64E60']
 
                 data.prospectos = {
-                    labels: ['convertido', 'sin convertir'],
+                    labels: ['CONVERTIDO', 'SIN CONVERTIR'],
                     datasets: [{
                         data: [contador, contador2],
                         backgroundColor: colors,
@@ -1181,21 +688,6 @@ class ReporteVentas extends Component {
                                     className = "mb-3"
                                     />
                             </div>
-                            {
-                                form.adjuntos.reportes.files.length > 0 ?
-                                    <div className="col-md-6">
-                                        {
-                                            leads.length && url.length > 0 ?
-                                                <>
-                                                    <div>
-                                                        <ItemSlider items={form.adjuntos.reportes.files} item='reportes' />
-                                                    </div>
-                                                </>
-                                            : ''
-                                        }
-                                    </div>
-                                : ''
-                            }
                         </div>
                         <Tab.Container activeKey = { key }>
                             <Tab.Content>
@@ -1258,7 +750,7 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'four'>
                                     {this.setButtons('three', 'five', null)}
-                                    <div className = "my-3 pt-4">
+                                    <div className = "my-3">
                                         <h3 className="card-label title-reporte-ventas">
                                             <strong>
                                                 04
@@ -1299,7 +791,7 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'six'>
                                     {this.setButtons('five', 'seven', null)}
-                                    <div className = "my-3 pt-4">
+                                    <div className = "my-3">
                                         <h3 className="card-label title-reporte-ventas">
                                             <strong>
                                                 06
@@ -1340,7 +832,7 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'eight'>
                                     {this.setButtons('seven', 'nine', null)}
-                                    <div className = "my-3 pt-4">
+                                    <div className = "my-3">
                                         <h3 className="card-label title-reporte-ventas">
                                             <strong>
                                                 08
@@ -1359,7 +851,7 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'nine'>
                                     {this.setButtons('eight', 'ten', null)}
-                                    <div className = "my-3 pt-4">
+                                    <div className = "my-3">
                                         <h3 className="card-label title-reporte-ventas">
                                             <strong>
                                                 09
@@ -1375,7 +867,7 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'ten'>
                                     {this.setButtons('nine', 'eleven', null)}
-                                    <div className = "my-3 pt-4">
+                                    <div className = "my-3">
                                         <h3 className="card-label title-reporte-ventas">
                                             <strong>
                                                 10
@@ -1391,7 +883,7 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'eleven'>
                                     {this.setButtons('ten', 'twelve', null)}
-                                    <div className = "my-3 pt-4">
+                                    <div className = "my-3">
                                         <h3 className="card-label title-reporte-ventas">
                                             <strong>
                                                 11
@@ -1472,7 +964,7 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'twelve'>
                                     {this.setButtons('eleven', null, true)}
-                                    <div className = "my-3 pt-4">
+                                    <div className = "my-3">
                                         <h3 className="card-label title-reporte-ventas">
                                             <strong>
                                                 12

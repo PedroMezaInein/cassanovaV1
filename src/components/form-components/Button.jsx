@@ -22,8 +22,11 @@ export default class button extends Component {
                                     <i className={only_icon}></i>
                                 }
                                 {
-                                    icon !== '' && <FontAwesomeIcon icon={icon} />
-                                }   <span className={pulse}></span>
+                                    icon !== undefined && icon !== '' ?
+                                        <FontAwesomeIcon icon={icon} />
+                                    : ''
+                                }
+                                <span className={pulse}></span>
 
                                 {text}
                                 {children}
@@ -35,7 +38,9 @@ export default class button extends Component {
                                 <i className={only_icon}></i>
                             }
                             {
-                                icon !== '' && <FontAwesomeIcon icon={icon} />
+                                icon !== undefined && icon !== '' ?
+                                    <FontAwesomeIcon icon={icon} />
+                                : ''
                             }<span className={pulse}></span>
 
                             {text}
