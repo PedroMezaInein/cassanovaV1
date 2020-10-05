@@ -64,10 +64,9 @@ class ReporteVentas extends Component {
     state = {
         editorState: EditorState.createEmpty(),
         empresa : '',
-        url: [],
         form:{
-            fechaInicio: null,
-            fechaFin: null,
+            fechaInicio: undefined,
+            fechaFin: undefined,
             fechaInicioRef: null,
             fechaFinRef: null,
             empresa: '',
@@ -239,7 +238,7 @@ class ReporteVentas extends Component {
     async generarPDF(){
         waitAlert()
         let aux = []
-        const { leads, form } = this.state
+        const { form, editorState } = this.state
         aux.push(
             {
                 name: 'total',
@@ -282,7 +281,7 @@ class ReporteVentas extends Component {
                 url: this.chartEstatusProspectosReference.current.chartInstance.toBase64Image()
             }
         )
-        let lista = draftToMarkdown(convertToRaw(this.state.editorState.getCurrentContent()))
+        let lista = draftToMarkdown(convertToRaw(editorState.getCurrentContent()))
         lista = lista.toUpperCase();
         lista = lista.replace(/\n|\r/g, "");
         lista = lista.split('-')
@@ -300,8 +299,7 @@ class ReporteVentas extends Component {
         swal.close()
         this.setState({
             ... this.state,
-            form,
-            url: aux
+            form
         })
     }
 
@@ -666,7 +664,7 @@ class ReporteVentas extends Component {
         });
     };
     render() {
-        const { form, leads, data, url, key } = this.state
+        const { form, leads, data, options: opciones, key, editorState } = this.state
         
         return (
             <Layout active = 'reportes'  {...this.props}>
@@ -681,7 +679,7 @@ class ReporteVentas extends Component {
                             <div className="col-md-12">                                
                                 <FlujosReportesVentas
                                     form = { form }
-                                    options = { this.state.options }
+                                    options = { opciones }
                                     onChangeRange = { this.onChangeRange }
                                     onChangeRangeRef = { this.onChangeRangeRef }
                                     onChange = { this.onChange }
@@ -983,7 +981,7 @@ class ReporteVentas extends Component {
                                                 },
                                             }
                                         }
-                                        editorState = { this.state.editorState }
+                                        editorState = { editorState }
                                         onEditorStateChange={this.onEditorStateChange}
                                         />
                                 </Tab.Pane>

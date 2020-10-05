@@ -30,22 +30,24 @@ class FlujosReportesForm extends Component {
                 <div className="row mx-0 mt-5 mb-3 justify-content-center">
                     <div className="col-md-6 text-center">
                         <div>
-                            <label class="col-form-label text-center">Fechas del reporte</label>
+                            <label className="col-form-label text-center">Fechas del reporte</label>
                         </div>
                         <RangeCalendar
                             onChange={onChangeRange}
                             start={form.fechaInicio}
                             end={form.fechaFin}
+                            key = 'selection-range'
                         />
                     </div>
                     <div className="col-md-6 text-center">
                         <div>
-                            <label class="col-form-label text-center">Fechas de referencia</label>
+                            <label className="col-form-label text-center">Fechas de referencia</label>
                         </div>
                         <RangeCalendar
                             onChange={onChangeRangeRef}
                             start={form.fechaInicioRef}
                             end={form.fechaFinRef}
+                            key = 'selection-ref'
                         />
                     </div>
                 </div>
