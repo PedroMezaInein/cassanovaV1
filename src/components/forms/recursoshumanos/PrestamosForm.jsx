@@ -2,12 +2,17 @@ import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { DATE } from '../../../constants';
 import { validateAlert } from '../../../functions/alert';
-import { SelectSearch, InputMoney, Calendar, Input, Button } from '../../form-components';
+import { SelectSearch, InputMoney, Calendar, Input, Button, InputNumber} from '../../form-components';
 import { ItemSlider } from '../../singles'
+import { ABONO } from '../../../constants'
 export default class componentName extends Component {
     handleChangeDate = (date) => {
         const { onChange } = this.props
         onChange({ target: { name: 'fecha', value: date } })
+    }
+    handleChangeDateAbono = (date) => {
+        const { onChange } = this.props
+        onChange({ target: { name: 'fecha_abono', value: date } })
     }
     updateEmpleado = value => {
         const { onChange } = this.props
@@ -25,7 +30,7 @@ export default class componentName extends Component {
                 }
                 {...props} >
                 <div className="form-group row form-group-marginless justify-content-md-center">
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <SelectSearch
                             formeditado={formeditado}
                             options={options.empleados}
@@ -33,19 +38,38 @@ export default class componentName extends Component {
                             name='empleado'
                             value={form.empleado}
                             onChange={this.updateEmpleado}
-                            iconclass='fas fa-user-alt' />
+                            iconclass='fas fa-user-alt'
+                        />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-9">
+                        <Input
+                            requirevalidation={0}
+                            formeditado={0}
+                            rows="1"
+                            as="textarea"
+                            placeholder="DESCRIPCIÓN"
+                            name="descripcion"
+                            value={form.descripcion}
+                            onChange={onChange}
+                            style={{ paddingLeft: "10px" }}
+                            messageinc="Incorrecto. Ingresa la descripción."
+                        />
+                    </div>
+                </div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-3">
                         <Calendar
                             formeditado={formeditado}
                             onChangeCalendar={this.handleChangeDate}
-                            placeholder='FECHA'
+                            placeholder='FECHA DEL PRESTAMO'
                             name='fecha'
                             value={form.fecha}
                             patterns={DATE}
-                            iconclass='fas fa-calendar' />
+                            iconclass='fas fa-calendar'
+                        />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <InputMoney
                             requirevalidation={1}
                             formeditado={formeditado}
@@ -53,27 +77,50 @@ export default class componentName extends Component {
                             onChange={onChange}
                             value={form.monto}
                             type="text"
-                            placeholder="MONTO"
+                            placeholder="MONTO DEL PRESTAMO"
                             iconclass="fas fa-dollar-sign"
                             thousandseparator={true}
-                            messageinc="Incorrecto. Ingresa el monto." />
+                        />
                     </div>
-                </div>
-                <div className="form-group row form-group-marginless">
-                    <div className="col-md-12">
+                    <div className="col-md-3">
+                        {/* <Calendar
+                            formeditado={formeditado}
+                            onChangeCalendar={this.handleChangeDateAbono}
+                            placeholder='FECHA DEL ABONO'
+                            name='fecha_abono'
+                            value={form.fecha_abono}
+                            patterns={DATE}
+                            iconclass='fas fa-calendar'
+                        /> */}
                         <Input
-                            requirevalidation={0}
-                            formeditado={0}
-                            rows="2"
-                            as="textarea"
-                            placeholder="DESCRIPCIÓN"
-                            name="descripcion"
-                            value={form.descripcion}
+                            requirevalidation={1}
+                            formeditado={formeditado}
+                            name="periodo_abono"
                             onChange={onChange}
-                            style={{ paddingLeft: "10px" }}
-                            messageinc="Incorrecto. Ingresa la descripción." />
+                            value={form.periodo_abono}
+                            type="text"
+                            placeholder="DÍAS DE ABONO"
+                            iconclass="fas fa-dollar-sign"
+                            // maxLength="2"
+                            messageinc="Incorrecto. Ingresa el periodo del abono."
+                            // patterns={ABONO}
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <InputMoney
+                            requirevalidation={1}
+                            formeditado={formeditado}
+                            name="cantidad_abono"
+                            onChange={onChange}
+                            value={form.cantidad_abono}
+                            type="text"
+                            placeholder="CANTIDAD DEL ABONO"
+                            iconclass="fas fa-dollar-sign"
+                            thousandseparator={true}
+                        />
                     </div>
                 </div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless justify-content-center">
                     <div className="col-md-6">
                         <ItemSlider

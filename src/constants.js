@@ -86,8 +86,8 @@ export const ICONS_MODULES = {
     export const EMAIL = '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$'
     // export const EMAIL='/^(?:[^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*|"[^\n"]+")@(?:[^<>()[\].,;:\s@"]+\.)+[^<>()[\]\.,;:\s@"]{2,63}$/i'
     export const NSS = '^(\d{2})(\d{2})(\d{2})\d{5}$'
-    export const CURP = '^[A-Z]{1}[AEIOU]{1}[A-Z]{2}[0-9]{2}(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])[HM]{1}(AS|BC|BS|CC|CS|CH|CL|CM|DF|DG|GT|GR|HG|JC|MC|MN|MS|NT|NL|OC|PL|QT|QR|SP|SL|SR|TC|TS|TL|VZ|YN|ZS|NE)[B-DF-HJ-NP-TV-Z]{3}[0-9A-Z]{1}[0-9]{1}$'
-
+    export const CURP = '/^[a-z]{4}\d{6}[HM][a-z]{5}\d{2}$/i'
+    // export const ABONO = '/^[12-40]$/'
 //Form
 
 export const EMPTY_EMPLEADO = {
