@@ -4,6 +4,7 @@ import INEIN from '../../assets/logos/inein.png'
 import PoppinsBold from '../../assets/fonts/Poppins-Bold.ttf'
 import Poppins from '../../assets/fonts/Poppins-Regular.ttf'
 import moment from 'moment'
+import { INEIN_RED } from '../../constants'
 
 Font.register({
     family: 'Poppins',
@@ -18,13 +19,13 @@ const styles = StyleSheet.create({
         width: 3,
         height: 3,
         borderRadius: 0.5,
-        backgroundColor: '#D8005A'
+        backgroundColor: INEIN_RED
     },
     pagina: {
-        backgroundColor: '#D8005A'
+        backgroundColor: INEIN_RED
     },
     pagina2: {
-        backgroundColor: '#565656'
+        backgroundColor: '#525252'
     },
     page: {
         paddingTop: '40px',
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white'
     },
     paginacion:{
-        color: 'red',
+        color: INEIN_RED,
         fontWeight: 'bold',
         fontFamily: 'Poppins',
         fontSize: 35
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
     tableRowHeader:{
         display: 'flex',
         flexDirection: 'row',
-        backgroundColor: '#D8005A'
+        backgroundColor: INEIN_RED
     },
     tableRowBodyNon:{
         display: 'flex',
@@ -79,7 +80,7 @@ const styles = StyleSheet.create({
     },
     footerTable1:{
         width: '12%', height: '100%', marginTop: 'auto', marginBottom: 'auto',
-        border: 'solid', borderRightWidth: 3, borderColor: '#D8005A', flexDirection: 'row', display: 'flex', alignItems: 'center'
+        border: 'solid', borderRightWidth: 3, borderColor: INEIN_RED, flexDirection: 'row', display: 'flex', alignItems: 'center'
     },
     footerTable2:{
         width: '21%', height: '100%', marginTop: 'auto', marginBottom: 'auto',
@@ -152,7 +153,7 @@ const styles = StyleSheet.create({
         marginTop: 100
     },
     lineaNegra:{
-        backgroundColor: '#323232',
+        backgroundColor: '#525252',
         position: 'absolute',
         height: '70%',
         width: '10px',
@@ -160,7 +161,7 @@ const styles = StyleSheet.create({
         left: 20
     },
     lineaRoja:{
-        backgroundColor: '#D8005A',
+        backgroundColor: INEIN_RED,
         position: 'absolute',
         height: '70%',
         width: '10px',

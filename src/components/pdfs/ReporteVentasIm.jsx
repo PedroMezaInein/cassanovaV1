@@ -4,6 +4,7 @@ import IM from '../../assets/logos/im.png'
 import SpartanBold from '../../assets/fonts/Spartan-Bold.ttf'
 import Spartan from '../../assets/fonts/Spartan-Regular.ttf'
 import moment from 'moment'
+import { IM_AZUL, IM_DORADO } from '../../constants'
 
 Font.register({
     family: 'Spartan',
@@ -18,13 +19,13 @@ const styles = StyleSheet.create({
         width: 3,
         height: 3,
         borderRadius: 0.5,
-        backgroundColor: '#7096c1'
+        backgroundColor: IM_AZUL
     },
     pagina: {
-        backgroundColor: '#7096c1'
+        backgroundColor: IM_AZUL
     },
     pagina2: {
-        backgroundColor: '#bdab71'
+        backgroundColor: IM_DORADO
     },
     page: {
         paddingTop: '40px',
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white'
     },
     paginacion:{
-        color: '#7096c1',
+        color: IM_AZUL,
         fontWeight: 'bold',
         fontFamily: 'Spartan',
         fontSize: 35
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
     tableRowHeader:{
         display: 'flex',
         flexDirection: 'row',
-        backgroundColor: '#7096c1'
+        backgroundColor: IM_AZUL
     },
     tableRowBodyNon:{
         display: 'flex',
@@ -79,18 +80,18 @@ const styles = StyleSheet.create({
     },
     footerTable1:{
         width: '10%', height: '100%', marginTop: 'auto', marginBottom: 'auto',
-        border: 'solid', borderRightWidth: 3, borderColor: '#7096c1', flexDirection: 'row', display: 'flex', alignItems: 'center'
+        border: 'solid', borderRightWidth: 3, borderColor: IM_AZUL, flexDirection: 'row', display: 'flex', alignItems: 'center'
     },
     footerTable2:{
         width: '28%', height: '100%', marginTop: 'auto', marginBottom: 'auto',
         flexDirection: 'row', display: 'flex', alignItems: 'center', marginLeft: 5
     },
     footerTable3:{
-        width: '17%', height: '100%', marginTop: 'auto', marginBottom: 'auto',
+        width: '15%', height: '100%', marginTop: 'auto', marginBottom: 'auto',
         flexDirection: 'row', display: 'flex', alignItems: 'center', marginLeft: 5
     },
     footerTable4:{
-        width: '22%', height: '100%', marginTop: 'auto', marginBottom: 'auto',
+        width: '24%', height: '100%', marginTop: 'auto', marginBottom: 'auto',
         flexDirection: 'row', display: 'flex', alignItems: 'center', marginLeft: 5
     },
     cell: {
@@ -160,7 +161,7 @@ const styles = StyleSheet.create({
         marginTop: 100
     },
     lineaNegra:{
-        backgroundColor: '#bdab71',
+        backgroundColor: IM_DORADO,
         position: 'absolute',
         height: '70%',
         width: '10px',
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
         left: 20
     },
     lineaRoja:{
-        backgroundColor: '#7096c1',
+        backgroundColor: IM_AZUL,
         position: 'absolute',
         height: '70%',
         width: '10px',
