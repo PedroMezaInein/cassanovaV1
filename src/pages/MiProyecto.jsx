@@ -1162,12 +1162,12 @@ class MiProyecto extends Component {
                                 ticket ? 
                                     <>
                                         <Tab.Pane eventKey="first">
-                                            <p className="my-5 lead font-weight-bold text-justify">{ticket.descripcion_solucion}</p>
+                                            <p className="my-5 lead font-weight-bold text-justify">{ticket.descripcion_solucion !== "null" ? ticket.descripcion_solucion :''}</p>
                                             <div className="table-responsive">
                                                 <div className="list min-w-500px" data-inbox="list">
                                                     <div className="d-flex justify-content-center align-items-center list-item ">
 
-                                                    <div className="col-md-4 d-flex align-items-center justify-content-center px-0">
+                                                    <div className={ticket.recibe !== "null"? "col-md-4 d-flex align-items-center justify-content-center px-0": "col-md-6 d-flex align-items-center justify-content-center px-0"}>
                                                             <div className="symbol symbol-35 symbol-light-primary mr-3 flex-shrink-0">
                                                                 <div className="symbol-label">
                                                                     <span className="svg-icon svg-icon-primary svg-icon-lg">
@@ -1186,7 +1186,7 @@ class MiProyecto extends Component {
                                                                 :''
                                                             }
                                                         </div>
-                                                        <div className="col-md-4 d-flex align-items-center justify-content-center px-0">
+                                                        <div className={ticket.recibe !== "null"? "col-md-4 d-flex align-items-center justify-content-center px-0": "col-md-6 d-flex align-items-center justify-content-center px-0"}>
                                                             <div className="symbol symbol-35 symbol-light-primary mr-3 flex-shrink-0">
                                                                 <div className="symbol-label">
                                                                     <span className="svg-icon svg-icon-primary svg-icon-lg">
@@ -1202,22 +1202,26 @@ class MiProyecto extends Component {
                                                                 <span className="text-muted ">FECHA PROGRAMADA</span>
                                                             </div>
                                                         </div>
+                                                        {
+                                                            ticket.recibe !== "null" ?
+                                                            <div className={ticket.recibe !== "null"? "col-md-4 d-flex align-items-center justify-content-center px-0": "col-md-6 d-flex align-items-center justify-content-center px-0"}>
+                                                                <div className="symbol symbol-35 symbol-light-primary mr-3 flex-shrink-0">
+                                                                    <div className="symbol-label">
+                                                                        <span className="svg-icon svg-icon-primary svg-icon-lg">
+                                                                            <SVG src={toAbsoluteUrl('/images/svg/Menu.svg')} />
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="d-flex flex-column font-weight-bold">
+                                                                    <div className="text-dark mb-1 ">
+                                                                        {ticket.recibe !== "null" ? ticket.recibe :''}
+                                                                    </div>
+                                                                    <span className="text-muted ">¿QUIÉN RECIBE?</span>
+                                                                </div>
+                                                            </div>
+                                                            :''
+                                                        }
                                                         
-                                                        <div className="col-md-4 d-flex align-items-center justify-content-center px-0">
-                                                            <div className="symbol symbol-35 symbol-light-primary mr-3 flex-shrink-0">
-                                                                <div className="symbol-label">
-                                                                    <span className="svg-icon svg-icon-primary svg-icon-lg">
-                                                                        <SVG src={toAbsoluteUrl('/images/svg/Menu.svg')} />
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                            <div className="d-flex flex-column font-weight-bold">
-                                                                <div className="text-dark mb-1 ">
-                                                                    {ticket.recibe}
-                                                                </div>
-                                                                <span className="text-muted ">¿QUIÉN RECIBE?</span>
-                                                            </div>
-                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
