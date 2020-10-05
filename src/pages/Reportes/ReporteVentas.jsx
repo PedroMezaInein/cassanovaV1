@@ -18,6 +18,7 @@ import { EditorState, convertToRaw } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import draftToMarkdown from 'draftjs-to-markdown';
 import ReporteVentasInein from '../../components/pdfs/ReporteVentasInein'
+import ReporteVentasIm from '../../components/pdfs/ReporteVentasIm'
 
 const options = {
     plugins: {
@@ -62,6 +63,7 @@ class ReporteVentas extends Component {
 
     state = {
         editorState: EditorState.createEmpty(),
+        empresa : '',
         url: [],
         form:{
             fechaInicio: null,
@@ -136,14 +138,24 @@ class ReporteVentas extends Component {
 
     onChange = e => {
         const { name, value } = e.target
-        const { form } = this.state
+        const { form, options } = this.state
+        let { empresa } = this.state
         form[name] = value
+        
         if(form.empresa !== '' && form.fechaInicio !== null && form.fechaFin !== null && form.fechaInicioRef !== null && form.fechaFinRef !== null){
             this.getReporteVentasAxios()
         }
+        if(name === 'empresa'){
+            options.empresas.map((emp)=>{
+                
+                if(emp.value === value)
+                    empresa = emp.name
+            })
+        }
         this.setState({
             ... this.state,
-            form
+            form,
+            empresa
         })
     }
 
@@ -198,6 +210,32 @@ class ReporteVentas extends Component {
         return año
     }
 
+    setReporte = ( images, lista ) => {
+        const { empresa, form  } = this.state
+        switch(empresa){
+            case 'INEIN':
+                return(
+                    <ReporteVentasInein form = { form } images = { images }
+                        lista = { lista } />
+                )
+            case 'INFRAESTRUCTURA MÉDICA':
+                return(
+                    <ReporteVentasIm form = { form } images = { images }
+                        lista = { lista } />
+                )
+        }
+    }
+
+    setColor = () => {
+        const { empresa } = this.state
+        switch(empresa){
+            case 'INEIN':
+                return '#D8005A'
+            case 'INFRAESTRUCTURA MÉDICA':
+                return '#7096c1'
+        }
+    }
+
     async generarPDF(){
         waitAlert()
         let aux = []
@@ -249,8 +287,7 @@ class ReporteVentas extends Component {
         lista = lista.replace(/\n|\r/g, "");
         lista = lista.split('-')
         const blob = await pdf((
-            <ReporteVentasInein form = { form } images = { aux }
-                lista = { lista } />
+            this.setReporte( aux, lista )
         )).toBlob();
         form.adjuntos.reportes.files = [
             {
@@ -306,16 +343,16 @@ class ReporteVentas extends Component {
         await axios.post(URL_DEV + 'reportes/ventas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { leads, leadsAnteriores, servicios, origenes, estatus } = response.data
-                const { data, form } = this.state
+                const { data, form, empresa } = this.state
                 data.total = {
                     labels: ['TOTAL'],
                     datasets: [{
                         data: [leads.length],
                         backgroundColor: [
-                            '#D8005A',
+                            this.setColor()
                         ],
                         hoverBackgroundColor: [
-                            '#D8005AD9',
+                            this.setColor()+'D9'
                         ]
                     }]
                 }
@@ -325,10 +362,10 @@ class ReporteVentas extends Component {
                     datasets: [{
                         data: [leadsAnteriores.length],
                         backgroundColor: [
-                            '#D8005A',
+                            this.setColor()
                         ],
                         hoverBackgroundColor: [
-                            '#D8005AD9',
+                            this.setColor()+'D9'
                         ]
                     }]
                 }
