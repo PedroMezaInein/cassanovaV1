@@ -422,3 +422,15 @@ table.dataTable.display tbody > tr.selected > .sorting_1{
 a.text-pink:hover, a.text-pink:focus {
     color: #e6217c !important; 
 }
+
+#card-accordion{
+    @include screen($md){
+        width:500px!important;
+    }
+    @include screen($lg){
+        width:450px!important;
+    }
+    @include screen($xxl){
+        width:600px!important;
+    }
+}

@@ -153,7 +153,7 @@ class FlujoProyectos extends Component {
                                 {
                                     form.empresa ? 
                                     <>
-                                        <div className="d-flex justify-content-center">
+                                        <div className="d-flex justify-content-center mt-4">
                                             <TablaReportes    
                                                 proyectos={proyectos}
                                             />

@@ -56,15 +56,14 @@ class TablaReportesDepartamento extends Component {
         const { departamentos } = this.props
         const { active } = this.state
         return (
-            <div className="table-responsive w-75">
+            <div className="table-responsive w-75 mt-5 table-hover">
                 <table className="table table-head-custom table-head-bg table-vertical-center">
                     <thead>
                         <tr>
-                            <th className="pl-7">
+                            <th className="pl-7 rounded-0">
                                 <span className="text-dark-75 font-size-lg">Departamento</span>
                             </th>
-                            
-                            <th className="text-right">
+                            <th className="text-right rounded-0">
                                 <span className="text-muted font-weight-bold">Egresos</span>
                                 <span className="text-dark-75 font-weight-bolder d-block font-size-lg">{setMoneyTableSinSmall(this.sumaTotalEgresosDepartamentos())}</span>
                             </th>
@@ -76,7 +75,7 @@ class TablaReportesDepartamento extends Component {
                                 return(
                                     <>
                                         <tr key={key} className="border-bottom" onClick = { (e) => { e.preventDefault(); this.setDeptos(departamento) } }>
-                                            <td className="btn btn-hover  p-2">
+                                            <td className="p-2">
                                                 <div className="d-flex align-items-start">
                                                     <div>
                                                         <div className="text-dark-75 mb-1 font-size-lg pl-2">{departamento.nombre}</div>
@@ -95,7 +94,7 @@ class TablaReportesDepartamento extends Component {
                                                             <td className="p-2">
                                                                 <div className="d-flex align-items-start">
                                                                     <div className="pl-4">
-                                                                        <div className="text-dark-75 mb-1 font-size-md pl-2">{subarea.nombre}</div>
+                                                                        <div className="text-dark-75 mb-1 font-size-md font-weight-bolder">&bull;&nbsp;{subarea.nombre}</div>
                                                                     </div>
                                                                 </div>
                                                             </td>

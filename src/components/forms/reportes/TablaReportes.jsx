@@ -45,20 +45,20 @@ class TablaReportes extends Component {
     render() {
         const { proyectos } = this.props
         return (
-            <div className="table-responsive">
+            <div className="table-responsive table-hover">
                 <table className="table table-head-custom table-head-bg table-borderless table-vertical-center">
                     <thead>
                         <tr>
-                            <th style={{ minWidth: "250px" }} className="pl-7 text-left ">
+                            <th className="pl-7 text-left w-auto rounded-0">
                                 <span className="text-dark-75 font-size-lg">Proyecto</span>
                             </th>
                             
-                            <th className="text-right">
+                            <th className="text-right rounded-0">
                                 <span className="text-muted font-weight-bold">Ventas</span>
                                 <span className="text-dark-75 font-weight-bolder d-block font-size-sm">{setMoneyTableSinSmall(this.sumaTotalVentasProyectos())}</span>
                             </th>
                             
-                            <th className="text-right">
+                            <th className="text-right rounded-0">
                                 <span className="text-muted font-weight-bold">Compras</span>
                                 <span className="text-dark-75 font-weight-bolder d-block font-size-sm">{setMoneyTableSinSmall(this.sumaTotalComprasProyectos())}</span>
                             </th>
@@ -71,7 +71,7 @@ class TablaReportes extends Component {
                                         <tr className="text-right border-bottom" key={key}>
                                                 <td className="p-2">
                                                     <div className="d-flex align-items-start">
-                                                        <div className="text-dark-75 mb-1 font-size-sm pl-2">{proyecto.nombre}</div>
+                                                        <div className="text-dark-75 mb-1 font-size-sm pl-2 text-justify">{proyecto.nombre}</div>
                                                     </div>
                                                 </td>           
                                                 <td>
