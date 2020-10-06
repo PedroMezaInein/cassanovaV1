@@ -23,8 +23,8 @@ class PrestamosForm extends Component {
             fecha: new Date(),
             monto: 0.0,
             descripcion: '',
-            periodo_abono:'',
-            cantidad_abono:'',
+            periodo:0,
+            numero_abono:'',
             adjuntos: {
                 adjuntos:{
                     files: [],

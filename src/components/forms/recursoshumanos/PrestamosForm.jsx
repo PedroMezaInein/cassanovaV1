@@ -2,9 +2,8 @@ import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { DATE } from '../../../constants';
 import { validateAlert } from '../../../functions/alert';
-import { SelectSearch, InputMoney, Calendar, Input, Button, InputNumber} from '../../form-components';
+import { SelectSearch, InputMoney, Calendar, Input, Button, InputNumber } from '../../form-components';
 import { ItemSlider } from '../../singles'
-import { ABONO } from '../../../constants'
 export default class componentName extends Component {
     handleChangeDate = (date) => {
         const { onChange } = this.props
@@ -83,40 +82,34 @@ export default class componentName extends Component {
                         />
                     </div>
                     <div className="col-md-3">
-                        {/* <Calendar
-                            formeditado={formeditado}
-                            onChangeCalendar={this.handleChangeDateAbono}
-                            placeholder='FECHA DEL ABONO'
-                            name='fecha_abono'
-                            value={form.fecha_abono}
-                            patterns={DATE}
-                            iconclass='fas fa-calendar'
-                        /> */}
-                        <Input
-                            requirevalidation={1}
-                            formeditado={formeditado}
-                            name="periodo_abono"
-                            onChange={onChange}
-                            value={form.periodo_abono}
-                            type="text"
-                            placeholder="DÍAS DE ABONO"
-                            iconclass="fas fa-dollar-sign"
-                            // maxLength="2"
-                            messageinc="Incorrecto. Ingresa el periodo del abono."
-                            // patterns={ABONO}
-                        />
+                        <Form.Label className="col-form-label">Selecciona el periodo</Form.Label>
+                        <div className="input-icon">
+                            <span className="input-icon input-icon-right">
+                                <span>
+                                    <i className="far fa-calendar-alt kt-font-boldest text-primary"></i>
+                                </span>
+                            </span>
+                            <Form.Control className="form-control is-valid text-uppercase" onChange={onChange} name='periodo' formeditado={formeditado} as="select">
+                                <option disabled selected value> Selecciona el periodo</option>
+                                <option value={"semanal"}>Semanal</option>
+                                <option value={"quincenal"}>Quincenal</option>
+                                <option value={"mensual"}>Mensual</option>
+                                <option value={"bimestral"}>Bimestral</option>
+                                <option value={"trimestral"}>Trimestral</option>
+                            </Form.Control>
+                        </div>
                     </div>
                     <div className="col-md-3">
-                        <InputMoney
-                            requirevalidation={1}
+                        <InputNumber
+                            requirevalidation={0}
                             formeditado={formeditado}
-                            name="cantidad_abono"
+                            name="numero_abono"
                             onChange={onChange}
-                            value={form.cantidad_abono}
+                            value={form.numero_abono}
                             type="text"
-                            placeholder="CANTIDAD DEL ABONO"
-                            iconclass="fas fa-dollar-sign"
-                            thousandseparator={true}
+                            placeholder="Numero de abonos"
+                            iconclass={"flaticon2-list-2"}
+                            messageinc="Incorrecto. Ingresa el número de abonos."
                         />
                     </div>
                 </div>
