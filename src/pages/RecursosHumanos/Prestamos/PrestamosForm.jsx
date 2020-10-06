@@ -8,10 +8,7 @@ import { deleteAlert, doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } f
 import { setOptions } from '../../../functions/setters';
 import axios from 'axios'
 import { PrestamosForm as PrestamosFormulario } from '../../../components/forms'
-import moment from 'moment'
-
 class PrestamosForm extends Component {
-
     state = {
         prestamo: '',
         title: 'Nuevo préstamos',
