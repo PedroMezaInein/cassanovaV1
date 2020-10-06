@@ -36,7 +36,7 @@ import cuentaCard from './Bancos/CuentaCard'
 import areaCard from './Catalogos/AreaCard'
 import partidaCard from './Catalogos/PartidaCard'
 import preciosDiseñoCard from './Catalogos/PreciosDiseñoCard'
-
+import adjuntoFormCard from './Catalogos/AdjuntoFormCard'
 //Leads
 import leadCard from './Leads/LeadCard'
 import prospectoCard from './Leads/ProspectoCard'
@@ -84,6 +84,7 @@ export const CuentaCard = cuentaCard
 export const AreaCard = areaCard
 export const PartidaCard = partidaCard
 export const PreciosDiseñoCard = preciosDiseñoCard
+export const AdjuntoFormCard = adjuntoFormCard
 //Leads
 export const LeadCard = leadCard
 export const ProspectoCard = prospectoCard

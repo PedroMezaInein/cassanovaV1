@@ -1968,3 +1968,21 @@ export const PROYECTOS_TICKETS = [
         accessor: 'motivo',
     }
 ]
+export const ADJUNTOS_EMPRESA_COLUMNS = [
+    {
+        Header: 'OPCIONES',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Empresa',
+        accessor: 'empresa'
+    },
+    {
+        Header: 'Tipo de adjunto',
+        accessor: 'tipo_adjunto',
+    },
+    {
+        Header: 'Adjunto',
+        accessor: 'adjunto',
+    }
+]
