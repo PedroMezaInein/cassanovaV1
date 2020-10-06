@@ -4,7 +4,7 @@ import { DATE } from '../../../constants';
 import { validateAlert } from '../../../functions/alert';
 import { SelectSearch, InputMoney, Calendar, Input, Button, InputNumber } from '../../form-components';
 import { ItemSlider } from '../../singles'
-export default class componentName extends Component {
+export default class PrestamosForm extends Component {
     handleChangeDate = (date) => {
         const { onChange } = this.props
         onChange({ target: { name: 'fecha', value: date } })
@@ -89,8 +89,8 @@ export default class componentName extends Component {
                                     <i className="far fa-calendar-alt kt-font-boldest text-primary"></i>
                                 </span>
                             </span>
-                            <Form.Control className="form-control is-valid text-uppercase" onChange={onChange} name='periodo' formeditado={formeditado} as="select">
-                                <option disabled selected value> Selecciona el periodo</option>
+                            <Form.Control className="form-control is-valid text-uppercase" value = {form.periodo} onChange={onChange} name='periodo' formeditado={formeditado} as="select">
+                                <option disabled selected value = {0}> Selecciona el periodo</option>
                                 <option value={"semanal"}>Semanal</option>
                                 <option value={"quincenal"}>Quincenal</option>
                                 <option value={"mensual"}>Mensual</option>

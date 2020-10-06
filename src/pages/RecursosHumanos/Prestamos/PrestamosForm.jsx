@@ -68,6 +68,10 @@ class PrestamosForm extends Component {
                             })
                         if(prestamo.empleado)
                             form.empleado = prestamo.empleado.id.toString()
+                        if(prestamo.periodo)    
+                            form.periodo = prestamo.periodo
+                        if(prestamo.numero_abonos)
+                            form.numero_abono = prestamo.numero_abonos
                         form.fecha = new Date(prestamo.fecha)
                         form.monto = prestamo.monto
                         form.descripcion = prestamo.descripcion
