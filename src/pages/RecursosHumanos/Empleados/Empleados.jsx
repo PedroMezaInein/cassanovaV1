@@ -8,7 +8,7 @@ import { Modal, ModalDelete } from '../../../components/singles'
 import { EMPLEADOS_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS } from '../../../constants'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { AdjuntosForm } from '../../../components/forms'
-import { setOptions, setTextTable, setArrayTable, setAdjuntosList, setDateTable } from '../../../functions/setters'
+import { setOptions, setTextTable, setArrayTable, setAdjuntosList, setDateTable,setLabelTable } from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert, deleteAlert, doneAlert } from '../../../functions/alert'
 import { Tabs, Tab } from 'react-bootstrap'
 import TableForModals from '../../../components/tables/TableForModals'
@@ -282,7 +282,7 @@ class Empleados extends Component {
                         rfc: renderToString(setTextTable(empleado.rfc)),
                         nss: renderToString(setTextTable(empleado.nss)),
                         curp: renderToString(setTextTable(empleado.curp)),
-                        estatus: renderToString(setTextTable(empleado.estatus_empleado)),
+                        estatus: renderToString(this.setLabel(empleado.estatus_empleado)),
                         fechaInicio: renderToString(setDateTable(empleado.fecha_inicio)),
                         cuenta: renderToString(setArrayTable(
                             [
@@ -303,6 +303,19 @@ class Empleados extends Component {
                 )
             })
         return aux
+    }
+    setLabel = estatus => {
+        let text = {}
+        if (estatus === "Activo") {
+            text.letra = '#388E3C'
+            text.fondo = '#E8F5E9'
+            text.estatus = 'Activo'
+        } else {
+            text.letra = '#F64E60'
+            text.fondo = '#FFE2E5'
+            text.estatus = 'Inactivo'
+        }
+        return setLabelTable(text)
     }
     setActions = () => {
         let aux = []
