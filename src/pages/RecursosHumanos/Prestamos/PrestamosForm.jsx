@@ -8,6 +8,7 @@ import { deleteAlert, doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } f
 import { setOptions } from '../../../functions/setters';
 import axios from 'axios'
 import { PrestamosForm as PrestamosFormulario } from '../../../components/forms'
+import moment from 'moment'
 
 class PrestamosForm extends Component {
 
@@ -72,7 +73,7 @@ class PrestamosForm extends Component {
                             form.periodo = prestamo.periodo
                         if(prestamo.numero_abonos)
                             form.numero_abono = prestamo.numero_abonos
-                        form.fecha = new Date(prestamo.fecha)
+                        form.fecha = new Date(prestamo.fecha + 'T00:00:00')
                         form.monto = prestamo.monto
                         form.descripcion = prestamo.descripcion
                         form.adjuntos.adjuntos.files = aux
