@@ -15,6 +15,8 @@ const $ = require('jquery');
 class UsuariosForm extends Component {
 
     state = {
+        departamentos_disponibles:[],
+        proyectos_disponibles:[],
         users: [],
         user: '',
         modal: {
@@ -114,6 +116,7 @@ class UsuariosForm extends Component {
                                 formeditado:1
                             })
                         }
+                        
                     }
                     else
                         history.push('/usuarios/usuarios')
@@ -126,6 +129,7 @@ class UsuariosForm extends Component {
         if (!usuarios)
             history.push('/')
         this.getOptionsAxios();
+        
     }
 
     async getOptionsAxios() {
@@ -145,7 +149,9 @@ class UsuariosForm extends Component {
                 this.setState({
                     ... this.state,
                     options
-                })
+                });
+                this.showDepartamentos();
+                this.showProyectos();
             },
             (error) => {
                 console.log(error, 'error')
@@ -295,7 +301,9 @@ class UsuariosForm extends Component {
         this.setState({
             ... this.state,
             form
-        })
+        }) 
+        if(e.target.name==="departamento"){this.showDepartamentos();}
+        if(e.target.name==="proyecto"){this.showProyectos();} 
     }
 
     onSubmit = e => {
@@ -340,6 +348,7 @@ class UsuariosForm extends Component {
 
     deleteOption = (element, array) => {
         let { form } = this.state
+
         let auxForm = []
         form[array].map( ( elemento, key ) => {
             if(element !== elemento){
@@ -350,26 +359,45 @@ class UsuariosForm extends Component {
         this.setState({
             ... this.state,
             form
-        })
+        });
+        if(array==="departamentos"){this.showDepartamentos();}
+        if(array==="proyectos"){  this.showProyectos();}
     }
-
-    // deleteOption = (option, arreglo) => {
-    //     const { form, options } = this.state
-    //     let aux = []
-    //     form[arreglo].map((element, key) => {
-    //         if (option.value.toString() !== element.value.toString()) {
-    //             aux.push(element)
-    //         } else {
-    //             options[arreglo].push(element)
-    //         }
-    //     })
-    //     form[arreglo] = aux
-    //     this.setState({
-    //         ... this.state,
-    //         options,
-    //         form
-    //     })
-    // }
+    showDepartamentos = () => {
+        const {  options, form } = this.state 
+        let departamentos_disponibles=[]
+        options.departamentos.forEach((departamento) => {
+            let existe =false
+            form.departamentos.forEach((departamentoForm) => {
+                if (departamento.value ===departamentoForm.value) {
+                    existe = true
+                } 
+            })  
+            if(!existe){
+                departamentos_disponibles.push(departamento)
+            }
+        })    
+        this.setState({  ... this.state, departamentos_disponibles  })
+        
+    }
+    
+    showProyectos = () => {
+        const {  options, form } = this.state 
+        let proyectos_disponibles=[] 
+        options.proyectos.forEach((proyecto) => {
+            let existe =false
+            form.proyectos.forEach((proyectoForm) => {
+                if (proyecto.value ===proyectoForm.value) {
+                    existe = true
+                } 
+            })  
+            if(!existe){
+                proyectos_disponibles.push(proyecto)
+            }
+        })    
+        this.setState({   proyectos_disponibles  })
+        
+    }
     onChangeAndAdd = (e, arreglo) => {
         const { value } = e.target
         const { options, form } = this.state
@@ -382,15 +410,14 @@ class UsuariosForm extends Component {
                 aux.push(_aux)
             }
         })
-        options[arreglo] = aux
         form[arreglo] = auxArray
-        // console.log(aux, 'aux') // Almacena las opciones no seleccionadas
-        // console.log(auxArray, 'auxArray') // Almacena las opciones ya seleccionadas
         this.setState({
             ... this.state,
             form,
             options
         })
+        if(arreglo==="departamentos"){this.showDepartamentos();}
+        if(arreglo==="proyectos"){this.showProyectos();}
     }
 
     async getAdministradorAxios() {
@@ -450,7 +477,8 @@ class UsuariosForm extends Component {
     }    
 
     render(){
-        const { title, form, options, formeditado} = this.state
+        const { title, form, options, formeditado,departamentos_disponibles, proyectos_disponibles} = this.state
+        
         return (
             <Layout active = { 'usuarios' }  { ...this.props } >
                 <Card className="card-custom">
@@ -462,7 +490,9 @@ class UsuariosForm extends Component {
                     <Card.Body>
                         <RegisterUserForm
                             form={form}
-                            options = { options }
+                            departamentos_disponibles={departamentos_disponibles}
+                            proyectos_disponibles={proyectos_disponibles}
+                            options = {options}
                             formeditado={formeditado}   
                             onSubmit = { this.onSubmit } 
                             onChange = { this.onChange }

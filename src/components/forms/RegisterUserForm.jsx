@@ -4,7 +4,7 @@ import { Input, Button, Select, SelectSearchTrue } from '../form-components'
 import { EMAIL } from '../../constants'
 class RegisterUserForm extends Component {
     updateDepartamento = value => {
-        const { onChange, onChangeAndAdd, options } = this.props
+        const { onChange, onChangeAndAdd, options, form } = this.props
         options.departamentos.map((departamento) => {
             if (departamento.value === value)
                 onChangeAndAdd({ target: { value: departamento.value, name: 'departamento' } }, 'departamentos')
@@ -24,7 +24,7 @@ class RegisterUserForm extends Component {
         onChange({ target: { value: value, name: 'empleado' } })
     }
     render() {
-        const { options, form, onChange, deleteOption, onChangeOptions, formeditado, ...props } = this.props
+        const { options, form, onChange, deleteOption, onChangeOptions, formeditado,departamentos_disponibles,proyectos_disponibles, ...props } = this.props 
         return (
             <Form {...props} >
                 <div className="form-group row form-group-marginless">
@@ -74,10 +74,10 @@ class RegisterUserForm extends Component {
                         <div className="form-group row form-group-marginless">
                             <div className="col-md-4">
                                 <SelectSearchTrue
-                                    options={options.departamentos}
+                                    options={departamentos_disponibles}
                                     placeholder="SELECCIONA EL(LOS) DEPARTAMENTO(S)"
                                     name="departamento"
-                                    value={form.departamento}
+                                    value={"No hay más departamentos"}
                                     onChange={this.updateDepartamento}
                                     iconclass={"fas fa-layer-group"}
                                     formeditado={formeditado}
@@ -129,7 +129,7 @@ class RegisterUserForm extends Component {
                         <div className="form-group row form-group-marginless">
                             <div className="col-md-4">
                                 <SelectSearchTrue
-                                    options={options.proyectos}
+                                    options={proyectos_disponibles}
                                     placeholder="SELECCIONA EL(LOS) PROYECTO(S)"
                                     name="proyecto"
                                     value={form.proyecto}
