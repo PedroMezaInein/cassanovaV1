@@ -29,6 +29,8 @@ const Normas = Loader(() => import('./pages/Normas') )
 const Leads = Loader(() => import('./pages/Leads/Leads/Leads') )
 const LeadsForm = Loader(() => import('./pages/Leads/Leads/LeadsForm') )
 
+const Crm = Loader(() => import('./pages/Leads/CRM/Crm') )
+
 const Prospectos = Loader(() => import('./pages/Leads/Prospectos/Prospectos') )
 const ProspectosForm = Loader(() => import('./pages/Leads/Prospectos/ProspectosForm') )
 
@@ -299,6 +301,8 @@ class App extends Component{
                 
                 <Route path = "/leads/leads" exact component ={ Leads } />
                 <Route path = "/leads/leads/:action" exact component ={ LeadsForm } />
+
+                <Route path = "/leads/crm" exact component = { Crm } />
 
                 <Route path = "/leads/prospectos" exact component = { Prospectos } />
                 <Route path = "/leads/prospectos/:action" exact component = { ProspectosForm } />
