@@ -1,35 +1,40 @@
 import React, { Component } from 'react'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../functions/routers"
-
+import { Button } from '../../components/form-components';
 class UrlLocation extends Component {
     state = {
-        paths: []
+        paths: [],
+        url:[]
     }
 
     componentDidMount() {
         const { history: { location: { pathname: pathname } } } = this.props
         let aux = pathname.substr(1, pathname.length - 1)
+        let url_direccion = pathname.substr(1, pathname.length - 1)
         aux = aux.split('/')
         if (!Array.isArray(aux)) {
             aux = [aux]
         }
         this.setState({
-            paths: aux
+            paths: aux,
+            url:url_direccion
         })
-
     }
-
-
+    changePageAdd = tipo => {
+        const { history } = this.props
+        history.push({
+            pathname: '/leads/crm/add/' + tipo
+        });
+    }
     render() {
-        const { paths } = this.state
+        const { paths, url} = this.state
         const modulos = this.props.authUser.modulos
         const active = this.props.active;
         let icon;
         let modulo_name;
         let submodulo_name;
         let submodulo;
-
         if (modulos) {
             if (paths.length === 1) {
                 for (let i = 0; i < modulos.length; i++) {
@@ -59,17 +64,18 @@ class UrlLocation extends Component {
                 }
             }
         }
+            
 
 
         return (
             <>
                 {
+                    
                     paths.length > 0 ?
                         <div className="subheader py-2 py-lg-4 subheader-solid" id="kt_subheader">
                             <div className="container-fluid d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
                                 <div className="d-flex align-items-center flex-wrap mr-1">
                                     <div className="d-flex align-items-baseline mr-5">
-
                                         <h5 className="text-dark font-weight-bold my-2 mr-3">
                                             {
                                                 modulo_name
@@ -93,8 +99,58 @@ class UrlLocation extends Component {
                                                 </ul>
                                                 : ""
                                         }
-
                                     </div>
+                                </div>
+                                <div className="d-flex justify-content-end flex-wrap">
+                                    {
+                                        url==="leads/crm"?
+                                        <>
+                                            <Button
+                                                icon=''
+                                                onClick={() => { this.changePageAdd('telefono') }}
+                                                className="btn btn-light-primary mr-2 rounded-0"
+                                                only_icon="fas fa-phone icon-md mr-2"
+                                                // tooltip={{ text: 'NUEVO LEAD POR TELÉFONO' }}
+                                                text='NUEVO LEAD POR TELÉFONO'
+                                            />
+                                            <Button
+                                                icon=''
+                                                className="btn btn-light-warning mr-2 rounded-0"
+                                                only_icon="flaticon2-black-back-closed-envelope-shape icon-md mr-2"
+                                                // tooltip={{ text: 'NUEVO LEAD POR CORREO' }}
+                                                text='NUEVO LEAD POR CORREO'
+                                            />
+                                            <Button
+                                                icon=''
+                                                className="btn btn-light-info mr-2 rounded-0"
+                                                only_icon="fas fa-dove icon-md mr-2"
+                                                // tooltip={{ text: 'NUEVO LEAD POR TAWK TO' }}
+                                                text='NUEVO LEAD POR TAWK TO'
+                                            />
+                                            {/* <Button
+                                                icon=''
+                                                onClick={() => { this.changePageAdd('telefono') }}
+                                                className="btn btn-light-primary mr-2 rounded-0 btn-sm"
+                                                only_icon="fas fa-phone pr-0"
+                                                tooltip={{ text: 'NUEVO LEAD POR TELÉFONO' }}
+                                            />
+                                            <Button
+                                                icon=''
+                                                className="btn btn-light-warning mr-2 rounded-0 btn-sm"
+                                                only_icon="flaticon2-black-back-closed-envelope-shape pr-0"
+                                                tooltip={{ text: 'NUEVO LEAD POR CORREO' }}
+                                            />
+                                            <Button
+                                                icon=''
+                                                className="btn btn-light-info mr-2 rounded-0 btn-sm"
+                                                only_icon="fas fa-dove pr-0"
+                                                tooltip={{ text: 'NUEVO LEAD POR TAWK TO' }}
+                                            /> */}
+                                        </>
+
+                                        :''
+                                    }
+                                    
                                 </div>
                             </div>
                         </div>

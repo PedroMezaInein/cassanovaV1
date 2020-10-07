@@ -42,7 +42,9 @@ import leadCard from './Leads/LeadCard'
 import prospectoCard from './Leads/ProspectoCard'
 import clienteCard from './Leads/ClienteCard'
 import proveedorCard from './Leads/ProveedorCard'
-
+import ultimosContactosCard from './Leads/CRM/UltimosContactosCard'
+import sinContacto from './Leads/CRM/SinContacto'
+import ultimosIngresosCard from './Leads/CRM/UltimosIngresosCard'
 //-------------------------------------------------------
 
 
@@ -90,3 +92,6 @@ export const LeadCard = leadCard
 export const ProspectoCard = prospectoCard
 export const ClienteCard = clienteCard
 export const ProveedorCard = proveedorCard
+export const UltimosContactosCard = ultimosContactosCard
+export const SinContacto = sinContacto
+export const UltimosIngresosCard = ultimosIngresosCard

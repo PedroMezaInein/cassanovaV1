@@ -434,3 +434,10 @@ a.text-pink:hover, a.text-pink:focus {
         width:600px!important;
     }
 }
+.timeline-badge.bg-danger-50 {
+    background: #efd0d9!important;
+}
+
+.timeline.timeline-danger:before {
+    background-color:#fbeaec!important;
+}

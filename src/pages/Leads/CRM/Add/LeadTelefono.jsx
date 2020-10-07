@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import Layout from '../../../../components/layout/layout';
 import Messages from '../../../../components/chat/Messages'
-import { Form } from 'react-bootstrap';
+import { Form, Card } from 'react-bootstrap';
 import { Button, Input, SelectSearch } from '../../../../components/form-components';
 import axios from 'axios'
 import { errorAlert, forbiddenAccessAlert, waitAlert } from '../../../../functions/alert';
@@ -216,76 +216,85 @@ class LeadTelefono extends Component {
                         <Messages messages = { messages } />
                     </div>
                     <div className = "col-md-8 py-3 px-4">
-                        <Form>
-                            <div className="form-group row form-group-marginless">
-                                <div className="col-md-4">
-                                    <SelectSearch options = { options.empresas } placeholder = "¿A qué empresa va dirigida el lead?" name = "empresa_dirigida"
-                                        value = { form.empresa_dirigida} onChange = { this.updateEmpresa } iconclass = "fas fa-building"/>
+                        <Card className="card-custom">
+                            <Card.Header className="align-items-center">
+                                <div className="card-title">
+                                    <h3 className="card-label">Formulario por correo</h3>
                                 </div>
-                                {
-                                    form.empresa_dirigida !== '' ?
+                            </Card.Header>
+                            <Card.Body>
+                                <Form>
+                                    <div className="form-group row form-group-marginless">
                                         <div className="col-md-4">
-                                            <Input name = 'name' value = { form.name } placeholder = 'Nombre del lead' onChange = { this.onChange } iconclass = "far fa-user" />
+                                            <SelectSearch options = { options.empresas } placeholder = "¿A qué empresa va dirigida el lead?" name = "empresa_dirigida"
+                                                value = { form.empresa_dirigida} onChange = { this.updateEmpresa } iconclass = "fas fa-building"/>
                                         </div>
-                                    :''
-                                }
-                                {
-                                    form.name !== '' ?
-                                        <div className="col-md-4">
-                                            <Input name = 'empresa' value = { form.empresa } placeholder = 'Empresa' onChange = { this.onChange } 
-                                                iconclass = 'fas fa-building' />
-                                        </div>
-                                    :''
-                                }
-                                {
-                                    form.empresa !== '' ?
-                                        <div className="col-md-12">
-                                            <Input placeholder = "COMENTARIO" name = "comentario" value = { form.comentario } 
-                                                onChange = { this.onChange } rows = { 3 } as = 'textarea' />
-                                        </div>
-                                    : ''
-                                }
-                                {
-                                    form.comentario !== '' ?
-                                        <div className = "col-md-4">
-                                            <label className = 'col-form-label'>¿Es un proyecto de obra o diseño?</label>
-                                            <div className="d-flex">
-                                                <label className ="checkbox checkbox-outline checkbox-outline-2x checkbox-primary mr-3">
-                                                    <input type = "checkbox" onChange = { (e) => this.onChange(e) } name = 'diseño'
-                                                        checked = { form.diseño } value = { form.diseño } />
-                                                    DISEÑO
-                                                    <span></span>
-                                                </label>
-                                                <label className ="checkbox checkbox-outline checkbox-outline-2x checkbox-primary">
-                                                    <input type = "checkbox" onChange = { (e) => this.onChange(e) } name = 'obra'
-                                                        checked = { form.obra } value = { form.obra } />
-                                                    Obra
-                                                    <span></span>
-                                                </label>
-                                            </div>
-                                            
-                                        </div>
-                                    :''
-                                }
-                                {
-                                    form.diseño || form.obra ?
-                                        <div className = "col-md-4">
-                                            <Input type = "email" placeholder="CORREO ELECTRÓNICO DE CONTACTO" name = "email" value = { form.email }
-                                                onChange = { this.onChange } iconclass = "fas fa-envelope"/>
-                                        </div>
-                                    : ''
-                                }
-                                {
-                                    form.email ?
-                                        <div className = "col-md-4">
-                                            <InputPhone placeholder = "TELÉFONO DE CONTACTO" name="telefono" value={form.telefono}
-                                                onChange = { this.onChange } iconclass = "fas fa-mobile-alt" patterns = { TEL }
-                                                thousandseparator = { false } prefix = ''/>
-                                        </div>
-                                    : ''
-                                }
-                            </div>
-                        </Form>
+                                        {
+                                            form.empresa_dirigida !== '' ?
+                                                <div className="col-md-4">
+                                                    <Input name = 'name' value = { form.name } placeholder = 'Nombre del lead' onChange = { this.onChange } iconclass = "far fa-user" />
+                                                </div>
+                                            :''
+                                        }
+                                        {
+                                            form.name !== '' ?
+                                                <div className="col-md-4">
+                                                    <Input name = 'empresa' value = { form.empresa } placeholder = 'Empresa' onChange = { this.onChange } 
+                                                        iconclass = 'fas fa-building' />
+                                                </div>
+                                            :''
+                                        }
+                                        {
+                                            form.empresa !== '' ?
+                                                <div className="col-md-12">
+                                                    <Input placeholder = "COMENTARIO" name = "comentario" value = { form.comentario } 
+                                                        onChange = { this.onChange } rows = { 3 } as = 'textarea' />
+                                                </div>
+                                            : ''
+                                        }
+                                        {
+                                            form.comentario !== '' ?
+                                                <div className = "col-md-4">
+                                                    <label className = 'col-form-label'>¿Es un proyecto de obra o diseño?</label>
+                                                    <div className="d-flex">
+                                                        <label className ="checkbox checkbox-outline checkbox-outline-2x checkbox-primary mr-3">
+                                                            <input type = "checkbox" onChange = { (e) => this.onChange(e) } name = 'diseño'
+                                                                checked = { form.diseño } value = { form.diseño } />
+                                                            DISEÑO
+                                                            <span></span>
+                                                        </label>
+                                                        <label className ="checkbox checkbox-outline checkbox-outline-2x checkbox-primary">
+                                                            <input type = "checkbox" onChange = { (e) => this.onChange(e) } name = 'obra'
+                                                                checked = { form.obra } value = { form.obra } />
+                                                            Obra
+                                                            <span></span>
+                                                        </label>
+                                                    </div>
+                                                    
+                                                </div>
+                                            :''
+                                        }
+                                        {
+                                            form.diseño || form.obra ?
+                                                <div className = "col-md-4">
+                                                    <Input type = "email" placeholder="CORREO ELECTRÓNICO DE CONTACTO" name = "email" value = { form.email }
+                                                        onChange = { this.onChange } iconclass = "fas fa-envelope"/>
+                                                </div>
+                                            : ''
+                                        }
+                                        {
+                                            form.email ?
+                                                <div className = "col-md-4">
+                                                    <InputPhone placeholder = "TELÉFONO DE CONTACTO" name="telefono" value={form.telefono}
+                                                        onChange = { this.onChange } iconclass = "fas fa-mobile-alt" patterns = { TEL }
+                                                        thousandseparator = { false } prefix = ''/>
+                                                </div>
+                                            : ''
+                                        }
+                                    </div>
+                                </Form>
+                            </Card.Body>
+                        </Card>
                     </div>
                 </div>
             </Layout>
