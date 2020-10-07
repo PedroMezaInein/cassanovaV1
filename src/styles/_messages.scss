@@ -1,0 +1,41 @@
+.messages {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    flex-grow: 1;
+    padding: 20px;
+    height: 80vh;
+    border-radius: 8px;
+    background-color: white;
+    border: solid 2px white;
+    .message {
+        margin-bottom: 20px;
+        &.from-me{
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 5px;
+            .message-body{
+                background-color: #EEE5FF;
+                color: #8950FC;
+            }
+            .username{
+                display: none;
+            }
+        }
+    }
+    .message-body {
+        max-width: 80%;
+        display: inline-block;
+        padding: 20px;
+        background-color: #EFEBE9;
+        color: #5D4037;
+        border: 1px;
+        border-radius: 5px;
+        padding-right: 50px;
+    }  
+    .username {
+        font-weight: bold;
+        font-size: 0.9rem;
+        color: #999;
+        margin-bottom: 5px;
+    }
+}
