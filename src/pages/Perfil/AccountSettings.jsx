@@ -67,7 +67,7 @@ class AccountSettings extends Component {
 					<Card className="card-custom"> 
 						<Card.Header>
                         <div className="card-title">
-                            <h3 className="card-label">Cambio de contraseña</h3>
+                            <h3 className="card-label">Mi perfil</h3>
                         </div>
                     </Card.Header>
 						<Card.Body> 

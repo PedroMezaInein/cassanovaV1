@@ -7,17 +7,15 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
 import esLocale from '@fullcalendar/core/locales/es';
-import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { Modal } from '../../components/singles'
 import { SolicitarVacacionesForm, EstatusForm } from "../../components/forms";
 import { errorAlert, forbiddenAccessAlert, waitAlert, doneAlert } from '../../functions/alert';
 import { countDaysWithoutWeekend } from '../../functions/functions';
 import { URL_DEV } from '../../constants';
 import bootstrapPlugin from '@fullcalendar/bootstrap'
-import { string } from 'prop-types';
-import DropdownButton from 'react-bootstrap/DropdownButton'
-import Dropdown from 'react-bootstrap/Dropdown'
+import {DropdownButton, Dropdown,Card, OverlayTrigger, Tooltip} from 'react-bootstrap'
 import moment from 'moment'
+import AVATAR from '../../assets/images/icons/avatar.png'
 class Calendario extends Component {
 
     state = {
@@ -31,6 +29,9 @@ class Calendario extends Component {
         form: {
             fechaInicio: new Date(),
             fechaFin: new Date(),
+        },
+        data:{
+            usuarios: []
         },
         estatus: [],
         disabledDates: []
@@ -50,6 +51,7 @@ class Calendario extends Component {
 
     handleDateClick = (arg) => { // bind with an arrow function
         /* alert(arg.dateStr) */
+        console.log(arg)
     }
     openModal = () => {
         this.setState({
@@ -247,7 +249,9 @@ class Calendario extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'vacaciones', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empleados, vacaciones, empleado, user_vacaciones, feriados } = response.data
+                const { data } = this.state
+                const { empleados, vacaciones, empleado, user_vacaciones, feriados, eventos, usuarios } = response.data
+                data.usuarios = usuarios
                 let aux = []
                 let aux2 = []
                 let mes = ''
@@ -290,6 +294,18 @@ class Calendario extends Component {
                     aux2.push(start)
                 })
 
+                eventos.map((evento)=>{
+                    aux.push({
+                        shortName: 'Eventos',
+                        title: evento.googleEvent.summary,
+                        start: evento.googleEvent.start.dateTime,
+                        end: evento.googleEvent.end.dateTime,
+                        iconClass: 'far fa-clock',
+                        containerClass: 'eventos',
+                        evento: evento
+                    })
+                })
+
                 this.setState({
                     ... this.state,
                     events: aux,
@@ -297,7 +313,8 @@ class Calendario extends Component {
                     vacaciones_totales: user_vacaciones,
                     disponibles: this.getDiasDisponibles(empleado, user_vacaciones),
                     estatus: this.getVacaciones(empleado, user_vacaciones),
-                    disabledDates: aux2
+                    disabledDates: aux2,
+                    data
                 })
 
             },
@@ -313,6 +330,154 @@ class Calendario extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
+    }
+
+    setInvitados = (invitados) => {
+        const { data } = this.state
+        if(invitados)
+            return(
+                <div>
+                    <div className="d-flex mb-3 flex-wrap  justify-content-center">
+                        {
+                            invitados.map((invitado, index)=>{
+                                let aux = false
+                                data.usuarios.map((user)=>{
+                                    if(user.email.toUpperCase() === invitado.email.toUpperCase()){
+                                        aux = user
+                                    }
+                                })
+                                if(aux !== false)
+                                {
+                                    if(aux.avatar){
+                                        return(
+                                            <img className = "calendar-avatar mr-3 mb-2" src = {aux.avatar} />
+                                        )
+                                    }else{
+                                        return(
+                                            <img className = "calendar-avatar mr-3 mb-2" src = {AVATAR} />
+                                        )   
+                                    }
+                                }
+                            })
+                        }
+                    </div>
+                    <div className="lista-invitados text-left">
+                        {
+                            invitados.map((invitado)=>{
+                                let aux = false
+                                data.usuarios.map((user)=>{
+                                    if(user.email.toUpperCase() === invitado.email.toUpperCase()){
+                                        aux = user
+                                    }
+                                })
+                                if(aux === false)
+                                return(
+                                    <div className="d-flex align-items-center my-2">
+                                        <i className={ invitado.responseStatus === 'accepted' ? "fas fa-check-circle kt-font-boldest mr-3 icon-green" : 'fas fa-clock kt-font-boldest mr-3 icon-purple'}></i>
+                                        <span>{invitado.email}</span>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                </div>
+                
+            )
+    }
+    
+    setTimer = (time) => {
+        switch(time){
+            case 0:
+                return '00'
+            case 1:
+                return '01'
+            case 2:
+                return '02'
+            case 3:
+                return '03'
+            case 4:
+                return '04'
+            case 5:
+                return '05'
+            case 6:
+                return '06'
+            case 7:
+                return '07'
+            case 8:
+                return '08'
+            case 9:
+                return '09'
+            default:
+                return time
+        }
+    }
+
+    getInvitadosSprits = invitados => {
+        if(invitados)
+            return(
+                <img className = "calendar-avatar" src = {AVATAR} />
+            )
+    }
+
+    renderEventContent = (eventInfo) => {
+        if(eventInfo.event._def.extendedProps.evento){
+            let start = new Date(eventInfo.event._def.extendedProps.evento.googleEvent.start.dateTime);
+            let end = new Date(eventInfo.event._def.extendedProps.evento.googleEvent.end.dateTime);
+            return(
+                    <OverlayTrigger 
+                        /* defaultShow = { true } */
+                        overlay = {
+                            <Tooltip className="tool-calendar">
+                                <div className="tool-titulo">
+                                    <b>
+                                        {eventInfo.event.title}
+                                    </b>
+                                </div>
+                                <div className="p-2">
+                                    <div className="tool-horario">
+                                        <span>
+                                            {
+                                                this.setTimer(start.getHours()) + ':' + this.setTimer(start.getMinutes())
+                                            }
+                                            &nbsp; - &nbsp; 
+                                            {
+                                                this.setTimer(end.getHours()) + ':' + this.setTimer(end.getMinutes())
+                                            }
+                                        </span>
+                                    </div>
+                                    <br />
+                                    {
+                                        this.setInvitados(eventInfo.event._def.extendedProps.evento.googleEvent.attendees)
+                                    }
+                                </div>
+                            </Tooltip>
+                            }
+                        >
+                        <div className={eventInfo.event._def.extendedProps.containerClass + ' evento text-left'}>
+                            <div className="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i className={eventInfo.event._def.extendedProps.iconClass + " kt-font-boldest mr-3"}></i>
+                                    <span>{eventInfo.event.title}</span>
+                                </div>
+                                <div>
+                                    {
+                                        this.getInvitadosSprits(eventInfo.event._def.extendedProps.evento.googleEvent.attendees)
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </OverlayTrigger>
+                )
+        }
+        return (
+            <OverlayTrigger overlay={<Tooltip>{eventInfo.event.title}</Tooltip>}>
+                <div className={eventInfo.event._def.extendedProps.containerClass + ' evento'}>
+                    <i className={eventInfo.event._def.extendedProps.iconClass + " kt-font-boldest mr-3"}></i>
+                    <span>{eventInfo.event.title}</span>
+                </div>
+            </OverlayTrigger>
+        )
     }
 
     render() {
@@ -373,7 +538,7 @@ class Calendario extends Component {
                             weekends={true}
                             events={events}
                             dateClick={this.handleDateClick}
-                            eventContent={renderEventContent}
+                            eventContent={this.renderEventContent}
                             firstDay={1}
                             themeSystem='bootstrap'
                         />
@@ -384,16 +549,7 @@ class Calendario extends Component {
     }
 }
 
-function renderEventContent(eventInfo) {
-    return (
-        <OverlayTrigger overlay={<Tooltip>{eventInfo.event.title}</Tooltip>}>
-            <div className={eventInfo.event._def.extendedProps.containerClass + ' evento'}>
-                <i className={eventInfo.event._def.extendedProps.iconClass + " kt-font-boldest mr-3"}></i>
-                <span>{eventInfo.event.title}</span>
-            </div>
-        </OverlayTrigger>
-    )
-}
+
 const mapStateToProps = state => {
     return {
         authUser: state.authUser

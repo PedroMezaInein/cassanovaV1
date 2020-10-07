@@ -29,6 +29,16 @@
     }
 }
 
+.eventos {
+    color: #388E3C;
+    background-color: #E8F5E9;
+    border-color: transparent;
+    min-width: 100%;
+    i {
+        color: #388E3C;
+    }
+}
+
 a.fc-daygrid-event.fc-daygrid-block-event.fc-h-event.fc-event.fc-event-start.fc-event-end.fc-event-past {
     border-color: white;
 }
@@ -134,4 +144,40 @@ a.fc-col-header-cell-cushion {
 
 .fc-h-event{
     border: 1px solid #ECF0F3 !important;
+}
+
+.tool-calendar{
+    .tool-titulo{
+        background-color: #ECEFF1;
+        padding: 0.5rem;
+    }
+    .tool-horario{
+        span{
+            color: #5F6A6A;
+            font-weight: bold;
+        }
+    }
+    .tooltip-inner {
+        width: 200px;
+        padding: 0;
+    }
+    .calendar-avatar{
+        width: 45px;
+        height: 45px;
+    }
+}
+.calendar-avatar{
+    width: 25px;
+    height: auto;
+    border-radius: 50%;
+    padding: 1px;
+    border: solid 1px #525252;
+}
+
+i.icon-green{
+    color: #388E3C
+}
+
+i.icon-purple{
+    color: #8950FC
 }
