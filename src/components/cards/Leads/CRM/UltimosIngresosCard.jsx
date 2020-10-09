@@ -45,8 +45,8 @@ export default class UltimosContactosCard extends Component {
         }
     }
     render() {
-        const { ultimos_ingresados, onClick } = this.props
-        console.log(ultimos_ingresados.data)
+        const { ultimos_ingresados, onClick, onClickPrev} = this.props
+        // console.log(ultimos_ingresados.data)
         return (
             <Card className="card-custom card-stretch gutter-b py-2">
                 <Card.Header className="align-items-center border-0">
@@ -54,7 +54,7 @@ export default class UltimosContactosCard extends Component {
                         <span className="font-weight-bolder text-dark">Últimos leads ingresados</span>
                     </div>
                     <div className="card-toolbar">
-                        <a href="#" className="btn btn-icon btn-xs btn-light-primary mr-2 my-1"><i className="ki ki-bold-arrow-back icon-xs"></i></a>
+                        <a href="#" className="btn btn-icon btn-xs btn-light-primary mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></a>
                         <a href="#" className="btn btn-icon btn-xs btn-light-primary mr-2 my-1" onClick={onClick}><i className="ki ki-bold-arrow-next icon-xs"></i></a>
                     </div>
                 </Card.Header>
@@ -67,7 +67,7 @@ export default class UltimosContactosCard extends Component {
                                         <div className="timeline-label"> {this.diffCommentDate(contacto)}</div>
                                         <div className="timeline-badge"><span className="bg-primary w-50 h-50"></span></div>
                                         <div className="timeline-content">
-                                            <a href="tel:+5500112233" className="text-dark-75 font-weight-bolder text-hover-primary mb-1">{contacto.nombre}</a>
+                                            <a href={`tel:+${contacto.telefono}`} className="text-dark-75 font-weight-bolder text-hover-primary mb-1">{contacto.nombre}</a>
                                             {
                                                 contacto.servicios.map((servicio, key1) => {
                                                     return (

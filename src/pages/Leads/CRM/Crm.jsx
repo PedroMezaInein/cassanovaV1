@@ -44,7 +44,7 @@ class Crm extends Component {
         this.getUltimosIngresados()
     }
 
-    onPageUltimosContactados=(e)=>{
+    nextUltimosContactados=(e)=>{
         e.preventDefault()
         const {ultimos_contactados}=this.state
         this.setState({
@@ -52,7 +52,7 @@ class Crm extends Component {
         })
         this.getUltimosContactos()
     }
-    onPageProspectosSinContactar=(e)=>{
+    nextPageProspectosSinContactar=(e)=>{
         e.preventDefault()
         const {prospectos_sin_contactar}=this.state
         this.setState({
@@ -60,11 +60,38 @@ class Crm extends Component {
         })
         this.getSinContactar()
     }
-    onPageUltimosIngresados=(e)=>{
+    nextPageUltimosIngresados=(e)=>{
         e.preventDefault()
         const {ultimos_ingresados}=this.state
         this.setState({
             numPage:ultimos_ingresados.numPage++
+        })
+        this.getUltimosIngresados()
+    }
+
+
+
+    prevUltimosContactados=(e)=>{
+        e.preventDefault()
+        const {ultimos_contactados}=this.state
+        this.setState({
+            numPage:ultimos_contactados.numPage--
+        })
+        this.getUltimosContactos()
+    }
+    prevPageProspectosSinContactar=(e)=>{
+        e.preventDefault()
+        const {prospectos_sin_contactar}=this.state
+        this.setState({
+            numPage:prospectos_sin_contactar.numPage--
+        })
+        this.getSinContactar()
+    }
+    prevPageUltimosIngresados=(e)=>{
+        e.preventDefault()
+        const {ultimos_ingresados}=this.state
+        this.setState({
+            numPage:ultimos_ingresados.numPage--
         })
         this.getUltimosIngresados()
     }
@@ -191,19 +218,22 @@ class Crm extends Component {
                     <Col lg={4}>
                         <UltimosContactosCard
                             ultimos_contactados={ultimos_contactados}
-                            onClick={this.onPageUltimosContactados}
+                            onClick={this.nextUltimosContactados}
+                            onClickPrev={this.prevUltimosContactados}
                         />
                     </Col>
                     <Col lg={4}>
                         <SinContacto
                             prospectos_sin_contactar={prospectos_sin_contactar}
-                            onClick={this.onPageProspectosSinContactar}
+                            onClick={this.nextPageProspectosSinContactar}
+                            onClickPrev={this.prevPageProspectosSinContactar}
                         />
                     </Col>
                     <Col lg={4}>
                         <UltimosIngresosCard 
                             ultimos_ingresados={ultimos_ingresados}
-                            onClick={this.onPageUltimosIngresados}
+                            onClick={this.nextPageUltimosIngresados}
+                            onClickPrev={this.prevPageUltimosIngresados}
                         />
                     </Col>
                 </Row>

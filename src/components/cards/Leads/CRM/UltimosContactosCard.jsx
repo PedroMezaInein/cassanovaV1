@@ -46,7 +46,7 @@ export default class UltimosContactosCard extends Component {
         }
     }
     render() {
-        const { ultimos_contactados, onClick } = this.props
+        const { ultimos_contactados, onClick, onClickPrev} = this.props
         // console.log(ultimos_contactados.data)
         // console.log(ultimos_contactados.total)
         return (
@@ -56,7 +56,7 @@ export default class UltimosContactosCard extends Component {
                         <span className="font-weight-bolder text-dark">Últimos leads contactados</span>
                     </div>
                     <div className="card-toolbar">
-                        <a className="btn btn-icon btn-xs btn-light-primary mr-2 my-1"><i className="ki ki-bold-arrow-back icon-xs"></i></a>
+                        <a className="btn btn-icon btn-xs btn-light-primary mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></a>
                         <a className="btn btn-icon btn-xs btn-light-primary mr-2 my-1" onClick={onClick}><i className="ki ki-bold-arrow-next icon-xs"></i></a>
                     </div>
                 </Card.Header>
