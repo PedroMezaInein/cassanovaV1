@@ -47,8 +47,8 @@ thead{
 }
 
 .card-toolbar a.btn.btn-icon{
-    color: #1bc5bd;
-    background-color: #E8F5E9;
+    /* color: #1bc5bd; */
+    /* background-color: #E8F5E9; */
     border-color: transparent;
     width: auto;
     padding-left: 10px;

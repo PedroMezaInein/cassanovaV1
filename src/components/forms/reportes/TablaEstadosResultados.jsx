@@ -52,7 +52,7 @@ class TablaEstadosResultados extends Component {
 
     render() {
         const { ventas, ingresos, compras, egresos } = this.props
-        const { itemsPerPage, activePage } = this.state
+        const { itemsPerPage, activePage } = this.state 
         return (
             <>
                 <div className="table-responsive d-flex justify-content-center">
@@ -84,8 +84,8 @@ class TablaEstadosResultados extends Component {
                                 :
                                     ventas.map((venta,key)=>{
                                         let limiteInferior = (activePage.ventas - 1) * itemsPerPage
+                                        
                                         let limiteSuperior = limiteInferior + (itemsPerPage - 1)
-
                                         if(ventas.length < itemsPerPage || ( key >= limiteInferior && key <= limiteSuperior))
                                             return(
                                                 <tr key={key} className="border-bottom">
