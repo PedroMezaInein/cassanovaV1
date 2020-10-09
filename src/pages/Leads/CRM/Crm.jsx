@@ -1,12 +1,180 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
+import axios from 'axios'
+import { URL_DEV } from '../../../constants'
 import Layout from '../../../components/layout/layout';
-import { Button } from '../../../components/form-components';
-import { Tab, Nav, Col, Row, OverlayTrigger, Tooltip, Card, Dropdown, DropdownButton } from 'react-bootstrap'
+import { Col, Row, OverlayTrigger, Tooltip, Card, Dropdown, DropdownButton } from 'react-bootstrap'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import { UltimosContactosCard, SinContacto, UltimosIngresosCard } from '../../../components/cards'
+import { forbiddenAccessAlert, errorAlert } from '../../../functions/alert'
 class Crm extends Component {
+    state = {
+        ultimos_contactados:{
+            data: [],
+            numPage:0,
+            total:0,
+            value:"ultimos_contactados"
+        },
+        prospectos_sin_contactar:{
+            data: [],
+            numPage:0,
+            total:0,
+            value:"prospectos_sin_contactar"
+        },
+        ultimos_ingresados:{
+            data: [],
+            numPage:0,
+            total:0,
+            value:"ultimos_ingresados"
+        }
+    }
+    componentDidMount() {
+        const { authUser: { user: { permisos: permisos } } } = this.props
+        const { history: { location: { pathname: pathname } } } = this.props
+        const { history } = this.props
+        const crm = permisos.find(function (element, index) {
+            const { modulo: { url: url } } = element
+            return pathname === url
+        });
+        if (!crm)
+            history.push('/')
+        this.getUltimosContactos()
+        this.getSinContactar()
+        this.getUltimosIngresados()
+    }
+
+    onPageUltimosContactados=(e)=>{
+        e.preventDefault()
+        const {ultimos_contactados}=this.state
+        this.setState({
+            numPage:ultimos_contactados.numPage++
+        })
+        this.getUltimosContactos()
+    }
+    onPageProspectosSinContactar=(e)=>{
+        e.preventDefault()
+        const {prospectos_sin_contactar}=this.state
+        this.setState({
+            numPage:prospectos_sin_contactar.numPage++
+        })
+        this.getSinContactar()
+    }
+    onPageUltimosIngresados=(e)=>{
+        e.preventDefault()
+        const {ultimos_ingresados}=this.state
+        this.setState({
+            numPage:ultimos_ingresados.numPage++
+        })
+        this.getUltimosIngresados()
+    }
+
+    // onPage = e => {
+    //     e.preventDefault()
+    //     const {ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados}=this.state
+    //     let aux;
+    //     if (ultimos_contactados.value ==="ultimos_contactados") {
+    //         aux= ultimos_contactados.numPage++
+    //         this.getUltimosContactos()
+    //     }
+    //     if (prospectos_sin_contactar.value ==="prospectos_sin_contactar") {
+    //         aux=prospectos_sin_contactar.numPage++
+    //         this.getSinContactar()
+    //     }
+    //     if (ultimos_ingresados.value ==="ultimos_ingresados") {
+    //         aux=ultimos_ingresados.numPage++
+    //         this.getUltimosIngresados()
+    //     }
+    //     this.setState({
+    //         // ... this.state,
+    //         // key: value
+    //         numPage:aux
+    //     })
+    // }
+    
+    async getUltimosContactos() {
+        const { access_token } = this.props.authUser
+        const{ultimos_contactados}=this.state
+        await axios.get(URL_DEV + 'crm/timeline/ultimos-contactos/'+ultimos_contactados.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { contactos, total } = response.data
+                const { ultimos_contactados } = this.state
+                ultimos_contactados.data = contactos
+                ultimos_contactados.total=total
+                this.setState({
+                    ... this.state,
+                    ultimos_contactados
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async getSinContactar() {
+        const { access_token } = this.props.authUser
+        const{prospectos_sin_contactar}=this.state
+        await axios.get(URL_DEV + 'crm/timeline/ultimos-prospectos-sin-contactar/'+prospectos_sin_contactar.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { contactos, total} = response.data
+                const { prospectos_sin_contactar } = this.state
+                prospectos_sin_contactar.data = contactos
+                prospectos_sin_contactar.total=total
+                this.setState({
+                    ... this.state,
+                    prospectos_sin_contactar
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async getUltimosIngresados() {
+        const { access_token } = this.props.authUser
+        const{ultimos_ingresados}=this.state
+        await axios.get(URL_DEV + 'crm/timeline/ultimos-leads-ingresados/'+ultimos_ingresados.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { leads, total} = response.data
+                const { ultimos_ingresados } = this.state
+                ultimos_ingresados.data = leads
+                ultimos_ingresados.total=total
+                this.setState({
+                    ... this.state,
+                    ultimos_ingresados
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }  
 
     changePageAdd = tipo => {
         const { history } = this.props
@@ -16,17 +184,27 @@ class Crm extends Component {
     }
 
     render() {
+        const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados } = this.state
         return (
             <Layout active='leads' {... this.props} >
                 <Row>
                     <Col lg={4}>
-                        <UltimosContactosCard />
+                        <UltimosContactosCard
+                            ultimos_contactados={ultimos_contactados}
+                            onClick={this.onPageUltimosContactados}
+                        />
                     </Col>
                     <Col lg={4}>
-                        <SinContacto />
+                        <SinContacto
+                            prospectos_sin_contactar={prospectos_sin_contactar}
+                            onClick={this.onPageProspectosSinContactar}
+                        />
                     </Col>
                     <Col lg={4}>
-                        <UltimosIngresosCard />
+                        <UltimosIngresosCard 
+                            ultimos_ingresados={ultimos_ingresados}
+                            onClick={this.onPageUltimosIngresados}
+                        />
                     </Col>
                 </Row>
                 <Col md={12} className="px-0">
@@ -143,3 +321,42 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Crm)
+
+
+
+// onpag2=(e)=>{
+    //     e.preventDefault()
+    //     const {numPage}=this.state 
+        
+    //     this.setState({
+    //         numPage:numPage+1
+    //     })
+    //     this.getUltimosContactos()
+    // }
+    // async getUltimosContactos() {
+    //     const { access_token } = this.props.authUser
+    //     const{numPage}=this.state
+
+    //     await axios.get(URL_DEV + 'crm/timeline/ultimos-contactos/'+numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+    //         (response) => {
+    //             const { contactos } = response.data
+    //             const { ultimos_contactados } = this.state
+    //             ultimos_contactados.data = contactos
+    //             this.setState({
+    //                 ... this.state,
+    //                 ultimos_contactados
+    //             })
+    //         },
+    //         (error) => {
+    //             console.log(error, 'error')
+    //             if (error.response.status === 401) {
+    //                 forbiddenAccessAlert()
+    //             } else {
+    //                 errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+    //             }
+    //         }
+    //     ).catch((error) => {
+    //         errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+    //         console.log(error, 'error')
+    //     })
+    // }
