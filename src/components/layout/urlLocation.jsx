@@ -110,41 +110,41 @@ class UrlLocation extends Component {
                                                 onClick={() => { this.changePageAdd('telefono') }}
                                                 className="btn btn-light-primary mr-2 rounded-0"
                                                 only_icon="fas fa-phone icon-md mr-2"
-                                                // tooltip={{ text: 'NUEVO LEAD POR TELÉFONO' }}
-                                                text='NUEVO LEAD POR TELÉFONO'
+                                                // tooltip={{ text: 'TELÉFONO' }}
+                                                text='TELÉFONO'
                                             />
                                             <Button
                                                 icon=''
                                                 className="btn btn-light-warning mr-2 rounded-0"
                                                 only_icon="flaticon2-black-back-closed-envelope-shape icon-md mr-2"
-                                                // tooltip={{ text: 'NUEVO LEAD POR CORREO' }}
-                                                text='NUEVO LEAD POR CORREO'
+                                                // tooltip={{ text: 'CORREO' }}
+                                                text='CORREO'
                                             />
                                             <Button
                                                 icon=''
                                                 className="btn btn-light-info mr-2 rounded-0"
                                                 only_icon="fas fa-dove icon-md mr-2"
-                                                // tooltip={{ text: 'NUEVO LEAD POR TAWK TO' }}
-                                                text='NUEVO LEAD POR TAWK TO'
+                                                // tooltip={{ text: 'TAWK TO' }}
+                                                text='TAWK TO'
                                             />
                                             {/* <Button
                                                 icon=''
                                                 onClick={() => { this.changePageAdd('telefono') }}
                                                 className="btn btn-light-primary mr-2 rounded-0 btn-sm"
                                                 only_icon="fas fa-phone pr-0"
-                                                tooltip={{ text: 'NUEVO LEAD POR TELÉFONO' }}
+                                                tooltip={{ text: 'TELÉFONO' }}
                                             />
                                             <Button
                                                 icon=''
                                                 className="btn btn-light-warning mr-2 rounded-0 btn-sm"
                                                 only_icon="flaticon2-black-back-closed-envelope-shape pr-0"
-                                                tooltip={{ text: 'NUEVO LEAD POR CORREO' }}
+                                                tooltip={{ text: 'CORREO' }}
                                             />
                                             <Button
                                                 icon=''
                                                 className="btn btn-light-info mr-2 rounded-0 btn-sm"
                                                 only_icon="fas fa-dove pr-0"
-                                                tooltip={{ text: 'NUEVO LEAD POR TAWK TO' }}
+                                                tooltip={{ text: 'TAWK TO' }}
                                             /> */}
                                         </>
 

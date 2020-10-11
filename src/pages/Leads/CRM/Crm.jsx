@@ -16,18 +16,21 @@ class Crm extends Component {
             data: [],
             numPage:0,
             total:0,
+            total_paginas:0,
             value:"ultimos_contactados"
         },
         prospectos_sin_contactar:{
             data: [],
             numPage:0,
             total:0,
+            total_paginas:0,
             value:"prospectos_sin_contactar"
         },
         ultimos_ingresados:{
             data: [],
             numPage:0,
             total:0,
+            total_paginas:0,
             value:"ultimos_ingresados"
         }
     }
@@ -47,80 +50,65 @@ class Crm extends Component {
     }
 
     nextUltimosContactados=(e)=>{
-        e.preventDefault()
+        e.preventDefault() 
         const {ultimos_contactados}=this.state
-        this.setState({
-            numPage:ultimos_contactados.numPage++
-        })
-        this.getUltimosContactos()
+        if(ultimos_contactados.numPage<ultimos_contactados.total_paginas-1){
+            this.setState({ 
+                numPage:ultimos_contactados.numPage++
+            })
+            this.getUltimosContactos()
+        } 
     }
     nextPageProspectosSinContactar=(e)=>{
         e.preventDefault()
         const {prospectos_sin_contactar}=this.state
-        this.setState({
-            numPage:prospectos_sin_contactar.numPage++
-        })
-        this.getSinContactar()
+        if(prospectos_sin_contactar.numPage<prospectos_sin_contactar.total_paginas-1){
+            this.setState({
+                numPage:prospectos_sin_contactar.numPage++
+            })
+            this.getSinContactar()
+        }
     }
     nextPageUltimosIngresados=(e)=>{
-        e.preventDefault()
+        e.preventDefault() 
         const {ultimos_ingresados}=this.state
-        this.setState({
-            numPage:ultimos_ingresados.numPage++
-        })
+        if(ultimos_ingresados.numPage<ultimos_ingresados.total_paginas-1){
+            this.setState({
+                numPage:ultimos_ingresados.numPage++
+            })
+        }
         this.getUltimosIngresados()
     }
-
-
-
     prevUltimosContactados=(e)=>{
         e.preventDefault()
         const {ultimos_contactados}=this.state
-        this.setState({
-            numPage:ultimos_contactados.numPage--
-        })
-        this.getUltimosContactos()
+        if(ultimos_contactados.numPage>0){
+            this.setState({
+                numPage:ultimos_contactados.numPage--
+            })
+            this.getUltimosContactos()
+        } 
     }
     prevPageProspectosSinContactar=(e)=>{
         e.preventDefault()
         const {prospectos_sin_contactar}=this.state
-        this.setState({
-            numPage:prospectos_sin_contactar.numPage--
-        })
-        this.getSinContactar()
+        if(prospectos_sin_contactar.numPage>0){
+            this.setState({
+                numPage:prospectos_sin_contactar.numPage--
+            })
+            this.getSinContactar()
+        }
     }
     prevPageUltimosIngresados=(e)=>{
         e.preventDefault()
         const {ultimos_ingresados}=this.state
-        this.setState({
-            numPage:ultimos_ingresados.numPage--
-        })
+        if(ultimos_ingresados.numPage>0){
+            this.setState({
+                numPage:ultimos_ingresados.numPage--
+            })
         this.getUltimosIngresados()
+        }
     }
-
-    // onPage = e => {
-    //     e.preventDefault()
-    //     const {ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados}=this.state
-    //     let aux;
-    //     if (ultimos_contactados.value ==="ultimos_contactados") {
-    //         aux= ultimos_contactados.numPage++
-    //         this.getUltimosContactos()
-    //     }
-    //     if (prospectos_sin_contactar.value ==="prospectos_sin_contactar") {
-    //         aux=prospectos_sin_contactar.numPage++
-    //         this.getSinContactar()
-    //     }
-    //     if (ultimos_ingresados.value ==="ultimos_ingresados") {
-    //         aux=ultimos_ingresados.numPage++
-    //         this.getUltimosIngresados()
-    //     }
-    //     this.setState({
-    //         // ... this.state,
-    //         // key: value
-    //         numPage:aux
-    //     })
-    // }
-    
     async getUltimosContactos() {
         const { access_token } = this.props.authUser
         const{ultimos_contactados}=this.state
@@ -128,8 +116,10 @@ class Crm extends Component {
             (response) => {
                 const { contactos, total } = response.data
                 const { ultimos_contactados } = this.state
+                let total_paginas = Math.ceil(total/5)
                 ultimos_contactados.data = contactos
                 ultimos_contactados.total=total
+                ultimos_contactados.total_paginas = total_paginas
                 this.setState({
                     ... this.state,
                     ultimos_contactados
@@ -158,6 +148,8 @@ class Crm extends Component {
                 const { prospectos_sin_contactar } = this.state
                 prospectos_sin_contactar.data = contactos
                 prospectos_sin_contactar.total=total
+                let total_paginas = Math.ceil(total/5)
+                prospectos_sin_contactar.total_paginas = total_paginas
                 this.setState({
                     ... this.state,
                     prospectos_sin_contactar
@@ -186,6 +178,8 @@ class Crm extends Component {
                 const { ultimos_ingresados } = this.state
                 ultimos_ingresados.data = leads
                 ultimos_ingresados.total=total
+                let total_paginas = Math.ceil(total/5)
+                ultimos_ingresados.total_paginas = total_paginas
                 this.setState({
                     ... this.state,
                     ultimos_ingresados
@@ -227,10 +221,10 @@ class Crm extends Component {
             <Layout active='leads' {... this.props} >
                 <Row>
                     <Col lg={4}>
-                        <UltimosContactosCard
-                            ultimos_contactados={ultimos_contactados}
-                            onClick={this.nextUltimosContactados}
-                            onClickPrev={this.prevUltimosContactados}
+                        <UltimosIngresosCard 
+                            ultimos_ingresados={ultimos_ingresados}
+                            onClick={this.nextPageUltimosIngresados}
+                            onClickPrev={this.prevPageUltimosIngresados}
                         />
                     </Col>
                     <Col lg={4}>
@@ -241,10 +235,10 @@ class Crm extends Component {
                         />
                     </Col>
                     <Col lg={4}>
-                        <UltimosIngresosCard 
-                            ultimos_ingresados={ultimos_ingresados}
-                            onClick={this.nextPageUltimosIngresados}
-                            onClickPrev={this.prevPageUltimosIngresados}
+                        <UltimosContactosCard
+                            ultimos_contactados={ultimos_contactados}
+                            onClick={this.nextUltimosContactados}
+                            onClickPrev={this.prevUltimosContactados}
                         />
                     </Col>
                 </Row>
