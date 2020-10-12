@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import Layout from '../../../components/layout/layout';
-import { Col, Row, Card } from 'react-bootstrap'
+import { Col, Row, Card, Form, Tab, Nav } from 'react-bootstrap'
 import { UltimosContactosCard, SinContacto, UltimosIngresosCard } from '../../../components/cards'
 import { forbiddenAccessAlert, errorAlert } from '../../../functions/alert'
 import LeadNuevo from '../../../components/tables/Lead/LeadNuevo'
@@ -12,26 +12,26 @@ import LeadNegociacion from '../../../components/tables/Lead/LeadNegociacion'
 import LeadContrato from '../../../components/tables/Lead/LeadContrato'
 class Crm extends Component {
     state = {
-        ultimos_contactados:{
+        ultimos_contactados: {
             data: [],
-            numPage:0,
-            total:0,
-            total_paginas:0,
-            value:"ultimos_contactados"
+            numPage: 0,
+            total: 0,
+            total_paginas: 0,
+            value: "ultimos_contactados"
         },
-        prospectos_sin_contactar:{
+        prospectos_sin_contactar: {
             data: [],
-            numPage:0,
-            total:0,
-            total_paginas:0,
-            value:"prospectos_sin_contactar"
+            numPage: 0,
+            total: 0,
+            total_paginas: 0,
+            value: "prospectos_sin_contactar"
         },
-        ultimos_ingresados:{
+        ultimos_ingresados: {
             data: [],
-            numPage:0,
-            total:0,
-            total_paginas:0,
-            value:"ultimos_ingresados"
+            numPage: 0,
+            total: 0,
+            total_paginas: 0,
+            value: "ultimos_ingresados"
         }
     }
     componentDidMount() {
@@ -49,76 +49,76 @@ class Crm extends Component {
         this.getUltimosIngresados()
     }
 
-    nextUltimosContactados=(e)=>{
-        e.preventDefault() 
-        const {ultimos_contactados}=this.state
-        if(ultimos_contactados.numPage<ultimos_contactados.total_paginas-1){
-            this.setState({ 
-                numPage:ultimos_contactados.numPage++
+    nextUltimosContactados = (e) => {
+        e.preventDefault()
+        const { ultimos_contactados } = this.state
+        if (ultimos_contactados.numPage < ultimos_contactados.total_paginas - 1) {
+            this.setState({
+                numPage: ultimos_contactados.numPage++
             })
             this.getUltimosContactos()
-        } 
+        }
     }
-    nextPageProspectosSinContactar=(e)=>{
+    nextPageProspectosSinContactar = (e) => {
         e.preventDefault()
-        const {prospectos_sin_contactar}=this.state
-        if(prospectos_sin_contactar.numPage<prospectos_sin_contactar.total_paginas-1){
+        const { prospectos_sin_contactar } = this.state
+        if (prospectos_sin_contactar.numPage < prospectos_sin_contactar.total_paginas - 1) {
             this.setState({
-                numPage:prospectos_sin_contactar.numPage++
+                numPage: prospectos_sin_contactar.numPage++
             })
             this.getSinContactar()
         }
     }
-    nextPageUltimosIngresados=(e)=>{
-        e.preventDefault() 
-        const {ultimos_ingresados}=this.state
-        if(ultimos_ingresados.numPage<ultimos_ingresados.total_paginas-1){
+    nextPageUltimosIngresados = (e) => {
+        e.preventDefault()
+        const { ultimos_ingresados } = this.state
+        if (ultimos_ingresados.numPage < ultimos_ingresados.total_paginas - 1) {
             this.setState({
-                numPage:ultimos_ingresados.numPage++
+                numPage: ultimos_ingresados.numPage++
             })
         }
         this.getUltimosIngresados()
     }
-    prevUltimosContactados=(e)=>{
+    prevUltimosContactados = (e) => {
         e.preventDefault()
-        const {ultimos_contactados}=this.state
-        if(ultimos_contactados.numPage>0){
+        const { ultimos_contactados } = this.state
+        if (ultimos_contactados.numPage > 0) {
             this.setState({
-                numPage:ultimos_contactados.numPage--
+                numPage: ultimos_contactados.numPage--
             })
             this.getUltimosContactos()
-        } 
+        }
     }
-    prevPageProspectosSinContactar=(e)=>{
+    prevPageProspectosSinContactar = (e) => {
         e.preventDefault()
-        const {prospectos_sin_contactar}=this.state
-        if(prospectos_sin_contactar.numPage>0){
+        const { prospectos_sin_contactar } = this.state
+        if (prospectos_sin_contactar.numPage > 0) {
             this.setState({
-                numPage:prospectos_sin_contactar.numPage--
+                numPage: prospectos_sin_contactar.numPage--
             })
             this.getSinContactar()
         }
     }
-    prevPageUltimosIngresados=(e)=>{
+    prevPageUltimosIngresados = (e) => {
         e.preventDefault()
-        const {ultimos_ingresados}=this.state
-        if(ultimos_ingresados.numPage>0){
+        const { ultimos_ingresados } = this.state
+        if (ultimos_ingresados.numPage > 0) {
             this.setState({
-                numPage:ultimos_ingresados.numPage--
+                numPage: ultimos_ingresados.numPage--
             })
-        this.getUltimosIngresados()
+            this.getUltimosIngresados()
         }
     }
     async getUltimosContactos() {
         const { access_token } = this.props.authUser
-        const{ultimos_contactados}=this.state
-        await axios.get(URL_DEV + 'crm/timeline/ultimos-contactos/'+ultimos_contactados.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { ultimos_contactados } = this.state
+        await axios.get(URL_DEV + 'crm/timeline/ultimos-contactos/' + ultimos_contactados.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { contactos, total } = response.data
                 const { ultimos_contactados } = this.state
-                let total_paginas = Math.ceil(total/5)
+                let total_paginas = Math.ceil(total / 5)
                 ultimos_contactados.data = contactos
-                ultimos_contactados.total=total
+                ultimos_contactados.total = total
                 ultimos_contactados.total_paginas = total_paginas
                 this.setState({
                     ... this.state,
@@ -141,14 +141,14 @@ class Crm extends Component {
 
     async getSinContactar() {
         const { access_token } = this.props.authUser
-        const{prospectos_sin_contactar}=this.state
-        await axios.get(URL_DEV + 'crm/timeline/ultimos-prospectos-sin-contactar/'+prospectos_sin_contactar.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { prospectos_sin_contactar } = this.state
+        await axios.get(URL_DEV + 'crm/timeline/ultimos-prospectos-sin-contactar/' + prospectos_sin_contactar.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { contactos, total} = response.data
+                const { contactos, total } = response.data
                 const { prospectos_sin_contactar } = this.state
                 prospectos_sin_contactar.data = contactos
-                prospectos_sin_contactar.total=total
-                let total_paginas = Math.ceil(total/5)
+                prospectos_sin_contactar.total = total
+                let total_paginas = Math.ceil(total / 5)
                 prospectos_sin_contactar.total_paginas = total_paginas
                 this.setState({
                     ... this.state,
@@ -171,14 +171,14 @@ class Crm extends Component {
 
     async getUltimosIngresados() {
         const { access_token } = this.props.authUser
-        const{ultimos_ingresados}=this.state
-        await axios.get(URL_DEV + 'crm/timeline/ultimos-leads-ingresados/'+ultimos_ingresados.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { ultimos_ingresados } = this.state
+        await axios.get(URL_DEV + 'crm/timeline/ultimos-leads-ingresados/' + ultimos_ingresados.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { leads, total} = response.data
+                const { leads, total } = response.data
                 const { ultimos_ingresados } = this.state
                 ultimos_ingresados.data = leads
-                ultimos_ingresados.total=total
-                let total_paginas = Math.ceil(total/5)
+                ultimos_ingresados.total = total
+                let total_paginas = Math.ceil(total / 5)
                 ultimos_ingresados.total_paginas = total_paginas
                 this.setState({
                     ... this.state,
@@ -221,7 +221,7 @@ class Crm extends Component {
             <Layout active='leads' {... this.props} >
                 <Row>
                     <Col lg={4}>
-                        <UltimosIngresosCard 
+                        <UltimosIngresosCard
                             ultimos_ingresados={ultimos_ingresados}
                             onClick={this.nextPageUltimosIngresados}
                             onClickPrev={this.prevPageUltimosIngresados}
@@ -243,46 +243,92 @@ class Crm extends Component {
                     </Col>
                 </Row>
                 <Col md={12} className="px-0">
-                    <Card className="card-custom card-stretch gutter-b py-2">
-                        <Card.Header className="align-items-center border-0">
-                            <h3 className="card-title align-items-start flex-column">
-                                <span className="font-weight-bolder text-dark">Nuevos leads</span>
-                            </h3>
-                        </Card.Header>
-                        <Card.Body className="py-2">
-                            <LeadNuevo/>
-                        </Card.Body>
-                    </Card>
-                    <Card className="card-custom card-stretch gutter-b py-2">
-                        <Card.Header className="align-items-center border-0">
-                            <h3 className="card-title align-items-start flex-column">
-                                <span className="font-weight-bolder text-dark">Leads en contacto</span>
-                            </h3>
-                        </Card.Header>
-                        <Card.Body className="py-2">
-                            <LeadContacto/>
-                        </Card.Body>
-                    </Card>
-                    <Card className="card-custom card-stretch gutter-b py-2">
-                        <Card.Header className="align-items-center border-0">
-                            <h3 className="card-title align-items-start flex-column">
-                                <span className="font-weight-bolder text-dark">Leads en negociación</span>
-                            </h3>
-                        </Card.Header>
-                        <Card.Body className="py-2">
-                            <LeadNegociacion/>
-                        </Card.Body>
-                    </Card>
-                    <Card className="card-custom card-stretch gutter-b py-2">
-                        <Card.Header className="align-items-center border-0">
-                            <h3 className="card-title align-items-start flex-column">
-                                <span className="font-weight-bolder text-dark">Leads contratados</span>
-                            </h3>
-                        </Card.Header>
-                        <Card.Body className="py-2">
-                            <LeadContrato/>
-                        </Card.Body>
-                    </Card>
+                    <Tab.Container defaultActiveKey="1">
+                        <Card className="card-custom card-stretch gutter-b py-2">
+                            <Card.Header className="align-items-center border-0">
+                                <h3 className="card-title align-items-start flex-column">
+                                    <span className="font-weight-bolder text-dark">Leads</span>
+                                </h3>
+                                <div className="card-toolbar">
+                                    <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0">
+                                        <Nav.Item className="nav-item">
+                                            <Nav.Link eventKey="1">NUEVOS</Nav.Link>
+                                        </Nav.Item>
+                                        <Nav.Item className="nav-item">
+                                            <Nav.Link eventKey="2">EN CONTACTO</Nav.Link>
+                                        </Nav.Item>
+                                        <Nav.Item className="nav-item">
+                                            <Nav.Link eventKey="3">EN NEGOCIACIÓN</Nav.Link>
+                                        </Nav.Item>
+                                        <Nav.Item className="nav-item">
+                                            <Nav.Link eventKey="4">CONTRATADOS</Nav.Link>
+                                        </Nav.Item>
+                                    </Nav>
+                                </div>
+                            </Card.Header>
+                            <div className="card-body">
+                                <div className="mb-5">
+                                    <div className="form-group row form-group-marginless">
+                                        <div className="col-md-5">
+                                            <div className="input-icon">
+                                                <input type="text" className="form-control" placeholder="Buscar cliente o proyecto" />
+                                                <span>
+                                                    <i className="flaticon2-search-1 text-muted"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className="col-md-3">
+                                            <Form.Control
+                                                className="form-control text-uppercase"
+                                                // value = {form.origen} 
+                                                // onChange={onChange} 
+                                                name='origen'
+                                                // formeditado={formeditado} 
+                                                as="select">
+                                                <option disabled selected value={0}> Origen</option>
+                                                <option value={"web"}>Web</option>
+                                                <option value={"facebook"}>Facebook</option>
+                                                <option value={"google"}>Google</option>
+                                                <option value={"linkedin"}>Linkedin</option>
+                                            </Form.Control>
+                                        </div>
+                                        <div className="col-md-3">
+                                            <Form.Control
+                                                className="form-control text-uppercase"
+                                                // value = {form.estatus} 
+                                                // onChange={onChange} 
+                                                // name='estatus' 
+                                                // formeditado={formeditado} 
+                                                as="select">
+                                                <option disabled selected value={0}> Estatus</option>
+                                                <option value={"pendiente"}>Pendiente</option>
+                                                <option value={"contacto"}>En contacto</option>
+                                                <option value={"negociacion"}>En negociación</option>
+                                                <option value={"contratado"}>Contratado</option>
+                                            </Form.Control>
+                                        </div>
+                                        <div className="col-md-1">
+                                            <a href="#" className="btn btn-light-primary px-6 font-weight-bold">Buscar</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <Tab.Content>
+                                    <Tab.Pane eventKey="1">
+                                        <LeadNuevo />
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="2">
+                                        <LeadContacto />
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="3">
+                                        <LeadNegociacion />
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="4">
+                                        <LeadContrato />
+                                    </Tab.Pane>
+                                </Tab.Content>
+                            </div>
+                        </Card>
+                    </Tab.Container>
                 </Col>
             </Layout>
         );
