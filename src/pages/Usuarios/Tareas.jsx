@@ -48,7 +48,7 @@ class Tareas extends Component{
         const { history : { location: { pathname: pathname } } } = this.props
         const { history } = this.props
         const tareas = permisos.find(function(element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if(!tareas)
@@ -106,7 +106,7 @@ class Tareas extends Component{
 
     handleCloseModal = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modal: !this.state.modal,
             tarea: '',
             adjuntoName: '',
@@ -122,7 +122,7 @@ class Tareas extends Component{
         let _index = []
 
         this.setState({
-            ... this.state,
+            ...this.state,
             tarea: tarea,
             modal: true,
             adjuntoName: '',
@@ -157,7 +157,7 @@ class Tareas extends Component{
         })
 
         this.setState({
-            ... this.state,
+            ...this.state,
             participantesTask: aux,
             participantes: _index
         })
@@ -165,7 +165,7 @@ class Tareas extends Component{
 
     setTareas = columns => {
         this.setState({
-            ... this.state,
+            ...this.state,
             columns
         })
     }
@@ -201,7 +201,7 @@ class Tareas extends Component{
         const { form } = this.state
         form['titulo'] = '';
         this.setState({
-            ... this.state,
+            ...this.state,
             activeKey: activeKey,
             form
         })
@@ -217,7 +217,7 @@ class Tareas extends Component{
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -226,14 +226,14 @@ class Tareas extends Component{
         const { value, name } = e.target
         if( name === 'adjunto'){
             this.setState({
-                ... this.state,
+                ...this.state,
                 adjuntoFile: e.target.files[0],
                 adjunto: e.target.value,
                 adjuntoName: e.target.files[0].name
             })
         }else{
             this.setState({
-                ... this.state,
+                ...this.state,
                 comentario: value
             })
         }
@@ -253,7 +253,7 @@ class Tareas extends Component{
         const { tarea } = this.state
         tarea[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             tarea: tarea,
             formeditado:1
         })
@@ -294,7 +294,7 @@ class Tareas extends Component{
                 const { data : { users : users } } = response
                 const { tableros } = response.data
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     user: user,
                     users: users,
                     tableros: tableros,
@@ -387,7 +387,7 @@ class Tareas extends Component{
                     }
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     comentario: '',
                     tarea: tarea,
                     adjunto: '',
@@ -451,7 +451,7 @@ class Tareas extends Component{
                     }
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal: false,
                     tarea: '',
                     adjuntoName: '',
@@ -485,7 +485,7 @@ class Tareas extends Component{
                     }
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal: false,
                     tarea: '',
                     adjuntoName: '',
@@ -521,7 +521,7 @@ class Tareas extends Component{
                     }
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal: false,
                     tableros:tableros
                 })

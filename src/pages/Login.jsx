@@ -41,7 +41,7 @@ class Login extends Component{
                                             <p className="pb-2 pt-1">Escribe tu correo y contraseña</p>
                                         </div>
                                             <div className=" align-items-center justify-content-center">
-                                                <LoginForm { ... this.props} />
+                                                <LoginForm { ...this.props} />
                                             </div>
                                     </div>
                                 </div>

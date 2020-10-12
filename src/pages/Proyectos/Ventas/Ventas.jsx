@@ -98,11 +98,11 @@ class Ventas extends Component {
         }
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const ventas = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!ventas)
@@ -156,7 +156,7 @@ class Ventas extends Component {
         const { name, value } = e.target
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -269,7 +269,7 @@ class Ventas extends Component {
                         form.facturaObject = obj
                         form.rfc = obj.rfc_receptor
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             options,
                             form
                         })
@@ -289,7 +289,7 @@ class Ventas extends Component {
         form['adjuntos'][name].value = value
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -308,7 +308,7 @@ class Ventas extends Component {
         }
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -459,7 +459,7 @@ class Ventas extends Component {
     }
     openModalDelete = (venta) => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: true,
             venta: venta
         })
@@ -479,7 +479,7 @@ class Ventas extends Component {
         porcentaje = porcentaje * 100 / venta.total
         porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
         this.setState({
-            ... this.state,
+            ...this.state,
             modalFacturas: true,
             venta: venta,
             facturas: venta.facturas,
@@ -492,7 +492,7 @@ class Ventas extends Component {
         const { data } = this.state
         data.adjuntos = venta.presupuestos.concat(venta.pagos)
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAdjuntos: true,
             venta: venta,
             form: this.clearForm(),
@@ -506,7 +506,7 @@ class Ventas extends Component {
     }
     openModalSee = venta => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: true,
             venta: venta
         })
@@ -517,7 +517,7 @@ class Ventas extends Component {
     //     form.cliente = venta.cliente.id.toString()
     //     form.rfc = venta.cliente.rfc
     //     this.setState({
-    //         ... this.state,
+    //         ...this.state,
     //         modalAskFactura: true,
     //         venta: venta,
     //         form,
@@ -527,14 +527,14 @@ class Ventas extends Component {
     handleCloseDelete = () => {
         const { modalDelete } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: !modalDelete,
             venta: ''
         })
     }
     handleCloseFacturas = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalFacturas: false,
             venta: '',
             facturas: [],
@@ -546,7 +546,7 @@ class Ventas extends Component {
         const { data } = this.state
         data.adjuntos = []
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAdjuntos: false,
             form: this.clearForm(),
             adjuntos: [],
@@ -556,14 +556,14 @@ class Ventas extends Component {
     }
     handleCloseSee = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: false,
             venta: ''
         })
     }
     // handleCloseAskFactura = () => {
     //     this.setState({
-    //         ... this.state,
+    //         ...this.state,
     //         modalAskFactura: false,
     //         venta: '',
     //         form: this.clearForm()
@@ -596,7 +596,7 @@ class Ventas extends Component {
                     }
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form,
                     data,
                     options
@@ -617,7 +617,7 @@ class Ventas extends Component {
         })
     }
     async getVentasAxios() {
-        var table = $('#kt_datatable2_ventas').DataTable().ajax.reload();
+        $('#kt_datatable2_ventas').DataTable().ajax.reload();
     }
     async getOptionsAxios() {
         waitAlert()
@@ -640,7 +640,7 @@ class Ventas extends Component {
                 data.empresas = empresas
                 swal.close()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options,
                     data
                 })
@@ -665,7 +665,7 @@ class Ventas extends Component {
             (response) => {
                 this.getVentasAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     modalDelete: false,
                     venta: ''
@@ -727,7 +727,7 @@ class Ventas extends Component {
                 porcentaje = porcentaje * 100 / venta.total
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form,
                     venta: venta,
                     facturas: venta.facturas,
@@ -763,7 +763,7 @@ class Ventas extends Component {
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
                 this.getVentasAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     venta: venta,
                     facturas: venta.facturas,
@@ -832,7 +832,7 @@ class Ventas extends Component {
                 data.adjuntos = venta.presupuestos.concat(venta.pagos)
                 this.getVentasAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     venta: venta,
                     adjuntos: this.setAdjuntosTable(venta),
@@ -863,7 +863,7 @@ class Ventas extends Component {
                 data.adjuntos = venta.presupuestos.concat(venta.pagos)
                 this.getVentasAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     venta: venta,
                     adjuntos: this.setAdjuntosTable(venta),
@@ -896,7 +896,7 @@ class Ventas extends Component {
             (response) => {
                 this.getVentasAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     // modalAskFactura: false
                 })
@@ -920,7 +920,7 @@ class Ventas extends Component {
         if (value === 'facturas') {
         }
         this.setState({
-            ... this.state,
+            ...this.state,
             active: value,
             form
         })

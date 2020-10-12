@@ -40,11 +40,11 @@ class Leads extends Component {
     }
 
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const leads = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!leads)
@@ -84,7 +84,7 @@ class Leads extends Component {
         } else
             form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -105,7 +105,7 @@ class Leads extends Component {
 
     handleCloseModal = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modal: false,
             typeForm: '',
             estado: '',
@@ -116,7 +116,7 @@ class Leads extends Component {
 
     handleDeleteModal = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: !this.state.modalDelete,
             cliente: ''
         })
@@ -125,7 +125,7 @@ class Leads extends Component {
 
     openModal = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modal: true,
             typeForm: 'Add',
             formeditado: 0
@@ -135,7 +135,7 @@ class Leads extends Component {
 
     openModalDelete = cliente => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: true,
             cliente
         })
@@ -163,7 +163,7 @@ class Leads extends Component {
         form['rfc'] = cliente.rfc
 
         this.setState({
-            ... this.state,
+            ...this.state,
             modal: true,
             typeForm: 'Edit',
             form,
@@ -174,7 +174,7 @@ class Leads extends Component {
 
     openModalSee = cliente => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: true,
             cliente: cliente
         })
@@ -182,7 +182,7 @@ class Leads extends Component {
 
     handleCloseSee = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: false,
             cliente: ''
         })
@@ -190,7 +190,7 @@ class Leads extends Component {
 
     openModalAddProspecto = cliente => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalProspecto: true,
             cliente: cliente
         })
@@ -198,7 +198,7 @@ class Leads extends Component {
 
     handleCloseAddProspecto = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalProspecto: false,
             cliente: ''
         })
@@ -223,7 +223,7 @@ class Leads extends Component {
             )
         })
         this.setState({
-            ... this.state,
+            ...this.state,
             clientes: aux
         })
     }
@@ -311,7 +311,7 @@ class Leads extends Component {
                 data.clientes = clientes
                 this.setClientes(clientes)
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     data
                 })
             },
@@ -342,7 +342,7 @@ class Leads extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito un nuevo cliente.')
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal: false,
                     typeForm: '',
                     data
@@ -376,7 +376,7 @@ class Leads extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito al cliente.')
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal: false,
                     cliente: '',
                     data
@@ -409,7 +409,7 @@ class Leads extends Component {
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito al cliente.')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modalDelete: false,
                     cliente: '',
                     data
@@ -440,7 +440,7 @@ class Leads extends Component {
                     aux.push({ value: colonia, name: colonia.toUpperCase() })
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     municipio,
                     estado,
                     colonias: aux

@@ -35,18 +35,18 @@ class HerramientaForm extends Component {
         herramienta: ''
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { match: { params: { action: action } } } = this.props
         const { history, location: { state: state } } = this.props
         const remisiones = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         switch (action) {
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Nueva herramienta',
                     formeditado: 0
                 })
@@ -73,7 +73,7 @@ class HerramientaForm extends Component {
                             form.adjuntos.adjuntos.files = aux
                         }
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             formeditado: 1,
                             herramienta: herramienta,
                             title: 'Editar herramienta',
@@ -97,7 +97,7 @@ class HerramientaForm extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -113,7 +113,7 @@ class HerramientaForm extends Component {
         })
         form.adjuntos.adjuntos.files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -133,7 +133,7 @@ class HerramientaForm extends Component {
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -166,7 +166,7 @@ class HerramientaForm extends Component {
                         form.proyecto = herramienta.proyecto_id.toString()
                 }
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options,
                     form
                 })

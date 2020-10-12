@@ -7,6 +7,7 @@ class TablaReportes extends Component {
         let suma = 0
         ventas.map((venta) => {
             suma = suma + venta.total
+            return false
         })
         return suma
     }
@@ -15,6 +16,7 @@ class TablaReportes extends Component {
         let suma = 0
         compras.map((compra) => {
             suma = suma + compra.total
+            return false
         })
         return suma
     }
@@ -24,9 +26,10 @@ class TablaReportes extends Component {
         proyectos.map((proyecto) => {
             proyecto.ventas.map((venta)=>{
                 suma = suma + venta.total
-            })            
+                return false
+            })
+            return false
         })
-        
         return suma
     }
     sumaTotalComprasProyectos(){
@@ -35,12 +38,12 @@ class TablaReportes extends Component {
         proyectos.map((proyecto) => {
             proyecto.compras.map((compra)=>{
                 suma = suma + compra.total
-            })            
+                return false
+            })
+            return false
         })
-        
         return suma
     }
-
 
     render() {
         const { proyectos } = this.props

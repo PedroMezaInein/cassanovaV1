@@ -19,11 +19,11 @@ class Traspasos extends Component {
         traspaso: ''
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const modulo = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!modulo)
@@ -109,7 +109,7 @@ class Traspasos extends Component {
         const { modal } = this.state
         modal.delete = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             traspaso: traspaso
         })
@@ -118,7 +118,7 @@ class Traspasos extends Component {
         const { modal } = this.state
         modal.delete = false
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             traspaso: ''
         })
@@ -127,7 +127,7 @@ class Traspasos extends Component {
         const { modal } = this.state
         modal.see = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             traspaso: traspaso
         })
@@ -136,7 +136,7 @@ class Traspasos extends Component {
         const { modal } = this.state
         modal.see = false
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             traspaso: ''
         })
@@ -183,7 +183,7 @@ class Traspasos extends Component {
                 const { modal } = this.state
                 modal.delete = false
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal,
                     traspaso: ''
                 })
@@ -205,7 +205,7 @@ class Traspasos extends Component {
     render() {
         const { modal, traspaso } = this.state
         return (
-            <Layout active='bancos' {... this.props}>
+            <Layout active='bancos' {...this.props}>
                 <NewTableServerRender
                     columns={TRASPASOS_COLUMNS}
                     title='Traspasos'

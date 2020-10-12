@@ -133,7 +133,7 @@ class Herramienta extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -146,7 +146,7 @@ class Herramienta extends Component {
     }
     openModalDelete = herramienta => {
         this.setState({
-            ... this.state,
+            ...this.state,
             herramienta: herramienta,
             modalDelete: true
         })
@@ -163,7 +163,7 @@ class Herramienta extends Component {
         })
         form.adjuntos.adjuntos.files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             herramienta: herramienta,
             modalAdjuntos: true,
             form
@@ -173,7 +173,7 @@ class Herramienta extends Component {
         const { data } = this.state
         data.ubicaciones = herramienta.ubicaciones
         this.setState({
-            ... this.state,
+            ...this.state,
             herramienta: herramienta,
             modalUbicacion: true,
             data,
@@ -182,14 +182,14 @@ class Herramienta extends Component {
     }
     openModalDeleteUbicacion = ubicacion => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDeleteUbicacion: true,
             ubicacion: ubicacion
         })
     }
     handleCloseDelete = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: false,
             herramienta: ''
         })
@@ -198,7 +198,7 @@ class Herramienta extends Component {
         const { form } = this.state
         form.adjuntos.adjuntos.files = []
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAdjuntos: false,
             herramienta: '',
             form
@@ -206,28 +206,28 @@ class Herramienta extends Component {
     }
     handleCloseUbicacion = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             herramienta: '',
             modalUbicacion: false
         })
     }
     handleCloseDeleteUbicacion = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDeleteUbicacion: false,
             ubicacion: ''
         })
     }
     openModalSee = herramienta => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: true,
             herramienta: herramienta
         })
     }
     handleCloseSee = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: false,
             herramienta: ''
         })
@@ -248,7 +248,7 @@ class Herramienta extends Component {
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -260,7 +260,7 @@ class Herramienta extends Component {
             form.comentario = ''
         }
         this.setState({
-            ... this.state,
+            ...this.state,
             active: value,
             form
         })
@@ -308,7 +308,7 @@ class Herramienta extends Component {
                 const { data } = this.state
                 data.ubicaciones = herramienta.ubicaciones
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     active: 'historial',
                     herramienta: herramienta,
                     data,
@@ -347,7 +347,7 @@ class Herramienta extends Component {
                 })
                 form.adjuntos.adjuntos.files = aux
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modalDelete: false,
                     herramienta: '',
                     form
@@ -407,7 +407,7 @@ class Herramienta extends Component {
                 })
                 form.adjuntos.adjuntos.files = aux
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modalDelete: false,
                     herramienta: '',
                     form
@@ -442,7 +442,7 @@ class Herramienta extends Component {
                 form.comentario = ''
                 data.ubicaciones = herramienta.ubicaciones
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     active: 'historial',
                     herramienta: herramienta,
                     form,

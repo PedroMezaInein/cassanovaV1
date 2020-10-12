@@ -30,11 +30,11 @@ class EstadosCuenta extends Component {
         }
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const leads = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!leads)
@@ -61,7 +61,7 @@ class EstadosCuenta extends Component {
             })
         })
         this.setState({
-            ... this.state,
+            ...this.state,
             estados: aux
         })
     }
@@ -133,7 +133,7 @@ class EstadosCuenta extends Component {
     }
     onChangeAdjunto = (e) => {
         this.setState({
-            ... this.state,
+            ...this.state,
             adjuntoFile: e.target.files[0],
             adjunto: e.target.value,
             adjuntoName: e.target.files[0].name
@@ -141,7 +141,7 @@ class EstadosCuenta extends Component {
     }
     deleteAdjunto = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             adjuntoFile: '',
             adjunto: '',
             adjuntoName: ''
@@ -149,7 +149,7 @@ class EstadosCuenta extends Component {
     }
     updateCuenta = value => {
         this.setState({
-            ... this.state,
+            ...this.state,
             cuenta: value
         })
     }
@@ -180,7 +180,7 @@ class EstadosCuenta extends Component {
     }
     openModalDelete = estado => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: true,
             estado: estado
         })
@@ -188,27 +188,27 @@ class EstadosCuenta extends Component {
     handleCloseDelete = () => {
         const { modalDelete } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: !modalDelete,
             estado: ''
         })
     }
     handleChangeDate = date => {
         this.setState({
-            ... this.state,
+            ...this.state,
             fecha: date
         })
     }
     openModalSee = estado => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: true,
             estado: estado
         })
     }
     handleCloseSee = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: false,
             estado: ''
         })
@@ -226,7 +226,7 @@ class EstadosCuenta extends Component {
                     aux.push({ value: element.numero, name: element.nombre })
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     cuentas: aux
                 })
             },
@@ -258,7 +258,7 @@ class EstadosCuenta extends Component {
                 data.estados = estados
                 this.setEstados(estados)
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     adjunto: '',
                     adjuntoFile: '',
                     adjuntoName: '',
@@ -290,7 +290,7 @@ class EstadosCuenta extends Component {
                 const { data } = this.state
                 data.estados = estados
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modalDelete: false,
                     estado: '',
                     data

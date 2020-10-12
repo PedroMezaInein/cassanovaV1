@@ -9,7 +9,7 @@ class UrlLocation extends Component {
     }
 
     componentDidMount() {
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         let aux = pathname.substr(1, pathname.length - 1)
         let url_direccion = pathname.substr(1, pathname.length - 1)
         aux = aux.split('/')

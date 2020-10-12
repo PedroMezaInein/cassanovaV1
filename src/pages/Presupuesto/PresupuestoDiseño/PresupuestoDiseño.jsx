@@ -27,11 +27,11 @@ class PresupuestoDiseño extends Component {
     }
 
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const presupuesto = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!presupuesto)
@@ -50,7 +50,7 @@ class PresupuestoDiseño extends Component {
         const { modal } = this.state
         modal.delete = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             presupuesto: presupuesto
         })
@@ -61,7 +61,7 @@ class PresupuestoDiseño extends Component {
         data.adjuntos = presupuesto.pdfs
         modal.adjuntos = true
         this.setState({
-            ... this.state,
+            ...this.state,
             presupuesto: presupuesto,
             modal,
             adjuntos: this.setAdjuntosTable(presupuesto.pdfs),
@@ -94,7 +94,7 @@ class PresupuestoDiseño extends Component {
                 this.getPresupuestoAxios()
                 modal.delete = false
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal,
                     presupuesto: '',
                 })
@@ -118,7 +118,7 @@ class PresupuestoDiseño extends Component {
         const { modal } = this.state
         modal.delete = false
         this.setState({
-            ... this.state,
+            ...this.state,
             form: this.clearForm(),
             modal,
             presupuesto: ''
@@ -130,7 +130,7 @@ class PresupuestoDiseño extends Component {
         data.adjuntos = []
         modal.adjuntos = false
         this.setState({
-            ... this.state,
+            ...this.state,
             presupuesto: '',
             modal,
             adjuntos: [],
@@ -211,7 +211,7 @@ class PresupuestoDiseño extends Component {
     }
 
     async getPresupuestoAxios() {
-        var table = $('#kt_datatable2_presupuesto_diseño').DataTable().ajax.reload();
+        $('#kt_datatable2_presupuesto_diseño').DataTable().ajax.reload();
     }
 
     render() {

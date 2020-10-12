@@ -38,7 +38,7 @@ class LeadTelefono extends Component {
         aux.push( { username: 'Cliente', message: 'Buenas tardes, ¿Con quién puedo ver lo de un proyecto?', fromMe: false } )
         aux.push( { username: usuario, message: `Lo puedes ver conmigo, soy ${usuario} asesor(a) comercial de IM. Dígame, ¿Cuál es su nombre?`, fromMe: true } )
         this.setState({
-            ... this.state,
+            ...this.state,
             messages: aux
         }) */
     }
@@ -64,7 +64,7 @@ class LeadTelefono extends Component {
         if(type === 'checkbox')
             form[name] = checked
         this.setState({
-            ... this.state,
+            ...this.state,
             form,
             messages: this.updateMessages(messages, name, value),
             tipo: name
@@ -190,7 +190,7 @@ class LeadTelefono extends Component {
                 const { options } = this.state
                 options.empresas = setOptions(empresas, 'name', 'id')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },
@@ -210,7 +210,7 @@ class LeadTelefono extends Component {
     render() {
         const { messages, form, options } = this.state
         return (
-            <Layout active = 'leads' { ... this.props } >
+            <Layout active = 'leads' { ...this.props } >
                 <div className = "row mx-0">
                     <div className = "col-md-4 position-relative border p-2">
                         <Messages messages = { messages } />

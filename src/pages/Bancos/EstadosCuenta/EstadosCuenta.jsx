@@ -24,11 +24,11 @@ class EstadosCuenta extends Component {
         }
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const estados = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!estados)
@@ -79,7 +79,7 @@ class EstadosCuenta extends Component {
         const { modal } = this.state
         modal.delete = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             estado: estado
         })
@@ -88,7 +88,7 @@ class EstadosCuenta extends Component {
         const { modal } = this.state
         modal.delete = false
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             estado: ''
         })
@@ -97,7 +97,7 @@ class EstadosCuenta extends Component {
         const { modal } = this.state
         modal.see = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             estado: estado
         })
@@ -106,7 +106,7 @@ class EstadosCuenta extends Component {
         const { modal } = this.state
         modal.see = false
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             estado: ''
         })
@@ -123,7 +123,7 @@ class EstadosCuenta extends Component {
                 const { modal } = this.state
                 modal.delete = false
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal,
                     estado: ''
                 })

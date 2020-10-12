@@ -24,7 +24,7 @@ class AccountSettings extends Component {
         const { name, value } = e.target
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
 	}

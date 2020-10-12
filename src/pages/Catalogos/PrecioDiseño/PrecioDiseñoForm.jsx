@@ -31,7 +31,7 @@ class PrecioDiseñoForm extends Component{
         const { match : { params: { action: action } } } = this.props
         const { history, location: { state: state} } = this.props
         const remisiones = permisos.find(function(element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         switch(action){
@@ -41,7 +41,7 @@ class PrecioDiseñoForm extends Component{
                 form.incremento_esquema_2 = 45
                 form.incremento_esquema_3 = 95
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Nuevo elemento',
                     formeditado:0,
                     form
@@ -62,7 +62,7 @@ class PrecioDiseñoForm extends Component{
                         form.esquema_3 = precio.esquema_3
                         
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             title: 'Editar elemento',
                             form,
                             precio: precio
@@ -93,7 +93,7 @@ class PrecioDiseñoForm extends Component{
         }
 
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }

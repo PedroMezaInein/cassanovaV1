@@ -96,7 +96,7 @@ class Prestamos extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -104,7 +104,7 @@ class Prestamos extends Component {
         let { activePage } = this.state
         activePage = pageNumber
         this.setState({
-            ... this.state,
+            ...this.state,
             activePage
         })
     }
@@ -122,14 +122,14 @@ class Prestamos extends Component {
     }
     openModalDelete = prestamo => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: true,
             prestamo: prestamo
         })
     }
     handleCloseDelete = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: false,
             prestamo: ''
         })
@@ -142,7 +142,7 @@ class Prestamos extends Component {
         })
         form.adjuntos.adjuntos.files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAdjuntos: true,
             form,
             prestamo: prestamo
@@ -152,7 +152,7 @@ class Prestamos extends Component {
         const { form } = this.state
         form.adjuntos.adjuntos.files = []
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAdjuntos: false,
             form,
             prestamo: ''
@@ -160,7 +160,7 @@ class Prestamos extends Component {
     }
     openModalAbonos = prestamo => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAbonos: true,
             prestamo: prestamo
         })
@@ -170,7 +170,7 @@ class Prestamos extends Component {
         form.fecha = new Date()
         form.abono = 0.0
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAbonos: false,
             prestamo: '',
             form,
@@ -179,14 +179,14 @@ class Prestamos extends Component {
     }
     openModalSee = prestamo => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: true,
             prestamo: prestamo
         })
     }
     handleCloseSee = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: false,
             prestamo: ''
         })
@@ -207,7 +207,7 @@ class Prestamos extends Component {
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -229,7 +229,7 @@ class Prestamos extends Component {
         })
         form.adjuntos.adjuntos.files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -238,7 +238,7 @@ class Prestamos extends Component {
         if (value === 'nuevo') {
         }
         this.setState({
-            ... this.state,
+            ...this.state,
             active: value,
             form
         })
@@ -253,7 +253,7 @@ class Prestamos extends Component {
             (response) => {
                 this.getPrestamosAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modalDelete: '',
                     prestamo: ''
                 })
@@ -300,7 +300,7 @@ class Prestamos extends Component {
                 form.adjuntos.adjuntos.files = aux
                 form.adjuntos.adjuntos.value = ''
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form
                 })
                 doneAlert('Adjunto creado con éxito')
@@ -330,7 +330,7 @@ class Prestamos extends Component {
                 form.abono = 0;
                 form.fecha = new Date()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     active: 'listado',
                     form,
                     prestamo: prestamo
@@ -383,7 +383,7 @@ class Prestamos extends Component {
             (response) => {
                 const { prestamo } = response.data
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     prestamo: prestamo
                 })
                 doneAlert('Abono eliminado con éxito')
@@ -405,7 +405,7 @@ class Prestamos extends Component {
     render() {
         const { modalDelete, form, modalAdjuntos, modalAbonos, active, prestamo, activePage, itemsPerPage, modalSee } = this.state
         return (
-            <Layout active='rh' {... this.props}>
+            <Layout active='rh' {...this.props}>
                 <NewTableServerRender
                     columns={PRESTAMOS_COLUMNS}
                     title='PRÉSTAMOS'

@@ -67,18 +67,18 @@ class IngresosForm extends Component {
         }
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { match: { params: { action: action } } } = this.props
         const { history, location: { state: state } } = this.props
         const ingresos = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         })
         switch (action) {
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Nuevo ingreso',
                     formeditado: 0
                 })
@@ -120,7 +120,7 @@ class IngresosForm extends Component {
                             }]
                         }
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             title: 'Editar ingreso',
                             form,
                             options,
@@ -145,7 +145,7 @@ class IngresosForm extends Component {
         const { name, value } = e.target
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -255,7 +255,7 @@ class IngresosForm extends Component {
                         form.facturaObject = obj
                         form.rfc = obj.rfc_receptor
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             options,
                             form
                         })
@@ -275,7 +275,7 @@ class IngresosForm extends Component {
         form['adjuntos'][name].value = value
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -294,7 +294,7 @@ class IngresosForm extends Component {
         }
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -344,7 +344,7 @@ class IngresosForm extends Component {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
-            ... this.state,
+            ...this.state,
             options
         })
     }
@@ -372,7 +372,7 @@ class IngresosForm extends Component {
                 data.clientes = clientes
                 data.empresas = empresas
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options,
                     data
                 })
@@ -423,7 +423,7 @@ class IngresosForm extends Component {
         await axios.post(URL_DEV + 'ingresos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm()
                 })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
@@ -474,7 +474,7 @@ class IngresosForm extends Component {
         await axios.post(URL_DEV + 'ingresos/update/' + ingreso.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm()
                 })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
@@ -519,7 +519,7 @@ class IngresosForm extends Component {
                     }
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form,
                     data,
                     options

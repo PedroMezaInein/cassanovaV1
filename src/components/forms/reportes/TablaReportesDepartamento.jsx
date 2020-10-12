@@ -46,7 +46,7 @@ class TablaReportesDepartamento extends Component {
             active = depto.id
         }
         this.setState({
-            ... this.state,
+            ...this.state,
             active
         })
     }

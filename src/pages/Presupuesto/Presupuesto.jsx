@@ -43,11 +43,11 @@ class Presupuesto extends Component {
         adjuntos: []
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const presupuesto = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!presupuesto)
@@ -58,7 +58,7 @@ class Presupuesto extends Component {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
-            ... this.state,
+            ...this.state,
             options
         })
     }
@@ -75,7 +75,7 @@ class Presupuesto extends Component {
                 options['areas'] = setOptions(areas, 'nombre', 'id')
                 options['partidas'] = setOptions(partidas, 'nombre', 'id')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },
@@ -101,7 +101,7 @@ class Presupuesto extends Component {
                 modal.delete = false
                 this.getPresupuestoAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal,
                     presupuesto: '',
 
@@ -125,7 +125,7 @@ class Presupuesto extends Component {
         const { modal } = this.state
         modal.delete = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             presupuesto: presupuesto
         })
@@ -135,7 +135,7 @@ class Presupuesto extends Component {
         data.adjuntos = presupuesto.pdfs
         modal.adjuntos = true
         this.setState({
-            ... this.state,
+            ...this.state,
             presupuesto: presupuesto,
             modal,
             adjuntos: this.setAdjuntosTable(presupuesto.pdfs),
@@ -147,7 +147,7 @@ class Presupuesto extends Component {
         data.adjuntos = []
         modal.adjuntos = false
         this.setState({
-            ... this.state,
+            ...this.state,
             presupuesto: '',
             modal,
             adjuntos: [],
@@ -158,7 +158,7 @@ class Presupuesto extends Component {
         const { modal } = this.state
         modal.delete = false
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             presupuesto: ''
         })
@@ -201,7 +201,7 @@ class Presupuesto extends Component {
         return aux
     }
     async getPresupuestoAxios() {
-        var table = $('#kt_datatable2_presupuesto').DataTable().ajax.reload();
+        $('#kt_datatable2_presupuesto').DataTable().ajax.reload();
     }
     setPresupuestos = presupuestos => {
         let aux = []

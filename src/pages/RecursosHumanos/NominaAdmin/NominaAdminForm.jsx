@@ -50,19 +50,19 @@ class NominaAdminForm extends Component {
     }
 
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { match: { params: { action: action } } } = this.props
         const { history, location: { state: state } } = this.props
 
         const nominaOmbra = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         switch (action) {
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Nueva nómina administrativa',
                     formeditado: 0
                 })
@@ -101,7 +101,7 @@ class NominaAdminForm extends Component {
                         }
                         
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             title: 'Editar nómina administrativa',
                             nomina: nomina,
                             form,
@@ -128,7 +128,7 @@ class NominaAdminForm extends Component {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
-            ... this.state,
+            ...this.state,
             options
         })
     }
@@ -146,7 +146,7 @@ class NominaAdminForm extends Component {
                 options['empresas'] = setOptions(empresas, 'name', 'id')
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options,
                     data
                 })
@@ -297,7 +297,7 @@ class NominaAdminForm extends Component {
         }
         form.adjuntos[name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -329,7 +329,7 @@ class NominaAdminForm extends Component {
     //     form.adjuntos[name].value = value
     //     form.adjuntos[name].files = aux
     //     this.setState({
-    //         ... this.state,
+    //         ...this.state,
     //         form
     //     })
     // }
@@ -375,7 +375,7 @@ class NominaAdminForm extends Component {
             }
         )
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -384,7 +384,7 @@ class NominaAdminForm extends Component {
         const { form } = this.state
         form.nominasAdmin.pop()
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -404,7 +404,7 @@ class NominaAdminForm extends Component {
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }

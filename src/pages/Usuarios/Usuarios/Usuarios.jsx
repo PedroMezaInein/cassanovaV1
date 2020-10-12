@@ -54,11 +54,11 @@ class Usuarios extends Component {
     }
 
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const usuarios = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!usuarios)
@@ -78,7 +78,7 @@ class Usuarios extends Component {
         const { modal } = this.state
         modal.delete = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             user: user
         })
@@ -88,7 +88,7 @@ class Usuarios extends Component {
         const { modal } = this.state
         modal.permisos = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             user: user
         })
@@ -98,7 +98,7 @@ class Usuarios extends Component {
         const { modal} = this.state
         modal.see =true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             user: user
         })
@@ -108,7 +108,7 @@ class Usuarios extends Component {
         const { modal} = this.state
         modal.see =false
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             user: ''
         })
@@ -118,7 +118,7 @@ class Usuarios extends Component {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
-            ... this.state,
+            ...this.state,
             options
         })
     }
@@ -137,7 +137,7 @@ class Usuarios extends Component {
                 options['tipos'] = setSelectOptions(tipos,'tipo' )
                 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },
@@ -178,7 +178,7 @@ class Usuarios extends Component {
                 }
                 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     modal
                     
@@ -226,7 +226,7 @@ class Usuarios extends Component {
                 modal.form = false
                 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal,
                     form: this.clearForm(),
                     user: ''
@@ -271,7 +271,7 @@ class Usuarios extends Component {
                 modal.delete = false
                 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal,
                     form: this.clearForm(),
                     user: ''
@@ -299,7 +299,7 @@ class Usuarios extends Component {
         const { modal } = this.state
         modal.form = false
         this.setState({
-            ... this.state,
+            ...this.state,
             form: this.clearForm(),
             modal,
             user: ''
@@ -310,7 +310,7 @@ class Usuarios extends Component {
         const { modal } = this.state
         modal.delete = false
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             user: ''
         })
@@ -320,7 +320,7 @@ class Usuarios extends Component {
         const { modal } = this.state
         modal.permisos = false
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             user: ''
         })
@@ -416,7 +416,7 @@ class Usuarios extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -445,7 +445,7 @@ class Usuarios extends Component {
         })
         form[arreglo] = auxArray
         this.setState({
-            ... this.state,
+            ...this.state,
             form,
             options
         })
@@ -461,7 +461,7 @@ class Usuarios extends Component {
         })
         form[array] = auxForm
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -490,7 +490,7 @@ class Usuarios extends Component {
             this.getClientesAxios()
         }
         this.setState({
-            ... this.state,
+            ...this.state,
             key: value,
             form
         })
@@ -513,7 +513,7 @@ class Usuarios extends Component {
     recover = () => {
         const { formulario, deleteForm } = this.props
         this.setState({
-            ... this.state,
+            ...this.state,
             form: formulario.form
         })
         deleteForm()
@@ -629,7 +629,7 @@ class Usuarios extends Component {
                 <Modal size = "lg" title = "Permisos de usuario" 
                     show = { modal.permisos } 
                     handleClose = { this.handleCloseModalPermisos } >
-                    <PermisosForm {... this.props} handleClose={this.handleCloseModalPermisos} user = {user.id} />
+                    <PermisosForm {...this.props} handleClose={this.handleCloseModalPermisos} user = {user.id} />
                 </Modal>
                 <Modal size="lg" title="Empleado" show = { modal.see } handleClose = { this.handleCloseSee } >
                     <UsuarioCard user={user}/>

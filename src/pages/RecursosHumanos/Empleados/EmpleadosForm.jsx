@@ -66,18 +66,18 @@ class Empleados extends Component {
         }
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { match: { params: { action: action } } } = this.props
         const { history, location: { state: state } } = this.props
         const empleado = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         switch (action) {
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Nuevo empleado',
                     formeditado: 0
                 })
@@ -113,7 +113,7 @@ class Empleados extends Component {
                         form.fecha_alta_imss = new Date(empleado.fecha_alta_imss)
                         form.numero_alta_imss = empleado.numero_alta_imss
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             form,
                             options,
                             empleado: empleado,
@@ -157,7 +157,7 @@ class Empleados extends Component {
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },
@@ -326,7 +326,7 @@ class Empleados extends Component {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
-            ... this.state,
+            ...this.state,
             options
         })
     }
@@ -343,7 +343,7 @@ class Empleados extends Component {
         }
         form.adjuntos[name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -364,7 +364,7 @@ class Empleados extends Component {
         form.adjuntos[name].value = value
         form.adjuntos[name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }

@@ -84,9 +84,7 @@ export function AsideMenuList({ props }) {
                                                 </li>
                                                 {
                                                     modulo.modulos.map( (submodulo) => {
-                                                        {/* <li  key={submodulo.url} className={`menu-item ${getMenuItemActive(submodulo.url)}`} aria-haspopup="true"> */}
                                                         return(
-                                                            
                                                             <li  key={submodulo.url} className={`menu-item `} aria-haspopup="true">
                                                                 <NavLink className="menu-link" to={submodulo.url} onClick = { () => { closeAside() } }>
                                                                     <span className="svg-icon menu-icon">

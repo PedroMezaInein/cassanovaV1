@@ -17,7 +17,7 @@ class ActualizarPresupuestoForm extends Component {
     mostrarFormulario() {
         const { showFechas } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             showFechas: !showFechas
         })
     } 
@@ -51,7 +51,7 @@ class ActualizarPresupuestoForm extends Component {
                     onChange(key, e, 'margen')
             })
         this.setState({
-            ... this.state,
+            ...this.state,
             margen: value
         })
     }

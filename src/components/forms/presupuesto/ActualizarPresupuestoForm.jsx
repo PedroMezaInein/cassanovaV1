@@ -44,7 +44,7 @@ class ActualizarPresupuestoForm extends Component {
                     }
             })
         this.setState({
-            ... this.state,
+            ...this.state,
             desperdicio: value
         })
     }

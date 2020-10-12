@@ -65,7 +65,7 @@ class TareaForm extends Component {
         const { form, changeValue, changeValueSend, deleteTarea, endTarea, formeditado } = this.props
         const { activeEnd, activeDelete } = this.state
         return (
-            <Form {... this.props}>
+            <Form {...this.props}>
                 <div className="row mx-0">
                     <div className="form-group row form-group-marginless pt-3 col-md-12">
                         <div className="col-md-6">

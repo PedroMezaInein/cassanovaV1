@@ -19,11 +19,11 @@ class Rendimientos extends Component {
         rendimiento: ''
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const rendimientos = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!rendimientos)
@@ -38,7 +38,7 @@ class Rendimientos extends Component {
     }
     openModalDelete = rendimiento => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: true,
             rendimiento: rendimiento
         })
@@ -46,21 +46,21 @@ class Rendimientos extends Component {
     handleCloseDelete = () => {
         const { modalDelete } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: !modalDelete,
             rendimiento: '',
         })
     }
     openModalSee = rendimiento => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: true,
             rendimiento: rendimiento
         })
     }
     handleCloseSee = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: false,
             rendimiento: ''
         })
@@ -120,7 +120,7 @@ class Rendimientos extends Component {
             this.addRendimientoAxios()
     }
     async getRemisionesAxios() {
-        var table = $('#kt_datatable_rendimiento').DataTable().ajax.reload();
+        $('#kt_datatable_rendimiento').DataTable().ajax.reload();
     }
     async deleteRendimientoAxios() {
         const { access_token } = this.props.authUser
@@ -130,7 +130,7 @@ class Rendimientos extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La rendimiento fue registrado con éxito.')                
                 this.getRemisionesAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modalDelete: false,
                     rendimiento: ''
                 })

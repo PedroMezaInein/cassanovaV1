@@ -463,7 +463,7 @@ class Proyectos extends Component {
             } 
         } 
         this.setState({
-            ... this.state,
+            ...this.state,
             primeravista:false,
             defaultactivekey:newdefaultactivekey,
             subActiveKey:newdefaultactivekey,
@@ -472,11 +472,11 @@ class Proyectos extends Component {
     }
 
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const proyectos = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         })
         if (!proyectos)
@@ -486,14 +486,14 @@ class Proyectos extends Component {
     
     updateActiveTabContainer = active => {
         this.setState({
-            ... this.state,
+            ...this.state,
             subActiveKey: active
         })
     }
 
     openModal = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modal: true,
             title: 'Nuevo proyecto',
             prospecto: '',
@@ -503,7 +503,7 @@ class Proyectos extends Component {
 
     openModalDelete = (proyecto) => {
         this.setState({
-            ... this.state,
+            ...this.state,
             proyecto: proyecto,
             modalDelete: true
         })
@@ -544,7 +544,7 @@ class Proyectos extends Component {
         }
 
         this.setState({
-            ... this.state,
+            ...this.state,
             proyecto: proyecto,
             modal: true,
             title: 'Editar proyecto',
@@ -556,7 +556,7 @@ class Proyectos extends Component {
     openModalAvances = proyecto => {
 
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAvances: true,
             title: 'Avances del proyecto',
             proyecto: proyecto,
@@ -571,7 +571,7 @@ class Proyectos extends Component {
         let auxheaders = [
         ]
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAdjuntos: true,
             adjuntos: this.setAdjuntosSlider(proyecto),
             proyecto: proyecto,
@@ -603,7 +603,7 @@ class Proyectos extends Component {
     handleClose = () => {
         const { modal } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modal: !modal,
             title: 'Nuevo proyecto',
             proyecto: '',
@@ -615,7 +615,7 @@ class Proyectos extends Component {
     handleCloseAvances = () => {
         const { modalAvances } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAvances: !modalAvances,
             form: this.clearForm(),
             proyecto: ''
@@ -625,7 +625,7 @@ class Proyectos extends Component {
     handleCloseDelete = () => {
         const { modalDelete } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: !modalDelete,
             proyecto: '',
             prospecto: ''
@@ -635,7 +635,7 @@ class Proyectos extends Component {
     handleCloseAdjuntos = () => {
         const { modalAdjuntos } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAdjuntos: !modalAdjuntos,
             proyecto: '',
             prospecto: '',
@@ -681,7 +681,7 @@ class Proyectos extends Component {
         form['avances'][key][name].value = value
         form['avances'][key][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -703,7 +703,7 @@ class Proyectos extends Component {
         form['adjuntos'][name].value = value
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -737,7 +737,7 @@ class Proyectos extends Component {
         form.adjuntos_grupo[grupo].adjuntos[adjunto].files = aux
         
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -762,7 +762,7 @@ class Proyectos extends Component {
         }
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -790,7 +790,7 @@ class Proyectos extends Component {
         }
         form.adjuntos_grupo[grupo].adjuntos[adjunto].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -809,7 +809,7 @@ class Proyectos extends Component {
         }
         form.avances[_key].adjuntos.files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -827,7 +827,7 @@ class Proyectos extends Component {
             }
         )
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -1225,7 +1225,7 @@ class Proyectos extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     proyecto: proyecto,
                     proyectos: this.setProyectos(proyectos),
                     adjuntos: this.setAdjuntosSlider(proyecto),
@@ -1300,7 +1300,7 @@ class Proyectos extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
                 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     proyectos: this.setProyectos(proyectos),
                     options,
@@ -1370,7 +1370,7 @@ class Proyectos extends Component {
                 win.focus();
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     proyecto: proyecto,
                     proyectos: this.setProyectos(proyectos),
                     form: this.clearForm(),
@@ -1421,7 +1421,7 @@ class Proyectos extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     proyecto: proyecto,
                     proyectos: this.setProyectos(proyectos),
                     adjuntos: this.setAdjuntosSlider(proyecto),
@@ -1488,7 +1488,7 @@ class Proyectos extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue editado con éxito.')
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     proyectos: this.setProyectos(proyectos),
                     options,
@@ -1530,7 +1530,7 @@ class Proyectos extends Component {
                 form.contacto = prospecto.lead.nombre
                 form.numeroContacto = prospecto.lead.telefono
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     prospecto,
                     form
                 })
@@ -1564,7 +1564,7 @@ class Proyectos extends Component {
                     })
                     options['colonias'] = aux
                     this.setState({
-                        ... this.state,
+                        ...this.state,
                         form,
                         options
                     })
@@ -1615,7 +1615,7 @@ class Proyectos extends Component {
         })
         form.correos = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }

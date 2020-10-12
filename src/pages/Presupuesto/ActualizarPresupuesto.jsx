@@ -56,7 +56,7 @@ class ActualizarPresupuesto extends Component {
         const { options } = this.state
         options.subpartidas = []
         this.setState({
-            ... this.state,
+            ...this.state,
             options,
             modal: true,
             title: 'Agregar concepto',
@@ -77,7 +77,7 @@ class ActualizarPresupuesto extends Component {
         const { modal, options } = this.state
         options.subpartidas = []
         this.setState({
-            ... this.state,
+            ...this.state,
             modal: !modal,
             options,
             title: 'Agregar concepto',
@@ -86,8 +86,8 @@ class ActualizarPresupuesto extends Component {
         })
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props;
-        const { history: { location: { pathname: pathname } } } = this.props;
+        const { authUser: { user: { permisos } } } = this.props;
+        const { history: { location: { pathname } } } = this.props;
         const { history, location: { state: state } } = this.props;
         const presupuesto = permisos.find(function (element, index) {
             const {
@@ -124,7 +124,7 @@ class ActualizarPresupuesto extends Component {
                 options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
                 options['unidades'] = setOptions(unidades, 'nombre', 'id')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },
@@ -194,7 +194,7 @@ class ActualizarPresupuesto extends Component {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
-            ... this.state,
+            ...this.state,
             options
         })
     }
@@ -253,7 +253,7 @@ class ActualizarPresupuesto extends Component {
         const { form } = this.state
         form.conceptosNuevos[key].active = checked
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -304,7 +304,7 @@ class ActualizarPresupuesto extends Component {
             this.onChange(key, { target: { value: aux } }, 'mensajes')
         }
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -375,7 +375,7 @@ class ActualizarPresupuesto extends Component {
                 })
                 form.conceptos = aux
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     presupuesto: presupuesto,
                     form,
                     formeditado: 1
@@ -418,7 +418,7 @@ class ActualizarPresupuesto extends Component {
     }
     controlledTab = value => {
         this.setState({
-            ... this.state,
+            ...this.state,
             form: this.clearForm(),
             key: value
         })
@@ -439,7 +439,7 @@ class ActualizarPresupuesto extends Component {
     recover = () => {
         const { formulario, deleteForm } = this.props
         this.setState({
-            ... this.state,
+            ...this.state,
             form: formulario.form
         })
         deleteForm()

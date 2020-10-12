@@ -29,18 +29,18 @@ class DocumentosForm extends Component {
         documento: ''
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { match: { params: { action: action } } } = this.props
         const { history, location: { state: state } } = this.props
         const remisiones = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         switch (action) {
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Documento nuevo',
                     formeditado: 0
                 })
@@ -65,7 +65,7 @@ class DocumentosForm extends Component {
                         }
                         form.adjuntos.adjuntos.files = aux
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             form,
                             title: 'Editar documento',
                             documento: documento
@@ -88,7 +88,7 @@ class DocumentosForm extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -108,7 +108,7 @@ class DocumentosForm extends Component {
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -124,7 +124,7 @@ class DocumentosForm extends Component {
         })
         form.adjuntos.adjuntos.files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -150,7 +150,7 @@ class DocumentosForm extends Component {
                 const { options } = this.state
                 options.empresas = setOptions(empresas, 'name', 'id')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },
