@@ -7,9 +7,9 @@ class LeadNuevo extends Component {
                 <div className="table-responsive-lg">
                     <table className="table table-borderless table-vertical-center">
                         <thead>
-                            <tr className="text-left text-uppercase bg-gray-100">
+                            <tr className="text-left text-uppercase bg-light-pink text-pink">
                                 <th style={{ minWidth: "250px" }} className="pl-7">
-                                    <span className="text-dark-75">Nombre del cliente / Nombre del proyecto</span>
+                                    <span>Nombre del cliente / Nombre del proyecto</span>
                                 </th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Vendedor</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Origen</th>
@@ -22,10 +22,10 @@ class LeadNuevo extends Component {
                                 <td className="pl-0 py-8">
                                     <div className="d-flex align-items-center">
                                         <div className="symbol symbol-45 mr-3">
-                                            <span className="symbol-label font-size-h5">P</span>
+                                            <span className="symbol-label font-size-h5 bg-light-pink text-pink">P</span>
                                         </div>
                                         <div>
-                                            <span className="text-dark-75 font-weight-bolder text-hover-dark mb-1 font-size-lg">Nombre cliente X</span>
+                                            <a href="#" className="text-dark-75 font-weight-bolder text-hover-pink mb-1 font-size-lg">Nombre cliente X</a>
                                             <span className="text-muted font-weight-bold d-block">Proyecto X</span>
                                         </div>
                                     </div>

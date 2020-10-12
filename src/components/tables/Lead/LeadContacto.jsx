@@ -88,10 +88,8 @@ class LeadContacto extends Component {
                                 </td>
                                 <td className="pr-0 text-right">
                                     <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
-                                        <a className="btn btn-default btn-icon btn-sm mr-2">
-                                            <span className="svg-icon svg-icon-md">
-                                                <SVG src={toAbsoluteUrl('/images/svg/Arrow-right.svg')} />
-                                            </span>
+                                        <a href='/leads/crm/info/info'className="btn btn-default btn-icon btn-sm mr-2">
+                                            <i className="flaticon2-plus icon-nm"></i>
                                         </a>
                                     </OverlayTrigger>
                                 </td>

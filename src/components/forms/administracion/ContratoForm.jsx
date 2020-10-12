@@ -1,18 +1,9 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { SelectSearch, Button, Input, Calendar, InputMoney } from '../../form-components'
-import { DATE } from '../../../constants'
+import { SelectSearch, Button, Input, InputMoney,RangeCalendar } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { ItemSlider } from '../../../components/singles';
 class ContratoForm extends Component {
-    handleChangeDateInicio = date => {
-        const { onChange } = this.props
-        onChange({ target: { value: date, name: 'fechaInicio' } })
-    }
-    handleChangeDateFin = date => {
-        const { onChange } = this.props
-        onChange({ target: { value: date, name: 'fechaFin' } })
-    }
     updateEmpresa = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'empresa' } })
@@ -30,7 +21,7 @@ class ContratoForm extends Component {
         onChange({ target: { value: value, name: 'proveedor' } })
     }
     render() {
-        const { title, options, form, onChange, tipo, onSubmit, formeditado, clearFiles, onChangeAdjunto,handleChange, ...props } = this.props
+        const { title, options, form, onChange, tipo, onSubmit, formeditado, clearFiles, onChangeAdjunto,handleChange,onChangeRange, ...props } = this.props
         return (
             <Form id="form-contrato"
                 onSubmit={
@@ -41,7 +32,7 @@ class ContratoForm extends Component {
                 }
                 {...props}>
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <Input
                             requirevalidation={1}
                             formeditado={formeditado}
@@ -53,7 +44,7 @@ class ContratoForm extends Component {
                             messageinc="Incorrecto. Ingresa el nombre."
                         />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         {
                             tipo === 'Cliente' ?
                                 <SelectSearch
@@ -77,7 +68,7 @@ class ContratoForm extends Component {
                                 />
                         }
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <SelectSearch
                             formeditado={formeditado}
                             options={options.empresas}
@@ -88,9 +79,6 @@ class ContratoForm extends Component {
                             iconclass={"far fa-building"}
                         />
                     </div>
-                </div>
-                <div className="separator separator-dashed mt-1 mb-2"></div>
-                <div className="form-group row form-group-marginless">
                     <div className="col-md-3">
                         <InputMoney
                             requirevalidation={1}
@@ -104,35 +92,9 @@ class ContratoForm extends Component {
                             iconclass={"fas fa-money-bill-wave-alt"}
                         />
                     </div>
-                    <div className="col-md-3">
-                        <Calendar
-                            formeditado={formeditado}
-                            onChangeCalendar={this.handleChangeDateInicio}
-                            placeholder="FECHA DE INICIO"
-                            name="fechaInicio"
-                            value={form.fechaInicio}
-                            selectsStart
-                            startDate={form.fechaInicio}
-                            endDate={form.fechaFin}
-                            iconclass={"far fa-calendar-alt"}
-                            patterns={DATE}
-                        />
-                    </div>
-                    <div className="col-md-3">
-                        <Calendar
-                            formeditado={formeditado}
-                            onChangeCalendar={this.handleChangeDateFin}
-                            placeholder="FECHA FINAL"
-                            name="fechaFin"
-                            value={form.fechaFin}
-                            selectsEnd
-                            startDate={form.fechaInicio}
-                            endDate={form.fechaFin}
-                            minDate={form.fechaInicio}
-                            iconclass={"far fa-calendar-alt"}
-                            patterns={DATE}
-                        />
-                    </div>
+                </div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
                     <div className="col-md-3">
                         <SelectSearch
                             formeditado={formeditado}
@@ -144,14 +106,11 @@ class ContratoForm extends Component {
                             iconclass={"fas fa-pen-fancy"}
                         />
                     </div>
-                </div>
-                <div className="separator separator-dashed mt-1 mb-2"></div>
-                <div className="form-group row form-group-marginless">
-                    <div className="col-md-12">
+                    <div className="col-md-9">
                         <Input
                             requirevalidation={0}
                             formeditado={formeditado}
-                            rows="3"
+                            rows="1"
                             as="textarea"
                             placeholder="DESCRIPCIÓN"
                             name="descripcion"
@@ -162,26 +121,21 @@ class ContratoForm extends Component {
                         />
                     </div>
                 </div>
-                <div className="separator separator-dashed mt-1 mb-2"></div>
+                <div className="separator separator-dashed mt-1 mb-4"></div>
                 <div className="form-group row form-group-marginless d-flex justify-content-center">
+                    <div className="col text-center">
+                        <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br/>
+                        <RangeCalendar
+                            onChange={onChangeRange}
+                            start={form.fechaInicio}
+                            end={form.fechaFin}
+                        />
+                    </div>
                     {
-                        title === 'Editar contrato de cliente' || title === 'Editar contrato de proveedor'
+                        title === 'Editar contrato de Cliente' || title === 'Editar contrato de Proveedor'
                             ? ''
                             :
-                            <div className="col-md-4 text-center">
-                                {/* <FileInput
-                                    requirevalidation={0}
-                                    formeditado={formeditado}
-                                    onChangeAdjunto={onChangeAdjunto}
-                                    placeholder={form.adjuntos.adjunto.placeholder}
-                                    value={form.adjuntos.adjunto.value}
-                                    name='adjunto'
-                                    id='adjunto'
-                                    accept="image/*, application/pdf"
-                                    files={form.adjuntos.adjunto.files}
-                                    deleteAdjunto={clearFiles}
-                                    multiple
-                                /> */}
+                            <div className="col text-center">
                                 <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.adjunto.placeholder}</label>
                                 <ItemSlider
                                     items={form.adjuntos.adjunto.files}
