@@ -91,6 +91,7 @@ class Cuenta extends Component {
                 fecha: renderToString(setDateTable(cuenta.created_at)),
                 id: cuenta.id
             })
+            return false
         })
         return aux
     }
@@ -150,6 +151,7 @@ class Cuenta extends Component {
                 fecha: renderToString(setDateTable(estado.created_at)),
                 id: estado.id
             })
+            return false
         })
         return aux
     }
@@ -314,6 +316,7 @@ class Cuenta extends Component {
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
+            return false
         })
         data.append('id', cuenta.id)
         await axios.post(URL_DEV + 'cuentas/estado', data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(

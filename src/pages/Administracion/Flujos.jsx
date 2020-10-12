@@ -15,8 +15,8 @@ class Flujos extends Component {
         form: {
             cuentas: [],
             cuenta: '',
-            fechaInicio: new Date,
-            fechaFin: new Date
+            fechaInicio: new Date(),
+            fechaFin: new Date()
         },
         options: {
             cuentas: []

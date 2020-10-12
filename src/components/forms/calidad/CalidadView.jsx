@@ -16,6 +16,7 @@ class CalidadView extends Component {
         aux.map((element) => {
             if (element !== '-')
                 iniciales = iniciales + element.charAt(0) + ' '
+            return false
         })
         return iniciales
     }

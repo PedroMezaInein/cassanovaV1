@@ -16,7 +16,7 @@ class FlujoProyectos extends Component {
         proyectos:[],
         form: {
             fechaInicio: new Date(),
-            fechaFin: new Date,
+            fechaFin: new Date(),
             empresas: [],
             empresa: '',
         },

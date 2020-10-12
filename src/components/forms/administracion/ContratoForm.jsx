@@ -14,11 +14,11 @@ class ContratoForm extends Component {
         onChange({ target: { value: date, name: 'fechaFin' } })
     }
     updateEmpresa = value => {
-        const { onChange, setOptions } = this.props
+        const { onChange } = this.props
         onChange({ target: { value: value, name: 'empresa' } })
     }
     updateCliente = value => {
-        const { onChange, setOptions } = this.props
+        const { onChange } = this.props
         onChange({ target: { value: value, name: 'cliente' } })
     }
     updateTipoContrato = value => {
@@ -26,7 +26,7 @@ class ContratoForm extends Component {
         onChange({ target: { value: value, name: 'tipoContrato' } })
     }
     updateProveedor = value => {
-        const { onChange, setOptions } = this.props
+        const { onChange } = this.props
         onChange({ target: { value: value, name: 'proveedor' } })
     }
     render() {

@@ -83,6 +83,7 @@ class Remisiones extends Component {
                     id: remision.id
                 }
             )
+            return false
         })
         return aux
     }

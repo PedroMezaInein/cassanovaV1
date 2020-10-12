@@ -69,8 +69,8 @@ class IngresosForm extends Component {
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
-        const { match: { params: { action: action } } } = this.props
-        const { history, location: { state: state } } = this.props
+        const { match: { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
         const ingresos = permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url + '/' + action

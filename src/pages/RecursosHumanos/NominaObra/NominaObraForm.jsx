@@ -48,8 +48,8 @@ class NominaObraForm extends Component {
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
-        const { match: { params: { action: action } } } = this.props
-        const { history, location: { state: state } } = this.props
+        const { match: { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
         const nominaOmbra = permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url + '/' + action
@@ -86,6 +86,7 @@ class NominaObraForm extends Component {
                                     extras: nom.extras
                                 }
                             )
+                            return false
                         })
                         if (aux.length) {
                             form.nominasObra = aux
@@ -183,6 +184,7 @@ class NominaObraForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -193,6 +195,7 @@ class NominaObraForm extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         await axios.post(URL_DEV + 'rh/nomina-obra', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -269,6 +272,7 @@ class NominaObraForm extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -338,6 +342,7 @@ class NominaObraForm extends Component {
                     form['nominasObra'][key].salario_hr = empleado.salario_hr
                     form['nominasObra'][key].salario_hr_extra = empleado.salario_hr_extra
                 }
+                return false
             })
         } else {
             if (name === 'salario_hr' || name === 'hr_trabajadas' || name === 'nominImss') {

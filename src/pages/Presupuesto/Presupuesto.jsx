@@ -175,6 +175,7 @@ class Presupuesto extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -197,6 +198,7 @@ class Presupuesto extends Component {
                 identificador: renderToString(setTextTable(adjunto.pivot.identificador)),
                 id: adjunto.id
             })
+            return false
         })
         return aux
     }
@@ -219,6 +221,7 @@ class Presupuesto extends Component {
                         objeto: presupuesto
                     }
                 )
+                return false
             })
         return aux
     }

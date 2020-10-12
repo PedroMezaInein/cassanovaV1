@@ -12,9 +12,9 @@ class VentasForm extends Component {
         onChange({ target: { value: value, name: 'cliente' } })
         onChange({ target: { value: '', name: 'proyecto' } })
         onChange({ target: { value: '', name: 'contrato' } })
-        const { options: { clientes: clientes } } = this.props
+        const { options: { clientes } } = this.props
 
-        const aux = clientes.find(function (element, index) {
+        clientes.find(function (element, index) {
             if (value.toString() === element.value.toString()) {
                 setOptions('proyectos', element.proyectos)
                 setOptions('contratos', element.contratos)
@@ -22,6 +22,7 @@ class VentasForm extends Component {
                     onChange({ target: { value: '', name: 'contrato' } })
                 }
             }
+            return false
         })
 
 

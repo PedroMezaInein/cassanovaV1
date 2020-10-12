@@ -3,7 +3,6 @@ import '../../styles/custom_datatable.css'
 import '../../styles/metronic/_datables.scss';
 import { errorAlert } from '../../functions/alert'
 import { Card, Spinner } from 'react-bootstrap'
-import Sending from '../Lottie/Sending';
 import { renderToString } from 'react-dom/server';
 
 const $ = require('jquery');
@@ -145,7 +144,7 @@ class NewTableServerRender extends Component {
 
         let _that = this
         for (i = 0; i < header.length; i++) {
-            var titulo = new Object();
+            var titulo = {};
             titulo["title"] = header[i].Header;
             titulo["data"] = header[i].accessor;
             columns[i] = titulo;
@@ -160,10 +159,9 @@ class NewTableServerRender extends Component {
                 // var html;
                 var contador = 0;
                 table.find("thead th").each(function () {
-                    var title = $(this).text();
                     let cellIndex = $(this)[0].cellIndex
                     cellIndex = header[cellIndex].accessor
-                    if (global_variable.mostrar_acciones == false || global_variable.mostrar_acciones && contador != 0) {
+                    if (global_variable.mostrar_acciones === false || ( global_variable.mostrar_acciones === true && contador > 0)) {
                         $(this).append('<div class="mt-2 separator separator-dashed separator-border-2"></div><div class="mt-2"><input type="text" id=' + cellIndex + ' class="form-control form-control-sm"/></div>');
 
                     }
@@ -179,6 +177,7 @@ class NewTableServerRender extends Component {
                                 .draw();
                         }
                     });
+                    return false
                 });
             },
 
@@ -294,7 +293,7 @@ class NewTableServerRender extends Component {
                 'searchable': mostrar_acciones ? false : true,
                 'orderable': false,
                 render: function (data, type, row, meta) {
-                    if (global_variable.mostrar_acciones == true) {
+                    if (global_variable.mostrar_acciones === true) {
                         let aux = ''
                         {
                             data.map((element) => {

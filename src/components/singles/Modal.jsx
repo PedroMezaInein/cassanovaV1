@@ -2,9 +2,7 @@ import React, { Component } from 'react'
 import Modal from 'react-bootstrap/Modal'
 
 class modal extends Component {
-    constructor(props) {
-        super(props)
-    }
+    
 
     componentDidUpdate(){
         var elementos = document.getElementsByClassName('modal');

@@ -4,18 +4,18 @@ import { Form } from 'react-bootstrap'
 import { RFC, DATE } from '../../../constants'
 import {openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
-import { ItemSlider } from '../../../components/singles';
 class ComprasForm extends Component {
 
     updateCliente = value => {
         const { onChange, setOptions } = this.props
         onChange({ target: { value: value, name: 'cliente' } })
         onChange({ target: { value: '', name: 'proyecto' } })
-        const { options: { proyectos: proyectos } } = this.props
+        const { options: { proyectos } } = this.props
 
-        const aux = proyectos.find(function (element, index) {
+        proyectos.find(function (element, index) {
             if (value.toString() === element.value.toString()) {
                 setOptions('proyectos', element.proyectos)
+                return value
             }
         })
     }

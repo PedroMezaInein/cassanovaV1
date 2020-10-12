@@ -17,8 +17,8 @@ class Contabilidad extends Component {
         form: {
             empresas: [],
             empresa: 0,
-            fechaInicio: new Date,
-            fechaFin: new Date,
+            fechaInicio: new Date(),
+            fechaFin: new Date(),
             modulos: [
                 {
                     text: 'Ventas',

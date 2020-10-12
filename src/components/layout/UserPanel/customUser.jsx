@@ -11,7 +11,7 @@ const NameUser = React.forwardRef(({userName}, ref) => (
 class customUser extends Component{
     
     render(){
-        const { children, clickLogout, authUser: { user: { name: userName } }, clickResponsiveMenu } = this.props
+        const { clickLogout, authUser: { user: { name: userName } } } = this.props
         return(
         <>               
 			<div className="d-flex flex-column">

@@ -15,7 +15,6 @@ class Calendar extends Component{
     }
     validarFecha(e) {    
         const { requirevalidation } = this.props 
-        let validado = false;
         if (requirevalidation) {    
             if(e instanceof Date){
                 this.setState({
@@ -27,8 +26,6 @@ class Calendar extends Component{
                     
                 })
             } 
-        }else{
-            validado = true
         }
     }
     

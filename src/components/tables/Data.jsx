@@ -142,9 +142,7 @@ function Table({ columns, data, hideSelector }) {
 }
 
 class DataTable extends Component {
-    constructor(props) {
-        super(props)
-    }
+    
 
     componentDidUpdate() {
 

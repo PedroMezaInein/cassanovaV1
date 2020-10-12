@@ -18,7 +18,7 @@ class EstadoResultados extends Component {
         ventas:[],
         form: {
             fechaInicio: new Date(),
-            fechaFin: new Date,
+            fechaFin: new Date(),
             empresas: [],
             empresa: '',
         },

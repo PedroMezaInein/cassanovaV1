@@ -82,6 +82,7 @@ class AdjuntosEmpresa extends Component {
                 adjunto: renderToString(setArrayTable([{ text: adjunto.name, url: adjunto.url }])),
                 id: adjunto.id,
             })
+            return false
         })
         return aux
     }

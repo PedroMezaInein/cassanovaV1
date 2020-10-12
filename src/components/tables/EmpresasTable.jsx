@@ -104,9 +104,7 @@ function Table({ columns, data }) {
 }
 
 class EmpresasTable extends Component {
-    constructor(props) {
-        super(props)
-    }
+    
 
     componentDidUpdate() {
 

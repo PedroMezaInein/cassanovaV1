@@ -43,8 +43,8 @@ class CuentaForm extends Component {
         }
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
-        const { match: { params: { action: action } } } = this.props
-        const { history, location: { state: state } } = this.props
+        const { match: { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
         const modulo = permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url + '/' + action
@@ -80,6 +80,7 @@ class CuentaForm extends Component {
                                     id: emp.id,
                                     text: emp.name
                                 })
+                                return false
                             })
                         form.descripcion = cuenta.descripcion
                         this.setState({
@@ -118,6 +119,7 @@ class CuentaForm extends Component {
                     form.empresas.map((element) => {
                         if (value.toString() === element.id.toString())
                             aux = false
+                        return false
                     })
                     if (aux)
                         form.empresas.push({
@@ -125,6 +127,7 @@ class CuentaForm extends Component {
                             id: empresa.value
                         })
                 }
+                return false
             })
         }
         form[name] = value
@@ -139,6 +142,7 @@ class CuentaForm extends Component {
         form.empresas.map((element) => {
             if (element !== empresa)
                 aux.push(element)
+            return false
         })
         form.empresas = aux
         this.setState({
@@ -159,6 +163,7 @@ class CuentaForm extends Component {
                     bancos.map((banco) => {
                         if (banco.nombre !== 'CAJA CHICA')
                             aux.push(banco)
+                        return false
                     })
                 }
                 if (tipo === 'cajas') {
@@ -167,11 +172,13 @@ class CuentaForm extends Component {
                             aux.push(banco)
                             this.onChange({ target: { value: banco.id.toString(), name: 'banco' } })
                         }
+                        return false
                     })
                     tipos.map((element) => {
                         if (element.tipo === 'EFECTIVO') {
                             this.onChange({ target: { value: element.id.toString(), name: 'tipo' } })
                         }
+                        return false
                     })
                 }
                 if (cuenta) {
@@ -183,12 +190,14 @@ class CuentaForm extends Component {
                                     aux.push(banco)
                                     this.onChange({ target: { value: banco.id.toString(), name: 'banco' } })
                                 }
+                                return false
                             })
                         } else {
                             tipo = 'bancos'
                             bancos.map((banco) => {
                                 if (banco.nombre !== 'CAJA CHICA')
                                     aux.push(banco)
+                                return false
                             })
                             this.onChange({ target: { value: cuenta.banco.id.toString(), name: 'banco' } })
                         }

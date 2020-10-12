@@ -7,9 +7,7 @@ import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../functions/routers"
 import { UltimosContactosCard, SinContacto, UltimosIngresosCard } from '../components/cards'
 class Normas extends Component {
-    constructor(props) {
-        super(props)
-    }
+    
     state = {
         title: '',
         accordion: [

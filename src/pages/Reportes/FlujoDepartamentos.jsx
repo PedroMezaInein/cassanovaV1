@@ -16,7 +16,7 @@ class FlujoDepartamentos extends Component {
         departamentos:[],
         form: {
             fechaInicio: new Date(),
-            fechaFin: new Date,
+            fechaFin: new Date(),
             empresas: [],
             empresa: '',
         },

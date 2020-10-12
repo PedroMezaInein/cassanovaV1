@@ -15,7 +15,7 @@ class AgregarConcepto extends Component {
         onChange({ target: { value: value, name: 'partida' } })
         onChange({ target: { value: '', name: 'subpartida' } })
 
-        const { options: { partidas: partidas } } = this.props
+        const { options: { partidas } } = this.props
         const aux = partidas.find(function (element, index) {
             if (value.toString() === element.value.toString()) {
                 setOptions('subpartidas', element.subpartidas)
