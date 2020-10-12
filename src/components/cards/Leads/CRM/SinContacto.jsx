@@ -46,9 +46,9 @@ export default class SinContacto extends Component {
     }
     render() {
         const { prospectos_sin_contactar, onClick, onClickPrev } = this.props
-        console.log(prospectos_sin_contactar.data)
+        // console.log(prospectos_sin_contactar.data)
         return (
-            <Card className="card-custom card-stretch gutter-b py-2 bg-danger-o-50">
+            <Card className="card-custom card-stretch gutter-b py-2">
                 <Card.Header className="align-items-center border-0">
                     <div className="card-title align-items-start flex-column">
                         <span className="font-weight-bolder text-dark">Sin contacto en + 1 semana</span>
@@ -65,19 +65,18 @@ export default class SinContacto extends Component {
                                 return (
                                     <div className="timeline-item" key={key}>
                                         <div className="timeline-label"> {this.diffCommentDate(contacto)}</div>
-                                        <div className="timeline-badge bg-danger-50"><span className="bg-danger w-50 h-50"></span></div>
+                                        <div className="timeline-badge"><span className="bg-danger w-50 h-50"></span></div>
                                         <div className="timeline-content">
                                             <a href={`tel:+${contacto.telefono}`} className="text-dark-75 font-weight-bolder text-hover-danger mb-1">{contacto.nombre}</a>
+                                            {
+                                                contacto.servicios.map((servicio, key1) => {
+                                                    return (
+                                                        // <span key={key1}> - {servicio.servicio.length>0?servicio.servicio:'Sin servicio'}</span>
+                                                        <span key={key1}> - {servicio.servicio}</span>
+                                                    )
+                                                })
+                                            }
                                         </div>
-                                        {
-                                            // contacto.servicios.map((servicio, key1) => {
-                                            //     return (
-                                            //         <div key={key1} className="timeline-content">
-                                            //             <a href="tel:+5500112233" className="text-dark-75 font-weight-bolder text-hover-primary mb-1">{contacto.nombre}</a> - {servicio.servicio}
-                                            //         </div>
-                                            //     )
-                                            // })
-                                        }
                                     </div>
                                 )
                             })

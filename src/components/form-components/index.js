@@ -13,15 +13,19 @@ import dropZone from './DropZone'
 import inputImage from './InputImage'
 import inputNumber from './InputNumber'
 import inputPhone from './InputPhone'
-import inputMoneySinText from './InputMoneySinText'
-import selectSearchSinText from './SelectSearchSinText'
-import inputNumberSinText from './InputNumberSinText'
-import inputSinText from './InputSinText'
-import rangeCalendar from './RangeCalendar'
 import calendarDay from './CalendarDay'
-import inputGray from './InputGray'
-import inputPhoneGray from './InputPhoneGray'
-import selectSearchGray from './SelectSearchGray'
+import rangeCalendar from './RangeCalendar'
+// Validado, pero sin texto de error
+import inputMoneySinText from './SinText/InputMoneySinText'
+import selectSearchSinText from './SinText/SelectSearchSinText'
+import inputNumberSinText from './SinText/InputNumberSinText'
+import inputSinText from './SinText/InputSinText'
+// Sin validar y sin texto de error
+import inputGray from './Gray/InputGray'
+import inputPhoneGray from './Gray/InputPhoneGray'
+import selectSearchGray from './Gray/SelectSearchGray'
+import inputMoneyGray from './Gray/InputMoneyGray'
+import inputNumberGray from './Gray/InputNumberGray'
 
 export const Button = button
 export const Input = input
@@ -38,12 +42,16 @@ export const DropZone = dropZone
 export const InputImage = inputImage
 export const InputNumber = inputNumber
 export const InputPhone = inputPhone
+export const CalendarDay = calendarDay
+export const RangeCalendar = rangeCalendar
+// Validado, pero sin texto de error
 export const InputMoneySinText = inputMoneySinText
 export const SelectSearchSinText = selectSearchSinText
 export const InputNumberSinText = inputNumberSinText
 export const InputSinText = inputSinText
-export const RangeCalendar = rangeCalendar
-export const CalendarDay = calendarDay
+// Sin validar y sin texto de error
 export const InputGray = inputGray
 export const InputPhoneGray = inputPhoneGray
 export const SelectSearchGray = selectSearchGray
+export const InputMoneyGray = inputMoneyGray
+export const InputNumberGray = inputNumberGray

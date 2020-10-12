@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Layout from '../../../../components/layout/layout'
 import { Col, Row, Card, Tab, Nav } from 'react-bootstrap'
 import { Button, InputGray, InputPhoneGray } from '../../../../components/form-components';
-import { RFC, TEL } from '../../../../constants'
+import { TEL } from '../../../../constants'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../../functions/routers"
 class LeadInfo extends Component {
@@ -19,7 +19,7 @@ class LeadInfo extends Component {
                                     <div className="d-flex justify-content-end mb-2">
                                         <Button
                                             icon=''
-                                            className="btn btn-light-success mr-2 rounded-0 btn-sm"
+                                            className="btn btn-light-success mr-2 btn-sm"
                                             only_icon="fab fa-whatsapp pr-0"
                                             tooltip={{ text: 'CONTACTAR POR WHATSAPP' }}
                                         />

@@ -1,12 +1,9 @@
 import React, { Component } from 'react'
 import NumberFormat from 'react-number-format'
-
 class InputPhoneGray extends Component {
-
     state = {
         inputPhone: !this.props.requirevalidation
     }
-
     validarPhone(e) {
         const { value } = e.target
         const { patterns, requirevalidation } = this.props
@@ -20,13 +17,11 @@ class InputPhoneGray extends Component {
                 } else {
                     this.setState({
                         inputPhone: false
-
                     })
                 }
             } else {
                 this.setState({
                     inputPhone: true
-
                 })
             }
         } else {
@@ -39,10 +34,8 @@ class InputPhoneGray extends Component {
                     inputPhone: true
                 })
             }
-
         }
     }
-
     componentDidUpdate(nextProps) {
         if (nextProps.value !== this.props.value)
             if (!nextProps.requirevalidation) {
@@ -55,34 +48,27 @@ class InputPhoneGray extends Component {
                     this.validarPhone({ target: { value: this.props.value } })
                 }
             }
-
     }
-
     componentDidMount() {
         const { formeditado, value } = this.props
         if (formeditado) {
             this.validarPhone({ target: { value: value } })
         }
     }
-
     onChange = values => {
         const { onChange, name } = this.props
         this.validarPhone({ target: { value: values.value, name: name } })
         onChange({ target: { value: values.value, name: name } })
-
     }
-
-
     render() {
-        const { error, onChange, placeholder, iconclass, value, thousandseparator,customlabel, ...props } = this.props
-
+        const { error, onChange, placeholder, iconclass, value, thousandseparator, customlabel, customstyle, customclass, ...props } = this.props
         return (
             <div className="form-group">
                 <label className={`col-form-label ${customlabel}`}>{placeholder}</label>
-                <div className="input-group input-group-solid">
+                <div className="input-group input-group-solid rounded-0">
                     <div className="input-group-prepend">
                         <span className="input-group-text">
-                            <i className={iconclass + " icon-lg"}></i>
+                            <i className={iconclass + " icon-lg text-dark-50"}></i>
                         </span>
                     </div>
                     <NumberFormat
@@ -95,7 +81,8 @@ class InputPhoneGray extends Component {
                         allowEmptyFormatting
                         mask="_"
                         placeholder={placeholder}
-                        className={"form-control"}
+                        className={`form-control text-dark-50 font-weight-bold ${customclass}`}
+                        style={customstyle}
                         {...props}
                     />
                 </div>
