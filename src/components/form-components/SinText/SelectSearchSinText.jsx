@@ -1,17 +1,14 @@
 import React, { Component } from 'react'
 import SelectSearch from 'react-select-search'
-import Input from './Input'
-import '../../styles/select_custom.css';
-
+import InputSinText from './InputSinText'
+import '../../../styles/select_custom.css';
 class SelectSearchSinText extends Component {
-
     state = {
         requirevalidation: true
     }
-
     renderFontValue = (valueProps, onChange) => {
         const { requirevalidation } = this.state
-        const { customstyle, placeholder,identificador } = this.props
+        const { customstyle, placeholder, identificador } = this.props
         let validado = false;
         if (requirevalidation) {
             if (onChange === null || onChange.value === null) {
@@ -32,7 +29,6 @@ class SelectSearchSinText extends Component {
             />
         )
     }
-
     render() {
         const { options, iconclass } = this.props
         return (
@@ -45,7 +41,7 @@ class SelectSearchSinText extends Component {
                             {...this.props}
                         />
                         :
-                        <Input
+                        <InputSinText
                             iconclass={iconclass}
                             readOnly
                             type="text"

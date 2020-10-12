@@ -1,12 +1,9 @@
 import React, { Component } from 'react'
 import NumberFormat from 'react-number-format'
-
 class InputMoneySinText extends Component {
-
     state = {
         inputMoneyValido: !this.props.requirevalidation
     }
-
     validarInputMoney(e) {
         const { value } = e.target
         const { requirevalidation } = this.props
@@ -29,16 +26,14 @@ class InputMoneySinText extends Component {
                 inputValido = true
             }
         }
-
-        if(inputValido !== inputMoneyValido)
+        if (inputValido !== inputMoneyValido)
             this.setState({
                 ... this.state,
                 inputMoneyValido: inputValido
             })
     }
-
     componentDidUpdate(nextProps) {
-        if (nextProps.value !== this.props.value){
+        if (nextProps.value !== this.props.value) {
             if (!nextProps.requirevalidation) {
                 this.setState({
                     ... this.state,
@@ -51,24 +46,20 @@ class InputMoneySinText extends Component {
             }
         }
     }
-
     componentDidMount() {
         const { formeditado, value } = this.props
         if (formeditado) {
             this.validarInputMoney({ target: { value: value } })
         }
     }
-
     onChange = values => {
         const { onChange, name } = this.props
         this.validarInputMoney({ target: { value: values.value, name: name } })
         onChange({ target: { value: values.value, name: name } })
-
     }
     render() {
         const { placeholder, value, prefix, thousandseparator, customstyle, identificador } = this.props
         const { inputMoneyValido } = this.state
-
         return (
             <NumberFormat
                 id={identificador}
