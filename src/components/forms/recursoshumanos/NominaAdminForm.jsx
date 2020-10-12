@@ -103,7 +103,7 @@ class NominaAdminForm extends Component {
                 >
                     <Card.Body>
                         <div className="form-group row form-group-marginless">
-                            <div className="col-md-6">
+                            <div className="col-md-3">
                                 <Input
                                     requirevalidation={1}
                                     formeditado={formeditado}
@@ -115,7 +115,7 @@ class NominaAdminForm extends Component {
                                     messageinc="Incorrecto. Ingresa el periodo de nómina Administrativa."
                                 />
                             </div>
-                            <div className="col-md-6">
+                            <div className="col-md-3">
                                 <SelectSearch
                                     formeditado={formeditado}
                                     options={options.empresas}
@@ -123,13 +123,9 @@ class NominaAdminForm extends Component {
                                     name="empresa"
                                     value={form.empresa}
                                     onChange={this.updateEmpresa}
-                                    iconclass={"far fa-building"}
                                 />
                             </div>
-                        </div>
-                        <div className="separator separator-dashed mt-1 mb-2"></div>
-                        <div className="form-group row form-group-marginless">
-                            <div className="col-md-6">
+                            <div className="col-md-3">
                                 <Calendar
                                     formeditado={formeditado}
                                     onChangeCalendar={this.handleChangeDateInicio}
@@ -143,7 +139,7 @@ class NominaAdminForm extends Component {
                                     patterns={DATE}
                                 />
                             </div>
-                            <div className="col-md-6">
+                            <div className="col-md-3">
                                 <Calendar
                                     formeditado={formeditado}
                                     onChangeCalendar={this.handleChangeDateFin}
@@ -159,7 +155,6 @@ class NominaAdminForm extends Component {
                                 />
                             </div>
                         </div>
-
                         {
                             title !== 'Editar nómina administrativa' ?
                                 <>
