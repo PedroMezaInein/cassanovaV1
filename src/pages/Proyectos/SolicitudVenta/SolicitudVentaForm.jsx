@@ -149,6 +149,7 @@ class SolicitudVentaForm extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form
     }
@@ -220,8 +221,8 @@ class SolicitudVentaForm extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'solicitud-venta/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empresas, areas, tiposPagos, proyectos, solicitudes, clientes, metodosPago, formasPago, estatusFacturas } = response.data
-                const { options, data } = this.state
+                const { empresas, areas, tiposPagos, proyectos, clientes, metodosPago, formasPago, estatusFacturas } = response.data
+                const { options } = this.state
                 // data.solicitudes = solicitudes
                 // data.clientes = clientes
                 options['empresas'] = setOptions(empresas, 'name', 'id')
@@ -268,6 +269,7 @@ class SolicitudVentaForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -278,6 +280,7 @@ class SolicitudVentaForm extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         await axios.post(URL_DEV + 'solicitud-venta', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -327,6 +330,7 @@ class SolicitudVentaForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -335,6 +339,7 @@ class SolicitudVentaForm extends Component {
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
+            return false
         })
         await axios.post(URL_DEV + 'solicitud-venta/update/' + solicitud.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {

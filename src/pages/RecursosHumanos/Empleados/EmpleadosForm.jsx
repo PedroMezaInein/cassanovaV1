@@ -8,7 +8,6 @@ import { setOptions} from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import { EmpleadosForm as EmpleadosFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
-const $ = require('jquery');
 
 class Empleados extends Component {
     state = {
@@ -198,6 +197,7 @@ class Empleados extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -208,6 +208,7 @@ class Empleados extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         await axios.post(URL_DEV + 'rh/empleado', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -302,6 +303,7 @@ class Empleados extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }

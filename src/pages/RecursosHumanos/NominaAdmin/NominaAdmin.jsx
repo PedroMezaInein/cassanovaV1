@@ -119,6 +119,7 @@ class NominaAdmin extends Component {
                 tipo: renderToString(setTextTable('Adjunto')),
                 id: 'adjuntos-' + adjunto.id
             })
+            return false
         })
         return aux
     }
@@ -227,6 +228,7 @@ class NominaAdmin extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
 
         data.append('id', nomina.id)
@@ -346,6 +348,7 @@ class NominaAdmin extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -384,6 +387,7 @@ class NominaAdmin extends Component {
                     id: nomina.id
                 }
             )
+            return false
         })
         return aux
     }

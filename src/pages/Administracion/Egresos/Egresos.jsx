@@ -10,7 +10,7 @@ import Layout from '../../../components/layout/layout'
 import { Button, FileInput } from '../../../components/form-components'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { FacturaTable } from '../../../components/tables'
-import { Form, ProgressBar } from 'react-bootstrap'
+import { Form } from 'react-bootstrap'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import Select from '../../../components/form-components/Select'
 import TableForModals from '../../../components/tables/TableForModals'
@@ -108,6 +108,7 @@ class egresos extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -197,6 +198,7 @@ class egresos extends Component {
                             if (element.rfc === obj.rfc_receptor) {
                                 auxEmpresa = element
                             }
+                            return false
                         });
                         let auxProveedor = ''
                         data.proveedores.find(function (element, index) {
@@ -208,6 +210,7 @@ class egresos extends Component {
                                 element.razon_social.toUpperCase() === cadena) {
                                 auxProveedor = element
                             }
+                            return false
                         });
                         if (auxEmpresa) {
                             options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')
@@ -280,6 +283,7 @@ class egresos extends Component {
                         _aux.push({
                             name: 'Presupuesto', text: presupuesto.name, url: presupuesto.url
                         })
+                        return false
                     })
                 }
                 if (egreso.pagos) {
@@ -287,6 +291,7 @@ class egresos extends Component {
                         _aux.push({
                             name: 'Pago', text: pago.name, url: pago.url
                         })
+                        return false
                     })
                 }
                 aux.push(
@@ -317,6 +322,7 @@ class egresos extends Component {
                         objeto: egreso
                     }
                 )
+                return false
             })
         return aux
     }

@@ -11,7 +11,7 @@ import { Button, FileInput } from '../../../components/form-components'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { FacturaTable } from '../../../components/tables'
 import { ComprasCard } from '../../../components/cards'
-import { Form, ProgressBar } from 'react-bootstrap'
+import { Form } from 'react-bootstrap'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import TableForModals from '../../../components/tables/TableForModals'
 import AdjuntosForm from '../../../components/forms/AdjuntosForm'
@@ -157,6 +157,7 @@ class Compras extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -186,7 +187,6 @@ class Compras extends Component {
                         const emisor = xml.getElementsByTagName('cfdi:Emisor')[0]
                         const receptor = xml.getElementsByTagName('cfdi:Receptor')[0]
                         const timbreFiscalDigital = xml.getElementsByTagName('tfd:TimbreFiscalDigital')[0]
-                        const concepto = xml.getElementsByTagName('cfdi:Concepto')[0]
                         const conceptos = xml.getElementsByTagName('cfdi:Concepto')
                         let relacionados = xml.getElementsByTagName('cfdi:CfdiRelacionados')
                         let desc = ''
@@ -251,6 +251,7 @@ class Compras extends Component {
                             if (element.rfc === obj.rfc_receptor) {
                                 auxEmpresa = element
                             }
+                            return false
                         });
                         let auxProveedor = ''
                         data.proveedores.find(function (element, index) {
@@ -262,6 +263,7 @@ class Compras extends Component {
                                 element.razon_social.toUpperCase() === cadena) {
                                 auxProveedor = element
                             }
+                            return false
                         });
                         if (auxEmpresa) {
                             options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')
@@ -336,6 +338,7 @@ class Compras extends Component {
                     _aux.push({
                         name: 'Presupuesto', text: presupuesto.name, url: presupuesto.url
                     })
+                    return false
                 })
             }
             if (compra.pagos) {
@@ -343,6 +346,7 @@ class Compras extends Component {
                     _aux.push({
                         name: 'Pago', text: pago.name, url: pago.url
                     })
+                    return false
                 })
             }
             aux.push(
@@ -374,6 +378,7 @@ class Compras extends Component {
                     objeto: compra
                 }
             )
+            return false
         })
         return aux
     }
@@ -389,6 +394,7 @@ class Compras extends Component {
                 tipo: renderToString(setTextTable(adjunto.pivot.tipo)),
                 id: 'adjuntos-' + adjunto.id
             })
+            return false
         })
         return aux
     }

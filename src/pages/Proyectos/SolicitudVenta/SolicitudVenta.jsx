@@ -161,6 +161,7 @@ class SolicitudVenta extends Component {
                     id: solicitud.id
                 }
             )
+            return false
         })
         return aux
     }

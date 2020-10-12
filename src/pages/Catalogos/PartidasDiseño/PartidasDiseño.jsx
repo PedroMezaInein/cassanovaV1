@@ -129,6 +129,7 @@ class PartidasDiseño extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -141,6 +142,7 @@ class PartidasDiseño extends Component {
                 partida: renderToString(setTextTable(partida.nombre)),
                 id: partida.id
             })
+            return false
         })
         return aux
     }

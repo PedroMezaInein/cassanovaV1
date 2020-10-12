@@ -8,7 +8,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
 import esLocale from '@fullcalendar/core/locales/es';
 import { forbiddenAccessAlert, errorAlert, createAlert, doneAlert, waitAlert } from '../../../functions/alert';
-import { URL_ASSETS, URL_DEV } from '../../../constants';
+import { URL_DEV } from '../../../constants';
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { setDateTableLG, setOptions } from '../../../functions/setters';
@@ -52,7 +52,7 @@ class Vacaciones extends Component {
         const { history: { location: { pathname } } } = this.props
         // const { match: { params: { action } } } = this.props
         // const { history, location: { state } } = this.props
-        const vacaciones = permisos.find(function (element, index) {
+        permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url
         });
@@ -109,6 +109,7 @@ class Vacaciones extends Component {
                             containerClass: 'cumpleaños'
                         })
                     }
+                    return false
                 })
                 vacaciones.map((vacacion) => {
                     aux.push({
@@ -119,6 +120,7 @@ class Vacaciones extends Component {
                         iconClass: 'fas fa-umbrella-beach icon-md',
                         containerClass: 'vacaciones'
                     })
+                    return false
                 })
                 feriados.map((feriado) => {
                     aux.push({
@@ -132,6 +134,7 @@ class Vacaciones extends Component {
                     })
                     var start = moment(feriado.fecha).toDate();
                     aux2.push(start)
+                    return false
                 })
 
                 this.setState({

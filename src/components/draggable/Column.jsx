@@ -7,16 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { Input, Button } from '../form-components'
 import { isMobile } from "react-device-detect"
-
-function closeAcordion() {
-    if (document.getElementsByClassName('collapse')[0].classList.contains("show")) {
-        document.getElementsByClassName("collapse")[0].classList.remove("show");
-    }
-    else {
-        document.getElementsByClassName("collapse")[0].classList.add("show");
-    }
-}
-
 class Column extends Component {
 
     state = {

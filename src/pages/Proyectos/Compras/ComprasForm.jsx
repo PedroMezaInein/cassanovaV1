@@ -114,7 +114,6 @@ class ComprasForm extends Component {
                         const emisor = xml.getElementsByTagName('cfdi:Emisor')[0]
                         const receptor = xml.getElementsByTagName('cfdi:Receptor')[0]
                         const timbreFiscalDigital = xml.getElementsByTagName('tfd:TimbreFiscalDigital')[0]
-                        const concepto = xml.getElementsByTagName('cfdi:Concepto')[0]
                         const conceptos = xml.getElementsByTagName('cfdi:Concepto')
                         let relacionados = xml.getElementsByTagName('cfdi:CfdiRelacionados')
                         let desc = ''
@@ -179,6 +178,7 @@ class ComprasForm extends Component {
                             if (element.rfc === obj.rfc_receptor) {
                                 auxEmpresa = element
                             }
+                            return false
                         });
                         let auxProveedor = ''
                         data.proveedores.find(function (element, index) {
@@ -190,6 +190,7 @@ class ComprasForm extends Component {
                                 element.razon_social.toUpperCase() === cadena) {
                                 auxProveedor = element
                             }
+                            return false
                         });
                         if (auxEmpresa) {
                             options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')

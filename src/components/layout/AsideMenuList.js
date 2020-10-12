@@ -107,5 +107,4 @@ export function AsideMenuList({ props }) {
             </ul>
         </>
     );
-    return false
 }

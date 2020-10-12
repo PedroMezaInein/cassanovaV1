@@ -15,7 +15,7 @@ class customUser extends Component{
         return(
         <>               
 			<div className="d-flex flex-column">
-				<a className="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><Navbar as={NameUser} userName={userName}> </Navbar></a>
+				<span className="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><Navbar as={NameUser} userName={userName}> </Navbar></span>
 				<div className="text-muted mt-1"></div>
 					<div className="navi mt-1"> 
 							<span className="navi-link p-0 pb-1">

@@ -11,7 +11,7 @@ import { Modal, ModalDelete } from '../../../components/singles'
 import { Button, FileInput } from '../../../components/form-components'
 import { FacturaForm } from '../../../components/forms'
 import { FacturaTable } from '../../../components/tables'
-import { Form, ProgressBar } from 'react-bootstrap'
+import { Form } from 'react-bootstrap'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import Select from '../../../components/form-components/Select'
 import AdjuntosForm from '../../../components/forms/AdjuntosForm'
@@ -125,6 +125,7 @@ class Ingresos extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -310,6 +311,7 @@ class Ingresos extends Component {
                     _aux.push({
                         name: 'Presupuesto', text: presupuesto.name, url: presupuesto.url
                     })
+                    return false
                 })
             }
             if (ingreso.pagos) {
@@ -317,6 +319,7 @@ class Ingresos extends Component {
                     _aux.push({
                         name: 'Pago', text: pago.name, url: pago.url
                     })
+                    return false
                 })
             }
             aux.push(
@@ -361,6 +364,7 @@ class Ingresos extends Component {
                 tipo: renderToString(setTextTable(adjunto.pivot.tipo)),
                 id: 'adjuntos-' + adjunto.id
             })
+            return false
         })
         return aux
     }
@@ -453,6 +457,7 @@ class Ingresos extends Component {
         porcentaje = 0
         ingreso.facturas.map((factura) => {
             porcentaje = porcentaje + factura.total
+            return false
         })
         porcentaje = porcentaje * 100 / (ingreso.total)
         porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
@@ -623,6 +628,7 @@ class Ingresos extends Component {
                 default:
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -633,6 +639,7 @@ class Ingresos extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         data.append('id', ingreso.id)
         await axios.post(URL_DEV + 'ingresos/factura', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
@@ -644,6 +651,7 @@ class Ingresos extends Component {
                 porcentaje = 0
                 ingreso.facturas.map((factura) => {
                     porcentaje = porcentaje + factura.total
+                    return false
                 })
                 porcentaje = porcentaje * 100 / (ingreso.total)
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
@@ -680,6 +688,7 @@ class Ingresos extends Component {
                 porcentaje = 0
                 ingreso.facturas.map((factura) => {
                     porcentaje = porcentaje + factura.total
+                    return false
                 })
                 porcentaje = porcentaje * 100 / (ingreso.total)
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
@@ -753,6 +762,7 @@ class Ingresos extends Component {
                     if (cliente.empresa === cadena) {
                         form.cliente = cliente.empresa
                     }
+                    return false
                 })
                 this.setState({
                     ...this.state,
@@ -814,6 +824,7 @@ class Ingresos extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         data.append('id', ingreso.id)
         await axios.post(URL_DEV + 'ingresos/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(

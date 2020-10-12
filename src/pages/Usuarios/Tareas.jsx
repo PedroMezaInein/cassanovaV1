@@ -44,8 +44,8 @@ class Tareas extends Component{
     }
 
     componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
+        const { authUser: { user : { permisos  } } } = this.props
+        const { history : { location: { pathname } } } = this.props
         const { history } = this.props
         const tareas = permisos.find(function(element, index) {
             const { modulo: { url } } = element

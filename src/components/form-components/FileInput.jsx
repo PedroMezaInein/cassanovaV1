@@ -113,7 +113,7 @@ class FileInput extends Component {
                                         </div>
                                         {
                                             file.url ?
-                                                <a href={file.url} target="_blank" className="pt-2 pb-2">
+                                                <a rel="noopener noreferrer"  href={file.url} target="_blank" className="pt-2 pb-2">
                                                     <div><span className="tagify__tag-text p-1 white-space">{file.name}</span></div>
                                                 </a>
                                                 :

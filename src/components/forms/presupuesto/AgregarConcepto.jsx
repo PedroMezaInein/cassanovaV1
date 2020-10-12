@@ -16,10 +16,11 @@ class AgregarConcepto extends Component {
         onChange({ target: { value: '', name: 'subpartida' } })
 
         const { options: { partidas } } = this.props
-        const aux = partidas.find(function (element, index) {
+        partidas.find(function (element, index) {
             if (value.toString() === element.value.toString()) {
                 setOptions('subpartidas', element.subpartidas)
             }
+            return false
         })
     }
 
@@ -41,16 +42,17 @@ class AgregarConcepto extends Component {
     onChange = e => {
         const { checked } = e.target
         const { data, checkButtonConceptos } = this.props
-
         data.subpartidas.map((subpartida) => {
             subpartida.conceptos.map((concepto) => {
                 checkButtonConceptos({ target: { name: concepto.clave, value: checked, checked: checked } })
+                return false
             })
+            return false
         })
     }
 
     render() {
-        const { title, options, form, onChange, onSubmit, formeditado, data, checkButtonConceptos, activeKey, onSelect } = this.props
+        const { options, form, onChange, onSubmit, formeditado, checkButtonConceptos, activeKey, onSelect } = this.props
         return (
             <Form id="form-presupuesto"
                 onSubmit={

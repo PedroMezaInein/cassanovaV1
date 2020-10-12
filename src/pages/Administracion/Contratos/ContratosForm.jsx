@@ -117,6 +117,7 @@ class ContratosForm extends Component {
                                         name: adj.name, url: adj.url
                                     }
                                 )
+                                return false
                             })
                         form.adjuntos.adjunto.files = aux
                         this.setState({
@@ -254,6 +255,7 @@ class ContratosForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -264,6 +266,7 @@ class ContratosForm extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         await axios.post(URL_DEV + 'contratos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {

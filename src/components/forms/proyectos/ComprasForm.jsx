@@ -17,6 +17,7 @@ class ComprasForm extends Component {
                 setOptions('proyectos', element.proyectos)
                 return value
             }
+            return false
         })
     }
     updateProyecto = value => {
@@ -29,12 +30,14 @@ class ComprasForm extends Component {
         onChange({ target: { value: value, name: 'empresa' } })
         onChange({ target: { value: '', name: 'cuenta' } })
 
-        const { options: { empresas: empresas } } = this.props
+        const { options: { empresas } } = this.props
 
-        const aux = empresas.find(function (element, index) {
+        empresas.find(function (element, index) {
             if (value.toString() === element.value.toString()) {
                 setOptions('cuentas', element.cuentas)
+                return element
             }
+            return false
         })
     }
     updateCuenta = value => {
@@ -48,11 +51,13 @@ class ComprasForm extends Component {
         onChange({ target: { value: value, name: 'area' } })
         onChange({ target: { value: '', name: 'subarea' } })
 
-        const { options: { areas: areas } } = this.props
-        const aux = areas.find(function (element, index) {
+        const { options: { areas } } = this.props
+        areas.find(function (element, index) {
             if (value.toString() === element.value.toString()) {
                 setOptions('subareas', element.subareas)
+                return true
             }
+            return false
         })
 
     }

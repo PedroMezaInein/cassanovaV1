@@ -8,7 +8,7 @@ class ProveedorForm extends Component {
         const { onChange, setOptions } = this.props
         onChange({ target: { value: value, name: 'area' } })
         onChange({ target: { value: '', name: 'subarea' } })
-        const { options: { areas: areas } } = this.props
+        const { options: { areas } } = this.props
         const aux = areas.find(function (element, index) {
             if (value.toString() === element.value.toString()) {
                 setOptions('subareas', element.subareas)
