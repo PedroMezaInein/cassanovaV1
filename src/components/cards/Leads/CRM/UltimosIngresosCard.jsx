@@ -12,7 +12,7 @@ export default class UltimosContactosCard extends Component {
         var minutes = parseInt(diff.asMinutes());
         if (months) {
             if (months === 1)
-                return 'Un mes'
+                return '1 mes'
             else
                 return `${months} meses`
         }
@@ -51,11 +51,11 @@ export default class UltimosContactosCard extends Component {
             <Card className="card-custom card-stretch gutter-b py-2">
                 <Card.Header className="align-items-center border-0">
                     <div className="card-title align-items-start flex-column">
-                        <span className="font-weight-bolder text-dark">Últimos leads ingresados</span>
+                        <span className="font-weight-bolder text-dark">Últimos ingresados</span>
                     </div>
                     <div className="card-toolbar">
-                        <a href="#" className="btn btn-icon btn-xs btn-light-primary mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></a>
-                        <a href="#" className="btn btn-icon btn-xs btn-light-primary mr-2 my-1" onClick={onClick}><i className="ki ki-bold-arrow-next icon-xs"></i></a>
+                        <a className="btn btn-icon btn-xs btn-light-primary mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></a>
+                        <a className="btn btn-icon btn-xs btn-light-primary mr-2 my-1" onClick={onClick}><i className="ki ki-bold-arrow-next icon-xs"></i></a>
                     </div>
                 </Card.Header>
                 <Card.Body className="py-2">

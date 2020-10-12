@@ -12,7 +12,7 @@ export default class SinContacto extends Component {
         var minutes = parseInt(diff.asMinutes());
         if (months) {
             if (months === 1)
-                return 'Un mes'
+                return '1 mes'
             else
                 return `${months} meses`
         }
@@ -51,11 +51,11 @@ export default class SinContacto extends Component {
             <Card className="card-custom card-stretch gutter-b py-2 bg-danger-o-50">
                 <Card.Header className="align-items-center border-0">
                     <div className="card-title align-items-start flex-column">
-                        <span className="font-weight-bolder text-dark">Leads sin contacto en más de una semana</span>
+                        <span className="font-weight-bolder text-dark">Sin contacto en + 1 semana</span>
                     </div>
                     <div className="card-toolbar">
-                        <a href="#" className="btn btn-icon btn-xs btn-light-danger mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></a>
-                        <a href="#" className="btn btn-icon btn-xs btn-light-danger mr-2 my-1" onClick={onClick}><i className="ki ki-bold-arrow-next icon-xs"></i></a>
+                        <a className="btn btn-icon btn-xs btn-light-danger mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></a>
+                        <a className="btn btn-icon btn-xs btn-light-danger mr-2 my-1" onClick={onClick}><i className="ki ki-bold-arrow-next icon-xs"></i></a>
                     </div>
                 </Card.Header>
                 <Card.Body className="py-2">
@@ -65,7 +65,7 @@ export default class SinContacto extends Component {
                                 return (
                                     <div className="timeline-item" key={key}>
                                         <div className="timeline-label"> {this.diffCommentDate(contacto)}</div>
-                                        <div className="timeline-badge bg-danger-50"><span className="bg-primary w-50 h-50"></span></div>
+                                        <div className="timeline-badge bg-danger-50"><span className="bg-danger w-50 h-50"></span></div>
                                         <div className="timeline-content">
                                             <a href={`tel:+${contacto.telefono}`} className="text-dark-75 font-weight-bolder text-hover-danger mb-1">{contacto.nombre}</a>
                                         </div>

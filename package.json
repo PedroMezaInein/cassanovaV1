@@ -82,7 +82,7 @@
       "lodash": "4.17.15",
       "material-ui-popup-state": "1.4.1",
       "mdbreact": "^4.27.0",
-      "modernizr": "^3.11.2",
+      "modernizr": "^3.11.3",
       "moment": "^2.27.0",
       "node-sass": "^4.14.1",
       "object-path": "0.11.4",
