@@ -78,11 +78,11 @@ class Ingresos extends Component {
         }
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const ingresos = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!ingresos)
@@ -133,7 +133,7 @@ class Ingresos extends Component {
         const { name, value } = e.target
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -243,7 +243,7 @@ class Ingresos extends Component {
                         form.facturaObject = obj
                         form.rfc = obj.rfc_receptor
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             options,
                             form
                         })
@@ -263,7 +263,7 @@ class Ingresos extends Component {
         form['adjuntos'][name].value = value
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -282,7 +282,7 @@ class Ingresos extends Component {
         }
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -430,7 +430,7 @@ class Ingresos extends Component {
     }
     openModalDelete = (ingreso) => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: true,
             ingreso: ingreso
         })
@@ -438,7 +438,7 @@ class Ingresos extends Component {
     handleCloseDelete = () => {
         const { modalDelete } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: !modalDelete,
             ingreso: ''
         })
@@ -457,7 +457,7 @@ class Ingresos extends Component {
         porcentaje = porcentaje * 100 / (ingreso.total)
         porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
         this.setState({
-            ... this.state,
+            ...this.state,
             modalFacturas: true,
             ingreso: ingreso,
             facturas: ingreso.facturas,
@@ -468,7 +468,7 @@ class Ingresos extends Component {
     }
     handleCloseFacturas = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalFacturas: false,
             ingreso: '',
             facturas: [],
@@ -482,7 +482,7 @@ class Ingresos extends Component {
     //     form.cliente = ingreso.cliente.id.toString()
     //     form.rfc = ingreso.cliente.rfc
     //     this.setState({
-    //         ... this.state,
+    //         ...this.state,
     //         // modalAskFactura: true,
     //         ingreso: ingreso,
     //         form,
@@ -491,7 +491,7 @@ class Ingresos extends Component {
     // }
     // handleCloseAskFactura = () => {
     //     this.setState({
-    //         ... this.state,
+    //         ...this.state,
     //         // modalAskFactura: false,
     //         ingreso: '',
     //         form: this.clearForm()
@@ -501,7 +501,7 @@ class Ingresos extends Component {
         const { data } = this.state
         data.adjuntos = ingreso.presupuestos.concat(ingreso.pagos)
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAdjuntos: true,
             ingreso: ingreso,
             form: this.clearForm(),
@@ -515,14 +515,14 @@ class Ingresos extends Component {
     }
     openModalSee = ingreso => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: true,
             ingreso: ingreso
         })
     }
     handleCloseSee = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: false,
             ingreso: ''
         })
@@ -531,7 +531,7 @@ class Ingresos extends Component {
         const { data } = this.state
         data.adjuntos = []
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAdjuntos: false,
             form: this.clearForm(),
             adjuntos: [],
@@ -544,7 +544,7 @@ class Ingresos extends Component {
         this.deleteFacturaAxios(id)
     }
     async getIngresosAxios() {
-        var table = $('#ingresostable').DataTable().ajax.reload();
+        $('#ingresostable').DataTable().ajax.reload();
     }
     async getOptionsAxios() {
         waitAlert()
@@ -563,7 +563,7 @@ class Ingresos extends Component {
                 data.empresas = empresas
                 swal.close()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     data,
                     options
                 })
@@ -588,7 +588,7 @@ class Ingresos extends Component {
             (response) => {
                 this.getIngresosAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modalDelete: false,
                     ingreso: ''
                 })
@@ -649,7 +649,7 @@ class Ingresos extends Component {
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
                 this.getIngresosAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form,
                     ingreso: ingreso,
                     facturas: ingreso.facturas,
@@ -685,7 +685,7 @@ class Ingresos extends Component {
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
                 this.getIngresosAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     ingreso: ingreso,
                     facturas: ingreso.facturas,
@@ -712,7 +712,7 @@ class Ingresos extends Component {
         await axios.post(URL_DEV + 'facturas/ask', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     // modalAskFactura: false
                 })
@@ -755,7 +755,7 @@ class Ingresos extends Component {
                     }
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form,
                     data,
                     options
@@ -823,7 +823,7 @@ class Ingresos extends Component {
                 data.adjuntos = ingreso.presupuestos.concat(ingreso.pagos)
                 this.getIngresosAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     ingreso: ingreso,
                     adjuntos: this.setAdjuntosTable(ingreso),
@@ -855,7 +855,7 @@ class Ingresos extends Component {
                 data.adjuntos = ingreso.presupuestos.concat(ingreso.pagos)
                 this.getIngresosAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     ingreso: ingreso,
                     adjuntos: this.setAdjuntosTable(ingreso),
@@ -881,7 +881,7 @@ class Ingresos extends Component {
         if (value === 'facturas') {
         }
         this.setState({
-            ... this.state,
+            ...this.state,
             active: value,
             form
         })

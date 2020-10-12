@@ -62,11 +62,11 @@ class Empresas extends Component {
     }
     
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const empresas = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!empresas)
@@ -88,6 +88,7 @@ class Empresas extends Component {
                 logo: renderToString(empresa.logos.length !== 0 ? <img className="img-empresa" src={empresa.logos[empresa.logos.length - 1].url} alt={empresa.name} /> : 'No hay logo'),
                 id: empresa.id
             })
+            return false
         })
         return aux
     }
@@ -129,7 +130,7 @@ class Empresas extends Component {
     
     openModalDeleteEmpresa = emp => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: true,
             empresa: emp,
             formAction: 'Delete'
@@ -145,11 +146,8 @@ class Empresas extends Component {
     }
     
     openModalAdjuntos = empresa => {
-        let { adjuntos } = this.state
-        // let auxheaders = []
-
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAdjuntos: true,
             adjuntos: this.setAdjuntosSlider(empresa),
             empresa: empresa,
@@ -160,7 +158,7 @@ class Empresas extends Component {
     
     openModalSee = empresa => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: true,
             empresa: empresa
         })
@@ -168,7 +166,7 @@ class Empresas extends Component {
     
     handleCloseSee = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: false,
             empresa: ''
         })
@@ -185,6 +183,7 @@ class Empresas extends Component {
                 form: element.form,
                 url: ''
             })
+            return false
         })
         return aux
     }
@@ -200,13 +199,14 @@ class Empresas extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form
     }
     
     updateActiveTabContainer = active => {
         this.setState({
-            ... this.state,
+            ...this.state,
             subActiveKey: active
         })
     }
@@ -214,7 +214,7 @@ class Empresas extends Component {
     handleDeleteModal = () => {
         const { modalDelete } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: !modalDelete,
             empresa: {},
             formAction: ''
@@ -224,7 +224,7 @@ class Empresas extends Component {
     safeDeleteEmpresa = e => (empresa) => {
         this.deleteEmpresaAxios(empresa);
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: false,
             empresa: {},
             formAction: ''
@@ -275,7 +275,7 @@ class Empresas extends Component {
         showadjuntos[adjunto].value = value
         showadjuntos[adjunto].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -321,6 +321,7 @@ class Empresas extends Component {
         showadjuntos[adjunto].files.map((file) => {
             data.append(`files_name_${showadjuntos[adjunto].id}[]`, file.name)
             data.append(`files_${showadjuntos[adjunto].id}[]`, file.file)
+            return false
         })
         await axios.post(URL_DEV + 'empresa/' + empresa.id + '/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -347,7 +348,7 @@ class Empresas extends Component {
     handleCloseAdjuntos = () => {
         const { modalAdjuntos } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAdjuntos: !modalAdjuntos,
             form: this.clearForm(),
             empresa: '',
@@ -357,7 +358,7 @@ class Empresas extends Component {
         e.preventDefault()
         const { name, logo, razon_social } = this.state.empresa
         this.setState({
-            ... this.state,
+            ...this.state,
             form: {
                 name: name,
                 razonSocial: razon_social,

@@ -19,7 +19,7 @@ class TablaEstadosResultados extends Component {
         const { activePage } = this.state
         activePage.compras = pageNumber
         this.setState({
-            ... this.state,
+            ...this.state,
             activePage
         })
     }
@@ -28,7 +28,7 @@ class TablaEstadosResultados extends Component {
         const { activePage } = this.state
         activePage.egresos = pageNumber
         this.setState({
-            ... this.state,
+            ...this.state,
             activePage
         })
     }
@@ -36,7 +36,7 @@ class TablaEstadosResultados extends Component {
         const { activePage } = this.state
         activePage.ingresos = pageNumber
         this.setState({
-            ... this.state,
+            ...this.state,
             activePage
         })
     }
@@ -45,7 +45,7 @@ class TablaEstadosResultados extends Component {
         const { activePage } = this.state
         activePage.ventas = pageNumber
         this.setState({
-            ... this.state,
+            ...this.state,
             activePage
         })
     }
@@ -99,7 +99,8 @@ class TablaEstadosResultados extends Component {
                                                         <span className="text-right text-dark-75 d-block font-size-lg">{setMoneyTableSinSmall(venta.total)}</span>
                                                     </td>
                                                 </tr>
-                                            )  
+                                            )
+                                        return false
                                     })
                             :''
                         }
@@ -135,6 +136,7 @@ class TablaEstadosResultados extends Component {
                                                     </td>
                                                 </tr>
                                             )  
+                                        return false
                                     })
                             :''
                         }
@@ -169,6 +171,7 @@ class TablaEstadosResultados extends Component {
                                                     </td>
                                                 </tr>
                                             )  
+                                        return false
                                     })
                             :''
                         }
@@ -201,6 +204,7 @@ class TablaEstadosResultados extends Component {
                                                     </td>
                                                 </tr>
                                             )  
+                                        return false
                                     })
                             :''
                         }

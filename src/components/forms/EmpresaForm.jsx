@@ -23,7 +23,7 @@ class EmpresaForm extends Component {
                         validateAlert(onSubmit, e, 'form-empresa')
                     }
                 }
-                {... this.props}
+                {...this.props}
             >
                 <div className="form-group row form-group-marginless pb-4">
                     <div className="col-md-4">

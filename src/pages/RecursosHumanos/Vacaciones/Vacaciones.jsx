@@ -48,12 +48,12 @@ class Vacaciones extends Component {
     }
 
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         // const { match: { params: { action: action } } } = this.props
         // const { history, location: { state: state } } = this.props
         const vacaciones = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
 
@@ -63,14 +63,14 @@ class Vacaciones extends Component {
 
     openModal = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modal: true
         })
     }
 
     handleClose = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modal: false
         })
     }
@@ -79,7 +79,7 @@ class Vacaciones extends Component {
         const {options} = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
-            ... this.state,
+            ...this.state,
             options
         })
     }
@@ -135,7 +135,7 @@ class Vacaciones extends Component {
                 })
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     events: aux,
                     espera: vacaciones_espera,
                     disabledDates: aux2
@@ -234,7 +234,7 @@ class Vacaciones extends Component {
 
     openModalAddVacaciones = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modal_add_vacaciones: true,
             title: 'Agregar vacaciones',
             form: this.clearForm(),
@@ -244,7 +244,7 @@ class Vacaciones extends Component {
 
     openModalAddFeriados = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modal_add_feriados: true,
             title: 'Agregar feriados',
             form: this.clearForm(),
@@ -281,7 +281,7 @@ class Vacaciones extends Component {
     handleCloseAddVacaciones = () => {
         const { modal_add_vacaciones } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modal_add_vacaciones: !modal_add_vacaciones,
             title: 'Agregar vacaciones',
             form: this.clearForm()
@@ -291,7 +291,7 @@ class Vacaciones extends Component {
     handleCloseAddFeriados = () => {
         const { modal_add_feriados } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modal_add_feriados: !modal_add_feriados,
             title: 'Agregar vacaciones',
             form: this.clearForm()
@@ -303,7 +303,7 @@ class Vacaciones extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -324,7 +324,7 @@ class Vacaciones extends Component {
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }

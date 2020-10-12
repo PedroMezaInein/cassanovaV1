@@ -89,19 +89,19 @@ class PresupuestoDiseñoForm extends Component {
     }
 
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
-        const { match: { params: { action: action } } } = this.props
-        const { history, location: { state: state } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
+        const { match: { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
 
         const presupuesto = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         switch (action) {
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Agregar presupuesto de diseño',
                     formeditado: 0
                 })
@@ -208,7 +208,7 @@ class PresupuestoDiseñoForm extends Component {
                                 form.tipo_partida = 'partidasIm'
                         }
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             title: 'Editar presupuesto de diseño',
                             presupuesto: presupuesto,
                             form,
@@ -232,7 +232,7 @@ class PresupuestoDiseñoForm extends Component {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
-            ... this.state,
+            ...this.state,
             options
         })
     }
@@ -289,7 +289,7 @@ class PresupuestoDiseñoForm extends Component {
                     }
                 }
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options,
                     data,
                     form
@@ -406,7 +406,7 @@ class PresupuestoDiseñoForm extends Component {
         })
         form.tiempo_ejecucion_diseno = count
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -414,7 +414,7 @@ class PresupuestoDiseñoForm extends Component {
         const { value, form } = e.target
         form.conceptos[key].value = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -540,7 +540,7 @@ class PresupuestoDiseñoForm extends Component {
         const { form } = this.state
         form[form.tipo_partida] = array
         this.setState({
-            ... this.state,
+            ...this.state,
             form: form
         })
     }

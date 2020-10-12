@@ -49,7 +49,7 @@ class Input extends Component {
             if(!nextProps.requirevalidation)
             {
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     inputValido: true
                 })
             }else{

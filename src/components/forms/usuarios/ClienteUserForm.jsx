@@ -8,6 +8,7 @@ class ClienteUserForm extends Component {
         options.proyectos.map((proyecto) => {
             if (proyecto.value === value)
                 onChangeOptions({ target: { value: proyecto.value, name: 'proyecto' } }, 'proyectos')
+            return false
         })
         onChange({ target: { value: value, name: 'proyecto' } })
     }

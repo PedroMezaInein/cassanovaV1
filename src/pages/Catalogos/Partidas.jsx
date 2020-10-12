@@ -31,11 +31,11 @@ class Partidas extends Component {
     }
 
     componentDidMount() {   
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const areas = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!areas)
@@ -54,7 +54,7 @@ class Partidas extends Component {
                 form.subpartidas.push(form.subpartida)
                 form.subpartida = ''
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form,
                     formeditado:0,
                 })
@@ -71,7 +71,7 @@ class Partidas extends Component {
         });
         form.subpartidas = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -81,7 +81,7 @@ class Partidas extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -218,7 +218,7 @@ class Partidas extends Component {
         const { modal} = this.state
         modal.see =true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             partida: partida
         })
@@ -228,7 +228,7 @@ class Partidas extends Component {
         const { modal} = this.state
         modal.see =false
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             partida: ''
         })
@@ -265,7 +265,7 @@ class Partidas extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito una nueva área.')
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal,
                     form: this.clearForm(),
                 })
@@ -298,7 +298,7 @@ class Partidas extends Component {
                 this.getPartidaAxios()
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal,
                     form: this.clearForm(),
                     partida: ''
@@ -332,7 +332,7 @@ class Partidas extends Component {
                 this.getPartidaAxios()
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal,
                     form: this.clearForm(),
                     partida: '',

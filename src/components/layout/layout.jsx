@@ -178,7 +178,7 @@ class Layout extends Component {
                                     <div id="showheader" onClick={() => { clickShowHeader() }}></div>
                                     <div className="topbar" >
                                         <div className="topbar-item">
-                                            {/* <Navbar clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {... this.props} />*/}
+                                            {/* <Navbar clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {...this.props} />*/}
                                             <div className="btn btn-icon w-auto btn-clean d-flex align-items-center btn-lg px-2" id="kt_quick_user_toggle" onClick={() => { openUserProfile() }}>
                                                 <span className="text-muted font-weight-bold font-size-base d-none d-md-inline mr-1">Hola,</span>
                                                 <br />
@@ -203,7 +203,7 @@ class Layout extends Component {
                                 {
                                     tipo_usuario === 'Cliente' ?
                                         '' :
-                                        <UrlLocation {... this.props} props={this.props} />
+                                        <UrlLocation {...this.props} props={this.props} />
                                 }
                                 <div className="d-flex flex-column-fluid">
                                     <div className="container-fluid">
@@ -218,7 +218,7 @@ class Layout extends Component {
                         </div>
                     </div>
                 </div>
-                <UserPanel clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {... this.props} />
+                <UserPanel clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {...this.props} />
             </div>
         )
     }

@@ -59,11 +59,11 @@ class NominaObra extends Component {
     }
 
     componentDidMount() { 
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const nominaobra = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!nominaobra)
@@ -98,7 +98,7 @@ class NominaObra extends Component {
         const { modal } = this.state
         modal.form = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             form: this.clearForm(),
             formeditado:0,
@@ -149,7 +149,7 @@ class NominaObra extends Component {
         }
 
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             title: 'Editar nómina obra',
             nomina: nomina,
@@ -162,7 +162,7 @@ class NominaObra extends Component {
         const { modal } = this.state
         modal.delete = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             nomina: nomina
         })
@@ -173,7 +173,7 @@ class NominaObra extends Component {
         modal.adjuntos = true
         data.adjuntos = nomina.adjuntos
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             nomina: nomina,
             data,
@@ -218,7 +218,7 @@ class NominaObra extends Component {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
-            ... this.state,
+            ...this.state,
             options
         })
     }
@@ -236,7 +236,7 @@ class NominaObra extends Component {
                 options['usuarios'] = setOptions( usuarios, 'nombre', 'id')
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options,
                     data
                 })
@@ -325,7 +325,7 @@ class NominaObra extends Component {
                 modal.form = false
 
                 this.setState({                    
-                    ... this.state,
+                    ...this.state,
                     modal,
                     nomina: '',
                     form: this.clearForm()
@@ -362,7 +362,7 @@ class NominaObra extends Component {
                 modal.delete = false
 
                 this.setState({                    
-                    ... this.state,
+                    ...this.state,
                     modal,
                     nomina: '',
                     form: this.clearForm()
@@ -414,7 +414,7 @@ class NominaObra extends Component {
                 this.getNominasAxios()
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     nomina: nomina,
                     adjuntos: this.setAdjuntosTable(data.adjuntos),
@@ -449,7 +449,7 @@ class NominaObra extends Component {
                 
                 this.getNominasAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     nomina: nomina,
                     adjuntos: this.setAdjuntosTable(data.adjuntos),
@@ -476,7 +476,7 @@ class NominaObra extends Component {
         const { modal } = this.state 
         modal.form = false
         this.setState({
-            ... this.state,
+            ...this.state,
             modal, 
             form: this.clearForm()
         })
@@ -486,7 +486,7 @@ class NominaObra extends Component {
         const { modal } = this.state
         modal.delete = false
         this.setState({
-            ... this.state,
+            ...this.state,
             form: this.clearForm(),
             modal, 
             nomina: ''
@@ -497,7 +497,7 @@ class NominaObra extends Component {
         const { modal } = this.state
         modal.adjuntos = false
         this.setState({
-            ... this.state,
+            ...this.state,
             form: this.clearForm(),
             modal, 
             nomina: ''
@@ -550,7 +550,7 @@ class NominaObra extends Component {
         }
         form.adjuntos[name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -637,7 +637,7 @@ class NominaObra extends Component {
         form.adjuntos[name].value = value
         form.adjuntos[name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -688,7 +688,7 @@ class NominaObra extends Component {
             }
         )
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -711,13 +711,13 @@ class NominaObra extends Component {
             }
         )
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
 
     async getNominasAxios(){
-        var table = $('#kt_datatable2_nomina_obra').DataTable().ajax.reload();
+        $('#kt_datatable2_nomina_obra').DataTable().ajax.reload();
     }
     
     render() {

@@ -6,9 +6,6 @@ import { Tooltip } from 'react-bootstrap'
 
 
 export default class button extends Component {
-    constructor(props) {
-        super(props)
-    }
 
     render() {
         const { children, color, text, icon, onClick, className, type, tooltip, pulse, only_icon, ...props } = this.props

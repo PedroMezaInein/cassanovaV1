@@ -60,11 +60,11 @@ class Leads extends Component {
     }
 
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const leads = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!leads)
@@ -76,7 +76,7 @@ class Leads extends Component {
         const { modal } = this.state
         modal.delete = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             prospecto: prospecto
         })
@@ -86,7 +86,7 @@ class Leads extends Component {
         const { modal } = this.state
         modal.delete = false
         this.setState({
-            ... this.state,
+            ...this.state,
             prospecto: '',
             modal
         })
@@ -96,7 +96,7 @@ class Leads extends Component {
         const { modal } = this.state
         modal.contactForm = true
         this.setState({
-            ... this.state,
+            ...this.state,
             prospecto,
             modal,
             formeditado: 0,
@@ -108,7 +108,7 @@ class Leads extends Component {
         const { modal } = this.state
         modal.contactForm = false
         this.setState({
-            ... this.state,
+            ...this.state,
             prospecto: '',
             modal,
             formContacto: this.clearContactForm()
@@ -131,7 +131,7 @@ class Leads extends Component {
             )
         })
         this.setState({
-            ... this.state,
+            ...this.state,
             prospecto,
             modal,
             contactHistory: aux,
@@ -143,7 +143,7 @@ class Leads extends Component {
         const { modal } = this.state
         modal.convert = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             prospecto: prospecto,
             formeditado: 1
@@ -154,7 +154,7 @@ class Leads extends Component {
         const { modal } = this.state
         modal.convert = false
         this.setState({
-            ... this.state,
+            ...this.state,
             prospecto: '',
             modal
         })
@@ -172,7 +172,7 @@ class Leads extends Component {
         const { modal } = this.state
         modal.see = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             prospecto: prospecto
         })
@@ -182,7 +182,7 @@ class Leads extends Component {
         const { modal } = this.state
         modal.see = false
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             prospecto: ''
         })
@@ -218,7 +218,7 @@ class Leads extends Component {
         const { name, value } = event.target
         formContacto[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             formContacto
         })
     }
@@ -335,7 +335,7 @@ class Leads extends Component {
                     value: 'New', name: '+ Agregar nuevo'
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },
@@ -354,7 +354,7 @@ class Leads extends Component {
     }
 
     async getProspectoAxios() {
-        var table = $('#kt_datatable_prospectos').DataTable().ajax.reload();
+        $('#kt_datatable_prospectos').DataTable().ajax.reload();
     }
 
     async deleteProspectoAxios() {
@@ -366,7 +366,7 @@ class Leads extends Component {
                 const { modal } = this.state
                 modal.delete = false
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal,
                     title: '',
                     prospecto: ''
@@ -401,7 +401,7 @@ class Leads extends Component {
                     value: 'New', name: '+ Agregar nuevo'
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal,
                     prospecto: '',
                     options
@@ -423,7 +423,7 @@ class Leads extends Component {
     }
     controlledTab = value => {
         this.setState({
-            ... this.state,
+            ...this.state,
             formContacto: this.clearContactForm(),
             active: value
         })
@@ -461,7 +461,7 @@ class Leads extends Component {
         formContacto['adjuntos'][item].value = files
         formContacto['adjuntos'][item].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             formContacto
         })
     }

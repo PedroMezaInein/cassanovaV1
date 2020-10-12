@@ -27,11 +27,11 @@ class Bancos extends Component {
     }
 
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const areas = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!areas)
@@ -43,7 +43,7 @@ class Bancos extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -173,7 +173,7 @@ class Bancos extends Component {
                 this.getBancosAxios()
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal,
                     form: this.clearForm()
                 })
@@ -206,7 +206,7 @@ class Bancos extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el área.')
                 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal,
                     form: this.clearForm(),
                     banco: ''
@@ -240,7 +240,7 @@ class Bancos extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito el área.')
                 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal,
                     form: this.clearForm(),
                     banco: '',

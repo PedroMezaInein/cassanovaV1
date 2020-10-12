@@ -35,18 +35,18 @@ class Conceptos extends Component {
         concepto: ''
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { match: { params: { action: action } } } = this.props
         const { history, location: { state: state } } = this.props
         const remisiones = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         switch (action) {
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Nuevo concepto',
                     formeditado: 0
                 })
@@ -70,7 +70,7 @@ class Conceptos extends Component {
                         if (concepto.proveedor)
                             form.proveedor = concepto.proveedor.id.toString()
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             title: 'Editar concepto',
                             form,
                             concepto: concepto,
@@ -95,7 +95,7 @@ class Conceptos extends Component {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
-            ... this.state,
+            ...this.state,
             options
         })
     }
@@ -124,7 +124,7 @@ class Conceptos extends Component {
         const { name, value } = e.target
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -139,7 +139,7 @@ class Conceptos extends Component {
                 options['partidas'] = setOptions(partidas, 'nombre', 'id')
                 options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },

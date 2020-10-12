@@ -33,18 +33,18 @@ class ClientesForm extends Component {
         }
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { match: { params: { action: action } } } = this.props
         const { history, location: { state: state } } = this.props
         const cliente = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         switch (action) {
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Nuevo cliente',
                     formeditado: 0
                 })
@@ -68,7 +68,7 @@ class ClientesForm extends Component {
                         form['perfil'] = cliente.perfil
                         form['rfc'] = cliente.rfc
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             cliente: cliente,
                             title: 'Editar cliente',
                             form,
@@ -155,7 +155,7 @@ class ClientesForm extends Component {
         } else
             form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -175,7 +175,7 @@ class ClientesForm extends Component {
                     aux.push({ value: colonia, name: colonia.toUpperCase() })
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     municipio,
                     estado,
                     colonias: aux

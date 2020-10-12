@@ -25,7 +25,7 @@ class RangeCalendar extends Component {
             key: 'selection'
         }
         this.setState({
-            ... this.state,
+            ...this.state,
             range
         })
     }
@@ -35,7 +35,7 @@ class RangeCalendar extends Component {
         const { onChange } = this.props
         range[0] = item.selection
         this.setState({
-            ... this.state,
+            ...this.state,
             range
         })
         onChange(range[0])

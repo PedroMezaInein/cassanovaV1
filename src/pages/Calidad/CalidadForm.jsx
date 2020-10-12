@@ -38,12 +38,12 @@ class CalidadForm extends Component {
         }
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { match: { params: { action: action } } } = this.props
         const { history, location: { state: state } } = this.props
         const remisiones = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         this.getTicketsOptions()
@@ -56,7 +56,7 @@ class CalidadForm extends Component {
                             this.changeEstatusAxios({ id: calidad.id })
                         else {
                             this.setState({
-                                ... this.state,
+                                ...this.state,
                                 ticket: calidad,
                                 form: this.setForm(calidad)
                             })
@@ -130,7 +130,7 @@ class CalidadForm extends Component {
         form['adjuntos'][name].value = value
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -139,7 +139,7 @@ class CalidadForm extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -187,7 +187,7 @@ class CalidadForm extends Component {
                 const { ticket } = response.data
                 window.history.replaceState(ticket, 'calidad')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     ticket: ticket,
                     form: this.setForm(ticket)
                 })
@@ -241,7 +241,7 @@ class CalidadForm extends Component {
                 const { ticket } = response.data
                 window.history.replaceState(ticket, 'calidad')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     ticket: ticket,
                     form: this.setForm(ticket)
                 })
@@ -281,7 +281,7 @@ class CalidadForm extends Component {
                 const { ticket } = response.data
                 window.history.replaceState(ticket, 'calidad')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     ticket: ticket,
                     form: this.setForm(ticket)
                 })
@@ -307,7 +307,7 @@ class CalidadForm extends Component {
                 const { ticket } = response.data
                 window.history.replaceState(ticket, 'calidad')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     ticket: ticket,
                     form: this.setForm(ticket)
                 })
@@ -336,7 +336,7 @@ class CalidadForm extends Component {
                 const { ticket } = response.data
                 window.history.replaceState(ticket, 'calidad')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     ticket: ticket,
                     form: this.setForm(ticket)
                 })
@@ -365,7 +365,7 @@ class CalidadForm extends Component {
                 const { options } = this.state
                 options['empleados'] = setOptions(empleados, 'nombre', 'id')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },

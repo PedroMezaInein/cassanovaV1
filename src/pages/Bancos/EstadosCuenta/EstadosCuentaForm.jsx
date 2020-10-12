@@ -32,12 +32,12 @@ class EstadosCuentaForm extends Component {
         }
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { match: { params: { action: action } } } = this.props
         const { history, location: { state: state } } = this.props
         const estados = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         if (!estados)
@@ -46,7 +46,7 @@ class EstadosCuentaForm extends Component {
         switch (action) {
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Nuevo estado de cuenta',
                     formeditado: 0
                 })
@@ -60,7 +60,7 @@ class EstadosCuentaForm extends Component {
         const { name, value } = e.target
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -80,7 +80,7 @@ class EstadosCuentaForm extends Component {
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -102,7 +102,7 @@ class EstadosCuentaForm extends Component {
                 const { options } = this.state
                 options.cuentas = setOptions(cuentas, 'nombre', 'numero')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },
@@ -175,7 +175,7 @@ class EstadosCuentaForm extends Component {
                 form.adjuntos.adjuntos.files = []
                 form.adjuntos.adjuntos.aux = ''
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form
                 })
                 doneAlert('Adjunto eliminado con éxito')

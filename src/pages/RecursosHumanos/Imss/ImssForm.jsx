@@ -37,13 +37,13 @@ class ImssForm extends Component {
         const { match : { params: { action: action } } } = this.props
         const { history, location: { state: state} } = this.props
         const remisiones = permisos.find(function(element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         switch(action){
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Documento IMSS nuevo',
                     formeditado:0
                 })
@@ -68,7 +68,7 @@ class ImssForm extends Component {
                         form.adjuntos.adjuntos.files = aux
                         form.fecha = new Date(imss.fecha)
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             title: 'Editar documento IMSS',
                             formeditado:1,
                             form,
@@ -100,7 +100,7 @@ class ImssForm extends Component {
         })
         form.adjuntos.adjuntos.files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -110,7 +110,7 @@ class ImssForm extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -131,7 +131,7 @@ class ImssForm extends Component {
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -263,7 +263,7 @@ class ImssForm extends Component {
                 options.empresas = setOptions(empresas, 'name', 'id')
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },

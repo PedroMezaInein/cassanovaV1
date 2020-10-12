@@ -80,7 +80,7 @@ class PermisosForm extends Component {
         });
 
         this.setState({
-            ... this.state,
+            ...this.state,
             grupos: grupos
         })
     }
@@ -114,7 +114,7 @@ class PermisosForm extends Component {
         })
 
         this.setState({
-            ... this.state,
+            ...this.state,
             grupos: gruposObject,
             activeKey: auxActive ? grupos[auxActive].slug : activeKey
         })

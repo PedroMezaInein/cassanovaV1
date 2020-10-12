@@ -11,11 +11,11 @@ class Calidad extends Component {
         calidad: ''
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const leads = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!leads)
@@ -62,7 +62,7 @@ class Calidad extends Component {
         return aux
     }
     async getCalidadAxios() {
-        var table = $('#kt_datatable_calidad').DataTable().ajax.reload();
+        $('#kt_datatable_calidad').DataTable().ajax.reload();
     }
     render() {
         return (

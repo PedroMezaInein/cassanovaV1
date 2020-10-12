@@ -10,7 +10,7 @@ class InputImage extends Component {
                 <label className="col-form-label">{placeholder}</label>
 
                     
-                    <Form.Control onChange={(e) => { e.preventDefault(); onChange(e) }} className={`${error}`} {... this.props} />
+                    <Form.Control onChange={(e) => { e.preventDefault(); onChange(e) }} className={`${error}`} {...this.props} />
                     {
                         error &&
                         <label className="error-label">

@@ -57,18 +57,18 @@ class SolicitudVentaForm extends Component {
         }
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { match: { params: { action: action } } } = this.props
         const { history, location: { state: state } } = this.props
         const solicitud = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         })
         switch (action) {
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Nueva solicitud de venta',
                     formeditado: 0
                 })
@@ -107,7 +107,7 @@ class SolicitudVentaForm extends Component {
                             }]
                         }
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             title: 'Editar solicitud de venta',
                             formeditado: 1,
                             form,
@@ -165,7 +165,7 @@ class SolicitudVentaForm extends Component {
         }
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -174,7 +174,7 @@ class SolicitudVentaForm extends Component {
         const { name, value } = e.target
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -195,7 +195,7 @@ class SolicitudVentaForm extends Component {
     //     form['adjuntos'][name].value = value
     //     form['adjuntos'][name].files = aux
     //     this.setState({
-    //         ... this.state,
+    //         ...this.state,
     //         form
     //     })
     // }
@@ -212,7 +212,7 @@ class SolicitudVentaForm extends Component {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
-            ... this.state,
+            ...this.state,
             options
         })
     }
@@ -233,7 +233,7 @@ class SolicitudVentaForm extends Component {
                 options['formasPago'] = setOptions(formasPago, 'nombre', 'id')
                 options['estatusFacturas'] = setOptions(estatusFacturas, 'estatus', 'id')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options,
                     // solicitudes: this.setSolicitudes(solicitudes),
                     // data
@@ -290,7 +290,7 @@ class SolicitudVentaForm extends Component {
                     pathname: '/proyectos/solicitud-venta'
                 });
                 // this.setState({
-                //     ... this.state,
+                //     ...this.state,
                 //     form: this.clearForm(),
                 //     solicitud: '',
                 //     solicitudes: this.setSolicitudes(solicitudes),
@@ -347,7 +347,7 @@ class SolicitudVentaForm extends Component {
                     pathname: '/proyectos/solicitud-venta'
                 });
                 // this.setState({
-                //     ... this.state,
+                //     ...this.state,
                 //     form: this.clearForm(),
                 //     solicitud: '',
                 //     solicitudes: this.setSolicitudes(solicitudes),
@@ -384,7 +384,7 @@ class SolicitudVentaForm extends Component {
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }

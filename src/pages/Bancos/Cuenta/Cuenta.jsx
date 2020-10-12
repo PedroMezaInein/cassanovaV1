@@ -39,11 +39,11 @@ class Cuenta extends Component {
         cuenta: ''
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const modulo = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!modulo)
@@ -57,7 +57,7 @@ class Cuenta extends Component {
             this.getCajasAxios()
         }
         this.setState({
-            ... this.state,
+            ...this.state,
             key: value
         })
     }
@@ -69,7 +69,7 @@ class Cuenta extends Component {
             form.fecha = new Date()
         }
         this.setState({
-            ... this.state,
+            ...this.state,
             keyEstados: value,
             form
         })
@@ -170,7 +170,7 @@ class Cuenta extends Component {
         const { form } = this.state
         form.fecha = date
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -190,7 +190,7 @@ class Cuenta extends Component {
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -211,7 +211,7 @@ class Cuenta extends Component {
         const { modal } = this.state
         modal.delete = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             cuenta: cuenta
         })
@@ -220,7 +220,7 @@ class Cuenta extends Component {
         const { modal } = this.state
         modal.delete = false
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             cuenta: ''
         })
@@ -229,7 +229,7 @@ class Cuenta extends Component {
         const { modal } = this.state
         modal.see = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             cuenta: cuenta
         })
@@ -238,7 +238,7 @@ class Cuenta extends Component {
         const { modal } = this.state
         modal.see = false
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             cuenta: ''
         })
@@ -248,7 +248,7 @@ class Cuenta extends Component {
         modal.estado = true
         data.estados = cuenta.estados
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             cuenta: cuenta,
             data,
@@ -260,7 +260,7 @@ class Cuenta extends Component {
         modal.estado = false
         data.estados = []
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             cuenta: '',
             data,
@@ -284,7 +284,7 @@ class Cuenta extends Component {
                 }
                 modal.delete = false
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal,
                     cuenta: ''
                 })
@@ -331,7 +331,7 @@ class Cuenta extends Component {
                 form.adjuntos.adjuntos.value = ''
                 form.fecha = new Date()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form,
                     cuenta: cuenta,
                     estados: this.setEstados(cuenta.estados),
@@ -368,7 +368,7 @@ class Cuenta extends Component {
                     this.getCajasAxios()
                 }
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     data,
                     estados: this.setEstados(cuenta.estados)
                 })
@@ -390,7 +390,7 @@ class Cuenta extends Component {
     render() {
         const { key, cuenta, modal, keyEstados, form, estados, data } = this.state
         return (
-            <Layout active='bancos' {... this.props}>
+            <Layout active='bancos' {...this.props}>
                 <Tabs defaultActiveKey='bancos' activeKey={key}
                     onSelect={(value) => { this.controlledTab(value) }}>
                     <Tab eventKey='bancos' title='Banco'>

@@ -31,13 +31,13 @@ class PartidasDiseñoForm extends Component {
         const { match : { params: { action: action } } } = this.props
         const { history, location: { state: state} } = this.props
         const partida = permisos.find(function(element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         switch(action){
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Nueva partida',
                     formeditado:0
                 })
@@ -53,7 +53,7 @@ class PartidasDiseñoForm extends Component {
                         form.empresa = partida.empresa
 
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             form,
                             partida: partida,
                             title: 'Editar partida',
@@ -93,7 +93,7 @@ class PartidasDiseñoForm extends Component {
                 }
                 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     partidas: partidas                 
                 })
@@ -139,7 +139,7 @@ class PartidasDiseñoForm extends Component {
                 }
                 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     partidas: partidas,
                     partida: ''
                 })
@@ -190,7 +190,7 @@ class PartidasDiseñoForm extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -223,7 +223,7 @@ class PartidasDiseñoForm extends Component {
             form.empresa = 'im'
         }
         this.setState({
-            ... this.state,
+            ...this.state,
             key: value,
             form
         })
@@ -246,7 +246,7 @@ class PartidasDiseñoForm extends Component {
     recover = () => {
         const { formulario, deleteForm } = this.props
         this.setState({
-            ... this.state,
+            ...this.state,
             form: formulario.form
         })
         deleteForm()

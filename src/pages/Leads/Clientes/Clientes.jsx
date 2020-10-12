@@ -26,11 +26,11 @@ class Leads extends Component {
         }
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const clientes = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!clientes)
@@ -126,7 +126,7 @@ class Leads extends Component {
         const { modal } = this.state
         modal.delete = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             cliente
         })
@@ -135,7 +135,7 @@ class Leads extends Component {
         const { modal } = this.state
         modal.delete = false
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             cliente: ''
         })
@@ -144,7 +144,7 @@ class Leads extends Component {
         const { modal } = this.state
         modal.see = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             cliente: cliente
         })
@@ -153,7 +153,7 @@ class Leads extends Component {
         const { modal } = this.state
         modal.see = false
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             cliente: ''
         })
@@ -162,7 +162,7 @@ class Leads extends Component {
         const { modal } = this.state
         modal.prospecto = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             cliente: cliente
         })
@@ -171,7 +171,7 @@ class Leads extends Component {
         const { modal } = this.state
         modal.prospecto = false
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             cliente: ''
         })
@@ -185,7 +185,7 @@ class Leads extends Component {
                 this.getClientesAxios()
                 modal.delete = false
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal,
                     cliente: ''
                 })

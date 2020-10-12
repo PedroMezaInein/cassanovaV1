@@ -19,6 +19,7 @@ export default class IngresosCard extends Component {
                     url: factura.pdf.url
                 })
             }
+            return false
         })
         return aux
     }

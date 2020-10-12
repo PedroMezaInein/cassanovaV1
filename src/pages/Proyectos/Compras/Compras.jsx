@@ -104,11 +104,11 @@ class Compras extends Component {
     }
 
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const compras = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!compras)
@@ -165,7 +165,7 @@ class Compras extends Component {
         const { name, value } = e.target
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -283,7 +283,7 @@ class Compras extends Component {
                         form.facturaObject = obj
                         form.rfc = obj.rfc_emisor
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             options,
                             form
                         })
@@ -303,7 +303,7 @@ class Compras extends Component {
         form['adjuntos'][name].value = value
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -322,7 +322,7 @@ class Compras extends Component {
         }
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -459,7 +459,7 @@ class Compras extends Component {
     }
     openModalDelete = (compra) => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: true,
             compra: compra
         })
@@ -471,7 +471,7 @@ class Compras extends Component {
         porcentaje = compra.total_facturas * 100 / (compra.total - compra.comision)
         porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
         this.setState({
-            ... this.state,
+            ...this.state,
             modalFacturas: true,
             compra: compra,
             facturas: compra.facturas,
@@ -484,7 +484,7 @@ class Compras extends Component {
         const { data } = this.state
         data.adjuntos = compra.presupuestos.concat(compra.pagos)
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAdjuntos: true,
             compra: compra,
             form: this.clearForm(),
@@ -498,7 +498,7 @@ class Compras extends Component {
     }
     openModalSee = compra => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: true,
             compra: compra
         })
@@ -506,14 +506,14 @@ class Compras extends Component {
     handleCloseDelete = () => {
         const { modalDelete } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: !modalDelete,
             compra: ''
         })
     }
     handleCloseFacturas = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalFacturas: false,
             venta: '',
             facturas: [],
@@ -525,7 +525,7 @@ class Compras extends Component {
         const { data } = this.state
         data.adjuntos = []
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAdjuntos: false,
             form: this.clearForm(),
             adjuntos: [],
@@ -534,7 +534,7 @@ class Compras extends Component {
     }
     handleCloseSee = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: false,
             compra: ''
         })
@@ -565,7 +565,7 @@ class Compras extends Component {
                     }
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form,
                     data,
                     options
@@ -586,7 +586,7 @@ class Compras extends Component {
         })
     }
     async getComprasAxios() {
-        var table = $('#kt_datatable2_compras').DataTable().ajax.reload();
+        $('#kt_datatable2_compras').DataTable().ajax.reload();
     }
     async getOptionsAxios() {
         const { access_token } = this.props.authUser
@@ -610,7 +610,7 @@ class Compras extends Component {
                 data.proveedores = proveedores
                 data.empresas = empresas
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options,
                     data
                 })
@@ -635,7 +635,7 @@ class Compras extends Component {
             (response) => {
                 this.getComprasAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     modalDelete: false,
                 })
@@ -692,7 +692,7 @@ class Compras extends Component {
                 porcentaje = compra.total_facturas * 100 / (compra.total - compra.comision)
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form,
                     compra: compra,
                     facturas: compra.facturas,
@@ -724,7 +724,7 @@ class Compras extends Component {
                 porcentaje = compra.total_facturas * 100 / (compra.total - compra.comision)
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     compra: compra,
                     facturas: compra.facturas,
@@ -808,7 +808,7 @@ class Compras extends Component {
                 data.adjuntos = compra.presupuestos.concat(compra.pagos)
                 this.getComprasAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     compra: compra,
                     adjuntos: this.setAdjuntosTable(compra),
@@ -840,7 +840,7 @@ class Compras extends Component {
                 data.adjuntos = compra.presupuestos.concat(compra.pagos)
                 this.getComprasAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     compra: compra,
                     adjuntos: this.setAdjuntosTable(compra),

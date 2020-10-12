@@ -30,12 +30,12 @@ class TraspasosForm extends Component {
         }
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { match: { params: { action: action } } } = this.props
         const { history, location: { state: state } } = this.props
         const modulo = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         if (!modulo)
@@ -44,7 +44,7 @@ class TraspasosForm extends Component {
         switch (action) {
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Traspaso nuevo',
                     formeditado: 0
                 })
@@ -68,7 +68,7 @@ class TraspasosForm extends Component {
                                 form.destino = traspaso.destino.numero
                         }
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             title: 'Editar traspaso',
                             formeditado: 1,
                             traspaso: traspaso,
@@ -89,7 +89,7 @@ class TraspasosForm extends Component {
         const { name, value } = e.target
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -109,7 +109,7 @@ class TraspasosForm extends Component {
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -143,7 +143,7 @@ class TraspasosForm extends Component {
                 const { options, traspaso, form } = this.state
                 options.cuentas = setOptions(cuentas, 'nombre', 'numero')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options,
                     form
                 })
@@ -264,7 +264,7 @@ class TraspasosForm extends Component {
                 form.adjuntos.adjuntos.files = []
                 form.adjuntos.adjuntos.aux = ''
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form
                 })
                 doneAlert('Adjunto eliminado con éxito')
@@ -285,7 +285,7 @@ class TraspasosForm extends Component {
     render() {
         const { title, options, form } = this.state
         return (
-            <Layout active='bancos' {... this.props}>
+            <Layout active='bancos' {...this.props}>
                 <Card>
                     <Card.Header>
                         <div className="card-custom">

@@ -96,7 +96,7 @@ class Imss extends Component {
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -115,13 +115,13 @@ class Imss extends Component {
         })
         form.adjuntos.adjuntos.files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
     openModalDelete = imss => {
         this.setState({
-            ... this.state,
+            ...this.state,
             imss: imss,
             modalDelete: true
         })
@@ -140,7 +140,7 @@ class Imss extends Component {
         }
         form.adjuntos.adjuntos.files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAdjuntos: true,
             form,
             imss: imss
@@ -148,14 +148,14 @@ class Imss extends Component {
     }
     openModalSee = imss => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: true,
             imss: imss
         })
     }
     handleCloseSee = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: false,
             imss: ''
         })
@@ -164,7 +164,7 @@ class Imss extends Component {
         const { form } = this.state
         form.adjuntos.adjuntos.files = []
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAdjuntos: false,
             form,
             imss: ''
@@ -172,7 +172,7 @@ class Imss extends Component {
     }
     handleCloseDelete = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: false,
             imss: ''
         })
@@ -187,7 +187,7 @@ class Imss extends Component {
             (response) => {
                 this.getImssAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modalDelete: '',
                     imss: ''
                 })
@@ -235,7 +235,7 @@ class Imss extends Component {
                 form.adjuntos.adjuntos.files = aux
                 form.adjuntos.adjuntos.value = ''
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form
                 })
                 doneAlert('Adjunto creado con éxito')

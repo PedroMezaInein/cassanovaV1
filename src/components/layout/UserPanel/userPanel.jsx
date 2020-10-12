@@ -31,7 +31,7 @@ class UserPanel extends Component {
 						<img className="symbol-label"  src="/default.jpg" />
 							<i className="symbol-badge bg-success"></i>
 						</div>
-						<CustomUser clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {... this.props}/>
+						<CustomUser clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {...this.props}/>
 					</div>
 					<div className="separator separator-dashed mt-4 mb-3"></div>
 					<NavUser/>

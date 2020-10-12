@@ -91,11 +91,11 @@ class Contabilidad extends Component {
     }
 
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const areas = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!areas)
@@ -108,7 +108,7 @@ class Contabilidad extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -129,7 +129,7 @@ class Contabilidad extends Component {
         options.empresas = aux
         form['empresas'] = auxEmpresa
         this.setState({
-            ... this.state,
+            ...this.state,
             form,
             options
         })
@@ -147,7 +147,7 @@ class Contabilidad extends Component {
         })
         form.empresas = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             options,
             form
         })
@@ -168,7 +168,7 @@ class Contabilidad extends Component {
 
                 options.empresas = setSelectOptions(empresas, 'name')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },

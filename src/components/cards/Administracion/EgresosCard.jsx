@@ -19,6 +19,7 @@ export default class EgresosCard extends Component {
                     url: factura.pdf.url
                 })
             }
+            return false
         })
         return aux
     }

@@ -113,7 +113,7 @@ class ReporteVentas extends Component {
         form.fechaInicio = startDate
         form.fechaFin = endDate
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
         if(form.empresa !== '' && form.fechaInicio !== null && form.fechaFin !== null && form.fechaInicioRef !== null && form.fechaFinRef !== null){
@@ -127,7 +127,7 @@ class ReporteVentas extends Component {
         form.fechaInicioRef = startDate
         form.fechaFinRef = endDate
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
         if(form.empresa !== '' && form.fechaInicio !== null && form.fechaFin !== null && form.fechaInicioRef !== null && form.fechaFinRef !== null){
@@ -152,7 +152,7 @@ class ReporteVentas extends Component {
             })
         }
         this.setState({
-            ... this.state,
+            ...this.state,
             form,
             empresa
         })
@@ -163,7 +163,7 @@ class ReporteVentas extends Component {
         let { form } = this.state
         form.leads[name].observacion = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -298,7 +298,7 @@ class ReporteVentas extends Component {
             window.open(form.adjuntos.reportes.files[0].url, '_blank');
         swal.close()
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -315,7 +315,7 @@ class ReporteVentas extends Component {
                 options.empresas = setOptions(empresas, 'name', 'id')
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },
@@ -593,7 +593,7 @@ class ReporteVentas extends Component {
 
                 swal.close()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     leads: leads,
                     key: 'one',
                     form
@@ -614,7 +614,7 @@ class ReporteVentas extends Component {
     }
     changeTabe = value => {
         this.setState({
-            ... this.state,
+            ...this.state,
             key: value
         })
     }

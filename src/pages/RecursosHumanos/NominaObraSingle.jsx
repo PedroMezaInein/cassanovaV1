@@ -18,12 +18,12 @@ class NominaObraSingle extends Component {
     }
 
     componentDidMount() { 
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { match : { params: { id: id } } } = this.props
         const { history } = this.props
         const nominaobra = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/single/' + id
         });
         

@@ -13,7 +13,7 @@ class SliderImages extends Component {
         else
             active = active - 1
         this.setState({
-            ... this.state,
+            ...this.state,
             active
         })
     }
@@ -25,7 +25,7 @@ class SliderImages extends Component {
         else
             active = active + 1
         this.setState({
-            ... this.state,
+            ...this.state,
             active
         })
     }

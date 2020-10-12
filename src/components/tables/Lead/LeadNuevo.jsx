@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { OverlayTrigger, Tooltip, Dropdown, DropdownButton } from 'react-bootstrap'
 class LeadNuevo extends Component {
     render() {
-        const { } = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">

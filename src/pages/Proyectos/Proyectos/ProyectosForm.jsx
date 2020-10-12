@@ -360,18 +360,18 @@ class ProyectosForm extends Component {
         }
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { match: { params: { action: action } } } = this.props
         const { history, location: { state: state } } = this.props
         const remisiones = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         switch (action) {
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Nuevo proyecto',
                     formeditado: 0,
                     action: 'add'
@@ -424,7 +424,7 @@ class ProyectosForm extends Component {
                             form.correos = aux
                         }
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             proyecto: proyecto,
                             form,
                             formeditado: 1,
@@ -477,7 +477,7 @@ class ProyectosForm extends Component {
         })
         form[arreglo] = auxArray
         this.setState({
-            ... this.state,
+            ...this.state,
             form,
             options
         })
@@ -492,7 +492,7 @@ class ProyectosForm extends Component {
         })
         form[array] = auxForm
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -506,7 +506,7 @@ class ProyectosForm extends Component {
         })
         form.correos = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -533,7 +533,7 @@ class ProyectosForm extends Component {
         form['adjuntos'][name].value = value
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -565,7 +565,7 @@ class ProyectosForm extends Component {
         form.adjuntos_grupo[grupo].adjuntos[adjunto].files = aux
 
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -582,7 +582,7 @@ class ProyectosForm extends Component {
         }
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -609,7 +609,7 @@ class ProyectosForm extends Component {
         }
         form.adjuntos_grupo[grupo].adjuntos[adjunto].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -827,7 +827,7 @@ class ProyectosForm extends Component {
                 form.contacto = prospecto.lead.nombre
                 form.numeroContacto = prospecto.lead.telefono
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     prospecto: prospecto,
                     form,
                     title: 'Convertir Prospecto',
@@ -862,7 +862,7 @@ class ProyectosForm extends Component {
                     })
                     options['colonias'] = aux
                     this.setState({
-                        ... this.state,
+                        ...this.state,
                         form,
                         options
                     })
@@ -890,7 +890,7 @@ class ProyectosForm extends Component {
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }

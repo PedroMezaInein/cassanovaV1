@@ -31,19 +31,19 @@ class RendimientoForm extends Component {
         rendimiento: ''
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { match: { params: { action: action } } } = this.props
         const { history, location: { state: state } } = this.props
 
         const egresos = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         switch (action) {
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Nuevo rendimiento',
                     formeditado: 0
                 })
@@ -70,7 +70,7 @@ class RendimientoForm extends Component {
                                 }]
                             }
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             title: 'Editar rendimiento',
                             form,
                             rendimiento: rendimiento,
@@ -103,7 +103,7 @@ class RendimientoForm extends Component {
         const { name, value } = e.target
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -124,7 +124,7 @@ class RendimientoForm extends Component {
     //     form[name].value = value
     //     form[name].files = aux
     //     this.setState({
-    //         ... this.state,
+    //         ...this.state,
     //         form
     //     })
     // }
@@ -141,7 +141,7 @@ class RendimientoForm extends Component {
         }
         form[name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -154,7 +154,7 @@ class RendimientoForm extends Component {
                 options['unidades'] = setOptions(unidades, 'nombre', 'id')
                 options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },
@@ -269,7 +269,7 @@ class RendimientoForm extends Component {
         form['adjunto'].value = files
         form['adjunto'].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }

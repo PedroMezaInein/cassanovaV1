@@ -28,11 +28,11 @@ class EstadoResultados extends Component {
     }
 
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const estado_resultado = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!estado_resultado)
@@ -52,7 +52,7 @@ class EstadoResultados extends Component {
                 options.empresas = setOptions(empresas, 'name', 'id')
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },
@@ -78,7 +78,7 @@ class EstadoResultados extends Component {
             this.getReporteEstadosResultadosAxios()
         }
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -89,7 +89,7 @@ class EstadoResultados extends Component {
         form.fechaInicio = startDate
         form.fechaFin = endDate
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
 
@@ -105,7 +105,7 @@ class EstadoResultados extends Component {
             (response) => {
                 const { egresos,compras, ingresos, ventas, suma} = response.data
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     egresos: egresos,
                     compras: compras,
                     ingresos: ingresos,

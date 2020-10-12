@@ -23,12 +23,13 @@ class Conceptos extends Component {
         concepto: ''
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const conceptos = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
+            return false
         });
         if (!conceptos)
             history.push('/')
@@ -44,7 +45,7 @@ class Conceptos extends Component {
 
     openModalDelete = concepto => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: true,
             concepto: concepto
         })
@@ -53,7 +54,7 @@ class Conceptos extends Component {
     handleCloseDelete = () => {
         const { modalDelete } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: !modalDelete,
             concepto: '',
         })
@@ -61,7 +62,7 @@ class Conceptos extends Component {
 
     openModalSee = concepto => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: true,
             concepto: concepto
         })
@@ -69,7 +70,7 @@ class Conceptos extends Component {
 
     handleCloseSee = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: false,
             concepto: ''
         })
@@ -131,7 +132,7 @@ class Conceptos extends Component {
                 this.getConceptosTable()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La concepto fue registrado con éxito.')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modalDelete: false
                 })
             },

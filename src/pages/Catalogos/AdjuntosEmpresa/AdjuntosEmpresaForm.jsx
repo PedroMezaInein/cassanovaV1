@@ -28,18 +28,18 @@ class AdjuntosEmpresaForm extends Component {
         },
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { match: { params: { action: action } } } = this.props
         const { history, location: { state: state } } = this.props
         const adjuntos = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         switch (action) {
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Nuevo adjunto',
                     formeditado: 0
                 })
@@ -65,7 +65,7 @@ class AdjuntosEmpresaForm extends Component {
                             })
                         form.adjuntos.adjunto.files = aux
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             title: 'Editar adjunto',
                             form,
                             adjunto: adjunto
@@ -93,7 +93,7 @@ class AdjuntosEmpresaForm extends Component {
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },
@@ -115,7 +115,7 @@ class AdjuntosEmpresaForm extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -191,7 +191,7 @@ class AdjuntosEmpresaForm extends Component {
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }

@@ -46,18 +46,18 @@ class SolicitudCompraForm extends Component {
         }
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { match: { params: { action: action } } } = this.props
         const { history, location: { state: state } } = this.props
         const remisiones = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         switch (action) {
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Nueva solicitud de compra',
                     formeditado: 0
                 })
@@ -68,7 +68,7 @@ class SolicitudCompraForm extends Component {
                         const { solicitud } = state
                         let aux = this.setSolicitud(solicitud)
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             form: aux.form,
                             options: aux.options,
                             solicitud: solicitud,
@@ -87,7 +87,7 @@ class SolicitudCompraForm extends Component {
                         const { remision } = state
                         let aux = this.setRemision(remision)
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             form: aux.form,
                             options: aux.options,
                             remision: remision,
@@ -112,7 +112,7 @@ class SolicitudCompraForm extends Component {
         const { name, value } = e.target
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -133,7 +133,7 @@ class SolicitudCompraForm extends Component {
     //     form['adjuntos'][name].value = value
     //     form['adjuntos'][name].files = aux
     //     this.setState({
-    //         ... this.state,
+    //         ...this.state,
     //         form
     //     })
     // }
@@ -150,7 +150,7 @@ class SolicitudCompraForm extends Component {
         }
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -167,7 +167,7 @@ class SolicitudCompraForm extends Component {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
-            ... this.state,
+            ...this.state,
             options
         })
     }
@@ -240,7 +240,7 @@ class SolicitudCompraForm extends Component {
                 options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
                 options['tiposPagos'] = setSelectOptions(tiposPagos, 'tipo')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },
@@ -369,7 +369,7 @@ class SolicitudCompraForm extends Component {
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }

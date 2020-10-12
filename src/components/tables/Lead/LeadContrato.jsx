@@ -6,7 +6,6 @@ import { toAbsoluteUrl } from '../../../functions/routers'
 class LeadContrato extends Component {
 
     render() {
-        const { } = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">

@@ -62,18 +62,18 @@ class EmpresasForm extends Component {
     }
 
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { match : { params: { action: action } } } = this.props
         const { history, location: { state: state} } = this.props
         const empresas = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         switch(action){
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Nueva empresa',
                     formeditado:0
                 })
@@ -92,7 +92,7 @@ class EmpresasForm extends Component {
                         form.rfc= empresa.rfc
 
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             title: 'Editar empresa',
                             empresa: empresa,
                             form,
@@ -197,7 +197,7 @@ class EmpresasForm extends Component {
             form['file'] = e.target.files[0]
             let img = URL.createObjectURL(e.target.files[0])
             this.setState({
-                ... this.state,
+                ...this.state,
                 form,
                 img: img
             })
@@ -209,13 +209,13 @@ class EmpresasForm extends Component {
                 cadena = cadena.replace(/\./g, '')
                 form[name] = cadena
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form
                 })
             } else {
                 form[name] = value
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form
                 })
             }
@@ -226,7 +226,7 @@ class EmpresasForm extends Component {
     //     e.preventDefault()
     //     const { name, logo, razon_social } = this.state.empresa
     //     this.setState({
-    //         ... this.state,
+    //         ...this.state,
     //         form: {
     //             name: name,
     //             razonSocial: razon_social,
