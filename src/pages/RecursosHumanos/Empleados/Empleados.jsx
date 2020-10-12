@@ -266,6 +266,7 @@ class Empleados extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -301,6 +302,7 @@ class Empleados extends Component {
                         id: empleado.id
                     }
                 )
+                return false
             })
         return aux
     }
@@ -362,6 +364,7 @@ class Empleados extends Component {
                 tipo: renderToString(setTextTable(adjunto.pivot.tipo)),
                 id: 'adjuntos-' + adjunto.id
             })
+            return false
         })
         return aux
     }
@@ -411,6 +414,7 @@ class Empleados extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         data.append('id', empleado.id)
         await axios.post(URL_DEV + 'rh/empleado/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(

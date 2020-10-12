@@ -46,6 +46,7 @@ export function setOptions(arreglo, name, value) {
                 }
             }
         }
+        return false
     })
     aux.sort(compare)
     return aux
@@ -59,6 +60,7 @@ export function setCheckedOptions(arreglo, name) {
             text: element[name],
             id: element.id
         })
+        return false
     })
     return aux
 }
@@ -70,6 +72,7 @@ export function setSelectOptions(arreglo, name) {
             value: element.id,
             text: element[name]
         })
+        return false
     })
     return aux
 }
@@ -261,7 +264,7 @@ export function setArrayTable(arreglo) {
                     }
                     {
                         element.url ?
-                            <a href={element.url} target="_blank">
+                            <a href={element.url} target="_blank" rel="noopener noreferrer">
                                 <Small>
                                     {
                                         element.text
@@ -289,7 +292,7 @@ export function setFacturaTable(data) {
                 {
                     data.facturas ?
                         data.facturas.xml
-                        && <a href={data.facturas.xml.url} target="_blank">
+                        && <a href={data.facturas.xml.url} target="_blank" rel="noopener noreferrer">
                             <Small>
                                 <FontAwesomeIcon color={GOLD} icon={faFileAlt} className="mr-2" />
                                 Factura.xml
@@ -301,7 +304,7 @@ export function setFacturaTable(data) {
                 {
                     data.facturas ?
                         data.facturas.pdf
-                        && <a href={data.facturas.pdf.url} target="_blank">
+                        && <a href={data.facturas.pdf.url} target="_blank" rel="noopener noreferrer">
                             <Small>
                                 <FontAwesomeIcon color={GOLD} icon={faFileAlt} className="mr-2" />
                                 Factura.pdf
@@ -331,7 +334,7 @@ export function setAdjuntosList(list) {
                 aux = false
                 return (
                     <li>
-                        <a href={element.url} target="_blank">
+                        <a href={element.url} target="_blank" rel="noopener noreferrer">
                             <Small>
                                 {
                                     element.name
@@ -348,6 +351,7 @@ export function setAdjuntosList(list) {
                     </Small>
                 )
             }
+            return false
         })
     )
 }
@@ -367,7 +371,7 @@ export function setContactoTable(contacto) {
             {
                 contacto.telefono &&
                 <div className="my-2">
-                    <a target="_blank" href={`tel:+${contacto.telefono}`}>
+                    <a target="_blank" href={`tel:+${contacto.telefono}`} rel="noopener noreferrer">
                         <Small>
                             <FontAwesomeIcon className="mx-3" icon={faPhone} />
                             {contacto.telefono}
@@ -379,7 +383,7 @@ export function setContactoTable(contacto) {
             {
                 contacto.email &&
                 <div className="my-2">
-                    <a target="_blank" href={`mailto:+${contacto.email}`}>
+                    <a target="_blank" href={`mailto:+${contacto.email}`} rel="noopener noreferrer">
                         <Small>
                             <FontAwesomeIcon className="mx-3" icon={faEnvelope} />
                             {contacto.email}

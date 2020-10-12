@@ -232,6 +232,7 @@ class ActualizarPresupuesto extends Component {
                     if (!aux) {
                         array.push(concepto)
                     }
+                    return false
                 })
                 form.conceptosNuevos = []
                 array.map((element, key) => {
@@ -281,7 +282,6 @@ class ActualizarPresupuesto extends Component {
         if (name === 'desperdicio')
             if (presupuesto.conceptos[key][name].toString() !== form.conceptos[key][name].toString()) {
                 form.conceptos[key].mensajes.active = true
-                let aux = value ? value : 0
                 form.conceptos[key].mensajes.mensaje = ('Actualización del desperdicio a un ' + value + '%').toUpperCase()
             } else {
                 form.conceptos[key].mensajes.active = false
@@ -326,6 +326,7 @@ class ActualizarPresupuesto extends Component {
             form.conceptosNuevos.map((concepto) => {
                 if (concepto.active)
                     aux.push(concepto)
+                return false
             })
             this.addConceptoToPresupuestoAxios(aux)
         }
@@ -355,6 +356,7 @@ class ActualizarPresupuesto extends Component {
                         if (concepto.id === elemento.id) {
                             bandera = elemento
                         }
+                        return false
                     })
                     if (bandera) {
                         aux.push(
@@ -374,6 +376,7 @@ class ActualizarPresupuesto extends Component {
                             unidad: concepto ? concepto.concepto ? concepto.concepto.unidad ? concepto.concepto.unidad.nombre : '' : '' : ''
                         })
                     }
+                    return false
                 })
                 form.conceptos = aux
                 this.setState({
@@ -432,6 +435,7 @@ class ActualizarPresupuesto extends Component {
         let aux = Object.keys(form)
         aux.map((element) => {
             auxObject[element] = form[element]
+            return false
         })
         save({
             form: auxObject,

@@ -22,6 +22,7 @@ class ContabilidadForm extends Component {
             if (element.id.toString() === name.toString()) {
                 element.checked = checked
             }
+            return false
         })
         onChange({ target: { value: optionesChecked, name: aux } })
     }

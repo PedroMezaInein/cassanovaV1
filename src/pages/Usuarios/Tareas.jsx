@@ -16,9 +16,6 @@ import { Badge, Card, Nav, Tab } from 'react-bootstrap'
 import { errorAlert, forbiddenAccessAlert } from '../../functions/alert'
 
 class Tareas extends Component{
-    constructor(props){
-        super(props)
-    }
 
     state = {
         columns:[],
@@ -116,10 +113,6 @@ class Tareas extends Component{
     }
 
     handleClickTask = tarea => {
-    
-        const { users } = this.state
-
-        let _index = []
 
         this.setState({
             ...this.state,
@@ -137,11 +130,13 @@ class Tareas extends Component{
         let aux = []
         tarea.participantes.map( ( participante, key ) => {
             aux.push( {name: participante.name, value:participante.email, identificador: participante.id} )
+            return false
         })
 
         let _aux = []
         users.map( ( participante, key ) => {
             _aux.push( {name: participante.name, value:participante.email, identificador: participante.id} )
+            return false
         })
 
         let _index = []
@@ -151,9 +146,11 @@ class Tareas extends Component{
             aux.map((_element, key) => {
                 if(element.identificador === _element.identificador)
                     validador = true
+                return false
             })
             if(!validador)
                 _index.push(element)
+            return false
         })
 
         this.setState({
@@ -208,7 +205,6 @@ class Tareas extends Component{
     }
 
     submitAdd = () => {
-        const { form } = this.state
         this.addTaskAxios();
     }
 
@@ -240,7 +236,7 @@ class Tareas extends Component{
     }
 
     onChangeParticipantes = (value) => {
-        const { tarea: { id: id } } = this.state
+        const { tarea: { id } } = this.state
         this.addParticipanteAxios(id, value.identificador);
     }
 
@@ -261,7 +257,6 @@ class Tareas extends Component{
 
     changeValueSend = event => {
         const { name, value } = event.target
-        const { tarea } = this.state
         this.editTaskAxios({[name]: value})
     }
 
@@ -282,6 +277,7 @@ class Tareas extends Component{
                     subActiveKey: active
                 })
             }
+            return false
         })
     }
 
@@ -289,9 +285,8 @@ class Tareas extends Component{
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'user/tareas', { headers: {Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
-                const { data : { tareas : columns } } = response
-                const { data : { user : user } } = response
-                const { data : { users : users } } = response
+                const { data : { user } } = response
+                const { data : { users } } = response
                 const { tableros } = response.data
                 this.setState({
                     ...this.state,
@@ -323,8 +318,7 @@ class Tareas extends Component{
         form.departamento = subActiveKey
         await axios.post(URL_DEV + 'user/tareas', form, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
-                const { data : { tareas : columns } } = response
-                const { data : { user : user } } = response
+                const { data : { user } } = response
                 const { form } = this.state
                 const { tableros } = response.data
 
@@ -332,6 +326,7 @@ class Tareas extends Component{
                     if(tablero.nombre == subActiveKey){
                         this.setTareas(tablero.tareas)
                     }
+                    return false
                 })
 
                 form['titulo'] = ''

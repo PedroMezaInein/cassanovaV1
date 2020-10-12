@@ -19,12 +19,13 @@ class IngresosForm extends Component {
         onChange({ target: { value: value, name: 'empresa' } })
         onChange({ target: { value: '', name: 'cuenta' } })
 
-        const { options: { empresas: empresas } } = this.props
-
-        const aux = empresas.find(function (element, index) {
+        const { options: { empresas } } = this.props
+        
+        empresas.find(function (element, index) {
             if (value.toString() === element.value.toString()) {
                 setOptions('cuentas', element.cuentas)
             }
+            return false
         })
     }
     updateCuenta = value => {
@@ -40,6 +41,7 @@ class IngresosForm extends Component {
                 if(element.rfc !== '')
                     onChange({ target: { value: element.rfc, name: 'rfc' } })
             }
+            return false
         })
     }
 
@@ -50,10 +52,11 @@ class IngresosForm extends Component {
         onChange({ target: { value: '', name: 'subarea' } })
 
         const { options: { areas } } = this.props
-        const aux = areas.find(function (element, index) {
+        areas.find(function (element, index) {
             if (value.toString() === element.value.toString()) {
                 setOptions('subareas', element.subareas)
             }
+            return false
         })
     }
 
@@ -69,6 +72,7 @@ class IngresosForm extends Component {
             options.tiposPagos.map((option) => {
                 if (option.value.toString() === value.toString() && option.text.toString() === 'TOTAL')
                     onChange({ target: { value: form.facturaObject.total, name: 'total' } })
+                return false
             })
         }
         onChange(e)
@@ -82,6 +86,7 @@ class IngresosForm extends Component {
         options.tiposImpuestos.find(function (element, index) {
             if (element.text === 'IVA')
                 aux = element.value
+            return false
         });
         onChange({ target: { value: aux, name: 'tipoImpuesto' } })
     }

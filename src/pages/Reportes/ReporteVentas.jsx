@@ -24,7 +24,6 @@ const options = {
     plugins: {
         datalabels: {
             color: '#000',
-            font: '30',
             backgroundColor: '#fff',
 		    font: {
                 size: 30
@@ -47,7 +46,6 @@ const options2 = {
     plugins: {
         datalabels: {
             color: '#000',
-            font: '30',
             backgroundColor: '#fff',
 		    font: {
                 size: 30
@@ -146,9 +144,9 @@ class ReporteVentas extends Component {
         }
         if(name === 'empresa'){
             options.empresas.map((emp)=>{
-                
                 if(emp.value === value)
                     empresa = emp.name
+                return false
             })
         }
         this.setState({
@@ -182,6 +180,7 @@ class ReporteVentas extends Component {
         let aux = [];
         array.map( (element) => {
             aux.push(element+'D9')
+            return false
         })
         return aux
     }
@@ -222,6 +221,8 @@ class ReporteVentas extends Component {
                     <ReporteVentasIm form = { form } images = { images }
                         lista = { lista } />
                 )
+            default:
+                break;
         }
     }
 
@@ -232,6 +233,8 @@ class ReporteVentas extends Component {
                 return INEIN_RED
             case 'INFRAESTRUCTURA MÉDICA':
                 return IM_AZUL
+            default:
+                break;
         }
     }
 
@@ -341,7 +344,7 @@ class ReporteVentas extends Component {
         await axios.post(URL_DEV + 'reportes/ventas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { leads, leadsAnteriores, servicios, origenes, estatus } = response.data
-                const { data, form, empresa } = this.state
+                const { data, form } = this.state
                 data.total = {
                     labels: ['TOTAL'],
                     datasets: [{
@@ -378,6 +381,7 @@ class ReporteVentas extends Component {
                 let colors2 = []
                 origenes.map((origen, index)=>{
                     origen.color = COLORES_GRAFICAS_2[index]
+                    return false
                 })
                 origenes.map( (origen) => {
                     contador = 0
@@ -386,6 +390,7 @@ class ReporteVentas extends Component {
                         if(lead.origen)
                             if(lead.origen.origen === origen.origen)
                                 contador ++
+                        return false
                     })
                     if(contador)
                     {
@@ -397,6 +402,7 @@ class ReporteVentas extends Component {
                         if(lead.origen)
                             if(lead.origen.origen === origen.origen)
                                 contador2 ++
+                        return false
                     })
                     if(contador2)
                     {
@@ -404,6 +410,7 @@ class ReporteVentas extends Component {
                         colors2.push(origen.color)
                         arrayData2.push(contador2)
                     }
+                    return false
                 })
 
                 data.totalOrigenes = {
@@ -435,6 +442,7 @@ class ReporteVentas extends Component {
 
                 servicios.map((servicio, index)=>{
                     servicio.color = COLORES_GRAFICAS_2[index]
+                    return false
                 })
                 
                 servicios.map( (servicio) => {
@@ -445,7 +453,9 @@ class ReporteVentas extends Component {
                             if(servicio.servicio === serv.servicio){
                                 contador ++
                             }
+                            return false
                         })
+                        return false
                     })
                     if(contador)
                     {
@@ -458,7 +468,9 @@ class ReporteVentas extends Component {
                             if(servicio.servicio === serv.servicio){
                                 contador2 ++
                             }
+                            return false
                         })
+                        return false
                     })
                     if(contador2)
                     {
@@ -466,6 +478,7 @@ class ReporteVentas extends Component {
                         colors2.push(servicio.color)
                         arrayData2.push(contador2)
                     }
+                    return false
                 })
 
                 data.servicios = {
@@ -494,6 +507,7 @@ class ReporteVentas extends Component {
                         contador++
                     if(lead.tipo_lead === 'potencial')
                         contador2++
+                    return false
                 })
 
                 colors = this.getBG(2);
@@ -515,6 +529,7 @@ class ReporteVentas extends Component {
                         contador++
                     if(lead.tipo_lead === 'potencial')
                         contador2++
+                    return false
                 })
 
                 colors = this.getBG(2);
@@ -535,6 +550,7 @@ class ReporteVentas extends Component {
 
                 estatus.map( (element, index) => {
                     element.color = COLORES_GRAFICAS_2[index]
+                    return false
                 })
 
                 estatus.map( (element) => {
@@ -548,6 +564,7 @@ class ReporteVentas extends Component {
                                 }
                             }
                         }
+                        return false
                     })
                     if(contador)
                     {
@@ -555,6 +572,7 @@ class ReporteVentas extends Component {
                         colors.push(element.color)
                         arrayData.push(contador)
                     }
+                    return false
                 })
 
                 data.estatusProspectos = {
@@ -574,6 +592,7 @@ class ReporteVentas extends Component {
                         contador++
                     else
                         contador2++
+                    return false
                 })
 
                 colors = ['#388E3C', '#F64E60']
@@ -589,6 +608,7 @@ class ReporteVentas extends Component {
                 form.leads = leads
                 form.leads.map((lead)=> {
                     lead.observacion = ''
+                    return false
                 })
 
                 swal.close()
@@ -967,6 +987,7 @@ class ReporteVentas extends Component {
                                                                 </td>
                                                             </tr>
                                                         )
+                                                    return false
                                                 })
                                             }
                                         </tbody>

@@ -294,15 +294,15 @@ class NewTableServerRender extends Component {
                 'orderable': false,
                 render: function (data, type, row, meta) {
                     if (global_variable.mostrar_acciones === true) {
-                        let aux = ''
+                        let auxString = ''
                         {
                             data.map((element) => {
-                                aux = aux +
-                                    `<button name=${element.action}  id = ${row.id} class="ml-2 btn btn-actions-table btn-xs btn-icon btn-text-${element.btnclass} btn-hover-${element.btnclass}" title=${element.text}><i class=${element.iconclass}></i></button>`
+                                auxString = auxString + `<button name=${element.action}  id = ${row.id} class="ml-2 btn btn-actions-table btn-xs btn-icon btn-text-${element.btnclass} btn-hover-${element.btnclass}" title=${element.text}><i class=${element.iconclass}></i></button>`
+                                return false
                                 })
                         }
                         return (
-                            '<div>' + aux + '</div>'
+                            '<div>' + auxString + '</div>'
                         )
                     }
                     else {
@@ -331,6 +331,7 @@ class NewTableServerRender extends Component {
                 if (element.id.toString() === id) {
                     return element
                 }
+                return false
             });
             actions[name].function(aux)
         });
@@ -356,7 +357,7 @@ class NewTableServerRender extends Component {
     }
     render() {
 
-        const { columns, data, title, subtitle, url, mostrar_boton, abrir_modal, exportar_boton, cardTable,cardTableHeader,cardBody } = this.props
+        const { title, subtitle, url, mostrar_boton, abrir_modal, exportar_boton, cardTable,cardTableHeader,cardBody } = this.props
         return (
             <>
                 <Card  id={cardTable} className="card-custom card-sticky">
@@ -374,7 +375,7 @@ class NewTableServerRender extends Component {
                             </h2>
                         </div>
                         <div className="card-toolbar">
-                            {(exportar_boton == true) ?
+                            {(exportar_boton === true) ?
                                 <button onClick={() => this.clickHandlerExport()} className="btn btn-primary font-weight-bold mr-2">
                                     <i className="far fa-file-excel"></i> Exportar
                                     </button>
@@ -382,8 +383,8 @@ class NewTableServerRender extends Component {
                                 ""
                             }
                             {
-                                (mostrar_boton == true) ?
-                                    (abrir_modal == true) ?
+                                (mostrar_boton === true) ?
+                                    (abrir_modal === true) ?
                                         <button onClick={() => this.clickHandler()} className="btn btn-success font-weight-bold mr-2">
                                             <i className="flaticon-add"></i> Agregar
                                             </button>

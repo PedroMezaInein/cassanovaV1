@@ -12,7 +12,9 @@ class TablaReportesDepartamento extends Component {
         subareas.map((subarea)=>{
             subarea.egresos.map((egresos) => {
                 suma = suma + egresos.total
+                return false
             })
+            return false
         })
         return suma
     }
@@ -21,6 +23,7 @@ class TablaReportesDepartamento extends Component {
         let suma = 0
         egresos.map((egreso)=>{
             suma = suma + egreso.total
+            return false
         })
         return suma
     }
@@ -32,8 +35,11 @@ class TablaReportesDepartamento extends Component {
             departamento.subareas.map((subarea)=>{
                 subarea.egresos.map((egresos) => {
                     suma = suma + egresos.total
+                    return false
                 })
-            })          
+                return false
+            })
+            return false
         })
         return suma
     }

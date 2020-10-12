@@ -20,7 +20,7 @@ class NominaAdminSingle extends Component {
     componentDidMount() { 
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
-        const { match : { params: { id: id } } } = this.props
+        const { match : { params: { id } } } = this.props
         const { history } = this.props
         const nominaadmin = permisos.find(function (element, index) {
             const { modulo: { url } } = element

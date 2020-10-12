@@ -26,6 +26,7 @@ class PermisosForm extends Component {
             if (element.name === eventKey && element.checked) {
                 aux = eventKey
             }
+            return false
         });
         this.setState({
             activeKey: aux
@@ -43,6 +44,7 @@ class PermisosForm extends Component {
                         modulo.checked = false;
                     })
                 }
+                return false
             });
             this.setState({
                 activeKey: activeKey === name ? '' : activeKey,
@@ -53,6 +55,7 @@ class PermisosForm extends Component {
                 if (element.name === name) {
                     grupos[index].checked = true
                 }
+                return false
             });
             this.setState({
                 activeKey: !checked ? activeKey : name,
@@ -74,9 +77,11 @@ class PermisosForm extends Component {
                         element.checked = !checked
                     }
                     aux = element.checked || aux
+                    return false
                 })
                 element.checked = aux
             }
+            return false
         });
 
         this.setState({
@@ -104,6 +109,7 @@ class PermisosForm extends Component {
                     modulosObject.push({ checked: false, padre: slugGrupo, name: slug, nombre: nombre, icon: icon })
                     aux = aux && false
                 }
+                return false
             })
             if ((auxActive === null && aux)) {
                 if (auxActive === null) {
@@ -111,6 +117,7 @@ class PermisosForm extends Component {
                 }
             }
             gruposObject.push({ checked: aux, modulos: modulosObject, name: slugGrupo, nombre: nombre, icon: icon })
+            return false
         })
 
         this.setState({

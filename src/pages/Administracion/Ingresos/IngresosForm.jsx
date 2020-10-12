@@ -226,6 +226,7 @@ class IngresosForm extends Component {
                             if (element.rfc === obj.rfc_emisor) {
                                 auxEmpresa = element
                             }
+                            return false
                         });
                         let auxCliente = ''
                         data.clientes.find(function (element, index) {
@@ -237,6 +238,7 @@ class IngresosForm extends Component {
                                 element.empresa.toUpperCase() === cadena) {
                                 auxCliente = element
                             }
+                            return false
                         });
                         if (auxEmpresa) {
                             options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')
@@ -337,6 +339,7 @@ class IngresosForm extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -409,6 +412,7 @@ class IngresosForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -419,6 +423,7 @@ class IngresosForm extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         await axios.post(URL_DEV + 'ingresos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -462,6 +467,7 @@ class IngresosForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -470,6 +476,7 @@ class IngresosForm extends Component {
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
+            return false
         })
         await axios.post(URL_DEV + 'ingresos/update/' + ingreso.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -517,6 +524,7 @@ class IngresosForm extends Component {
                     if (cliente.empresa === cadena) {
                         form.cliente = cliente.empresa
                     }
+                    return false
                 })
                 this.setState({
                     ...this.state,

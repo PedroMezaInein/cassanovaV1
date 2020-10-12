@@ -1,20 +1,12 @@
 import React, { Component } from 'react'
-import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
 import Layout from '../../../components/layout/layout'
-import { Modal, ModalDelete } from '../../../components/singles'
-import { NOMINA_OBRA_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS } from '../../../constants'
-import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { AdjuntosForm } from '../../../components/forms'
-import { setOptions, setDateTable, setMoneyTable, setTextTable, setAdjuntosList } from '../../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, deleteAlert, doneAlert } from '../../../functions/alert'
-import TableForModals from '../../../components/tables/TableForModals'
+import { URL_DEV } from '../../../constants'
+import { setOptions } from '../../../functions/setters'
+import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import { NominaAdminForm as NominaAdminFormulario } from '../../../components/forms'
-import { Card } from 'react-bootstrap'
-
-const $ = require('jquery');
 
 class NominaAdminForm extends Component {
     state = {
@@ -87,6 +79,7 @@ class NominaAdminForm extends Component {
                                     extras: nom.extras
                                 }
                             )
+                            return false
                         })
 
                         if (aux.length) {
@@ -187,6 +180,7 @@ class NominaAdminForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -197,6 +191,7 @@ class NominaAdminForm extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         await axios.post(URL_DEV + 'rh/nomina-administrativa', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -280,6 +275,7 @@ class NominaAdminForm extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -353,6 +349,7 @@ class NominaAdminForm extends Component {
                     form['nominasAdmin'][key].restanteNomina = empleado.nomina_extras
                     form['nominasAdmin'][key].extras = 0.0
                 }
+                return false
             }) 
         }
         form['nominasAdmin'][key][name] = value

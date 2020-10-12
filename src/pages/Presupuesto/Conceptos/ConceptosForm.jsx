@@ -105,6 +105,7 @@ class Conceptos extends Component {
         let aux = Object.keys(form)
         aux.map((element) => {
             form[element] = ''
+            return false
         })
         return form
     }

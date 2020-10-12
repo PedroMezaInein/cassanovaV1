@@ -215,6 +215,7 @@ class Ingresos extends Component {
                             if (element.rfc === obj.rfc_emisor) {
                                 auxEmpresa = element
                             }
+                            return false
                         });
                         let auxCliente = ''
                         data.clientes.find(function (element, index) {
@@ -226,6 +227,7 @@ class Ingresos extends Component {
                                 element.empresa.toUpperCase() === cadena.toUpperCase()) {
                                 auxCliente = element
                             }
+                            return false
                         });
                         if (auxEmpresa) {
                             options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')
@@ -349,6 +351,7 @@ class Ingresos extends Component {
                     objeto: ingreso
                 }
             )
+            return false
         })
         return aux
     }
@@ -898,7 +901,7 @@ class Ingresos extends Component {
         })
     }
     render() {
-        const { ingresos, form, options, modalDelete, modalFacturas, modalAdjuntos, adjuntos, porcentaje, facturas, modalAskFactura, data, formeditado, modalSee, ingreso, active } = this.state
+        const { ingresos, form, options, modalDelete, modalFacturas, modalAdjuntos, adjuntos, facturas, data, formeditado, modalSee, ingreso, active } = this.state
         return (
             <Layout active={'administracion'}  {...this.props}>
                 <NewTableServerRender columns={INGRESOS_COLUMNS} data={ingresos}

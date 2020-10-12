@@ -7,11 +7,10 @@ import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete} from '../../../components/singles' 
 import { NOMINA_OBRA_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS} from '../../../constants'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender' 
-import { NominaObraForm, AdjuntosForm} from '../../../components/forms'
+import { AdjuntosForm} from '../../../components/forms'
 import { setOptions, setDateTable, setMoneyTable, setTextTable, setAdjuntosList} from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert, deleteAlert, doneAlert} from '../../../functions/alert'
 import TableForModals from '../../../components/tables/TableForModals'
-import { format } from 'date-fns'
 
 const $ = require('jquery');
 
@@ -130,6 +129,7 @@ class NominaObra extends Component {
                     extras:nom.extras
                 }
             )
+            return false
         })
 
         if(aux.length){
@@ -197,6 +197,7 @@ class NominaObra extends Component {
                 tipo: renderToString(setTextTable(adjunto.pivot.tipo)),
                 id: 'adjuntos-' + adjunto.id
             })
+            return false
         })
         return aux
     }
@@ -277,6 +278,7 @@ class NominaObra extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -287,6 +289,7 @@ class NominaObra extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         await axios.post(URL_DEV + 'rh/nomina-obra', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -351,12 +354,11 @@ class NominaObra extends Component {
     async deleteNominaObraAxios(){
         waitAlert()
         const { access_token } = this.props.authUser
-        const { form, nomina} = this.state
+        const { nomina} = this.state
         
         await axios.delete(URL_DEV + 'rh/nomina-obra/' + nomina.id , { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { modal } = this.state
-                const { nomina } = response.data
                 this.getNominasAxios()
 
                 modal.delete = false
@@ -400,6 +402,7 @@ class NominaObra extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
 
         data.append('id', nomina.id)
@@ -408,7 +411,7 @@ class NominaObra extends Component {
             (response) => {
 
                 const { nomina } = response.data
-                const { data, key } = this.state
+                const { data } = this.state
                 data.adjuntos = nomina.adjuntos
                 //AQUI
                 this.getNominasAxios()
@@ -444,7 +447,7 @@ class NominaObra extends Component {
         await axios.delete(URL_DEV + 'rh/nomina-obra/' + nomina.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { nomina } = response.data
-                const { data, key } = this.state
+                const { data } = this.state
                 data.adjuntos = nomina.adjuntos
                 
                 this.getNominasAxios()
@@ -533,6 +536,7 @@ class NominaObra extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -571,6 +575,7 @@ class NominaObra extends Component {
                     id: nomina.id
                 }
             )
+            return false
         })
         return aux
     }
@@ -661,6 +666,7 @@ class NominaObra extends Component {
                     form['nominasObra'][key].salario_hr  = empleado.salario_hr
                     form['nominasObra'][key].salario_hr_extra  = empleado.salario_hr_extra
                 }
+                return false
             }) 
         }
         form['nominasObra'][key][name] = value
@@ -721,7 +727,7 @@ class NominaObra extends Component {
     }
     
     render() {
-        const {nominaOmbra, modal, options, title, form, formeditado, adjuntos, data} = this.state
+        const { modal, form, adjuntos, data} = this.state
         return (
             <Layout active={'rh'} {...this.props}>
                 <NewTableServerRender   

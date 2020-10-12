@@ -277,6 +277,7 @@ class Vacaciones extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -342,6 +343,7 @@ class Vacaciones extends Component {
                         fecha: row[0],
                         texto: row[1]
                     })
+                return false
             })
             this.sendVacacionesAxios(arreglo)
         })
@@ -448,23 +450,23 @@ class Vacaciones extends Component {
                                                                     <span className="font-size-lg">{setDateTableLG(vacacion.fecha_fin)}</span>
                                                                 </td>
                                                                 <td className="pr-0">
-                                                                    <a className="btn btn-icon btn-light-success success2 btn-sm mr-2 ml-auto" onClick = { (e) =>  { 
+                                                                    <span className="btn btn-icon btn-light-success success2 btn-sm mr-2 ml-auto" onClick = { (e) =>  { 
                                                                         e.preventDefault(); 
                                                                         createAlert('¿Estás seguro que deseas aceptar las vacaciones?', '', 
                                                                         () => this.editVacacionesAxios(vacacion, 'Aceptadas'))
                                                                     }}  
                                                                     >
                                                                         <i className="flaticon2-check-mark icon-sm"></i>
-                                                                    </a>
+                                                                    </span>
                                                                 
-                                                                    <a className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger"onClick = { (e) =>  { 
+                                                                    <span className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger"onClick = { (e) =>  { 
                                                                         e.preventDefault(); 
                                                                         createAlert('¿Estás seguro que deseas rechazar las vacaciones?', '', 
                                                                         () => this.editVacacionesAxios(vacacion, 'Rechazadas'))
                                                                     }}
                                                                     >
                                                                         <i className="flaticon2-cross icon-sm"></i>
-                                                                    </a>
+                                                                    </span>
                                                                 </td>
                                                             </tr>
                                                         </tbody>

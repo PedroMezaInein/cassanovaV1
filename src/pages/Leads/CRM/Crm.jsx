@@ -308,7 +308,7 @@ class Crm extends Component {
                                             </Form.Control>
                                         </div>
                                         <div className="col-md-1">
-                                            <a href="#" className="btn btn-light-primary px-6 font-weight-bold">Buscar</a>
+                                            <span className="btn btn-light-primary px-6 font-weight-bold">Buscar</span>
                                         </div>
                                     </div>
                                 </div>

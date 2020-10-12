@@ -297,6 +297,7 @@ class ComprasForm extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -472,6 +473,7 @@ class ComprasForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -482,6 +484,7 @@ class ComprasForm extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         await axios.post(URL_DEV + 'compras', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -526,6 +529,7 @@ class ComprasForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -534,6 +538,7 @@ class ComprasForm extends Component {
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
+            return false
         })
         await axios.post(URL_DEV + 'compras/update/' + compra.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -581,6 +586,7 @@ class ComprasForm extends Component {
                     if (proveedor.razon_social === cadena) {
                         form.proveedor = proveedor.id.toString()
                     }
+                    return false
                 })
                 this.setState({
                     ...this.state,
@@ -616,6 +622,7 @@ class ComprasForm extends Component {
                     options.tiposImpuestos.find(function (element, index) {
                         if (element.text === 'IVA')
                             aux = element.value
+                        return false
                     });
                     form.tipoImpuesto = aux
                 }

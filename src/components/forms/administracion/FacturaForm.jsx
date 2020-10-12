@@ -22,6 +22,7 @@ export default class FacturaForm extends Component {
         data.clientes.map((cliente) => {
             if (cliente.id.toString() === value)
                 onChange({ target: { value: cliente.rfc, name: 'rfc' } })
+            return false
         })
     }
 
@@ -77,7 +78,6 @@ export default class FacturaForm extends Component {
                         <Input
                             requirevalidation={1}
                             formeditado={formeditado}
-                            formeditado={formeditado}
                             placeholder="RFC DEL CLIENTE"
                             value={form.rfc}
                             name="rfc"
@@ -132,7 +132,6 @@ export default class FacturaForm extends Component {
                         <Input
                             formeditado={formeditado}
                             requirevalidation={1}
-                            formeditado={formeditado}
                             placeholder="CORREO ELECTRÓNICO"
                             value={form.email}
                             name="email"

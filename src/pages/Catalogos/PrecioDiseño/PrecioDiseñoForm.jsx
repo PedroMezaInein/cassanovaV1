@@ -6,7 +6,7 @@ import { URL_DEV} from '../../../constants'
 // import { setOptions} from '../../../functions/setters'
 import { errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
-import { PrecioDiseñoForm as PrecioDiseñoFormulario } from '../../../components/forms'
+import { PrecioDiseñoForm as Formulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
 
 
@@ -174,13 +174,12 @@ class PrecioDiseñoForm extends Component{
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <PrecioDiseñoFormulario 
+                        <Formulario 
                             onChange = { this.onChange } 
                             formeditado = { 0 }  
                             form = { form } 
                             title = { title } 
-                            onSubmit = { this.onSubmit } 
-                        />                        
+                            onSubmit = { this.onSubmit } />
                     </Card.Body>    
                 </Card>
             </Layout>

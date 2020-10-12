@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Page, Text, View, Document, StyleSheet, pdf, Image, Font, Link } from '@react-pdf/renderer'
+import { Page, Text, View, Document, StyleSheet, Image, Font, Link } from '@react-pdf/renderer'
 import INEIN from '../../assets/logos/inein.png'
 import PoppinsBold from '../../assets/fonts/Poppins-Bold.ttf'
 import Poppins from '../../assets/fonts/Poppins-Regular.ttf'
@@ -559,6 +559,7 @@ export default class ReporteVentasInein extends Component {
                                                     </View>
                                                 </View>
                                             )
+                                        return false
                                     })
                                 }
                             </View>
@@ -599,6 +600,7 @@ export default class ReporteVentasInein extends Component {
                                             </View>
                                         </View>
                                     )
+                                    return false
                                 })
                             }
                         </View>
