@@ -24,42 +24,7 @@ class FlujosForm extends Component {
         const { form, onChange, options, deleteOption, onChangeAndAdd, clear, onChangeRange, ...props } = this.props
         return (
             <Form {...props}>
-                <div className="form-group row form-group-marginless">
-                    <div className="col-md-6">
-                        <SelectSearch
-                            options={options.cuentas}
-                            placeholder="SELECCIONA LA CUENTA"
-                            name="cuenta"
-                            value={form.cuenta}
-                            onChange={this.updateCuenta}
-                            iconclass={"fas fa-credit-card"}
-                        />
-                        {
-                            form.cuentas.length > 0 ?
-                                <div className="col-md-12 row mx-0 align-items-center image-upload">
-                                    {
-                                        form.cuentas.map((cuenta, key) => {
-                                            return (
-                                                <div key={key} className="tagify form-control p-1 col-md-4 px-2 d-flex justify-content-center align-items-center mb-3" tabIndex="-1" style={{ borderWidth: "0px" }}>
-                                                    <div className="tagify__tag tagify__tag--primary tagify--noAnim">
-                                                        <div
-                                                            title="Borrar archivo"
-                                                            className="tagify__tag__removeBtn"
-                                                            role="button"
-                                                            aria-label="remove tag"
-                                                            onClick={(e) => { e.preventDefault(); deleteOption(cuenta, 'cuentas') }}
-                                                        >
-                                                        </div>
-                                                        <div><span className="tagify__tag-text p-1 white-space">{cuenta.name}</span></div>
-                                                    </div>
-                                                </div>
-                                            )
-                                        })
-                                    }
-                                </div>
-                                : ''
-                        }
-                    </div>
+                <div className="form-group row form-group-marginless d-flex justify-content-center">
                     <div className="col-md-6 text-center">
                         <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br />
                         <RangeCalendar
@@ -68,6 +33,43 @@ class FlujosForm extends Component {
                             end={form.fechaFin}
                         />
                     </div>
+                </div>
+                <div className="form-group row form-group-marginless d-flex justify-content-center">
+                    <div className="col-md-4 mb-4">
+                        <SelectSearch
+                            options={options.cuentas}
+                            placeholder="SELECCIONA LA CUENTA"
+                            name="cuenta"
+                            value={form.cuenta}
+                            onChange={this.updateCuenta}
+                            iconclass={"fas fa-credit-card"}
+                        />
+                    </div>
+                    {
+                        form.cuentas.length > 0 ?
+                            <div className="col-md-12 row mx-0 align-items-center image-upload">
+                                {
+                                    form.cuentas.map((cuenta, key) => {
+                                        return (
+                                            <div key={key} className="tagify form-control p-1 col-md-3 px-2 d-flex justify-content-center align-items-center mb-3" tabIndex="-1" style={{ borderWidth: "0px" }}>
+                                                <div className="tagify__tag tagify__tag--primary tagify--noAnim">
+                                                    <div
+                                                        title="Borrar archivo"
+                                                        className="tagify__tag__removeBtn"
+                                                        role="button"
+                                                        aria-label="remove tag"
+                                                        onClick={(e) => { e.preventDefault(); deleteOption(cuenta, 'cuentas') }}
+                                                    >
+                                                    </div>
+                                                    <div><span className="tagify__tag-text p-1 white-space">{cuenta.name}</span></div>
+                                                </div>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </div>
+                            : ''
+                    }
                 </div>
                 <div className="d-flex justify-content-center mb-5">
                     <Button
