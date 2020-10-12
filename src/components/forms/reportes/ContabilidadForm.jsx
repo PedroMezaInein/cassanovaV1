@@ -1,18 +1,18 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form' 
-import { Button, Select, Calendar, OptionsCheckbox } from '../../form-components' 
+import { Button, Select, RangeCalendar, OptionsCheckbox } from '../../form-components' 
 import { validateAlert } from '../../../functions/alert'
 
 class ContabilidadForm extends Component {
 
-    handleChangeDateInicio = date => {
-        const { onChange } = this.props
-        onChange({ target: { value: date, name: 'fechaInicio' } })
-    }
-    handleChangeDateFin = date => {
-        const { onChange } = this.props
-        onChange({ target: { value: date, name: 'fechaFin' } })
-    }
+    // handleChangeDateInicio = date => {
+    //     const { onChange } = this.props
+    //     onChange({ target: { value: date, name: 'fechaInicio' } })
+    // }
+    // handleChangeDateFin = date => {
+    //     const { onChange } = this.props
+    //     onChange({ target: { value: date, name: 'fechaFin' } })
+    // }
 
     handleChangeCheckbox = (e, aux) => {
         const { checked, name } = e.target
@@ -28,7 +28,7 @@ class ContabilidadForm extends Component {
     }
 
     render() {
-        const { form, onChange, options, onChangeEmpresa, updateEmpresa, formeditado, onSubmit, ...props } = this.props
+        const { form, onChange, options, onChangeEmpresa, updateEmpresa, formeditado, onSubmit, onChangeRange, ...props } = this.props
         return (
             <Form id="form-contabilidad"
                 onSubmit={
@@ -40,7 +40,15 @@ class ContabilidadForm extends Component {
                 {...props}
             >
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-4">
+                    <div className="col text-center">
+                        <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br/>
+                        <RangeCalendar
+                            onChange={onChangeRange}
+                            start={form.fechaInicio}
+                            end={form.fechaFin}
+                        />
+                    </div>
+                    <div className="col">
                         <Select
                             requirevalidation={1}
                             formeditado={formeditado}
@@ -52,8 +60,36 @@ class ContabilidadForm extends Component {
                             iconclass={"far fa-building"}
                             messageinc="Incorrecto. Selecciona la(s) empresa(s)."
                         />
+                        {
+                            form.empresas.length > 0 ?
+                                <div className="col-md-12 row mx-0 align-items-center image-upload mt-5">
+                                    {
+                                        form.empresas.map((empresa, key) => {
+                                            return (
+                                                <div className="tagify form-control p-1 col-md-12 px-2 d-flex justify-content-center align-items-center mb-3" tabIndex="-1" style={{ borderWidth: "0px" }} key={key}>
+                                                    <div className="tagify__tag tagify__tag--primary tagify--noAnim" >
+                                                        <div
+                                                            title="Borrar archivo"
+                                                            className="tagify__tag__removeBtn"
+                                                            role="button"
+                                                            aria-label="remove tag"
+                                                            onClick={(e) => { e.preventDefault(); updateEmpresa(empresa) }}
+                                                        >
+                                                        </div>
+                                                        <div><span className="tagify__tag-text p-1 white-space">{empresa.text}</span></div>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </div>
+                                : ''
+                        }
                     </div>
-                    <div className="col-md-4">
+                </div>
+                <div className="form-group row form-group-marginless d-flex justify-content-center">
+                    
+                    {/* <div className="col-md-4">
                         <Calendar
                             onChangeCalendar={this.handleChangeDateInicio}
                             placeholder="FECHA DE INICIO"
@@ -77,33 +113,9 @@ class ContabilidadForm extends Component {
                             minDate={form.fechaInicio}
                             iconclass={"far fa-calendar-alt"}
                         />
-                    </div>
+                    </div> */}
                 </div>
-                {
-                    form.empresas.length > 0 ?
-                        <div className="col-md-12 row mx-0 align-items-center image-upload">
-                            {
-                                form.empresas.map((empresa, key) => {
-                                    return (
-                                        <div className="tagify form-control p-1 col-md-3 px-2 d-flex justify-content-center align-items-center mb-3" tabIndex="-1" style={{ borderWidth: "0px" }} key={key}>
-                                            <div className="tagify__tag tagify__tag--primary tagify--noAnim" >
-                                                <div
-                                                    title="Borrar archivo"
-                                                    className="tagify__tag__removeBtn"
-                                                    role="button"
-                                                    aria-label="remove tag"
-                                                    onClick={(e) => { e.preventDefault(); updateEmpresa(empresa) }}
-                                                >
-                                                </div>
-                                                <div><span className="tagify__tag-text p-1 white-space">{empresa.text}</span></div>
-                                            </div>
-                                        </div>
-                                    )
-                                })
-                            }
-                        </div>
-                        : ''
-                }
+                
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless pt-3">
                     <div className="col-md-4  d-flex justify-content-around align-items-top">

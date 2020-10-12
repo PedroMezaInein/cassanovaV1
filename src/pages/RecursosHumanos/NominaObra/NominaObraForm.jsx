@@ -412,6 +412,16 @@ class NominaObraForm extends Component {
             form
         })
     }
+    onChangeRange = range => {
+        const { startDate, endDate } = range
+        const { form } = this.state
+        form.fechaInicio = startDate
+        form.fechaFin = endDate
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
     render() {
         const { options, title, form, formeditado } = this.state
         return (
@@ -430,6 +440,7 @@ class NominaObraForm extends Component {
                     clearFiles={this.clearFiles}
                     onSubmit={this.onSubmit}
                     handleChange={this.handleChange}
+                    onChangeRange={this.onChangeRange}
                 />
             </Layout>
         )

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { Input, Calendar, SelectSearch, Button, InputMoneySinText, SelectSearchSinText } from '../../form-components'
+import { Input, RangeCalendar, SelectSearch, Button, InputMoneySinText, SelectSearchSinText } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { DATE } from '../../../constants'
 import { setMoneyTableForNominas } from '../../../functions/setters'
@@ -8,14 +8,14 @@ import { Card } from 'react-bootstrap'
 import { ItemSlider } from '../../../components/singles';
 class NominaAdminForm extends Component {
 
-    handleChangeDateInicio = date => {
-        const { onChange } = this.props
-        onChange({ target: { value: date, name: 'fechaInicio' } })
-    }
-    handleChangeDateFin = date => {
-        const { onChange } = this.props
-        onChange({ target: { value: date, name: 'fechaFin' } })
-    }
+    // handleChangeDateInicio = date => {
+    //     const { onChange } = this.props
+    //     onChange({ target: { value: date, name: 'fechaInicio' } })
+    // }
+    // handleChangeDateFin = date => {
+    //     const { onChange } = this.props
+    //     onChange({ target: { value: date, name: 'fechaFin' } })
+    // }
 
     updateEmpresa = value => {
         const { onChange } = this.props
@@ -83,8 +83,8 @@ class NominaAdminForm extends Component {
 
 
     render() {
-        const { options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, onChange, form, onSubmit, formeditado, title, handleChange} = this.props
-        
+        const { options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, onChange, form, onSubmit, formeditado, title, handleChange, onChangeRange } = this.props
+
         return (
             <Card className="card card-custom gutter-b example example-compact">
                 <Card.Header>
@@ -102,7 +102,7 @@ class NominaAdminForm extends Component {
                 >
                     <Card.Body>
                         <div className="form-group row form-group-marginless">
-                            <div className="col-md-3">
+                            <div className="col-md-6">
                                 <Input
                                     requirevalidation={1}
                                     formeditado={formeditado}
@@ -114,7 +114,7 @@ class NominaAdminForm extends Component {
                                     messageinc="Incorrecto. Ingresa el periodo de nómina Administrativa."
                                 />
                             </div>
-                            <div className="col-md-3">
+                            <div className="col-md-6">
                                 <SelectSearch
                                     formeditado={formeditado}
                                     options={options.empresas}
@@ -124,7 +124,7 @@ class NominaAdminForm extends Component {
                                     onChange={this.updateEmpresa}
                                 />
                             </div>
-                            <div className="col-md-3">
+                            {/* <div className="col-md-3">
                                 <Calendar
                                     formeditado={formeditado}
                                     onChangeCalendar={this.handleChangeDateInicio}
@@ -152,14 +152,25 @@ class NominaAdminForm extends Component {
                                     iconclass={"far fa-calendar-alt"}
                                     patterns={DATE}
                                 />
-                            </div>
+                            </div> */}
                         </div>
-                        {
-                            title !== 'Editar nómina administrativa' ?
-                                <>
-                                    <div className="separator separator-dashed mt-1 mb-2"></div>
-                                    <div className="form-group row form-group-marginless d-flex justify-content-center">
-                                        <div className="col-md-4 text-center">
+                        {/* <div className="form-group row form-group-marginless d-flex justify-content-center">
+
+                        </div> */}
+                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                        <div className="form-group row form-group-marginless d-flex justify-content-center">
+                            <div className="col-md-6 text-center">
+                                <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br />
+                                <RangeCalendar
+                                    onChange={onChangeRange}
+                                    start={form.fechaInicio}
+                                    end={form.fechaFin}
+                                />
+                            </div>
+                            {
+                                title !== 'Editar nómina administrativa' ?
+                                    <>
+                                        <div className="col-md-6 text-center">
                                             {/* <FileInput
                                                 requirevalidation={0}
                                                 formeditado={formeditado}
@@ -181,11 +192,10 @@ class NominaAdminForm extends Component {
                                                 multiple={true}
                                             />
                                         </div>
-                                    </div>
-                                </>
-                                : ''
-                        }
-
+                                    </>
+                                    : ''
+                            }
+                        </div>
                         <table className="table table-separate table-responsive-sm table_nominas_obras" id="tabla_obra">
                             <thead>
                                 <tr>
@@ -216,7 +226,7 @@ class NominaAdminForm extends Component {
                                                         name="usuario"
                                                         value={form['nominasAdmin'][key]['usuario']}
                                                         onChange={(value) => this.updateUsuario(value, key)}
-                                                        customstyle={{ minWidth: "300px" }}/>
+                                                        customstyle={{ minWidth: "300px" }} />
                                                 </td>
                                                 <td>
                                                     <InputMoneySinText
@@ -271,7 +281,7 @@ class NominaAdminForm extends Component {
                             <button type="button" className="btn btn-light-primary font-weight-bold mr-2" onClick={addRowNominaAdmin} >Agregar Fila</button>
                             <button type="button" className="btn btn-light-danger font-weight-bold mr-2" onClick={deleteRowNominaAdmin} >Eliminar Fila</button>
                         </div>
-                        
+
                     </Card.Body>
                     <Card.Footer>
                         <div className="row">

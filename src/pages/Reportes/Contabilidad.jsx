@@ -484,6 +484,16 @@ class Contabilidad extends Component {
             console.log(error, 'error ')
         })
     }
+    onChangeRange = range => {
+        const { startDate, endDate } = range
+        const { form } = this.state
+        form.fechaInicio = startDate
+        form.fechaFin = endDate
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
 
     render() {
         const { form, options } = this.state
@@ -503,6 +513,7 @@ class Contabilidad extends Component {
                             updateEmpresa = { this.updateEmpresa } 
                             onChange = { this.onChange } 
                             onSubmit = { this.onSubmit }
+                            onChangeRange={this.onChangeRange}
                         />                            
                     </Card.Body>
                 </Card>
