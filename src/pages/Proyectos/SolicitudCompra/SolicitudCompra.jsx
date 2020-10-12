@@ -20,11 +20,11 @@ class SolicitudCompra extends Component {
         solicitud: '',
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const solicitud = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!solicitud)
@@ -36,7 +36,7 @@ class SolicitudCompra extends Component {
             if (id) {
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modalSingle: true
                 })
                 this.getSolicitudCompraAxios(id)
@@ -45,7 +45,7 @@ class SolicitudCompra extends Component {
     }
     openModalDelete = solicitud => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: true,
             title: 'Nueva solicitud de compra',
             solicitud: solicitud
@@ -54,7 +54,7 @@ class SolicitudCompra extends Component {
     handleCloseDelete = () => {
         const { modalDelete } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: !modalDelete,
             solicitud: '',
             remision: ''
@@ -62,7 +62,7 @@ class SolicitudCompra extends Component {
     }
     openModalSee = solicitud => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSingle: true,
             solicitud: solicitud
         })
@@ -70,7 +70,7 @@ class SolicitudCompra extends Component {
     handleCloseSingle = () => {
         const { modalSingle } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSingle: !modalSingle,
             solicitud: '',
             remision: ''
@@ -96,6 +96,7 @@ class SolicitudCompra extends Component {
                     id: solicitud.id
                 }
             )
+            return false
         })
         return aux
     }
@@ -156,7 +157,7 @@ class SolicitudCompra extends Component {
             (response) => {
                 const { solicitud } = response.data
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     solicitud: solicitud
                 })
             },
@@ -184,7 +185,7 @@ class SolicitudCompra extends Component {
                 this.getSolicitudesCompraAxios()
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modalDelete: false,
                     title: 'Nueva solicitud de compra',
                     solicitud: ''

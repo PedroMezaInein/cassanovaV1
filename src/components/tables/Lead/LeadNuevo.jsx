@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { OverlayTrigger, Tooltip, Dropdown, DropdownButton } from 'react-bootstrap'
 class LeadNuevo extends Component {
     render() {
-        const { } = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
@@ -63,18 +62,18 @@ class LeadNuevo extends Component {
                                         </Dropdown.Header>
                                         <Dropdown.Divider />
                                         <Dropdown.Item eventKey="1">
-                                            <a href="#" className="navi-link">
+                                            <span className="navi-link">
                                                 <span className="navi-text">
                                                     <span className="label label-xl label-inline label-light-success rounded-0">CONTRATADO</span>
                                                 </span>
-                                            </a>
+                                            </span>
                                         </Dropdown.Item>
                                         <Dropdown.Item eventKey="2">
-                                            <a href="#" className="navi-link">
+                                            <span className="navi-link">
                                                 <span className="navi-text">
                                                     <span className="label label-xl label-inline label-light-danger rounded-0">DETENIDO</span>
                                                 </span>
-                                            </a>
+                                            </span>
                                         </Dropdown.Item>
                                     </DropdownButton>
                                 </td>

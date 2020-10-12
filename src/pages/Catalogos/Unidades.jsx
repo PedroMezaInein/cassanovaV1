@@ -29,11 +29,11 @@ class Unidades extends Component {
     }
 
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const areas = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!areas)
@@ -46,7 +46,7 @@ class Unidades extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -171,7 +171,7 @@ class Unidades extends Component {
                 const { unidades } = response.data
                 data.unidades = unidades
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     unidades: this.setUnidades(unidades),
                     data
                 })
@@ -203,7 +203,7 @@ class Unidades extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito una nueva área.')
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal,
                     form: this.clearForm(),
                     unidades: this.setUnidades(unidades),
@@ -237,7 +237,7 @@ class Unidades extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el área.')
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal,
                     form: this.clearForm(),
                     unidades: this.setUnidades(unidades),
@@ -272,7 +272,7 @@ class Unidades extends Component {
                 modal.delete=false
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal,
                     // form: this.clearForm(),
                     // unidades: this.setUnidades(unidades),
@@ -295,7 +295,7 @@ class Unidades extends Component {
     }
 
     async getUnidadesAxios() {
-        var table = $('#kt_datatable_unidades').DataTable().ajax.reload();
+        $('#kt_datatable_unidades').DataTable().ajax.reload();
     }
 
     render() {

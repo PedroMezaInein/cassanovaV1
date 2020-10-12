@@ -39,7 +39,7 @@ class InputMoneyGray extends Component {
         if (nextProps.value !== this.props.value)
             if (!nextProps.requirevalidation) {
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     inputMoneyValido: true
                 })
             } else {

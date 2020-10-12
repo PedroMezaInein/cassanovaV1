@@ -67,11 +67,11 @@ class Contratos extends Component {
         key: 'cliente'
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const contratos = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!contratos)
@@ -97,7 +97,7 @@ class Contratos extends Component {
         const { modal } = this.state
         modal.delete = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             tipo: 'Cliente',
             contrato: contrato
@@ -107,7 +107,7 @@ class Contratos extends Component {
         const { modal } = this.state
         modal.delete = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             tipo: 'Proveedor',
             contrato: contrato
@@ -117,7 +117,7 @@ class Contratos extends Component {
         const { modal } = this.state
         modal.see = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             contrato: contrato
         })
@@ -127,7 +127,7 @@ class Contratos extends Component {
         modal.adjuntos = true
         data.adjuntos = contrato.adjuntos
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             data,
             adjuntos: this.setAdjuntos(contrato.adjuntos),
@@ -164,7 +164,7 @@ class Contratos extends Component {
         const { modal } = this.state
         modal.delete = false
         this.setState({
-            ... this.state,
+            ...this.state,
             form: this.clearForm(),
             modal,
             tipo: 'Cliente',
@@ -175,7 +175,7 @@ class Contratos extends Component {
         const { modal } = this.state
         modal.see = false
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             contrato: ''
         })
@@ -184,7 +184,7 @@ class Contratos extends Component {
         const { modal } = this.state
         modal.adjuntos = false
         this.setState({
-            ... this.state,
+            ...this.state,
             form: this.clearForm(),
             modal,
             tipo: 'Cliente',
@@ -205,7 +205,7 @@ class Contratos extends Component {
     //             options.clientes = setOptions(clientes, 'empresa', 'id')
     //             options.tiposContratos = setOptions(tiposContratos, 'tipo', 'id')
     //             this.setState({
-    //                 ... this.state,
+    //                 ...this.state,
     //                 options
     //             })
     //         },
@@ -237,7 +237,7 @@ class Contratos extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El contrato fue registrado con éxito.')
                 modal.delete = false
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     contrato: '',
                     modal
                 })
@@ -280,6 +280,7 @@ class Contratos extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -300,6 +301,7 @@ class Contratos extends Component {
                 descripcion: renderToString(setTextTable(contrato.descripcion)),
                 id: contrato.id
             })
+            return false
         })
         return aux
     }
@@ -320,6 +322,7 @@ class Contratos extends Component {
                 descripcion: renderToString(setTextTable(contrato.descripcion)),
                 id: contrato.id
             })
+            return false
         })
         return aux
     }
@@ -400,6 +403,7 @@ class Contratos extends Component {
                 adjunto: renderToString(setArrayTable([{ text: documento.name, url: documento.url }])),
                 id: documento.id
             })
+            return false
         })
         return aux
     }
@@ -430,7 +434,7 @@ class Contratos extends Component {
             this.getCajasAxios()
         }
         this.setState({
-            ... this.state,
+            ...this.state,
             key: value
         })
     }
@@ -447,6 +451,7 @@ class Contratos extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         await axios.post(URL_DEV + 'contratos/' + contrato.id + '/adjunto/', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -461,7 +466,7 @@ class Contratos extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El contrato fue registrado con éxito.')
                 data.adjuntos = contrato.adjuntos
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     data,
                     modal,
                     adjuntos: this.setAdjuntos(contrato.adjuntos)
@@ -482,7 +487,7 @@ class Contratos extends Component {
     }
     async deleteAdjuntoContratoAxios(adjunto) {
         const { access_token } = this.props.authUser
-        const { form, contrato } = this.state
+        const { contrato } = this.state
         await axios.delete(URL_DEV + 'contratos/' + contrato.id + '/adjunto/' + adjunto, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { contrato } = response.data
@@ -495,7 +500,7 @@ class Contratos extends Component {
                 }
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El contrato fue registrado con éxito.')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     contrato: '',
                     modal,
                     adjuntos: this.setAdjuntos(contrato.adjuntos)
@@ -527,7 +532,7 @@ class Contratos extends Component {
         }
         form.adjuntos[name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -548,7 +553,7 @@ class Contratos extends Component {
         form.adjuntos[name].value = value
         form.adjuntos[name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -562,7 +567,7 @@ class Contratos extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }

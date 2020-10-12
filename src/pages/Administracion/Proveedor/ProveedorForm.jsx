@@ -37,18 +37,18 @@ class ProveedorForm extends Component {
         }
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
-        const { match: { params: { action: action } } } = this.props
-        const { history, location: { state: state } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
+        const { match: { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
         const proveedores = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         })
         switch (action) {
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Nuevo proveedor',
                     formeditado: 0
                 })
@@ -58,7 +58,7 @@ class ProveedorForm extends Component {
                     if (state.proveedor) {
                         this.setProveedor(state.proveedor)
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             title: 'Editar proveedor',
                             formeditado: 1
                         })
@@ -73,7 +73,7 @@ class ProveedorForm extends Component {
                     if (state.lead) {
                         this.setLead(state.lead)
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             title: 'Convertir lead en proveedor',
                             formeditado: 1
                         })
@@ -103,6 +103,7 @@ class ProveedorForm extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -116,7 +117,7 @@ class ProveedorForm extends Component {
         } else
             form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -133,7 +134,7 @@ class ProveedorForm extends Component {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
-            ... this.state,
+            ...this.state,
             options
         })
     }
@@ -154,7 +155,7 @@ class ProveedorForm extends Component {
             form.subarea = proveedor.subarea.id.toString()
         }
         this.setState({
-            ... this.state,
+            ...this.state,
             options,
             proveedor: proveedor,
             form
@@ -167,7 +168,7 @@ class ProveedorForm extends Component {
         form.telefono = lead.telefono
         form.leadId = lead.id
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -183,7 +184,7 @@ class ProveedorForm extends Component {
                 options['bancos'] = setSelectOptions(bancos, 'nombre')
                 options['tipos'] = setSelectOptions(tipos_cuentas, 'tipo')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },
@@ -206,7 +207,7 @@ class ProveedorForm extends Component {
         await axios.post(URL_DEV + 'proveedores', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     title: ''
                 })
@@ -235,7 +236,7 @@ class ProveedorForm extends Component {
         await axios.put(URL_DEV + 'proveedores/' + proveedor.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     title: '',
                 })

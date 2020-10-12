@@ -8,6 +8,7 @@ class FlujosForm extends Component {
         options.cuentas.map((cuenta) => {
             if (cuenta.value === value)
                 onChangeAndAdd({ target: { value: cuenta.value, name: 'cuenta' } }, 'cuentas')
+            return false
         })
         onChange({ target: { value: value, name: 'cuenta' } })
     }
@@ -16,6 +17,7 @@ class FlujosForm extends Component {
         const { options, onChange } = this.props
         options.cuentas.map((cuenta) => {
             this.updateCuenta(cuenta.value)
+            return false
         })
         onChange({ target: { value: '', name: 'cuenta' } })
     }

@@ -10,7 +10,7 @@ import Layout from '../../../components/layout/layout'
 import { Button, FileInput } from '../../../components/form-components'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { FacturaTable } from '../../../components/tables'
-import { Form, ProgressBar } from 'react-bootstrap'
+import { Form } from 'react-bootstrap'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import Select from '../../../components/form-components/Select'
 import TableForModals from '../../../components/tables/TableForModals'
@@ -66,11 +66,11 @@ class egresos extends Component {
         }
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const egresos = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!egresos)
@@ -108,6 +108,7 @@ class egresos extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -116,7 +117,7 @@ class egresos extends Component {
         const { name, value } = e.target
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -197,6 +198,7 @@ class egresos extends Component {
                             if (element.rfc === obj.rfc_receptor) {
                                 auxEmpresa = element
                             }
+                            return false
                         });
                         let auxProveedor = ''
                         data.proveedores.find(function (element, index) {
@@ -208,6 +210,7 @@ class egresos extends Component {
                                 element.razon_social.toUpperCase() === cadena) {
                                 auxProveedor = element
                             }
+                            return false
                         });
                         if (auxEmpresa) {
                             options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')
@@ -226,7 +229,7 @@ class egresos extends Component {
                         form.facturaObject = obj
                         form.rfc = obj.rfc_emisor
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             options,
                             form
                         })
@@ -246,7 +249,7 @@ class egresos extends Component {
         form['adjuntos'][name].value = value
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -265,7 +268,7 @@ class egresos extends Component {
         }
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -280,6 +283,7 @@ class egresos extends Component {
                         _aux.push({
                             name: 'Presupuesto', text: presupuesto.name, url: presupuesto.url
                         })
+                        return false
                     })
                 }
                 if (egreso.pagos) {
@@ -287,6 +291,7 @@ class egresos extends Component {
                         _aux.push({
                             name: 'Pago', text: pago.name, url: pago.url
                         })
+                        return false
                     })
                 }
                 aux.push(
@@ -317,6 +322,7 @@ class egresos extends Component {
                         objeto: egreso
                     }
                 )
+                return false
             })
         return aux
     }
@@ -405,7 +411,7 @@ class egresos extends Component {
     }
     openModalDelete = egreso => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: true,
             egreso: egreso
         })
@@ -421,7 +427,7 @@ class egresos extends Component {
         porcentaje = porcentaje * 100 / (egreso.total - egreso.comision)
         porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
         this.setState({
-            ... this.state,
+            ...this.state,
             modalFacturas: true,
             egreso: egreso,
             facturas: egreso.facturas,
@@ -433,7 +439,7 @@ class egresos extends Component {
         const { data } = this.state
         data.adjuntos = egreso.presupuestos.concat(egreso.pagos)
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAdjuntos: true,
             egreso: egreso,
             form: this.clearForm(),
@@ -447,21 +453,21 @@ class egresos extends Component {
     }
     openModalSee = egreso => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: true,
             egreso: egreso
         })
     }
     handleCloseSee = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: false,
             egreso: ''
         })
     }
     handleCloseFacturas = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalFacturas: false,
             venta: '',
             facturas: [],
@@ -472,7 +478,7 @@ class egresos extends Component {
     handleCloseDelete = () => {
         const { modalDelete } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: !modalDelete,
             egreso: ''
         })
@@ -481,7 +487,7 @@ class egresos extends Component {
         const { data } = this.state
         data.adjuntos = []
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAdjuntos: false,
             form: this.clearForm(),
             adjuntos: [],
@@ -515,7 +521,7 @@ class egresos extends Component {
                     }
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form,
                     data,
                     options
@@ -536,7 +542,7 @@ class egresos extends Component {
         })
     }
     async getEgresosAxios() {
-        var table = $('#egresos').DataTable().ajax.reload();
+        $('#egresos').DataTable().ajax.reload();
     }
     async getOptionsAxios() {
         waitAlert()
@@ -550,7 +556,7 @@ class egresos extends Component {
                 options['estatusCompras'] = setSelectOptions(estatusCompras, 'estatus')
                 swal.close()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     data, options
                 })
             },
@@ -574,7 +580,7 @@ class egresos extends Component {
             (response) => {
                 this.getEgresosAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modalDelete: false,
                     egreso: '',
                 })
@@ -635,7 +641,7 @@ class egresos extends Component {
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
                 this.getEgresosAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form,
                     egreso: egreso,
                     facturas: egreso.facturas,
@@ -672,7 +678,7 @@ class egresos extends Component {
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
                 this.getEgresosAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     egreso: egreso,
                     facturas: egreso.facturas,
@@ -742,7 +748,7 @@ class egresos extends Component {
                 data.adjuntos = egreso.presupuestos.concat(egreso.pagos)
                 this.getEgresosAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     egreso: egreso,
                     adjuntos: this.setAdjuntosTable(egreso),
@@ -775,7 +781,7 @@ class egresos extends Component {
                 data.adjuntos = egreso.presupuestos.concat(egreso.pagos)
                 this.getEgresosAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     egreso: egreso,
                     adjuntos: this.setAdjuntosTable(egreso),

@@ -16,7 +16,7 @@ class FlujoProyectos extends Component {
         proyectos:[],
         form: {
             fechaInicio: new Date(),
-            fechaFin: new Date,
+            fechaFin: new Date(),
             empresas: [],
             empresa: '',
         },
@@ -26,11 +26,11 @@ class FlujoProyectos extends Component {
     }
 
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const flujo_proyectos = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!flujo_proyectos)
@@ -50,7 +50,7 @@ class FlujoProyectos extends Component {
                 options.empresas = setOptions(empresas, 'name', 'id')
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },
@@ -76,7 +76,7 @@ class FlujoProyectos extends Component {
             this.getReporteFlujosProyectosAxios()
         }
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -87,7 +87,7 @@ class FlujoProyectos extends Component {
         form.fechaInicio = startDate
         form.fechaFin = endDate
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
 
@@ -105,7 +105,7 @@ class FlujoProyectos extends Component {
                 const { proyectos, suma} = response.data
                 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     proyectos: proyectos,
                     suma:suma
                 })

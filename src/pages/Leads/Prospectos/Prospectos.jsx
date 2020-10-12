@@ -60,11 +60,11 @@ class Leads extends Component {
     }
 
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const leads = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!leads)
@@ -76,7 +76,7 @@ class Leads extends Component {
         const { modal } = this.state
         modal.delete = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             prospecto: prospecto
         })
@@ -86,7 +86,7 @@ class Leads extends Component {
         const { modal } = this.state
         modal.delete = false
         this.setState({
-            ... this.state,
+            ...this.state,
             prospecto: '',
             modal
         })
@@ -96,7 +96,7 @@ class Leads extends Component {
         const { modal } = this.state
         modal.contactForm = true
         this.setState({
-            ... this.state,
+            ...this.state,
             prospecto,
             modal,
             formeditado: 0,
@@ -108,7 +108,7 @@ class Leads extends Component {
         const { modal } = this.state
         modal.contactForm = false
         this.setState({
-            ... this.state,
+            ...this.state,
             prospecto: '',
             modal,
             formContacto: this.clearContactForm()
@@ -129,9 +129,10 @@ class Leads extends Component {
                     comentario: renderToString(setTextTable(contacto.comentario)),
                 }
             )
+            return false
         })
         this.setState({
-            ... this.state,
+            ...this.state,
             prospecto,
             modal,
             contactHistory: aux,
@@ -143,7 +144,7 @@ class Leads extends Component {
         const { modal } = this.state
         modal.convert = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             prospecto: prospecto,
             formeditado: 1
@@ -154,7 +155,7 @@ class Leads extends Component {
         const { modal } = this.state
         modal.convert = false
         this.setState({
-            ... this.state,
+            ...this.state,
             prospecto: '',
             modal
         })
@@ -172,7 +173,7 @@ class Leads extends Component {
         const { modal } = this.state
         modal.see = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             prospecto: prospecto
         })
@@ -182,7 +183,7 @@ class Leads extends Component {
         const { modal } = this.state
         modal.see = false
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             prospecto: ''
         })
@@ -209,6 +210,7 @@ class Leads extends Component {
                     formContacto[element] = ''
                     break;
             }
+            return false
         })
         return formContacto;
     }
@@ -218,7 +220,7 @@ class Leads extends Component {
         const { name, value } = event.target
         formContacto[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             formContacto
         })
     }
@@ -246,6 +248,7 @@ class Leads extends Component {
                 fechaConversion: renderToString(setDateTable(prospecto.created_at)),
                 id: prospecto.id
             })
+            return aux
         })
         return aux
     }
@@ -335,7 +338,7 @@ class Leads extends Component {
                     value: 'New', name: '+ Agregar nuevo'
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },
@@ -354,7 +357,7 @@ class Leads extends Component {
     }
 
     async getProspectoAxios() {
-        var table = $('#kt_datatable_prospectos').DataTable().ajax.reload();
+        $('#kt_datatable_prospectos').DataTable().ajax.reload();
     }
 
     async deleteProspectoAxios() {
@@ -366,7 +369,7 @@ class Leads extends Component {
                 const { modal } = this.state
                 modal.delete = false
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal,
                     title: '',
                     prospecto: ''
@@ -401,7 +404,7 @@ class Leads extends Component {
                     value: 'New', name: '+ Agregar nuevo'
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal,
                     prospecto: '',
                     options
@@ -423,7 +426,7 @@ class Leads extends Component {
     }
     controlledTab = value => {
         this.setState({
-            ... this.state,
+            ...this.state,
             formContacto: this.clearContactForm(),
             active: value
         })
@@ -461,7 +464,7 @@ class Leads extends Component {
         formContacto['adjuntos'][item].value = files
         formContacto['adjuntos'][item].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             formContacto
         })
     }
@@ -496,22 +499,22 @@ class Leads extends Component {
                 <Modal size="xl" title="Agregar un nuevo contacto" show={modal.contactForm} handleClose={this.handleCloseFormContact} >
                     <div className="d-flex justify-content-center mt-4">
                         <div className="row m-0">
-                            <a onClick={(e) => { e.preventDefault(); this.changePageDesign(prospecto) }} className="text-info font-weight-bold font-size-sm">
+                            <span onClick={(e) => { e.preventDefault(); this.changePageDesign(prospecto) }} className="text-info font-weight-bold font-size-sm">
                                 <div className="bg-light-info rounded-sm mr-5 p-2">
                                     <span className="svg-icon svg-icon-xl svg-icon-info mr-2">
                                         <SVG src={toAbsoluteUrl('/images/svg/Pen-tool-vector.svg')} />
                                     </span>
                                     Presupuesto de diseño
                                 </div>
-                            </a>
-                            <a onClick={(e) => { e.preventDefault(); this.changePageObra(prospecto) }} className="text-pink font-weight-bold font-size-sm">
+                            </span>
+                            <span onClick={(e) => { e.preventDefault(); this.changePageObra(prospecto) }} className="text-pink font-weight-bold font-size-sm">
                                 <div className="bg-light-pink rounded-sm p-2">
                                     <span className="svg-icon svg-icon-xl svg-icon-pink mr-2">
                                         <SVG src={toAbsoluteUrl('/images/svg/Road-Cone.svg')} />
                                     </span>
                                     Presupuesto de obra
                                 </div>
-                            </a>
+                            </span>
                         </div>
                     </div>
                     <Tabs defaultActiveKey="nuevo" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100" activeKey={active} onSelect={this.controlledTab}>
@@ -566,7 +569,7 @@ class Leads extends Component {
                     handleClose={this.handleCloseConvertModal}
                     title="¿Estás seguro que deseas convertir el prospecto en un proyecto?">
                     <div className="d-flex justify-content-center mt-3">
-                        <Button icon='' onClick={this.handleCloseConvertModal} text="CANCELAR" className="mr-3" className={"btn btn-light-primary font-weight-bolder mr-3"} />
+                        <Button icon='' onClick={this.handleCloseConvertModal} text="CANCELAR" className={"btn btn-light-primary font-weight-bolder mr-3"} />
                         <Button icon='' onClick={(e) => { this.safeConvert(e)(prospecto) }} text="CONTINUAR" className={"btn btn-success font-weight-bold mr-2"} />
                     </div>
                 </Modal>

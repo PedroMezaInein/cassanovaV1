@@ -88,7 +88,7 @@ class Ventas extends Component {
         const { name, value } = e.target
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -103,6 +103,7 @@ class Ventas extends Component {
                     waitAlert()
                     const reader = new FileReader()
                     reader.onload = async (e) => {
+                        let auxiliar = ''
                         const text = (e.target.result)
                         var XMLParser = require('react-xml-parser');
                         var xml = new XMLParser().parseFromString(text);
@@ -151,16 +152,16 @@ class Ventas extends Component {
                             let Subtotal = text.search('SubTotal="')
                             if (Subtotal)
                                 Subtotal = text.substring(Subtotal + 10)
-                            aux = Subtotal.search('"')
-                            Subtotal = Subtotal.substring(0, aux)
+                            auxiliar = Subtotal.search('"')
+                            Subtotal = Subtotal.substring(0, auxiliar)
                             obj.subtotal = Subtotal
                         }
                         if (obj.fecha === '') {
                             let Fecha = text.search('Fecha="')
                             if (Fecha)
                                 Fecha = text.substring(Fecha + 7)
-                            aux = Fecha.search('"')
-                            Fecha = Fecha.substring(0, aux)
+                            auxiliar = Fecha.search('"')
+                            Fecha = Fecha.substring(0, auxiliar)
                             obj.fecha = Fecha
                         }
                         let auxEmpresa = ''
@@ -168,6 +169,7 @@ class Ventas extends Component {
                             if (element.rfc === obj.rfc_emisor) {
                                 auxEmpresa = element
                             }
+                            return false
                         });
                         let auxCliente = ''
                         data.clientes.find(function (element, index) {
@@ -179,6 +181,7 @@ class Ventas extends Component {
                                 element.empresa === cadena) {
                                 auxCliente = element
                             }
+                            return false
                         });
                         if (auxEmpresa) {
                             options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')
@@ -201,7 +204,7 @@ class Ventas extends Component {
                         form.facturaObject = obj
                         form.rfc = obj.rfc_receptor
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             options,
                             form
                         })
@@ -221,7 +224,7 @@ class Ventas extends Component {
         form['adjuntos'][name].value = value
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -240,7 +243,7 @@ class Ventas extends Component {
         }
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -283,6 +286,7 @@ class Ventas extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -296,18 +300,18 @@ class Ventas extends Component {
             this.addVentaAxios()
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
-        const { match: { params: { action: action } } } = this.props
-        const { history, location: { state: state } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
+        const { match: { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
         const ventas = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         switch (action) {
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Nueva venta',
                     formeditado: 0
                 })
@@ -357,7 +361,7 @@ class Ventas extends Component {
                             }]
                         }
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             title: 'Editar venta',
                             form,
                             options,
@@ -377,7 +381,7 @@ class Ventas extends Component {
                     }
                 }
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     formeditado: 1
                 })
                 break;
@@ -392,7 +396,7 @@ class Ventas extends Component {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
-            ... this.state,
+            ...this.state,
             options
         })
     }
@@ -417,7 +421,7 @@ class Ventas extends Component {
                 data.empresas = empresas
                 swal.close()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options,
                     data
                 })
@@ -454,6 +458,7 @@ class Ventas extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -464,12 +469,13 @@ class Ventas extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         await axios.post(URL_DEV + 'ventas', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.getOptionsAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                 })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
@@ -508,6 +514,7 @@ class Ventas extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -516,12 +523,13 @@ class Ventas extends Component {
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
+            return false
         })
         await axios.post(URL_DEV + 'ventas/update/' + venta.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.getOptionsAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                 })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
@@ -564,9 +572,10 @@ class Ventas extends Component {
                     if (cliente.empresa === cadena) {
                         form.cliente = cliente.empresa
                     }
+                    return false
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form,
                     data,
                     options
@@ -632,7 +641,7 @@ class Ventas extends Component {
                     form.descripcion = solicitud.descripcion
                 }
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Convierte la solicitud de venta',
                     solicitud: solicitud,
                     form,

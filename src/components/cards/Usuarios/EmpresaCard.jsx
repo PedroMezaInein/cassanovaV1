@@ -12,24 +12,28 @@ export default class EmpresaCard extends Component {
                 name: isotipo.name,
                 url: isotipo.url
             })
+            return false
         })
         empresa.letras.map((letra) => {
             aux.push({
                 name: letra.name,
                 url: letra.url
             })
+            return false
         })
         empresa.logos.map((logo) => {
             aux.push({
                 name: logo.name,
                 url: logo.url
             })
+            return false
         })
         empresa.logos_blanco.map((logo_blanco) => {
             aux.push({
                 name: logo_blanco.name,
                 url: logo_blanco.url
             })
+            return false
         })
         return aux
     }

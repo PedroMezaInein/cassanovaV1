@@ -9,7 +9,7 @@ import { ProyectosForm as ProyectoFormulario } from '../../../components/forms'
 import { URL_DEV, CP_URL } from '../../../constants';
 import { Button } from '../../../components/form-components'
 import { ProyectoCard } from '../../../components/cards'
-import { waitAlert, forbiddenAccessAlert, errorAlert, doneAlert, questionAlert,deleteAlert } from '../../../functions/alert';
+import { waitAlert, forbiddenAccessAlert, errorAlert, doneAlert, questionAlert } from '../../../functions/alert';
 import { setOptions } from '../../../functions/setters';
 class ProyectosForm extends Component {
     state = {
@@ -360,18 +360,18 @@ class ProyectosForm extends Component {
         }
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
-        const { match: { params: { action: action } } } = this.props
-        const { history, location: { state: state } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
+        const { match: { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
         const remisiones = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         switch (action) {
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Nuevo proyecto',
                     formeditado: 0,
                     action: 'add'
@@ -420,11 +420,12 @@ class ProyectosForm extends Component {
                         if (proyecto.contactos) {
                             proyecto.contactos.map((contacto) => {
                                 aux.push(contacto.correo)
+                                return false
                             })
                             form.correos = aux
                         }
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             proyecto: proyecto,
                             form,
                             formeditado: 1,
@@ -474,10 +475,11 @@ class ProyectosForm extends Component {
             } else {
                 aux.push(_aux)
             }
+            return false
         })
         form[arreglo] = auxArray
         this.setState({
-            ... this.state,
+            ...this.state,
             form,
             options
         })
@@ -489,10 +491,11 @@ class ProyectosForm extends Component {
             if (element !== elemento) {
                 auxForm.push(elemento)
             }
+            return false
         })
         form[array] = auxForm
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -503,10 +506,11 @@ class ProyectosForm extends Component {
             if (correo !== value) {
                 aux.push(correo)
             }
+            return false
         })
         form.correos = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -533,7 +537,7 @@ class ProyectosForm extends Component {
         form['adjuntos'][name].value = value
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -565,7 +569,7 @@ class ProyectosForm extends Component {
         form.adjuntos_grupo[grupo].adjuntos[adjunto].files = aux
 
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -582,7 +586,7 @@ class ProyectosForm extends Component {
         }
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -609,7 +613,7 @@ class ProyectosForm extends Component {
         }
         form.adjuntos_grupo[grupo].adjuntos[adjunto].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -624,7 +628,6 @@ class ProyectosForm extends Component {
     }
 
     changeEstatus = estatus =>  {
-        const { proyecto } = this.state
         estatus === 'Detenido'?
             questionAlert('¿ESTÁS SEGURO?', 'DETENDRÁS EL PROYECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
         :
@@ -709,6 +712,7 @@ class ProyectosForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -718,6 +722,7 @@ class ProyectosForm extends Component {
                     data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
                 }
             }
+            return false
         })
         if (prospecto) {
             data.append('prospecto', prospecto.id)
@@ -727,10 +732,13 @@ class ProyectosForm extends Component {
                 adjunto.files.map((file) => {
                     data.append(`files_name_${adjunto.id}[]`, file.name)
                     data.append(`files_${adjunto.id}[]`, file.file)
+                    return false
                 })
                 if (adjunto.files.length)
                     data.append('adjuntos[]', adjunto.id)
+                return false
             })
+            return false
         })
         await axios.post(URL_DEV + 'proyectos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -827,7 +835,7 @@ class ProyectosForm extends Component {
                 form.contacto = prospecto.lead.nombre
                 form.numeroContacto = prospecto.lead.telefono
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     prospecto: prospecto,
                     form,
                     title: 'Convertir Prospecto',
@@ -862,7 +870,7 @@ class ProyectosForm extends Component {
                     })
                     options['colonias'] = aux
                     this.setState({
-                        ... this.state,
+                        ...this.state,
                         form,
                         options
                     })
@@ -890,7 +898,7 @@ class ProyectosForm extends Component {
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }

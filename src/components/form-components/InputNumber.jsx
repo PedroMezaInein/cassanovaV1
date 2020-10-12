@@ -46,7 +46,7 @@ class InputNumber extends Component {
         if (nextProps.value !== this.props.value)
             if (!nextProps.requirevalidation) {
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     inputValido: true
                 })
             } else {

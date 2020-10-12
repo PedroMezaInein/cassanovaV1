@@ -50,18 +50,18 @@ class UsuariosForm extends Component {
     }
 
     componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
-        const { match : { params: { action: action } } } = this.props
-        const { history, location: { state: state} } = this.props
+        const { authUser: { user : { permisos  } } } = this.props
+        const { history : { location: { pathname } } } = this.props
+        const { match : { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
         const usuarios = permisos.find(function(element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         switch(action){
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Registrar nuevo usuario',
                     formeditado:0
                 })
@@ -89,7 +89,7 @@ class UsuariosForm extends Component {
                                 form.empleado = user.empleado.id.toString()
                             }
                             this.setState({
-                                ... this.state,
+                                ...this.state,
                                 form,
                                 options,
                                 user: user,
@@ -108,7 +108,7 @@ class UsuariosForm extends Component {
                             })
                             form.proyectos = aux
                             this.setState({
-                                ... this.state,
+                                ...this.state,
                                 form,
                                 options,
                                 user: user,
@@ -147,7 +147,7 @@ class UsuariosForm extends Component {
                 options['empleados'] = setOptions(empleados, 'nombre', 'id')
                 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 });
                 this.showDepartamentos();
@@ -192,7 +192,7 @@ class UsuariosForm extends Component {
                 }
                 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     users: users,
                     modal
@@ -245,7 +245,7 @@ class UsuariosForm extends Component {
                 modal.form = false
                 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     users: users,
                     modal,
                     form: this.clearForm(),
@@ -299,7 +299,7 @@ class UsuariosForm extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         }) 
         if(e.target.name==="departamento"){this.showDepartamentos();}
@@ -320,7 +320,7 @@ class UsuariosForm extends Component {
         const {options} = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
-            ... this.state,
+            ...this.state,
             options
         })
     }
@@ -340,7 +340,7 @@ class UsuariosForm extends Component {
         /* options[arreglo] = aux */
         form[arreglo] = auxArray
         this.setState({
-            ... this.state,
+            ...this.state,
             form,
             options
         })
@@ -357,7 +357,7 @@ class UsuariosForm extends Component {
         })
         form[array] = auxForm
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         });
         if(array==="departamentos"){this.showDepartamentos();}
@@ -377,7 +377,7 @@ class UsuariosForm extends Component {
                 departamentos_disponibles.push(departamento)
             }
         })    
-        this.setState({  ... this.state, departamentos_disponibles  })
+        this.setState({  ...this.state, departamentos_disponibles  })
         
     }
     
@@ -412,7 +412,7 @@ class UsuariosForm extends Component {
         })
         form[arreglo] = auxArray
         this.setState({
-            ... this.state,
+            ...this.state,
             form,
             options
         })
@@ -447,7 +447,7 @@ class UsuariosForm extends Component {
             form.tipo_empleado = 3
         }
         this.setState({
-            ... this.state,
+            ...this.state,
             key: value,
             form
         })
@@ -470,7 +470,7 @@ class UsuariosForm extends Component {
     recover = () => {
         const { formulario, deleteForm } = this.props
         this.setState({
-            ... this.state,
+            ...this.state,
             form: formulario.form
         })
         deleteForm()

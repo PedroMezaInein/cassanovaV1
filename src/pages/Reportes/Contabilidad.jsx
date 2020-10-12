@@ -17,8 +17,8 @@ class Contabilidad extends Component {
         form: {
             empresas: [],
             empresa: 0,
-            fechaInicio: new Date,
-            fechaFin: new Date,
+            fechaInicio: new Date(),
+            fechaFin: new Date(),
             modulos: [
                 {
                     text: 'Ventas',
@@ -91,11 +91,11 @@ class Contabilidad extends Component {
     }
 
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const areas = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!areas)
@@ -108,13 +108,13 @@ class Contabilidad extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
 
     onChangeEmpresa = e => {
-        const { name, value } = e.target
+        const { value } = e.target
         const { options, form } = this.state
         let auxEmpresa = form.empresas
         let aux = []
@@ -124,12 +124,13 @@ class Contabilidad extends Component {
             } else {
                 aux.push(_aux)
             }
+            return false
         })
 
         options.empresas = aux
         form['empresas'] = auxEmpresa
         this.setState({
-            ... this.state,
+            ...this.state,
             form,
             options
         })
@@ -144,10 +145,11 @@ class Contabilidad extends Component {
             } else {
                 options.empresas.push(element)
             }
+            return false
         })
         form.empresas = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             options,
             form
         })
@@ -168,7 +170,7 @@ class Contabilidad extends Component {
 
                 options.empresas = setSelectOptions(empresas, 'name')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },
@@ -218,6 +220,7 @@ class Contabilidad extends Component {
                                             })
                                             const name = 'ventas/pagos/'+empresa.name+' V '+pago.id+' '+venta.id+url.substring(url.lastIndexOf('.'))
                                             empresaFolder.file(name, blobPromise)
+                                            return false
                                         })
                                     }
                                     if(venta.presupuestos){
@@ -229,6 +232,7 @@ class Contabilidad extends Component {
                                             })
                                             const name = 'ventas/presupuestos/'+empresa.name+' V '+presupuesto.id+' '+venta.id+url.substring(url.lastIndexOf('.'))
                                             empresaFolder.file(name, blobPromise)
+                                            return false
                                         })
                                     }
                                     if(venta.facturas){
@@ -251,8 +255,10 @@ class Contabilidad extends Component {
                                                 const name = 'ventas/facturas/'+empresa.name+' F '+factura.id+' '+venta.id+url.substring(url.lastIndexOf('.'))
                                                 empresaFolder.file(name, blobPromise)
                                             }
+                                            return false
                                         })
                                     }
+                                    return false
                                 })
                             }
                         }
@@ -275,6 +281,7 @@ class Contabilidad extends Component {
                                             })
                                             const name = 'compras/pagos/'+empresa.name+' C '+pago.id+' '+compra.id+url.substring(url.lastIndexOf('.'))
                                             empresaFolder.file(name, blobPromise)
+                                            return false
                                         })
                                     }
                                     if(compra.presupuestos){
@@ -286,6 +293,7 @@ class Contabilidad extends Component {
                                             })
                                             const name = 'compras/presupuestos/'+empresa.name+' C '+presupuesto.id+' '+compra.id+url.substring(url.lastIndexOf('.'))
                                             empresaFolder.file(name, blobPromise)
+                                            return false
                                         })
                                     }
                                     if(compra.facturas){
@@ -308,8 +316,10 @@ class Contabilidad extends Component {
                                                 const name = 'compras/facturas/'+empresa.name+' F '+factura.id+' '+compra.id+url.substring(url.lastIndexOf('.'))
                                                 empresaFolder.file(name, blobPromise)
                                             }
+                                            return false
                                         })
                                     }
+                                    return false
                                 })
                             }
                         }
@@ -332,6 +342,7 @@ class Contabilidad extends Component {
                                             })
                                             const name = 'egresos/pagos/'+empresa.name+' E '+pago.id+' '+egreso.id+url.substring(url.lastIndexOf('.'))
                                             empresaFolder.file(name, blobPromise)
+                                            return false
                                         })
                                     }
                                     if(egreso.presupuestos){
@@ -343,6 +354,7 @@ class Contabilidad extends Component {
                                             })
                                             const name = 'egresos/presupuestos/'+empresa.name+' E '+presupuesto.id+' '+egreso.id+url.substring(url.lastIndexOf('.'))
                                             empresaFolder.file(name, blobPromise)
+                                            return false
                                         })
                                     }
                                     if(egreso.facturas){
@@ -365,8 +377,10 @@ class Contabilidad extends Component {
                                                 const name = 'egresos/facturas/'+empresa.name+' F '+factura.id+' '+egreso.id+url.substring(url.lastIndexOf('.'))
                                                 empresaFolder.file(name, blobPromise)
                                             }
+                                            return false
                                         })
                                     }
+                                    return false
                                 })
                             }
                         }
@@ -389,6 +403,7 @@ class Contabilidad extends Component {
                                             })
                                             const name = 'ingresos/pagos/'+empresa.name+' I '+pago.id+' '+ingreso.id+url.substring(url.lastIndexOf('.'))
                                             empresaFolder.file(name, blobPromise)
+                                            return false
                                         })
                                     }
                                     if(ingreso.presupuestos){
@@ -400,6 +415,7 @@ class Contabilidad extends Component {
                                             })
                                             const name = 'ingresos/presupuestos/'+empresa.name+' I '+presupuesto.id+' '+ingreso.id+url.substring(url.lastIndexOf('.'))
                                             empresaFolder.file(name, blobPromise)
+                                            return false
                                         })
                                     }
                                     if(ingreso.facturas){
@@ -422,8 +438,10 @@ class Contabilidad extends Component {
                                                 const name = 'ingresos/facturas/'+empresa.name+' F '+factura.id+' '+ingreso.id+url.substring(url.lastIndexOf('.'))
                                                 empresaFolder.file(name, blobPromise)
                                             }
+                                            return false
                                         })
                                     }
+                                    return false
                                 })
                             }
                         }
@@ -437,9 +455,12 @@ class Contabilidad extends Component {
                                     })
                                     const name = 'estados-cuentas/'+empresa.name+' EC '+estado.id+url.substring(url.lastIndexOf('.'))
                                     empresaFolder.file(name, blobPromise)
+                                    return false
                                 })
+                                return false
                             })
                         }
+                        return false
                     })
                     zip.generateAsync({type:"blob"})
                         .then((blob) => {saveAs(blob, 'contabilidad.zip'); swal.close()})

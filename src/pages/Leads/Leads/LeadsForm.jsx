@@ -34,19 +34,19 @@ class LeadsForm extends Component {
     }
 
     componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
-        const { match : { params: { action: action } } } = this.props
-        const { history, location: { state: state} } = this.props
+        const { authUser: { user : { permisos  } } } = this.props
+        const { history : { location: { pathname } } } = this.props
+        const { match : { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
         const lead = permisos.find(function(element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         this.getOptions()
         switch(action){
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Nuevo lead',
                     formeditado: 0
                 })
@@ -91,7 +91,7 @@ class LeadsForm extends Component {
                         form.fecha = new Date(lead.created_at);
 
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             lead: lead,
                             title: 'Editar lead',
                             form,
@@ -113,7 +113,7 @@ class LeadsForm extends Component {
         const { form }  = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -122,7 +122,7 @@ class LeadsForm extends Component {
         const { form }  = this.state
         form['fecha'] = date
         this.setState({
-            ... this.state,
+            ...this.state,
             form: form
         })
     }
@@ -131,7 +131,7 @@ class LeadsForm extends Component {
         const { form }  = this.state
         form['servicios'] = array
         this.setState({
-            ... this.state,
+            ...this.state,
             form: form
         })
     }
@@ -176,7 +176,7 @@ class LeadsForm extends Component {
                     form.servicios = _servicios;
                 }
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form,
                     options
                 })

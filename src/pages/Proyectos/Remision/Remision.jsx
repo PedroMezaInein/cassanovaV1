@@ -21,11 +21,11 @@ class Remisiones extends Component {
         formeditado: 0,
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const remisiones = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!remisiones)
@@ -41,21 +41,21 @@ class Remisiones extends Component {
     }
     openModalDelete = remision => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: true,
             remision: remision
         })
     }
     openModalSee = remision => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSingle: true,
             remision: remision
         })
     }
     handleCloseSingle = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSingle: false,
             remision: ''
         })
@@ -63,7 +63,7 @@ class Remisiones extends Component {
     handleCloseDelete = () => {
         const { modalDelete } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: !modalDelete,
             remision: '',
         })
@@ -83,6 +83,7 @@ class Remisiones extends Component {
                     id: remision.id
                 }
             )
+            return false
         })
         return aux
     }
@@ -145,7 +146,7 @@ class Remisiones extends Component {
             (response) => {
                 const { remision } = response.data
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modalSingle: true,
                     remision: remision,
                 })
@@ -171,7 +172,7 @@ class Remisiones extends Component {
                 this.getRemisionesAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La remisión fue eliminada con éxito.')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modalDelete: false,
                     remision: '',
                 })

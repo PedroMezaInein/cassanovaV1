@@ -185,7 +185,7 @@ export default class SolicitudCompraCard extends Component {
                                                 </div>
                                             </div>
                                             <div>
-                                                <a href={data.adjunto.url} target="_blank" className="font-size-h6 text-dark-75 font-weight-bolder text-hover-primary">{data.adjunto.name}</a>
+                                                <a rel="noopener noreferrer"  href={data.adjunto.url} target="_blank" className="font-size-h6 text-dark-75 font-weight-bolder text-hover-primary">{data.adjunto.name}</a>
                                                 <div className="font-size-sm text-muted font-weight-bold mt-1">ADJUNTO</div>
                                             </div>
                                         </div>

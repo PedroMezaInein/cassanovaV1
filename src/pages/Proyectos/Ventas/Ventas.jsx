@@ -11,7 +11,7 @@ import { Button, FileInput } from '../../../components/form-components'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { FacturaForm, AdjuntosForm } from '../../../components/forms'
 import { FacturaTable } from '../../../components/tables'
-import { Form, ProgressBar } from 'react-bootstrap'
+import { Form } from 'react-bootstrap'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import TableForModals from '../../../components/tables/TableForModals'
 import Select from '../../../components/form-components/Select'
@@ -98,11 +98,11 @@ class Ventas extends Component {
         }
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const ventas = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!ventas)
@@ -148,6 +148,7 @@ class Ventas extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -156,7 +157,7 @@ class Ventas extends Component {
         const { name, value } = e.target
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -171,6 +172,7 @@ class Ventas extends Component {
                     waitAlert()
                     const reader = new FileReader()
                     reader.onload = async (e) => {
+                        let auxiliar = ''
                         const text = (e.target.result)
                         var XMLParser = require('react-xml-parser');
                         var xml = new XMLParser().parseFromString(text);
@@ -219,16 +221,16 @@ class Ventas extends Component {
                             let Subtotal = text.search('SubTotal="')
                             if (Subtotal)
                                 Subtotal = text.substring(Subtotal + 10)
-                            aux = Subtotal.search('"')
-                            Subtotal = Subtotal.substring(0, aux)
+                            auxiliar = Subtotal.search('"')
+                            Subtotal = Subtotal.substring(0, auxiliar)
                             obj.subtotal = Subtotal
                         }
                         if (obj.fecha === '') {
                             let Fecha = text.search('Fecha="')
                             if (Fecha)
                                 Fecha = text.substring(Fecha + 7)
-                            aux = Fecha.search('"')
-                            Fecha = Fecha.substring(0, aux)
+                                auxiliar = Fecha.search('"')
+                            Fecha = Fecha.substring(0, auxiliar)
                             obj.fecha = Fecha
                         }
                         let auxEmpresa = ''
@@ -236,6 +238,7 @@ class Ventas extends Component {
                             if (element.rfc === obj.rfc_emisor) {
                                 auxEmpresa = element
                             }
+                            return false
                         });
                         let auxCliente = ''
                         data.clientes.find(function (element, index) {
@@ -247,6 +250,7 @@ class Ventas extends Component {
                                 element.empresa === cadena) {
                                 auxCliente = element
                             }
+                            return false
                         });
                         if (auxEmpresa) {
                             options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')
@@ -269,7 +273,7 @@ class Ventas extends Component {
                         form.facturaObject = obj
                         form.rfc = obj.rfc_receptor
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             options,
                             form
                         })
@@ -289,7 +293,7 @@ class Ventas extends Component {
         form['adjuntos'][name].value = value
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -308,7 +312,7 @@ class Ventas extends Component {
         }
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -327,6 +331,7 @@ class Ventas extends Component {
                     _aux.push({
                         name: 'Presupuesto', text: presupuesto.name, url: presupuesto.url
                     })
+                    return false
                 })
             }
             if (venta.pagos) {
@@ -334,6 +339,7 @@ class Ventas extends Component {
                     _aux.push({
                         name: 'Pago', text: pago.name, url: pago.url
                     })
+                    return false
                 })
             }
             aux.push(
@@ -368,6 +374,7 @@ class Ventas extends Component {
                     objeto: venta
                 }
             )
+            return false
         })
         return aux
     }
@@ -382,6 +389,7 @@ class Ventas extends Component {
                 tipo: renderToString(setTextTable(adjunto.pivot.tipo)),
                 id: 'adjuntos-' + adjunto.id
             })
+            return false
         })
         return aux
     }
@@ -459,7 +467,7 @@ class Ventas extends Component {
     }
     openModalDelete = (venta) => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: true,
             venta: venta
         })
@@ -475,11 +483,12 @@ class Ventas extends Component {
         porcentaje = 0
         venta.facturas.map((factura) => {
             porcentaje = porcentaje + factura.total
+            return false
         })
         porcentaje = porcentaje * 100 / venta.total
         porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
         this.setState({
-            ... this.state,
+            ...this.state,
             modalFacturas: true,
             venta: venta,
             facturas: venta.facturas,
@@ -492,7 +501,7 @@ class Ventas extends Component {
         const { data } = this.state
         data.adjuntos = venta.presupuestos.concat(venta.pagos)
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAdjuntos: true,
             venta: venta,
             form: this.clearForm(),
@@ -506,7 +515,7 @@ class Ventas extends Component {
     }
     openModalSee = venta => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: true,
             venta: venta
         })
@@ -517,7 +526,7 @@ class Ventas extends Component {
     //     form.cliente = venta.cliente.id.toString()
     //     form.rfc = venta.cliente.rfc
     //     this.setState({
-    //         ... this.state,
+    //         ...this.state,
     //         modalAskFactura: true,
     //         venta: venta,
     //         form,
@@ -527,14 +536,14 @@ class Ventas extends Component {
     handleCloseDelete = () => {
         const { modalDelete } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: !modalDelete,
             venta: ''
         })
     }
     handleCloseFacturas = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalFacturas: false,
             venta: '',
             facturas: [],
@@ -546,7 +555,7 @@ class Ventas extends Component {
         const { data } = this.state
         data.adjuntos = []
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAdjuntos: false,
             form: this.clearForm(),
             adjuntos: [],
@@ -556,14 +565,14 @@ class Ventas extends Component {
     }
     handleCloseSee = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: false,
             venta: ''
         })
     }
     // handleCloseAskFactura = () => {
     //     this.setState({
-    //         ... this.state,
+    //         ...this.state,
     //         modalAskFactura: false,
     //         venta: '',
     //         form: this.clearForm()
@@ -594,9 +603,10 @@ class Ventas extends Component {
                     if (cliente.empresa === cadena) {
                         form.cliente = cliente.empresa
                     }
+                    return false
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form,
                     data,
                     options
@@ -617,7 +627,7 @@ class Ventas extends Component {
         })
     }
     async getVentasAxios() {
-        var table = $('#kt_datatable2_ventas').DataTable().ajax.reload();
+        $('#kt_datatable2_ventas').DataTable().ajax.reload();
     }
     async getOptionsAxios() {
         waitAlert()
@@ -640,7 +650,7 @@ class Ventas extends Component {
                 data.empresas = empresas
                 swal.close()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options,
                     data
                 })
@@ -665,7 +675,7 @@ class Ventas extends Component {
             (response) => {
                 this.getVentasAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     modalDelete: false,
                     venta: ''
@@ -701,6 +711,7 @@ class Ventas extends Component {
                 default:
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -711,6 +722,7 @@ class Ventas extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         data.append('id', venta.id)
         await axios.post(URL_DEV + 'ventas/factura', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
@@ -723,11 +735,12 @@ class Ventas extends Component {
                 porcentaje = 0
                 venta.facturas.map((factura) => {
                     porcentaje = porcentaje + factura.total
+                    return false
                 })
                 porcentaje = porcentaje * 100 / venta.total
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form,
                     venta: venta,
                     facturas: venta.facturas,
@@ -758,12 +771,13 @@ class Ventas extends Component {
                 porcentaje = 0
                 venta.facturas.map((factura) => {
                     porcentaje = porcentaje + factura.total
+                    return false
                 })
                 porcentaje = porcentaje * 100 / venta.total
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
                 this.getVentasAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     venta: venta,
                     facturas: venta.facturas,
@@ -823,6 +837,7 @@ class Ventas extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         data.append('id', venta.id)
         await axios.post(URL_DEV + 'ventas/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
@@ -832,7 +847,7 @@ class Ventas extends Component {
                 data.adjuntos = venta.presupuestos.concat(venta.pagos)
                 this.getVentasAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     venta: venta,
                     adjuntos: this.setAdjuntosTable(venta),
@@ -863,7 +878,7 @@ class Ventas extends Component {
                 data.adjuntos = venta.presupuestos.concat(venta.pagos)
                 this.getVentasAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     venta: venta,
                     adjuntos: this.setAdjuntosTable(venta),
@@ -896,7 +911,7 @@ class Ventas extends Component {
             (response) => {
                 this.getVentasAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     // modalAskFactura: false
                 })
@@ -917,16 +932,14 @@ class Ventas extends Component {
     }
     onSelect = value => {
         const { form } = this.state
-        if (value === 'facturas') {
-        }
         this.setState({
-            ... this.state,
+            ...this.state,
             active: value,
             form
         })
     }
     render() {
-        const { modalDelete, modalFacturas, modalAdjuntos, adjuntos, title, options, form, ventas, venta, facturas, data, formeditado, modalSee, active } = this.state
+        const { modalDelete, modalFacturas, modalAdjuntos, adjuntos, options, form, ventas, venta, facturas, data, formeditado, modalSee, active } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <NewTableServerRender columns={VENTAS_COLUMNS} data={ventas}

@@ -69,7 +69,7 @@ class Leads extends Component {
 
     openModalSafeDelete =  (lead) => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: true,
             lead: lead,
         })
@@ -78,14 +78,14 @@ class Leads extends Component {
 
     openModalExport = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalExport: true
         })
     }
 
     openModalSee = lead => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSingle: true,
             lead: lead
         })
@@ -93,7 +93,7 @@ class Leads extends Component {
 
     handleClose = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: false,
             lead: ''
         })
@@ -101,7 +101,7 @@ class Leads extends Component {
 
     handleCloseDelete = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: false,
             lead : ''
         })
@@ -112,7 +112,7 @@ class Leads extends Component {
         form.fechaInicio = moment().startOf('month').toDate()
         form.fechaFin = moment().endOf('month').toDate()
         this.setState({
-            ... this.state,
+            ...this.state,
             form,
             modalExport: false
         })
@@ -120,7 +120,7 @@ class Leads extends Component {
 
     handleCloseSingle = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSingle: false,
             lead : ''
         })
@@ -132,7 +132,7 @@ class Leads extends Component {
         form.fechaInicio = startDate
         form.fechaFin = endDate
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -153,6 +153,7 @@ class Leads extends Component {
                 convertido: renderToString(this.setLabel(lead)),
                 id: lead.id
             })
+            return false
         })
         return aux
     }
@@ -237,7 +238,7 @@ class Leads extends Component {
                 this.getLeadAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito el lead.')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modalDelete: false,
                     lead: ''
                 })

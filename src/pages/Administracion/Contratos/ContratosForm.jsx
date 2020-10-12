@@ -64,12 +64,12 @@ class ContratosForm extends Component {
             }
         }
         let tipo_contrato=tipo
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
-        const { match: { params: { action: action } } } = this.props
-        const { history, location: { state: state } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
+        const { match: { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
         const contratos = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         if (!contratos)
@@ -80,7 +80,7 @@ class ContratosForm extends Component {
         switch (aux[0]) {
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     tipo: tipo_contrato,
                     title: 'Nuevo contrato de '+tipo_contrato,
                     formeditado: 0
@@ -117,10 +117,11 @@ class ContratosForm extends Component {
                                         name: adj.name, url: adj.url
                                     }
                                 )
+                                return false
                             })
                         form.adjuntos.adjunto.files = aux
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             form,
                             contrato: contrato,
                             tipo: tipo,
@@ -142,7 +143,7 @@ class ContratosForm extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -156,7 +157,7 @@ class ContratosForm extends Component {
             form.tipo = 'proveedor'
         }
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
         waitAlert()
@@ -182,7 +183,7 @@ class ContratosForm extends Component {
         }
         form.adjuntos[name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -203,7 +204,7 @@ class ContratosForm extends Component {
     //     form.adjuntos[name].value = value
     //     form.adjuntos[name].files = aux
     //     this.setState({
-    //         ... this.state,
+    //         ...this.state,
     //         form
     //     })
     // }
@@ -220,7 +221,7 @@ class ContratosForm extends Component {
                 options.clientes = setOptions(clientes, 'empresa', 'id')
                 options.tiposContratos = setOptions(tiposContratos, 'tipo', 'id')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },
@@ -254,6 +255,7 @@ class ContratosForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -264,6 +266,7 @@ class ContratosForm extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         await axios.post(URL_DEV + 'contratos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -327,7 +330,7 @@ class ContratosForm extends Component {
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }

@@ -8,7 +8,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
 import esLocale from '@fullcalendar/core/locales/es';
 import { forbiddenAccessAlert, errorAlert, createAlert, doneAlert, waitAlert } from '../../../functions/alert';
-import { URL_ASSETS, URL_DEV } from '../../../constants';
+import { URL_DEV } from '../../../constants';
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { setDateTableLG, setOptions } from '../../../functions/setters';
@@ -48,12 +48,12 @@ class Vacaciones extends Component {
     }
 
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
-        // const { match: { params: { action: action } } } = this.props
-        // const { history, location: { state: state } } = this.props
-        const vacaciones = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
+        // const { match: { params: { action } } } = this.props
+        // const { history, location: { state } } = this.props
+        permisos.find(function (element, index) {
+            const { modulo: { url } } = element
             return pathname === url
         });
 
@@ -63,14 +63,14 @@ class Vacaciones extends Component {
 
     openModal = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modal: true
         })
     }
 
     handleClose = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modal: false
         })
     }
@@ -79,7 +79,7 @@ class Vacaciones extends Component {
         const {options} = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
-            ... this.state,
+            ...this.state,
             options
         })
     }
@@ -109,6 +109,7 @@ class Vacaciones extends Component {
                             containerClass: 'cumpleaños'
                         })
                     }
+                    return false
                 })
                 vacaciones.map((vacacion) => {
                     aux.push({
@@ -119,6 +120,7 @@ class Vacaciones extends Component {
                         iconClass: 'fas fa-umbrella-beach icon-md',
                         containerClass: 'vacaciones'
                     })
+                    return false
                 })
                 feriados.map((feriado) => {
                     aux.push({
@@ -132,10 +134,11 @@ class Vacaciones extends Component {
                     })
                     var start = moment(feriado.fecha).toDate();
                     aux2.push(start)
+                    return false
                 })
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     events: aux,
                     espera: vacaciones_espera,
                     disabledDates: aux2
@@ -234,7 +237,7 @@ class Vacaciones extends Component {
 
     openModalAddVacaciones = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modal_add_vacaciones: true,
             title: 'Agregar vacaciones',
             form: this.clearForm(),
@@ -244,7 +247,7 @@ class Vacaciones extends Component {
 
     openModalAddFeriados = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modal_add_feriados: true,
             title: 'Agregar feriados',
             form: this.clearForm(),
@@ -274,6 +277,7 @@ class Vacaciones extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -281,7 +285,7 @@ class Vacaciones extends Component {
     handleCloseAddVacaciones = () => {
         const { modal_add_vacaciones } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modal_add_vacaciones: !modal_add_vacaciones,
             title: 'Agregar vacaciones',
             form: this.clearForm()
@@ -291,7 +295,7 @@ class Vacaciones extends Component {
     handleCloseAddFeriados = () => {
         const { modal_add_feriados } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modal_add_feriados: !modal_add_feriados,
             title: 'Agregar vacaciones',
             form: this.clearForm()
@@ -303,7 +307,7 @@ class Vacaciones extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -324,7 +328,7 @@ class Vacaciones extends Component {
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -339,6 +343,7 @@ class Vacaciones extends Component {
                         fecha: row[0],
                         texto: row[1]
                     })
+                return false
             })
             this.sendVacacionesAxios(arreglo)
         })
@@ -445,23 +450,23 @@ class Vacaciones extends Component {
                                                                     <span className="font-size-lg">{setDateTableLG(vacacion.fecha_fin)}</span>
                                                                 </td>
                                                                 <td className="pr-0">
-                                                                    <a className="btn btn-icon btn-light-success success2 btn-sm mr-2 ml-auto" onClick = { (e) =>  { 
+                                                                    <span className="btn btn-icon btn-light-success success2 btn-sm mr-2 ml-auto" onClick = { (e) =>  { 
                                                                         e.preventDefault(); 
                                                                         createAlert('¿Estás seguro que deseas aceptar las vacaciones?', '', 
                                                                         () => this.editVacacionesAxios(vacacion, 'Aceptadas'))
                                                                     }}  
                                                                     >
                                                                         <i className="flaticon2-check-mark icon-sm"></i>
-                                                                    </a>
+                                                                    </span>
                                                                 
-                                                                    <a className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger"onClick = { (e) =>  { 
+                                                                    <span className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger"onClick = { (e) =>  { 
                                                                         e.preventDefault(); 
                                                                         createAlert('¿Estás seguro que deseas rechazar las vacaciones?', '', 
                                                                         () => this.editVacacionesAxios(vacacion, 'Rechazadas'))
                                                                     }}
                                                                     >
                                                                         <i className="flaticon2-cross icon-sm"></i>
-                                                                    </a>
+                                                                    </span>
                                                                 </td>
                                                             </tr>
                                                         </tbody>

@@ -7,9 +7,7 @@ import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../functions/routers"
 import { UltimosContactosCard, SinContacto, UltimosIngresosCard } from '../components/cards'
 class Normas extends Component {
-    constructor(props) {
-        super(props)
-    }
+    
     state = {
         title: '',
         accordion: [
@@ -48,11 +46,11 @@ class Normas extends Component {
         });
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const tareas = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!tareas)

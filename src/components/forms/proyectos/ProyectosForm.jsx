@@ -18,6 +18,7 @@ class ProyectosForm extends Component {
                     if (correo === form.correo) {
                         aux = true
                     }
+                    return false
                 })
                 if (!aux) {
                     array = form.correos
@@ -52,11 +53,12 @@ class ProyectosForm extends Component {
                 form.clientes.map((element) => {
                     if (element.value === value)
                         aux = true
+                    return false
                 })
                 if (!aux)
                     onChangeOptions({ target: { value: cliente.value, name: 'cliente' } }, 'clientes')
             }
-
+            return false
         })
         onChange({ target: { value: value, name: 'cliente' } })
     }

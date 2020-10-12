@@ -66,11 +66,11 @@ class SolicitudVenta extends Component{
     }
 
     componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
+        const { authUser: { user : { permisos  } } } = this.props
+        const { history : { location: { pathname } } } = this.props
         const { history } = this.props
         const solicitud = permisos.find(function(element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if(!solicitud)
@@ -83,7 +83,7 @@ class SolicitudVenta extends Component{
             if(id){
                 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modalSingle: true
                 })
                 this.getSolicitudVentaAxios(id)
@@ -119,7 +119,7 @@ class SolicitudVenta extends Component{
 
     openModal = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             form: this.clearForm(),
             modal: true,
             title: 'Nueva solicitud de venta',
@@ -158,7 +158,7 @@ class SolicitudVenta extends Component{
             }]
         }
         this.setState({
-            ... this.state,
+            ...this.state,
             modal: true,
             title: 'Editar solicitud de venta',
             solicitud: solicitud,
@@ -170,7 +170,7 @@ class SolicitudVenta extends Component{
 
     openModalDelete = ( solicitud ) => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: true,
             title: 'Eliminar solicitud de venta',
             form: this.clearForm(),
@@ -180,7 +180,7 @@ class SolicitudVenta extends Component{
 
     openModalSingle = ( solicitud ) => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSingle: true,
             solicitud: solicitud
         })
@@ -190,7 +190,7 @@ class SolicitudVenta extends Component{
         const { form } = this.state
         form.empresa = solicitud.empresa.id.toString()
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAskFactura: true,
             solicitud: solicitud,
             form,
@@ -200,7 +200,7 @@ class SolicitudVenta extends Component{
 
     handleCloseAskFactura = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAskFactura: false,
             solicitud: '',
             form: this.clearForm()
@@ -209,7 +209,7 @@ class SolicitudVenta extends Component{
 
     handleClose = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             form: this.clearForm(),
             modal: false,
             solicitudes: '',
@@ -220,7 +220,7 @@ class SolicitudVenta extends Component{
     handleCloseDelete = () => {
         const { modalDelete } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: !modalDelete,
             form: this.clearForm(),
             solicitud: ''
@@ -230,7 +230,7 @@ class SolicitudVenta extends Component{
     handleCloseSingle = () => {
         const { modalSingle } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSingle: !modalSingle,
             solicitud: ''
         })
@@ -250,7 +250,7 @@ class SolicitudVenta extends Component{
         const {name, value} = e.target
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -272,7 +272,7 @@ class SolicitudVenta extends Component{
         form['adjuntos'][name].value = value
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -290,7 +290,7 @@ class SolicitudVenta extends Component{
         }
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -315,7 +315,7 @@ class SolicitudVenta extends Component{
         const {options} = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
-            ... this.state,
+            ...this.state,
             options
         })
     }
@@ -393,7 +393,7 @@ class SolicitudVenta extends Component{
             (response) => {
                 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     modalAskFactura: false
                 })
@@ -432,7 +432,7 @@ class SolicitudVenta extends Component{
                 options['formasPago'] = setOptions(formasPago, 'nombre', 'id')
                 options['estatusFacturas'] = setOptions(estatusFacturas, 'estatus', 'id')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options,
                     solicitudes: this.setSolicitudes(solicitudes),
                     data
@@ -460,7 +460,7 @@ class SolicitudVenta extends Component{
                 const { solicitud } = response.data
                 data.solicitud = solicitud
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     solicitud: solicitud,
                     data
                 })
@@ -517,7 +517,7 @@ class SolicitudVenta extends Component{
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
                 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     solicitud: '',
                     solicitudes: this.setSolicitudes(solicitudes),
@@ -577,7 +577,7 @@ class SolicitudVenta extends Component{
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     solicitud: '',
                     solicitudes: this.setSolicitudes(solicitudes),
@@ -612,7 +612,7 @@ class SolicitudVenta extends Component{
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud fue registrado con éxito.')
                 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modalDelete: false,
                     data,
                     title: 'Nueva solicitud de compra',

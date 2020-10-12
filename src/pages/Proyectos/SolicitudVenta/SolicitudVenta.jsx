@@ -67,11 +67,11 @@ class SolicitudVenta extends Component {
         }
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const solicitud = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!solicitud)
@@ -82,7 +82,7 @@ class SolicitudVenta extends Component {
             let id = parseInt(params.get("id"))
             if (id) {
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modalSingle: true
                 })
                 this.getSolicitudVentaAxios(id)
@@ -92,7 +92,7 @@ class SolicitudVenta extends Component {
     }
     openModalDelete = (solicitud) => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: true,
             title: 'Eliminar solicitud de venta',
             form: this.clearForm(),
@@ -102,7 +102,7 @@ class SolicitudVenta extends Component {
     handleCloseDelete = () => {
         const { modalDelete } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: !modalDelete,
             form: this.clearForm(),
             solicitud: ''
@@ -112,7 +112,7 @@ class SolicitudVenta extends Component {
         const { form } = this.state
         form.empresa = solicitud.empresa.id.toString()
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAskFactura: true,
             solicitud: solicitud,
             form,
@@ -121,7 +121,7 @@ class SolicitudVenta extends Component {
     }
     handleCloseAskFactura = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAskFactura: false,
             solicitud: '',
             form: this.clearForm()
@@ -129,7 +129,7 @@ class SolicitudVenta extends Component {
     }
     openModalSingle = (solicitud) => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSingle: true,
             solicitud: solicitud
         })
@@ -137,7 +137,7 @@ class SolicitudVenta extends Component {
     handleCloseSingle = () => {
         const { modalSingle } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSingle: !modalSingle,
             solicitud: ''
         })
@@ -161,6 +161,7 @@ class SolicitudVenta extends Component {
                     id: solicitud.id
                 }
             )
+            return false
         })
         return aux
     }
@@ -225,7 +226,7 @@ class SolicitudVenta extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'solicitud-venta/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empresas, areas, tiposPagos, proyectos, solicitudes, clientes, metodosPago, formasPago, estatusFacturas } = response.data
+                const { empresas, areas, tiposPagos, proyectos, clientes, metodosPago, formasPago, estatusFacturas } = response.data
                 const { options, data } = this.state
                 // data.solicitudes = solicitudes
                 data.clientes = clientes
@@ -238,7 +239,7 @@ class SolicitudVenta extends Component {
                 options['formasPago'] = setOptions(formasPago, 'nombre', 'id')
                 options['estatusFacturas'] = setOptions(estatusFacturas, 'estatus', 'id')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options,
                     // solicitudes: this.setSolicitudes(solicitudes),
                     data
@@ -258,7 +259,7 @@ class SolicitudVenta extends Component {
         })
     }
     async getSolicitudAxios() {
-        var table = $('#kt_datatable_solicitud').DataTable().ajax.reload();
+        $('#kt_datatable_solicitud').DataTable().ajax.reload();
     }
     async getSolicitudVentaAxios(id) {
         const { access_token } = this.props.authUser
@@ -268,7 +269,7 @@ class SolicitudVenta extends Component {
                 const { solicitud } = response.data
                 data.solicitud = solicitud
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     solicitud: solicitud,
                     data
                 })
@@ -297,7 +298,7 @@ class SolicitudVenta extends Component {
                 this.getSolicitudAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud fue registrado con éxito.')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modalDelete: false,
                     data,
                     title: 'Nueva solicitud de compra',
@@ -340,6 +341,7 @@ class SolicitudVenta extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form
     }
@@ -352,10 +354,11 @@ class SolicitudVenta extends Component {
                 if (value === cliente.id.toString()) {
                     form.rfc = cliente.rfc
                 }
+                return false
             })
         }
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -370,7 +373,7 @@ class SolicitudVenta extends Component {
         await axios.post(URL_DEV + 'facturas/ask', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     modalAskFactura: false
                 })

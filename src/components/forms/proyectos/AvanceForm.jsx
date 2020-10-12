@@ -1,10 +1,8 @@
 import React, { Component } from 'react'
-import { P } from '../../texts'
 import { Calendar, FileInput, Button, InputSinText, InputMoneySinText, Input } from '../../form-components'
 import { Form, Accordion, Card } from 'react-bootstrap'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import SliderImages from '../../singles/SliderImages'
-import ItemSlider from '../../singles/ItemSlider'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 class AvanceForm extends Component {
@@ -23,13 +21,14 @@ class AvanceForm extends Component {
         onChange({ target: { name: 'fechaFin', value: date } })
     }
     handleAccordion = eventKey => {
-        const { proyecto: { avances: avances } } = this.props;
+        const { proyecto: { avances } } = this.props;
         const { activeKey } = this.state
         let aux = activeKey
         avances.find(function (element, index) {
             if (element.id === eventKey) {
                 aux = eventKey
             }
+            return false
         });
         this.setState({
             activeKey: aux
@@ -196,7 +195,7 @@ class AvanceForm extends Component {
                                                                 <Card.Body>
                                                                     <div>
                                                                         <div className="d-flex justify-content-center">
-                                                                            <a href={avance.pdf} target="_blank" className="text-info font-weight-bold font-size-sm">
+                                                                            <a rel="noopener noreferrer" href={avance.pdf} target="_blank" className="text-info font-weight-bold font-size-sm">
                                                                                 <div className="bg-light-info rounded-sm mr-5 p-2">
                                                                                     <span className="svg-icon svg-icon-xl svg-icon-info mr-2">
                                                                                         <SVG src={toAbsoluteUrl('/images/svg/Download.svg')} />
@@ -207,14 +206,14 @@ class AvanceForm extends Component {
                                                                             {
                                                                                 proyecto ?
                                                                                     proyecto.contactos.length ?
-                                                                                        <a onClick={(e) => { e.preventDefault(); sendMail(avance.id) }} className="text-pink font-weight-bold font-size-sm">
+                                                                                        <span onClick={(e) => { e.preventDefault(); sendMail(avance.id) }} className="text-pink font-weight-bold font-size-sm">
                                                                                             <div className="bg-light-pink rounded-sm mr-5 p-2">
                                                                                                 <span className="svg-icon svg-icon-xl svg-icon-pink mr-2">
                                                                                                     <SVG src={toAbsoluteUrl('/images/svg/Mail-notification.svg')} />
                                                                                                 </span>
                                                                                                 Enviar por correo
                                                                                             </div>
-                                                                                        </a>
+                                                                                        </span>
                                                                                         :
                                                                                         ''
                                                                                     : ''

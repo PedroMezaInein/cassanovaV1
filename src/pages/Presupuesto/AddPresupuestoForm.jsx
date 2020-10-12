@@ -186,7 +186,7 @@ class AddPresupuestoForm extends Component {
         const { form } = this.state
         form.conceptos[name] = checked
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }

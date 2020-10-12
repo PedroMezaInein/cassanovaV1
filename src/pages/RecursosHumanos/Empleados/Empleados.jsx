@@ -76,11 +76,11 @@ class Empleados extends Component {
         }
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const empleados = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!empleados)
@@ -98,7 +98,7 @@ class Empleados extends Component {
         const { modal } = this.state
         modal.delete = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             empleado: empleado
         })
@@ -108,7 +108,7 @@ class Empleados extends Component {
         modal.adjuntos = true
         data.adjuntos = empleado.datos_generales.concat(empleado.recibos_nomina).concat(empleado.altas_bajas)
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             empleado: empleado,
             data,
@@ -123,7 +123,7 @@ class Empleados extends Component {
         const { modal } = this.state
         modal.see = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             empleado: empleado
         })
@@ -132,7 +132,7 @@ class Empleados extends Component {
         const { modal } = this.state
         modal.delete = false
         this.setState({
-            ... this.state,
+            ...this.state,
             form: this.clearForm(),
             modal,
             empleado: ''
@@ -142,7 +142,7 @@ class Empleados extends Component {
         const { modal } = this.state
         modal.adjuntos = false
         this.setState({
-            ... this.state,
+            ...this.state,
             form: this.clearForm(),
             modal,
             empleado: ''
@@ -152,7 +152,7 @@ class Empleados extends Component {
         const { modal } = this.state
         modal.see = false
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             empleado: ''
         })
@@ -167,7 +167,7 @@ class Empleados extends Component {
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },
@@ -199,7 +199,7 @@ class Empleados extends Component {
                 }
                 modal.delete = false
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal,
                     empleado: '',
                     form: this.clearForm()
@@ -266,6 +266,7 @@ class Empleados extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -301,6 +302,7 @@ class Empleados extends Component {
                         id: empleado.id
                     }
                 )
+                return false
             })
         return aux
     }
@@ -362,6 +364,7 @@ class Empleados extends Component {
                 tipo: renderToString(setTextTable(adjunto.pivot.tipo)),
                 id: 'adjuntos-' + adjunto.id
             })
+            return false
         })
         return aux
     }
@@ -393,7 +396,7 @@ class Empleados extends Component {
             form.tipo_empleado = 'Obra'
         }
         this.setState({
-            ... this.state,
+            ...this.state,
             key: value,
             form
         })
@@ -411,6 +414,7 @@ class Empleados extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         data.append('id', empleado.id)
         await axios.post(URL_DEV + 'rh/empleado/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
@@ -425,7 +429,7 @@ class Empleados extends Component {
                     this.getEmpleadosObraAxios()
                 }
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     empleado: empleado,
                     adjuntos: this.setAdjuntosTable(data.adjuntos),
@@ -462,7 +466,7 @@ class Empleados extends Component {
                 }
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     empleado: empleado,
                     adjuntos: this.setAdjuntosTable(data.adjuntos),
@@ -495,7 +499,7 @@ class Empleados extends Component {
         }
         form.adjuntos[name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -516,7 +520,7 @@ class Empleados extends Component {
         form.adjuntos[name].value = value
         form.adjuntos[name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }

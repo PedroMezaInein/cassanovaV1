@@ -18,7 +18,7 @@ export default class FacturaTable extends Component {
         const { dataArray } = this.state
         dataArray.facturas = facturas
         this.setState({
-            ... this.state,
+            ...this.state,
             data: this.setFactura(facturas),
             dataArray
         })
@@ -55,6 +55,7 @@ export default class FacturaTable extends Component {
                     id: factura.id
                 }
             )
+            return false
         })
         return aux
     }
@@ -64,7 +65,7 @@ export default class FacturaTable extends Component {
         if (prevProps.facturas !== this.props.facturas) {
             dataArray.facturas = this.props.facturas
             this.setState({
-                ... this.state,
+                ...this.state,
                 data: this.setFactura(this.props.facturas),
                 dataArray
             })

@@ -57,18 +57,18 @@ class SolicitudVentaForm extends Component {
         }
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
-        const { match: { params: { action: action } } } = this.props
-        const { history, location: { state: state } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
+        const { match: { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
         const solicitud = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         })
         switch (action) {
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Nueva solicitud de venta',
                     formeditado: 0
                 })
@@ -107,7 +107,7 @@ class SolicitudVentaForm extends Component {
                             }]
                         }
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             title: 'Editar solicitud de venta',
                             formeditado: 1,
                             form,
@@ -149,6 +149,7 @@ class SolicitudVentaForm extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form
     }
@@ -165,7 +166,7 @@ class SolicitudVentaForm extends Component {
         }
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -174,7 +175,7 @@ class SolicitudVentaForm extends Component {
         const { name, value } = e.target
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -195,7 +196,7 @@ class SolicitudVentaForm extends Component {
     //     form['adjuntos'][name].value = value
     //     form['adjuntos'][name].files = aux
     //     this.setState({
-    //         ... this.state,
+    //         ...this.state,
     //         form
     //     })
     // }
@@ -212,7 +213,7 @@ class SolicitudVentaForm extends Component {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
-            ... this.state,
+            ...this.state,
             options
         })
     }
@@ -220,8 +221,8 @@ class SolicitudVentaForm extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'solicitud-venta/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empresas, areas, tiposPagos, proyectos, solicitudes, clientes, metodosPago, formasPago, estatusFacturas } = response.data
-                const { options, data } = this.state
+                const { empresas, areas, tiposPagos, proyectos, clientes, metodosPago, formasPago, estatusFacturas } = response.data
+                const { options } = this.state
                 // data.solicitudes = solicitudes
                 // data.clientes = clientes
                 options['empresas'] = setOptions(empresas, 'name', 'id')
@@ -233,7 +234,7 @@ class SolicitudVentaForm extends Component {
                 options['formasPago'] = setOptions(formasPago, 'nombre', 'id')
                 options['estatusFacturas'] = setOptions(estatusFacturas, 'estatus', 'id')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options,
                     // solicitudes: this.setSolicitudes(solicitudes),
                     // data
@@ -268,6 +269,7 @@ class SolicitudVentaForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -278,6 +280,7 @@ class SolicitudVentaForm extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         await axios.post(URL_DEV + 'solicitud-venta', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -290,7 +293,7 @@ class SolicitudVentaForm extends Component {
                     pathname: '/proyectos/solicitud-venta'
                 });
                 // this.setState({
-                //     ... this.state,
+                //     ...this.state,
                 //     form: this.clearForm(),
                 //     solicitud: '',
                 //     solicitudes: this.setSolicitudes(solicitudes),
@@ -327,6 +330,7 @@ class SolicitudVentaForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -335,6 +339,7 @@ class SolicitudVentaForm extends Component {
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
+            return false
         })
         await axios.post(URL_DEV + 'solicitud-venta/update/' + solicitud.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -347,7 +352,7 @@ class SolicitudVentaForm extends Component {
                     pathname: '/proyectos/solicitud-venta'
                 });
                 // this.setState({
-                //     ... this.state,
+                //     ...this.state,
                 //     form: this.clearForm(),
                 //     solicitud: '',
                 //     solicitudes: this.setSolicitudes(solicitudes),
@@ -384,7 +389,7 @@ class SolicitudVentaForm extends Component {
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }

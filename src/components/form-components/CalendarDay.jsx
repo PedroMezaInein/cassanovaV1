@@ -12,7 +12,7 @@ export default class CalendarDay extends Component {
     componentDidMount(){
         const { date } = this.props
         this.setState({
-            ... this.state,
+            ...this.state,
             date: date
         })
     }
@@ -20,7 +20,7 @@ export default class CalendarDay extends Component {
     updateDate = item => {
         const { onChange, name } = this.props
         this.setState({
-            ... this.state,
+            ...this.state,
             date: item
         })
         onChange({ target: { name: name, value: item } })

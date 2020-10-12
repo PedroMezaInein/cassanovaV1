@@ -56,12 +56,12 @@ class Facturacion extends Component {
         key: 'ventas'
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         let aux = pathname.substr(1, pathname.length - 1)
         const facturas = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!facturas)
@@ -79,7 +79,7 @@ class Facturacion extends Component {
                 data.empresas = empresas
                 swal.close()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     data
                 })
             },
@@ -125,14 +125,14 @@ class Facturacion extends Component {
     }
     openModalSee = factura => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: true,
             factura: factura
         })
     }
     handleCloseSee = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: false,
             factura: ''
         })
@@ -249,7 +249,7 @@ class Facturacion extends Component {
         })
         form.adjuntos.adjuntos.files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             modalCancelar: true,
             // tipo: 'Ventas',
             factura: factura,
@@ -302,7 +302,7 @@ class Facturacion extends Component {
         form['adjuntos'][name].value = value
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -379,7 +379,7 @@ class Facturacion extends Component {
     handleClose = () => {
         const { modalCancelar } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modalCancelar: !modalCancelar,
             form: this.clearForm()
         })
@@ -391,7 +391,7 @@ class Facturacion extends Component {
     }
     openModal = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalFacturas: true,
             title: 'Agregar Factura',
             // tipo: 'Compras',
@@ -402,7 +402,7 @@ class Facturacion extends Component {
     handleCloseFacturas = () => {
         const { modalFacturas } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modalFacturas: !modalFacturas,
             // form: this.clearForm()
         })
@@ -508,7 +508,7 @@ class Facturacion extends Component {
                         }
                         form.facturaObject = obj
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             form
                         })
                     }
@@ -527,7 +527,7 @@ class Facturacion extends Component {
         form['adjuntos'][name].value = value
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -535,7 +535,7 @@ class Facturacion extends Component {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
-            ... this.state,
+            ...this.state,
             options
         })
     }
@@ -554,7 +554,7 @@ class Facturacion extends Component {
         }
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -572,7 +572,7 @@ class Facturacion extends Component {
             this.getVentasAxios()
         }
         this.setState({
-            ... this.state,
+            ...this.state,
             key: value
         })
     }
@@ -607,7 +607,7 @@ class Facturacion extends Component {
             (response) => {
                 this.getVentasAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     modalFacturas: false
                 })
@@ -649,7 +649,7 @@ class Facturacion extends Component {
                     }
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form,
                     data,
                     options

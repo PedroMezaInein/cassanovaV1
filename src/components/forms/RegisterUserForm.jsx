@@ -4,10 +4,11 @@ import { Input, Button, Select, SelectSearchTrue } from '../form-components'
 import { EMAIL } from '../../constants'
 class RegisterUserForm extends Component {
     updateDepartamento = value => {
-        const { onChange, onChangeAndAdd, options, form } = this.props
+        const { onChange, onChangeAndAdd, options } = this.props
         options.departamentos.map((departamento) => {
             if (departamento.value === value)
                 onChangeAndAdd({ target: { value: departamento.value, name: 'departamento' } }, 'departamentos')
+            return false
         })
         onChange({ target: { value: value, name: 'departamento' } })
     }
@@ -16,6 +17,7 @@ class RegisterUserForm extends Component {
         options.proyectos.map((proyecto) => {
             if (proyecto.value === value)
                 onChangeAndAdd({ target: { value: proyecto.value, name: 'proyecto' } }, 'proyectos')
+            return false
         })
         onChange({ target: { value: value, name: 'proyecto' } })
     }
@@ -125,7 +127,7 @@ class RegisterUserForm extends Component {
                         : ''
                 }
                 {
-                    form.tipo == 3 ?
+                    form.tipo === '3' ?
                         <div className="form-group row form-group-marginless">
                             <div className="col-md-4">
                                 <SelectSearchTrue

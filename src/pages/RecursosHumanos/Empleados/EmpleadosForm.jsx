@@ -8,7 +8,6 @@ import { setOptions} from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import { EmpleadosForm as EmpleadosFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
-const $ = require('jquery');
 
 class Empleados extends Component {
     state = {
@@ -66,18 +65,18 @@ class Empleados extends Component {
         }
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
-        const { match: { params: { action: action } } } = this.props
-        const { history, location: { state: state } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
+        const { match: { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
         const empleado = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         switch (action) {
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Nuevo empleado',
                     formeditado: 0
                 })
@@ -113,7 +112,7 @@ class Empleados extends Component {
                         form.fecha_alta_imss = new Date(empleado.fecha_alta_imss)
                         form.numero_alta_imss = empleado.numero_alta_imss
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             form,
                             options,
                             empleado: empleado,
@@ -157,7 +156,7 @@ class Empleados extends Component {
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },
@@ -198,6 +197,7 @@ class Empleados extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -208,6 +208,7 @@ class Empleados extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         await axios.post(URL_DEV + 'rh/empleado', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -302,6 +303,7 @@ class Empleados extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -326,7 +328,7 @@ class Empleados extends Component {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
-            ... this.state,
+            ...this.state,
             options
         })
     }
@@ -343,7 +345,7 @@ class Empleados extends Component {
         }
         form.adjuntos[name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -364,7 +366,7 @@ class Empleados extends Component {
         form.adjuntos[name].value = value
         form.adjuntos[name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }

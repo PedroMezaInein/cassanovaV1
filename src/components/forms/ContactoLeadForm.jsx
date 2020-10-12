@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { RadioGroup, Calendar, SelectSearch, Input, CalendarDay } from '../form-components'
+import { RadioGroup, Calendar, SelectSearch, Input } from '../form-components'
 import { DATE } from '../../constants'
 import { ItemSlider } from '../../components/singles'
 

@@ -7,11 +7,10 @@ import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete} from '../../../components/singles' 
 import { NOMINA_OBRA_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS} from '../../../constants'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender' 
-import { NominaObraForm, AdjuntosForm} from '../../../components/forms'
+import { AdjuntosForm} from '../../../components/forms'
 import { setOptions, setDateTable, setMoneyTable, setTextTable, setAdjuntosList} from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert, deleteAlert, doneAlert} from '../../../functions/alert'
 import TableForModals from '../../../components/tables/TableForModals'
-import { format } from 'date-fns'
 
 const $ = require('jquery');
 
@@ -59,11 +58,11 @@ class NominaObra extends Component {
     }
 
     componentDidMount() { 
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const nominaobra = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!nominaobra)
@@ -98,7 +97,7 @@ class NominaObra extends Component {
         const { modal } = this.state
         modal.form = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             form: this.clearForm(),
             formeditado:0,
@@ -130,6 +129,7 @@ class NominaObra extends Component {
                     extras:nom.extras
                 }
             )
+            return false
         })
 
         if(aux.length){
@@ -149,7 +149,7 @@ class NominaObra extends Component {
         }
 
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             title: 'Editar nómina obra',
             nomina: nomina,
@@ -162,7 +162,7 @@ class NominaObra extends Component {
         const { modal } = this.state
         modal.delete = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             nomina: nomina
         })
@@ -173,7 +173,7 @@ class NominaObra extends Component {
         modal.adjuntos = true
         data.adjuntos = nomina.adjuntos
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             nomina: nomina,
             data,
@@ -197,6 +197,7 @@ class NominaObra extends Component {
                 tipo: renderToString(setTextTable(adjunto.pivot.tipo)),
                 id: 'adjuntos-' + adjunto.id
             })
+            return false
         })
         return aux
     }
@@ -218,7 +219,7 @@ class NominaObra extends Component {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
-            ... this.state,
+            ...this.state,
             options
         })
     }
@@ -236,7 +237,7 @@ class NominaObra extends Component {
                 options['usuarios'] = setOptions( usuarios, 'nombre', 'id')
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options,
                     data
                 })
@@ -277,6 +278,7 @@ class NominaObra extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -287,6 +289,7 @@ class NominaObra extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         await axios.post(URL_DEV + 'rh/nomina-obra', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -325,7 +328,7 @@ class NominaObra extends Component {
                 modal.form = false
 
                 this.setState({                    
-                    ... this.state,
+                    ...this.state,
                     modal,
                     nomina: '',
                     form: this.clearForm()
@@ -351,18 +354,17 @@ class NominaObra extends Component {
     async deleteNominaObraAxios(){
         waitAlert()
         const { access_token } = this.props.authUser
-        const { form, nomina} = this.state
+        const { nomina} = this.state
         
         await axios.delete(URL_DEV + 'rh/nomina-obra/' + nomina.id , { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { modal } = this.state
-                const { nomina } = response.data
                 this.getNominasAxios()
 
                 modal.delete = false
 
                 this.setState({                    
-                    ... this.state,
+                    ...this.state,
                     modal,
                     nomina: '',
                     form: this.clearForm()
@@ -400,6 +402,7 @@ class NominaObra extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
 
         data.append('id', nomina.id)
@@ -408,13 +411,13 @@ class NominaObra extends Component {
             (response) => {
 
                 const { nomina } = response.data
-                const { data, key } = this.state
+                const { data } = this.state
                 data.adjuntos = nomina.adjuntos
                 //AQUI
                 this.getNominasAxios()
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     nomina: nomina,
                     adjuntos: this.setAdjuntosTable(data.adjuntos),
@@ -444,12 +447,12 @@ class NominaObra extends Component {
         await axios.delete(URL_DEV + 'rh/nomina-obra/' + nomina.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { nomina } = response.data
-                const { data, key } = this.state
+                const { data } = this.state
                 data.adjuntos = nomina.adjuntos
                 
                 this.getNominasAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     nomina: nomina,
                     adjuntos: this.setAdjuntosTable(data.adjuntos),
@@ -476,7 +479,7 @@ class NominaObra extends Component {
         const { modal } = this.state 
         modal.form = false
         this.setState({
-            ... this.state,
+            ...this.state,
             modal, 
             form: this.clearForm()
         })
@@ -486,7 +489,7 @@ class NominaObra extends Component {
         const { modal } = this.state
         modal.delete = false
         this.setState({
-            ... this.state,
+            ...this.state,
             form: this.clearForm(),
             modal, 
             nomina: ''
@@ -497,7 +500,7 @@ class NominaObra extends Component {
         const { modal } = this.state
         modal.adjuntos = false
         this.setState({
-            ... this.state,
+            ...this.state,
             form: this.clearForm(),
             modal, 
             nomina: ''
@@ -533,6 +536,7 @@ class NominaObra extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -550,7 +554,7 @@ class NominaObra extends Component {
         }
         form.adjuntos[name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -571,6 +575,7 @@ class NominaObra extends Component {
                     id: nomina.id
                 }
             )
+            return false
         })
         return aux
     }
@@ -637,7 +642,7 @@ class NominaObra extends Component {
         form.adjuntos[name].value = value
         form.adjuntos[name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -661,6 +666,7 @@ class NominaObra extends Component {
                     form['nominasObra'][key].salario_hr  = empleado.salario_hr
                     form['nominasObra'][key].salario_hr_extra  = empleado.salario_hr_extra
                 }
+                return false
             }) 
         }
         form['nominasObra'][key][name] = value
@@ -688,7 +694,7 @@ class NominaObra extends Component {
             }
         )
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -711,17 +717,17 @@ class NominaObra extends Component {
             }
         )
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
 
     async getNominasAxios(){
-        var table = $('#kt_datatable2_nomina_obra').DataTable().ajax.reload();
+        $('#kt_datatable2_nomina_obra').DataTable().ajax.reload();
     }
     
     render() {
-        const {nominaOmbra, modal, options, title, form, formeditado, adjuntos, data} = this.state
+        const { modal, form, adjuntos, data} = this.state
         return (
             <Layout active={'rh'} {...this.props}>
                 <NewTableServerRender   

@@ -50,9 +50,9 @@ class UltimoPresupuesto extends Component {
     };
 
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props;
-        const { history: { location: { pathname: pathname } } } = this.props;
-        const { history, location: { state: state } } = this.props;
+        const { authUser: { user: { permisos } } } = this.props;
+        const { history: { location: { pathname } } } = this.props;
+        const { history, location: { state } } = this.props;
         const presupuesto = permisos.find(function (element, index) {
             const {
                 modulo: { url: url },
@@ -88,7 +88,7 @@ class UltimoPresupuesto extends Component {
                 options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
                 options['unidades'] = setOptions(unidades, 'nombre', 'id')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },
@@ -159,7 +159,7 @@ class UltimoPresupuesto extends Component {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
-            ... this.state,
+            ...this.state,
             options
         })
     }
@@ -237,7 +237,7 @@ class UltimoPresupuesto extends Component {
             this.onChange(key, { target: { value: '$' + pre.desperdicio } }, 'desperdicio')
         }
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -318,7 +318,7 @@ class UltimoPresupuesto extends Component {
                 })
                 form.conceptos = aux
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     presupuesto: presupuesto,
                     form,
                     formeditado: 1
@@ -376,7 +376,7 @@ class UltimoPresupuesto extends Component {
     recover = () => {
         const { formulario, deleteForm } = this.props
         this.setState({
-            ... this.state,
+            ...this.state,
             form: formulario.form
         })
         deleteForm()

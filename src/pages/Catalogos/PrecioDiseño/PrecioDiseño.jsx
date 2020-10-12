@@ -8,7 +8,7 @@ import axios from 'axios'
 import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import { setTextTable, setMoneyTable} from '../../../functions/setters'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { PreciosDiseñoCard } from '../../../components/cards'
+import { PreciosDisenoCard } from '../../../components/cards'
 
 const $ = require('jquery');
 
@@ -23,11 +23,11 @@ class PrecioDiseño extends Component {
     }
     
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const areas = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!areas)
@@ -48,7 +48,7 @@ class PrecioDiseño extends Component {
         const { modal } = this.state
         modal.delete = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             precio: precio
         })
@@ -58,7 +58,7 @@ class PrecioDiseño extends Component {
         const { modal } = this.state
         modal.delete = false
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             precio: ''
         })
@@ -67,7 +67,7 @@ class PrecioDiseño extends Component {
         const { modal} = this.state
         modal.see =true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             precio: precio
         })
@@ -77,7 +77,7 @@ class PrecioDiseño extends Component {
         const { modal} = this.state
         modal.see =false
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             precio: ''
         })
@@ -96,6 +96,7 @@ class PrecioDiseño extends Component {
                 esquema3: renderToString(setMoneyTable(precio.esquema_3)),
                 id: precio.id,
             })
+            return false
         })
         return aux
     }
@@ -129,7 +130,7 @@ class PrecioDiseño extends Component {
     }
 
     async getPreciosAxios() {
-        var table = $('#kt_datatable_precio').DataTable().ajax.reload();
+        $('#kt_datatable_precio').DataTable().ajax.reload();
     }
 
     async deletePrecioAxios() {
@@ -146,7 +147,7 @@ class PrecioDiseño extends Component {
                 modal.delete = false
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     precio: '',
                     modal
                 })
@@ -198,7 +199,7 @@ class PrecioDiseño extends Component {
                 />
 
                 <Modal title="Precio para diseño" show = { modal.see } handleClose = { this.handleCloseSee } >
-                    <PreciosDiseñoCard precio={precio}/>
+                    <PreciosDisenoCard precio={precio}/>
                 </Modal>
             </Layout>
         )

@@ -34,11 +34,11 @@ class PartidasDiseño extends Component {
     }
 
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const partidas = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!partidas)
@@ -57,7 +57,7 @@ class PartidasDiseño extends Component {
         const { modal } = this.state
         modal.delete = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             partida: partida
         })
@@ -81,7 +81,7 @@ class PartidasDiseño extends Component {
                 modal.delete = false
                 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal,
                     form: this.clearForm(),
                     partida: ''
@@ -108,7 +108,7 @@ class PartidasDiseño extends Component {
         const { modal } = this.state
         modal.delete = false
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             partida: ''
         })
@@ -129,6 +129,7 @@ class PartidasDiseño extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -141,6 +142,7 @@ class PartidasDiseño extends Component {
                 partida: renderToString(setTextTable(partida.nombre)),
                 id: partida.id
             })
+            return false
         })
         return aux
     }
@@ -171,7 +173,7 @@ class PartidasDiseño extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -205,7 +207,7 @@ class PartidasDiseño extends Component {
             form.empresa = 'im'
         }
         this.setState({
-            ... this.state,
+            ...this.state,
             key: value,
             form
         })

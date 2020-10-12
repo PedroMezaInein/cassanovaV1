@@ -289,7 +289,7 @@ class MiProyecto extends Component {
             }
         }
         this.setState({
-            ... this.state,
+            ...this.state,
             primeravista: false,
             defaultactivekey: newdefaultactivekey,
             subActiveKey: newdefaultactivekey,
@@ -297,8 +297,8 @@ class MiProyecto extends Component {
         })
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const proyecto = permisos.find(function (element, index) {
             return element.modulo.url === pathname
@@ -312,7 +312,7 @@ class MiProyecto extends Component {
             let id = parseInt(params.get("id"))
             if(id){
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     id: id
                 })
             }
@@ -344,7 +344,7 @@ class MiProyecto extends Component {
 
     updateActiveTabContainer = active => {
         this.setState({
-            ... this.state,
+            ...this.state,
             subActiveKey: active
         })
     }
@@ -369,7 +369,7 @@ class MiProyecto extends Component {
                 }
                 data.tickets = proyecto.tickets
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     defaultactivekey: newdefaultactivekey,
                     proyecto: proyecto,
                     tickets: this.setTickets(proyecto.tickets),
@@ -407,7 +407,7 @@ class MiProyecto extends Component {
                     } )
                 }
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     data,
                     options,
                     proyecto,
@@ -462,7 +462,7 @@ class MiProyecto extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -514,7 +514,7 @@ class MiProyecto extends Component {
                 this.getMiProyectoAxios()
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm()
                 })
             },
@@ -599,7 +599,7 @@ class MiProyecto extends Component {
         form['adjuntos'][name].value = value
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -610,7 +610,7 @@ class MiProyecto extends Component {
 
     openModalSee = (ticket) => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modal: true,
             formeditado: 0,
             ticket:ticket
@@ -620,7 +620,7 @@ class MiProyecto extends Component {
     handleClose = () => {
         const { modal } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modal: !modal,
             ticket: ''
         })
@@ -628,7 +628,7 @@ class MiProyecto extends Component {
 
     openModalDetalles = (ticket) => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDetalles: true,
             formeditado: 0,
             ticket:ticket
@@ -638,7 +638,7 @@ class MiProyecto extends Component {
     handleCloseDetalles = () => {
         const { modalDetalles } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDetalles: !modalDetalles,
             ticket: ''
         })
@@ -649,7 +649,7 @@ class MiProyecto extends Component {
         const { name, value } = e.target
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -692,7 +692,7 @@ class MiProyecto extends Component {
             (response) => {
                 const { ticket } = response.data
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal: false
                 })
                 if(data.estatus){

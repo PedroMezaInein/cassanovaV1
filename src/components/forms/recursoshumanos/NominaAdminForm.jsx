@@ -72,19 +72,18 @@ class NominaAdminForm extends Component {
         let sumaNomImss = 0;
         let sumaRestanteNomina = 0;
         let sumaExtras = 0;
-        let sumaTotal = 0;
 
         form.nominasAdmin.forEach(element => {
             sumaNomImss += element.nominImss === undefined ? 0 : parseFloat(element.nominImss);
             sumaRestanteNomina += element.restanteNomina === undefined ? 0 : parseFloat(element.restanteNomina);
             sumaExtras += element.extras === undefined ? 0 : parseFloat(element.extras);
         });
-        return sumaTotal = sumaNomImss + sumaRestanteNomina + sumaExtras
+        return sumaNomImss + sumaRestanteNomina + sumaExtras
     }
 
 
     render() {
-        const { options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, onChange, onChangeAdjunto, clearFiles, form, onSubmit, formeditado, title, handleChange} = this.props
+        const { options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, onChange, form, onSubmit, formeditado, title, handleChange} = this.props
         
         return (
             <Card className="card card-custom gutter-b example example-compact">

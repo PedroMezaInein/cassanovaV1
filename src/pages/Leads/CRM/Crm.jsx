@@ -35,11 +35,11 @@ class Crm extends Component {
         }
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const crm = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!crm)
@@ -121,7 +121,7 @@ class Crm extends Component {
                 ultimos_contactados.total = total
                 ultimos_contactados.total_paginas = total_paginas
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     ultimos_contactados
                 })
             },
@@ -151,7 +151,7 @@ class Crm extends Component {
                 let total_paginas = Math.ceil(total / 5)
                 prospectos_sin_contactar.total_paginas = total_paginas
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     prospectos_sin_contactar
                 })
             },
@@ -181,7 +181,7 @@ class Crm extends Component {
                 let total_paginas = Math.ceil(total / 5)
                 ultimos_ingresados.total_paginas = total_paginas
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     ultimos_ingresados
                 })
             },
@@ -203,7 +203,7 @@ class Crm extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -218,7 +218,7 @@ class Crm extends Component {
     render() {
         const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados } = this.state
         return (
-            <Layout active='leads' {... this.props} >
+            <Layout active='leads' {...this.props} >
                 <Row>
                     <Col lg={4}>
                         <UltimosIngresosCard
@@ -314,6 +314,9 @@ class Crm extends Component {
                                                 <option value={"negociacion"} className="bg-white">En negociación</option>
                                                 <option value={"contratado"} className="bg-white">Contratado</option>
                                             </Form.Control>
+                                        </div>
+                                        <div className="col-md-1">
+                                            <span className="btn btn-light-primary px-6 font-weight-bold">Buscar</span>
                                         </div>
                                         {/* <div className="col-md-1">
                                             <a href="#" className="btn btn-light-primary px-6 font-weight-bold">Buscar</a>

@@ -20,7 +20,7 @@ class ItemSlider extends Component {
                 active = active - 1
             }
             this.setState({
-                ... this.state,
+                ...this.state,
                 active
             })
         } else {
@@ -30,7 +30,7 @@ class ItemSlider extends Component {
                 active = active - 1
             }
             this.setState({
-                ... this.state,
+                ...this.state,
                 active
             })
         }
@@ -46,7 +46,7 @@ class ItemSlider extends Component {
                 active = active + 1
             }
             this.setState({
-                ... this.state,
+                ...this.state,
                 active
             })
         } else {
@@ -56,7 +56,7 @@ class ItemSlider extends Component {
                 active = active + 1
             }
             this.setState({
-                ... this.state,
+                ...this.state,
                 active
             })
         }

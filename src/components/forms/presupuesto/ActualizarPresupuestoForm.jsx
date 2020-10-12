@@ -18,13 +18,14 @@ class ActualizarPresupuestoForm extends Component {
         form.conceptos.map( (concepto) => {
             if(concepto.active)
                 aux = aux + parseFloat(concepto.importe)
+            return false
         })
         return aux.toFixed(2)
     }
 
     onChangeMensaje = ( e, key ) => {
-        const { value, name } = e.target
-        const { form, onChange } = this.props
+        const { value } = e.target
+        const { onChange } = this.props
         let aux = {
             active: true,
             mensaje: value
@@ -33,7 +34,7 @@ class ActualizarPresupuestoForm extends Component {
     }
 
     onChangeDesperdicio = e =>{
-        const { value, name } = e.target
+        const { value } = e.target
         const { form, onChange } = this.props
         if(value)
             form.conceptos.map( (concepto, key) => {
@@ -42,9 +43,10 @@ class ActualizarPresupuestoForm extends Component {
                         || concepto.unidad === 'JGO' || concepto.unidad === 'EQUIPO' || concepto.unidad === 'BULTO')){
                         onChange(key, e, 'desperdicio')
                     }
+                return false
             })
         this.setState({
-            ... this.state,
+            ...this.state,
             desperdicio: value
         })
     }
@@ -83,6 +85,7 @@ class ActualizarPresupuestoForm extends Component {
         presupuesto.pdfs.map( (pdf, key) => {
             if( pdf.pivot.identificador >  identificador)
                 identificador = pdf.pivot.identificador
+            return false
         })
         identificador++
         return identificador.toString()

@@ -19,11 +19,11 @@ class AdjuntosEmpresa extends Component {
         adjunto: ''
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const adjunto = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!adjunto)
@@ -40,7 +40,7 @@ class AdjuntosEmpresa extends Component {
         const { modal } = this.state
         modal.delete = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             adjunto: adjunto
         })
@@ -49,7 +49,7 @@ class AdjuntosEmpresa extends Component {
         const { modal } = this.state
         modal.delete = false
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             adjunto: ''
         })
@@ -58,7 +58,7 @@ class AdjuntosEmpresa extends Component {
         const { modal } = this.state
         modal.see = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             adjunto: adjunto
         })
@@ -67,7 +67,7 @@ class AdjuntosEmpresa extends Component {
         const { modal } = this.state
         modal.see = false
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             adjunto: ''
         })
@@ -82,6 +82,7 @@ class AdjuntosEmpresa extends Component {
                 adjunto: renderToString(setArrayTable([{ text: adjunto.name, url: adjunto.url }])),
                 id: adjunto.id,
             })
+            return false
         })
         return aux
     }
@@ -113,7 +114,7 @@ class AdjuntosEmpresa extends Component {
         return aux
     }
     async getAdjuntosAxios() {
-        var table = $('#kt_datatable_adjunto').DataTable().ajax.reload();
+        $('#kt_datatable_adjunto').DataTable().ajax.reload();
     }
     async deleteAdjuntosAxios() {
         const { access_token } = this.props.authUser
@@ -125,7 +126,7 @@ class AdjuntosEmpresa extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El adjunto fue eliminado con éxito.')
                 modal.delete = false
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     adjunto: '',
                     modal
                 })

@@ -4,7 +4,7 @@ import axios from 'axios'
 import swal from 'sweetalert';
 import { URL_DEV } from '../../../constants'
 import Layout from '../../../components/layout/layout'
-import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert, deleteAlert, questionAlert} from '../../../functions/alert'
+import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert, questionAlert} from '../../../functions/alert'
 import { setOptions } from '../../../functions/setters'
 import { Card, Accordion } from 'react-bootstrap'
 import { ProspectoForm as ProspectoFormulario } from '../../../components/forms'
@@ -55,12 +55,12 @@ class ProspectosForm extends Component {
     }
 
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
-        const { match: { params: { action: action } } } = this.props
-        const { history, location: { state: state } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
+        const { match: { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
         const remisiones = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         switch (action) {
@@ -93,7 +93,7 @@ class ProspectosForm extends Component {
                             form.tipoProyecto = prospecto.tipo_proyecto.id.toString()
                         }
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             prospecto: prospecto,
                             title: 'Editar prospecto',
                             form,
@@ -118,7 +118,7 @@ class ProspectosForm extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.setState({
+            ...this.setState({
                 form
             })
         })
@@ -130,7 +130,7 @@ class ProspectosForm extends Component {
         formContacto[name] = value
         console.log(name, value)
         this.setState({
-            ... this.state,
+            ...this.state,
             formContacto
         })
     }
@@ -166,7 +166,7 @@ class ProspectosForm extends Component {
                     value: 'New', name: '+ Agregar nuevo'
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },
@@ -190,7 +190,7 @@ class ProspectosForm extends Component {
             (response) => {
                 const { lead } = response.data
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     lead
                 })
             },
@@ -281,7 +281,7 @@ class ProspectosForm extends Component {
         formContacto['adjuntos'][item].value = files
         formContacto['adjuntos'][item].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             formContacto
         })
     }

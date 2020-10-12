@@ -67,18 +67,18 @@ class IngresosForm extends Component {
         }
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
-        const { match: { params: { action: action } } } = this.props
-        const { history, location: { state: state } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
+        const { match: { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
         const ingresos = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         })
         switch (action) {
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Nuevo ingreso',
                     formeditado: 0
                 })
@@ -120,7 +120,7 @@ class IngresosForm extends Component {
                             }]
                         }
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             title: 'Editar ingreso',
                             form,
                             options,
@@ -145,7 +145,7 @@ class IngresosForm extends Component {
         const { name, value } = e.target
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -226,6 +226,7 @@ class IngresosForm extends Component {
                             if (element.rfc === obj.rfc_emisor) {
                                 auxEmpresa = element
                             }
+                            return false
                         });
                         let auxCliente = ''
                         data.clientes.find(function (element, index) {
@@ -237,6 +238,7 @@ class IngresosForm extends Component {
                                 element.empresa.toUpperCase() === cadena) {
                                 auxCliente = element
                             }
+                            return false
                         });
                         if (auxEmpresa) {
                             options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')
@@ -255,7 +257,7 @@ class IngresosForm extends Component {
                         form.facturaObject = obj
                         form.rfc = obj.rfc_receptor
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             options,
                             form
                         })
@@ -275,7 +277,7 @@ class IngresosForm extends Component {
         form['adjuntos'][name].value = value
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -294,7 +296,7 @@ class IngresosForm extends Component {
         }
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -337,6 +339,7 @@ class IngresosForm extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -344,7 +347,7 @@ class IngresosForm extends Component {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
-            ... this.state,
+            ...this.state,
             options
         })
     }
@@ -372,7 +375,7 @@ class IngresosForm extends Component {
                 data.clientes = clientes
                 data.empresas = empresas
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options,
                     data
                 })
@@ -409,6 +412,7 @@ class IngresosForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -419,11 +423,12 @@ class IngresosForm extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         await axios.post(URL_DEV + 'ingresos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm()
                 })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
@@ -462,6 +467,7 @@ class IngresosForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -470,11 +476,12 @@ class IngresosForm extends Component {
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
+            return false
         })
         await axios.post(URL_DEV + 'ingresos/update/' + ingreso.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm()
                 })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
@@ -517,9 +524,10 @@ class IngresosForm extends Component {
                     if (cliente.empresa === cadena) {
                         form.cliente = cliente.empresa
                     }
+                    return false
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form,
                     data,
                     options

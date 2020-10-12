@@ -49,7 +49,7 @@ class Input extends Component {
             if(!nextProps.requirevalidation)
             {
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     inputValido: true
                 })
             }else{
@@ -75,9 +75,6 @@ class Input extends Component {
         else{
             if(letterCase === 'Upper')
                 e.target.value = ("" + e.target.value).toUpperCase();
-            else{ 
-                e.target.value = e.target.value
-            }
         }
     }
 

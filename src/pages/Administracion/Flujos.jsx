@@ -15,8 +15,8 @@ class Flujos extends Component {
         form: {
             cuentas: [],
             cuenta: '',
-            fechaInicio: new Date,
-            fechaFin: new Date
+            fechaInicio: new Date(),
+            fechaFin: new Date()
         },
         options: {
             cuentas: []
@@ -29,11 +29,11 @@ class Flujos extends Component {
         total: []
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const areas = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!areas)
@@ -45,7 +45,7 @@ class Flujos extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -64,7 +64,7 @@ class Flujos extends Component {
         options[arreglo] = aux
         form[arreglo] = auxArray
         this.setState({
-            ... this.state,
+            ...this.state,
             form,
             options
         })
@@ -81,7 +81,7 @@ class Flujos extends Component {
         })
         form[arreglo] = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             options,
             form
         })
@@ -153,7 +153,7 @@ class Flujos extends Component {
         form.fechaFin = new Date
         data.flujos = []
         this.setState({
-            ... this.state,
+            ...this.state,
             options,
             form,
             flujos: [],
@@ -174,7 +174,7 @@ class Flujos extends Component {
                 data.cuentas = cuentas
                 options.cuentas = setOptions(cuentas, 'nombre', 'id')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options,
                     data
                 })
@@ -202,7 +202,7 @@ class Flujos extends Component {
                 data.flujos = flujos
                 swal.close()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     data,
                     flujos: this.setFlujos(flujos)
                 })

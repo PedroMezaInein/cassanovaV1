@@ -16,9 +16,6 @@ import { Badge, Card, Nav, Tab } from 'react-bootstrap'
 import { errorAlert, forbiddenAccessAlert } from '../../functions/alert'
 
 class Tareas extends Component{
-    constructor(props){
-        super(props)
-    }
 
     state = {
         columns:[],
@@ -44,11 +41,11 @@ class Tareas extends Component{
     }
 
     componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
+        const { authUser: { user : { permisos  } } } = this.props
+        const { history : { location: { pathname } } } = this.props
         const { history } = this.props
         const tareas = permisos.find(function(element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if(!tareas)
@@ -106,7 +103,7 @@ class Tareas extends Component{
 
     handleCloseModal = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modal: !this.state.modal,
             tarea: '',
             adjuntoName: '',
@@ -116,13 +113,9 @@ class Tareas extends Component{
     }
 
     handleClickTask = tarea => {
-    
-        const { users } = this.state
-
-        let _index = []
 
         this.setState({
-            ... this.state,
+            ...this.state,
             tarea: tarea,
             modal: true,
             adjuntoName: '',
@@ -137,11 +130,13 @@ class Tareas extends Component{
         let aux = []
         tarea.participantes.map( ( participante, key ) => {
             aux.push( {name: participante.name, value:participante.email, identificador: participante.id} )
+            return false
         })
 
         let _aux = []
         users.map( ( participante, key ) => {
             _aux.push( {name: participante.name, value:participante.email, identificador: participante.id} )
+            return false
         })
 
         let _index = []
@@ -151,13 +146,15 @@ class Tareas extends Component{
             aux.map((_element, key) => {
                 if(element.identificador === _element.identificador)
                     validador = true
+                return false
             })
             if(!validador)
                 _index.push(element)
+            return false
         })
 
         this.setState({
-            ... this.state,
+            ...this.state,
             participantesTask: aux,
             participantes: _index
         })
@@ -165,7 +162,7 @@ class Tareas extends Component{
 
     setTareas = columns => {
         this.setState({
-            ... this.state,
+            ...this.state,
             columns
         })
     }
@@ -201,14 +198,13 @@ class Tareas extends Component{
         const { form } = this.state
         form['titulo'] = '';
         this.setState({
-            ... this.state,
+            ...this.state,
             activeKey: activeKey,
             form
         })
     }
 
     submitAdd = () => {
-        const { form } = this.state
         this.addTaskAxios();
     }
 
@@ -217,7 +213,7 @@ class Tareas extends Component{
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -226,21 +222,21 @@ class Tareas extends Component{
         const { value, name } = e.target
         if( name === 'adjunto'){
             this.setState({
-                ... this.state,
+                ...this.state,
                 adjuntoFile: e.target.files[0],
                 adjunto: e.target.value,
                 adjuntoName: e.target.files[0].name
             })
         }else{
             this.setState({
-                ... this.state,
+                ...this.state,
                 comentario: value
             })
         }
     }
 
     onChangeParticipantes = (value) => {
-        const { tarea: { id: id } } = this.state
+        const { tarea: { id } } = this.state
         this.addParticipanteAxios(id, value.identificador);
     }
 
@@ -253,7 +249,7 @@ class Tareas extends Component{
         const { tarea } = this.state
         tarea[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             tarea: tarea,
             formeditado:1
         })
@@ -261,7 +257,6 @@ class Tareas extends Component{
 
     changeValueSend = event => {
         const { name, value } = event.target
-        const { tarea } = this.state
         this.editTaskAxios({[name]: value})
     }
 
@@ -282,6 +277,7 @@ class Tareas extends Component{
                     subActiveKey: active
                 })
             }
+            return false
         })
     }
 
@@ -289,12 +285,11 @@ class Tareas extends Component{
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'user/tareas', { headers: {Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
-                const { data : { tareas : columns } } = response
-                const { data : { user : user } } = response
-                const { data : { users : users } } = response
+                const { data : { user } } = response
+                const { data : { users } } = response
                 const { tableros } = response.data
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     user: user,
                     users: users,
                     tableros: tableros,
@@ -323,8 +318,7 @@ class Tareas extends Component{
         form.departamento = subActiveKey
         await axios.post(URL_DEV + 'user/tareas', form, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
-                const { data : { tareas : columns } } = response
-                const { data : { user : user } } = response
+                const { data : { user } } = response
                 const { form } = this.state
                 const { tableros } = response.data
 
@@ -332,6 +326,7 @@ class Tareas extends Component{
                     if(tablero.nombre == subActiveKey){
                         this.setTareas(tablero.tareas)
                     }
+                    return false
                 })
 
                 form['titulo'] = ''
@@ -387,7 +382,7 @@ class Tareas extends Component{
                     }
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     comentario: '',
                     tarea: tarea,
                     adjunto: '',
@@ -451,7 +446,7 @@ class Tareas extends Component{
                     }
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal: false,
                     tarea: '',
                     adjuntoName: '',
@@ -485,7 +480,7 @@ class Tareas extends Component{
                     }
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal: false,
                     tarea: '',
                     adjuntoName: '',
@@ -521,7 +516,7 @@ class Tareas extends Component{
                     }
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal: false,
                     tableros:tableros
                 })

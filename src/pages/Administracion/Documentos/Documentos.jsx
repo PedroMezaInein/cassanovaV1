@@ -86,7 +86,7 @@ class Documentos extends Component {
         })
         form.adjuntos.adjuntos.files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -99,7 +99,7 @@ class Documentos extends Component {
     }
     openModalDelete = documento => {
         this.setState({
-            ... this.state,
+            ...this.state,
             documento: documento,
             modalDelete: true
         })
@@ -118,7 +118,7 @@ class Documentos extends Component {
         }
         form.adjuntos.adjuntos.files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAdjuntos: true,
             form,
             documento: documento
@@ -126,21 +126,21 @@ class Documentos extends Component {
     }
     openModalSee = documento => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: true,
             documento: documento
         })
     }
     handleCloseSee = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: false,
             documento: ''
         })
     }
     handleCloseDelete = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             documento: '',
             modalDelete: false
         })
@@ -149,7 +149,7 @@ class Documentos extends Component {
         const { form } = this.state
         form.adjuntos.adjuntos.files = []
         this.setState({
-            ... this.state,
+            ...this.state,
             documento: '',
             form,
             modalAdjuntos: false
@@ -171,7 +171,7 @@ class Documentos extends Component {
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -188,7 +188,7 @@ class Documentos extends Component {
             (response) => {
                 this.getDocumentosAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modalDelete: '',
                     documento: ''
                 })
@@ -234,7 +234,7 @@ class Documentos extends Component {
                 })
                 form.adjuntos.adjuntos.files = aux
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form
                 })
                 doneAlert('Adjunto creado con éxito')

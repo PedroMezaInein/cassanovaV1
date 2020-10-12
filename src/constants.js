@@ -348,6 +348,10 @@ export const CUENTAS_COLUMNS = [
         accessor: 'empresa',
     },
     {
+        Header: 'Empresa principal',
+        accessor: 'principal'
+    },
+    {
         Header: 'Banco',
         accessor: 'banco',
     },

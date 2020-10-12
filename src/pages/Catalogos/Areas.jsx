@@ -4,11 +4,9 @@ import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { AreasForm } from '../../components/forms'
 import { URL_DEV, AREAS_COLUMNS } from '../../constants'
-import { Small} from '../../components/texts'
 import { Modal, ModalDelete } from '../../components/singles'
 import axios from 'axios'
 import { AreaCard } from '../../components/cards'
-import NewTable from '../../components/tables/NewTable'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../functions/alert'
 import { setTextTable, setListTable} from '../../functions/setters'
@@ -35,11 +33,11 @@ class Areas extends Component {
     }
     
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const areas = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!areas)
@@ -58,7 +56,7 @@ class Areas extends Component {
                 form.subareas.push(form.subarea)
                 form.subarea = ''
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form
                 })
             }
@@ -74,7 +72,7 @@ class Areas extends Component {
         });
         form.subareas = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -84,7 +82,7 @@ class Areas extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -269,7 +267,7 @@ class Areas extends Component {
 
     openModalSee = area => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: true,
             area: area
         })
@@ -277,7 +275,7 @@ class Areas extends Component {
 
     handleCloseSee = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: false,
             area: ''
         })
@@ -301,7 +299,7 @@ class Areas extends Component {
         const { form, tipo } = this.state
         form.tipo = tipo
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
         await axios.post(URL_DEV + 'areas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -312,7 +310,7 @@ class Areas extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito una nueva área.')
                 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal: false,
                     form: this.clearForm(),
                 })
@@ -344,7 +342,7 @@ class Areas extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el área.')
                 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal: false,
                     form: this.clearForm(),
                     area: ''
@@ -377,7 +375,7 @@ class Areas extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito el área.')
                 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modalDelete: false,
                     form: this.clearForm(),
                     area: '',
@@ -423,7 +421,7 @@ class Areas extends Component {
                 break;
         }
         this.setState({
-            ... this.state,
+            ...this.state,
             key: value
         })
     }

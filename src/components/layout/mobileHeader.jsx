@@ -9,12 +9,12 @@ function openMobileAside(){
 	document.getElementById('showaside').classList.add("aside-overlay"); 	
 }
 
-function openMobileHeader(){    
+/* function openMobileHeader(){    
 	document.body.classList.add('header-menu-wrapper-on');		
 	document.getElementById("openbuerger").classList.add("mobile-toggle-active");
 	document.getElementById("showheadermenu").classList.add("header-menu-wrapper-on");
 	document.getElementById('showheader').classList.add("header-menu-wrapper-overlay"); 	
-}
+} */
 
 function openMobileTopbar(){    
 	if(!document.body.classList.contains('topbar-mobile-on') )

@@ -22,11 +22,11 @@ class Proveedor extends Component {
         }
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const proveedor = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!proveedor)
@@ -100,7 +100,7 @@ class Proveedor extends Component {
     }
     openModalDelete = proveedor => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: true,
             proveedor: proveedor
         })
@@ -113,14 +113,14 @@ class Proveedor extends Component {
     }
     openModalSee = proveedor => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: true,
             proveedor: proveedor
         })
     }
     handleCloseSee = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: false,
             proveedor: ''
         })
@@ -134,7 +134,7 @@ class Proveedor extends Component {
                 const { data } = this.state
                 data.proveedores = proveedores
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     proveedores: this.setProveedores(proveedores),
                     data,
                     modalDelete: false,

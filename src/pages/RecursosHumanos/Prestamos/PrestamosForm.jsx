@@ -34,18 +34,18 @@ class PrestamosForm extends Component {
     }
 
     componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
-        const { match : { params: { action: action } } } = this.props
-        const { history, location: { state: state} } = this.props
+        const { authUser: { user : { permisos  } } } = this.props
+        const { history : { location: { pathname } } } = this.props
+        const { match : { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
         const remisiones = permisos.find(function(element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         switch(action){
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Nuevo préstamo',
                     formeditado:0
                 })
@@ -75,7 +75,7 @@ class PrestamosForm extends Component {
                         form.descripcion = prestamo.descripcion
                         form.adjuntos.adjuntos.files = aux
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             title: 'Editar préstamo',
                             formeditado: 1,
                             form,
@@ -100,7 +100,7 @@ class PrestamosForm extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -121,7 +121,7 @@ class PrestamosForm extends Component {
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -152,7 +152,7 @@ class PrestamosForm extends Component {
         })
         form.adjuntos.adjuntos.files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -270,7 +270,7 @@ class PrestamosForm extends Component {
                 options.empleados = setOptions(empleados, 'nombre', 'id')
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },
@@ -314,7 +314,7 @@ class PrestamosForm extends Component {
     render() {
         const { title, form, formeditado, options } = this.state
         return (
-            <Layout active = 'rh' { ... this.props }>
+            <Layout active = 'rh' { ...this.props }>
                 <Card>
                     <Card.Header>
                         <div className="card-custom">

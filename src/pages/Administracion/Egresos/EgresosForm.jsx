@@ -65,7 +65,7 @@ class EgresosForm extends Component {
         const { name, value } = e.target
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -146,6 +146,7 @@ class EgresosForm extends Component {
                             if (element.rfc === obj.rfc_receptor) {
                                 auxEmpresa = element
                             }
+                            return false
                         });
                         let auxProveedor = ''
                         data.proveedores.find(function (element, index) {
@@ -157,6 +158,7 @@ class EgresosForm extends Component {
                                 element.razon_social.toUpperCase() === cadena) {
                                 auxProveedor = element
                             }
+                            return false
                         });
                         if (auxEmpresa) {
                             options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')
@@ -175,7 +177,7 @@ class EgresosForm extends Component {
                         form.facturaObject = obj
                         form.rfc = obj.rfc_emisor
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             options,
                             form
                         })
@@ -195,7 +197,7 @@ class EgresosForm extends Component {
         form['adjuntos'][name].value = value
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -214,7 +216,7 @@ class EgresosForm extends Component {
         }
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -257,6 +259,7 @@ class EgresosForm extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -270,18 +273,18 @@ class EgresosForm extends Component {
             this.addEgresoAxios()
     }
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
-        const { match: { params: { action: action } } } = this.props
-        const { history, location: { state: state } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
+        const { match: { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
         const egresos = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         switch (action) {
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Nuevo egreso',
                     formeditado: 0
                 })
@@ -324,7 +327,7 @@ class EgresosForm extends Component {
                             }]
                         }
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             title: 'Editar egreso',
                             form,
                             options,
@@ -348,7 +351,7 @@ class EgresosForm extends Component {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
-            ... this.state,
+            ...this.state,
             options
         })
     }
@@ -368,7 +371,7 @@ class EgresosForm extends Component {
                 data.proveedores = proveedores
                 data.empresas = empresas
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options,
                     data
                 })
@@ -406,6 +409,7 @@ class EgresosForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -416,11 +420,12 @@ class EgresosForm extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         await axios.post(URL_DEV + 'egresos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal: false,
                     form: this.clearForm()
                 })
@@ -460,6 +465,7 @@ class EgresosForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -468,11 +474,12 @@ class EgresosForm extends Component {
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
+            return false
         })
         await axios.post(URL_DEV + 'egresos/update/' + egreso.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal: false,
                     form: this.clearForm()
                 })
@@ -515,9 +522,10 @@ class EgresosForm extends Component {
                     if (proveedor.razon_social === cadena) {
                         form.proveedor = proveedor.id.toString()
                     }
+                    return false
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form,
                     data,
                     options

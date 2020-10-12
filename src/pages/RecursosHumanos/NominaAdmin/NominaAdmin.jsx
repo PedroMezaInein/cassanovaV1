@@ -52,11 +52,11 @@ class NominaAdmin extends Component {
     }
 
     componentDidMount() { 
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const nominaadmin = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!nominaadmin)
@@ -84,7 +84,7 @@ class NominaAdmin extends Component {
         const { modal } = this.state
         modal.delete = true
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             nomina: nomina
         })
@@ -95,7 +95,7 @@ class NominaAdmin extends Component {
         modal.adjuntos = true
         data.adjuntos = nomina.adjuntos
         this.setState({
-            ... this.state,
+            ...this.state,
             modal,
             nomina: nomina,
             data,
@@ -119,6 +119,7 @@ class NominaAdmin extends Component {
                 tipo: renderToString(setTextTable('Adjunto')),
                 id: 'adjuntos-' + adjunto.id
             })
+            return false
         })
         return aux
     }
@@ -140,7 +141,7 @@ class NominaAdmin extends Component {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
-            ... this.state,
+            ...this.state,
             options
         })
     }
@@ -157,7 +158,7 @@ class NominaAdmin extends Component {
                 options['usuarios'] = setOptions( usuarios, 'nombre', 'id')
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options,
                     data
                 })
@@ -189,7 +190,7 @@ class NominaAdmin extends Component {
                 modal.delete = false
 
                 this.setState({                    
-                    ... this.state,
+                    ...this.state,
                     modal,
                     nomina: '',
                     form: this.clearForm()
@@ -227,6 +228,7 @@ class NominaAdmin extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
 
         data.append('id', nomina.id)
@@ -240,7 +242,7 @@ class NominaAdmin extends Component {
                 this.getNominasAxios()
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     nomina: nomina,
                     adjuntos: this.setAdjuntosTable(data.adjuntos),
@@ -274,7 +276,7 @@ class NominaAdmin extends Component {
                 data.adjuntos = nomina.adjuntos
                 this.getNominasAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     nomina: nomina,
                     adjuntos: this.setAdjuntosTable(data.adjuntos),
@@ -300,7 +302,7 @@ class NominaAdmin extends Component {
         const { modal } = this.state
         modal.delete = false
         this.setState({
-            ... this.state,
+            ...this.state,
             form: this.clearForm(),
             modal, 
             nomina: ''
@@ -311,7 +313,7 @@ class NominaAdmin extends Component {
         const { modal } = this.state
         modal.adjuntos = false
         this.setState({
-            ... this.state,
+            ...this.state,
             form: this.clearForm(),
             modal, 
             nomina: ''
@@ -346,6 +348,7 @@ class NominaAdmin extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -363,7 +366,7 @@ class NominaAdmin extends Component {
         }
         form.adjuntos[name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -384,6 +387,7 @@ class NominaAdmin extends Component {
                     id: nomina.id
                 }
             )
+            return false
         })
         return aux
     }
@@ -450,13 +454,13 @@ class NominaAdmin extends Component {
         form.adjuntos[name].value = value
         form.adjuntos[name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
 
     async getNominasAxios(){
-        var table = $('#kt_datatable2_nomina_admin').DataTable().ajax.reload();
+        $('#kt_datatable2_nomina_admin').DataTable().ajax.reload();
     }
     
     render() {

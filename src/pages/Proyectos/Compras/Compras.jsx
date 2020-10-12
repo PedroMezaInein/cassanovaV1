@@ -11,7 +11,7 @@ import { Button, FileInput } from '../../../components/form-components'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { FacturaTable } from '../../../components/tables'
 import { ComprasCard } from '../../../components/cards'
-import { Form, ProgressBar } from 'react-bootstrap'
+import { Form } from 'react-bootstrap'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import TableForModals from '../../../components/tables/TableForModals'
 import AdjuntosForm from '../../../components/forms/AdjuntosForm'
@@ -104,11 +104,11 @@ class Compras extends Component {
     }
 
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const compras = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!compras)
@@ -157,6 +157,7 @@ class Compras extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -165,7 +166,7 @@ class Compras extends Component {
         const { name, value } = e.target
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -186,7 +187,6 @@ class Compras extends Component {
                         const emisor = xml.getElementsByTagName('cfdi:Emisor')[0]
                         const receptor = xml.getElementsByTagName('cfdi:Receptor')[0]
                         const timbreFiscalDigital = xml.getElementsByTagName('tfd:TimbreFiscalDigital')[0]
-                        const concepto = xml.getElementsByTagName('cfdi:Concepto')[0]
                         const conceptos = xml.getElementsByTagName('cfdi:Concepto')
                         let relacionados = xml.getElementsByTagName('cfdi:CfdiRelacionados')
                         let desc = ''
@@ -251,6 +251,7 @@ class Compras extends Component {
                             if (element.rfc === obj.rfc_receptor) {
                                 auxEmpresa = element
                             }
+                            return false
                         });
                         let auxProveedor = ''
                         data.proveedores.find(function (element, index) {
@@ -262,6 +263,7 @@ class Compras extends Component {
                                 element.razon_social.toUpperCase() === cadena) {
                                 auxProveedor = element
                             }
+                            return false
                         });
                         if (auxEmpresa) {
                             options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')
@@ -283,7 +285,7 @@ class Compras extends Component {
                         form.facturaObject = obj
                         form.rfc = obj.rfc_emisor
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             options,
                             form
                         })
@@ -303,7 +305,7 @@ class Compras extends Component {
         form['adjuntos'][name].value = value
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -322,7 +324,7 @@ class Compras extends Component {
         }
         form['adjuntos'][name].files = aux
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -336,6 +338,7 @@ class Compras extends Component {
                     _aux.push({
                         name: 'Presupuesto', text: presupuesto.name, url: presupuesto.url
                     })
+                    return false
                 })
             }
             if (compra.pagos) {
@@ -343,6 +346,7 @@ class Compras extends Component {
                     _aux.push({
                         name: 'Pago', text: pago.name, url: pago.url
                     })
+                    return false
                 })
             }
             aux.push(
@@ -374,6 +378,7 @@ class Compras extends Component {
                     objeto: compra
                 }
             )
+            return false
         })
         return aux
     }
@@ -389,6 +394,7 @@ class Compras extends Component {
                 tipo: renderToString(setTextTable(adjunto.pivot.tipo)),
                 id: 'adjuntos-' + adjunto.id
             })
+            return false
         })
         return aux
     }
@@ -459,7 +465,7 @@ class Compras extends Component {
     }
     openModalDelete = (compra) => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: true,
             compra: compra
         })
@@ -471,7 +477,7 @@ class Compras extends Component {
         porcentaje = compra.total_facturas * 100 / (compra.total - compra.comision)
         porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
         this.setState({
-            ... this.state,
+            ...this.state,
             modalFacturas: true,
             compra: compra,
             facturas: compra.facturas,
@@ -484,7 +490,7 @@ class Compras extends Component {
         const { data } = this.state
         data.adjuntos = compra.presupuestos.concat(compra.pagos)
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAdjuntos: true,
             compra: compra,
             form: this.clearForm(),
@@ -498,7 +504,7 @@ class Compras extends Component {
     }
     openModalSee = compra => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: true,
             compra: compra
         })
@@ -506,14 +512,14 @@ class Compras extends Component {
     handleCloseDelete = () => {
         const { modalDelete } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modalDelete: !modalDelete,
             compra: ''
         })
     }
     handleCloseFacturas = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalFacturas: false,
             venta: '',
             facturas: [],
@@ -525,7 +531,7 @@ class Compras extends Component {
         const { data } = this.state
         data.adjuntos = []
         this.setState({
-            ... this.state,
+            ...this.state,
             modalAdjuntos: false,
             form: this.clearForm(),
             adjuntos: [],
@@ -534,7 +540,7 @@ class Compras extends Component {
     }
     handleCloseSee = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modalSee: false,
             compra: ''
         })
@@ -565,7 +571,7 @@ class Compras extends Component {
                     }
                 })
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form,
                     data,
                     options
@@ -586,7 +592,7 @@ class Compras extends Component {
         })
     }
     async getComprasAxios() {
-        var table = $('#kt_datatable2_compras').DataTable().ajax.reload();
+        $('#kt_datatable2_compras').DataTable().ajax.reload();
     }
     async getOptionsAxios() {
         const { access_token } = this.props.authUser
@@ -610,7 +616,7 @@ class Compras extends Component {
                 data.proveedores = proveedores
                 data.empresas = empresas
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options,
                     data
                 })
@@ -635,7 +641,7 @@ class Compras extends Component {
             (response) => {
                 this.getComprasAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     modalDelete: false,
                 })
@@ -692,7 +698,7 @@ class Compras extends Component {
                 porcentaje = compra.total_facturas * 100 / (compra.total - compra.comision)
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form,
                     compra: compra,
                     facturas: compra.facturas,
@@ -724,7 +730,7 @@ class Compras extends Component {
                 porcentaje = compra.total_facturas * 100 / (compra.total - compra.comision)
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     compra: compra,
                     facturas: compra.facturas,
@@ -808,7 +814,7 @@ class Compras extends Component {
                 data.adjuntos = compra.presupuestos.concat(compra.pagos)
                 this.getComprasAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     compra: compra,
                     adjuntos: this.setAdjuntosTable(compra),
@@ -840,7 +846,7 @@ class Compras extends Component {
                 data.adjuntos = compra.presupuestos.concat(compra.pagos)
                 this.getComprasAxios()
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     form: this.clearForm(),
                     compra: compra,
                     adjuntos: this.setAdjuntosTable(compra),

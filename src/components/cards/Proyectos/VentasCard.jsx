@@ -19,6 +19,7 @@ export default class VentasCard extends Component {
                     url: factura.pdf.url
                 })
             }
+            return false
         })
         return aux
     }

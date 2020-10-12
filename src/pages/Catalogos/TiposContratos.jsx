@@ -28,11 +28,11 @@ class TiposContratos extends Component {
     }
 
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const areas = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         if (!areas)
@@ -44,7 +44,7 @@ class TiposContratos extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -178,7 +178,7 @@ class TiposContratos extends Component {
                 this.getTiposContratosAxios()
                 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal,
                     form: this.clearForm()
                 })
@@ -210,7 +210,7 @@ class TiposContratos extends Component {
                 this.getTiposContratosAxios()
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal,
                     form: this.clearForm(),
                     tipo: ''
@@ -243,7 +243,7 @@ class TiposContratos extends Component {
                 this.getTiposContratosAxios()
                 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     modal,
                     form: this.clearForm(),
                     tipo: ''

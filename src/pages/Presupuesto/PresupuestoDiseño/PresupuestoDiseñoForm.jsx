@@ -89,19 +89,19 @@ class PresupuestoDiseñoForm extends Component {
     }
 
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
-        const { match: { params: { action: action } } } = this.props
-        const { history, location: { state: state } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
+        const { match: { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
 
         const presupuesto = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
         switch (action) {
             case 'add':
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     title: 'Agregar presupuesto de diseño',
                     formeditado: 0
                 })
@@ -110,7 +110,7 @@ class PresupuestoDiseñoForm extends Component {
                 if (state) {
                     if (state.presupuesto) {
                         const { presupuesto } = state
-                        const { form, options, data } = this.state
+                        const { form, options } = this.state
 
                         form.empresa = presupuesto.empresa ? presupuesto.empresa.id.toString() : ''
                         form.m2 = presupuesto.precio ? presupuesto.precio.id.toString() : ''
@@ -131,6 +131,7 @@ class PresupuestoDiseñoForm extends Component {
                                 sabado: semana.sabado,
                                 domingo: semana.domingo
                             })
+                            return false
                         })
                         if (aux.length === 0) {
                             aux.push({
@@ -151,6 +152,7 @@ class PresupuestoDiseñoForm extends Component {
                                 value: concepto.dias,
                                 text: concepto.texto
                             })
+                            return false
                         })
                         if (aux.length === 0) {
                             aux = [
@@ -208,7 +210,7 @@ class PresupuestoDiseñoForm extends Component {
                                 form.tipo_partida = 'partidasIm'
                         }
                         this.setState({
-                            ... this.state,
+                            ...this.state,
                             title: 'Editar presupuesto de diseño',
                             presupuesto: presupuesto,
                             form,
@@ -232,7 +234,7 @@ class PresupuestoDiseñoForm extends Component {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
         this.setState({
-            ... this.state,
+            ...this.state,
             options
         })
     }
@@ -240,6 +242,7 @@ class PresupuestoDiseñoForm extends Component {
         let checkBoxPartida = []
         partidas.map((partida, key) => {
             checkBoxPartida.push({ checked: value, text: partida.nombre, id: partida.id })
+            return false
         })
         return checkBoxPartida
     }
@@ -272,7 +275,9 @@ class PresupuestoDiseñoForm extends Component {
                                         if (element.id === partida_inein.partida.id) {
                                             element.checked = true
                                         }
+                                        return false
                                     })
+                                return false
                             })
                         }
                         if (presupuesto.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
@@ -283,13 +288,15 @@ class PresupuestoDiseñoForm extends Component {
                                         if (element.id === partida_im.partida.id) {
                                             element.checked = true
                                         }
+                                        return false
                                     })
+                                return false
                             })
                         }
                     }
                 }
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options,
                     data,
                     form
@@ -402,11 +409,13 @@ class PresupuestoDiseñoForm extends Component {
             aux.map((element) => {
                 if (semana[element])
                     count++;
+                return false
             })
+            return false
         })
         form.tiempo_ejecucion_diseno = count
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -414,7 +423,7 @@ class PresupuestoDiseñoForm extends Component {
         const { value, form } = e.target
         form.conceptos[key].value = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -440,6 +449,7 @@ class PresupuestoDiseñoForm extends Component {
                     if (value === 'esquema_3')
                         concepto.text = 'JUNTA PRESENCIAL PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO, MODELO 3D Y RENDERS'
                 }
+                return false
             })
         }
         if (name === 'tiempo_ejecucion_diseno') {
@@ -482,6 +492,7 @@ class PresupuestoDiseñoForm extends Component {
                 } else {
                     form.semanas[form.semanas.length - 1][element] = false
                 }
+                return false
             })
             if (modulo > 2) {
                 form.semanas.push({
@@ -503,6 +514,7 @@ class PresupuestoDiseñoForm extends Component {
                             form.total = precio[form.esquema] * (1 - (form.descuento / 100))
                         } else
                             form.total = precio[form.esquema]
+                return false
             })
         }
         if (name === "empresa") {
@@ -513,6 +525,7 @@ class PresupuestoDiseñoForm extends Component {
                 if (empresa.id.toString() === value && empresa.name === 'INFRAESTRUCTURA MÉDICA') {
                     form.tipo_partida = 'partidasIm'
                 }
+                return false
             })
         }
         this.setState({
@@ -540,7 +553,7 @@ class PresupuestoDiseñoForm extends Component {
         const { form } = this.state
         form[form.tipo_partida] = array
         this.setState({
-            ... this.state,
+            ...this.state,
             form: form
         })
     }

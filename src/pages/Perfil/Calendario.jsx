@@ -38,12 +38,12 @@ class Calendario extends Component {
     };
 
     componentDidMount() {
-        const { authUser: { user: { permisos: permisos } } } = this.props
-        const { history: { location: { pathname: pathname } } } = this.props
-        const { match: { params: { action: action } } } = this.props
-        const { history, location: { state: state } } = this.props
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
+        const { match: { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
         const remisiones = permisos.find(function (element, index) {
-            const { modulo: { url: url } } = element
+            const { modulo: { url } } = element
             return pathname === url
         });
         this.getVacacionesAxios()
@@ -55,7 +55,7 @@ class Calendario extends Component {
     }
     openModal = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modal: true,
             title: 'Solicitar vacaciones',
             form: this.clearForm(),
@@ -64,7 +64,7 @@ class Calendario extends Component {
     }
     openModalEstatus = () => {
         this.setState({
-            ... this.state,
+            ...this.state,
             modal_status: true,
             title: 'Estatus de vacaciones',
             form: this.clearForm(),
@@ -91,7 +91,7 @@ class Calendario extends Component {
     handleClose = () => {
         const { modal, options } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modal: !modal,
             options,
             title: 'Solicitar vacaciones',
@@ -101,7 +101,7 @@ class Calendario extends Component {
     handleCloseEstatus = () => {
         const { modal_status } = this.state
         this.setState({
-            ... this.state,
+            ...this.state,
             modal_status: !modal_status,
             title: 'Estatus de vacaciones',
             form: this.clearForm()
@@ -113,7 +113,7 @@ class Calendario extends Component {
         const { form } = this.state
         form[name] = value
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -307,7 +307,7 @@ class Calendario extends Component {
                 })
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     events: aux,
                     empleado: empleado,
                     vacaciones_totales: user_vacaciones,

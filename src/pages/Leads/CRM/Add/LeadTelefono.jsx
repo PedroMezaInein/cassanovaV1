@@ -3,12 +3,12 @@ import React, { Component } from 'react';
 import Layout from '../../../../components/layout/layout';
 import Messages from '../../../../components/chat/Messages'
 import { Form, Card } from 'react-bootstrap';
-import { Button, Input, SelectSearch } from '../../../../components/form-components';
+import { Input, SelectSearch } from '../../../../components/form-components';
 import axios from 'axios'
 import { errorAlert, forbiddenAccessAlert, waitAlert } from '../../../../functions/alert';
 import swal from 'sweetalert';
 import { setOptions } from '../../../../functions/setters';
-import { EMAIL, TEL, URL_DEV } from '../../../../constants';
+import { TEL, URL_DEV } from '../../../../constants';
 import InputPhone from '../../../../components/form-components/InputPhone';
 
 class LeadTelefono extends Component {
@@ -38,7 +38,7 @@ class LeadTelefono extends Component {
         aux.push( { username: 'Cliente', message: 'Buenas tardes, ¿Con quién puedo ver lo de un proyecto?', fromMe: false } )
         aux.push( { username: usuario, message: `Lo puedes ver conmigo, soy ${usuario} asesor(a) comercial de IM. Dígame, ¿Cuál es su nombre?`, fromMe: true } )
         this.setState({
-            ... this.state,
+            ...this.state,
             messages: aux
         }) */
     }
@@ -51,6 +51,7 @@ class LeadTelefono extends Component {
             if(emp.value.toString() === value.toString()){
                 empresa = emp
             }
+            return false
         })
         this.setState({
             empresa: empresa
@@ -64,7 +65,7 @@ class LeadTelefono extends Component {
         if(type === 'checkbox')
             form[name] = checked
         this.setState({
-            ... this.state,
+            ...this.state,
             form,
             messages: this.updateMessages(messages, name, value),
             tipo: name
@@ -84,6 +85,7 @@ class LeadTelefono extends Component {
                     if(emp.value.toString() === value.toString()){
                         empresa = emp
                     }
+                    return false
                 })
                 messages.push( { username: usuario, message: `${empresa.name}, Buenas tardes. ¿En qué puedo ayudarlo?`, fromMe: true } )
                 messages.push( { username: 'Cliente', message: 'Buenas tardes, ¿Con quién puedo ver lo de un proyecto?', fromMe: false } )
@@ -102,6 +104,7 @@ class LeadTelefono extends Component {
                         mensaje.message = `Mucho gusto ${value}, me puede indicar el nombre de su empresa`
                         auxVendedor = true
                     }
+                    return false
                 })
                 if(aux === false)
                     messages.push( { username: value, message: `Mi nombre es ${value}`, fromMe: false, tipo: name } )
@@ -114,6 +117,7 @@ class LeadTelefono extends Component {
                         mensaje.message = `${value}`
                         aux = true
                     }
+                    return false
                 })
                 if(aux === false){
                     messages.push( { username: form.name, message: `${value}`, fromMe: false, tipo: name } )
@@ -126,6 +130,7 @@ class LeadTelefono extends Component {
                         mensaje.message = `${value}`
                         aux = true
                     }
+                    return false
                 })
                 if(aux === false){
                     messages.push( { username: form.name, message: `${value}`, fromMe: false, tipo: name } )
@@ -153,6 +158,7 @@ class LeadTelefono extends Component {
                         mensaje.message = `${tipoProyecto}`
                         aux = true
                     }
+                    return false
                 })
                 if(aux === false){
                     messages.push( { username: form.name, message: `${tipoProyecto}`, fromMe: false, tipo: name } )
@@ -167,6 +173,7 @@ class LeadTelefono extends Component {
                         mensaje.message = `${value}`
                         aux = true
                     }
+                    return false
                 })
                 if(aux === false){
                     messages.push( { username: form.name, message: `${value}`, fromMe: false, tipo: name } )
@@ -175,6 +182,8 @@ class LeadTelefono extends Component {
                     messages.push( { username: form.name, message: `Todo bien, solo quedo en espera de la información.`, fromMe: false, tipo: name } )
                     messages.push( { username: usuario, message: `Muy bien, en unos momentos le hago llegar el correo. Que tenga un excelente día.`, fromMe: true } )
                 }
+                break;
+            default:
                 break;
         }
         return messages
@@ -190,7 +199,7 @@ class LeadTelefono extends Component {
                 const { options } = this.state
                 options.empresas = setOptions(empresas, 'name', 'id')
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options
                 })
             },
@@ -210,7 +219,7 @@ class LeadTelefono extends Component {
     render() {
         const { messages, form, options } = this.state
         return (
-            <Layout active = 'leads' { ... this.props } >
+            <Layout active = 'leads' { ...this.props } >
                 <div className = "row mx-0">
                     <div className = "col-md-4 position-relative border p-2">
                         <Messages messages = { messages } />
