@@ -331,6 +331,16 @@ class ContratosForm extends Component {
             form
         })
     }
+    onChangeRange = range => {
+        const { startDate, endDate } = range
+        const { form } = this.state
+        form.fechaInicio = startDate
+        form.fechaFin = endDate
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
     render() {
         const { title, options, form, tipo, formeditado } = this.state
         return (
@@ -349,6 +359,7 @@ class ContratosForm extends Component {
                             onChange={this.onChange}
                             onSubmit={this.onSubmit}
                             formeditado={formeditado}
+                            onChangeRange={this.onChangeRange}
                             // onChangeAdjunto={this.onChangeAdjunto}
                             clearFiles={this.clearFiles}
                             title={title}

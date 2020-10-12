@@ -220,6 +220,16 @@ class Flujos extends Component {
             console.log(error, 'error')
         })
     }
+    onChangeRange = range => {
+        const { startDate, endDate } = range
+        const { form } = this.state
+        form.fechaInicio = startDate
+        form.fechaFin = endDate
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
     render() {
         const { form, options, data, flujos, total } = this.state
         return (
@@ -231,9 +241,17 @@ class Flujos extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <FlujosForm form={form} options={options} onChange={this.onChange}
-                            onSubmit={this.onSubmit} onChangeAndAdd={this.onChangeAndAdd}
-                            deleteOption={this.deleteOption} clear={this.clear} onSubmit={this.onSubmit} />
+                        <FlujosForm 
+                            form={form}
+                            options={options}
+                            onChange={this.onChange}
+                            onSubmit={this.onSubmit}
+                            onChangeAndAdd={this.onChangeAndAdd}
+                            deleteOption={this.deleteOption}
+                            clear={this.clear}
+                            onSubmit={this.onSubmit}
+                            onChangeRange={this.onChangeRange}
+                        />
                         <TableForModals
                             columns={FLUJOS_COLUMNS}
                             data={flujos}
