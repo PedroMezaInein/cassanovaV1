@@ -294,7 +294,7 @@ class Crm extends Component {
                                                 // formeditado={formeditado} 
                                                 as="select">
                                                 <option disabled selected value={0}>Selecciona el origen</option>
-                                                <option value={"web"} className="bg-white">Web</option>
+                                                <option value={"web"} className="bg-white" >Web</option>
                                                 <option value={"facebook"} className="bg-white">Facebook</option>
                                                 <option value={"google"} className="bg-white">Google</option>
                                                 <option value={"linkedin"} className="bg-white">Linkedin</option>
