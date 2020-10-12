@@ -1,10 +1,6 @@
 import React, { Component } from 'react'
 import { OverlayTrigger, Tooltip, Dropdown, DropdownButton } from 'react-bootstrap'
-import SVG from "react-inlinesvg";
-import { toAbsoluteUrl } from '../../../functions/routers'
-
 class LeadNuevo extends Component {
-
     render() {
         const { } = this.props
         return (
@@ -85,9 +81,7 @@ class LeadNuevo extends Component {
                                 <td className="pr-0 text-right">
                                     <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
                                         <a href='/leads/crm/info/info'className="btn btn-default btn-icon btn-sm mr-2">
-                                            <span className="svg-icon svg-icon-md">
-                                                <SVG src={toAbsoluteUrl('/images/svg/Arrow-right.svg')} />
-                                            </span>
+                                            <i className="flaticon2-plus icon-nm"></i>
                                         </a>
                                     </OverlayTrigger>
                                 </td>

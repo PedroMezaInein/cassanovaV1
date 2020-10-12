@@ -87,6 +87,7 @@ class Cuenta extends Component {
                 tipo: renderToString(setTextTable(cuenta.tipo ? cuenta.tipo.tipo : '')),
                 estatus: cuenta.estatus ? renderToString(this.setLabel(cuenta.estatus.estatus)) : '',
                 empresa: renderToString(setListTable(cuenta.empresa, 'name')),
+                principal: renderToString(setTextTable(cuenta ? cuenta.empresa_principal ? cuenta.empresa_principal.name : '' : '')),
                 fecha: renderToString(setDateTable(cuenta.created_at)),
                 id: cuenta.id
             })

@@ -121,6 +121,17 @@ class NominaObraForm extends Component {
                                 />
                             </div>
                             <div className="col-md-3">
+                                <SelectSearch
+                                    formeditado={formeditado}
+                                    options={options.empresas}
+                                    placeholder="Selecciona la empresa"
+                                    name="empresa"
+                                    value={form.empresa}
+                                    onChange={this.updateEmpresa}
+                                    iconclass={"far fa-building"}
+                                />
+                            </div>
+                            <div className="col-md-3">
                                 <Calendar
                                     formeditado={formeditado}
                                     onChangeCalendar={this.handleChangeDateInicio}
@@ -147,17 +158,6 @@ class NominaObraForm extends Component {
                                     minDate={form.fechaInicio}
                                     iconclass={"far fa-calendar-alt"}
                                     patterns={DATE}
-                                />
-                            </div>
-                            <div className="col-md-3">
-                                <SelectSearch
-                                    formeditado={formeditado}
-                                    options={options.empresas}
-                                    placeholder="Selecciona la empresa"
-                                    name="empresa"
-                                    value={form.empresa}
-                                    onChange={this.updateEmpresa}
-                                    iconclass={"far fa-building"}
                                 />
                             </div>
                         </div>

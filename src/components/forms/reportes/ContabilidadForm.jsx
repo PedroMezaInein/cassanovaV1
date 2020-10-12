@@ -84,8 +84,8 @@ class ContabilidadForm extends Component {
                             {
                                 form.empresas.map((empresa, key) => {
                                     return (
-                                        <div className="tagify form-control p-1 col-md-3 px-2 d-flex justify-content-center align-items-center mb-3" tabIndex="-1" style={{ borderWidth: "0px" }}>
-                                            <div className="tagify__tag tagify__tag--primary tagify--noAnim" key={key}>
+                                        <div className="tagify form-control p-1 col-md-3 px-2 d-flex justify-content-center align-items-center mb-3" tabIndex="-1" style={{ borderWidth: "0px" }} key={key}>
+                                            <div className="tagify__tag tagify__tag--primary tagify--noAnim" >
                                                 <div
                                                     title="Borrar archivo"
                                                     className="tagify__tag__removeBtn"
