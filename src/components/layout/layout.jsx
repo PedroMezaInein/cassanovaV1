@@ -204,7 +204,7 @@ class Layout extends Component {
                         </div>
                     </div>
                 </div>
-                <UserPanel clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {...this.props} />
+                <UserPanel avatar = { this.props.authUser.user.avatar } clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {...this.props} />
             </div>
         )
     }

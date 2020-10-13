@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../constants'
 import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../functions/alert'
-
+import { update } from '../../redux/reducers/auth_user'
 import { ChangePasswordForm } from '../../components/forms'
 import swal from 'sweetalert';
 
@@ -60,6 +60,34 @@ class AccountSettings extends Component {
         })
 	}
 
+	sendAvatar = async (e) => {
+		e.preventDefault();
+		const { access_token } = this.props.authUser
+		const { form } = this.state
+        await axios.post(URL_DEV + 'user/users/avatar', form,  { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+				const { update } = this.props
+                update({
+                    access_token: response.data.access_token,
+                    user: response.data.user,
+                    modulos: response.data.modulos
+                })
+				doneAlert(response.data.message !== undefined ? response.data.message : 'El avatar fue actualizado con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+	}
+
 	render(){		
 		const { form } = this.state
 		return (
@@ -72,7 +100,8 @@ class AccountSettings extends Component {
                         </div>
                     </Card.Header>
 						<Card.Body> 
-							<ChangePasswordForm form = { form } onChange = { this.onChange } onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.changePasswordAxios()} } />
+							<ChangePasswordForm form = { form } onChange = { this.onChange } onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.changePasswordAxios()} } 
+								sendAvatar = { this.sendAvatar } />
 						</Card.Body>
 					</Card>
 				</Layout>
@@ -88,6 +117,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => ({
+    update: payload => dispatch(update(payload))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(AccountSettings);

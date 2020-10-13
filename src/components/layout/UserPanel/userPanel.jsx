@@ -15,6 +15,7 @@ function closeButton(){
 class UserPanel extends Component {
 	
 	render(){		
+		const { avatar } = this.props
 		return (
 		<>   
 			<div className="scroll scroll-pull offcanvas offcanvas-right p-5   ">
@@ -28,7 +29,7 @@ class UserPanel extends Component {
 				<div className="offcanvas-content pr-3 mr-n3">
 					<div className="d-flex align-items-center mt-3">
 						<div className="symbol symbol-100 mr-3">
-						<img className="symbol-label"  src="/default.jpg" alt = '' />
+						<img className="symbol-label"  src={avatar ? avatar : "/default.jpg"} alt = '' />
 							<i className="symbol-badge bg-success"></i>
 						</div>
 						<CustomUser clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {...this.props}/>

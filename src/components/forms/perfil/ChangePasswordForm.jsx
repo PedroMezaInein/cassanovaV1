@@ -4,7 +4,7 @@ import { Button, Input, ImageUpload } from '../../form-components'
 import { Form } from 'react-bootstrap'
 class ChangePasswordFrom extends Component {
 	render() {
-		const { onSubmit, form, onChange } = this.props
+		const { onSubmit, form, onChange, sendAvatar } = this.props
 		return (<>
 			<Form id="form-foto"
 				onSubmit={
@@ -26,7 +26,7 @@ class ChangePasswordFrom extends Component {
 						onClick={
 							(e) => {
 								e.preventDefault();
-								validateAlert(onSubmit, e, 'form-foto')
+								validateAlert(sendAvatar, e, 'form-foto')
 							}
 						}
 						text="ENVIAR" />
