@@ -288,12 +288,13 @@ class Crm extends Component {
                                         <div className="col-md-2">
                                             <Form.Control
                                                 className="form-control text-uppercase form-control-solid"
+                                                defaultValue = { 0 }
                                                 // value = {form.origen} 
                                                 // onChange={onChange} 
                                                 name='origen'
                                                 // formeditado={formeditado} 
                                                 as="select">
-                                                <option disabled selected value={0}>Selecciona el origen</option>
+                                                <option disabled value={0}>Selecciona el origen</option>
                                                 <option value={"web"} className="bg-white" >Web</option>
                                                 <option value={"facebook"} className="bg-white">Facebook</option>
                                                 <option value={"google"} className="bg-white">Google</option>
@@ -303,12 +304,13 @@ class Crm extends Component {
                                         <div className="col-md-2">
                                             <Form.Control
                                                 className="form-control text-uppercase form-control-solid"
+                                                defaultValue = { 0 }
                                                 // value = {form.estatus} 
                                                 // onChange={onChange} 
                                                 // name='estatus' 
                                                 // formeditado={formeditado} 
                                                 as="select">
-                                                <option disabled selected value={0}>Selecciona el estatus</option>
+                                                <option disabled value={0}>Selecciona el estatus</option>
                                                 <option value={"pendiente"} className="bg-white">Pendiente</option>
                                                 <option value={"contacto"} className="bg-white">En contacto</option>
                                                 <option value={"negociacion"} className="bg-white">En negociación</option>
@@ -352,7 +354,7 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-}
+const mapDispatchToProps = dispatch => ({
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(Crm)
