@@ -165,10 +165,9 @@ class NewTableServerRender extends Component {
                         $(this).append('<div class="mt-2 separator separator-dashed separator-border-2"></div><div class="mt-2"><input type="text" id=' + cellIndex + ' class="form-control form-control-sm"/></div>');
                     contador++;
                 });
-
                 this.api().columns().every(function () {
                     var that = this;
-                    $('input', this.header()).on('keyup change clear', function () {
+                    $('input', this.header()).on('blur', function () {
                         if (that.search() !== this.value) {
                             that
                                 .search(this.value)
