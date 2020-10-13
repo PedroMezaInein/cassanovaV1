@@ -30,7 +30,7 @@ class ChangePasswordFrom extends Component {
 												onClick={
 													(e) => {
 														e.preventDefault();
-														validateAlert(onSubmit, e, 'form-foto')
+														validateAlert(sendAvatar, e, 'form-foto')
 													}
 												}
 												text="CARGAR FOTO" />
