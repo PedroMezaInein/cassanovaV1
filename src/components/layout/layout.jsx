@@ -78,7 +78,7 @@ class Layout extends Component {
                 })
                 setTimeout(() => {
                     this.getNotificacionesAxios()
-                }, (numero * 2500) + 300000)
+                }, (numero * 2500) + 1000000)
             },
             (error) => {
             }
