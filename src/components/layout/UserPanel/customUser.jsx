@@ -11,11 +11,11 @@ const NameUser = React.forwardRef(({userName}, ref) => (
 class customUser extends Component{
     
     render(){
-        const { clickLogout, authUser: { user: { name: userName } } } = this.props
+		const { clickLogout, authUser: { user: { name: userName } } } = this.props
         return(
         <>               
 			<div className="d-flex flex-column">
-				<span className="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><Navbar as={NameUser} userName={userName}> </Navbar></span>
+				<div className="font-weight-bold font-size-h5 text-dark-75 text-justify "><Navbar as={NameUser} userName={userName}> </Navbar></div>
 				<div className="text-muted mt-1"></div>
 					<div className="navi mt-1"> 
 							<span className="navi-link p-0 pb-1">
@@ -25,7 +25,7 @@ class customUser extends Component{
 									</span>
 								</span>
 								<a rel="noopener noreferrer" href={"mailto:"+this.props.authUser.user.email} target="_blank">
-									<span className="navi-text text-muted text-hover-primary">{this.props.authUser.user.email}</span>
+									<span className="navi-text text-muted text-hover-primary  ">{this.props.authUser.user.email}</span>
 								</a>
 							</span> 
 						<span className="btn btn-sm btn-light-primary font-weight-bolder mt-2 " onClick={clickLogout}>Cerrar Sesión</span>
