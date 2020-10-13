@@ -5,21 +5,7 @@ import { RFC, DATE } from '../../../constants'
 import {openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
 class ComprasForm extends Component {
-
-    updateCliente = value => {
-        const { onChange, setOptions } = this.props
-        onChange({ target: { value: value, name: 'cliente' } })
-        onChange({ target: { value: '', name: 'proyecto' } })
-        const { options: { proyectos } } = this.props
-
-        proyectos.find(function (element, index) {
-            if (value.toString() === element.value.toString()) {
-                setOptions('proyectos', element.proyectos)
-                return value
-            }
-            return false
-        })
-    }
+    
     updateProyecto = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'proyecto' } })

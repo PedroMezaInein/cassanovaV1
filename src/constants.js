@@ -52,6 +52,7 @@ export const URL_ASSETS = 'http://127.0.0.1:8000'; */
 /* export const PROD_LINK = 'https://demo.proyectosadmin.com/api/' */
 export const PROD_LINK = 'https://proyectosadmin.xyz/api/'
 export const DEV_LINK = 'http://localhost:8000/api/'
+/* export const DEV_LINK = 'https://demo.proyectosadmin.com/api/' */
 /* export const DEV_LINK = 'https://proyectosadmin.xyz/api/' */
 
 export const URL_DEV = process.env.NODE_ENV === 'production' ? PROD_LINK : DEV_LINK
@@ -982,20 +983,20 @@ export const COMPRAS_COLUMNS = [
         accessor: 'subarea'
     },
     {
-        Header: 'Total',
-        accessor: 'total'
-    },
-    {
-        Header: 'Cuenta',
-        accessor: 'cuenta'
-    },
-    {
         Header: 'Monto',
         accessor: 'monto'
     },
     {
         Header: 'Comisión',
         accessor: 'comision'
+    },
+    {
+        Header: 'Total',
+        accessor: 'total'
+    },
+    {
+        Header: 'Cuenta',
+        accessor: 'cuenta'
     },
     {
         Header: 'Impuesto',
@@ -1012,10 +1013,6 @@ export const COMPRAS_COLUMNS = [
     {
         Header: 'Descripción',
         accessor: 'descripcion'
-    },
-    {
-        Header: 'Adjuntos',
-        accessor: 'adjuntos',
     },
 ]
 
