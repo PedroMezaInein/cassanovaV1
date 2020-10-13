@@ -57,6 +57,7 @@ class Traspasos extends Component {
                 fecha: renderToString(setDateTable(traspaso.created_at)),
                 id: traspaso.id
             })
+            return false
         })
         return aux
     }

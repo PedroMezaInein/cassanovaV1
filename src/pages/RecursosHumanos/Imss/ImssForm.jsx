@@ -62,6 +62,7 @@ class ImssForm extends Component {
                                     name: adj.name,
                                     url: adj.url
                                 })
+                                return false
                             })
                         if(imss.empresa)
                             form.empresa = imss.empresa.id.toString()
@@ -97,6 +98,7 @@ class ImssForm extends Component {
                 url: adj.url,
                 id: adj.id
             })
+            return false
         })
         form.adjuntos.adjuntos.files = aux
         this.setState({
@@ -168,6 +170,7 @@ class ImssForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
 
         aux = Object.keys(form.adjuntos)
@@ -177,6 +180,7 @@ class ImssForm extends Component {
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
+            return false
         })
         
         await axios.post(URL_DEV + 'imss', data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
@@ -219,6 +223,7 @@ class ImssForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
 
         aux = Object.keys(form.adjuntos)
@@ -228,6 +233,7 @@ class ImssForm extends Component {
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
+            return false
         })
         await axios.post(URL_DEV + 'imss/' + imss.id, data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {

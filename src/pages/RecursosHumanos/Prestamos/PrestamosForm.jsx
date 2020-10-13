@@ -63,6 +63,7 @@ class PrestamosForm extends Component {
                                     name: adj.name,
                                     url: adj.url
                                 })
+                                return false
                             })
                         if(prestamo.empleado)
                             form.empleado = prestamo.empleado.id.toString()
@@ -149,6 +150,7 @@ class PrestamosForm extends Component {
                 url: adj.url,
                 id: adj.id
             })
+            return false
         })
         form.adjuntos.adjuntos.files = aux
         this.setState({
@@ -175,6 +177,7 @@ class PrestamosForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
 
         aux = Object.keys(form.adjuntos)
@@ -184,6 +187,7 @@ class PrestamosForm extends Component {
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
+            return false
         })
         
         await axios.post(URL_DEV + 'prestamos', data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
@@ -226,6 +230,7 @@ class PrestamosForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
 
         aux = Object.keys(form.adjuntos)
@@ -235,6 +240,7 @@ class PrestamosForm extends Component {
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
+            return false
         })
         await axios.post(URL_DEV + 'prestamos/' + prestamo.id, data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {

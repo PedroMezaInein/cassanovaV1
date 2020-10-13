@@ -64,6 +64,7 @@ class NominaObraSingle extends Component {
                     id: nomina.id
                 }
             )
+            return false
         })
         return aux
     }

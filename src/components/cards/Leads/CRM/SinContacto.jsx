@@ -63,7 +63,6 @@ export default class SinContacto extends Component {
     }
     render() {
         const { prospectos_sin_contactar, onClick, onClickPrev } = this.props
-        // console.log(prospectos_sin_contactar.data)
         return (
             <Card className="card-custom card-stretch gutter-b py-2">
                 <Card.Header className="align-items-center border-0">
@@ -72,11 +71,11 @@ export default class SinContacto extends Component {
                     </div>
                     <div className="card-toolbar">
                         { this.isActiveButton('prev')?
-                            <a className="btn btn-icon btn-xs btn-light-danger mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></a>
+                            <span className="btn btn-icon btn-xs btn-light-danger mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></span>
                             :''
                         }
                         { this.isActiveButton('next')?
-                            <a className="btn btn-icon btn-xs btn-light-danger mr-2 my-1" onClick={onClick}><i className="ki ki-bold-arrow-next icon-xs"></i></a>
+                            <span className="btn btn-icon btn-xs btn-light-danger mr-2 my-1" onClick={onClick}><i className="ki ki-bold-arrow-next icon-xs"></i></span>
                             :''
                         }
                     </div>

@@ -63,7 +63,7 @@ class Layout extends Component {
             draggable: false,
             progress: undefined,
         }
-        const { authUser: { access_token: access_token } } = this.props
+        const { authUser: { access_token } } = this.props
         await axios.get(URL_DEV + 'notificaciones', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { notificaciones } = response.data
@@ -74,6 +74,7 @@ class Layout extends Component {
                             toast(<Notificacion data={notificacion} />, options);
                         }, (i) * 2500
                     )
+                    return false
                 })
                 setTimeout(() => {
                     this.getNotificacionesAxios()
@@ -83,27 +84,12 @@ class Layout extends Component {
             }
         ).catch((error) => {
         })
-        /* for(let i = 0; i < 5; i++)
-            setTimeout(
-                () => {
-                    toast('🦄 Wow so easy!', {
-                        position: "top-right",
-                        autoClose: 5000,
-                        hideProgressBar: true,
-                        closeOnClick: false,
-                        pauseOnHover: true,
-                        draggable: false,
-                        progress: undefined,
-                        });
-                }, (i) * 2500
-            ) */
-
     }
 
 
 
     async logoutUserAxios() {
-        const { logout, authUser: { access_token: access_token }, history } = this.props
+        const { logout, authUser: { access_token }, history } = this.props
         await axios.get(URL_DEV + 'user/logout', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 logout();

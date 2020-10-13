@@ -62,9 +62,6 @@ class InputGray extends Component {
         else {
             if (letterCase === 'Upper')
                 e.target.value = ("" + e.target.value).toUpperCase();
-            else {
-                e.target.value = e.target.value
-            }
         }
     }
     render() {

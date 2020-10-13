@@ -36,7 +36,7 @@ class Calendar extends Component{
 
     render(){
         const { placeholder, onChangeCalendar, name, value, messageinc, iconclass, ...props } = this.props
-        const { onChangeCalendar: { onChangeCalendar2}, minDate, endDate, selectsEnd, startDate, selectsStart, ... props2} = this.props
+        const { minDate, endDate, selectsEnd, startDate, selectsStart, ...props2} = this.props
         const { calendarValido } = this.state
         return(
             <div>  
@@ -44,7 +44,6 @@ class Calendar extends Component{
                     <DatePicker
                         { ...props }
                         dateFormat="dd/MM/yyyy"
-                        placeholderText="Selecciona la fecha"
                         selected={value}
                         onChange={(date) => {this.validarFecha(date); onChangeCalendar(date);}}
                         locale={'es'} 

@@ -66,7 +66,7 @@ class ComprasForm extends Component {
         const { onChange, setOptions } = this.props
         onChange({ target: { value: value, name: 'proveedor' } })
         onChange({ target: { value: '', name: 'contrato' } })
-        const { data: { proveedores: proveedores } } = this.props
+        const { data: { proveedores } } = this.props
         proveedores.find(function (element, index) {
             if (value.toString() === element.id.toString()) {
                 setOptions('contratos', element.contratos)
@@ -74,6 +74,7 @@ class ComprasForm extends Component {
                     onChange({ target: { value: element.rfc, name: 'rfc' } })
                 }
             }
+            return false
         })
     }
 
@@ -101,6 +102,7 @@ class ComprasForm extends Component {
         options.tiposImpuestos.find(function (element, index) {
             if (element.text === 'IVA')
                 aux = element.value
+            return false
         });
         onChange({ target: { value: aux, name: 'tipoImpuesto' } })
     }
@@ -112,6 +114,7 @@ class ComprasForm extends Component {
             options.tiposPagos.map((option) => {
                 if (option.value.toString() === value.toString() && option.text.toString() === 'TOTAL')
                     onChange({ target: { value: form.facturaObject.total, name: 'total' } })
+                return false
             })
         }
         onChange(e)

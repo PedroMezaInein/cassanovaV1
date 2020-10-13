@@ -48,6 +48,7 @@ class Prestamos extends Component {
                 restante: renderToString(setMoneyTable(prestamo.restante)),
                 id: prestamo.id
             })
+            return false
         })
         return aux
     }
@@ -139,6 +140,7 @@ class Prestamos extends Component {
         let aux = []
         prestamo.adjuntos.map((adj) => {
             aux.push(adj)
+            return false
         })
         form.adjuntos.adjuntos.files = aux
         this.setState({
@@ -226,6 +228,7 @@ class Prestamos extends Component {
                 url: adj.url,
                 id: adj.id
             })
+            return false
         })
         form.adjuntos.adjuntos.files = aux
         this.setState({
@@ -284,6 +287,7 @@ class Prestamos extends Component {
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
+            return false
         })
         await axios.post(URL_DEV + 'prestamos/' + prestamo.id + '/adjuntos', data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -296,6 +300,7 @@ class Prestamos extends Component {
                         url: adj.url,
                         id: adj.id
                     })
+                    return false
                 })
                 form.adjuntos.adjuntos.files = aux
                 form.adjuntos.adjuntos.value = ''
@@ -579,6 +584,7 @@ class Prestamos extends Component {
                                                                 </td>
                                                             </tr>
                                                         )
+                                                    return false
                                                 })
                                                 : ''
                                         }

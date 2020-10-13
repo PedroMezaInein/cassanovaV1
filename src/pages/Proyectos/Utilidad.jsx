@@ -33,6 +33,7 @@ class Utilidad extends Component {
                     : renderToString(setPercentTable(0)), 
                 id: utilidad.id
             })
+            return false
         })
         return aux
     }

@@ -55,11 +55,11 @@ class Flujos extends Component {
         let auxArray = form[arreglo]
         let aux = []
         options[arreglo].find(function (_aux) {
-            if (_aux.value.toString() === value.toString()) {
+            if (_aux.value.toString() === value.toString())
                 auxArray.push(_aux)
-            } else {
+            else
                 aux.push(_aux)
-            }
+            return false
         })
         options[arreglo] = aux
         form[arreglo] = auxArray
@@ -73,11 +73,11 @@ class Flujos extends Component {
         const { form, options } = this.state
         let aux = []
         form[arreglo].map((element, key) => {
-            if (option.value.toString() !== element.value.toString()) {
+            if (option.value.toString() !== element.value.toString())
                 aux.push(element)
-            } else {
+            else
                 options[arreglo].push(element)
-            }
+            return false
         })
         form[arreglo] = aux
         this.setState({
@@ -90,6 +90,7 @@ class Flujos extends Component {
         let aux = 0
         array.map((element) => {
             aux = aux + element[name];
+            return false
         })
         return aux
     }
@@ -97,6 +98,7 @@ class Flujos extends Component {
         let aux = 0
         array.map((element) => {
             aux = aux + (element.traspasos_destino_count - element.traspasos_origen_count);
+            return false
         })
         return aux
     }
@@ -141,6 +143,7 @@ class Flujos extends Component {
                 cuenta: renderToString(setTextTable(flujo.nombre)),
                 id: flujo.id
             })
+            return false
         })
         return aux
     }
@@ -226,7 +229,7 @@ class Flujos extends Component {
         form.fechaInicio = startDate
         form.fechaFin = endDate
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }
@@ -245,7 +248,6 @@ class Flujos extends Component {
                             form={form}
                             options={options}
                             onChange={this.onChange}
-                            onSubmit={this.onSubmit}
                             onChangeAndAdd={this.onChangeAndAdd}
                             deleteOption={this.deleteOption}
                             clear={this.clear}

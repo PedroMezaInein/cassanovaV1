@@ -62,6 +62,7 @@ class AdjuntosEmpresaForm extends Component {
                                         name: adj.name, url: adj.url
                                     }
                                 )
+                                return false
                             })
                         form.adjuntos.adjunto.files = aux
                         this.setState({

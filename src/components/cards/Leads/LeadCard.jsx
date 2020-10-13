@@ -39,7 +39,7 @@ export default class LeadCard extends Component {
                                             </div>
                                         </div>
                                         <div>
-                                            <a target="_blank" href={`tel:+${lead.telefono}`} className="font-size-h6 text-dark-75 font-weight-bolder text-hover-primary">{lead.telefono}</a>
+                                            <a target="_blank" href={`tel:+${lead.telefono}`} className="font-size-h6 text-dark-75 font-weight-bolder text-hover-primary" rel="noopener noreferrer">{lead.telefono}</a>
                                             <div className="font-size-sm text-muted font-weight-bold mt-1">TELÉFONO</div>
                                         </div>
                                     </div>
@@ -69,7 +69,7 @@ export default class LeadCard extends Component {
                                             </div>
                                         </div>
                                         <div>
-                                            <a target="_blank" href={`mailto:+${lead.email}`} className="font-size-h6 text-dark-75 font-weight-bolder text-hover-primary">{lead.email}</a>
+                                            <a target="_blank" href={`mailto:+${lead.email}`} className="font-size-h6 text-dark-75 font-weight-bolder text-hover-primary" rel="noopener noreferrer">{lead.email}</a>
                                             <div className="font-size-sm text-muted font-weight-bold mt-1">Correo electrónico</div>
                                         </div>
                                     </div>

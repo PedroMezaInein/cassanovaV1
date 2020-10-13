@@ -57,6 +57,7 @@ class TiposContratos extends Component {
                 tipo: renderToString(setTextTable(tipo.tipo)),
                 id: tipo.id
             })
+            return false
         })
         return aux
     }
@@ -91,6 +92,7 @@ class TiposContratos extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }

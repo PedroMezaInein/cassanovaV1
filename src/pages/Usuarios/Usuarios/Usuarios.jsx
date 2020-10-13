@@ -342,6 +342,7 @@ class Usuarios extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -372,6 +373,7 @@ class Usuarios extends Component {
                         }
                     )
                 }
+                return false
             })
         return aux
     }
@@ -442,6 +444,7 @@ class Usuarios extends Component {
             } else {
                 aux.push(_aux)
             }
+            return false
         })
         form[arreglo] = auxArray
         this.setState({
@@ -458,6 +461,7 @@ class Usuarios extends Component {
             if(element !== elemento){
                 auxForm.push(elemento)
             }
+            return false
         })
         form[array] = auxForm
         this.setState({
@@ -503,6 +507,7 @@ class Usuarios extends Component {
         let aux = Object.keys(form)
         aux.map((element) => {
             auxObject[element] = form[element]
+            return false
         })
         save({
             form: auxObject,

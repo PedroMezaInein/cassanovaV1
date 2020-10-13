@@ -2,9 +2,6 @@ import React, { Component } from 'react'
 import Card from 'react-bootstrap/Card'
 
 export default class card extends Component{
-    constructor(props){
-        super(props)
-    }
 
     render(){
         const { img, children, variant , className} = this.props

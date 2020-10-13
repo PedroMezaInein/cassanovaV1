@@ -566,9 +566,9 @@ class Compras extends Component {
                 options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
                 data.proveedores = proveedores
                 proveedores.map((proveedor) => {
-                    if (proveedor.razon_social === cadena) {
+                    if (proveedor.razon_social === cadena)
                         form.proveedor = proveedor.id.toString()
-                    }
+                    return false
                 })
                 this.setState({
                     ...this.state,
@@ -673,9 +673,9 @@ class Compras extends Component {
                 case 'estatusCompra':
                     data.append(element, form[element]);
                     break;
-                default:
-                    break
+                default: break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -685,7 +685,9 @@ class Compras extends Component {
                     data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
                 }
                 data.append('adjuntos[]', element)
+                return false
             }
+            return false
         })
         data.append('id', compra.id)
         await axios.post(URL_DEV + 'compras/factura', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
@@ -766,6 +768,7 @@ class Compras extends Component {
                     }
                 }
             }
+            return false
         })
         waitAlert()
         const { access_token } = this.props.authUser
@@ -805,6 +808,7 @@ class Compras extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         data.append('id', compra.id)
         await axios.post(URL_DEV + 'compras/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(

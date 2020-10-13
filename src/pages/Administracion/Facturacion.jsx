@@ -57,9 +57,9 @@ class Facturacion extends Component {
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
-        const { history: { location: { pathname } } } = this.props
+        let { history: { location: { pathname } } } = this.props
         const { history } = this.props
-        let aux = pathname.substr(1, pathname.length - 1)
+        pathname = pathname.substr(1, pathname.length - 1)
         const facturas = permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url
@@ -120,6 +120,7 @@ class Facturacion extends Component {
                     objeto: factura
                 }
             )
+            return false
         })
         return aux
     }
@@ -195,7 +196,7 @@ class Facturacion extends Component {
             <div>
                 {
                     factura.xml ?
-                        <a href={factura.xml.url} target="_blank">
+                        <a href={factura.xml.url} target="_blank" rel="noopener noreferrer">
                             <Small>
                                 factura.xml
                             </Small>
@@ -205,7 +206,7 @@ class Facturacion extends Component {
                 <br />
                 {
                     factura.pdf ?
-                        <a href={factura.pdf.url} target="_blank">
+                        <a href={factura.pdf.url} target="_blank" rel="noopener noreferrer">
                             <Small>
                                 factura.pdf
                             </Small>
@@ -246,6 +247,7 @@ class Facturacion extends Component {
                 name: adjunto.name,
                 url: adjunto.url
             })
+            return false
         })
         form.adjuntos.adjuntos.files = aux
         this.setState({
@@ -279,6 +281,7 @@ class Facturacion extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -319,6 +322,7 @@ class Facturacion extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         await axios.post(URL_DEV + 'facturas/cancelar/' + factura.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -462,27 +466,28 @@ class Facturacion extends Component {
                             if (NoCertificado)
                                 obj.numero_certificado = text.substring(NoCertificado + 15, NoCertificado + 35)
                         }
+                        let auxiliar = ''
                         if (obj.subtotal === '') {
                             let Subtotal = text.search('SubTotal="')
                             if (Subtotal)
                                 Subtotal = text.substring(Subtotal + 10)
-                            aux = Subtotal.search('"')
-                            Subtotal = Subtotal.substring(0, aux)
+                            auxiliar = Subtotal.search('"')
+                            Subtotal = Subtotal.substring(0, auxiliar)
                             obj.subtotal = Subtotal
                         }
                         if (obj.fecha === '') {
                             let Fecha = text.search('Fecha="')
                             if (Fecha)
                                 Fecha = text.substring(Fecha + 7)
-                            aux = Fecha.search('"')
-                            Fecha = Fecha.substring(0, aux)
+                            auxiliar = Fecha.search('"')
+                            Fecha = Fecha.substring(0, auxiliar)
                             obj.fecha = Fecha
                         }
                         let auxEmpresa = ''
                         data.empresas.find(function (element, index) {
-                            if (element.rfc === obj.rfc_emisor) {
+                            if (element.rfc === obj.rfc_emisor)
                                 auxEmpresa = element
-                            }
+                            return false
                         });
                         let auxCliente = ''
                         data.clientes.find(function (element, index) {
@@ -494,6 +499,7 @@ class Facturacion extends Component {
                                 element.empresa === cadena) {
                                 auxCliente = element
                             }
+                            return false
                         });
                         if (auxEmpresa) {
                         } else {
@@ -592,6 +598,7 @@ class Facturacion extends Component {
                 default:
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -602,6 +609,7 @@ class Facturacion extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         await axios.post(URL_DEV + 'facturas/new', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -644,9 +652,9 @@ class Facturacion extends Component {
                 options['clientes'] = setOptions(clientes, 'empresa', 'id')
                 data.clientes = clientes
                 clientes.map((cliente) => {
-                    if (cliente.empresa === cadena) {
+                    if (cliente.empresa === cadena)
                         form.cliente = cliente.empresa
-                    }
+                    return false
                 })
                 this.setState({
                     ...this.state,

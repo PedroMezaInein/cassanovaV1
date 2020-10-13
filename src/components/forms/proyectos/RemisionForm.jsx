@@ -18,10 +18,11 @@ class ConceptoForm extends Component {
         onChange({ target: { value: '', name: 'subarea' } })
 
         const { options: { areas } } = this.props
-        const aux = areas.find(function (element, index) {
+        areas.find(function (element, index) {
             if (value.toString() === element.value.toString()) {
                 setOptions('subareas', element.subareas)
             }
+            return false
         })
     }
 

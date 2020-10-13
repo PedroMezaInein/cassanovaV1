@@ -3,6 +3,7 @@ import '../../styles/custom_datatable.css'
 import '../../styles/metronic/_datables.scss';
 import { errorAlert } from '../../functions/alert'
 import { Card, Spinner } from 'react-bootstrap'
+import Sending from '../Lottie/Sending';
 import { renderToString } from 'react-dom/server';
 
 const $ = require('jquery');
@@ -144,7 +145,7 @@ class NewTableServerRender extends Component {
 
         let _that = this
         for (i = 0; i < header.length; i++) {
-            var titulo = {};
+            var titulo = new Object();
             titulo["title"] = header[i].Header;
             titulo["data"] = header[i].accessor;
             columns[i] = titulo;
@@ -159,9 +160,10 @@ class NewTableServerRender extends Component {
                 // var html;
                 var contador = 0;
                 table.find("thead th").each(function () {
+                    var title = $(this).text();
                     let cellIndex = $(this)[0].cellIndex
                     cellIndex = header[cellIndex].accessor
-                    if (global_variable.mostrar_acciones === false || ( global_variable.mostrar_acciones === true && contador > 0)) {
+                    if (global_variable.mostrar_acciones == false || global_variable.mostrar_acciones && contador != 0) {
                         $(this).append('<div class="mt-2 separator separator-dashed separator-border-2"></div><div class="mt-2"><input type="text" id=' + cellIndex + ' class="form-control form-control-sm"/></div>');
 
                     }
@@ -177,7 +179,6 @@ class NewTableServerRender extends Component {
                                 .draw();
                         }
                     });
-                    return false
                 });
             },
 
@@ -293,16 +294,16 @@ class NewTableServerRender extends Component {
                 'searchable': mostrar_acciones ? false : true,
                 'orderable': false,
                 render: function (data, type, row, meta) {
-                    if (global_variable.mostrar_acciones === true) {
-                        let auxString = ''
+                    if (global_variable.mostrar_acciones == true) {
+                        let aux = ''
                         {
                             data.map((element) => {
-                                auxString = auxString + `<button name=${element.action}  id = ${row.id} class="ml-2 btn btn-actions-table btn-xs btn-icon btn-text-${element.btnclass} btn-hover-${element.btnclass}" title=${element.text}><i class=${element.iconclass}></i></button>`
-                                return false
+                                aux = aux +
+                                    `<button name=${element.action}  id = ${row.id} class="ml-2 btn btn-actions-table btn-xs btn-icon btn-text-${element.btnclass} btn-hover-${element.btnclass}" title=${element.text}><i class=${element.iconclass}></i></button>`
                                 })
                         }
                         return (
-                            '<div>' + auxString + '</div>'
+                            '<div>' + aux + '</div>'
                         )
                     }
                     else {
@@ -331,7 +332,6 @@ class NewTableServerRender extends Component {
                 if (element.id.toString() === id) {
                     return element
                 }
-                return false
             });
             actions[name].function(aux)
         });
@@ -357,7 +357,7 @@ class NewTableServerRender extends Component {
     }
     render() {
 
-        const { title, subtitle, url, mostrar_boton, abrir_modal, exportar_boton, cardTable,cardTableHeader,cardBody } = this.props
+        const { columns, data, title, subtitle, url, mostrar_boton, abrir_modal, exportar_boton, cardTable,cardTableHeader,cardBody } = this.props
         return (
             <>
                 <Card  id={cardTable} className="card-custom card-sticky">
@@ -375,7 +375,7 @@ class NewTableServerRender extends Component {
                             </h2>
                         </div>
                         <div className="card-toolbar">
-                            {(exportar_boton === true) ?
+                            {(exportar_boton == true) ?
                                 <button onClick={() => this.clickHandlerExport()} className="btn btn-primary font-weight-bold mr-2">
                                     <i className="far fa-file-excel"></i> Exportar
                                     </button>
@@ -383,8 +383,8 @@ class NewTableServerRender extends Component {
                                 ""
                             }
                             {
-                                (mostrar_boton === true) ?
-                                    (abrir_modal === true) ?
+                                (mostrar_boton == true) ?
+                                    (abrir_modal == true) ?
                                         <button onClick={() => this.clickHandler()} className="btn btn-success font-weight-bold mr-2">
                                             <i className="flaticon-add"></i> Agregar
                                             </button>

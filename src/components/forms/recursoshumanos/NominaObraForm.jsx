@@ -77,14 +77,13 @@ class NominaObraForm extends Component {
         let sumaNomImss = 0;
         let sumaRestanteNomina = 0;
         let sumaExtras = 0;
-        let sumaTotal = 0;
 
         form.nominasObra.forEach(element => {
             sumaNomImss += element.nominImss === undefined ? 0 : parseFloat(element.nominImss);
             sumaRestanteNomina += element.restanteNomina === undefined ? 0 : parseFloat(element.restanteNomina);
             sumaExtras += element.extras === undefined ? 0 : parseFloat(element.extras);
         });
-        return sumaTotal = sumaNomImss + sumaRestanteNomina + sumaExtras
+        return sumaNomImss + sumaRestanteNomina + sumaExtras
     }
 
 

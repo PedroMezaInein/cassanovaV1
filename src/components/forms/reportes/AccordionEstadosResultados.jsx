@@ -50,6 +50,7 @@ class AccordionEstadosResultados extends Component {
             else {
                 element.isActive = false
             }
+            return false
         })
         this.setState({
             accordion: accordion
@@ -61,6 +62,7 @@ class AccordionEstadosResultados extends Component {
         let sumaVentas = 0
         ventas.map((venta) => {
             sumaVentas = sumaVentas + venta.total
+            return false
         })
         return sumaVentas
     }
@@ -70,6 +72,7 @@ class AccordionEstadosResultados extends Component {
         let sumaIngresos = 0
         ingresos.map((ingreso) => {
             sumaIngresos = sumaIngresos + ingreso.total
+            return false
         })
         return sumaIngresos
     }
@@ -79,6 +82,7 @@ class AccordionEstadosResultados extends Component {
         let sumaCompras = 0
         compras.map((compra) => {
             sumaCompras = sumaCompras + compra.total
+            return false
         })
         return sumaCompras
     }
@@ -88,6 +92,7 @@ class AccordionEstadosResultados extends Component {
         let sumaGastos = 0
         egresos.map((egreso) => {
             sumaGastos = sumaGastos + egreso.total
+            return false
         })
         return sumaGastos
     }

@@ -28,7 +28,7 @@ class LeadContrato extends Component {
                                             <span className="symbol-label font-size-h5">P</span>
                                         </div>
                                         <div>
-                                            <a href="#" className="text-dark-75 font-weight-bolder text-hover-success mb-1 font-size-lg">Nombre cliente X</a>
+                                            <span href="#" className="text-dark-75 font-weight-bolder text-hover-success mb-1 font-size-lg">Nombre cliente X</span>
                                             <span className="text-muted font-weight-bold d-block">Proyecto X</span>
                                         </div>
                                     </div>
@@ -69,18 +69,18 @@ class LeadContrato extends Component {
                                         </Dropdown.Header>
                                         <Dropdown.Divider />
                                         <Dropdown.Item eventKey="1">
-                                            <a href="#" className="navi-link">
+                                            <span className="navi-link">
                                                 <span className="navi-text">
                                                     <span className="label label-xl label-inline label-light-success rounded-0">CONTRATADO</span>
                                                 </span>
-                                            </a>
+                                            </span>
                                         </Dropdown.Item>
                                         <Dropdown.Item eventKey="2">
-                                            <a href="#" className="navi-link">
+                                            <span className="navi-link">
                                                 <span className="navi-text">
                                                     <span className="label label-xl label-inline label-light-danger rounded-0">DETENIDO</span>
                                                 </span>
-                                            </a>
+                                            </span>
                                         </Dropdown.Item>
                                     </DropdownButton>
                                 </td>
