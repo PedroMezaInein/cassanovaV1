@@ -2,10 +2,9 @@ import React, { Component } from 'react'
 import Layout from '../components/layout/layout'
 import { connect } from 'react-redux'
 import { Button } from '../components/form-components/'
-import { Tab, Nav, Col, Row, OverlayTrigger, Tooltip, Card, Dropdown, DropdownButton } from 'react-bootstrap'
+import { Tab, Nav, Col, Row, OverlayTrigger, Tooltip, Card } from 'react-bootstrap'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../functions/routers"
-import { UltimosContactosCard, SinContacto, UltimosIngresosCard } from '../components/cards'
 class Normas extends Component {
     
     state = {
