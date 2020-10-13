@@ -1,47 +1,55 @@
 import React, { Component } from 'react'
 import { validateAlert } from '../../../functions/alert'
 import { Button, Input, ImageUpload } from '../../form-components'
-import { Form } from 'react-bootstrap'
+import { Form, Col } from 'react-bootstrap'
 class ChangePasswordFrom extends Component {
 	render() {
 		const { onSubmit, form, onChange } = this.props
 		return (<>
-			<Form id="form-foto"
-				onSubmit={
-					(e) => {
-						e.preventDefault();
-						validateAlert(onSubmit, e, 'form-foto')
-					}
-				}
-			>
-				<div className="col-md-7 align-self-center">
-					<ImageUpload
-						name="foto"
-						value={form.foto}
-						onChange={onChange}
-					/>
-				</div>
-				<div className="mt-3 text-center">
-					<Button icon='' className="mx-auto"
-						onClick={
+			<div className="row">
+				<Col md="7">
+					<Form id="form-foto"
+						onSubmit={
 							(e) => {
 								e.preventDefault();
 								validateAlert(onSubmit, e, 'form-foto')
 							}
 						}
-						text="ENVIAR" />
-				</div>
-			</Form>
-			<Form id="form-perfil"
-				onSubmit={
-					(e) => {
-						e.preventDefault();
-						validateAlert(onSubmit, e, 'form-perfil')
-					}
-				}
-			>
-				<div className="form-group row form-group-marginless justify-content-center">
-					<div className="col-md-5">
+					>
+						<div className="align-self-center">
+							<ImageUpload
+								name="foto"
+								value={form.foto}
+								onChange={onChange}
+							/>
+							{/* {
+								form.foto ? */}
+									<div className="form-group row form-group-marginless justify-content-center mb-0">
+										<div className="mt-5 text-center">
+											<Button icon='' className="btn btn-light-primary font-weight-bold"
+												onClick={
+													(e) => {
+														e.preventDefault();
+														validateAlert(onSubmit, e, 'form-foto')
+													}
+												}
+												text="CARGAR FOTO" />
+										</div>
+									</div>
+									{/* : ''
+							} */}
+						</div>
+					</Form>
+				</Col>
+				<Col md="5">
+					<Form id="form-perfil"
+						onSubmit={
+							(e) => {
+								e.preventDefault();
+								validateAlert(onSubmit, e, 'form-perfil')
+							}
+						}
+					>
 						<div className="form-group row form-group-marginless justify-content-center">
 							<div className="col-md-9">
 								<Input
@@ -101,9 +109,9 @@ class ChangePasswordFrom extends Component {
 								</div>
 								: ''
 						}
-					</div>
-				</div>
-			</Form>
+					</Form>
+				</Col>
+			</div>
 		</>
 		)
 	}
