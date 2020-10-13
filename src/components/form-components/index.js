@@ -15,6 +15,7 @@ import inputNumber from './InputNumber'
 import inputPhone from './InputPhone'
 import calendarDay from './CalendarDay'
 import rangeCalendar from './RangeCalendar'
+import imageUpload from './ImageUpload'
 // Validado, pero sin texto de error
 import inputMoneySinText from './SinText/InputMoneySinText'
 import selectSearchSinText from './SinText/SelectSearchSinText'
@@ -44,6 +45,7 @@ export const InputNumber = inputNumber
 export const InputPhone = inputPhone
 export const CalendarDay = calendarDay
 export const RangeCalendar = rangeCalendar
+export const ImageUpload = imageUpload
 // Validado, pero sin texto de error
 export const InputMoneySinText = inputMoneySinText
 export const SelectSearchSinText = selectSearchSinText
