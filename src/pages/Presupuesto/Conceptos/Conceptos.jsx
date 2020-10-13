@@ -91,6 +91,7 @@ class Conceptos extends Component {
                     id: concepto.id
                 }
             )
+            return false
         })
         return aux
     }

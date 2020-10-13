@@ -83,6 +83,7 @@ class UsuariosForm extends Component {
                                     value: depto.id.toString(),
                                     name: depto.nombre
                                 })
+                                return false
                             })
                             form.departamentos = aux
                             if(user.empleado){
@@ -105,6 +106,7 @@ class UsuariosForm extends Component {
                                     value: proyecto.id.toString(),
                                     name: proyecto.nombre
                                 })
+                                return false
                             })
                             form.proyectos = aux
                             this.setState({
@@ -290,6 +292,7 @@ class UsuariosForm extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -326,16 +329,16 @@ class UsuariosForm extends Component {
     }
 
     onChangeOptions = (e, arreglo) => {
-        const { name, value } = e.target
+        const { value } = e.target
         const { form, options } = this.state
         let auxArray = form[arreglo]
         let aux = []
         options[arreglo].find(function (_aux) {
-            if (_aux.value.toString() === value.toString()) {
+            if (_aux.value.toString() === value.toString())
                 auxArray.push(_aux)
-            } else {
+            else
                 aux.push(_aux)
-            }
+            return false
         })
         /* options[arreglo] = aux */
         form[arreglo] = auxArray
@@ -351,9 +354,9 @@ class UsuariosForm extends Component {
 
         let auxForm = []
         form[array].map( ( elemento, key ) => {
-            if(element !== elemento){
+            if(element !== elemento)
                 auxForm.push(elemento)
-            }
+            return false
         })
         form[array] = auxForm
         this.setState({
@@ -404,11 +407,11 @@ class UsuariosForm extends Component {
         let auxArray = form[arreglo]
         let aux = []
         options[arreglo].find(function (_aux) {
-            if (_aux.value.toString() === value.toString()) {
+            if (_aux.value.toString() === value.toString())
                 auxArray.push(_aux)
-            } else {
+            else
                 aux.push(_aux)
-            }
+            return false
         })
         form[arreglo] = auxArray
         this.setState({
@@ -460,6 +463,7 @@ class UsuariosForm extends Component {
         let aux = Object.keys(form)
         aux.map((element) => {
             auxObject[element] = form[element]
+            return false
         })
         save({
             form: auxObject,

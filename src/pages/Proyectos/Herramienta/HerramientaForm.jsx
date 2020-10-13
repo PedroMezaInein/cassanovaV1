@@ -69,6 +69,7 @@ class HerramientaForm extends Component {
                                     url: adjunto.url,
                                     id: adjunto.id
                                 })
+                                return false
                             })
                             form.adjuntos.adjuntos.files = aux
                         }
@@ -110,6 +111,7 @@ class HerramientaForm extends Component {
                 url: adj.url,
                 id: adj.id
             })
+            return false
         })
         form.adjuntos.adjuntos.files = aux
         this.setState({
@@ -202,6 +204,7 @@ class HerramientaForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -210,6 +213,7 @@ class HerramientaForm extends Component {
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
+            return false
         })
         await axios.post(URL_DEV + 'herramientas', data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -249,6 +253,7 @@ class HerramientaForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -257,6 +262,7 @@ class HerramientaForm extends Component {
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
+            return false
         })
         await axios.post(URL_DEV + 'herramientas/' + herramienta.id, data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {

@@ -87,6 +87,7 @@ class TableForModals extends Component {
                                 .draw();
                         }
                     });
+                    return false
                 });
             },
 
@@ -140,6 +141,7 @@ class TableForModals extends Component {
                             data.map((element) => {
                                 aux = aux + 
                                     `<button name=${element.action}  id = ${row.id} class="ml-2 btn btn-actions-table btn-xs btn-icon btn-text-${element.btnclass} btn-hover-${element.btnclass}" title=${element.text}><i class=${element.iconclass}></i></button>`
+                                return false
                             })
                         }
                         return (
@@ -178,6 +180,7 @@ class TableForModals extends Component {
                     if (element.id.toString() === id) {
                         return element
                     }
+                return false
             });
             actions[name].function(aux)
         });

@@ -283,17 +283,12 @@ class UltimoPresupuesto extends Component {
                 let aux = []
                 let mensajeAux = {}
                 presupuesto.conceptos.map((concepto) => {
-                    mensajeAux = {}    
                     if (concepto.mensaje) {
-                        mensajeAux = {
-                            active: true,
-                            mensaje: concepto.mensaje
-                        }
+                        mensajeAux.active = true
+                        mensajeAux.mensaje = concepto.mensaje
                     } else {
-                        mensajeAux = {
-                            active: false,
-                            mensaje: ''
-                        }
+                        mensajeAux.active = false
+                        mensajeAux.mensaje = ''
                     }
                     let precio_unitario = concepto.precio_unitario
                     if (concepto.margen === 0) {

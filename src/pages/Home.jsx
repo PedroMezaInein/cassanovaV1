@@ -6,7 +6,7 @@ class Home extends Component{
     
 
     componentDidMount(){
-        const { user : { permisos: permisos } } = this.props.authUser
+        const { user : { permisos } } = this.props.authUser
         const { history } = this.props
         
         const usuarios = permisos.find(function(element, index) {

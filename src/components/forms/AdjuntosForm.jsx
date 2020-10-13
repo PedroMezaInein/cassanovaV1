@@ -9,6 +9,7 @@ class AdjuntosForm extends Component{
         adjuntos.map( (adjunto) => {
             if(form.adjuntos[adjunto].files.length)
                 aux = true
+            return aux
         })
         return aux
     }

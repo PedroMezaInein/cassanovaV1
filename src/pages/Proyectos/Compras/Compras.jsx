@@ -687,6 +687,7 @@ class Compras extends Component {
                 data.append('adjuntos[]', element)
                 return false
             }
+            return false
         })
         data.append('id', compra.id)
         await axios.post(URL_DEV + 'compras/factura', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(

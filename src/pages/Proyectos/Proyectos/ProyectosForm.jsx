@@ -783,6 +783,7 @@ class ProyectosForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -794,6 +795,7 @@ class ProyectosForm extends Component {
                 if (element.toString() !== 'image')
                     data.append('adjuntos[]', element)
             }
+            return false
         })
         if (prospecto) {
             data.append('prospecto', prospecto.id)
@@ -867,6 +869,7 @@ class ProyectosForm extends Component {
                     let aux = []
                     asentamiento.map((element) => {
                         aux.push({ name: element.toString().toUpperCase(), value: element.toString().toUpperCase() })
+                        return false
                     })
                     options['colonias'] = aux
                     this.setState({

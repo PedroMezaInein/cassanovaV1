@@ -64,7 +64,10 @@ class ItemSlider extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.state.active = 0
+        this.setState({
+            ...this.state,
+            active: 0
+        })
     }
 
     handleChange = files => {
@@ -130,11 +133,11 @@ class ItemSlider extends Component {
                                             {
                                                 (items[active].name.substring(items[active].name.length - 3)).toUpperCase() === 'PDF' ?
                                                     <div className="w-100 pb-2">
-                                                        <iframe src={items[active].url} className="pdfview" />
+                                                        <iframe title = {items[active].name} src={items[active].url} className="pdfview" />
                                                     </div>
                                                     :
                                                     this.isImage(items[active].name) ?
-                                                        <img className="p-2 rounded pdfview-img" src={items[active].url} style={{ width: "100", height: "100" }} />
+                                                        <img alt = '' className="p-2 rounded pdfview-img" src={items[active].url} style={{ width: "100", height: "100" }} />
                                                         :
                                                         <div id="descarga" className="btn btn-hover p-2 rounded pdfview d-flex align-items-center justify-content-center mx-auto" onClick={() => { this.downloadFile(items[active]) }}>
                                                             <div>
@@ -178,7 +181,7 @@ class ItemSlider extends Component {
                     {
                         items.length > 0 && active !== items.length ? 
                         <div className="text-center">
-                            <a href={items[active].url} target='_blank' className="text-muted text-hover-primary font-weight-bold mr-lg-8 mr-5 mb-lg-0 mb-2 pl-4">
+                            <a href={items[active].url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-primary font-weight-bold mr-lg-8 mr-5 mb-lg-0 mb-2 pl-4">
                                 <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
                                     <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
 								</span>
