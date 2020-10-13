@@ -46,9 +46,9 @@ class Partidas extends Component {
         const { form } = this.state
         if (form['subpartida'] !== '') {
             let aux = false;
-            aux = form.subpartidas.find(function (element, index) {
+            form.subpartidas.find(function (element, index) {
                 if (element === form.subpartida)
-                    return true
+                    aux = true
                 return false
             });
             if (aux !== true) {
