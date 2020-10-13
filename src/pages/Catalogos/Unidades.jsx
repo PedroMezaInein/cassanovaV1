@@ -261,7 +261,7 @@ class Unidades extends Component {
 
     async deleteUnidadAxios() {
         const { access_token } = this.props.authUser
-        const { unidad, modal, data } = this.state
+        const { unidad  } = this.state
         await axios.delete(URL_DEV + 'unidades/' + unidad.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { modal } = this.state
@@ -299,7 +299,7 @@ class Unidades extends Component {
     }
 
     render() {
-        const { form, unidades, modal, title, data, formeditado } = this.state
+        const { form, modal, title, formeditado } = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
                 <NewTableServerRender

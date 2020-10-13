@@ -134,7 +134,7 @@ class TableForModals extends Component {
                 'searchable': mostrar_acciones ? false : true,
                 'orderable': false,
                 render: function (data, type, row, meta) {
-                    if (global_variable.mostrar_acciones == true) {
+                    if (global_variable.mostrar_acciones === true) {
                         let aux = ''
                         {
                             data.map((element) => {
@@ -211,7 +211,7 @@ class TableForModals extends Component {
             <>
                 <div className="card-toolbar">
                     {
-                        (exportar_boton == true) ?
+                        (exportar_boton === true) ?
                             <button onClick={() => this.clickHandlerExport()} className="btn btn-primary font-weight-bold mr-2">
                                 <i className="far fa-file-excel"></i> Exportar
                             </button>
@@ -219,8 +219,8 @@ class TableForModals extends Component {
                             ""
                     }
                     {
-                        (mostrar_boton == true) ?
-                            (abrir_modal == true) ?
+                        (mostrar_boton === true) ?
+                            (abrir_modal === true) ?
                                 <button onClick={() => this.clickHandler()} className="btn btn-success font-weight-bold mr-2">
                                     <i className="flaticon-add"></i> Agregar
                             </button>

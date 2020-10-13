@@ -1,10 +1,8 @@
 import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
-import axios from 'axios' 
 import { URL_DEV, UTILIDADES_COLUMNS} from '../../constants'
 import { setTextTable, setMoneyTable, setPercentTable} from '../../functions/setters'
-import { errorAlert, forbiddenAccessAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 const $ = require('jquery');

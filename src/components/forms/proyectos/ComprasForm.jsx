@@ -63,7 +63,7 @@ class ComprasForm extends Component {
     }
 
     updateProveedor = value => {
-        const { onChange, setOptions, form } = this.props
+        const { onChange, setOptions } = this.props
         onChange({ target: { value: value, name: 'proveedor' } })
         onChange({ target: { value: '', name: 'contrato' } })
         const { data: { proveedores: proveedores } } = this.props

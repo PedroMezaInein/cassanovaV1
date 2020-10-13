@@ -50,7 +50,7 @@ class Flujos extends Component {
         })
     }
     onChangeAndAdd = (e, arreglo) => {
-        const { name, value } = e.target
+        const { value } = e.target
         const { options, form } = this.state
         let auxArray = form[arreglo]
         let aux = []
@@ -149,8 +149,8 @@ class Flujos extends Component {
         options.cuentas = setOptions(data.cuentas, 'nombre', 'id')
         form.cuenta = ''
         form.cuentas = []
-        form.fechaInicio = new Date
-        form.fechaFin = new Date
+        form.fechaInicio = new Date()
+        form.fechaFin = new Date()
         data.flujos = []
         this.setState({
             ...this.state,
@@ -231,7 +231,7 @@ class Flujos extends Component {
         })
     }
     render() {
-        const { form, options, data, flujos, total } = this.state
+        const { form, options, data, flujos } = this.state
         return (
             <Layout active={'administracion'}  {...this.props}>
                 <Card className="card-custom">

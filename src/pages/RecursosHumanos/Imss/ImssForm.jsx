@@ -283,7 +283,7 @@ class ImssForm extends Component {
     async deleteAdjuntoAxios(id){
         waitAlert()
         const { access_token } = this.props.authUser
-        const { form, state, imss } = this.state
+        const { imss } = this.state
         await axios.delete(URL_DEV + 'imss/' + imss.id + '/adjuntos/' +id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { imss } = response.data

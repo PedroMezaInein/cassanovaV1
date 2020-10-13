@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 import { Button, FileInput } from '../form-components'
-import { ItemSlider } from '../../components/singles';
 class AdjuntosForm extends Component{
     
     activateButton = () => {
