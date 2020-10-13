@@ -1,13 +1,37 @@
 import React, { Component } from 'react'
-
 import { validateAlert } from '../../../functions/alert'
-import { Button, Input } from '../../form-components'
+import { Button, Input, ImageUpload } from '../../form-components'
 import { Form } from 'react-bootstrap'
-
 class ChangePasswordFrom extends Component {
 	render() {
 		const { onSubmit, form, onChange } = this.props
-		return (
+		return (<>
+			<Form id="form-foto"
+				onSubmit={
+					(e) => {
+						e.preventDefault();
+						validateAlert(onSubmit, e, 'form-foto')
+					}
+				}
+			>
+				<div className="col-md-7 align-self-center">
+					<ImageUpload
+						name="foto"
+						value={form.foto}
+						onChange={onChange}
+					/>
+				</div>
+				<div className="mt-3 text-center">
+					<Button icon='' className="mx-auto"
+						onClick={
+							(e) => {
+								e.preventDefault();
+								validateAlert(onSubmit, e, 'form-foto')
+							}
+						}
+						text="ENVIAR" />
+				</div>
+			</Form>
 			<Form id="form-perfil"
 				onSubmit={
 					(e) => {
@@ -16,11 +40,8 @@ class ChangePasswordFrom extends Component {
 					}
 				}
 			>
-				<div className="form-group row form-group-marginless">
-					<div className="col-md-6">
-						
-					</div>
-					<div className="col-md-6">
+				<div className="form-group row form-group-marginless justify-content-center">
+					<div className="col-md-5">
 						<div className="form-group row form-group-marginless justify-content-center">
 							<div className="col-md-9">
 								<Input
@@ -69,7 +90,7 @@ class ChangePasswordFrom extends Component {
 						{
 							form.oldPassword && form.newPassword && form.newPassword2 && form.newPassword === form.newPassword2 ?
 								<div className="mt-3 text-center">
-									<Button icon='' className="mx-auto" 
+									<Button icon='' className="mx-auto"
 										onClick={
 											(e) => {
 												e.preventDefault();
@@ -82,9 +103,8 @@ class ChangePasswordFrom extends Component {
 						}
 					</div>
 				</div>
-				
-
 			</Form>
+		</>
 		)
 	}
 }

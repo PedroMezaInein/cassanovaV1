@@ -21,7 +21,8 @@ class AccountSettings extends Component {
 	
 	onChange = e => {
         const { form } = this.state
-        const { name, value } = e.target
+		const { name, value } = e.target
+		console.log(name, value )
         form[name] = value
         this.setState({
             ...this.state,
