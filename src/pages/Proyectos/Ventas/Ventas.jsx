@@ -11,7 +11,7 @@ import { Button, FileInput } from '../../../components/form-components'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { FacturaForm, AdjuntosForm } from '../../../components/forms'
 import { FacturaTable } from '../../../components/tables'
-import { Form, ProgressBar } from 'react-bootstrap'
+import { Form } from 'react-bootstrap'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import TableForModals from '../../../components/tables/TableForModals'
 import Select from '../../../components/form-components/Select'
@@ -148,6 +148,7 @@ class Ventas extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -171,6 +172,7 @@ class Ventas extends Component {
                     waitAlert()
                     const reader = new FileReader()
                     reader.onload = async (e) => {
+                        let auxiliar = ''
                         const text = (e.target.result)
                         var XMLParser = require('react-xml-parser');
                         var xml = new XMLParser().parseFromString(text);
@@ -219,16 +221,16 @@ class Ventas extends Component {
                             let Subtotal = text.search('SubTotal="')
                             if (Subtotal)
                                 Subtotal = text.substring(Subtotal + 10)
-                            aux = Subtotal.search('"')
-                            Subtotal = Subtotal.substring(0, aux)
+                            auxiliar = Subtotal.search('"')
+                            Subtotal = Subtotal.substring(0, auxiliar)
                             obj.subtotal = Subtotal
                         }
                         if (obj.fecha === '') {
                             let Fecha = text.search('Fecha="')
                             if (Fecha)
                                 Fecha = text.substring(Fecha + 7)
-                            aux = Fecha.search('"')
-                            Fecha = Fecha.substring(0, aux)
+                                auxiliar = Fecha.search('"')
+                            Fecha = Fecha.substring(0, auxiliar)
                             obj.fecha = Fecha
                         }
                         let auxEmpresa = ''
@@ -236,6 +238,7 @@ class Ventas extends Component {
                             if (element.rfc === obj.rfc_emisor) {
                                 auxEmpresa = element
                             }
+                            return false
                         });
                         let auxCliente = ''
                         data.clientes.find(function (element, index) {
@@ -247,6 +250,7 @@ class Ventas extends Component {
                                 element.empresa === cadena) {
                                 auxCliente = element
                             }
+                            return false
                         });
                         if (auxEmpresa) {
                             options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')
@@ -327,6 +331,7 @@ class Ventas extends Component {
                     _aux.push({
                         name: 'Presupuesto', text: presupuesto.name, url: presupuesto.url
                     })
+                    return false
                 })
             }
             if (venta.pagos) {
@@ -334,6 +339,7 @@ class Ventas extends Component {
                     _aux.push({
                         name: 'Pago', text: pago.name, url: pago.url
                     })
+                    return false
                 })
             }
             aux.push(
@@ -368,6 +374,7 @@ class Ventas extends Component {
                     objeto: venta
                 }
             )
+            return false
         })
         return aux
     }
@@ -382,6 +389,7 @@ class Ventas extends Component {
                 tipo: renderToString(setTextTable(adjunto.pivot.tipo)),
                 id: 'adjuntos-' + adjunto.id
             })
+            return false
         })
         return aux
     }
@@ -475,6 +483,7 @@ class Ventas extends Component {
         porcentaje = 0
         venta.facturas.map((factura) => {
             porcentaje = porcentaje + factura.total
+            return false
         })
         porcentaje = porcentaje * 100 / venta.total
         porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
@@ -594,6 +603,7 @@ class Ventas extends Component {
                     if (cliente.empresa === cadena) {
                         form.cliente = cliente.empresa
                     }
+                    return false
                 })
                 this.setState({
                     ...this.state,
@@ -701,6 +711,7 @@ class Ventas extends Component {
                 default:
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -711,6 +722,7 @@ class Ventas extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         data.append('id', venta.id)
         await axios.post(URL_DEV + 'ventas/factura', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
@@ -723,6 +735,7 @@ class Ventas extends Component {
                 porcentaje = 0
                 venta.facturas.map((factura) => {
                     porcentaje = porcentaje + factura.total
+                    return false
                 })
                 porcentaje = porcentaje * 100 / venta.total
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
@@ -758,6 +771,7 @@ class Ventas extends Component {
                 porcentaje = 0
                 venta.facturas.map((factura) => {
                     porcentaje = porcentaje + factura.total
+                    return false
                 })
                 porcentaje = porcentaje * 100 / venta.total
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
@@ -823,6 +837,7 @@ class Ventas extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         data.append('id', venta.id)
         await axios.post(URL_DEV + 'ventas/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
@@ -917,8 +932,6 @@ class Ventas extends Component {
     }
     onSelect = value => {
         const { form } = this.state
-        if (value === 'facturas') {
-        }
         this.setState({
             ...this.state,
             active: value,
@@ -926,7 +939,7 @@ class Ventas extends Component {
         })
     }
     render() {
-        const { modalDelete, modalFacturas, modalAdjuntos, adjuntos, title, options, form, ventas, venta, facturas, data, formeditado, modalSee, active } = this.state
+        const { modalDelete, modalFacturas, modalAdjuntos, adjuntos, options, form, ventas, venta, facturas, data, formeditado, modalSee, active } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <NewTableServerRender columns={VENTAS_COLUMNS} data={ventas}

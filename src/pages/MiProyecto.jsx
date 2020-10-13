@@ -338,6 +338,7 @@ class MiProyecto extends Component {
                         files: []
                     }
                 }
+            return false
         })
         return form
     }
@@ -377,6 +378,7 @@ class MiProyecto extends Component {
                     data
                 })
             }
+            return false
         })
     }
 
@@ -396,6 +398,7 @@ class MiProyecto extends Component {
                         if(proy.id === id){
                             proyecto = proy
                         }
+                        return false
                     })
                 }
                 if(proyecto !== ''){
@@ -404,6 +407,7 @@ class MiProyecto extends Component {
                             proyecto = element
                             tickets = this.setTickets(element.tickets)
                         }
+                        return false
                     } )
                 }
                 this.setState({
@@ -493,6 +497,7 @@ class MiProyecto extends Component {
                     data.append(element, form[element]);
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -503,6 +508,7 @@ class MiProyecto extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         data.append('proyecto', proyecto.id)
         await axios.post(URL_DEV + 'proyectos/mi-proyecto/tickets', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
@@ -542,12 +548,12 @@ class MiProyecto extends Component {
                     partida: renderToString(this.setText(ticket.partida.nombre)),
                     estatus: renderToString(setLabelTable(ticket.estatus_ticket)),
                     descripcion: renderToString(this.setText(ticket.descripcion)),
-                    descripcion: renderToString(this.setText(ticket.descripcion)),
                     tipo_trabajo: renderToString(this.setText(ticket.tipo_trabajo.tipo)),
                     motivo: renderToString(this.setText(ticket.motivo_cancelacion)),
                     id: ticket.id
                 }
             )
+            return false
         })
         return aux
     }
@@ -690,7 +696,6 @@ class MiProyecto extends Component {
         const { access_token } = this.props.authUser
         await axios.put(URL_DEV + 'calidad/estatus/' + data.id, data, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                const { ticket } = response.data
                 this.setState({
                     ...this.state,
                     modal: false
@@ -751,7 +756,7 @@ class MiProyecto extends Component {
                                                 </span>
                                             </div>
                                             <div className="d-flex flex-column">
-                                                <a className="text-dark text-hover-primary font-weight-bold font-size-h4 mb-3 pl-2">PROYECTO</a>
+                                                <span className="text-dark text-hover-primary font-weight-bold font-size-h4 mb-3 pl-2">PROYECTO</span>
                                                 <div className="text-dark-75 pl-2">{proyecto.nombre}</div>
                                             </div>
                                         </div>
@@ -768,7 +773,7 @@ class MiProyecto extends Component {
                                                 </span>
                                             </div>
                                             <div className="d-flex flex-column">
-                                                <a className="text-dark text-hover-danger font-weight-bold font-size-h4 mb-3 pl-2">Dirección</a>
+                                                <span className="text-dark text-hover-danger font-weight-bold font-size-h4 mb-3 pl-2">Dirección</span>
                                                 <div className="text-dark-75 text-justify pl-2">
                                                     {
                                                         proyecto ?
@@ -815,7 +820,7 @@ class MiProyecto extends Component {
                                                 </span>
                                             </div>
                                             <div className="d-flex flex-column">
-                                                <a className="text-dark text-hover-info font-weight-bold font-size-h4 mb-3 pl-2">PERIODO</a>
+                                                <span className="text-dark text-hover-info font-weight-bold font-size-h4 mb-3 pl-2">PERIODO</span>
                                                 <div className="text-dark-75 pl-2">
                                                     {
                                                         proyecto ?
@@ -917,6 +922,7 @@ class MiProyecto extends Component {
                                                                         </div>
                                                                     )
                                                                 }
+                                                                return aux
                                                             })
                                                         }
                                                     </Nav>
@@ -937,6 +943,7 @@ class MiProyecto extends Component {
                                                                                     </Nav.Item>
                                                                                 )
                                                                             }
+                                                                            return false
                                                                         })
                                                                     }
                                                                 </Nav>
@@ -968,6 +975,7 @@ class MiProyecto extends Component {
                                                                                     </Tab.Pane>
                                                                                 )
                                                                             }
+                                                                            return false
                                                                         })
                                                                     }
                                                                 </Tab.Content>

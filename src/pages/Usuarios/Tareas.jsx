@@ -16,9 +16,6 @@ import { Badge, Card, Nav, Tab } from 'react-bootstrap'
 import { errorAlert, forbiddenAccessAlert } from '../../functions/alert'
 
 class Tareas extends Component{
-    constructor(props){
-        super(props)
-    }
 
     state = {
         columns:[],
@@ -44,8 +41,8 @@ class Tareas extends Component{
     }
 
     componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
+        const { authUser: { user : { permisos  } } } = this.props
+        const { history : { location: { pathname } } } = this.props
         const { history } = this.props
         const tareas = permisos.find(function(element, index) {
             const { modulo: { url } } = element
@@ -116,10 +113,6 @@ class Tareas extends Component{
     }
 
     handleClickTask = tarea => {
-    
-        const { users } = this.state
-
-        let _index = []
 
         this.setState({
             ...this.state,
@@ -137,11 +130,13 @@ class Tareas extends Component{
         let aux = []
         tarea.participantes.map( ( participante, key ) => {
             aux.push( {name: participante.name, value:participante.email, identificador: participante.id} )
+            return false
         })
 
         let _aux = []
         users.map( ( participante, key ) => {
             _aux.push( {name: participante.name, value:participante.email, identificador: participante.id} )
+            return false
         })
 
         let _index = []
@@ -151,9 +146,11 @@ class Tareas extends Component{
             aux.map((_element, key) => {
                 if(element.identificador === _element.identificador)
                     validador = true
+                return false
             })
             if(!validador)
                 _index.push(element)
+            return false
         })
 
         this.setState({
@@ -208,7 +205,6 @@ class Tareas extends Component{
     }
 
     submitAdd = () => {
-        const { form } = this.state
         this.addTaskAxios();
     }
 
@@ -240,7 +236,7 @@ class Tareas extends Component{
     }
 
     onChangeParticipantes = (value) => {
-        const { tarea: { id: id } } = this.state
+        const { tarea: { id } } = this.state
         this.addParticipanteAxios(id, value.identificador);
     }
 
@@ -261,7 +257,6 @@ class Tareas extends Component{
 
     changeValueSend = event => {
         const { name, value } = event.target
-        const { tarea } = this.state
         this.editTaskAxios({[name]: value})
     }
 
@@ -282,6 +277,7 @@ class Tareas extends Component{
                     subActiveKey: active
                 })
             }
+            return false
         })
     }
 
@@ -289,9 +285,8 @@ class Tareas extends Component{
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'user/tareas', { headers: {Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
-                const { data : { tareas : columns } } = response
-                const { data : { user : user } } = response
-                const { data : { users : users } } = response
+                const { data : { user } } = response
+                const { data : { users } } = response
                 const { tableros } = response.data
                 this.setState({
                     ...this.state,
@@ -323,15 +318,15 @@ class Tareas extends Component{
         form.departamento = subActiveKey
         await axios.post(URL_DEV + 'user/tareas', form, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
-                const { data : { tareas : columns } } = response
-                const { data : { user : user } } = response
+                const { data : { user } } = response
                 const { form } = this.state
                 const { tableros } = response.data
 
                 tableros.map((tablero) => {
-                    if(tablero.nombre == subActiveKey){
+                    if(tablero.nombre === subActiveKey){
                         this.setTareas(tablero.tareas)
                     }
+                    return false
                 })
 
                 form['titulo'] = ''
@@ -382,9 +377,10 @@ class Tareas extends Component{
             (response) => {
                 const { tableros, tarea } = response.data
                 tableros.map((tablero) => {
-                    if(tablero.nombre == subActiveKey){
+                    if(tablero.nombre === subActiveKey){
                         this.setTareas(tablero.tareas)
                     }
+                    return false
                 })
                 this.setState({
                     ...this.state,
@@ -441,14 +437,15 @@ class Tareas extends Component{
 
     async deleteTareaAxios(id){
         const { access_token } = this.props.authUser
-        const { form, subActiveKey} = this.state
+        const { subActiveKey } = this.state
         await axios.delete(URL_DEV + 'user/tareas/' + id, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
-                const { tableros, tarea } = response.data
+                const { tableros } = response.data
                 tableros.map((tablero) => {
-                    if(tablero.nombre == subActiveKey){
+                    if(tablero.nombre === subActiveKey){
                         this.setTareas(tablero.tareas)
                     }
+                    return false
                 })
                 this.setState({
                     ...this.state,
@@ -478,11 +475,12 @@ class Tareas extends Component{
         const { subActiveKey } = this.state
         await axios.put(URL_DEV + 'user/tareas/' + id + '/end', {}, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
-                const { tableros, tarea } = response.data
+                const { tableros } = response.data
                 tableros.map((tablero) => {
-                    if(tablero.nombre == subActiveKey){
+                    if(tablero.nombre === subActiveKey){
                         this.setTareas(tablero.tareas)
                     }
+                    return false
                 })
                 this.setState({
                     ...this.state,
@@ -514,11 +512,12 @@ class Tareas extends Component{
         const { subActiveKey } = this.state
         await axios.put(URL_DEV + 'user/tareas/order', {source, destination, task}, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
-                const { tableros, tarea } = response.data
+                const { tableros } = response.data
                 tableros.map((tablero) => {
-                    if(tablero.nombre == subActiveKey){
+                    if(tablero.nombre === subActiveKey){
                         this.setTareas(tablero.tareas)
                     }
+                    return false
                 })
                 this.setState({
                     ...this.state,
@@ -541,7 +540,7 @@ class Tareas extends Component{
     } 
     render(){
         
-        const { columns, user, form, activeKey, modal, tarea, comentario, adjunto,adjuntoName, users, participantesTask, participantes, formeditado, tableros, defaultactivekey, subActiveKey} = this.state
+        const { columns, user, form, activeKey, modal, tarea, comentario, adjunto,adjuntoName, participantesTask, participantes, formeditado, tableros, defaultactivekey, subActiveKey} = this.state
         return(
             <Layout active={'usuarios'} { ...this.props}> 
                 <div className="d-flex flex-row">
@@ -678,7 +677,7 @@ class Tareas extends Component{
                                                                     {
                                                                         comentario.adjunto ?
                                                                             <div className="d-flex justify-content-end">
-                                                                                <a href = { comentario.adjunto.url } target = '_blank' >
+                                                                                <a href = { comentario.adjunto.url } target = '_blank' rel="noopener noreferrer">
                                                                                     { comentario.adjunto.name }
                                                                                 </a>
                                                                             </div>    

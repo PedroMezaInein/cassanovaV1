@@ -34,6 +34,7 @@ class NewTable extends Component {
                 if (element.id.toString() === id) {
                     aux = element
                 }
+                return false
             });
             if (aux !== '')
                 actions[name].function(aux)
@@ -57,7 +58,7 @@ class NewTable extends Component {
         }) 
         $( window ).on('scroll',function(){ 
             var pos = $(this).scrollTop(); 
-            if (pos == 0) {
+            if (pos === 0) {
                 $("#"+cardTableHeader).css("margin-top","0px").css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)")
             }
             else
@@ -88,7 +89,7 @@ class NewTable extends Component {
     }
 
     componentDidMount() {
-        const { data, mostrar_acciones, elementClass, totales, validateFactura, tipo_validacion, cardTable, cardTableHeader, cardBody, isTab, elements, actions } = this.props
+        const { data, mostrar_acciones, totales, tipo_validacion, elements, actions } = this.props
         global_variable["mostrar_acciones"] = mostrar_acciones;
 
         this.reloadHeader()
@@ -99,7 +100,7 @@ class NewTable extends Component {
         let aux = [];
 
         for (i = 0; i < header.length; i++) {
-            var titulo = new Object();
+            var titulo = {}
             titulo["title"] = header[i].Header;
             titulo["data"] = header[i].accessor;
             titulo["class"] = header[i].class;
@@ -111,17 +112,14 @@ class NewTable extends Component {
         table.DataTable({
 
             initComplete: function () {
-                var html_append;
-                var html;
                 var contador = 0;
                 table.find("thead th").each(function () {
-                    var title = $(this).text();
                     let cellIndex = $(this)[0].cellIndex
                     let total = header[cellIndex].total
                     let clase = header[cellIndex].class
                     cellIndex = header[cellIndex].accessor
                     
-                    if (global_variable.mostrar_acciones == false || global_variable.mostrar_acciones && contador != 0) {
+                    if (global_variable.mostrar_acciones === false || (global_variable.mostrar_acciones && contador !== 0)) {
                         if(clase){
                             $(this).append(`<div class="mt-2 separator separator-dashed separator-border-2 ${clase}"></div><div class="mt-2"><input type="text" id=${cellIndex} class="form-control form-control-sm"/></div>`);
                         }else
@@ -144,6 +142,7 @@ class NewTable extends Component {
                                 .draw();
                         }
                     });
+                    return false
                 })
             },
 
@@ -231,14 +230,15 @@ class NewTable extends Component {
                 'targets': [0],
                 'data': null,
                 'searchable': mostrar_acciones ? false : true,
-                'orderable': global_variable.mostrar_acciones == true ? false : true,
+                'orderable': global_variable.mostrar_acciones === true ? false : true,
                 render: function (data, type, row, meta) {
-                    if (global_variable.mostrar_acciones == true) {
+                    if (global_variable.mostrar_acciones === true) {
                         let aux = ''
                         {
                             data.map((element) => {
                                 aux = aux +
                                     `<button name=${element.action}  id = ${row.id} class="ml-2 btn btn-actions-table btn-xs btn-icon btn-text-${element.btnclass} btn-hover-${element.btnclass}" title=${element.text}><i class=${element.iconclass}></i></button>`
+                                return false
                             })
                         }
                         return (
@@ -270,6 +270,7 @@ class NewTable extends Component {
                 if (element.id.toString() === id) {
                     aux = element
                 }
+                return false
             });
             if (aux !== '')
                 actions[name].function(aux)
@@ -307,7 +308,7 @@ class NewTable extends Component {
 
     render() {
 
-        const { columns, data, title, subtitle, url, mostrar_boton, abrir_modal, exportar_boton, cardTable, cardTableHeader, cardBody} = this.props
+        const { title, subtitle, url, mostrar_boton, abrir_modal, exportar_boton, cardTable, cardTableHeader, cardBody} = this.props
 
         return (
             <>
@@ -326,7 +327,7 @@ class NewTable extends Component {
                             </h2>
                         </div>
                         <div className="card-toolbar">
-                            {(exportar_boton == true) ?
+                            {(exportar_boton === true) ?
                                 <button onClick={() => this.clickHandlerExport()} className="btn btn-primary font-weight-bold mr-2">
                                     <i className="far fa-file-excel"></i> Exportar
                                 </button>
@@ -334,8 +335,8 @@ class NewTable extends Component {
                                 ""
                             }
                             {
-                                (mostrar_boton == true) ?
-                                    (abrir_modal == true) ?
+                                (mostrar_boton === true) ?
+                                    (abrir_modal === true) ?
                                         <button onClick={() => this.clickHandler()} className="btn btn-success font-weight-bold mr-2">
                                             <i className="flaticon-add"></i> Agregar
                                         </button>

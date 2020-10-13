@@ -20,7 +20,7 @@ class NominaObraSingle extends Component {
     componentDidMount() { 
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
-        const { match : { params: { id: id } } } = this.props
+        const { match : { params: { id } } } = this.props
         const { history } = this.props
         const nominaobra = permisos.find(function (element, index) {
             const { modulo: { url } } = element
@@ -64,6 +64,7 @@ class NominaObraSingle extends Component {
                     id: nomina.id
                 }
             )
+            return false
         })
         return aux
     }

@@ -8,7 +8,7 @@ import axios from 'axios'
 import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import { setTextTable, setMoneyTable} from '../../../functions/setters'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { PreciosDiseñoCard } from '../../../components/cards'
+import { PreciosDisenoCard } from '../../../components/cards'
 
 const $ = require('jquery');
 
@@ -199,7 +199,7 @@ class PrecioDiseño extends Component {
                 />
 
                 <Modal title="Precio para diseño" show = { modal.see } handleClose = { this.handleCloseSee } >
-                    <PreciosDiseñoCard precio={precio}/>
+                    <PreciosDisenoCard precio={precio}/>
                 </Modal>
             </Layout>
         )

@@ -70,6 +70,7 @@ class ActualizarPresupuesto extends Component {
         aux.map((element) => {
             if (element !== 'conceptos' && element !== 'conceptosNuevos')
                 form[element] = ''
+            return false
         })
         return form
     }
@@ -88,12 +89,10 @@ class ActualizarPresupuesto extends Component {
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props;
         const { history: { location: { pathname } } } = this.props;
-        const { history, location: { state: state } } = this.props;
+        const { history, location: { state } } = this.props;
         const presupuesto = permisos.find(function (element, index) {
-            const {
-                modulo: { url: url },
-            } = element;
-            return pathname === url + "/" + "update";
+            const { modulo: { url } } = element;
+            return pathname === url + "/update";
         });
         if (state) {
             if (state.presupuesto) {
@@ -116,6 +115,7 @@ class ActualizarPresupuesto extends Component {
                 let aux = {}
                 conceptos.map((concepto) => {
                     aux[concepto.clave] = false
+                    return false
                 })
                 options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
                 options['empresas'] = setOptions(empresas, 'name', 'id')
@@ -208,6 +208,7 @@ class ActualizarPresupuesto extends Component {
                     if (partida.id.toString() === value) {
                         data.subpartidas = partida.subpartidas
                     }
+                    return false
                 })
                 break;
             case 'subpartida':
@@ -215,27 +216,29 @@ class ActualizarPresupuesto extends Component {
                     if (subpartida.id.toString() === value) {
                         data.conceptos = subpartida.conceptos
                     }
+                    return false
                 })
                 let array = []
                 data.conceptos.map((concepto) => {
                     let aux = false
-
                     presupuesto.conceptos.map((concepto_form) => {
                         if (concepto) {
                             if (concepto.clave === concepto_form.concepto.clave) {
                                 aux = true
                             }
                         }
-
+                        return false
                     })
                     if (!aux) {
                         array.push(concepto)
                     }
+                    return false
                 })
                 form.conceptosNuevos = []
                 array.map((element, key) => {
                     form.conceptosNuevos.push(element)
                     form.conceptosNuevos[key].active = false
+                    return false
                 })
                 break;
             default:
@@ -279,7 +282,6 @@ class ActualizarPresupuesto extends Component {
         if (name === 'desperdicio')
             if (presupuesto.conceptos[key][name].toString() !== form.conceptos[key][name].toString()) {
                 form.conceptos[key].mensajes.active = true
-                let aux = value ? value : 0
                 form.conceptos[key].mensajes.mensaje = ('Actualización del desperdicio a un ' + value + '%').toUpperCase()
             } else {
                 form.conceptos[key].mensajes.active = false
@@ -324,6 +326,7 @@ class ActualizarPresupuesto extends Component {
             form.conceptosNuevos.map((concepto) => {
                 if (concepto.active)
                     aux.push(concepto)
+                return false
             })
             this.addConceptoToPresupuestoAxios(aux)
         }
@@ -353,6 +356,7 @@ class ActualizarPresupuesto extends Component {
                         if (concepto.id === elemento.id) {
                             bandera = elemento
                         }
+                        return false
                     })
                     if (bandera) {
                         aux.push(
@@ -372,6 +376,7 @@ class ActualizarPresupuesto extends Component {
                             unidad: concepto ? concepto.concepto ? concepto.concepto.unidad ? concepto.concepto.unidad.nombre : '' : '' : ''
                         })
                     }
+                    return false
                 })
                 form.conceptos = aux
                 this.setState({
@@ -430,6 +435,7 @@ class ActualizarPresupuesto extends Component {
         let aux = Object.keys(form)
         aux.map((element) => {
             auxObject[element] = form[element]
+            return false
         })
         save({
             form: auxObject,

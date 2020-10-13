@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Page, Text, View, Document, StyleSheet, pdf, Image, Font, Link } from '@react-pdf/renderer'
+import { Page, Text, View, Document, StyleSheet, Image, Font, Link } from '@react-pdf/renderer'
 import IM from '../../assets/logos/im.png'
 import SpartanBold from '../../assets/fonts/Spartan-Bold.ttf'
 import Spartan from '../../assets/fonts/Spartan-Regular.ttf'
@@ -58,6 +58,12 @@ const styles = StyleSheet.create({
         width: '100%',
         display: 'flex',
         flexDirection: 'column'
+    },
+    table2: {
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        paddingTop: 50
     },
     tableRow:{
         display: 'flex',
@@ -567,6 +573,7 @@ export default class ReporteVentasInein extends Component {
                                                     </View>
                                                 </View>
                                             )
+                                        return false
                                     })
                                 }
                             </View>
@@ -587,7 +594,7 @@ export default class ReporteVentasInein extends Component {
                                 </Text>
                             </View>
                         </View>
-                        <View style = { styles.table, { paddingTop: 50 } }  >
+                        <View style = { styles.table2 }  >
                             {
                                 lista.map((element)=>{
                                     if(element !== '')
@@ -607,6 +614,7 @@ export default class ReporteVentasInein extends Component {
                                             </View>
                                         </View>
                                     )
+                                    return false
                                 })
                             }
                         </View>

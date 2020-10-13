@@ -56,6 +56,7 @@ class Bancos extends Component {
                 banco: renderToString(setTextTable(banco.nombre)),
                 id: banco.id
             })
+            return false
         })
         return aux
     }
@@ -85,7 +86,7 @@ class Bancos extends Component {
         const { form } = this.state
         let aux = Object.keys(form)
         aux.map((element) => {
-            form[element] = ''
+            return form[element] = ''
         })
         return form;
     }
@@ -195,7 +196,7 @@ class Bancos extends Component {
 
     async updateBancoAxios() {
         const { access_token } = this.props.authUser
-        const { form, banco, data, modal } = this.state
+        const { form, banco, modal } = this.state
         await axios.put(URL_DEV + 'bancos/' + banco.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
 
@@ -229,7 +230,7 @@ class Bancos extends Component {
 
     async deleteBancoAxios() {
         const { access_token } = this.props.authUser
-        const { banco, modal, data } = this.state
+        const { banco, modal } = this.state
         await axios.delete(URL_DEV + 'bancos/' + banco.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
 

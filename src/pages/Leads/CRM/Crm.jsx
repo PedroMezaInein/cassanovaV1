@@ -268,48 +268,59 @@ class Crm extends Component {
                             </Card.Header>
                             <div className="card-body">
                                 <div className="mb-5">
-                                    <div className="form-group row form-group-marginless">
-                                        <div className="col-md-5">
+                                    <div className="form-group row form-group-marginless d-flex justify-content-center">
+                                        <div className="col-md-3">
                                             <div className="input-icon">
-                                                <input type="text" className="form-control" placeholder="Buscar cliente o proyecto" />
+                                                <input type="text" className="form-control form-control-solid" placeholder="Buscar cliente" />
                                                 <span>
                                                     <i className="flaticon2-search-1 text-muted"></i>
                                                 </span>
                                             </div>
                                         </div>
                                         <div className="col-md-3">
+                                            <div className="input-icon">
+                                                <input type="text" className="form-control form-control-solid" placeholder="Buscar proyecto" />
+                                                <span>
+                                                    <i className="flaticon2-search-1 text-muted"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className="col-md-2">
                                             <Form.Control
-                                                className="form-control text-uppercase"
+                                                className="form-control text-uppercase form-control-solid"
                                                 // value = {form.origen} 
                                                 // onChange={onChange} 
                                                 name='origen'
                                                 // formeditado={formeditado} 
                                                 as="select">
-                                                <option disabled selected value={0}> Origen</option>
-                                                <option value={"web"}>Web</option>
-                                                <option value={"facebook"}>Facebook</option>
-                                                <option value={"google"}>Google</option>
-                                                <option value={"linkedin"}>Linkedin</option>
+                                                <option disabled selected value={0}>Selecciona el origen</option>
+                                                <option value={"web"} className="bg-white" >Web</option>
+                                                <option value={"facebook"} className="bg-white">Facebook</option>
+                                                <option value={"google"} className="bg-white">Google</option>
+                                                <option value={"linkedin"} className="bg-white">Linkedin</option>
                                             </Form.Control>
                                         </div>
-                                        <div className="col-md-3">
+                                        <div className="col-md-2">
                                             <Form.Control
-                                                className="form-control text-uppercase"
+                                                className="form-control text-uppercase form-control-solid"
                                                 // value = {form.estatus} 
                                                 // onChange={onChange} 
                                                 // name='estatus' 
                                                 // formeditado={formeditado} 
                                                 as="select">
-                                                <option disabled selected value={0}> Estatus</option>
-                                                <option value={"pendiente"}>Pendiente</option>
-                                                <option value={"contacto"}>En contacto</option>
-                                                <option value={"negociacion"}>En negociación</option>
-                                                <option value={"contratado"}>Contratado</option>
+                                                <option disabled selected value={0}>Selecciona el estatus</option>
+                                                <option value={"pendiente"} className="bg-white">Pendiente</option>
+                                                <option value={"contacto"} className="bg-white">En contacto</option>
+                                                <option value={"negociacion"} className="bg-white">En negociación</option>
+                                                <option value={"contratado"} className="bg-white">Contratado</option>
                                             </Form.Control>
                                         </div>
                                         <div className="col-md-1">
-                                            <a href="#" className="btn btn-light-primary px-6 font-weight-bold">Buscar</a>
+                                            <span className="btn btn-light-primary px-6 font-weight-bold">Buscar</span>
                                         </div>
+                                        {/* <div className="col-md-1">
+                                            <a href="#" className="btn btn-light-primary px-6 font-weight-bold">Buscar</a>
+                                        </div> */}
                                     </div>
                                 </div>
                                 <Tab.Content>

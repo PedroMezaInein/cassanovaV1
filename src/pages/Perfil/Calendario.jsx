@@ -40,9 +40,7 @@ class Calendario extends Component {
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
-        const { match: { params: { action: action } } } = this.props
-        const { history, location: { state: state } } = this.props
-        const remisiones = permisos.find(function (element, index) {
+        permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url
         });
@@ -85,6 +83,7 @@ class Calendario extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -170,6 +169,7 @@ class Calendario extends Component {
                         }
                     }
                 }
+                return false
             })
 
             return empleado.vacaciones_disponibles - contador
@@ -212,6 +212,7 @@ class Calendario extends Component {
                     if (vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin && vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin)
                         contador.push(vacacion)
                 }
+                return false
             })
 
             return contador
@@ -269,6 +270,7 @@ class Calendario extends Component {
                             containerClass: 'cumpleaños'
                         })
                     }
+                    return false
                 })
                 vacaciones.map((vacacion) => {
                     if (vacacion.estatus === 'Aceptadas')
@@ -279,6 +281,7 @@ class Calendario extends Component {
                             iconClass: 'fas fa-umbrella-beach',
                             containerClass: 'vacaciones'
                         })
+                    return false
                 })
 
                 feriados.map((feriado) => {
@@ -292,6 +295,7 @@ class Calendario extends Component {
                     })
                     var start = moment(feriado.fecha).toDate();
                     aux2.push(start)
+                    return false
                 })
 
                 eventos.map((evento)=>{
@@ -304,6 +308,7 @@ class Calendario extends Component {
                         containerClass: 'eventos',
                         evento: evento
                     })
+                    return false
                 })
 
                 this.setState({
@@ -345,19 +350,21 @@ class Calendario extends Component {
                                     if(user.email.toUpperCase() === invitado.email.toUpperCase()){
                                         aux = user
                                     }
+                                    return false
                                 })
                                 if(aux !== false)
                                 {
                                     if(aux.avatar){
                                         return(
-                                            <img className = "calendar-avatar mr-3 mb-2" src = {aux.avatar} />
+                                            <img className = "calendar-avatar mr-3 mb-2" src = {aux.avatar} alt = '' />
                                         )
                                     }else{
                                         return(
-                                            <img className = "calendar-avatar mr-3 mb-2" src = {AVATAR} />
+                                            <img className = "calendar-avatar mr-3 mb-2" src = {AVATAR} alt = '' />
                                         )   
                                     }
                                 }
+                                return false
                             })
                         }
                     </div>
@@ -369,6 +376,7 @@ class Calendario extends Component {
                                     if(user.email.toUpperCase() === invitado.email.toUpperCase()){
                                         aux = user
                                     }
+                                    return false
                                 })
                                 if(aux === false)
                                 return(
@@ -377,6 +385,7 @@ class Calendario extends Component {
                                         <span>{invitado.email}</span>
                                     </div>
                                 )
+                                return false
                             })
                         }
                     </div>
@@ -415,7 +424,7 @@ class Calendario extends Component {
     getInvitadosSprits = invitados => {
         if(invitados)
             return(
-                <img className = "calendar-avatar" src = {AVATAR} />
+                <img className = "calendar-avatar" src = {AVATAR}  alt = ''/>
             )
     }
 
@@ -481,7 +490,7 @@ class Calendario extends Component {
     }
 
     render() {
-        const { events, form, title, formeditado, modal, key, modal_status, estatus, disponibles, disabledDates } = this.state
+        const { events, form, title, formeditado, modal, modal_status, estatus, disponibles, disabledDates } = this.state
         return (
             <Layout active='rh'  {...this.props}>
                 <Card className="card-custom">

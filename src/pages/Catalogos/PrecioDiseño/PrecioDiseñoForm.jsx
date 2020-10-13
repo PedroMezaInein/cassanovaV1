@@ -6,7 +6,7 @@ import { URL_DEV} from '../../../constants'
 // import { setOptions} from '../../../functions/setters'
 import { errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
-import { PrecioDiseñoForm as PrecioDiseñoFormulario } from '../../../components/forms'
+import { PrecioDiseñoForm as Formulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
 
 
@@ -26,10 +26,10 @@ class PrecioDiseñoForm extends Component{
     }
 
     componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
-        const { match : { params: { action: action } } } = this.props
-        const { history, location: { state: state} } = this.props
+        const { authUser: { user : { permisos  } } } = this.props
+        const { history : { location: { pathname } } } = this.props
+        const { match : { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
         const remisiones = permisos.find(function(element, index) {
             const { modulo: { url } } = element
             return pathname === url + '/' + action
@@ -174,13 +174,12 @@ class PrecioDiseñoForm extends Component{
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <PrecioDiseñoFormulario 
+                        <Formulario 
                             onChange = { this.onChange } 
                             formeditado = { 0 }  
                             form = { form } 
                             title = { title } 
-                            onSubmit = { this.onSubmit } 
-                        />                        
+                            onSubmit = { this.onSubmit } />
                     </Card.Body>    
                 </Card>
             </Layout>

@@ -36,6 +36,7 @@ class Imss extends Component {
                 fecha: renderToString(setDateTable(imss.fecha)),
                 id: imss.id
             })
+            return false
         })
         return aux
     }
@@ -112,6 +113,7 @@ class Imss extends Component {
                 url: adj.url,
                 id: adj.id
             })
+            return false
         })
         form.adjuntos.adjuntos.files = aux
         this.setState({
@@ -136,6 +138,7 @@ class Imss extends Component {
                     name: adj.name,
                     url: adj.url
                 })
+                return false
             })
         }
         form.adjuntos.adjuntos.files = aux
@@ -219,6 +222,7 @@ class Imss extends Component {
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
+            return false
         })
         await axios.post(URL_DEV + 'imss/' + imss.id + '/adjuntos', data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -231,6 +235,7 @@ class Imss extends Component {
                         url: adj.url,
                         id: adj.id
                     })
+                    return false
                 })
                 form.adjuntos.adjuntos.files = aux
                 form.adjuntos.adjuntos.value = ''

@@ -3,13 +3,10 @@ import Layout from '../components/layout/layout'
 import { connect } from 'react-redux'
 
 class Home extends Component{
-    constructor(props) {
-        super(props)
-    }
+    
 
     componentDidMount(){
-        const { user : { id: tipo} } = this.props.authUser
-        const { user : { permisos: permisos } } = this.props.authUser
+        const { user : { permisos } } = this.props.authUser
         const { history } = this.props
         
         const usuarios = permisos.find(function(element, index) {

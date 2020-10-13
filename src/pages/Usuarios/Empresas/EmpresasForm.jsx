@@ -64,8 +64,8 @@ class EmpresasForm extends Component {
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
-        const { match : { params: { action: action } } } = this.props
-        const { history, location: { state: state} } = this.props
+        const { match : { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
         const empresas = permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url + '/' + action
@@ -132,8 +132,6 @@ class EmpresasForm extends Component {
         data.append('rfc', form.rfc)
         await axios.post(URL_DEV + 'empresa/' + empresa, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
-                const { data: { empresas: empresas } } = response
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Actualizaste con éxito la empresa.')
 
                 const { history } = this.props
@@ -165,7 +163,6 @@ class EmpresasForm extends Component {
         data.append('rfc', form.rfc)
         await axios.post(URL_DEV + 'empresa', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
-                const { data: { empresas: empresas } } = response
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Agregaste con éxito la empresa.')
                 

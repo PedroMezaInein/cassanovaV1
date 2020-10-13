@@ -15,8 +15,8 @@ class Flujos extends Component {
         form: {
             cuentas: [],
             cuenta: '',
-            fechaInicio: new Date,
-            fechaFin: new Date
+            fechaInicio: new Date(),
+            fechaFin: new Date()
         },
         options: {
             cuentas: []
@@ -50,16 +50,16 @@ class Flujos extends Component {
         })
     }
     onChangeAndAdd = (e, arreglo) => {
-        const { name, value } = e.target
+        const { value } = e.target
         const { options, form } = this.state
         let auxArray = form[arreglo]
         let aux = []
         options[arreglo].find(function (_aux) {
-            if (_aux.value.toString() === value.toString()) {
+            if (_aux.value.toString() === value.toString())
                 auxArray.push(_aux)
-            } else {
+            else
                 aux.push(_aux)
-            }
+            return false
         })
         options[arreglo] = aux
         form[arreglo] = auxArray
@@ -73,11 +73,11 @@ class Flujos extends Component {
         const { form, options } = this.state
         let aux = []
         form[arreglo].map((element, key) => {
-            if (option.value.toString() !== element.value.toString()) {
+            if (option.value.toString() !== element.value.toString())
                 aux.push(element)
-            } else {
+            else
                 options[arreglo].push(element)
-            }
+            return false
         })
         form[arreglo] = aux
         this.setState({
@@ -90,6 +90,7 @@ class Flujos extends Component {
         let aux = 0
         array.map((element) => {
             aux = aux + element[name];
+            return false
         })
         return aux
     }
@@ -97,6 +98,7 @@ class Flujos extends Component {
         let aux = 0
         array.map((element) => {
             aux = aux + (element.traspasos_destino_count - element.traspasos_origen_count);
+            return false
         })
         return aux
     }
@@ -141,6 +143,7 @@ class Flujos extends Component {
                 cuenta: renderToString(setTextTable(flujo.nombre)),
                 id: flujo.id
             })
+            return false
         })
         return aux
     }
@@ -149,8 +152,8 @@ class Flujos extends Component {
         options.cuentas = setOptions(data.cuentas, 'nombre', 'id')
         form.cuenta = ''
         form.cuentas = []
-        form.fechaInicio = new Date
-        form.fechaFin = new Date
+        form.fechaInicio = new Date()
+        form.fechaFin = new Date()
         data.flujos = []
         this.setState({
             ...this.state,
@@ -220,8 +223,18 @@ class Flujos extends Component {
             console.log(error, 'error')
         })
     }
+    onChangeRange = range => {
+        const { startDate, endDate } = range
+        const { form } = this.state
+        form.fechaInicio = startDate
+        form.fechaFin = endDate
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
     render() {
-        const { form, options, data, flujos, total } = this.state
+        const { form, options, data, flujos } = this.state
         return (
             <Layout active={'administracion'}  {...this.props}>
                 <Card className="card-custom">
@@ -231,9 +244,16 @@ class Flujos extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <FlujosForm form={form} options={options} onChange={this.onChange}
-                            onSubmit={this.onSubmit} onChangeAndAdd={this.onChangeAndAdd}
-                            deleteOption={this.deleteOption} clear={this.clear} onSubmit={this.onSubmit} />
+                        <FlujosForm 
+                            form={form}
+                            options={options}
+                            onChange={this.onChange}
+                            onChangeAndAdd={this.onChangeAndAdd}
+                            deleteOption={this.deleteOption}
+                            clear={this.clear}
+                            onSubmit={this.onSubmit}
+                            onChangeRange={this.onChangeRange}
+                        />
                         <TableForModals
                             columns={FLUJOS_COLUMNS}
                             data={flujos}

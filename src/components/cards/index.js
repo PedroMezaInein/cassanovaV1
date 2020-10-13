@@ -85,7 +85,7 @@ export const CuentaCard = cuentaCard
 //Catálogos
 export const AreaCard = areaCard
 export const PartidaCard = partidaCard
-export const PreciosDiseñoCard = preciosDiseñoCard
+export const PreciosDisenoCard = preciosDiseñoCard
 export const AdjuntoFormCard = adjuntoFormCard
 //Leads
 export const LeadCard = leadCard

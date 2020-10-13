@@ -280,6 +280,7 @@ class Contratos extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -300,6 +301,7 @@ class Contratos extends Component {
                 descripcion: renderToString(setTextTable(contrato.descripcion)),
                 id: contrato.id
             })
+            return false
         })
         return aux
     }
@@ -320,6 +322,7 @@ class Contratos extends Component {
                 descripcion: renderToString(setTextTable(contrato.descripcion)),
                 id: contrato.id
             })
+            return false
         })
         return aux
     }
@@ -400,6 +403,7 @@ class Contratos extends Component {
                 adjunto: renderToString(setArrayTable([{ text: documento.name, url: documento.url }])),
                 id: documento.id
             })
+            return false
         })
         return aux
     }
@@ -447,6 +451,7 @@ class Contratos extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         await axios.post(URL_DEV + 'contratos/' + contrato.id + '/adjunto/', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -482,7 +487,7 @@ class Contratos extends Component {
     }
     async deleteAdjuntoContratoAxios(adjunto) {
         const { access_token } = this.props.authUser
-        const { form, contrato } = this.state
+        const { contrato } = this.state
         await axios.delete(URL_DEV + 'contratos/' + contrato.id + '/adjunto/' + adjunto, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { contrato } = response.data

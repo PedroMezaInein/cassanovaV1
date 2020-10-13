@@ -18,7 +18,7 @@ class EstadoResultados extends Component {
         ventas:[],
         form: {
             fechaInicio: new Date(),
-            fechaFin: new Date,
+            fechaFin: new Date(),
             empresas: [],
             empresa: '',
         },
@@ -103,7 +103,7 @@ class EstadoResultados extends Component {
         const { form } = this.state
         await axios.post(URL_DEV + 'reportes/estado-resultados', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { egresos,compras, ingresos, ventas, suma} = response.data
+                const { egresos,compras, ingresos, ventas } = response.data
                 this.setState({
                     ...this.state,
                     egresos: egresos,

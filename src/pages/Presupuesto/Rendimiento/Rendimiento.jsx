@@ -80,6 +80,7 @@ class Rendimientos extends Component {
                     id: rendimiento.id
                 }
             )
+            return false
         })
         return aux
     }

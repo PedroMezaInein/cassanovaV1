@@ -6,7 +6,7 @@ import Layout from '../../../components/layout/layout'
 import { URL_DEV } from '../../../constants'
 import { setOptions } from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
-import { PresupuestoDiseñoForm as PresupuestoDiseñoFormulario } from '../../../components/forms'
+import { PresupuestoDiseñoForm as PresupuestoDisenoFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
 class PresupuestoDiseñoForm extends Component {
     state = {
@@ -110,7 +110,7 @@ class PresupuestoDiseñoForm extends Component {
                 if (state) {
                     if (state.presupuesto) {
                         const { presupuesto } = state
-                        const { form, options, data } = this.state
+                        const { form, options } = this.state
 
                         form.empresa = presupuesto.empresa ? presupuesto.empresa.id.toString() : ''
                         form.m2 = presupuesto.precio ? presupuesto.precio.id.toString() : ''
@@ -131,6 +131,7 @@ class PresupuestoDiseñoForm extends Component {
                                 sabado: semana.sabado,
                                 domingo: semana.domingo
                             })
+                            return false
                         })
                         if (aux.length === 0) {
                             aux.push({
@@ -151,6 +152,7 @@ class PresupuestoDiseñoForm extends Component {
                                 value: concepto.dias,
                                 text: concepto.texto
                             })
+                            return false
                         })
                         if (aux.length === 0) {
                             aux = [
@@ -240,6 +242,7 @@ class PresupuestoDiseñoForm extends Component {
         let checkBoxPartida = []
         partidas.map((partida, key) => {
             checkBoxPartida.push({ checked: value, text: partida.nombre, id: partida.id })
+            return false
         })
         return checkBoxPartida
     }
@@ -272,7 +275,9 @@ class PresupuestoDiseñoForm extends Component {
                                         if (element.id === partida_inein.partida.id) {
                                             element.checked = true
                                         }
+                                        return false
                                     })
+                                return false
                             })
                         }
                         if (presupuesto.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
@@ -283,7 +288,9 @@ class PresupuestoDiseñoForm extends Component {
                                         if (element.id === partida_im.partida.id) {
                                             element.checked = true
                                         }
+                                        return false
                                     })
+                                return false
                             })
                         }
                     }
@@ -402,7 +409,9 @@ class PresupuestoDiseñoForm extends Component {
             aux.map((element) => {
                 if (semana[element])
                     count++;
+                return false
             })
+            return false
         })
         form.tiempo_ejecucion_diseno = count
         this.setState({
@@ -440,6 +449,7 @@ class PresupuestoDiseñoForm extends Component {
                     if (value === 'esquema_3')
                         concepto.text = 'JUNTA PRESENCIAL PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO, MODELO 3D Y RENDERS'
                 }
+                return false
             })
         }
         if (name === 'tiempo_ejecucion_diseno') {
@@ -482,6 +492,7 @@ class PresupuestoDiseñoForm extends Component {
                 } else {
                     form.semanas[form.semanas.length - 1][element] = false
                 }
+                return false
             })
             if (modulo > 2) {
                 form.semanas.push({
@@ -503,6 +514,7 @@ class PresupuestoDiseñoForm extends Component {
                             form.total = precio[form.esquema] * (1 - (form.descuento / 100))
                         } else
                             form.total = precio[form.esquema]
+                return false
             })
         }
         if (name === "empresa") {
@@ -513,6 +525,7 @@ class PresupuestoDiseñoForm extends Component {
                 if (empresa.id.toString() === value && empresa.name === 'INFRAESTRUCTURA MÉDICA') {
                     form.tipo_partida = 'partidasIm'
                 }
+                return false
             })
         }
         this.setState({
@@ -555,7 +568,7 @@ class PresupuestoDiseñoForm extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <PresupuestoDiseñoFormulario
+                        <PresupuestoDisenoFormulario
                             title={title}
                             formeditado={formeditado}
                             className=" px-3 "

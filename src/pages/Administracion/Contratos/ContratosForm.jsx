@@ -66,8 +66,8 @@ class ContratosForm extends Component {
         let tipo_contrato=tipo
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
-        const { match: { params: { action: action } } } = this.props
-        const { history, location: { state: state } } = this.props
+        const { match: { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
         const contratos = permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url + '/' + action
@@ -117,6 +117,7 @@ class ContratosForm extends Component {
                                         name: adj.name, url: adj.url
                                     }
                                 )
+                                return false
                             })
                         form.adjuntos.adjunto.files = aux
                         this.setState({
@@ -254,6 +255,7 @@ class ContratosForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -264,6 +266,7 @@ class ContratosForm extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         await axios.post(URL_DEV + 'contratos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -331,6 +334,16 @@ class ContratosForm extends Component {
             form
         })
     }
+    onChangeRange = range => {
+        const { startDate, endDate } = range
+        const { form } = this.state
+        form.fechaInicio = startDate
+        form.fechaFin = endDate
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
     render() {
         const { title, options, form, tipo, formeditado } = this.state
         return (
@@ -349,6 +362,7 @@ class ContratosForm extends Component {
                             onChange={this.onChange}
                             onSubmit={this.onSubmit}
                             formeditado={formeditado}
+                            onChangeRange={this.onChangeRange}
                             // onChangeAdjunto={this.onChangeAdjunto}
                             clearFiles={this.clearFiles}
                             title={title}

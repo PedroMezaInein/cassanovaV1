@@ -59,6 +59,7 @@ class Unidades extends Component {
                 unidad: renderToString(setTextTable(unidad.nombre)),
                 id: unidad.id
             })
+            return false
         })
         return aux
     }
@@ -93,6 +94,7 @@ class Unidades extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -161,33 +163,6 @@ class Unidades extends Component {
 
     safeDelete = e => () => {
         this.deleteUnidadAxios()
-    }
-
-    async getUnidadesAxios() {
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'unidades', { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { data } = this.state
-                const { unidades } = response.data
-                data.unidades = unidades
-                this.setState({
-                    ...this.state,
-                    unidades: this.setUnidades(unidades),
-                    data
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
     }
 
     async addUnidadAxios() {
@@ -261,7 +236,7 @@ class Unidades extends Component {
 
     async deleteUnidadAxios() {
         const { access_token } = this.props.authUser
-        const { unidad, modal, data } = this.state
+        const { unidad  } = this.state
         await axios.delete(URL_DEV + 'unidades/' + unidad.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { modal } = this.state
@@ -299,7 +274,7 @@ class Unidades extends Component {
     }
 
     render() {
-        const { form, unidades, modal, title, data, formeditado } = this.state
+        const { form, modal, title, formeditado } = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
                 <NewTableServerRender

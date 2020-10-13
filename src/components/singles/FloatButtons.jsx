@@ -10,9 +10,9 @@ class FloatButtons extends Component {
             <ul className="sticky-toolbar nav flex-column pl-2 pr-2 pt-3 pb-2 mt-4">
                 <OverlayTrigger overlay={<Tooltip>Guardar</Tooltip>}>
                     <li className="nav-item mb-2" data-placement="right">
-                        <a className="btn btn-sm btn-icon btn-bg-light btn-text-success btn-hover-success" onClick={save}>
+                        <span className="btn btn-sm btn-icon btn-bg-light btn-text-success btn-hover-success" onClick={save}>
                             <i className="far fa-save"></i>
-                        </a>
+                        </span>
                     </li>
                 </OverlayTrigger>
                 {
@@ -20,9 +20,9 @@ class FloatButtons extends Component {
                         Object.keys(formulario.form).length > 0 ?
                             <OverlayTrigger overlay={<Tooltip>Recuperar formulario</Tooltip>}>
                                 <li className="nav-item mb-2" title="" data-placement="left">
-                                    <a className="btn btn-sm btn-icon btn-bg-light btn-text-primary btn-hover-primary" onClick={recover}>
+                                    <span className="btn btn-sm btn-icon btn-bg-light btn-text-primary btn-hover-primary" onClick={recover}>
                                         <i className="flaticon2-list-3"></i>
-                                    </a>
+                                    </span>
                                 </li>
                             </OverlayTrigger>
                             : ''
@@ -33,9 +33,9 @@ class FloatButtons extends Component {
                     exportar ? 
                         <OverlayTrigger overlay={<Tooltip>Descargar</Tooltip>}>
                             <li className="nav-item mb-2" data-placement="left">
-                                <a className="btn btn-sm btn-icon btn-bg-light btn-text-info btn-hover-info" onClick={descargar}>
+                                <span className="btn btn-sm btn-icon btn-bg-light btn-text-info btn-hover-info" onClick={descargar}>
                                     <i className="flaticon-download"></i>
-                                </a>
+                                </span>
                             </li>
                         </OverlayTrigger>
                     :''

@@ -1,9 +1,8 @@
 import swal from 'sweetalert'
-import { renderToString } from 'react-dom/server'
 import { Sending } from '../components/Lottie/'
 import { Done } from '../components/Lottie/'
 import ReactDOM from 'react-dom';
-import React, { Component } from 'react'
+import React from 'react'
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
@@ -16,15 +15,6 @@ let sending = wrapperSending.firstChild;
 let wrapperDone = document.createElement('div');
 ReactDOM.render(<Done />, wrapperDone);
 let done = wrapperDone.firstChild;
-
-class Alert extends Component{
-    render(){
-        return(
-            <div className="">
-            </div>
-        )
-    }
-}
 
 export async function waitAlert() {
     swal({

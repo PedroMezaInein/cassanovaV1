@@ -52,6 +52,7 @@ class Leads extends Component {
                 fecha: renderToString(setDateTable(cliente.created_at)),
                 id: cliente.id
             })
+            return false
         })
         return aux
     }

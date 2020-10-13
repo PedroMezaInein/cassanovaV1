@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { Input, SelectSearch, Button, Calendar, InputNumber, InputPhone, SelectSearchTrue } from '../../form-components'
+import { Input, SelectSearch, Button, RangeCalendar, InputNumber, InputPhone, SelectSearchTrue } from '../../form-components'
 import { faPlus} from '@fortawesome/free-solid-svg-icons'
-import { DATE, TEL, EMAIL } from '../../../constants'
+import { TEL, EMAIL } from '../../../constants'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
 import ItemSlider from '../../singles/ItemSlider'
@@ -18,6 +18,7 @@ class ProyectosForm extends Component {
                     if (correo === form.correo) {
                         aux = true
                     }
+                    return false
                 })
                 if (!aux) {
                     array = form.correos
@@ -31,18 +32,18 @@ class ProyectosForm extends Component {
         }
     }
 
-    handleChangeDateInicio = date => {
-        const { onChange, form } = this.props
-        if (form.fechaInicio > form.fechaFin) {
-            onChange({ target: { name: 'fechaFin', value: date } })
-        }
-        onChange({ target: { name: 'fechaInicio', value: date } })
-    }
+    // handleChangeDateInicio = date => {
+    //     const { onChange, form } = this.props
+    //     if (form.fechaInicio > form.fechaFin) {
+    //         onChange({ target: { name: 'fechaFin', value: date } })
+    //     }
+    //     onChange({ target: { name: 'fechaInicio', value: date } })
+    // }
 
-    handleChangeDateFin = date => {
-        const { onChange } = this.props
-        onChange({ target: { name: 'fechaFin', value: date } })
-    }
+    // handleChangeDateFin = date => {
+    //     const { onChange } = this.props
+    //     onChange({ target: { name: 'fechaFin', value: date } })
+    // }
 
     updateCliente = value => {
         const { onChange, options, onChangeOptions, form } = this.props
@@ -52,11 +53,12 @@ class ProyectosForm extends Component {
                 form.clientes.map((element) => {
                     if (element.value === value)
                         aux = true
+                    return false
                 })
                 if (!aux)
                     onChangeOptions({ target: { value: cliente.value, name: 'cliente' } }, 'clientes')
             }
-
+            return false
         })
         onChange({ target: { value: value, name: 'cliente' } })
     }
@@ -83,7 +85,7 @@ class ProyectosForm extends Component {
     }
 
     render() {
-        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, removeCorreo, formeditado, deleteOption, onChangeOptions, action,handleChange,  ...props } = this.props
+        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, removeCorreo, formeditado, deleteOption, onChangeOptions, action,handleChange, onChangeRange, ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -434,7 +436,7 @@ class ProyectosForm extends Component {
                                 <div className="form-group row form-group-marginless">
                                     {
                                         action === 'edit' ?
-                                            <div className={action === 'edit' ? "col-md-3" : "col-md-4"}>
+                                            <div className={action === 'edit' ? "col-md-2" : "col-md-6"}>
                                                 <SelectSearch
                                                     formeditado = { formeditado }
                                                     options = { options.estatus }
@@ -447,7 +449,7 @@ class ProyectosForm extends Component {
                                             </div>
                                         :''
                                     }
-                                    <div className={form.estatus? "col-md-3":"col-md-4"}>
+                                    <div className={form.estatus? "col-md-3":"col-md-6"}>
                                         <SelectSearch
                                             formeditado={formeditado}
                                             options={options.empresas}
@@ -458,7 +460,21 @@ class ProyectosForm extends Component {
                                             iconclass={"far fa-building"}
                                         />
                                     </div>
-                                    <div className={form.estatus? "col-md-3":"col-md-4"}>
+                                    <div className={form.estatus? "col-md-7":"col-md-6"}>
+                                        <Input
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
+                                            rows="1"
+                                            as="textarea"
+                                            placeholder="DESCRIPCIÓN"
+                                            name="descripcion"
+                                            onChange={onChange}
+                                            value={form.descripcion}
+                                            style={{ paddingLeft: "10px" }}
+                                            messageinc="Incorrecto. Ingresa una descripción."
+                                        />
+                                    </div>
+                                    {/* <div className={form.estatus? "col-md-3":"col-md-4"}>
                                         <Calendar
                                             formeditado={formeditado}
                                             onChangeCalendar={this.handleChangeDateInicio}
@@ -485,34 +501,29 @@ class ProyectosForm extends Component {
                                             iconclass={"far fa-calendar-alt"}
                                             patterns={DATE}
                                         />
-                                    </div>
+                                    </div> */}
                                 </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                {/* <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
-                                    <div className="col-md-12">
-                                        <Input
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            rows="3"
-                                            as="textarea"
-                                            placeholder="DESCRIPCIÓN"
-                                            name="descripcion"
-                                            onChange={onChange}
-                                            value={form.descripcion}
-                                            style={{ paddingLeft: "10px" }}
-                                            messageinc="Incorrecto. Ingresa una descripción."
-                                        />
-                                    </div>
-                                </div>
+                                    
+                                </div> */}
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless justify-content-center mt-3">
-                                    <div className="col-md-4 text-center">
+                                    <div className="col-md-6 text-center">
                                     <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.image.placeholder}</label>
                                         <ItemSlider
                                             items={form.adjuntos.image.files}
                                             item='image' 
                                             handleChange={handleChange}
                                             multiple={false} 
+                                        />
+                                    </div>
+                                    <div className="col-md-6 text-center">
+                                        <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br/>
+                                        <RangeCalendar
+                                            onChange={onChangeRange}
+                                            start={form.fechaInicio}
+                                            end={form.fechaFin}
                                         />
                                     </div>
                                 </div>

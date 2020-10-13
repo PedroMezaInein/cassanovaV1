@@ -35,9 +35,9 @@ class ClientesForm extends Component {
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
-        const { match: { params: { action: action } } } = this.props
-        const { history, location: { state: state } } = this.props
-        const cliente = permisos.find(function (element, index) {
+        const { match: { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
+        permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
@@ -173,6 +173,7 @@ class ClientesForm extends Component {
                 let aux = [];
                 asentamiento.map((colonia, key) => {
                     aux.push({ value: colonia, name: colonia.toUpperCase() })
+                    return false
                 })
                 this.setState({
                     ...this.state,
@@ -185,6 +186,7 @@ class ClientesForm extends Component {
                         if (element.name === cliente.colonia) {
                             this.updateColonia(element)
                         }
+                        return false
                     })
                 }
                 this.onChange({ target: { name: 'cp', value: value } })

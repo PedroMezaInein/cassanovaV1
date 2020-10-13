@@ -24,14 +24,14 @@ class Login extends Component{
                         <div className="d-flex flex-center bgi-size-cover bgi-no-repeat flex-row-fluid" style ={ { backgroundImage: "url('/6.jpg')" } }>
                             <div className="row mx-0 d-flex flex-center ">
                                 <div className="d-flex flex-center mb-3">
-                                    <a href="https://infraestructuramedica.mx/" target="_blank" >
-                                        <img src="/im.png" className="img-empresa  mr-2 mr-md-5"/>
+                                    <a href="https://infraestructuramedica.mx/" target="_blank" rel="noopener noreferrer">
+                                        <img src="/im.png" className="img-empresa  mr-2 mr-md-5" alt = ''/>
                                     </a>
-                                    <a href="https://inein.mx/" target="_blank">
-                                        <img src="/inein.png" className="img-empresa mx-2 mx-md-5"/>
+                                    <a href="https://inein.mx/" target="_blank" rel="noopener noreferrer">
+                                        <img src="/inein.png" className="img-empresa mx-2 mx-md-5" alt = ''/>
                                     </a>
-                                    <a href="https://www.rocco.mx/" target="_blank">
-                                        <img src="/Rocco.png" className="img-empresa ml-2 ml-md-5"/>
+                                    <a href="https://www.rocco.mx/" target="_blank" rel="noopener noreferrer">
+                                        <img src="/Rocco.png" className="img-empresa ml-2 ml-md-5" alt = ''/>
                                     </a>
                                 </div>
                                 <div className="login-form text-center text-white p-7 position-relative overflow-hidden pt-4">

@@ -55,6 +55,7 @@ export default class FacturaTable extends Component {
                     id: factura.id
                 }
             )
+            return false
         })
         return aux
     }

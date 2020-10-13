@@ -49,6 +49,7 @@ class Partidas extends Component {
             aux = form.subpartidas.find(function (element, index) {
                 if (element === form.subpartida)
                     return true
+                return false
             });
             if (aux !== true) {
                 form.subpartidas.push(form.subpartida)
@@ -68,6 +69,7 @@ class Partidas extends Component {
         form.subpartidas.find(function (element, index) {
             if (element.toString() !== value.toString())
                 aux.push(element)
+            return false
         });
         form.subpartidas = aux
         this.setState({
@@ -96,6 +98,7 @@ class Partidas extends Component {
                 subpartidas: renderToString(setArrayTable(this.setArrayTable(partida.subpartidas))),
                 id: partida.id
             })
+            return false
         })
         return aux
     }
@@ -108,6 +111,7 @@ class Partidas extends Component {
                 text: subpartida.nombre,
                 lista: true
             })
+            return false
         })
         return aux
     }
@@ -152,6 +156,7 @@ class Partidas extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -203,6 +208,7 @@ class Partidas extends Component {
         let aux = []
         partida.subpartidas.map((element) => {
             aux.push(element.nombre)
+            return false
         })
         form.subpartidas = aux
         this.setState({
@@ -287,7 +293,7 @@ class Partidas extends Component {
 
     async updatePartidaAxios() {
         const { access_token } = this.props.authUser
-        const { form, partida, data, modal } = this.state
+        const { form, partida } = this.state
         await axios.put(URL_DEV + 'partidas/' + partida.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { modal } = this.state
@@ -321,7 +327,7 @@ class Partidas extends Component {
 
     async deletePartidaAxios() {
         const { access_token } = this.props.authUser
-        const { partida, modal, data } = this.state
+        const { partida } = this.state
         await axios.delete(URL_DEV + 'partidas/' + partida.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { modal } = this.state
@@ -354,7 +360,7 @@ class Partidas extends Component {
     }
 
     render() {
-        const { form, partidas, modal, title, data, formeditado, partida} = this.state
+        const { form, modal, title, formeditado, partida} = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
                 <NewTableServerRender 

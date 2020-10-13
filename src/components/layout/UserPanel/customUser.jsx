@@ -11,11 +11,11 @@ const NameUser = React.forwardRef(({userName}, ref) => (
 class customUser extends Component{
     
     render(){
-        const { children, clickLogout, authUser: { user: { name: userName } }, clickResponsiveMenu } = this.props
+        const { clickLogout, authUser: { user: { name: userName } } } = this.props
         return(
         <>               
 			<div className="d-flex flex-column">
-				<a className="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><Navbar as={NameUser} userName={userName}> </Navbar></a>
+				<span className="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><Navbar as={NameUser} userName={userName}> </Navbar></span>
 				<div className="text-muted mt-1"></div>
 					<div className="navi mt-1"> 
 							<span className="navi-link p-0 pb-1">
@@ -24,11 +24,11 @@ class customUser extends Component{
 										<SVG src={toAbsoluteUrl('/images/svg/Mail-notification.svg')} /> 
 									</span>
 								</span>
-								<a href={"mailto:"+this.props.authUser.user.email} target="_blank">
+								<a rel="noopener noreferrer" href={"mailto:"+this.props.authUser.user.email} target="_blank">
 									<span className="navi-text text-muted text-hover-primary">{this.props.authUser.user.email}</span>
 								</a>
 							</span> 
-						<a href="#" className="btn btn-sm btn-light-primary font-weight-bolder mt-2 " onClick={clickLogout}>Cerrar Sesión</a>
+						<span className="btn btn-sm btn-light-primary font-weight-bolder mt-2 " onClick={clickLogout}>Cerrar Sesión</span>
 					</div>
             </div>        
         </>

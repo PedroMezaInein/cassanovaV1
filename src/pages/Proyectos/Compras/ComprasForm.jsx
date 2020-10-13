@@ -114,7 +114,6 @@ class ComprasForm extends Component {
                         const emisor = xml.getElementsByTagName('cfdi:Emisor')[0]
                         const receptor = xml.getElementsByTagName('cfdi:Receptor')[0]
                         const timbreFiscalDigital = xml.getElementsByTagName('tfd:TimbreFiscalDigital')[0]
-                        const concepto = xml.getElementsByTagName('cfdi:Concepto')[0]
                         const conceptos = xml.getElementsByTagName('cfdi:Concepto')
                         let relacionados = xml.getElementsByTagName('cfdi:CfdiRelacionados')
                         let desc = ''
@@ -179,6 +178,7 @@ class ComprasForm extends Component {
                             if (element.rfc === obj.rfc_receptor) {
                                 auxEmpresa = element
                             }
+                            return false
                         });
                         let auxProveedor = ''
                         data.proveedores.find(function (element, index) {
@@ -190,6 +190,7 @@ class ComprasForm extends Component {
                                 element.razon_social.toUpperCase() === cadena) {
                                 auxProveedor = element
                             }
+                            return false
                         });
                         if (auxEmpresa) {
                             options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')
@@ -296,6 +297,7 @@ class ComprasForm extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -311,8 +313,8 @@ class ComprasForm extends Component {
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
-        const { match: { params: { action: action } } } = this.props
-        const { history, location: { state: state } } = this.props
+        const { match: { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
         const egresos = permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url + '/' + action
@@ -471,6 +473,7 @@ class ComprasForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -481,6 +484,7 @@ class ComprasForm extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         await axios.post(URL_DEV + 'compras', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -525,6 +529,7 @@ class ComprasForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -533,6 +538,7 @@ class ComprasForm extends Component {
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
+            return false
         })
         await axios.post(URL_DEV + 'compras/update/' + compra.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -580,6 +586,7 @@ class ComprasForm extends Component {
                     if (proveedor.razon_social === cadena) {
                         form.proveedor = proveedor.id.toString()
                     }
+                    return false
                 })
                 this.setState({
                     ...this.state,
@@ -615,6 +622,7 @@ class ComprasForm extends Component {
                     options.tiposImpuestos.find(function (element, index) {
                         if (element.text === 'IVA')
                             aux = element.value
+                        return false
                     });
                     form.tipoImpuesto = aux
                 }

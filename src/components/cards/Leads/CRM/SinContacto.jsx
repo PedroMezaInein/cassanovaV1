@@ -54,8 +54,8 @@ export default class SinContacto extends Component {
                         <span className="font-weight-bolder text-dark">Sin contacto en + 1 semana</span>
                     </div>
                     <div className="card-toolbar">
-                        <a className="btn btn-icon btn-xs btn-light-danger mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></a>
-                        <a className="btn btn-icon btn-xs btn-light-danger mr-2 my-1" onClick={onClick}><i className="ki ki-bold-arrow-next icon-xs"></i></a>
+                        <span className="btn btn-icon btn-xs btn-light-danger mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></span>
+                        <span className="btn btn-icon btn-xs btn-light-danger mr-2 my-1" onClick={onClick}><i className="ki ki-bold-arrow-next icon-xs"></i></span>
                     </div>
                 </Card.Header>
                 <Card.Body className="py-2">

@@ -31,8 +31,8 @@ class DocumentosForm extends Component {
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
-        const { match: { params: { action: action } } } = this.props
-        const { history, location: { state: state } } = this.props
+        const { match: { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
         const remisiones = permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url + '/' + action
@@ -61,6 +61,7 @@ class DocumentosForm extends Component {
                                     name: adj.name,
                                     id: adj.id
                                 })
+                                return false
                             })
                         }
                         form.adjuntos.adjuntos.files = aux
@@ -121,6 +122,7 @@ class DocumentosForm extends Component {
                 url: adj.url,
                 id: adj.id
             })
+            return false
         })
         form.adjuntos.adjuntos.files = aux
         this.setState({
@@ -180,6 +182,7 @@ class DocumentosForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -188,6 +191,7 @@ class DocumentosForm extends Component {
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
+            return false
         })
         await axios.post(URL_DEV + 'documentos', data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -224,6 +228,7 @@ class DocumentosForm extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -232,6 +237,7 @@ class DocumentosForm extends Component {
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
+            return false
         })
         await axios.post(URL_DEV + 'documentos/' + documento.id, data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -257,7 +263,7 @@ class DocumentosForm extends Component {
     async deleteAdjuntoAxios(id) {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { form, state, documento } = this.state
+        const { documento } = this.state
         await axios.delete(URL_DEV + 'documentos/' + documento.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { documento } = response.data

@@ -6,7 +6,7 @@ import { URL_DEV } from '../../../constants'
 import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert } from '../../../functions/alert'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
 import { Card } from 'react-bootstrap'
-import { PartidasDiseñoForm as PartidasDiseñoFormulario } from '../../../components/forms'
+import { PartidasDiseñoForm as PartidasDiseoFormulario } from '../../../components/forms'
 const $ = require('jquery');
 
 class PartidasDiseñoForm extends Component {
@@ -26,10 +26,10 @@ class PartidasDiseñoForm extends Component {
     }
 
     componentDidMount(){
-        const { authUser: { user : { permisos : permisos } } } = this.props
-        const { history : { location: { pathname: pathname } } } = this.props
-        const { match : { params: { action: action } } } = this.props
-        const { history, location: { state: state} } = this.props
+        const { authUser: { user : { permisos  } } } = this.props
+        const { history : { location: { pathname } } } = this.props
+        const { match : { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
         const partida = permisos.find(function(element, index) {
             const { modulo: { url } } = element
             return pathname === url + '/' + action
@@ -181,6 +181,7 @@ class PartidasDiseñoForm extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -236,6 +237,7 @@ class PartidasDiseñoForm extends Component {
         let aux = Object.keys(form)
         aux.map((element) => {
             auxObject[element] = form[element]
+            return false
         })
         save({
             form: auxObject,
@@ -254,7 +256,6 @@ class PartidasDiseñoForm extends Component {
 
     render(){
         const { title, form, formeditado} = this.state
-        const { formulario, deleteForm } = this.props 
         return (
             <Layout active = { 'catalogos' }  { ...this.props } >
                 <Card className="card-custom">
@@ -264,7 +265,7 @@ class PartidasDiseñoForm extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <PartidasDiseñoFormulario
+                        <PartidasDiseoFormulario
                             form={form}
                             formeditado={formeditado}   
                             onSubmit = { this.onSubmit } 

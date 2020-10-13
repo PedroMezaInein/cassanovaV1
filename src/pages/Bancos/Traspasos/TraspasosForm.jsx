@@ -32,8 +32,8 @@ class TraspasosForm extends Component {
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
-        const { match: { params: { action: action } } } = this.props
-        const { history, location: { state: state } } = this.props
+        const { match: { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
         const modulo = permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url + '/' + action
@@ -140,7 +140,7 @@ class TraspasosForm extends Component {
             (response) => {
                 swal.close()
                 const { cuentas } = response.data
-                const { options, traspaso, form } = this.state
+                const { options, form } = this.state
                 options.cuentas = setOptions(cuentas, 'nombre', 'numero')
                 this.setState({
                     ...this.state,
@@ -177,6 +177,7 @@ class TraspasosForm extends Component {
                     data.append(element, form[element]);
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -185,6 +186,7 @@ class TraspasosForm extends Component {
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
+            return false
         })
         await axios.post(URL_DEV + 'traspasos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
@@ -223,6 +225,7 @@ class TraspasosForm extends Component {
                     data.append(element, form[element]);
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -231,6 +234,7 @@ class TraspasosForm extends Component {
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
+            return false
         })
         await axios.post(URL_DEV + 'traspasos/' + traspaso.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
@@ -256,10 +260,9 @@ class TraspasosForm extends Component {
     async deleteAdjuntoAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { form, traspaso } = this.state
+        const { traspaso } = this.state
         await axios.delete(URL_DEV + 'traspasos/' + traspaso.id + '/adjuntos', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { documento } = response.data
                 const { form } = this.state
                 form.adjuntos.adjuntos.files = []
                 form.adjuntos.adjuntos.aux = ''

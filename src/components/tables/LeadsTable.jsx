@@ -104,9 +104,7 @@ function Table({ columns, data }) {
 }
 
 class EmpresasTable extends Component {
-    constructor(props) {
-        super(props)
-    }
+    
 
     componentDidUpdate() {
 
@@ -155,35 +153,3 @@ class EmpresasTable extends Component {
 }
 
 export default EmpresasTable;
-
-
-const columns = [
-    {
-        Header: ' ',
-        accessor: 'actions',
-    },
-    {
-        Header: 'Nombre',
-        accessor: 'nombre',
-    },
-    {
-        Header: 'Contacto',
-        accessor: 'contacto',
-    },
-    {
-        Header: 'Comentario',
-        accessor: 'comentario',
-    },
-    {
-        Header: 'Empresa',
-        accessor: 'empresa',
-    },
-    {
-        Header: 'Origen',
-        accessor: 'origen',
-    },
-    {
-        Header: 'Fecha',
-        accessor: 'fecha',
-    },
-]

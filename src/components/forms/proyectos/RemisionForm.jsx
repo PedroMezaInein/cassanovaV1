@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { Input, FileInput, SelectSearch, Button, Calendar } from '../../form-components'
+import { Input, SelectSearch, Button, Calendar } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import ItemSlider from '../../singles/ItemSlider'
 
@@ -17,11 +17,12 @@ class ConceptoForm extends Component {
         onChange({ target: { value: value, name: 'area' } })
         onChange({ target: { value: '', name: 'subarea' } })
 
-        const { options: { areas: areas } } = this.props
-        const aux = areas.find(function (element, index) {
+        const { options: { areas } } = this.props
+        areas.find(function (element, index) {
             if (value.toString() === element.value.toString()) {
                 setOptions('subareas', element.subareas)
             }
+            return false
         })
     }
 

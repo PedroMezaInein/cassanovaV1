@@ -1,21 +1,20 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { Input, Calendar, SelectSearch, Button, FileInput, InputMoneySinText, SelectSearchSinText, InputNumberSinText } from '../../form-components'
+import { Input, SelectSearch, Button, RangeCalendar, InputMoneySinText, SelectSearchSinText, InputNumberSinText } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
-import { DATE } from '../../../constants'
 import { setMoneyTableForNominas } from '../../../functions/setters'
 import { Card } from 'react-bootstrap'
 import { ItemSlider } from '../../../components/singles';
 class NominaObraForm extends Component {
 
-    handleChangeDateInicio = date => {
-        const { onChange } = this.props
-        onChange({ target: { value: date, name: 'fechaInicio' } })
-    }
-    handleChangeDateFin = date => {
-        const { onChange } = this.props
-        onChange({ target: { value: date, name: 'fechaFin' } })
-    }
+    // handleChangeDateInicio = date => {
+    //     const { onChange } = this.props
+    //     onChange({ target: { value: date, name: 'fechaInicio' } })
+    // }
+    // handleChangeDateFin = date => {
+    //     const { onChange } = this.props
+    //     onChange({ target: { value: date, name: 'fechaFin' } })
+    // }
 
     updateEmpresa = value => {
         const { onChange } = this.props
@@ -78,19 +77,18 @@ class NominaObraForm extends Component {
         let sumaNomImss = 0;
         let sumaRestanteNomina = 0;
         let sumaExtras = 0;
-        let sumaTotal = 0;
 
         form.nominasObra.forEach(element => {
             sumaNomImss += element.nominImss === undefined ? 0 : parseFloat(element.nominImss);
             sumaRestanteNomina += element.restanteNomina === undefined ? 0 : parseFloat(element.restanteNomina);
             sumaExtras += element.extras === undefined ? 0 : parseFloat(element.extras);
         });
-        return sumaTotal = sumaNomImss + sumaRestanteNomina + sumaExtras
+        return sumaNomImss + sumaRestanteNomina + sumaExtras
     }
 
 
     render() {
-        const { options, addRowNominaObra, deleteRowNominaObra, onChangeNominasObra, onChange, clearFiles, onChangeAdjunto, form, onSubmit, formeditado, title, handleChange} = this.props
+        const { options, addRowNominaObra, deleteRowNominaObra, onChangeNominasObra, onChange, form, onSubmit, formeditado, title, handleChange, onChangeRange} = this.props
         return (
             <Card className="card card-custom gutter-b example example-compact">
                 <Card.Header>
@@ -107,8 +105,8 @@ class NominaObraForm extends Component {
                     }
                 >
                     <Card.Body>
-                        <div className="form-group row form-group-marginless">
-                            <div className="col-md-3">
+                    <div className="form-group row form-group-marginless">
+                            <div className="col-md-6">
                                 <Input
                                     requirevalidation={1}
                                     formeditado={formeditado}
@@ -120,7 +118,7 @@ class NominaObraForm extends Component {
                                     messageinc="Incorrecto. Ingresa el periodo de nómina de obra."
                                 />
                             </div>
-                            <div className="col-md-3">
+                            <div className="col-md-6">
                                 <SelectSearch
                                     formeditado={formeditado}
                                     options={options.empresas}
@@ -131,38 +129,18 @@ class NominaObraForm extends Component {
                                     iconclass={"far fa-building"}
                                 />
                             </div>
-                            <div className="col-md-3">
-                                <Calendar
-                                    formeditado={formeditado}
-                                    onChangeCalendar={this.handleChangeDateInicio}
-                                    placeholder="Fecha de inicio"
-                                    name="fechaInicio"
-                                    value={form.fechaInicio}
-                                    selectsStart
-                                    startDate={form.fechaInicio}
-                                    endDate={form.fechaFin}
-                                    iconclass={"far fa-calendar-alt"}
-                                    patterns={DATE}
-                                />
-                            </div>
-                            <div className="col-md-3">
-                                <Calendar
-                                    formeditado={formeditado}
-                                    onChangeCalendar={this.handleChangeDateFin}
-                                    placeholder="Fecha final"
-                                    name="fechaFin"
-                                    value={form.fechaFin}
-                                    selectsEnd
-                                    startDate={form.fechaInicio}
-                                    endDate={form.fechaFin}
-                                    minDate={form.fechaInicio}
-                                    iconclass={"far fa-calendar-alt"}
-                                    patterns={DATE}
-                                />
-                            </div>
                         </div>
                         <div className="separator separator-dashed mt-1 mb-2"></div>
                         <div className="form-group row form-group-marginless d-flex justify-content-center">
+                            <div className="col-md-6 text-center">
+                                <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br />
+                                <RangeCalendar
+                                    onChange={onChangeRange}
+                                    start={form.fechaInicio}
+                                    end={form.fechaFin}
+                                    formeditado={formeditado}
+                                />
+                            </div>
                             {
                                 title !== 'Editar nómina obra' ?
                                     <>

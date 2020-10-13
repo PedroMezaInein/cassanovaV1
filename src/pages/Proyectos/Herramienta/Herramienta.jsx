@@ -56,6 +56,7 @@ class Herramienta extends Component {
                 fecha: renderToString(setDateTable(herramienta.created_at)),
                 id: herramienta.id
             })
+            return false
         })
         return aux
     }
@@ -125,6 +126,7 @@ class Herramienta extends Component {
                 fecha: renderToString(setDateTable(ubicacion.created_at)),
                 id: ubicacion.id
             })
+            return false
         })
         return aux
     }
@@ -160,6 +162,7 @@ class Herramienta extends Component {
                 url: adjunto.url,
                 id: adjunto.id
             })
+            return false
         })
         form.adjuntos.adjuntos.files = aux
         this.setState({
@@ -332,7 +335,7 @@ class Herramienta extends Component {
     async deleteAdjuntoAxios(id) {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { form, herramienta } = this.state
+        const { herramienta } = this.state
         await axios.delete(URL_DEV + 'herramientas/' + herramienta.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { herramienta } = response.data
@@ -344,6 +347,7 @@ class Herramienta extends Component {
                         url: adj.url,
                         id: adj.id
                     })
+                    return false
                 })
                 form.adjuntos.adjuntos.files = aux
                 this.setState({
@@ -384,6 +388,7 @@ class Herramienta extends Component {
                     data.append(element, form[element])
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -392,6 +397,7 @@ class Herramienta extends Component {
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
+            return false
         })
         await axios.post(URL_DEV + 'herramientas/' + herramienta.id + '/adjuntos', data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -404,6 +410,7 @@ class Herramienta extends Component {
                         url: adj.url,
                         id: adj.id
                     })
+                    return false
                 })
                 form.adjuntos.adjuntos.files = aux
                 this.setState({
@@ -437,7 +444,7 @@ class Herramienta extends Component {
                 let { form } = this.state
                 const { data } = this.state
                 this.getHerramientasAxios()
-                form.fecha = new Date
+                form.fecha = new Date()
                 form.ubicacion = ''
                 form.comentario = ''
                 data.ubicaciones = herramienta.ubicaciones

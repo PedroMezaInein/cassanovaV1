@@ -161,6 +161,7 @@ class SolicitudVenta extends Component {
                     id: solicitud.id
                 }
             )
+            return false
         })
         return aux
     }
@@ -225,7 +226,7 @@ class SolicitudVenta extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'solicitud-venta/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empresas, areas, tiposPagos, proyectos, solicitudes, clientes, metodosPago, formasPago, estatusFacturas } = response.data
+                const { empresas, areas, tiposPagos, proyectos, clientes, metodosPago, formasPago, estatusFacturas } = response.data
                 const { options, data } = this.state
                 // data.solicitudes = solicitudes
                 data.clientes = clientes
@@ -340,6 +341,7 @@ class SolicitudVenta extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form
     }
@@ -352,6 +354,7 @@ class SolicitudVenta extends Component {
                 if (value === cliente.id.toString()) {
                     form.rfc = cliente.rfc
                 }
+                return false
             })
         }
         this.setState({

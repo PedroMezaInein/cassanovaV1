@@ -197,7 +197,7 @@ class App extends Component{
     }
 
     async logoutUser(){
-        const { logout, authUser : {access_token: access_token}, history } = this.props
+        const { logout, authUser : {access_token }, history } = this.props
         
         await axios.get(URL_DEV + 'user/logout', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {

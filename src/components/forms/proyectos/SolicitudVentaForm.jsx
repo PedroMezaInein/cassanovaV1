@@ -16,12 +16,13 @@ class SolicitudVentaForm extends Component {
         onChange({ target: { value: value, name: 'empresa' } })
         onChange({ target: { value: '', name: 'cuenta' } })
 
-        const { options: { empresas: empresas } } = this.props
+        const { options: { empresas } } = this.props
 
-        const aux = empresas.find(function (element, index) {
+        empresas.find(function (element, index) {
             if (value.toString() === element.value.toString()) {
                 setOptions('cuentas', element.cuentas)
             }
+            return false
         })
     }
 
@@ -31,11 +32,12 @@ class SolicitudVentaForm extends Component {
         onChange({ target: { value: value, name: 'area' } })
         onChange({ target: { value: '', name: 'subarea' } })
 
-        const { options: { areas: areas } } = this.props
-        const aux = areas.find(function (element, index) {
+        const { options: { areas } } = this.props
+        areas.find(function (element, index) {
             if (value.toString() === element.value.toString()) {
                 setOptions('subareas', element.subareas)
             }
+            return false
         })
 
     }

@@ -35,6 +35,7 @@ class PresupuestoDiseñoForm extends Component {
             if (_aux.id.toString() === name.toString()) {
                 _aux.checked = checked
             }
+            return false
         });
         onChangeCheckboxes(aux)
     }

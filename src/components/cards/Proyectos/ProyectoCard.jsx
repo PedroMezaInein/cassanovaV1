@@ -51,7 +51,7 @@ export default class ProyectoCard extends Component {
                                                             </div>
                                                         </div>
                                                         <div>
-                                                            <a target="_blank" href={`tel:+${data.lead.telefono}`} className="font-size-h6 text-dark-75 font-weight-bolder text-hover-primary">{data.lead.telefono}</a>
+                                                            <a rel="noopener noreferrer" target="_blank" href={`tel:+${data.lead.telefono}`} className="font-size-h6 text-dark-75 font-weight-bolder text-hover-primary">{data.lead.telefono}</a>
                                                             <div className="font-size-sm text-muted font-weight-bold mt-1">TELÉFONO</div>
                                                         </div>
                                                     </div>
@@ -81,7 +81,7 @@ export default class ProyectoCard extends Component {
                                                             </div>
                                                         </div>
                                                         <div>
-                                                            <a target="_blank" href={`mailto:+${data.lead.email}`} className="font-size-h6 text-dark-75 font-weight-bolder text-hover-primary">{data.lead.email}</a>
+                                                            <a rel="noopener noreferrer" target="_blank" href={`mailto:+${data.lead.email}`} className="font-size-h6 text-dark-75 font-weight-bolder text-hover-primary">{data.lead.email}</a>
                                                             <div className="font-size-sm text-muted font-weight-bold mt-1">Correo electrónico</div>
                                                         </div>
                                                     </div>

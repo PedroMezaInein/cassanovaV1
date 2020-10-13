@@ -42,25 +42,12 @@ class AddPresupuestoForm extends Component {
     componentDidMount() {
         var elemento = document.getElementById("form-presupuesto");
         elemento.style.display = 'none';
-        const {
-            authUser: {
-                user: { permisos: permisos },
-            },
-        } = this.props;
-        const {
-            history: {
-                location: { pathname: pathname },
-            },
-        } = this.props;
-        const {
-            history,
-            location: { state: state },
-        } = this.props;
+        const { authUser: { user: { permisos } } } = this.props;
+        const { history: { location: { pathname } } } = this.props;
+        const { history } = this.props;
         const presupuesto = permisos.find(function (element, index) {
-            const {
-                modulo: { url: url },
-            } = element;
-            return pathname === url + "/" + "add";
+            const { modulo: { url } } = element;
+            return pathname === url + "/add";
         });
         if (!presupuesto) history.push("/");
         this.getOptionsAxios();
@@ -94,7 +81,7 @@ class AddPresupuestoForm extends Component {
                     data.partidas = partidas
                     let aux = {}
                     conceptos.map((concepto) => {
-                        aux[concepto.clave] = false
+                        return aux[concepto.clave] = false
                     })
                     form.conceptos = aux;
                     options["proyectos"] = setOptions(proyectos, "nombre", "id");
@@ -161,6 +148,7 @@ class AddPresupuestoForm extends Component {
                     if (partida.id.toString() === value) {
                         data.subpartidas = partida.subpartidas
                     }
+                    return false
                 })
                 break;
             case 'subpartida':
@@ -168,6 +156,7 @@ class AddPresupuestoForm extends Component {
                     if (subpartida.id.toString() === value) {
                         data.conceptos = subpartida.conceptos
                     }
+                    return false
                 })
                 break;
             default:

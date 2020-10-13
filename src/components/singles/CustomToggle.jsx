@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 
 function CustomToggle({ children, eventKey } ) {

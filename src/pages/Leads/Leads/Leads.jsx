@@ -153,6 +153,7 @@ class Leads extends Component {
                 convertido: renderToString(this.setLabel(lead)),
                 id: lead.id
             })
+            return false
         })
         return aux
     }
