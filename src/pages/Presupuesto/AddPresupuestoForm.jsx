@@ -47,7 +47,7 @@ class AddPresupuestoForm extends Component {
         const { history } = this.props;
         const presupuesto = permisos.find(function (element, index) {
             const { modulo: { url } } = element;
-            return pathname === url + "/" + "add";
+            return pathname === url + "/add";
         });
         if (!presupuesto) history.push("/");
         this.getOptionsAxios();

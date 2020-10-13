@@ -51,6 +51,7 @@ class Areas extends Component {
             aux = form.subareas.find(function (element, index) {
                 if (element === form.subarea)
                     return true
+                return false
             });
             if (aux !== true) {
                 form.subareas.push(form.subarea)
@@ -69,6 +70,7 @@ class Areas extends Component {
         form.subareas.find(function (element, index) {
             if (element.toString() !== value.toString())
                 aux.push(element)
+            return false
         });
         form.subareas = aux
         this.setState({
@@ -96,6 +98,7 @@ class Areas extends Component {
                 subareas: renderToString(setListTable(area.subareas, 'nombre')),
                 id: area.id
             })
+            return false
         })
         return aux
     }
@@ -140,6 +143,7 @@ class Areas extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         return form;
     }
@@ -213,6 +217,7 @@ class Areas extends Component {
         let aux = []
         area.subareas.map((element) => {
             aux.push(element.nombre)
+            return false
         })
         form.subareas = aux
         this.setState({
@@ -233,6 +238,7 @@ class Areas extends Component {
         let aux = []
         area.subareas.map((element) => {
             aux.push(element.nombre)
+            return false
         })
         form.subareas = aux
         this.setState({
@@ -253,6 +259,7 @@ class Areas extends Component {
         let aux = []
         area.subareas.map((element) => {
             aux.push(element.nombre)
+            return false
         })
         form.subareas = aux
         this.setState({
@@ -419,6 +426,7 @@ class Areas extends Component {
             case 'egresos':
                 this.getEgresosAxios();
                 break;
+            default: break;
         }
         this.setState({
             ...this.state,

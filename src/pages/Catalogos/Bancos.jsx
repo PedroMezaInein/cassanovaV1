@@ -56,6 +56,7 @@ class Bancos extends Component {
                 banco: renderToString(setTextTable(banco.nombre)),
                 id: banco.id
             })
+            return false
         })
         return aux
     }
@@ -85,7 +86,7 @@ class Bancos extends Component {
         const { form } = this.state
         let aux = Object.keys(form)
         aux.map((element) => {
-            form[element] = ''
+            return form[element] = ''
         })
         return form;
     }

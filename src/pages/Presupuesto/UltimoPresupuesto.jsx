@@ -54,10 +54,8 @@ class UltimoPresupuesto extends Component {
         const { history: { location: { pathname } } } = this.props;
         const { history, location: { state } } = this.props;
         const presupuesto = permisos.find(function (element, index) {
-            const {
-                modulo: { url: url },
-            } = element;
-            return pathname === url + "/" + "finish";
+            const { modulo: { url } } = element;
+            return pathname === url + "/finish";
         });
         if (state) {
             if (state.presupuesto) {
@@ -79,7 +77,7 @@ class UltimoPresupuesto extends Component {
                 data.partidas = partidas
                 let aux = {}
                 conceptos.map((concepto) => {
-                    aux[concepto.clave] = false
+                    return aux[concepto.clave] = false
                 })
                 options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
                 options['empresas'] = setOptions(empresas, 'name', 'id')
@@ -170,32 +168,32 @@ class UltimoPresupuesto extends Component {
             case 'partida':
                 data.partidas.map((partida) => {
                     data.conceptos = []
-                    if (partida.id.toString() === value) {
+                    if (partida.id.toString() === value) 
                         data.subpartidas = partida.subpartidas
-                    }
+                    return false
                 })
                 break;
             case 'subpartida':
                 data.subpartidas.map((subpartida) => {
-                    if (subpartida.id.toString() === value) {
+                    if (subpartida.id.toString() === value) 
                         data.conceptos = subpartida.conceptos
-                    }
+                    return false
                 })
                 let array = []
                 data.conceptos.map((concepto) => {
                     let aux = false
-
                     presupuesto.conceptos.map((concepto_form) => {
                         if (concepto) {
                             if (concepto.clave === concepto_form.concepto.clave) {
                                 aux = true
                             }
                         }
-
+                        return false
                     })
                     if (!aux) {
                         array.push(concepto)
                     }
+                    return false
                 })
                 break;
             default:
@@ -230,7 +228,6 @@ class UltimoPresupuesto extends Component {
         form.conceptos[key][name] = checked
         if (!checked) {
             let pre = presupuesto.conceptos[key]
-            let aux = { active: false, mensaje: '' }
             this.onChange(key, { target: { value: pre.descripcion } }, 'descripcion')
             this.onChange(key, { target: { value: pre.costo } }, 'costo')
             this.onChange(key, { target: { value: pre.cantidad_preliminar } }, 'cantidad_preliminar')
@@ -284,8 +281,9 @@ class UltimoPresupuesto extends Component {
                 const { form } = this.state
                 const { presupuesto } = response.data
                 let aux = []
+                let mensajeAux = {}
                 presupuesto.conceptos.map((concepto) => {
-                    let mensajeAux = {}
+                    mensajeAux = {}    
                     if (concepto.mensaje) {
                         mensajeAux = {
                             active: true,
@@ -315,6 +313,7 @@ class UltimoPresupuesto extends Component {
                         active: concepto.active ? true : false,
                         id: concepto.id,
                     })
+                    return false
                 })
                 form.conceptos = aux
                 this.setState({
@@ -367,6 +366,7 @@ class UltimoPresupuesto extends Component {
         let aux = Object.keys(form)
         aux.map((element) => {
             auxObject[element] = form[element]
+            return false
         })
         save({
             form: auxObject,

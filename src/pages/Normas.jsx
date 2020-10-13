@@ -39,6 +39,7 @@ class Normas extends Component {
             else {
                 element.isActive = false
             }
+            return false
         })
         this.setState({
             accordion: accordion
@@ -239,7 +240,7 @@ class Normas extends Component {
                                                                                 <span className="symbol-label font-size-h5">P</span>
                                                                             </div>
 																			<div>
-																				<a href="#" className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg">Nombre cliente X</a>
+																				<span className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg">Nombre cliente X</span>
 																				<span className="text-muted font-weight-bold d-block">Proyecto X</span>
 																			</div>
 																		</div>
@@ -272,11 +273,11 @@ class Normas extends Component {
 																		<span className="text-muted font-weight-bold">Web, UI/UX Design</span>
 																	</td>
 																	<td>
-																		<img  alt="image" style={{width: "5.5rem"}}/>
+																		<img  alt="" style={{width: "5.5rem"}}/>
 																		<span className="text-muted font-weight-bold d-block font-size-sm">Best Rated</span>
 																	</td>
 																	<td className="pr-0 text-right">
-																		<a href="#" className="btn btn-light-success font-weight-bolder font-size-sm">View Offer</a>
+																		<span className="btn btn-light-success font-weight-bolder font-size-sm">View Offer</span>
 																	</td>
 																</tr>
 															</tbody>

@@ -497,9 +497,6 @@ class Proyectos extends Component {
         })
     }
     openModalAdjuntos = proyecto => {
-        let { adjuntos } = this.state
-        let auxheaders = [
-        ]
         this.setState({
             ...this.state,
             modalAdjuntos: true,
@@ -534,6 +531,7 @@ class Proyectos extends Component {
                 form: element.form,
                 url: ''
             })
+            return false
         })
         return aux
     }
@@ -766,17 +764,21 @@ class Proyectos extends Component {
                     form[element] = ''
                     break;
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
             form.adjuntos[element].value = ''
             form.adjuntos[element].files = []
+            return false
         })
         form.adjuntos_grupo.map((grupo) => {
             grupo.adjuntos.map((adjunto) => {
                 adjunto.value = ''
                 adjunto.files = []
+                return false
             })
+            return false
         })
         return form
     }
@@ -864,6 +866,7 @@ class Proyectos extends Component {
                 fases: renderToString(setListTable(this.setFasesList(proyecto), 'text')),
                 id: proyecto.id
             })
+            return false
         })
         return aux
     }
@@ -1077,6 +1080,7 @@ class Proyectos extends Component {
                 default:
                     break
             }
+            return false
         })
         form.avances.map((avance, key) => {
             if (avance.adjuntos.value !== '') {
@@ -1087,6 +1091,7 @@ class Proyectos extends Component {
                     data.append(`files_avance[]`, avance.avance)
                 }
             }
+            return false
         })
 
         await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/avances', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
@@ -1137,6 +1142,7 @@ class Proyectos extends Component {
         form.adjuntos_grupo[grupo].adjuntos[adjunto].files.map((file) => {
             data.append(`files_name_${form.adjuntos_grupo[grupo].adjuntos[adjunto].id}[]`, file.name)
             data.append(`files_${form.adjuntos_grupo[grupo].adjuntos[adjunto].id}[]`, file.file)
+            return false
         })
         await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -1218,6 +1224,7 @@ class Proyectos extends Component {
             case 'fase3':
                 this.getProyectoFase3Axios();
                 break;
+            default: break;
         }
         this.setState({
             ...this.state,
@@ -1360,9 +1367,6 @@ class Proyectos extends Component {
                     <div className="p-2">
                         <Card className="card-custom card-without-box-shadown">
                             <Card.Header className="pl-0 pr-0 justify-content-start">
-                                <Card.Title>
-                                    <h3 className="text-dark"></h3>
-                                </Card.Title>
                                 <div className="card-toolbar">
                                     <Nav as="ul" className="nav nav-bold nav-pills">
                                         {

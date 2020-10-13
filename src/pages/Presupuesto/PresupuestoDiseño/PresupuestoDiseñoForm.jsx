@@ -6,7 +6,7 @@ import Layout from '../../../components/layout/layout'
 import { URL_DEV } from '../../../constants'
 import { setOptions } from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
-import { PresupuestoDiseñoForm as PresupuestoDiseñoFormulario } from '../../../components/forms'
+import { PresupuestoDiseñoForm as PresupuestoDisenoFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
 class PresupuestoDiseñoForm extends Component {
     state = {
@@ -568,7 +568,7 @@ class PresupuestoDiseñoForm extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <PresupuestoDiseñoFormulario
+                        <PresupuestoDisenoFormulario
                             title={title}
                             formeditado={formeditado}
                             className=" px-3 "

@@ -59,6 +59,12 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column'
     },
+    table2: {
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        paddingTop: 50
+    },
     tableRow:{
         display: 'flex',
         flexDirection: 'row'
@@ -580,7 +586,7 @@ export default class ReporteVentasInein extends Component {
                                 </Text>
                             </View>
                         </View>
-                        <View style = { styles.table, { paddingTop: 50 } }  >
+                        <View style = { styles.table2 }  >
                             {
                                 lista.map((element)=>{
                                     if(element !== '')
