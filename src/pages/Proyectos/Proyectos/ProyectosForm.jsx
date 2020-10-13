@@ -902,6 +902,16 @@ class ProyectosForm extends Component {
             form
         })
     }
+    onChangeRange = range => {
+        const { startDate, endDate } = range
+        const { form } = this.state
+        form.fechaInicio = startDate
+        form.fechaFin = endDate
+        this.setState({
+            ... this.state,
+            form
+        })
+    }
     render() {
         const { title, form, options, formeditado, prospecto, action } = this.state
         return (
@@ -950,6 +960,7 @@ class ProyectosForm extends Component {
                             clearFilesGrupo={this.clearFilesGrupo}
                             removeCorreo={this.removeCorreo}
                             handleChange={this.handleChange}
+                            onChangeRange={this.onChangeRange}
                             className="px-3">
                             {
                                 prospecto !== '' ?
