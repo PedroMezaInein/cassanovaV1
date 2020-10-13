@@ -45,6 +45,7 @@ class Calidad extends Component {
                     id: calidad.id
                 }
             )
+            return false
         })
         return aux
     }

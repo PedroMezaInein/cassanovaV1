@@ -41,7 +41,7 @@ class PermisosForm extends Component {
                 if (element.name === name) {
                     grupos[index].checked = false
                     grupos[index].modulos.map((modulo) => {
-                        modulo.checked = false;
+                        return modulo.checked = false;
                     })
                 }
                 return false
@@ -94,12 +94,12 @@ class PermisosForm extends Component {
         let { activeKey } = this.state
         activeKey = grupos[0].slug
         let auxActive = null
-        let gruposObject = Array()
+        let gruposObject = []
         grupos.map((grupo, key) => {
             let aux = true
 
             const { slug: slugGrupo, name: nombre, icon } = grupo
-            let modulosObject = Array()
+            let modulosObject = []
             grupo.modulos.map((modulo, key) => {
                 const { slug, name: nombre, icon } = modulo
                 if (modulo.permisos.length) {
@@ -128,7 +128,7 @@ class PermisosForm extends Component {
     }
 
     async componentDidMount() {
-        const { authUser: { access_token: access_token }, history, user } = this.props
+        const { authUser: { access_token }, history, user } = this.props
         if (!access_token)
             history.push('/login')
         await axios.get(URL_DEV + 'modulos/user/' + user, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
@@ -157,7 +157,7 @@ class PermisosForm extends Component {
     }
 
     async setPermisosAxios(user, data) {
-        const { authUser: { access_token: access_token }, history, handleClose } = this.props
+        const { authUser: { access_token }, history, handleClose } = this.props
         if (!access_token)
             history.push('/login')
         await axios.put(URL_DEV + 'modulos/user/' + user, { grupos: data }, { headers: { Authorization: `Bearer ${access_token}`, } }).then(

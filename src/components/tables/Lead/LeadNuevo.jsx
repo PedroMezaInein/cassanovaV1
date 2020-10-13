@@ -25,7 +25,7 @@ class LeadNuevo extends Component {
                                             <span className="symbol-label font-size-h5 bg-light-pink text-pink">P</span>
                                         </div>
                                         <div>
-                                            <a href="#" className="text-dark-75 font-weight-bolder text-hover-pink mb-1 font-size-lg">Nombre cliente X</a>
+                                            <span className="text-dark-75 font-weight-bolder text-hover-pink mb-1 font-size-lg">Nombre cliente X</span>
                                             <span className="text-muted font-weight-bold d-block">Proyecto X</span>
                                         </div>
                                     </div>

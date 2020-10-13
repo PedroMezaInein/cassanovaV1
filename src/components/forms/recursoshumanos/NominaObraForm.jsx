@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { Input, Calendar, SelectSearch, Button, RangeCalendar, InputMoneySinText, SelectSearchSinText, InputNumberSinText } from '../../form-components'
+import { Input, SelectSearch, Button, RangeCalendar, InputMoneySinText, SelectSearchSinText, InputNumberSinText } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
-import { DATE } from '../../../constants'
 import { setMoneyTableForNominas } from '../../../functions/setters'
 import { Card } from 'react-bootstrap'
 import { ItemSlider } from '../../../components/singles';
@@ -78,14 +77,13 @@ class NominaObraForm extends Component {
         let sumaNomImss = 0;
         let sumaRestanteNomina = 0;
         let sumaExtras = 0;
-        let sumaTotal = 0;
 
         form.nominasObra.forEach(element => {
             sumaNomImss += element.nominImss === undefined ? 0 : parseFloat(element.nominImss);
             sumaRestanteNomina += element.restanteNomina === undefined ? 0 : parseFloat(element.restanteNomina);
             sumaExtras += element.extras === undefined ? 0 : parseFloat(element.extras);
         });
-        return sumaTotal = sumaNomImss + sumaRestanteNomina + sumaExtras
+        return sumaNomImss + sumaRestanteNomina + sumaExtras
     }
 
 

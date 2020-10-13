@@ -61,6 +61,7 @@ class Proveedor extends Component {
                     id: proveedor.id
                 }
             )
+            return false
         })
         return aux
     }

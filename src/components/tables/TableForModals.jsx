@@ -39,6 +39,7 @@ class TableForModals extends Component {
                     if (element.id.toString() === id) {
                         return element
                     }
+                return false
             });
             actions[name].function(aux)
         });
@@ -55,7 +56,7 @@ class TableForModals extends Component {
         let aux = [];
 
         for (i = 0; i < header.length; i++) {
-            var titulo = new Object();
+            var titulo = {}
             titulo["title"] = header[i].Header;
             titulo["data"] = header[i].accessor;
             columns[i] = titulo;
@@ -68,7 +69,7 @@ class TableForModals extends Component {
             initComplete: function () {
                 var contador = 0;
                 table.find("thead th").each(function () {
-                    if (global_variable.mostrar_acciones == false || global_variable.mostrar_acciones && contador != 0) {
+                    if (global_variable.mostrar_acciones === false || (global_variable.mostrar_acciones && contador !== 0)) {
                         $(this).append('<div class="mt-2 separator separator-dashed separator-border-2"></div><div class="mt-2"><input type="text" class="form-control form-control-sm"/></div>');
                     }
                     contador++;

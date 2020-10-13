@@ -6,7 +6,6 @@ class Home extends Component{
     
 
     componentDidMount(){
-        const { user : { id: tipo} } = this.props.authUser
         const { user : { permisos: permisos } } = this.props.authUser
         const { history } = this.props
         

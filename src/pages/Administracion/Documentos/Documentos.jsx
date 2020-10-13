@@ -37,6 +37,7 @@ class Documentos extends Component {
                 fecha: renderToString(setDateTable(documento.created_at)),
                 id: documento.id
             })
+            return false
         })
         return aux
     }
@@ -83,6 +84,7 @@ class Documentos extends Component {
                 url: adj.url,
                 id: adj.id
             })
+            return false
         })
         form.adjuntos.adjuntos.files = aux
         this.setState({
@@ -114,6 +116,7 @@ class Documentos extends Component {
                     name: adj.name,
                     url: adj.url
                 })
+                return false
             })
         }
         form.adjuntos.adjuntos.files = aux
@@ -219,6 +222,7 @@ class Documentos extends Component {
                 data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
             }
             data.append('adjuntos[]', element)
+            return false
         })
         await axios.post(URL_DEV + 'documentos/' + documento.id + '/adjuntos', data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -231,6 +235,7 @@ class Documentos extends Component {
                         url: adj.url,
                         id: adj.id
                     })
+                    return false
                 })
                 form.adjuntos.adjuntos.files = aux
                 this.setState({

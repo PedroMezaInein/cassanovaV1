@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import { OverlayTrigger, Tooltip, Dropdown, DropdownButton } from 'react-bootstrap'
-import SVG from "react-inlinesvg";
-import { toAbsoluteUrl } from '../../../functions/routers'
 
 class LeadNegociacion extends Component {
 
@@ -30,7 +28,7 @@ class LeadNegociacion extends Component {
                                             <span className="symbol-label font-size-h5">P</span>
                                         </div>
                                         <div>
-                                            <a href="#" className="text-dark-75 font-weight-bolder text-hover-info mb-1 font-size-lg">Nombre cliente X</a>
+                                            <span className="text-dark-75 font-weight-bolder text-hover-info mb-1 font-size-lg">Nombre cliente X</span>
                                             <span className="text-muted font-weight-bold d-block">Proyecto X</span>
                                         </div>
                                     </div>
@@ -71,18 +69,18 @@ class LeadNegociacion extends Component {
                                         </Dropdown.Header>
                                         <Dropdown.Divider />
                                         <Dropdown.Item eventKey="1">
-                                            <a href="#" className="navi-link">
+                                            <span className="navi-link">
                                                 <span className="navi-text">
                                                     <span className="label label-xl label-inline label-light-success rounded-0">CONTRATADO</span>
                                                 </span>
-                                            </a>
+                                            </span>
                                         </Dropdown.Item>
                                         <Dropdown.Item eventKey="2">
-                                            <a href="#" className="navi-link">
+                                            <span className="navi-link">
                                                 <span className="navi-text">
                                                     <span className="label label-xl label-inline label-light-danger rounded-0">DETENIDO</span>
                                                 </span>
-                                            </a>
+                                            </span>
                                         </Dropdown.Item>
                                     </DropdownButton>
                                 </td>

@@ -33,10 +33,11 @@ class PresupuestoForm extends Component {
         onChange({ target: { value: '', name: 'subpartida' } })
 
         const { options: { partidas } } = this.props
-        const aux = partidas.find(function (element, index) {
+        partidas.find(function (element, index) {
             if (value.toString() === element.value.toString()) {
                 setOptions('subpartidas', element.subpartidas)
             }
+            return false
         })
     }
 
@@ -61,7 +62,9 @@ class PresupuestoForm extends Component {
         data.subpartidas.map((subpartida) => {
             subpartida.conceptos.map((concepto) => {
                 checkButton({ target: { name: concepto.clave, value: checked, checked: checked } })
+                return false
             })
+            return false
         })
     }
 
@@ -82,7 +85,9 @@ class PresupuestoForm extends Component {
         data.subpartidas.map((subpartida) => {
             subpartida.conceptos.map((concepto) => {
                 aux = aux && form.conceptos[concepto.clave]
+                return false
             })
+            return false
         })
         return aux
     }
@@ -110,7 +115,7 @@ class PresupuestoForm extends Component {
                                                         <span className="symbol-label"></span>
                                                     </label>
                                                     <div className="d-flex flex-column mr-2 py-2">
-                                                        <a className="text-dark text-hover-primary font-weight-bold font-size-h4 mx-3">CONCEPTOS</a>
+                                                        <span className="text-dark text-hover-primary font-weight-bold font-size-h4 mx-3">CONCEPTOS</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -216,7 +221,7 @@ class PresupuestoForm extends Component {
                                             <div
                                                 className="d-flex align-items-center justify-content-between flex-wrap card-spacer-x py-3">
                                                 <div className="d-flex flex-column mr-2 py-2">
-                                                    <a className="text-dark text-hover-primary font-weight-bold font-size-h4 mr-3"> CONCEPTOS SELECCIONADOS</a>
+                                                    <span className="text-dark text-hover-primary font-weight-bold font-size-h4 mr-3"> CONCEPTOS SELECCIONADOS</span>
                                                 </div>
                                                 <div className="d-flex py-2">
                                                     <Button
@@ -396,6 +401,7 @@ class PresupuestoForm extends Component {
                                                                                     </div>
                                                                                 )
                                                                             }
+                                                                            return false
                                                                         })
                                                                     )
                                                                 })

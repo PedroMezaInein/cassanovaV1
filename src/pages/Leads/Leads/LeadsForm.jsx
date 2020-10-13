@@ -38,7 +38,7 @@ class LeadsForm extends Component {
         const { history : { location: { pathname } } } = this.props
         const { match : { params: { action } } } = this.props
         const { history, location: { state } } = this.props
-        const lead = permisos.find(function(element, index) {
+        permisos.find(function(element, index) {
             const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
@@ -84,6 +84,7 @@ class LeadsForm extends Component {
                             }else{
                                 _servicios.push( { checked: false, text: _form.text, id: _form.id })
                             }
+                            return false
                         })
 
                         form.servicios = _servicios;
@@ -172,6 +173,7 @@ class LeadsForm extends Component {
                         }else{
                             _servicios.push( { checked: false, text: _form.text, id: _form.id })
                         }
+                        return false
                     })
                     form.servicios = _servicios;
                 }

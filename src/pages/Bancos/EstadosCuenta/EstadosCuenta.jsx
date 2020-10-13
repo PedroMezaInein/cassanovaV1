@@ -52,6 +52,7 @@ class EstadosCuenta extends Component {
                 fecha: renderToString(setDateTable(estado.created_at)),
                 id: estado.id
             })
+            return false
         })
         return aux
     }

@@ -908,7 +908,7 @@ class ProyectosForm extends Component {
         form.fechaInicio = startDate
         form.fechaFin = endDate
         this.setState({
-            ... this.state,
+            ...this.state,
             form
         })
     }

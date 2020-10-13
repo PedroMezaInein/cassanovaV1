@@ -38,6 +38,7 @@ class ActualizarPresupuestoForm extends Component {
         form.conceptos.map( (concepto) => {
             if(concepto.active)
                 aux = aux + parseFloat(concepto.importe)
+            return false
         })
         return aux.toFixed(2)
     }
@@ -49,6 +50,7 @@ class ActualizarPresupuestoForm extends Component {
             form.conceptos.map( (concepto, key) => {
                 if(concepto.active)
                     onChange(key, e, 'margen')
+                return false
             })
         this.setState({
             ...this.state,
@@ -89,6 +91,7 @@ class ActualizarPresupuestoForm extends Component {
         presupuesto.pdfs.map( (pdf, key) => {
             if( pdf.pivot.identificador >  identificador)
                 identificador = pdf.pivot.identificador
+            return false
         })
         identificador++
         return identificador.toString()

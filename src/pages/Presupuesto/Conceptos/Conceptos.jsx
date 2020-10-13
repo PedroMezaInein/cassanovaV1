@@ -29,7 +29,6 @@ class Conceptos extends Component {
         const conceptos = permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url
-            return false
         });
         if (!conceptos)
             history.push('/')

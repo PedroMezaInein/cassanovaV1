@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { Input, SelectSearch, Button, InputMoney, FileInput } from '../../form-components'
+import { Input, SelectSearch, Button, InputMoney } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { ItemSlider } from '../../../components/singles';
 class RendimientoForm extends Component {

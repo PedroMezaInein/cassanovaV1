@@ -338,6 +338,7 @@ class egresos extends Component {
                 tipo: renderToString(setTextTable(adjunto.pivot.tipo)),
                 id: 'adjuntos-' + adjunto.id
             })
+            return false
         })
         return aux
     }
@@ -423,6 +424,7 @@ class egresos extends Component {
         porcentaje = 0
         egreso.facturas.map((factura) => {
             porcentaje = porcentaje + factura.total
+            return false
         })
         porcentaje = porcentaje * 100 / (egreso.total - egreso.comision)
         porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
@@ -519,6 +521,7 @@ class egresos extends Component {
                     if (proveedor.razon_social === cadena) {
                         form.proveedor = proveedor.id.toString()
                     }
+                    return false
                 })
                 this.setState({
                     ...this.state,
@@ -615,6 +618,7 @@ class egresos extends Component {
                 default:
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -625,6 +629,7 @@ class egresos extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         data.append('id', egreso.id)
         await axios.post(URL_DEV + 'egresos/factura', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
@@ -636,6 +641,7 @@ class egresos extends Component {
                 porcentaje = 0
                 egreso.facturas.map((factura) => {
                     porcentaje = porcentaje + factura.total
+                    return false
                 })
                 porcentaje = porcentaje * 100 / (egreso.total - egreso.comision)
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
@@ -673,6 +679,7 @@ class egresos extends Component {
                 porcentaje = 0
                 egreso.facturas.map((factura) => {
                     porcentaje = porcentaje + factura.total
+                    return false
                 })
                 porcentaje = porcentaje * 100 / (egreso.total - egreso.comision)
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
@@ -739,6 +746,7 @@ class egresos extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         data.append('id', egreso.id)
         await axios.post(URL_DEV + 'egresos/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
@@ -803,7 +811,7 @@ class egresos extends Component {
         })
     }
     render() {
-        const { egresos, modalDelete, modalFacturas, modalAdjuntos, adjuntos, facturas, porcentaje, form, data, options, modalSee, egreso } = this.state
+        const { egresos, modalDelete, modalFacturas, modalAdjuntos, adjuntos, facturas, form, data, options, modalSee, egreso } = this.state
         return (
             <Layout active={'administracion'}  {...this.props}>
                 <NewTableServerRender columns={EGRESOS_COLUMNS} data={egresos}

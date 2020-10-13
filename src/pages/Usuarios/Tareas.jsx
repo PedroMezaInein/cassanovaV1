@@ -323,7 +323,7 @@ class Tareas extends Component{
                 const { tableros } = response.data
 
                 tableros.map((tablero) => {
-                    if(tablero.nombre == subActiveKey){
+                    if(tablero.nombre === subActiveKey){
                         this.setTareas(tablero.tareas)
                     }
                     return false
@@ -377,9 +377,10 @@ class Tareas extends Component{
             (response) => {
                 const { tableros, tarea } = response.data
                 tableros.map((tablero) => {
-                    if(tablero.nombre == subActiveKey){
+                    if(tablero.nombre === subActiveKey){
                         this.setTareas(tablero.tareas)
                     }
+                    return false
                 })
                 this.setState({
                     ...this.state,
@@ -436,14 +437,15 @@ class Tareas extends Component{
 
     async deleteTareaAxios(id){
         const { access_token } = this.props.authUser
-        const { form, subActiveKey} = this.state
+        const { subActiveKey } = this.state
         await axios.delete(URL_DEV + 'user/tareas/' + id, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
-                const { tableros, tarea } = response.data
+                const { tableros } = response.data
                 tableros.map((tablero) => {
-                    if(tablero.nombre == subActiveKey){
+                    if(tablero.nombre === subActiveKey){
                         this.setTareas(tablero.tareas)
                     }
+                    return false
                 })
                 this.setState({
                     ...this.state,
@@ -473,11 +475,12 @@ class Tareas extends Component{
         const { subActiveKey } = this.state
         await axios.put(URL_DEV + 'user/tareas/' + id + '/end', {}, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
-                const { tableros, tarea } = response.data
+                const { tableros } = response.data
                 tableros.map((tablero) => {
-                    if(tablero.nombre == subActiveKey){
+                    if(tablero.nombre === subActiveKey){
                         this.setTareas(tablero.tareas)
                     }
+                    return false
                 })
                 this.setState({
                     ...this.state,
@@ -509,11 +512,12 @@ class Tareas extends Component{
         const { subActiveKey } = this.state
         await axios.put(URL_DEV + 'user/tareas/order', {source, destination, task}, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
-                const { tableros, tarea } = response.data
+                const { tableros } = response.data
                 tableros.map((tablero) => {
-                    if(tablero.nombre == subActiveKey){
+                    if(tablero.nombre === subActiveKey){
                         this.setTareas(tablero.tareas)
                     }
+                    return false
                 })
                 this.setState({
                     ...this.state,
@@ -536,7 +540,7 @@ class Tareas extends Component{
     } 
     render(){
         
-        const { columns, user, form, activeKey, modal, tarea, comentario, adjunto,adjuntoName, users, participantesTask, participantes, formeditado, tableros, defaultactivekey, subActiveKey} = this.state
+        const { columns, user, form, activeKey, modal, tarea, comentario, adjunto,adjuntoName, participantesTask, participantes, formeditado, tableros, defaultactivekey, subActiveKey} = this.state
         return(
             <Layout active={'usuarios'} { ...this.props}> 
                 <div className="d-flex flex-row">
@@ -673,7 +677,7 @@ class Tareas extends Component{
                                                                     {
                                                                         comentario.adjunto ?
                                                                             <div className="d-flex justify-content-end">
-                                                                                <a href = { comentario.adjunto.url } target = '_blank' >
+                                                                                <a href = { comentario.adjunto.url } target = '_blank' rel="noopener noreferrer">
                                                                                     { comentario.adjunto.name }
                                                                                 </a>
                                                                             </div>    

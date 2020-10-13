@@ -283,7 +283,7 @@ class NewTableServerRender extends Component {
 
             columnDefs: [{
                 "targets": aux,
-                render: function (data, type, row, meta) {
+                render: function (data) {
                     return (`<div>${data}</div>`)
                 }
             },
@@ -292,17 +292,17 @@ class NewTableServerRender extends Component {
                 'data': null,
                 'searchable': mostrar_acciones ? false : true,
                 'orderable': false,
-                render: function (data, type, row, meta) {
+                render: function (data, row) {
                     if (global_variable.mostrar_acciones === true) {
-                        let auxString = ''
+                        let cadenaString = ''
                         {
                             data.map((element) => {
-                                auxString = auxString + `<button name=${element.action}  id = ${row.id} class="ml-2 btn btn-actions-table btn-xs btn-icon btn-text-${element.btnclass} btn-hover-${element.btnclass}" title=${element.text}><i class=${element.iconclass}></i></button>`
+                                cadenaString = cadenaString + `<button name=${element.action}  id = ${row.id} class="ml-2 btn btn-actions-table btn-xs btn-icon btn-text-${element.btnclass} btn-hover-${element.btnclass}" title=${element.text}><i class=${element.iconclass}></i></button>`
                                 return false
                                 })
                         }
                         return (
-                            '<div>' + auxString + '</div>'
+                            '<div>' + cadenaString + '</div>'
                         )
                     }
                     else {

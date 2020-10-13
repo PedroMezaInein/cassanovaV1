@@ -338,6 +338,7 @@ class MiProyecto extends Component {
                         files: []
                     }
                 }
+            return false
         })
         return form
     }
@@ -377,6 +378,7 @@ class MiProyecto extends Component {
                     data
                 })
             }
+            return false
         })
     }
 
@@ -396,6 +398,7 @@ class MiProyecto extends Component {
                         if(proy.id === id){
                             proyecto = proy
                         }
+                        return false
                     })
                 }
                 if(proyecto !== ''){
@@ -404,6 +407,7 @@ class MiProyecto extends Component {
                             proyecto = element
                             tickets = this.setTickets(element.tickets)
                         }
+                        return false
                     } )
                 }
                 this.setState({
@@ -493,6 +497,7 @@ class MiProyecto extends Component {
                     data.append(element, form[element]);
                     break
             }
+            return false
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
@@ -503,6 +508,7 @@ class MiProyecto extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
+            return false
         })
         data.append('proyecto', proyecto.id)
         await axios.post(URL_DEV + 'proyectos/mi-proyecto/tickets', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
@@ -548,6 +554,7 @@ class MiProyecto extends Component {
                     id: ticket.id
                 }
             )
+            return false
         })
         return aux
     }
