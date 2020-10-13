@@ -45,10 +45,25 @@ export default class UltimosContactosCard extends Component {
             }
         }
     }
+    isActiveButton(direction){
+        const { ultimos_contactados} = this.props
+        if(ultimos_contactados.total_paginas>1){
+            if(direction==='prev'){
+                if(ultimos_contactados.numPage>0){
+                    return true;
+                }
+            }else{
+                if(ultimos_contactados.numPage<10){
+                    if(ultimos_contactados.numPage < ultimos_contactados.total_paginas - 1){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
     render() {
         const { ultimos_contactados, onClick, onClickPrev} = this.props
-        // console.log(ultimos_contactados.data)
-        // console.log(ultimos_contactados.total)
         return (
             <Card className="card-custom card-stretch gutter-b py-2">
                 <Card.Header className="align-items-center border-0">
@@ -56,8 +71,15 @@ export default class UltimosContactosCard extends Component {
                         <span className="font-weight-bolder text-dark">Últimos contactados</span>
                     </div>
                     <div className="card-toolbar">
-                        <a className="btn btn-icon btn-xs btn-light-primary mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></a>
-                        <a className="btn btn-icon btn-xs btn-light-primary mr-2 my-1" onClick={onClick}><i className="ki ki-bold-arrow-next icon-xs"></i></a>
+                        { this.isActiveButton('prev')?
+                            <a className='btn btn-icon btn-xs btn-light-primary mr-2 my-1' onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></a>
+                            :''
+                        }
+                        { this.isActiveButton('next')?
+                            <a className='btn btn-icon btn-xs btn-light-primary mr-2 my-1' onClick={onClick}><i className="ki ki-bold-arrow-next icon-xs"></i></a>
+                            :''
+                        }
+                        
                     </div>
                 </Card.Header>
                 <Card.Body className="py-2">
