@@ -287,7 +287,7 @@ class Partidas extends Component {
 
     async updatePartidaAxios() {
         const { access_token } = this.props.authUser
-        const { form, partida, data, modal } = this.state
+        const { form, partida } = this.state
         await axios.put(URL_DEV + 'partidas/' + partida.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { modal } = this.state
@@ -321,7 +321,7 @@ class Partidas extends Component {
 
     async deletePartidaAxios() {
         const { access_token } = this.props.authUser
-        const { partida, modal, data } = this.state
+        const { partida } = this.state
         await axios.delete(URL_DEV + 'partidas/' + partida.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { modal } = this.state
@@ -354,7 +354,7 @@ class Partidas extends Component {
     }
 
     render() {
-        const { form, partidas, modal, title, data, formeditado, partida} = this.state
+        const { form, modal, title, formeditado, partida} = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
                 <NewTableServerRender 

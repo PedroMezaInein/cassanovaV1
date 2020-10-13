@@ -31,7 +31,7 @@ class SliderImages extends Component {
     }
     render() {
         const { active } = this.state
-        const { elements, ...props } = this.props
+        const { elements } = this.props
         return (
             <>
                 <div className="d-flex justify-content-center align-items-center">

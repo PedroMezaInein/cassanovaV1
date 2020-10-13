@@ -257,7 +257,7 @@ class DocumentosForm extends Component {
     async deleteAdjuntoAxios(id) {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { form, state, documento } = this.state
+        const { documento } = this.state
         await axios.delete(URL_DEV + 'documentos/' + documento.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { documento } = response.data

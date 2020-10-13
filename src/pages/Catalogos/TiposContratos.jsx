@@ -200,7 +200,7 @@ class TiposContratos extends Component {
 
     async updateTipoContratoAxios() {
         const { access_token } = this.props.authUser
-        const { form, tipo, data, modal } = this.state
+        const { form, tipo, modal } = this.state
         await axios.put(URL_DEV + 'tipos-contratos/' + tipo.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 modal.form = false
@@ -233,7 +233,7 @@ class TiposContratos extends Component {
 
     async deleteTipoContratoAxios() {
         const { access_token } = this.props.authUser
-        const { tipo, modal, data } = this.state
+        const { tipo, modal } = this.state
         await axios.delete(URL_DEV + 'tipos-contratos/' + tipo.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 modal.delete = false

@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import { OverlayTrigger, Tooltip, Dropdown, DropdownButton } from 'react-bootstrap'
-import SVG from "react-inlinesvg";
-import { toAbsoluteUrl } from '../../../functions/routers'
 
 class LeadContrato extends Component {
 

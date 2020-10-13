@@ -332,7 +332,7 @@ class Herramienta extends Component {
     async deleteAdjuntoAxios(id) {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { form, herramienta } = this.state
+        const { herramienta } = this.state
         await axios.delete(URL_DEV + 'herramientas/' + herramienta.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { herramienta } = response.data
@@ -437,7 +437,7 @@ class Herramienta extends Component {
                 let { form } = this.state
                 const { data } = this.state
                 this.getHerramientasAxios()
-                form.fecha = new Date
+                form.fecha = new Date()
                 form.ubicacion = ''
                 form.comentario = ''
                 data.ubicaciones = herramienta.ubicaciones

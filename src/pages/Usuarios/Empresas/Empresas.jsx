@@ -394,7 +394,7 @@ class Empresas extends Component {
         })
     }
     render() {
-        const { empresas, modalDelete, empresa, data, modalAdjuntos, showadjuntos, defaultactivekey, modalSee } = this.state
+        const { modalDelete, empresa, modalAdjuntos, showadjuntos, defaultactivekey, modalSee } = this.state
         return (
             <Layout active={'usuarios'} {...this.props}>
                 <NewTableServerRender 

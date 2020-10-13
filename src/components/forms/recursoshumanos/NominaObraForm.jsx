@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { Input, Calendar, SelectSearch, Button, RangeCalendar, InputMoneySinText, SelectSearchSinText, InputNumberSinText } from '../../form-components'
+import { Input, SelectSearch, Button, RangeCalendar, InputMoneySinText, SelectSearchSinText, InputNumberSinText } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
-import { DATE } from '../../../constants'
 import { setMoneyTableForNominas } from '../../../functions/setters'
 import { Card } from 'react-bootstrap'
 import { ItemSlider } from '../../../components/singles';
