@@ -168,15 +168,15 @@ class Layout extends Component {
                                             <div className="btn btn-icon w-auto btn-clean d-flex align-items-center btn-lg px-2" id="kt_quick_user_toggle" onClick={() => { openUserProfile() }}>
                                                 <span className="text-muted font-weight-bold font-size-base d-none d-md-inline mr-1">Hola,</span>
                                                 <br />
-                                                <span className="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-3">
+                                                <span className="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-2">
                                                     {
                                                         this.props.authUser.user.name
                                                     }
                                                 </span>
-                                                <span className="symbol symbol-35 symbol-light-primary">
+                                                <span className="symbol symbol-45">
                                                     {
                                                         this.props.authUser.user.avatar ? 
-                                                            <img className="symbol-label p-1 font-size-h5 font-weight-bold" src = { this.props.authUser.user.avatar } alt ="profile" />
+                                                            <img className="symbol-label p-1 font-size-h5 font-weight-bold bg-transparent" src = { this.props.authUser.user.avatar } alt ="profile" />
                                                         : 
                                                             <span className="symbol-label font-size-h5 font-weight-bold">
                                                             {
