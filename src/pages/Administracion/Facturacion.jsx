@@ -59,12 +59,11 @@ class Facturacion extends Component {
         const { authUser: { user: { permisos } } } = this.props
         let { history: { location: { pathname } } } = this.props
         const { history } = this.props
-        pathname = pathname.substr(1, pathname.length - 1)
-        const facturas = permisos.find(function (element, index) {
+        const conceptos = permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url
         });
-        if (!facturas)
+        if (!conceptos)
             history.push('/')
         this.getOptionsAxios()
     }
