@@ -318,11 +318,13 @@ class NewTable extends Component {
                                 {
                                     title ? title : ''
                                 }
-                                <span className="d-block text-muted pt-2 font-size-sm">
-                                    {
-                                        subtitle ? subtitle : ''
-                                    }
-                                </span>
+                                {
+                                    subtitle ?
+                                        <span className="d-block text-muted pt-2 font-size-sm">
+                                            {subtitle}
+                                        </span>
+                                    : ''
+                                }
                             </h2>
                         </div>
                         <div className="card-toolbar">

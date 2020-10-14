@@ -1986,3 +1986,21 @@ export const ADJUNTOS_EMPRESA_COLUMNS = [
         accessor: 'adjunto',
     }
 ]
+export const DETAILS_CUENTAS = [
+    {
+        Header: 'Traspaso ID',
+        accessor: 'idTraspaso',
+    },
+    {
+        Header: 'Fecha',
+        accessor: 'fecha'
+    },
+    {
+        Header: 'Monto',
+        accessor: 'monto'
+    },
+    {
+        Header: 'Balance',
+        accessor: 'balance'
+    },
+]
