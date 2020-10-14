@@ -173,10 +173,10 @@ class Layout extends Component {
                                                         this.props.authUser.user.name
                                                     }
                                                 </span>
-                                                <span className="symbol symbol-35 symbol-light-primary">
+                                                <span className="symbol symbol-45">
                                                     {
                                                         this.props.authUser.user.avatar ? 
-                                                            <img className="symbol-label p-1 font-size-h5 font-weight-bold" src = { this.props.authUser.user.avatar } alt ="profile" />
+                                                            <img className="symbol-label p-1 font-size-h5 font-weight-bold bg-transparent" src = { this.props.authUser.user.avatar } alt ="profile" />
                                                         : 
                                                             <span className="symbol-label font-size-h5 font-weight-bold">
                                                             {
