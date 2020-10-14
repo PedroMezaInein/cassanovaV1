@@ -305,7 +305,7 @@ class egresos extends Component {
                                 { name: 'No. de cuenta', text: egreso.cuenta ? egreso.cuenta.numero : '' }
                             ]
                         )),
-                        cliente: renderToString(setTextTable(egreso.proveedor ? egreso.proveedor.razon_social : '')),
+                        proveedor: renderToString(setTextTable(egreso.proveedor ? egreso.proveedor.razon_social : '')),
                         factura: renderToString(setTextTable(egreso.factura ? 'Con factura' : 'Sin factura')),
                         monto: renderToString(setMoneyTable(egreso.monto)),
                         comision: renderToString(setMoneyTable(egreso.comision ? egreso.comision : 0.0)),
@@ -708,9 +708,24 @@ class egresos extends Component {
         })
     }
     async exportEgresosAxios() {
+        let headers = []
+        let documento = ''
+        EGRESOS_COLUMNS.map((columna, key) => {
+            if (columna !== 'actions' && columna !== 'adjuntos') {
+                documento = document.getElementById(columna.accessor)
+                if (documento) {
+                    if (documento.value) {
+                        headers.push({
+                            name: columna.accessor,
+                            value: documento.value
+                        })
+                    }
+                }
+            }
+        })
         waitAlert();
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'exportar/egresos', { responseType: 'blob', headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'exportar/egresos', { columnas: headers }, { responseType: 'blob', headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');

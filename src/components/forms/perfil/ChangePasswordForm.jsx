@@ -3,8 +3,9 @@ import { validateAlert } from '../../../functions/alert'
 import { Button, Input, ImageUpload } from '../../form-components'
 import { Form, Col } from 'react-bootstrap'
 class ChangePasswordFrom extends Component {
+
 	render() {
-		const { onSubmit, form, onChange, sendAvatar } = this.props
+		const { onSubmit, form, onChange, sendAvatar, clearAvatar } = this.props
 		return (<>
 			<div className="row">
 				<Col md="7">
@@ -21,6 +22,7 @@ class ChangePasswordFrom extends Component {
 								name="foto"
 								value={form.foto}
 								onChange={onChange}
+								clearAvatar = { clearAvatar }
 							/>
 							{/* {
 								form.foto ? */}
