@@ -45,6 +45,7 @@ const MiProyecto = Loader(() => import('./pages/MiProyecto') )
 
 const Cuentas = Loader(() => import('./pages/Bancos/Cuenta/Cuenta') )
 const CuentasForm = Loader(() => import('./pages/Bancos/Cuenta/CuentaForm') )
+const CuentaDetails = Loader(() => import('./pages/Bancos/Cuenta/CuentaDetails') )
 
 // const EstadosCuenta = Loader(() => import('./pages/Bancos/EstadosCuenta') )
 const EstadosCuenta = Loader(() => import('./pages/Bancos/EstadosCuenta/EstadosCuenta') )
@@ -294,7 +295,8 @@ class App extends Component{
 
                 <Route path = "/bancos/cuentas" exact component ={ Cuentas } />
                 <Route path = "/bancos/cuentas/:action" exact component ={ CuentasForm } />
-                
+                <Route path = "/bancos/cuentas/details/:id" exact component ={ CuentaDetails } />
+
                 {/* <Route path = "/bancos/estados-cuenta" exact component ={ EstadosCuenta } /> */}
                 <Route path = "/bancos/estados-cuenta" exact component ={ EstadosCuenta } />
                 <Route path = "/bancos/estados-cuenta/:action" exact component ={ EstadosCuentaForm } />
