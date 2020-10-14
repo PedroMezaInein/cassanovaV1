@@ -1,6 +1,7 @@
 import React from 'react'
 import Avatar from 'react-avatar-edit'
 class ImageUpload extends React.Component {
+
     constructor(props) {
         super(props)
         const src = ''
@@ -12,20 +13,36 @@ class ImageUpload extends React.Component {
         this.onClose = this.onClose.bind(this)
         this.onBeforeFileLoad = this.onBeforeFileLoad.bind(this)
     }
-    onClose() {
-        this.setState({ preview: null })
+
+    componentDidUpdate(nextProps){
+        if (nextProps.value !== this.props.value){
+            const { value } = this.props
+            this.setState({
+                ...this.state,
+                src: value,
+                preview: value
+            })
+        }
     }
+
+    onClose() {
+        const { clearAvatar } = this.props
+        clearAvatar()
+    }
+
     onCrop(preview) {
         const { onChange} = this.props
         this.setState({ preview })
         onChange({ target: { name: 'foto', value: preview } })
     }
+
     onBeforeFileLoad(elem) {
         if (elem.target.files[0].size > 71680) {
             alert("¡El archivo es demasiado grande!");
             elem.target.value = "";
         };
     }
+
     render() {
         const divStyle = {
             color: '#80808F',

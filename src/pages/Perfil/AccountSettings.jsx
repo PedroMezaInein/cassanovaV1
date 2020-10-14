@@ -15,20 +15,41 @@ class AccountSettings extends Component {
 		form:{
 			oldPassword: '',
 			newPassword: '',
-			newPassword2: '',
+            newPassword2: '',
+            foto: ''
 		}
-	}
+    }
+    
+    componentDidMount(){
+        const { avatar }  = this.props.authUser.user
+        const { form } = this.state
+        form.foto = avatar
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
 	
 	onChange = e => {
         const { form } = this.state
 		const { name, value } = e.target
-		console.log(name, value )
         form[name] = value
         this.setState({
             ...this.state,
             form
         })
-	}
+    }
+    
+    clearAvatar = () => {
+
+        const { avatar } = this.props.authUser.user
+        const { form } = this.state
+        form.foto = avatar
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
 
 	async changePasswordAxios() {
 		const { access_token } = this.props.authUser
@@ -101,7 +122,7 @@ class AccountSettings extends Component {
                     </Card.Header>
 						<Card.Body> 
 							<ChangePasswordForm form = { form } onChange = { this.onChange } onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.changePasswordAxios()} } 
-								sendAvatar = { this.sendAvatar } />
+								sendAvatar = { this.sendAvatar } clearAvatar = { this.clearAvatar } />
 						</Card.Body>
 					</Card>
 				</Layout>
