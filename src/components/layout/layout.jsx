@@ -168,7 +168,7 @@ class Layout extends Component {
                                             <div className="btn btn-icon w-auto btn-clean d-flex align-items-center btn-lg px-2" id="kt_quick_user_toggle" onClick={() => { openUserProfile() }}>
                                                 <span className="text-muted font-weight-bold font-size-base d-none d-md-inline mr-1">Hola,</span>
                                                 <br />
-                                                <span className="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-3">
+                                                <span className="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-2">
                                                     {
                                                         this.props.authUser.user.name
                                                     }
