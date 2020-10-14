@@ -94,6 +94,32 @@ class ItemSlider extends Component {
         link.click();
     }
 
+    isEnablePrevButton = () => {
+        const { items, handleChange } = this.props
+        const { active } = this.state
+        if(items.length < 1 )
+            return false
+        if(handleChange){
+            return true
+        }
+        if(active === 0)
+            return false
+        return true
+    }
+
+    isEnableNextButton = () => {
+        const { items, handleChange } = this.props
+        const { active } = this.state
+        if(items.length < 1 )
+            return false
+        if(handleChange){
+            return true
+        }
+        if(active === items.length - 1)
+            return false
+        return true
+    }
+
     render() {
         const { items, deleteFile, handleChange, multiple, accept } = this.props
         const { active } = this.state
@@ -101,7 +127,7 @@ class ItemSlider extends Component {
             <>
                 <div className="d-flex justify-content-center align-items-center">
                     {
-                        items.length > 0 ?
+                        this.isEnablePrevButton() ?
                             <div className="cursor" onClick={(e) => { e.preventDefault(); this.sliderBack(); }}>
                                 <div className="btn btn-default font-weight-bold small-button">
                                     <span className="svg-icon svg-icon-lg mr-0">
@@ -166,7 +192,7 @@ class ItemSlider extends Component {
                         }
                     </div>
                     {
-                        items.length > 0 ?
+                        this.isEnableNextButton() ?
                             <div className="cursor" onClick={(e) => { e.preventDefault(); this.sliderNext(); }}>
                                 <div className="btn btn-default font-weight-bold small-button">
                                     <span className="svg-icon svg-icon-lg mr-0">

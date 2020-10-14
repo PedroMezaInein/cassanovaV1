@@ -138,7 +138,14 @@ class Cuenta extends Component {
                 iconclass: 'flaticon2-infographic',
                 action: 'estado',
                 tooltip: { id: 'estado', text: 'Agregar estados de cuenta', type: 'error' }
-            }
+            },
+            {
+                text: 'Detalles',
+                btnclass: 'dark',
+                iconclass: 'flaticon-eye',
+                action: 'details ',
+                tooltip: { id: 'details', text: 'Detalles', type: 'info' },
+            },
         )
         return aux
     }
@@ -206,6 +213,13 @@ class Cuenta extends Component {
         const { history } = this.props
         history.push({
             pathname: '/bancos/cuentas/edit',
+            state: { cuenta: cuenta }
+        });
+    }
+    changePageDetails = cuenta => {
+        const { history } = this.props
+        history.push({
+            pathname: '/bancos/cuentas/details/'+cuenta.id,
             state: { cuenta: cuenta }
         });
     }
@@ -413,6 +427,7 @@ class Cuenta extends Component {
                                             'delete': { function: this.openModalDelete },
                                             'estado': { function: this.openModalEstado },
                                             'see': { function: this.openModalSee },
+                                            'details': { function: this.changePageDetails },
                                         }
                                     }
                                     accessToken={this.props.authUser.access_token}
@@ -443,6 +458,7 @@ class Cuenta extends Component {
                                             'delete': { function: this.openModalDelete },
                                             'estado': { function: this.openModalEstado },
                                             'see': { function: this.openModalSee },
+                                            'details': { function: this.changePageDetails },
                                         }}
                                     accessToken={this.props.authUser.access_token}
                                     setter={this.setCuentas}
