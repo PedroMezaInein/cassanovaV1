@@ -542,7 +542,7 @@ export const EGRESOS_COLUMNS = [
     },
     {
         Header: 'Proveedor',
-        accessor: 'cliente'
+        accessor: 'proveedor'
     },
     {
         Header: 'Factura',
@@ -555,14 +555,6 @@ export const EGRESOS_COLUMNS = [
     {
         Header: 'Sub-Área',
         accessor: 'subarea'
-    },    
-    {
-        Header: 'Total',
-        accessor: 'total'
-    },
-    {
-        Header: 'Cuenta',
-        accessor: 'cuenta'
     },
     {
         Header: 'Monto',
@@ -571,6 +563,14 @@ export const EGRESOS_COLUMNS = [
     {
         Header: 'Comisión',
         accessor: 'comision'
+    },    
+    {
+        Header: 'Total',
+        accessor: 'total'
+    },
+    {
+        Header: 'Cuenta',
+        accessor: 'cuenta'
     },
     {
         Header: 'Pago', //Cambié de Tipo de pago a Pago
@@ -583,11 +583,7 @@ export const EGRESOS_COLUMNS = [
     {
         Header: 'Estatus',
         accessor: 'estatusCompra'
-    },
-    {
-        Header: 'Adjuntos',
-        accessor: 'adjuntos',
-    },    
+    }, 
     {
         Header: 'Descripción',
         accessor: 'descripcion'
