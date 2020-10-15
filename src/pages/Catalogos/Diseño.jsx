@@ -1,19 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import swal from 'sweetalert'
-import { URL_DEV, URL_ASSETS } from '../../constants'
+import { URL_DEV } from '../../constants'
 import { setSelectOptions} from '../../functions/setters'
 import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
-import { Card, Nav, Tab, Tabs } from 'react-bootstrap'
+import { Card, Nav, Tab } from 'react-bootstrap'
 import { DiseñoForm } from '../../components/forms'
-
 class Contabilidad extends Component {
 
     state = {
-        partidas: [],
-        partida: '',
         title: 'Diseño',
         empresas:{
             precio_inicial_diseño:'',
@@ -41,7 +37,6 @@ class Contabilidad extends Component {
             }]
         },
         data:{
-            partidas:[],
             empresas: []
         },
         formeditado: 0,
@@ -110,11 +105,9 @@ class Contabilidad extends Component {
         })
     }
 
-
     onSubmit = e => {
         e.preventDefault()
         waitAlert()
-        // this.createReporteContabilidad()
     }
 
     addRow = () => {
@@ -153,6 +146,14 @@ class Contabilidad extends Component {
             form
         })
     }
+    deleteRow= () => {
+        const { form } = this.state
+        form.variaciones.pop()
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
 
     changeActiveKey = empresa => {
         const { form } = this.state
@@ -168,10 +169,8 @@ class Contabilidad extends Component {
 
     onChangeVariaciones = (key, e, name) => {
         const { value } = e.target
-        const { form, data } = this.state
-
+        const { form } = this.state
         form.variaciones[key][name] = value
-        
         this.setState({
             ...this.state,
             form
@@ -205,12 +204,11 @@ class Contabilidad extends Component {
                         <Card.Body>
                             <DiseñoForm 
                                 form = { form } 
-                                options = { options } 
-                                onChangeEmpresa = { this.onChangeEmpresa } 
-                                updateEmpresa = { this.updateEmpresa } 
+                                options = { options }
                                 onChange = { this.onChange } 
                                 onSubmit = { this.onSubmit }
                                 addRow={this.addRow}
+                                deleteRow={this.deleteRow}
                                 onChangeVariaciones = { this.onChangeVariaciones }
                             />
                         </Card.Body>
