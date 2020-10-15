@@ -2,10 +2,11 @@ import React, { Component } from 'react'
 import { validateAlert } from '../../../functions/alert'
 import { Button, Input, ImageUpload } from '../../form-components'
 import { Form, Col } from 'react-bootstrap'
+import { ItemSlider } from '../../../components/singles'
 class ChangePasswordFrom extends Component {
 
 	render() {
-		const { onSubmit, form, onChange, sendAvatar, clearAvatar } = this.props
+		const { onSubmit, form, onChange, sendAvatar, clearAvatar, handleChange, sendFirma} = this.props
 		return (<>
 			<div className="row">
 				<Col md="7">
@@ -22,24 +23,50 @@ class ChangePasswordFrom extends Component {
 								name="foto"
 								value={form.foto}
 								onChange={onChange}
-								clearAvatar = { clearAvatar }
+								clearAvatar={clearAvatar}
 							/>
-							{/* {
-								form.foto ? */}
-									<div className="form-group row form-group-marginless justify-content-center mb-0">
-										<div className="mt-5 text-center">
-											<Button icon='' className="btn btn-light-primary font-weight-bold"
-												onClick={
-													(e) => {
-														e.preventDefault();
-														validateAlert(sendAvatar, e, 'form-foto')
-													}
-												}
-												text="CARGAR FOTO" />
-										</div>
-									</div>
-									{/* : ''
-							} */}
+							<div className="form-group row form-group-marginless justify-content-center mb-0">
+								<div className="text-center">
+									<Button icon='' className="btn btn-light-primary font-weight-bold"
+										onClick={
+											(e) => {
+												e.preventDefault();
+												validateAlert(sendAvatar, e, 'form-foto')
+											}
+										}
+										text="SUBIR FOTO" />
+								</div>
+							</div>
+						</div>
+					</Form>
+					<Form id="form-firma"
+						onSubmit={
+							(e) => {
+								e.preventDefault();
+								validateAlert(sendAvatar, e, 'form-firma')
+							}
+						}
+					>
+						<div className="col-md-12 text-center mt-5">
+							<label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.firma.placeholder}</label>
+							<ItemSlider
+								items={form.adjuntos.firma.files}
+								item='firma'
+								handleChange={handleChange}
+								multiple={true}
+							/>
+						</div>
+						<div className="form-group row form-group-marginless justify-content-center mb-0">
+							<div className="mt-4 text-center">
+								<Button icon='' className="btn btn-light-primary font-weight-bold"
+									onClick={
+										(e) => {
+											e.preventDefault();
+											validateAlert(sendFirma, e, 'form-firma')
+										}
+									}
+									text="SUBIR FIRMA" />
+							</div>
 						</div>
 					</Form>
 				</Col>
@@ -107,7 +134,7 @@ class ChangePasswordFrom extends Component {
 												validateAlert(onSubmit, e, 'form-perfil')
 											}
 										}
-										text="ENVIAR" />
+										text="CAMBIAR CONTRASEÑA" />
 								</div>
 								: ''
 						}

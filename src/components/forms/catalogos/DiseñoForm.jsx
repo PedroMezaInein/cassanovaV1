@@ -5,7 +5,7 @@ import { validateAlert } from '../../../functions/alert'
 import { setMoneyTableForNominas } from '../../../functions/setters'
 class DiseñoForm extends Component {
     render() {
-        const { title, options, form, onChange, addSubpartida, deleteSubpartida, onSubmit, formeditado, requirevalidation, onChangeVariaciones, addRow, updateEmpresa, ...props } = this.props
+        const { form, onChange, onSubmit, formeditado, requirevalidation, onChangeVariaciones, addRow, deleteRow, ...props } = this.props
         return (
             <>
                 <Form id="form-diseño"
@@ -130,13 +130,20 @@ class DiseñoForm extends Component {
                             </div>
                         </div>
                         <div className="col-md-6">
-                            <div className="form-group d-flex justify-content-center mb-1">
+                            <div className="d-flex justify-content-end">
                                 <Button
                                     icon=''
                                     onClick={addRow}
-                                    className={"btn btn-icon btn-light-primary btn-sm ml-auto"}
-                                    only_icon={"flaticon2-plus icon-nm"}
+                                    className={"btn btn-icon btn-xs p-3 btn-light-success success2 mr-2"}
+                                    only_icon={"flaticon2-plus icon-13px"}
                                     tooltip={{ text: 'AGREGAR' }}
+                                />
+                                <Button
+                                    icon=''
+                                    onClick={deleteRow}
+                                    className={"btn btn-icon btn-xs p-3 btn-light-danger"}
+                                    only_icon={"far fa-trash-alt icon-15px"}
+                                    tooltip={{ text: 'Eliminar' }}
                                 />
                             </div>
                             <div className="d-flex justify-content-center">

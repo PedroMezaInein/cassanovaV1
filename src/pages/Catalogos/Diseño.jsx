@@ -1,21 +1,17 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import swal from 'sweetalert'
-import { URL_DEV, URL_ASSETS } from '../../constants'
+import { URL_DEV } from '../../constants'
 import { setSelectOptions} from '../../functions/setters'
 import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
-import { Card, Nav, Tab, Tabs } from 'react-bootstrap'
+import { Card, Nav, Tab } from 'react-bootstrap'
 import { DiseñoForm } from '../../components/forms'
-
 import {Line} from 'react-chartjs-2';
 
 class Contabilidad extends Component {
 
     state = {
-        partidas: [],
-        partida: '',
         title: 'Diseño',
         empresas:{
             precio_inicial_diseño:'',
@@ -46,7 +42,6 @@ class Contabilidad extends Component {
             }]
         },
         data:{
-            partidas:[],
             empresas: []
         },
         formeditado: 0,
@@ -222,6 +217,16 @@ class Contabilidad extends Component {
         })
     }
 
+    deleteRow= () => {
+        const { form } = this.state
+        form.variaciones.pop()
+        this.setState({
+            ...this.state,
+            form,
+            grafica: this.setGrafica(form)
+        })
+    }
+
     changeActiveKey = empresa => {
         const { form } = this.state
         form.precio_inicial_diseño = empresa.precio_inicial_diseño
@@ -367,6 +372,7 @@ class Contabilidad extends Component {
                                 onChange = { this.onChange } 
                                 onSubmit = { this.onSubmit }
                                 addRow={this.addRow}
+                                deleteRow={this.deleteRow}
                                 onChangeVariaciones = { this.onChangeVariaciones }
                             />
                             {
