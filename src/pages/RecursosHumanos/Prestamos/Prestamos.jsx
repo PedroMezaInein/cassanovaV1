@@ -555,8 +555,8 @@ class Prestamos extends Component {
                                                             </span>
                                                         </td>
                                                     </tr>
-                                                    : ''
-                                                : ''
+                                                    : <></>
+                                                : <></>
                                         }
                                         {
                                             prestamo ?
@@ -567,9 +567,9 @@ class Prestamos extends Component {
                                                         return (
                                                             <tr key={key} className="border-bottom" >
                                                                 <td className="text-center">
-                                                                    <button class="btn btn-actions-table btn-xs btn-icon btn-text-danger btn-hover-danger" title="Eliminar"
+                                                                    <button className="btn btn-actions-table btn-xs btn-icon btn-text-danger btn-hover-danger" title="Eliminar"
                                                                         onClick={(e) => { e.preventDefault(); this.deleteAbono(abono) }}>
-                                                                        <i class="flaticon2-rubbish-bin"></i>
+                                                                        <i className="flaticon2-rubbish-bin"></i>
                                                                     </button>
                                                                 </td>
                                                                 <td>
@@ -586,7 +586,7 @@ class Prestamos extends Component {
                                                         )
                                                     return false
                                                 })
-                                                : ''
+                                                :  <></>
                                         }
                                     </tbody>
                                 </table>

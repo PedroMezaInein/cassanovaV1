@@ -88,7 +88,7 @@ class InputMoney extends Component {
                     <NumberFormat
                         value={value}
                         displayType={'input'}
-                        thousandSeparator={thousandseparator ? thousandseparator : false}
+                        thousandSeparator={thousandseparator ? ',' : ''}
                         prefix={prefix}
                         className={inputMoneyValido ? " form-control is-valid text-uppercase" : " form-control is-invalid text-uppercase"}
                         renderText={value => <div> {value} </div>}
