@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { Input, Button, InputNumber, InputMoney, InputNumberSinText, InputMoneySinText } from '../../form-components'
+import { Button, InputNumber, InputMoney, InputNumberSinText, InputMoneySinText } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
-import { setMoneyTableForNominas } from '../../../functions/setters'
 
 class DiseñoForm extends Component {
 
@@ -12,7 +11,7 @@ class DiseñoForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, addSubpartida, deleteSubpartida, onSubmit, formeditado, requirevalidation, onChangeNominasAdmin, addRow, ...props } = this.props
+        const { title, options, form, onChange, addSubpartida, deleteSubpartida, onSubmit, formeditado, requirevalidation, onChangeVariaciones, addRow, updateEmpresa, ...props } = this.props
         return (
             <>
                 <Form id="form-diseño"
@@ -112,7 +111,7 @@ class DiseñoForm extends Component {
                                     </thead>
                                     <tbody>
                                         {
-                                            form.variaciones.map((variaciones, key) => {
+                                            form.variaciones.map((variacion, key) => {
                                                 return (
                                                     <tr key={key}>
                                                         <td>
@@ -122,7 +121,7 @@ class DiseñoForm extends Component {
                                                                     formeditado={formeditado}
                                                                     name="inferior"
                                                                     value={form['variaciones'][key]['inferior']}
-                                                                    onChange={e => onChangeNominasAdmin(key, e, 'inferior')}
+                                                                    onChange={e => onChangeVariaciones(key, e, 'inferior')}
                                                                     type="text"
                                                                     customstyle={{ width: "auto" }}
                                                                     identificador={"inferior"}
@@ -136,7 +135,7 @@ class DiseñoForm extends Component {
                                                                     formeditado={formeditado}
                                                                     name="superior"
                                                                     value={form['variaciones'][key]['superior']}
-                                                                    onChange={e => onChangeNominasAdmin(key, e, 'superior')}
+                                                                    onChange={e => onChangeVariaciones(key, e, 'superior')}
                                                                     type="text"
                                                                     customstyle={{ width: "auto" }}
                                                                     identificador={"superior"}
@@ -150,7 +149,7 @@ class DiseñoForm extends Component {
                                                                     formeditado={formeditado}
                                                                     name="cambio"
                                                                     value={form['variaciones'][key]['cambio']}
-                                                                    onChange={e => onChangeNominasAdmin(key, e, 'cambio')}
+                                                                    onChange={e => onChangeVariaciones(key, e, 'cambio')}
                                                                     thousandseparator={true}
                                                                     prefix={'$'}
                                                                     customstyle={{ width: "auto" }}
