@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { Button, InputNumber, InputMoney, InputNumberSinText, InputMoneySinText } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
+import { setMoneyTableForNominas } from '../../../functions/setters'
 class DiseñoForm extends Component {
     render() {
         const { title, options, form, onChange, addSubpartida, deleteSubpartida, onSubmit, formeditado, requirevalidation, onChangeVariaciones, addRow, updateEmpresa, ...props } = this.props
@@ -25,7 +26,7 @@ class DiseñoForm extends Component {
                                         formeditado={formeditado}
                                         thousandseparator={true}
                                         prefix={'$'}
-                                        name="m2"
+                                        name="precio_inicial_diseño"
                                         value={form.precio_inicial_diseño}
                                         onChange={onChange}
                                         placeholder="PRECIO INICIAL"
@@ -34,7 +35,7 @@ class DiseñoForm extends Component {
                                 </div>
                                 <div className="col-md-5">
                                     <InputNumber
-                                        requirevalidation={1}
+                                        requirevalidation={0}
                                         formeditado={formeditado}
                                         name="m2"
                                         onChange={onChange}
@@ -67,9 +68,27 @@ class DiseñoForm extends Component {
                                                 <tbody>
                                                     <tr>
                                                         <th scope="row" className="bg-gray-200">PRECIO DISEÑO</th>
-                                                        <td>$35.500,00</td>
-                                                        <td>$47.925,00</td>
-                                                        <td>$62.125,00</td>
+                                                        <td>
+                                                            {
+                                                                form.precio_esquema_1 !== '-' ?
+                                                                    setMoneyTableForNominas(form.precio_esquema_1)
+                                                                : '-'
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            {
+                                                                form.precio_esquema_2 !== '-' ?
+                                                                    setMoneyTableForNominas(form.precio_esquema_2)
+                                                                : '-'
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            {
+                                                                form.precio_esquema_3 !== '-' ?
+                                                                    setMoneyTableForNominas(form.precio_esquema_3)
+                                                                : '-'
+                                                            }
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row" className="bg-gray-200">INCREMENTO</th>
