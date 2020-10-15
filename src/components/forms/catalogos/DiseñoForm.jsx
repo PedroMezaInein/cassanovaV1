@@ -2,14 +2,7 @@ import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { Button, InputNumber, InputMoney, InputNumberSinText, InputMoneySinText } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
-
 class DiseñoForm extends Component {
-
-    updateEmpresa = value => {
-        const { onChange } = this.props
-        onChange({ target: { value: value, name: 'empresa' } })
-    }
-
     render() {
         const { title, options, form, onChange, addSubpartida, deleteSubpartida, onSubmit, formeditado, requirevalidation, onChangeVariaciones, addRow, updateEmpresa, ...props } = this.props
         return (
@@ -49,7 +42,6 @@ class DiseñoForm extends Component {
                                         type="text"
                                         placeholder="M2"
                                         iconclass={"fas fa-ruler-combined"}
-                                        thousandseparator={true}
                                         messageinc="Incorrecto. Ingresa los M2."
                                     />
                                 </div>
@@ -59,34 +51,62 @@ class DiseñoForm extends Component {
                                     <div className="separator separator-dashed"></div>
                                 </div>
                             </div>
-                            <div className="row d-flex justify-content-center mb-4">
-                                <div className="col-md-5">
-                                    <InputNumber
-                                        requirevalidation={1}
-                                        formeditado={formeditado}
-                                        name="incremento_esquema_2"
-                                        onChange={onChange}
-                                        value={form.incremento_esquema_2}
-                                        type="text"
-                                        placeholder="Incremento esquema 2"
-                                        prefix={'%'}
-                                        iconclass={"far fa-plus-square"}
-                                        messageinc="Incorrecto. Ingresa el incremento."
-                                    />
-                                </div>
-                                <div className="col-md-5">
-                                    <InputNumber
-                                        requirevalidation={1}
-                                        formeditado={formeditado}
-                                        name="incremento_esquema_3"
-                                        onChange={onChange}
-                                        value={form.incremento_esquema_3}
-                                        type="text"
-                                        placeholder="Incremento esquema 3"
-                                        prefix={'%'}
-                                        iconclass={"far fa-plus-square"}
-                                        messageinc="Incorrecto. Ingresa el incremento."
-                                    />
+                            <div className="row mb-4">
+                                <div className="col-md-12">
+                                    <div className="tab-content">
+                                        <div className="table-responsive d-flex justify-content-center">
+                                            <table className="table table-responsive-lg table-vertical-center text-center" id="esquemas">
+                                                <thead>
+                                                    <tr className="bg-gray-200">
+                                                        <th></th>
+                                                        <th>ESQUEMA 1</th>
+                                                        <th>ESQUEMA 2</th>
+                                                        <th>ESQUEMA 3</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th scope="row" className="bg-gray-200">PRECIO DISEÑO</th>
+                                                        <td>$35.500,00</td>
+                                                        <td>$47.925,00</td>
+                                                        <td>$62.125,00</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row" className="bg-gray-200">INCREMENTO</th>
+                                                        <td>-</td>
+                                                        <td>
+                                                            <div className="d-flex justify-content-center">
+                                                                <InputNumberSinText
+                                                                    requirevalidation={1}
+                                                                    formeditado={formeditado}
+                                                                    name="incremento_esquema_2"
+                                                                    onChange={onChange}
+                                                                    value={form.incremento_esquema_2}
+                                                                    type="text"
+                                                                    prefix={'%'}
+                                                                    customstyle={{ width: "70px" }}
+                                                                />
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div className="d-flex justify-content-center">
+                                                                <InputNumberSinText
+                                                                    requirevalidation={1}
+                                                                    formeditado={formeditado}
+                                                                    name="incremento_esquema_3"
+                                                                    onChange={onChange}
+                                                                    value={form.incremento_esquema_3}
+                                                                    type="text"
+                                                                    prefix={'%'}
+                                                                    customstyle={{ width: "70px" }}
+                                                                />
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -143,7 +163,7 @@ class DiseñoForm extends Component {
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <div  className="d-flex justify-content-center">
+                                                            <div className="d-flex justify-content-center">
                                                                 <InputMoneySinText
                                                                     requirevalidation={1}
                                                                     formeditado={formeditado}
