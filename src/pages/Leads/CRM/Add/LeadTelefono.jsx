@@ -2,35 +2,36 @@ import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import Layout from '../../../../components/layout/layout';
 import Messages from '../../../../components/chat/Messages'
-import { Form, Card } from 'react-bootstrap';
-import { Input, SelectSearch } from '../../../../components/form-components';
+import { Form } from 'react-bootstrap';
+import { InputGray, SelectSearchGray, InputPhoneGray } from '../../../../components/form-components';
 import axios from 'axios'
 import { errorAlert, forbiddenAccessAlert, waitAlert } from '../../../../functions/alert';
 import swal from 'sweetalert';
 import { setOptions } from '../../../../functions/setters';
-import { TEL, URL_DEV } from '../../../../constants';
-import InputPhone from '../../../../components/form-components/InputPhone';
+import { TEL, URL_DEV, EMAIL } from '../../../../constants';
 
 class LeadTelefono extends Component {
-    
+
     state = {
         messages: [],
-        form:{
+        form: {
             name: '',
             empresa: '',
             empresa_dirigida: '',
+            tipoProyecto: '',
             comentario: '',
             diseño: '',
             obra: '',
             email: ''
         },
         tipo: '',
-        options:{
+        options: {
             empresas: []
-        }
+        },
+        newTipoProyecto: false,
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.getOptionsAxios()
         /* const { name: usuario } = this.props.authUser.user
         let aux = []
@@ -42,13 +43,12 @@ class LeadTelefono extends Component {
             messages: aux
         }) */
     }
-
     updateEmpresa = value => {
         const { options } = this.state
         this.onChange({ target: { name: 'empresa_dirigida', value: value } })
         let empresa = ''
-        options.empresas.map( (emp) => {
-            if(emp.value.toString() === value.toString()){
+        options.empresas.map((emp) => {
+            if (emp.value.toString() === value.toString()) {
                 empresa = emp
             }
             return false
@@ -57,12 +57,25 @@ class LeadTelefono extends Component {
             empresa: empresa
         })
     }
+    updateTipoProyecto = value => {
+        const { onChange } = this.props
+        this.onChange({ target: { name: 'tipoProyecto', value: value } })
+        if (value === 'New') {
+            this.setState({
+                newTipoProyecto: true
+            })
+        } else {
+            this.setState({
+                newTipoProyecto: false
+            })
+        }
+    }
 
     onChange = e => {
         const { name, value, checked, type } = e.target
         const { form, messages } = this.state
         form[name] = value
-        if(type === 'checkbox')
+        if (type === 'checkbox')
             form[name] = checked
         this.setState({
             ...this.state,
@@ -77,112 +90,135 @@ class LeadTelefono extends Component {
         const { name: usuario } = this.props.authUser.user
         let aux = false
         let auxVendedor = false
-        switch(name){
+        switch (name) {
             case 'empresa_dirigida':
                 messages = []
                 let empresa = ''
-                options.empresas.map((emp)=>{
-                    if(emp.value.toString() === value.toString()){
+                options.empresas.map((emp) => {
+                    if (emp.value.toString() === value.toString()) {
                         empresa = emp
                     }
                     return false
                 })
-                messages.push( { username: usuario, message: `${empresa.name}, Buenas tardes. ¿En qué puedo ayudarlo?`, fromMe: true } )
-                messages.push( { username: 'Cliente', message: 'Buenas tardes, ¿Con quién puedo ver lo de un proyecto?', fromMe: false } )
-                messages.push( { username: usuario, message: `Lo puedes ver conmigo, soy ${usuario} asesor(a) comercial de ${empresa.name}. Dígame, ¿Cuál es su nombre?`, fromMe: true } )
+                messages.push({ username: usuario, message: `Buen día.  Asesoría comercial, ${empresa.name}, lo atiende ${usuario}, ¿Con quién tengo el gusto?`, fromMe: true })
+                // messages.push( { username: 'Cliente', message: 'Buenas tardes, ¿Con quién puedo ver lo de un proyecto?', fromMe: false } )
+                // messages.push( { username: usuario, message: `Lo puedes ver conmigo, soy ${usuario} asesor(a) comercial de ${empresa.name}. Dígame, ¿Cuál es su nombre?`, fromMe: true } )
                 break;
             case 'name':
-                messages.map((mensaje)=>{
-                    if(!mensaje.fromMe){
+                messages.map((mensaje) => {
+                    if (!mensaje.fromMe) {
                         mensaje.username = value
                     }
-                    if(mensaje.tipo === name){
-                        mensaje.message = `Mi nombre es ${value}`
+                    if (mensaje.tipo === name) {
+                        mensaje.message = `Buenos días, mi nombre es ${value}`
                         aux = true
                     }
-                    if(mensaje.tipo === 'vendedor-nombre'){
-                        mensaje.message = `Mucho gusto ${value}, me puede indicar el nombre de su empresa`
+                    if (mensaje.tipo === 'vendedor-nombre') {
+                        mensaje.message = `Mucho gusto ${value}, ¿Cuál es el motivo de su llamada?`
                         auxVendedor = true
                     }
                     return false
                 })
-                if(aux === false)
-                    messages.push( { username: value, message: `Mi nombre es ${value}`, fromMe: false, tipo: name } )
-                if(auxVendedor === false)
-                    messages.push( { username: usuario, message: `Mucho gusto ${value}, me puede indicar el nombre de su empresa`, fromMe: true, tipo: 'vendedor-nombre' } )
+                if (aux === false)
+                    messages.push({ username: value, message: `Buenos días, mi nombre es  ${value}`, fromMe: false, tipo: name })
+                if (auxVendedor === false)
+                    messages.push({ username: usuario, message: `Mucho gusto ${value}, ¿Cuál es el motivo de su llamada?`, fromMe: true, tipo: 'vendedor-nombre' })
+                if (aux === false)
+                    messages.push({ username: 'Cliente', message: 'Tengo un proyecto y me gustaría cotizarlo', fromMe: false })
+                if (auxVendedor === false)
+                    messages.push({ username: usuario, message: `Excelente, puede indicarme ¿Qué tipo de proyecto es?`, fromMe: true })
                 break;
-            case 'empresa':
-                messages.map((mensaje)=>{
-                    if(mensaje.tipo === name){
-                        mensaje.message = `${value}`
-                        aux = true
+            case 'tipoProyecto':
+                let tipo_proyecto = ''
+                options.empresas.map((emp) => {
+                    if (emp.value.toString() === value.toString()) {
+                        tipo_proyecto = emp
                     }
                     return false
                 })
-                if(aux === false){
-                    messages.push( { username: form.name, message: `${value}`, fromMe: false, tipo: name } )
-                    messages.push( { username: usuario, message: `Dígame ${form.name}, ¿Cuál es el proyecto que desea realizar?`, fromMe: true } )
-                }
-                break;
-            case 'comentario':
-                messages.map((mensaje)=>{
-                    if(mensaje.tipo === name){
-                        mensaje.message = `${value}`
-                        aux = true
-                    }
-                    return false
-                })
-                if(aux === false){
-                    messages.push( { username: form.name, message: `${value}`, fromMe: false, tipo: name } )
-                    messages.push( { username: usuario, message: `¡Perfecto!`, fromMe: true } )
-                    console.log(emp.name, 'name')
-                    if(emp.name === 'INFRAESTRUCTURA MÉDICA')
-                        messages.push( { username: usuario, message: `Le comento que nosotros somos especialistas en diseño y construcción de espacios para la salud. 
-                            Cumplimos con todas las normativas de los esapcios establecidas por las dependencias de gobierno y sobre todo COFEPRIS. Tenemos más de 10 años 
-                            de experiencia en el mercado y desarrollamos proyectos en toda la república mexicana.`, fromMe: true } )
-                    messages.push( { username: usuario, message: `¿Su proyecto se trata de diseño o construcción?`, fromMe: true } )
-                }
-                break;
-            case 'diseño':
-            case 'obra':
-                let tipoProyecto = ''
-                if(form.diseño)
-                    tipoProyecto = 'Diseño'
-                if(form.obra)
-                    if(tipoProyecto.length)
-                        tipoProyecto = tipoProyecto + ' y obra'
-                    else
-                        tipoProyecto = 'Obra'
-                messages.map((mensaje)=>{
-                    if(mensaje.tipo === 'diseño' || mensaje.tipo === 'obra'){
-                        mensaje.message = `${tipoProyecto}`
-                        aux = true
-                    }
-                    return false
-                })
-                if(aux === false){
-                    messages.push( { username: form.name, message: `${tipoProyecto}`, fromMe: false, tipo: name } )
-                    messages.push( { username: usuario, message: `Bien, ¿Me puede indicar cuál es su correo electrónico? Para hacerle llegar 
-                        un cuestionario de proyectos donde requerimos nos lo pueda responder y adjuntar la información solicitada en el, esto con el fin 
-                        de conocer mas detalles acerca de su proyecto y analizarlos.`, fromMe: true } )
-                }
+                messages.push({ username: 'Cliente', message: `${tipo_proyecto.name}`, fromMe: false })
+                messages.push({ username: usuario, message: `En ${emp.name} somos especialistas en el diseño, construcción y remodelación de ${tipo_proyecto.name}.  Me gustaría conocer más detalles específicos acerca su proyecto por lo que le solicito me pueda proporcionar su correo electrónico para hacerle llegar un cuestionario.`, fromMe: true })
                 break;
             case 'email':
-                messages.map((mensaje)=>{
-                    if(mensaje.tipo === name){
-                        mensaje.message = `${value}`
-                        aux = true
-                    }
-                    return false
-                })
-                if(aux === false){
-                    messages.push( { username: form.name, message: `${value}`, fromMe: false, tipo: name } )
-                    messages.push( { username: usuario, message: `${form.name}, además del cuestionario le enviaré un documento con información 
-                        detallada acerca de cada servicio que brindamos. ¿Algo más en lo que pueda apoyarlo?`, fromMe: true } )
-                    messages.push( { username: form.name, message: `Todo bien, solo quedo en espera de la información.`, fromMe: false, tipo: name } )
-                    messages.push( { username: usuario, message: `Muy bien, en unos momentos le hago llegar el correo. Que tenga un excelente día.`, fromMe: true } )
+                // messages.map((mensaje) => {
+                //     if (mensaje.tipo === name) {
+                //         mensaje.message = `${value}`
+                //         aux = true
+                //     }
+                //     return false
+                // })
+                if (aux === false) {
+                    messages.push({ username: form.name, message: `${value}`, fromMe: false, tipo: name })
+                    messages.push({
+                        username: usuario, message: `Gracias ${form.name}, en unos minutos le estaré enviado dicho cuestionario a su correo y
+                        además le anexare un documento que será útil para usted, en él se describe detalladamente cada servicio que podemos brindarle.`, fromMe: true
+                    })
+                    messages.push({ username: form.name, message: `Muy bien`, fromMe: false, tipo: name })
+                    messages.push({ username: usuario, message: `Una vez que me haga llegar su información, la analizare y posteriormente me estaré comunicado con usted.`, fromMe: true })
+                    messages.push({ username: form.name, message: `Hasta luego`, fromMe: false, tipo: name })
+                    messages.push({ username: usuario, message: `Gracias por contactarnos, que tenga un excelente día.`, fromMe: true })
                 }
                 break;
+            // case 'empresa':
+            //     messages.map((mensaje) => {
+            //         if (mensaje.tipo === name) {
+            //             mensaje.message = `${value}`
+            //             aux = true
+            //         }
+            //         return false
+            //     })
+            //     if (aux === false) {
+            //         messages.push({ username: form.name, message: `${value}`, fromMe: false, tipo: name })
+            //         messages.push({ username: usuario, message: `Dígame ${form.name}, ¿Cuál es el proyecto que desea realizar?`, fromMe: true })
+            //     }
+            //     break;
+            // case 'comentario':
+            //     messages.map((mensaje) => {
+            //         if (mensaje.tipo === name) {
+            //             mensaje.message = `${value}`
+            //             aux = true
+            //         }
+            //         return false
+            //     })
+            //     if (aux === false) {
+            //         messages.push({ username: form.name, message: `${value}`, fromMe: false, tipo: name })
+            //         messages.push({ username: usuario, message: `¡Perfecto!`, fromMe: true })
+            //         // console.log(emp.name, 'name')
+            //         if (emp.name === 'INFRAESTRUCTURA MÉDICA')
+            //             messages.push({
+            //                 username: usuario, message: `Le comento que nosotros somos especialistas en diseño y construcción de espacios para la salud. 
+            //                 Cumplimos con todas las normativas de los esapcios establecidas por las dependencias de gobierno y sobre todo COFEPRIS. Tenemos más de 10 años 
+            //                 de experiencia en el mercado y desarrollamos proyectos en toda la república mexicana.`, fromMe: true
+            //             })
+            //         messages.push({ username: usuario, message: `¿Su proyecto se trata de diseño o construcción?`, fromMe: true })
+            //     }
+            //     break;
+            // case 'diseño':
+            // case 'obra':
+            //     let tipoProyecto = ''
+            //     if (form.diseño)
+            //         tipoProyecto = 'Diseño'
+            //     if (form.obra)
+            //         if (tipoProyecto.length)
+            //             tipoProyecto = tipoProyecto + ' y obra'
+            //         else
+            //             tipoProyecto = 'Obra'
+            //     messages.map((mensaje) => {
+            //         if (mensaje.tipo === 'diseño' || mensaje.tipo === 'obra') {
+            //             mensaje.message = `${tipoProyecto}`
+            //             aux = true
+            //         }
+            //         return false
+            //     })
+            //     if (aux === false) {
+            //         messages.push({ username: form.name, message: `${tipoProyecto}`, fromMe: false, tipo: name })
+            //         messages.push({
+            //             username: usuario, message: `Bien, ¿Me puede indicar cuál es su correo electrónico? Para hacerle llegar 
+            //             un cuestionario de proyectos donde requerimos nos lo pueda responder y adjuntar la información solicitada en el, esto con el fin 
+            //             de conocer mas detalles acerca de su proyecto y analizarlos.`, fromMe: true
+            //         })
+            //     }
+            //     break;
             default:
                 break;
         }
@@ -217,10 +253,186 @@ class LeadTelefono extends Component {
     }
 
     render() {
-        const { messages, form, options } = this.state
+        const { messages, form, options, newTipoProyecto } = this.state
         return (
-            <Layout active = 'leads' { ...this.props } >
-                <div className = "row mx-0">
+            <Layout active='leads' {...this.props} >
+                <div className="card-custom card-stretch gutter-b py-2 card">
+                    <div className="align-items-center border-0 card-header">
+                        <h3 className="card-title align-items-start flex-column">
+                            <span className="font-weight-bolder text-dark">Formulario por llamada</span>
+                        </h3>
+                    </div>
+                    <div className="card-body pt-0">
+                        {/* <p className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg">
+                            Buen día. Asesoría comercial, Infraestructura Médica, lo atiende CARINA, <span className="font-weight-boldest">¿Con quién tengo el gusto?</span>
+                        </p> */}
+                        <p className="bg-light-primary">
+                            {/* Buen día. Asesoría comercial, IM Infraestructura Médica, lo atiende Diana Hernández, <span className="font-weight-boldest">¿Con quién tengo el gusto?</span> */}
+                            <Messages messages={messages} />
+                        </p>
+                        <Form>
+                            <div className="form-group row form-group-marginless mt-5 mb-0">
+                                <div className={newTipoProyecto ? 'col-md-3' : 'col-md-4'}>
+                                    <SelectSearchGray
+                                        options={options.empresas}
+                                        placeholder="¿A QUÉ EMPRESA VA DIRIGIDA EL LEAD?"
+                                        name="empresa_dirigida"
+                                        value={form.empresa_dirigida}
+                                        onChange={this.updateEmpresa}
+                                        iconclass="fas fa-building"
+                                    />
+                                </div>
+                                {
+                                    form.empresa_dirigida !== '' ?
+                                        <div className={newTipoProyecto ? 'col-md-3' : 'col-md-4'}>
+                                            <InputGray
+                                                placeholder='NOMBRE DEL LEAD'
+                                                withicon={true}
+                                                iconclass="far fa-user"
+                                                name='name'
+                                                value={form.name}
+                                                onChange={this.onChange}
+                                            />
+                                        </div>
+                                        : ''
+                                }
+                                {
+                                    form.name !== '' ?
+                                        // <div className="col-md-4">
+                                        //     <InputGray
+                                        //         placeholder="TIPO DE PROYECTO"
+                                        //         withicon={true}
+                                        //         iconclass="fas fa-folder-open"
+                                        //         type="text"
+                                        //         name="tipoProyecto"
+                                        //         value={form.tipoProyecto}
+                                        //         onChange={this.onChange}
+                                        //     />
+                                        // </div>
+                                        <div className={newTipoProyecto ? 'col-md-3' : 'col-md-4'}>
+                                            <SelectSearchGray
+                                                options={options.empresas}
+                                                placeholder="SELECCIONA EL TIPO DE PROYECTO"
+                                                onChange={this.updateTipoProyecto}
+                                                name="tipoProyecto"
+                                                value={form.tipoProyecto}
+                                            />
+                                            {
+                                                newTipoProyecto &&
+                                                <div className={newTipoProyecto ? 'col-md-3' : 'col-md-4'}>
+                                                    <InputGray
+                                                        requirevalidation={1}
+                                                        name="newTipoProyecto"
+                                                        onChange={this.onChange}
+                                                        value={form.newTipoProyecto}
+                                                        type="text"
+                                                        placeholder="NUEVO TIPO DE PROYECTO"
+                                                        iconclass={"far fa-folder-open"}
+                                                    />
+                                                </div>
+                                            }
+                                        </div>
+                                        : ''
+                                }
+                                {
+                                    form.tipoProyecto !== '' ?
+                                        <div className="col-md-4">
+                                            <InputGray
+                                                placeholder="CORREO ELECTRÓNICO DE CONTACTO"
+                                                withicon={true}
+                                                iconclass="fas fa-envelope"
+                                                type="email"
+                                                name="email"
+                                                value={form.email}
+                                                onChange={this.onChange}
+                                                patterns={EMAIL}
+                                            />
+                                        </div>
+                                        : ''
+                                }
+                                {
+                                    form.email !== '' ?
+                                        <div className="col-md-4">
+                                            <InputGray
+                                                name='empresa'
+                                                value={form.empresa}
+                                                placeholder='Empresa'
+                                                onChange={this.onChange}
+                                                iconclass='fas fa-building'
+                                            />
+                                        </div>
+                                        : ''
+                                }
+                                {
+                                    form.empresa !== '' ?
+                                        <div className="col-md-4">
+                                            <InputPhoneGray
+                                                placeholder="TELÉFONO DE CONTACTO"
+                                                withicon={true}
+                                                iconclass="fas fa-mobile-alt"
+                                                name="telefono"
+                                                value={form.telefono}
+                                                onChange={this.onChange}
+                                                patterns={TEL}
+                                                thousandseparator={false}
+                                                prefix=''
+                                            />
+                                        </div>
+                                        : ''
+                                }
+                                {
+                                    form.telefono ?
+                                        <div className="col-md-12">
+                                            <InputGray
+                                                placeholder="COMENTARIO"
+                                                withicon={false}
+                                                name="comentario"
+                                                value={form.comentario}
+                                                onChange={this.onChange}
+                                                rows={3}
+                                                as='textarea'
+                                            />
+                                        </div>
+                                        : ''
+                                }
+                                {
+                                    form.comentario !== '' ?
+                                        <>
+                                            <label className='pl-3 w-auto col-form-label font-weight-bold text-dark-60'>¿Es un proyecto de obra y/o diseño?</label>
+                                            <div className="col-md-4">
+                                                <div className="checkbox-inline mt-2">
+                                                    <label className="checkbox checkbox-outline checkbox-outline-2x checkbox-secondary mr-3">
+                                                        <input
+                                                            type="checkbox"
+                                                            onChange={(e) => this.onChange(e)}
+                                                            name='diseño'
+                                                            checked={form.diseño}
+                                                            value={form.diseño}
+                                                        />
+                                                            DISEÑO
+                                                            <span></span>
+                                                    </label>
+                                                    <label className="checkbox checkbox-outline checkbox-outline-2x checkbox-secondary">
+                                                        <input
+                                                            type="checkbox"
+                                                            onChange={(e) => this.onChange(e)}
+                                                            name='obra'
+                                                            checked={form.obra}
+                                                            value={form.obra}
+                                                        />
+                                                            Obra
+                                                            <span></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </>
+                                        : ''
+                                }
+                            </div>
+                        </Form>
+                    </div>
+                </div>
+                {/* <div className = "row mx-0">
                     <div className = "col-md-4 position-relative border p-2">
                         <Messages messages = { messages } />
                     </div>
@@ -305,7 +517,7 @@ class LeadTelefono extends Component {
                             </Card.Body>
                         </Card>
                     </div>
-                </div>
+                </div> */}
             </Layout>
         );
     }
