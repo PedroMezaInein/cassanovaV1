@@ -16,7 +16,14 @@ class AccountSettings extends Component {
 			oldPassword: '',
 			newPassword: '',
             newPassword2: '',
-            foto: ''
+            foto: '',
+            adjuntos: {
+                firma: {
+                    value: '',
+                    placeholder: 'Ingresa la firma electrónica',
+                    files: []
+                }
+            }
 		}
     }
     
@@ -108,7 +115,47 @@ class AccountSettings extends Component {
             console.log(error, 'error')
         })
 	}
-
+    handleChange = (files, item) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
+    sendFirma = async (e) => {
+		e.preventDefault();
+		const { access_token } = this.props.authUser
+		const { form } = this.state
+        await axios.post(URL_DEV + 'user/users/firma', form,  { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+				
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+	}
 	render(){		
 		const { form } = this.state
 		return (
@@ -120,9 +167,16 @@ class AccountSettings extends Component {
                             <h3 className="card-label">Mi perfil</h3>
                         </div>
                     </Card.Header>
-						<Card.Body> 
-							<ChangePasswordForm form = { form } onChange = { this.onChange } onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.changePasswordAxios()} } 
-								sendAvatar = { this.sendAvatar } clearAvatar = { this.clearAvatar } />
+						<Card.Body>
+                            <ChangePasswordForm
+                                form = { form }
+                                onChange = { this.onChange }
+                                onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.changePasswordAxios()} }
+                                sendAvatar = { this.sendAvatar }
+                                clearAvatar = { this.clearAvatar }
+                                handleChange={this.handleChange}
+                                sendFirma={this.sendFirma}
+                            />
 						</Card.Body>
 					</Card>
 				</Layout>
