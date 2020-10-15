@@ -65,7 +65,7 @@ class InputNumber extends Component {
     }
 
     render() {
-        const { error, onChange, placeholder, iconclass, messageinc, typeformat, ...props } = this.props
+        const { error, onChange, placeholder, iconclass, messageinc, typeformat, thousandseparator, ...props } = this.props
         const { inputValido } = this.state
         return (
             <div >
@@ -78,6 +78,7 @@ class InputNumber extends Component {
                         placeholder={placeholder}
                         className={inputValido ? " form-control is-valid text-uppercase" : " form-control is-invalid text-uppercase"}
                         onChange={(e) => { e.preventDefault(); this.validarInput(e); onChange(e) }}
+                        thousandSeparator={thousandseparator ? ',' : ''}
                         {...props}
                         format={typeformat}
 

@@ -84,8 +84,8 @@ class LeadInfo extends Component {
                                     <Tab.Pane eventKey="1">
                                         <Card.Header className="align-items-center border-0 mt-4 pt-3 pb-0">
                                             <Card.Title>
-                                                <h3 class="card-title align-items-start flex-column">
-                                                    <span class="font-weight-bolder text-dark">Información general</span>
+                                                <h3 className="card-title align-items-start flex-column">
+                                                    <span className="font-weight-bolder text-dark">Información general</span>
                                                     {/* <span class="text-muted mt-3 font-weight-bold font-size-sm">890,344 Sales</span> */}
                                                 </h3>
                                             </Card.Title>
@@ -186,8 +186,8 @@ class LeadInfo extends Component {
                                     <Tab.Pane eventKey="2">
                                         <Card.Header className="align-items-center border-0 mt-4 pt-3">
                                             <Card.Title>
-                                                <h3 class="card-title align-items-start flex-column">
-                                                    <span class="font-weight-bolder text-dark">Contrato</span>
+                                                <h3 className="card-title align-items-start flex-column">
+                                                    <span className="font-weight-bolder text-dark">Contrato</span>
                                                     {/* <span class="text-muted mt-3 font-weight-bold font-size-sm">890,344 Sales</span> */}
                                                 </h3>
                                             </Card.Title>

@@ -45,7 +45,8 @@ import agregarConcepto from './presupuesto/AgregarConcepto'
 import ultimoPresupuestoForm from './presupuesto/UltimoPresupuestoForm'
 import precioDiseñoForm from './catalogos/PrecioDiseñoForm'
 import presupuestoDiseñoForm from './presupuesto/PresupuestoDiseñoForm'
-import partidasDiseñoForm from './catalogos/PartidasDiseñoForm' 
+import partidasDiseñoForm from './catalogos/PartidasDiseñoForm'
+import diseñoForm from './catalogos/DiseñoForm'
 import calidadView from './calidad/CalidadView' 
 import procesoTicketForm from './calidad/ProcesoTicketForm'
 import agregarVacacionesForm from './recursoshumanos/AgregarVacacionesForm'
@@ -110,6 +111,7 @@ export const UltimoPresupuestoForm = ultimoPresupuestoForm
 export const PrecioDiseñoForm = precioDiseñoForm
 export const PresupuestoDiseñoForm = presupuestoDiseñoForm
 export const PartidasDiseñoForm = partidasDiseñoForm
+export const DiseñoForm = diseñoForm
 export const CalidadView = calidadView
 export const AgregarVacacionesForm = agregarVacacionesForm
 export const ProcesoTicketForm = procesoTicketForm
