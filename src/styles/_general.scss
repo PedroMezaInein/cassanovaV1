@@ -455,3 +455,26 @@ a.text-pink:hover, a.text-pink:focus {
 .timeline.timeline-danger:before {
     background-color:#fbeaec!important;
 }
+
+// input#inferior, input#superior, input#cambio{
+//     @include min-width($lg){
+//         width: "auto"!important;
+//     }
+//     @include min-width($xl){
+//         width: "auto"!important;
+//     }
+//     @include min-width($xxl){
+//         width: "auto"!important;
+//     }
+// }
+// table#table_diseño{
+//     @include min-width($lg){
+//         width: 50% !important;
+//     }
+//     @include min-width($xl){
+//         width: 50% !important;
+//     }
+//     @include min-width($xxl){
+//         width: 50% !important;
+//     }
+// }
