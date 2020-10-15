@@ -64,7 +64,7 @@ class InputPhoneGray extends Component {
         const { error, onChange, placeholder, iconclass, value, thousandseparator, customlabel, customstyle, customclass, ...props } = this.props
         return (
             <div className="form-group">
-                <label className={`col-form-label ${customlabel}`}>{placeholder}</label>
+                <label className={`col-form-label font-weight-bold text-dark-60  ${customlabel}`}>{placeholder}</label>
                 <div className="input-group input-group-solid rounded-0">
                     <div className="input-group-prepend">
                         <span className="input-group-text">
@@ -77,7 +77,7 @@ class InputPhoneGray extends Component {
                         thousandSeparator={thousandseparator ? thousandseparator : false}
                         renderText={value => <div> {value} </div>}
                         onValueChange={(values) => this.onChange(values)}
-                        format="+52 1 (##) #### - ####"
+                        format="+52 1 ##### - #####"
                         allowEmptyFormatting
                         mask="_"
                         placeholder={placeholder}

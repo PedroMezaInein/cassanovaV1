@@ -65,7 +65,7 @@ class InputGray extends Component {
         }
     }
     render() {
-        const { error, onChange, placeholder, iconclass, letterCase, customlabel, customstyle, customclass, ...props } = this.props
+        const { error, onChange, placeholder, iconclass, letterCase, customlabel, customstyle, customclass,withicon, ...props } = this.props
         const toInputUppercase = e => {
             if (letterCase === undefined)
                 e.target.value = ("" + e.target.value).toUpperCase();
@@ -76,13 +76,18 @@ class InputGray extends Component {
         };
         return (
             <div className="form-group">
-                <label className={`col-form-label ${customlabel}`}>{placeholder}</label>
+                <label className={`col-form-label font-weight-bold text-dark-60  ${customlabel}`}>{placeholder}</label>
                 <div className="input-group input-group-solid rounded-0">
-                    <div className="input-group-prepend">
-                        <span className="input-group-text">
-                            <i className={iconclass + " icon-lg text-dark-50"}></i>
-                        </span>
-                    </div>
+                    {
+                        withicon?
+                        <div className="input-group-prepend">
+                            <span className="input-group-text">
+                                <i className={iconclass + " icon-lg text-dark-50"}></i>
+                            </span>
+                        </div>
+                        :''
+                    }
+                    
                     <Form.Control
                         placeholder={placeholder}
                         className={`form-control text-dark-50 font-weight-bold ${customclass}`}

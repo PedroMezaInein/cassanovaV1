@@ -14,7 +14,7 @@ class SelectSearchGray extends Component {
                     <div className="input-group input-group-solid rounded-0">
                         <div className="input-group-prepend">
                             <span className="input-group-text">
-                                <i className={"flaticon2-search-1 icon-lg text-dark-50"}></i>
+                                <i className={"flaticon2-search-1 icon-md text-dark-50"}></i>
                             </span>
                         </div>
                         <input
@@ -36,7 +36,7 @@ class SelectSearchGray extends Component {
                 {
                     options.length > 0 ?
                         <>
-                            <label className={`col-form-label ${customlabel}`}>{placeholder}</label>
+                            <label className={`col-form-label font-weight-bold text-dark-60  ${customlabel}`}>{placeholder}</label>
                             <SelectSearch
                                 renderValue={this.renderFontValue}
                                 search
