@@ -3,9 +3,11 @@ import React, { Component } from 'react';
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import Layout from '../../../components/layout/layout';
+import swal from 'sweetalert'
 import { Col, Row, Card, Form, Tab, Nav } from 'react-bootstrap'
-import { UltimosContactosCard, SinContacto, UltimosIngresosCard } from '../../../components/cards'
-import { forbiddenAccessAlert, errorAlert } from '../../../functions/alert'
+import { setOptions } from '../../../functions/setters'
+import { UltimosContactosCard, SinContacto, UltimosIngresosCard} from '../../../components/cards'
+import { forbiddenAccessAlert, errorAlert, waitAlert } from '../../../functions/alert'
 import LeadNuevo from '../../../components/tables/Lead/LeadNuevo'
 import LeadContacto from '../../../components/tables/Lead/LeadContacto'
 import LeadNegociacion from '../../../components/tables/Lead/LeadNegociacion'
@@ -18,6 +20,10 @@ class Crm extends Component {
             total: 0,
             total_paginas: 0,
             value: "ultimos_contactados"
+        },
+        options: {
+            empresas: [],
+            servicios:[]
         },
         prospectos_sin_contactar: {
             data: [],
@@ -51,10 +57,39 @@ class Crm extends Component {
         });
         if (!crm)
             history.push('/')
+        this.getOptionsAxios()
         this.getUltimosContactos()
         this.getSinContactar()
         this.getUltimosIngresados()
         this.getLeadsWeb()
+    }
+    async getOptionsAxios() {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'crm/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                swal.close()
+                const { empresas, servicios} = response.data
+                const { options } = this.state
+                options.servicios = setOptions(servicios,'name','id')
+                options.empresas = setOptions(empresas,'name','id')
+                this.setState({
+                    ...this.state,
+                    options
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     nextUltimosContactados = (e) => {
