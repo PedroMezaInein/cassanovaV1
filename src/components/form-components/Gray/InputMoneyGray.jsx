@@ -63,7 +63,7 @@ class InputMoneyGray extends Component {
         const { placeholder, value, prefix, thousandseparator, iconclass, customstyle, customlabel, customclass } = this.props
         return (
             <div className="form-group">
-                <label className={`col-form-label ${customlabel}`}>{placeholder}</label>
+                <label className={`col-form-label font-weight-bold text-dark-60  ${customlabel}`}>{placeholder}</label>
                 <div className="input-group input-group-solid rounded-0">
                     <div className="input-group-prepend">
                         <span className="input-group-text">
