@@ -249,9 +249,6 @@ class Contabilidad extends Component {
             superior:'',
             cambio:''
         }]
-
-        console.log(form.variaciones, 'variaciones form')
-        console.log(empresa.variaciones, 'variaciones empresa')
         
         if(form.variaciones.length === 1){
             if(form.variaciones[0].superior && form.variaciones[0].inferior && form.variaciones[0].cambio){

@@ -18,7 +18,7 @@ class DiseñoForm extends Component {
                     {...props}
                 >
                     <div className="row">
-                        <div className="col-md-6">
+                        <div className="col-md-6 px-0">
                             <div className="row d-flex justify-content-center">
                                 <div className="col-md-5">
                                     <InputMoney
@@ -93,7 +93,7 @@ class DiseñoForm extends Component {
                                                     <tr>
                                                         <th scope="row" className="bg-gray-200">INCREMENTO</th>
                                                         <td>-</td>
-                                                        <td>
+                                                        <td className="px-1">
                                                             <div className="d-flex justify-content-center">
                                                                 <InputNumberSinText
                                                                     requirevalidation={1}
@@ -103,11 +103,11 @@ class DiseñoForm extends Component {
                                                                     value={form.incremento_esquema_2}
                                                                     type="text"
                                                                     prefix={'%'}
-                                                                    customstyle={{ width: "70px" }}
+                                                                    /* customstyle={{ width: "70px" }} */
                                                                 />
                                                             </div>
                                                         </td>
-                                                        <td>
+                                                        <td className="px-1">
                                                             <div className="d-flex justify-content-center">
                                                                 <InputNumberSinText
                                                                     requirevalidation={1}
@@ -117,7 +117,7 @@ class DiseñoForm extends Component {
                                                                     value={form.incremento_esquema_3}
                                                                     type="text"
                                                                     prefix={'%'}
-                                                                    customstyle={{ width: "70px" }}
+                                                                    /* customstyle={{ width: "70px" }} */
                                                                 />
                                                             </div>
                                                         </td>
@@ -129,7 +129,7 @@ class DiseñoForm extends Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-md-6">
+                        <div className="col-lg-6 px-0">
                             <div className="d-flex justify-content-end">
                                 <Button
                                     icon=''
@@ -147,7 +147,7 @@ class DiseñoForm extends Component {
                                 />
                             </div>
                             <div className="d-flex justify-content-center">
-                                <table className="table table-separate table-responsive-sm text-center w-50" id="table_diseño">
+                                <table className="table table-separate table-responsive-sm text-center w-md-50" id="table_diseño">
                                     <thead>
                                         <tr>
                                             <th className="pb-0 border-bottom-0">Inferior</th>
@@ -160,7 +160,7 @@ class DiseñoForm extends Component {
                                             form.variaciones.map((variacion, key) => {
                                                 return (
                                                     <tr key={key}>
-                                                        <td>
+                                                        <td className="px-1 pt-0 pb-2 border-0">
                                                             <div className="d-flex justify-content-center">
                                                                 <InputNumberSinText
                                                                     requirevalidation={1}
@@ -169,12 +169,13 @@ class DiseñoForm extends Component {
                                                                     value={form['variaciones'][key]['inferior']}
                                                                     onChange={e => onChangeVariaciones(key, e, 'inferior')}
                                                                     type="text"
-                                                                    customstyle={{ width: "auto" }}
+                                                                    /* customstyle={{ width: "auto" }} */
+                                                                    customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
                                                                     identificador={"inferior"}
                                                                 />
                                                             </div>
                                                         </td>
-                                                        <td>
+                                                        <td className="px-1 pt-0 pb-2 border-0">
                                                             <div className="d-flex justify-content-center">
                                                                 <InputNumberSinText
                                                                     requirevalidation={1}
@@ -183,12 +184,12 @@ class DiseñoForm extends Component {
                                                                     value={form['variaciones'][key]['superior']}
                                                                     onChange={e => onChangeVariaciones(key, e, 'superior')}
                                                                     type="text"
-                                                                    customstyle={{ width: "auto" }}
+                                                                    customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
                                                                     identificador={"superior"}
                                                                 />
                                                             </div>
                                                         </td>
-                                                        <td>
+                                                        <td className="px-1 pt-0 pb-2 border-0">
                                                             <div className="d-flex justify-content-center">
                                                                 <InputMoneySinText
                                                                     requirevalidation={1}
@@ -198,7 +199,8 @@ class DiseñoForm extends Component {
                                                                     onChange={e => onChangeVariaciones(key, e, 'cambio')}
                                                                     thousandseparator={true}
                                                                     prefix={'$'}
-                                                                    customstyle={{ width: "auto" }}
+                                                                    /* customstyle={{ width: "auto" }} */
+                                                                    customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
                                                                     identificador={"cambio"}
                                                                 />
                                                             </div>
