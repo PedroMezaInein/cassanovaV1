@@ -18,7 +18,9 @@ class EmpresasForm extends Component {
             razonSocial: '',
             logo: '',
             file: [],
-            rfc: ''
+            rfc: '',
+            tipoProyecto: '',
+            tipos: []
         },
         data: {
             empresas: []
@@ -56,10 +58,10 @@ class EmpresasForm extends Component {
         adjuntos: [],
         defaultactivekey:"",
     }
-    constructor(props) {
+    /* constructor(props) {
         super(props)
         this.handleChange = this.handleChange.bind(this);
-    }
+    } */
 
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -90,6 +92,14 @@ class EmpresasForm extends Component {
                         form.logo= ''
                         form.file= empresa.logo
                         form.rfc= empresa.rfc
+
+                        let aux = []
+                        empresa.tipos.map((tipo)=>{
+                            aux.push(tipo.tipo)
+                            return false
+                        })
+
+                        form.tipos = aux
 
                         this.setState({
                             ...this.state,
@@ -122,15 +132,10 @@ class EmpresasForm extends Component {
             this.addEmpresaAxios();
     }
 
-    async updateEmpresaAxios(empresa) {
+    async updateEmpresaAxios() {
         const { access_token } = this.props.authUser
-        const { form } = this.state
-        const data = new FormData();
-        data.append('name', form.name)
-        data.append('razonSocial', form.razonSocial)
-        data.append('logo', form.file)
-        data.append('rfc', form.rfc)
-        await axios.post(URL_DEV + 'empresa/' + empresa, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}`, } }).then(
+        const { form,empresa } = this.state
+        await axios.post(URL_DEV + 'empresa/' + empresa.id, form, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Actualizaste con éxito la empresa.')
 
@@ -186,7 +191,7 @@ class EmpresasForm extends Component {
     }
 
     handleChange = (e) => {
-        e.preventDefault();
+        /* e.preventDefault(); */
         const { name, value } = e.target
         const { form } = this.state
         if (name === 'logo') {
