@@ -219,16 +219,28 @@ class Contabilidad extends Component {
 
     deleteRow= () => {
         const { form } = this.state
+        let { grafica } = this.state
+        
         form.variaciones.pop()
+        
+        if(form.variaciones.length === 0){
+            grafica = ''
+            form.variaciones = [{superior: '', inferior: '', cambio: ''}]
+        }
+        else
+            grafica = this.setGrafica(form)
+
         this.setState({
             ...this.state,
             form,
-            grafica: this.setGrafica(form)
+            grafica
         })
     }
 
     changeActiveKey = empresa => {
         const { form } = this.state
+        let { grafica } = this.state
+
         form.precio_inicial_diseño = empresa.precio_inicial_diseño
         form.incremento_esquema_2 = empresa.incremento_esquema_2
         form.incremento_esquema_3 = empresa.incremento_esquema_3
@@ -237,12 +249,26 @@ class Contabilidad extends Component {
             superior:'',
             cambio:''
         }]
+
+        console.log(form.variaciones, 'variaciones form')
+        console.log(empresa.variaciones, 'variaciones empresa')
+        
+        if(form.variaciones.length === 1){
+            if(form.variaciones[0].superior && form.variaciones[0].inferior && form.variaciones[0].cambio){
+                grafica = this.setGrafica(empresa)
+            }else{
+                grafica = ''
+            }
+        }
+        else{
+           grafica = this.setGrafica(empresa)
+        }
         
         this.setState({
             ...this.state,
             empresa: empresa,
             form,
-            grafica: this.setGrafica(empresa)
+            grafica
         })
     }
 
