@@ -9,7 +9,6 @@ class EmpresaForm extends Component {
 
     addTipo = () => {
         const { form, onChange } = this.props
-        console.log('add tipo')
         if(form.tipoProyecto){
             let aux = true
             let array = []
