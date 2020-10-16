@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
-import { OverlayTrigger, Tooltip, Dropdown, DropdownButton } from 'react-bootstrap'
+import { OverlayTrigger, Tooltip, Dropdown, DropdownButton, Button } from 'react-bootstrap'
+import SVG from "react-inlinesvg";
+import { toAbsoluteUrl } from "../../../functions/routers"
 class LeadNuevo extends Component {
     render() {
         return (
@@ -11,7 +13,7 @@ class LeadNuevo extends Component {
                                 <th style={{ minWidth: "250px" }} className="pl-7">
                                     <span>Nombre del cliente / Nombre del proyecto</span>
                                 </th>
-                                <th style={{ minWidth: "100px" }} className="text-center">Vendedor</th>
+                                <th style={{ minWidth: "100px" }} className="text-center">Empresa</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Origen</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
                                 <th style={{ minWidth: "80px" }}></th>
@@ -31,23 +33,7 @@ class LeadNuevo extends Component {
                                     </div>
                                 </td>
                                 <td className="d-flex justify-content-center">
-                                    <div className="symbol-group symbol-hover">
-                                        <OverlayTrigger overlay={<Tooltip>OMAR ABAROA</Tooltip>}>
-                                            <div className="symbol symbol-35 symbol-circle">
-                                                <img alt="Pic" src="/100_1.jpg" />
-                                            </div>
-                                        </OverlayTrigger>
-                                        <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
-                                            <div className="symbol symbol-35 symbol-circle">
-                                                <img alt="Pic" src="/100_2.jpg" />
-                                            </div>
-                                        </OverlayTrigger>
-                                        <OverlayTrigger overlay={<Tooltip>FERNANDO MÁRQUEZ</Tooltip>}>
-                                            <div className="symbol symbol-35 symbol-circle">
-                                                <img alt="Pic" src="/100_3.jpg" />
-                                            </div>
-                                        </OverlayTrigger>
-                                    </div>
+                                    <span className="text-dark-75 font-weight-bolder d-block font-size-lg text-center">INEIN</span>
                                 </td>
                                 <td>
                                     <span className="text-dark-75 font-weight-bolder d-block font-size-lg text-center">WEB</span>
@@ -78,9 +64,30 @@ class LeadNuevo extends Component {
                                     </DropdownButton>
                                 </td>
                                 <td className="pr-0 text-right">
-                                    <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
-                                        <a href='/leads/crm/info/info'className="btn btn-default btn-icon btn-sm mr-2">
+                                    {/* <OverlayTrigger overlay={<Tooltip>Enviar correo</Tooltip>}>
+                                        <a href='/leads/crm/info/info' className="btn btn-default btn-icon btn-sm mr-2">
                                             <i className="flaticon2-plus icon-nm"></i>
+                                        </a>
+                                    </OverlayTrigger> */}
+                                    <OverlayTrigger overlay={<Tooltip>ENVIAR CORREO</Tooltip>}>
+                                        <a href="#" className="btn btn-icon btn-light btn-hover-secondary btn-sm mr-2">
+                                            <span className="svg-icon svg-icon-md svg-icon-primary">
+                                                <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')} />
+                                            </span>
+                                        </a>
+                                    </OverlayTrigger>
+                                    <OverlayTrigger overlay={<Tooltip>AGENDAR LLAMADA</Tooltip>}>
+                                        <a href="#" className="btn btn-icon btn-light btn-hover-secondary btn-sm mr-2">
+                                            <span className="svg-icon svg-icon-md">
+                                                <SVG src={toAbsoluteUrl('/images/svg/Active-call.svg')} />
+                                            </span>
+                                        </a>
+                                    </OverlayTrigger>
+                                    <OverlayTrigger overlay={<Tooltip>SEGUIMIENTO (SCRIPT)</Tooltip>}>
+                                        <a href="#" className="btn btn-icon btn-light btn-hover-secondary btn-sm mr-2">
+                                            <span className="svg-icon svg-icon-md">
+                                                <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
+                                            </span>
                                         </a>
                                     </OverlayTrigger>
                                 </td>
@@ -88,9 +95,10 @@ class LeadNuevo extends Component {
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </div >
         )
     }
 }
+
 
 export default LeadNuevo
