@@ -6,7 +6,7 @@ import { setSelectOptions} from '../../functions/setters'
 import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Card, Nav, Tab } from 'react-bootstrap'
-import { DiseñoForm } from '../../components/forms'
+import { DiseñoForm, ObraForm } from '../../components/forms'
 import {Line} from 'react-chartjs-2';
 
 class Contabilidad extends Component {
@@ -39,7 +39,8 @@ class Contabilidad extends Component {
                 inferior:'',
                 superior:'',
                 cambio:''
-            }]
+            }],
+            tipos:[]
         },
         data:{
             empresas: []
@@ -63,7 +64,7 @@ class Contabilidad extends Component {
 
     async getDiseñoAxios(){
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'empresa/diseño', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'empresa/tabulador', { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { empresas } = response.data
                 const { options, data, form } = this.state
@@ -72,18 +73,34 @@ class Contabilidad extends Component {
                 options.empresas = setSelectOptions(empresas, 'name')
                 if(empresas){
                     if(empresas.length){
+                        console.log('empresa', empresa)
                         if(empresa === '')
                             empresa = empresas[0]
                         form.precio_inicial_diseño = empresa.precio_inicial_diseño
                         form.incremento_esquema_2 = empresa.incremento_esquema_2
                         form.incremento_esquema_3 = empresa.incremento_esquema_3
                         empresa.variaciones.map((variacion, index)=>{
-                            this.addRow()
+                            /* this.addRow() */
                             this.onChangeVariaciones(index, {target:{value:variacion.superior}},'superior')
                             this.onChangeVariaciones(index, {target:{value:variacion.inferior}},'inferior')
                             this.onChangeVariaciones(index, {target:{value:variacion.cambio}},'cambio')
                         })
-                        /* form.variaciones = empresa.variaciones.length > 0 ? empresa.variaciones : [{superior: '', inferior: '', cambio: ''}] */
+                        let aux = []
+                        empresa.tipos.map((tipo)=>{
+                            aux.push({
+                                name: tipo.tipo,
+                                id: tipo.id,
+                                parametricos:{
+                                    construccion_civil_inf: tipo.pivot.construccion_civil_inf,
+                                    construccion_civil_sup: tipo.pivot.construccion_civil_sup,
+                                    construccion_interiores_inf: tipo.pivot.construccion_interiores_inf,
+                                    construccion_interiores_sup: tipo.pivot.construccion_interiores_sup,
+                                    mobiliario_inf: tipo.pivot.mobiliario_inf,
+                                    mobiliario_sup: tipo.pivot.mobiliario_sup
+                                }
+                            })
+                        })
+                        form.tipos = aux
                         grafica = this.setGrafica(empresa)
                     }
                 }
@@ -115,10 +132,40 @@ class Contabilidad extends Component {
         waitAlert()
         const { access_token } = this.props.authUser
         const { empresa, form } = this.state
-        await axios.post(`${URL_DEV}empresa/${empresa.id}/diseño`, form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(`${URL_DEV}empresa/${empresa.id}/tabulador/diseño`, form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 doneAlert('Datos actualizados con éxito')
                 this.getDiseñoAxios()
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    onSubmitObra = async (e) => {
+        e.preventDefault()
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { empresa, form } = this.state
+        await axios.post(`${URL_DEV}empresa/${empresa.id}/tabulador/obra`, form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const { empresa: {respuesta}} = response.data
+                this.setState({
+                    ...this.state,
+                    empresa: ''
+                })
+                doneAlert('Datos actualizados con éxito')
+                this.getDiseñoAxios()
+                /*  */
             },
             (error) => {
                 console.log(error, 'error')
@@ -155,6 +202,9 @@ class Contabilidad extends Component {
     onChangeVariaciones = (key, e, name) => {
         let { value } = e.target
         let { form, grafica } = this.state
+        if(key === form.variaciones.length){
+            this.addRow()
+        }
         if(name === 'cambio')
             value = parseFloat(value)
         if(name === 'inferior'||name ==='superior')  
@@ -215,6 +265,35 @@ class Contabilidad extends Component {
             ...this.state,
             form
         })
+    }
+
+    addParametricRow = () => {
+        const { form } = this.state
+        let aux = true
+        let arreglo = form.tipos
+        form.tipos.map((tipo)=>{
+            if(tipo.name === '')
+                aux = false
+        })
+        if(aux){
+            arreglo.push({
+                id: '',
+                name: '',
+                parametricos: {
+                    construccion_civil_inf: 0,
+                    construccion_civil_sup: 0,
+                    construccion_interiores_inf: 0,
+                    construccion_interiores_sup: 0,
+                    mobiliario_inf: 0,
+                    mobiliario_sup: 0
+                }
+            })
+            form.tipos = arreglo
+            this.setState({
+                ...this.state,
+                form
+            })
+        }
     }
 
     deleteRow= () => {
@@ -391,7 +470,6 @@ class Contabilidad extends Component {
                         <Card.Body>
                             <DiseñoForm 
                                 form = { form } 
-                                options = { options } 
                                 onChange = { this.onChange } 
                                 onSubmit = { this.onSubmit }
                                 addRow={this.addRow}
@@ -407,6 +485,19 @@ class Contabilidad extends Component {
                                     </div>   
                                 : <></>
                             }
+                        </Card.Body>
+                        <Card.Header className="align-items-center border-0">
+                            <div className="card-title">
+                                <h3 className="card-label">Obra</h3>
+                            </div>
+                        </Card.Header>
+                        <Card.Body>
+                            <ObraForm
+                                form = { form }
+                                onChange = { this.onChange }
+                                onSubmit = { this.onSubmitObra }
+                                addRow = { this.addParametricRow }
+                                />
                         </Card.Body>
                     </Card>
                 </Tab.Container>

@@ -331,7 +331,7 @@ class App extends Component{
                 <Route path = "/catalogos/partidas-diseño/:action" exact component ={ PartidasDiseñoForm } />
                 <Route path = "/catalogos/adjuntos" exact component ={ AdjuntosEmpresa } />
                 <Route path = "/catalogos/adjuntos/:action" exact component ={ AdjuntosEmpresaForm } />
-                <Route path = "/catalogos/diseño" exact component ={ Diseño } />
+                <Route path = "/catalogos/tabulador" exact component ={ Diseño } />
 
                 <Route path = "/reportes/contabilidad" exact component ={ Contabilidad } />
                 <Route path = "/reportes/reporte-ventas" exact component ={ ReporteVentas } />
