@@ -32,6 +32,13 @@ class Crm extends Component {
             total: 0,
             total_paginas: 0,
             value: "ultimos_ingresados"
+        },
+        lead_web: {
+            data: [],
+            numPage: 0,
+            total: 0,
+            total_paginas: 0,
+            value: "ultimos_ingresados"
         }
     }
     componentDidMount() {
@@ -47,6 +54,7 @@ class Crm extends Component {
         this.getUltimosContactos()
         this.getSinContactar()
         this.getUltimosIngresados()
+        this.getLeadsWeb()
     }
 
     nextUltimosContactados = (e) => {
@@ -79,6 +87,16 @@ class Crm extends Component {
         }
         this.getUltimosIngresados()
     }
+    nextPageLeadWeb = (e) => {
+        e.preventDefault()
+        const { lead_web } = this.state
+        if (lead_web.numPage < lead_web.total_paginas - 1) {
+            this.setState({
+                numPage: lead_web.numPage++
+            })
+        }
+        this.getLeadsWeb()
+    }
     prevUltimosContactados = (e) => {
         e.preventDefault()
         const { ultimos_contactados } = this.state
@@ -107,6 +125,16 @@ class Crm extends Component {
                 numPage: ultimos_ingresados.numPage--
             })
             this.getUltimosIngresados()
+        }
+    }
+    prevPageLeadWeb = (e) => {
+        e.preventDefault()
+        const { lead_web } = this.state
+        if (lead_web.numPage > 0) {
+            this.setState({
+                numPage: lead_web.numPage--
+            })
+            this.getLeadsWeb()
         }
     }
     async getUltimosContactos() {
@@ -198,6 +226,36 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
+
+    async getLeadsWeb() {
+        const { access_token } = this.props.authUser
+        const { lead_web } = this.state
+        await axios.get(URL_DEV + 'crm/table/lead-web/' + lead_web.numPage , { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { leads, total } = response.data
+                const { lead_web } = this.state
+                lead_web.data = leads
+                lead_web.total = total
+                let total_paginas = Math.ceil(total / 5)
+                lead_web.total_paginas = total_paginas
+                this.setState({
+                    ...this.state,
+                    lead_web
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -216,7 +274,7 @@ class Crm extends Component {
     }
 
     render() {
-        const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados } = this.state
+        const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados,lead_web } = this.state
         return (
             <Layout active='leads' {...this.props} >
                 <Row>
@@ -252,7 +310,7 @@ class Crm extends Component {
                                 <div className="card-toolbar">
                                     <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0">
                                         <Nav.Item className="nav-item">
-                                            <Nav.Link eventKey="1">NUEVOS</Nav.Link>
+                                            <Nav.Link eventKey="1">PAGINA WEB</Nav.Link>
                                         </Nav.Item>
                                         <Nav.Item className="nav-item">
                                             <Nav.Link eventKey="2">EN CONTACTO</Nav.Link>
@@ -327,7 +385,11 @@ class Crm extends Component {
                                 </div>
                                 <Tab.Content>
                                     <Tab.Pane eventKey="1">
-                                        <LeadNuevo />
+                                        <LeadNuevo 
+                                            lead_web={lead_web}
+                                            onClick={this.nextPageLeadWeb}
+                                            onClickPrev={this.prevPageLeadWeb}
+                                        />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="2">
                                         <LeadContacto />
