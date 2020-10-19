@@ -12,6 +12,7 @@ import LeadNuevo from '../../../components/tables/Lead/LeadNuevo'
 import LeadContacto from '../../../components/tables/Lead/LeadContacto'
 import LeadNegociacion from '../../../components/tables/Lead/LeadNegociacion'
 import LeadContrato from '../../../components/tables/Lead/LeadContrato'
+import LeadNoContratado from '../../../components/tables/Lead/LeadNoContratado'
 class Crm extends Component {
     state = {
         ultimos_contactados: {
@@ -69,9 +70,8 @@ class Crm extends Component {
         await axios.get(URL_DEV + 'crm/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                const { empresas, servicios} = response.data
+                const { empresas } = response.data
                 const { options } = this.state
-                // options.servicios = setOptions(servicios,'name','id')
                 options.empresas = setOptions(empresas,'name','id')
                 this.setState({
                     ...this.state,
@@ -377,6 +377,9 @@ class Crm extends Component {
                                         <Nav.Item className="nav-item">
                                             <Nav.Link eventKey="4">CONTRATADOS</Nav.Link>
                                         </Nav.Item>
+                                        <Nav.Item className="nav-item">
+                                            <Nav.Link eventKey="5">NO CONTRATADOS</Nav.Link>
+                                        </Nav.Item>
                                     </Nav>
                                 </div>
                             </Card.Header>
@@ -385,7 +388,7 @@ class Crm extends Component {
                                     <div className="form-group row form-group-marginless d-flex justify-content-center">
                                         <div className="col-md-3">
                                             <div className="input-icon">
-                                                <input type="text" className="form-control form-control-solid" placeholder="Buscar cliente" />
+                                                <input type="text" className="form-control form-control-solid" placeholder="BUSCAR CLIENTE" />
                                                 <span>
                                                     <i className="flaticon2-search-1 text-muted"></i>
                                                 </span>
@@ -393,7 +396,7 @@ class Crm extends Component {
                                         </div>
                                         <div className="col-md-3">
                                             <div className="input-icon">
-                                                <input type="text" className="form-control form-control-solid" placeholder="Buscar proyecto" />
+                                                <input type="text" className="form-control form-control-solid" placeholder="BUCAR PROYECTO" />
                                                 <span>
                                                     <i className="flaticon2-search-1 text-muted"></i>
                                                 </span>
@@ -456,6 +459,9 @@ class Crm extends Component {
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="4">
                                         <LeadContrato />
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="5">
+                                        <LeadNoContratado />
                                     </Tab.Pane>
                                 </Tab.Content>
                             </div>
