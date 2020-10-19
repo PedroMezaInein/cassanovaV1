@@ -51,16 +51,18 @@ $l-black-blue: #293747;
 $l-black-dark-blue: #132036;
 $l-black-gold: #423b28;
 
-.hidden{
+.hidden {
     transition: all 0.5s;
     width: 0px;
     height: 0px;
     overflow: hidden;
-    &.active{
+
+    &.active {
         width: auto;
         height: auto;
     }
 }
+
 //@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;531;600;700;800;900&family=Oswald:wght@200;300;400;469;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700');
 
@@ -72,42 +74,47 @@ $l-black-gold: #423b28;
 
     /* height: calc(100vh  ); 
 }*/
-.symbol.symbol-light-success2 .symbol-label{
-    background-color: #d1e3d7;  
+.symbol.symbol-light-success2 .symbol-label {
+    background-color: #d1e3d7;
 }
-body{
+
+body {
     text-transform: uppercase;
 }
 
-.border-nav{
+.border-nav {
     border: 3px solid #F3F6F9;
     padding: 1.75rem 1.5rem;
     border-top-left-radius: 0.42rem;
     border-top-right-radius: 0.42rem;
 }
 
-a.text-hover-danger2:hover, .text-hover-danger2:hover{
+a.text-hover-danger2:hover,
+.text-hover-danger2:hover {
     color: #cc4b4c !important;
 }
 
-.pdfview{
+.pdfview {
     @include screen ($lg) {
         width: 275px;
         height: 418.984px;
     }
+
     @include screen ($xxl) {
         width: 468px;
         height: 418.984px;
     }
+
     width: 468px;
     height: 418.984px;
 }
 
-.pdfview-img{
-    @include down-screen($xs){
+.pdfview-img {
+    @include down-screen($xs) {
         width: 18rem;
         height: auto;
     }
+
     width: 100%;
     height: auto;
     /* width: auto;
@@ -115,13 +122,16 @@ a.text-hover-danger2:hover, .text-hover-danger2:hover{
 }
 
 @media screen and (max-width: 992px) {
+
     // @include down-screen($xs){
     //     width: 18rem;
     //     height: auto;
     // }
-    #descarga, img, iframe {
-        max-width:527px;
-        max-height:527px;
+    #descarga,
+    img,
+    iframe {
+        max-width: 527px;
+        max-height: 527px;
     }
 
 }
@@ -130,12 +140,12 @@ a.text-hover-danger2:hover, .text-hover-danger2:hover{
 //     white-space: normal !important;
 // }
 
-.white-space{
+.white-space {
     white-space: normal !important;
 }
 
 @media screen and (max-width: 992px) {
-    .tagify__tag > div > * {
+    .tagify__tag>div>* {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -143,22 +153,23 @@ a.text-hover-danger2:hover, .text-hover-danger2:hover{
         vertical-align: top;
         min-width: var(--tag--min-width);
         max-width: var(--tag--max-width);
-        -webkit-transition: .8s ease,.1s color;
-        transition: .8s ease,.1s color; 
+        -webkit-transition: .8s ease, .1s color;
+        transition: .8s ease, .1s color;
     }
 
 }
 
 //Todos los calendarios
-.react-datepicker-popper{
+.react-datepicker-popper {
     z-index: 2;
 }
 
 //Usuarios/Empresa
-.img-empresa{
+.img-empresa {
     height: 4rem;
     width: auto;
-    @include down-screen($md){
+
+    @include down-screen($md) {
         height: 3rem;
     }
 }
@@ -170,11 +181,11 @@ a.text-hover-danger2:hover, .text-hover-danger2:hover{
 
 //login
 .bg-white-o-9 {
-    background-color: rgba(255, 255, 255, 0.09) !important; 
+    background-color: rgba(255, 255, 255, 0.09) !important;
 }
 
 //Estilo para ToggleButton usuarios/usuarios -> Permisos
-.cczuaK input[type="checkbox"]:checked + label:after { 
+.cczuaK input[type="checkbox"]:checked+label:after {
     font-family: Ki;
     content: "";
     color: #ffffff;
@@ -184,70 +195,77 @@ a.text-hover-danger2:hover, .text-hover-danger2:hover{
     position: absolute;
     display: -webkit-box;
 }
+
 .cczuaK {
     color: #ffffff;
     width: 39px !important;
 }
 
-.cczuaK input[type="checkbox"] + label {
+.cczuaK input[type="checkbox"]+label {
     border-radius: 5px !important;
     width: 0px !important;
 }
 
-.cczuaK input[type="checkbox"] + label:after{
+.cczuaK input[type="checkbox"]+label:after {
     border-radius: inherit !important;
-} 
+}
 
-.cczuaK input[type="checkbox"] + label:before {
+.cczuaK input[type="checkbox"]+label:before {
     left: 0px !important;
     border-radius: 5px !important;
     width: 39px !important;
 }
 
 //Se quita el icono de los inputs
-.sin_icono{
+.sin_icono {
     background-image: none !important;
     padding-right: 0 !important;
 }
 
 
-.modal-dialog{
-    &.modal-xl{
-        @include screen($md){
-            max-width: 85vw!important;
+.modal-dialog {
+    &.modal-xl {
+        @include screen($md) {
+            max-width: 85vw !important;
         }
     }
 }
+
 // Inicio: Tabla actualización de presupuestos
-th.check_desc, th.clave, th.descripcion{
+th.check_desc,
+th.clave,
+th.descripcion {
     @include screen ($lg) {
         width: 1px;
     }
+
     @include screen ($xxl) {
         width: 1px;
         padding: 4px;
     }
 }
 
-td.check_desc.text-center{
+td.check_desc.text-center {
     @include screen ($lg) {
         padding-right: 0px;
     }
+
     @include screen ($xxl) {
         padding-right: 0px;
     }
 }
 
-td.clave.text-center{
+td.clave.text-center {
     @include screen ($xxl) {
         min-width: 59px;
     }
 }
 
-td.descripcion.text-center{
+td.descripcion.text-center {
     @include screen ($lg) {
         min-width: 500px;
     }
+
     @include screen ($xxl) {
         min-width: 1000px;
     }
@@ -255,23 +273,29 @@ td.descripcion.text-center{
 
 // Fin: Tabla actualización de presupuestos
 
-a#tabsAreas-tab-compras, a#tabsAreas-tab-ventas, a#tabsAreas-tab-egresos{
-    @include down-screen($md){
+a#tabsAreas-tab-compras,
+a#tabsAreas-tab-ventas,
+a#tabsAreas-tab-egresos {
+    @include down-screen($md) {
         font-size: 11px;
-    }  
+    }
 }
 
 //TABLA - PRESUPUESTO DISEÑO
 
-td.dia, th.dia {
+td.dia,
+th.dia {
     width: 20px;
 }
-td.dia, th.dia{
-    @include down-screen($md){
+
+td.dia,
+th.dia {
+    @include down-screen($md) {
         width: 100px;
     }
 }
-td.concepto{
+
+td.concepto {
     text-align: justify;
 }
 
@@ -289,20 +313,22 @@ td.concepto{
 }
 
 .tooltip-inner2 {
-    font-size: 0.9rem!important;
+    font-size: 0.9rem !important;
 }
-.w-0{
+
+.w-0 {
     width: 0;
     height: 0;
 }
-.center_content{
-    vertical-align: middle!important;
+
+.center_content {
+    vertical-align: middle !important;
     margin-left: auto;
     margin-right: auto;
 }
 
 //Inicio: Dropdown para: CALENDARIO
-#dropdown-button-drop-left{
+#dropdown-button-drop-left {
     color: #3699FF;
     background-color: #E1F0FF;
     border-color: transparent;
@@ -310,10 +336,12 @@ td.concepto{
     width: calc(1.35em + 1.1rem + 2px);
     justify-content: center;
     display: inline-flex;
-    i{
+
+    i {
         color: #2171c1;
     }
 }
+
 // .btn.btn-primary:hover:not(.btn-text), .btn.btn-primary:focus:not(.btn-text), .btn.btn-primary.focus:not(.btn-text) {
 //     color: #FFFFFF!important;
 //     background-color: #2171c1!important;
@@ -321,31 +349,37 @@ td.concepto{
 //     i{
 //         color: #E1F0FF!important;
 //     }
-    
+
 // }
-.dropdown-toggle.nav-link:after, .dropdown-toggle.btn:after{
-    display:none!important;
+.dropdown-toggle.nav-link:after,
+.dropdown-toggle.btn:after {
+    display: none !important;
 }
+
 //Final: Dropdown para: CALENDARIO para: CALENDARIO
 
 
 .img-calidad {
-    @include down-screen($md) { 
+    @include down-screen($md) {
         width: 100%;
-    margin-top: 2rem;
-    height: auto;
-}    
+        margin-top: 2rem;
+        height: auto;
+    }
+
     width: 27%;
     height: auto;
 }
 
-div#symbol_calidad{
-    @include down-screen($md) { 
+div#symbol_calidad {
+    @include down-screen($md) {
         display: none;
     }
 }
-div#partida_calidad, div#tipoT_calidad,div#fecha_calidad{
-    @include down-screen($md) { 
+
+div#partida_calidad,
+div#tipoT_calidad,
+div#fecha_calidad {
+    @include down-screen($md) {
         justify-content: start !important;
     }
 }
@@ -353,107 +387,123 @@ div#partida_calidad, div#tipoT_calidad,div#fecha_calidad{
 
 a.dropdown-toggle.nav-link {
     @include down-screen($md) {
-        margin-left: 0px!important;
+        margin-left: 0px !important;
     }
 }
 
 a.nav-link {
     @include down-screen($md) {
-        margin-left: 0px!important;
+        margin-left: 0px !important;
     }
 }
 
-.pt-65px{
-    padding-top: 65px!important;
+.pt-65px {
+    padding-top: 65px !important;
 }
 
 
-#form-flujo-proyectos{
-    @include down-screen($lg){
-        text-align: center!important;
+#form-flujo-proyectos {
+    @include down-screen($lg) {
+        text-align: center !important;
     }
 }
-#id-row{
-    @include down-screen($lg){
-        display: block!important;
+
+#id-row {
+    @include down-screen($lg) {
+        display: block !important;
     }
 }
-#col-calendar{
-    @include down-screen($lg){
-        flex: none; 
+
+#col-calendar {
+    @include down-screen($lg) {
+        flex: none;
         max-width: none;
     }
 }
-#col-table{
-    @include down-screen($lg){ 
-        flex: none; 
+
+#col-table {
+    @include down-screen($lg) {
+        flex: none;
         max-width: none;
     }
 }
+
 // /presupuesto/conceptos tr select
 #kt_datatable_conceptos.dataTable tbody tr.selected {
     color: #ECF0F3 !important;
     background-color: #ECF0F3 !important;
 }
-table.dataTable.display tbody > tr.selected > .sorting_1{
-    background-color:  #ECF0F3!important;
-}
-.dataTables_wrapper .dataTable tbody tr.selected td{
-    background-color:  #ECF0F3 !important;
+
+table.dataTable.display tbody>tr.selected>.sorting_1 {
+    background-color: #ECF0F3 !important;
 }
 
-.bg-light-pink{
+.dataTables_wrapper .dataTable tbody tr.selected td {
+    background-color: #ECF0F3 !important;
+}
+
+.bg-light-pink {
     background-color: #fbeff7 !important;
 }
 
-.text-pink{
+.text-pink {
     color: #e44e93 !important;
 }
+
 // a.text-pink:hover, a.text-pink:focus {
 //     color: #e44e93 !important;
 // }
-a.text-hover-pink:hover, .text-hover-pink:hover {
+a.text-hover-pink:hover,
+.text-hover-pink:hover {
     transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
     color: #e44e93 !important;
 }
-.bg-light-green{
+
+.bg-light-green {
     background-color: #E8F5E9 !important;
 }
 
-.text-green{
+.text-green {
     color: #388E3C !important;
 }
 
 .svg-icon.svg-icon-pink svg g [fill] {
     -webkit-transition: fill 0.3s ease;
     transition: fill 0.3s ease;
-    fill: #E83E8C !important; }
+    fill: #E83E8C !important;
+}
 
 .svg-icon.svg-icon-pink svg:hover g [fill] {
     -webkit-transition: fill 0.3s ease;
-    transition: fill 0.3s ease; }
+    transition: fill 0.3s ease;
+}
 
-a.text-pink:hover, a.text-pink:focus {
-    color: #e6217c !important; 
+a.text-pink:hover,
+a.text-pink:focus {
+    color: #e6217c !important;
 }
+
 //reportes/estado-resultados
-#card-accordion{
-    @include screen($md){
-        width:500px!important;
+#card-accordion {
+    @include screen($md) {
+        width: 500px !important;
     }
-    @include screen($lg){
-        width:450px!important;
+
+    @include screen($lg) {
+        width: 450px !important;
     }
-    @include screen($xxl){
-        width:600px!important;
+
+    @include screen($xxl) {
+        width: 600px !important;
     }
 }
+
 .timeline-badge.bg-danger-50 {
-    background: #efd0d9!important;
+    background: #efd0d9 !important;
 }
 
 .timeline.timeline-danger:before {
-    background-color:#fbeaec!important;
+    background-color: #fbeaec !important;
 }
 
 // input#inferior, input#superior, input#cambio{
@@ -478,16 +528,19 @@ a.text-pink:hover, a.text-pink:focus {
 //         width: 50% !important;
 //     }
 // }
-table#esquemas{
-    width:538px;
-    table-layout:fixed;
+table#esquemas {
+    width: 538px;
+    table-layout: fixed;
 }
-.icon-13px{
-    font-size: 13px!important;
+
+.icon-13px {
+    font-size: 13px !important;
 }
-.icon-15px{
-    font-size: 15px!important;
+
+.icon-15px {
+    font-size: 15px !important;
 }
-.text-dark-60{
+
+.text-dark-60 {
     color: #686871 !important;
 }

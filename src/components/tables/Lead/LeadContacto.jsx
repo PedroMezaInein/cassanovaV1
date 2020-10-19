@@ -34,7 +34,7 @@ class LeadContacto extends Component {
                                     </div>
                                 </td>
                                 <td className="font-size-lg text-left font-weight-bolder">
-                                    <span>Ingreso: </span><span className="text-muted font-weight-bold">01/10/2020</span><br/>
+                                    <span>Ingreso: </span><span className="text-muted font-weight-bold">01/10/2020</span><br />
                                     <span>Último contacto: </span><span className="text-muted font-weight-bold">09/10/2020</span>
                                 </td>
                                 <td className="d-flex justify-content-center">
@@ -68,17 +68,17 @@ class LeadContacto extends Component {
                                             <span className="font-size-sm">Elige una opción</span>
                                         </Dropdown.Header>
                                         <Dropdown.Divider />
-                                        <Dropdown.Item eventKey="1">
-                                            <span className="navi-link">
+                                        <Dropdown.Item eventKey="1" className="p-0">
+                                            <span className="navi-link w-100">
                                                 <span className="navi-text">
-                                                    <span className="label label-xl label-inline label-light-success rounded-0">CONTRATADO</span>
+                                                    <span className="label label-xl label-inline label-light-success rounded-0 w-100">CONTRATADO</span>
                                                 </span>
                                             </span>
                                         </Dropdown.Item>
-                                        <Dropdown.Item eventKey="2">
-                                            <span className="navi-link">
+                                        <Dropdown.Item eventKey="2" className="p-0">
+                                            <span className="navi-link w-100">
                                                 <span className="navi-text">
-                                                    <span className="label label-xl label-inline label-light-danger rounded-0">DETENIDO</span>
+                                                    <span className="label label-xl label-inline label-light-danger rounded-0 w-100">DETENIDO</span>
                                                 </span>
                                             </span>
                                         </Dropdown.Item>
@@ -86,7 +86,7 @@ class LeadContacto extends Component {
                                 </td>
                                 <td className="pr-0 text-right">
                                     <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
-                                        <a href='/leads/crm/info/info'className="btn btn-default btn-icon btn-sm mr-2">
+                                        <a href='/leads/crm/info/info' className="btn btn-default btn-icon btn-sm mr-2">
                                             <i className="flaticon2-plus icon-nm"></i>
                                         </a>
                                     </OverlayTrigger>
