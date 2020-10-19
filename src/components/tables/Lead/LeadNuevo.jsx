@@ -25,7 +25,7 @@ class LeadNuevo extends Component {
         console.log(lead_web.data, 'lead_web.data')
         {
             lead_web.data.map((lead, key) => {
-                
+
             })
         }
         return (
@@ -34,12 +34,12 @@ class LeadNuevo extends Component {
                     <div className="table-responsive-lg">
                         <table className="table table-borderless table-vertical-center">
                             <thead>
-                                <tr className="text-left text-uppercase bg-light-pink text-pink">
-                                    <th style={{ minWidth: "250px" }} className="pl-7">
+                                <tr className="text-uppercase bg-light-pink text-pink">
+                                    <th style={{ minWidth: "231px" }} className="pl-7">
                                         <span>Nombre del cliente / Nombre del proyecto</span>
                                     </th>
-                                    <th style={{ minWidth: "100px" }} className="text-left">Empresa</th>
-                                    <th style={{ minWidth: "100px" }} className="text-center">Servicios</th>
+                                    <th style={{ minWidth: "100px" }}>Empresa</th>
+                                    <th style={{ minWidth: "100px" }} >Servicios</th>
                                     <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
                                     <th style={{ minWidth: "80px" }}></th>
                                 </tr>
@@ -63,39 +63,19 @@ class LeadNuevo extends Component {
                                                 <td className="d-flex justify-content-start">
                                                     <span className="text-dark-75 font-weight-bolder d-block font-size-lg">{lead.empresa.name}</span>
                                                 </td>
-                                                {
-                                                    lead.servicios.map((servicio, key1) => {
-                                                        return (
-                                                            <td key={key1}>
-                                                                <span className="text-dark-75 font-weight-bolder d-block font-size-lg text-center">{servicio.servicio}</span>
-                                                            </td>
-                                                        )
-                                                    })
-                                                }
+                                                <td>
+                                                    {
+                                                        lead.servicios.length > 0 ?
+                                                            lead.servicios.map((servicio, key) => {
+                                                                return (
+                                                                    <div key={key}><span className="text-dark-75 font-weight-bolder d-block font-size-lg">{servicio.servicio}</span><br/></div>
+                                                                )
+                                                            })
+                                                            : <span className="text-dark-75 font-weight-bolder d-block font-size-lg">Sin servicios</span>
+                                                    }
+                                                </td>
                                                 <td className="text-center">
-                                                    <DropdownButton
-                                                        variant={"secondary"}
-                                                        title={"Estatus"}
-                                                    >
-                                                        <Dropdown.Header>
-                                                            <span className="font-size-sm">Elige una opción</span>
-                                                        </Dropdown.Header>
-                                                        <Dropdown.Divider />
-                                                        <Dropdown.Item eventKey="1" className="p-0">
-                                                            <span className="navi-link w-100">
-                                                                <span className="navi-text">
-                                                                    <span className="label label-xl label-inline label-light-success rounded-0 w-100">CONTRATADO</span>
-                                                                </span>
-                                                            </span>
-                                                        </Dropdown.Item>
-                                                        <Dropdown.Item eventKey="2" className="p-0">
-                                                            <span className="navi-link w-100">
-                                                                <span className="navi-text">
-                                                                    <span className="label label-xl label-inline label-light-danger rounded-0 w-100">DETENIDO</span>
-                                                                </span>
-                                                            </span>
-                                                        </Dropdown.Item>
-                                                    </DropdownButton>
+                                                    <span class="label label-md label-light-primary label-inline font-weight-bold">EN ESPERA</span>
                                                 </td>
                                                 <td className="pr-0 text-right">
                                                     {/* <OverlayTrigger overlay={<Tooltip>Enviar correo</Tooltip>}>
