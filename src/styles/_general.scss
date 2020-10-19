@@ -548,3 +548,8 @@ table#esquemas {
 .timeline-label{
     font-size: 0.7rem!important;
 }
+div#asideMenuScroll{
+    @include screen($xxl) {
+        height: 989px!important;
+    }
+}
