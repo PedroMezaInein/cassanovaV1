@@ -173,7 +173,6 @@
       "typescript-eslint": "0.0.1-alpha.0",
       "uneval": "^0.1.2",
       "webfontloader": "^1.6.28",
-      "webpack": "4.x.x",
       "xlsx": "^0.16.8",
       "yup": "0.28.0"
    },
