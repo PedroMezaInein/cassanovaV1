@@ -96,12 +96,14 @@ class LeadContacto extends Component {
                                                 
                                             </td>
                                             <td className="text-center">
+                                                {console.log(lead)}
                                                 {
                                                     lead.prospecto ?
                                                         lead.prospecto.estatus_prospecto ?
                                                             <DropdownButton
+                                                                id="dropdown-basic"
                                                                 variant={"secondary"}
-                                                                title={lead.prospecto.estatus_prospecto.estatus}>
+                                                                title={lead.prospecto.estatus_prospecto.estatus.toUpperCase()}>
                                                                 <Dropdown.Header>
                                                                     <span className="font-size-sm">Elige una opción</span>
                                                                 </Dropdown.Header>
