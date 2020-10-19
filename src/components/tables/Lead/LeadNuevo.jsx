@@ -21,7 +21,7 @@ class LeadNuevo extends Component {
         return false;
     }
     render() {
-        const { lead_web, onClickPrev, onClickNext } = this.props
+        const { lead_web, onClickPrev, onClickNext, sendEmail } = this.props
         console.log(lead_web.data, 'lead_web.data')
         return (
             <>
@@ -80,11 +80,12 @@ class LeadNuevo extends Component {
                                                         </OverlayTrigger> 
                                                     */}
                                                     <OverlayTrigger overlay={<Tooltip>ENVIAR CORREO</Tooltip>}>
-                                                        <a href="#" className="btn btn-icon btn-light btn-hover-secondary btn-sm mr-2">
+                                                        <span onClick = { (e) => { sendEmail(lead) } }
+                                                            className="btn btn-icon btn-light btn-hover-secondary btn-sm mr-2">
                                                             <span className="svg-icon svg-icon-md ">{/* svg-icon-primary */}
                                                                 <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')} />
                                                             </span>
-                                                        </a>
+                                                        </span>
                                                     </OverlayTrigger>
                                                     <OverlayTrigger overlay={<Tooltip>AGENDAR LLAMADA</Tooltip>}>
                                                         <a href="#" className="btn btn-icon btn-light btn-hover-secondary btn-sm mr-2">
