@@ -532,9 +532,11 @@ class Crm extends Component {
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="contacto">
-                                        <LeadContacto leads = { leads_en_contacto } 
+                                        <LeadContacto
+                                            leads = { leads_en_contacto } 
                                             onClickNext={this.nextPageLeadEnContacto}
-                                            onClickPrev={this.prevPageLeadEnContacto}/>
+                                            onClickPrev={this.prevPageLeadEnContacto}
+                                        />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="negociacion">
                                         <LeadNegociacion />
