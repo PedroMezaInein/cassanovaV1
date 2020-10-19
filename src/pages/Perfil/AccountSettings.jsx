@@ -138,8 +138,20 @@ class AccountSettings extends Component {
     sendFirma = async (e) => {
 		e.preventDefault();
 		const { access_token } = this.props.authUser
-		const { form } = this.state
-        await axios.post(URL_DEV + 'user/users/firma', form,  { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        const { form } = this.state
+        const data = new FormData();
+        let aux = Object.keys(form.adjuntos)
+        aux.map((element) => {
+            if (form.adjuntos[element].value !== '') {
+                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                }
+                data.append('adjuntos[]', element)
+            }
+            return false
+        })
+        await axios.post(URL_DEV + 'user/users/firma', data,  { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
 				
             },
