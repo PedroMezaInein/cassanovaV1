@@ -50,19 +50,18 @@ class LeadNuevo extends Component {
                                                         </div>
                                                         <div>
                                                             <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-pink mb-1 font-size-lg">{lead.nombre}</a>
-                                                            {/* <span className="text-muted font-weight-bold d-block">Proyecto X</span> */}
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td className="d-flex justify-content-start">
+                                                <td className="pl-0 py-8">
                                                     <span className="text-dark-75 font-weight-bolder d-block font-size-lg">{lead.empresa.name}</span>
                                                 </td>
-                                                <td>
+                                                <td className="pl-0 py-8">
                                                     {
                                                         lead.servicios.length > 0 ?
                                                             lead.servicios.map((servicio, key) => {
                                                                 return (
-                                                                    <div key={key}><span className="text-dark-75 font-weight-bolder d-block font-size-lg">{servicio.servicio}</span><br/></div>
+                                                                    <div className="d-flex align-items-center" key={key}><span className="text-dark-75 font-weight-bolder d-block font-size-lg">{servicio.servicio}</span><br/></div>
                                                                 )
                                                             })
                                                             : <span className="text-dark-75 font-weight-bolder d-block font-size-lg">Sin servicios</span>
