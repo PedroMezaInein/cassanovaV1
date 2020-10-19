@@ -2,9 +2,9 @@ import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import Layout from '../../../../components/layout/layout';
 import { Form } from 'react-bootstrap';
-import { InputGray, SelectSearchGray, InputPhoneGray } from '../../../../components/form-components';
+import { InputGray, SelectSearchGray, InputPhoneGray, Button } from '../../../../components/form-components';
 import axios from 'axios'
-import { errorAlert, forbiddenAccessAlert, waitAlert } from '../../../../functions/alert';
+import { errorAlert, forbiddenAccessAlert, validateAlert, waitAlert } from '../../../../functions/alert';
 import swal from 'sweetalert';
 import { setOptions, setSelectOptions } from '../../../../functions/setters';
 import { TEL, URL_DEV, EMAIL } from '../../../../constants';
@@ -140,6 +140,27 @@ class LeadTelefono extends Component {
             console.log(error, 'error')
         })
     }
+
+    onSubmit = async(e) =>{
+        waitAlert();
+        const { form } = this.state
+        const { access_token } = this.props.authUser
+        await axios.post(URL_DEV + 'crm/add/lead/telefono', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401)
+                    forbiddenAccessAlert();
+                else
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
         const { messages, form, options } = this.state
         return (
@@ -152,7 +173,14 @@ class LeadTelefono extends Component {
                     </div>
                     <div className="card-body pt-0">
                         {messages}
-                        <Form>
+                        <Form id="form-lead-telefono"
+                            onSubmit = {
+                                (e) => {
+                                    e.preventDefault();
+                                    validateAlert(this.onSubmit, e, 'form-lead-telefono')
+                                }
+                            }
+                            {...this.props}>
                             <div className="form-group row form-group-marginless mt-4 mb-0">
                                 <div className="col-md-4">
                                     <SelectSearchGray
@@ -299,6 +327,19 @@ class LeadTelefono extends Component {
                                         : ''
                                 }
                             </div>
+                            {
+                                form.telefono ?
+                                    <div className="card-footer py-3 pr-1 text-right">
+                                        <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" icon=''
+                                            onClick = {
+                                                (e) => {
+                                                    e.preventDefault();
+                                                    validateAlert(this.onSubmit, e, 'form-lead-telefono')
+                                                }
+                                            }/>
+                                    </div>
+                                :''
+                            }
                         </Form>
                     </div>
                 </div>
