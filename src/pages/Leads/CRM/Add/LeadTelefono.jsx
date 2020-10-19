@@ -4,9 +4,9 @@ import Layout from '../../../../components/layout/layout';
 import { Form } from 'react-bootstrap';
 import { InputGray, SelectSearchGray, InputPhoneGray, Button } from '../../../../components/form-components';
 import axios from 'axios'
-import { errorAlert, forbiddenAccessAlert, validateAlert, waitAlert } from '../../../../functions/alert';
+import { doneAlert, errorAlert, forbiddenAccessAlert, validateAlert, waitAlert } from '../../../../functions/alert';
 import swal from 'sweetalert';
-import { setOptions } from '../../../../functions/setters';
+import { setOptions, setSelectOptions } from '../../../../functions/setters';
 import { TEL, URL_DEV, EMAIL } from '../../../../constants';
 class LeadTelefono extends Component {
     state = {
@@ -119,9 +119,10 @@ class LeadTelefono extends Component {
         await axios.get(URL_DEV + 'crm/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                const { empresas } = response.data
+                const { empresas, origenes} = response.data
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
+                options['origenes'] = setOptions(origenes, 'origen','id')
                 this.setState({
                     ...this.state,
                     options
@@ -146,7 +147,12 @@ class LeadTelefono extends Component {
         const { access_token } = this.props.authUser
         await axios.post(URL_DEV + 'crm/add/lead/telefono', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Actualizaste los permisos.',)
+                const { history } = this.props
+                history.push({
+                    pathname: '/leads/crm',
+                    state: { tipo: 'lead-telefono'}
+                });
             },
             (error) => {
                 console.log(error, 'error')
