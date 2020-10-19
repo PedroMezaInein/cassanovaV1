@@ -71,7 +71,7 @@ class Crm extends Component {
                 swal.close()
                 const { empresas, servicios} = response.data
                 const { options } = this.state
-                options.servicios = setOptions(servicios,'name','id')
+                // options.servicios = setOptions(servicios,'name','id')
                 options.empresas = setOptions(empresas,'name','id')
                 this.setState({
                     ...this.state,
@@ -271,7 +271,7 @@ class Crm extends Component {
                 const { lead_web } = this.state
                 lead_web.data = leads
                 lead_web.total = total
-                let total_paginas = Math.ceil(total / 5)
+                let total_paginas = Math.ceil(total / 10)
                 lead_web.total_paginas = total_paginas
                 this.setState({
                     ...this.state,
@@ -301,12 +301,12 @@ class Crm extends Component {
         })
     }
 
-    changePageAdd = tipo => {
-        const { history } = this.props
-        history.push({
-            pathname: '/leads/crm/add/' + tipo
-        });
-    }
+    // changePageAdd = tipo => {
+    //     const { history } = this.props
+    //     history.push({
+    //         pathname: '/leads/crm/add/' + tipo
+    //     });
+    // }
 
     render() {
         const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados,lead_web } = this.state
@@ -422,7 +422,7 @@ class Crm extends Component {
                                     <Tab.Pane eventKey="1">
                                         <LeadNuevo 
                                             lead_web={lead_web}
-                                            onClick={this.nextPageLeadWeb}
+                                            onClickNext={this.nextPageLeadWeb}
                                             onClickPrev={this.prevPageLeadWeb}
                                         />
                                     </Tab.Pane>
