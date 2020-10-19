@@ -23,11 +23,6 @@ class LeadNuevo extends Component {
     render() {
         const { lead_web, onClickPrev, onClickNext } = this.props
         console.log(lead_web.data, 'lead_web.data')
-        {
-            lead_web.data.map((lead, key) => {
-
-            })
-        }
         return (
             <>
                 <div className="tab-content">
@@ -36,7 +31,7 @@ class LeadNuevo extends Component {
                             <thead>
                                 <tr className="text-uppercase bg-light-pink text-pink">
                                     <th style={{ minWidth: "231px" }} className="pl-7">
-                                        <span>Nombre del cliente / Nombre del proyecto</span>
+                                        <span>Nombre del cliente y proyecto</span>
                                     </th>
                                     <th style={{ minWidth: "100px" }}>Empresa</th>
                                     <th style={{ minWidth: "100px" }} >Servicios</th>
@@ -56,7 +51,7 @@ class LeadNuevo extends Component {
                                                         </div>
                                                         <div>
                                                             <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-pink mb-1 font-size-lg">{lead.nombre}</a>
-                                                            <span className="text-muted font-weight-bold d-block">Proyecto X</span>
+                                                            {/* <span className="text-muted font-weight-bold d-block">Proyecto X</span> */}
                                                         </div>
                                                     </div>
                                                 </td>
@@ -75,7 +70,7 @@ class LeadNuevo extends Component {
                                                     }
                                                 </td>
                                                 <td className="text-center">
-                                                    <span class="label label-md label-light-primary label-inline font-weight-bold">EN ESPERA</span>
+                                                    <span className="label label-md label-light-primary label-inline font-weight-bold">EN ESPERA</span>
                                                 </td>
                                                 <td className="pr-0 text-right">
                                                     {/* <OverlayTrigger overlay={<Tooltip>Enviar correo</Tooltip>}>
