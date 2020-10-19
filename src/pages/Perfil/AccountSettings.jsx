@@ -28,9 +28,13 @@ class AccountSettings extends Component {
     }
     
     componentDidMount(){
-        const { avatar }  = this.props.authUser.user
+        const { avatar, firma }  = this.props.authUser.user
         const { form } = this.state
         form.foto = avatar
+        if(firma)
+            form.adjuntos.firma.files = [
+                {name:'firma.png', url: firma}
+            ]
         this.setState({
             ...this.state,
             form
