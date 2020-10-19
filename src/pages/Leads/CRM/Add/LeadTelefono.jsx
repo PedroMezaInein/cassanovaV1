@@ -20,12 +20,14 @@ class LeadTelefono extends Component {
             diseño: '',
             obra: '',
             email: '',
-            tipoProyectoNombre: ''
+            tipoProyectoNombre: '',
+            origen:''
         },
         tipo: '',
         options: {
             empresas: [],
-            tipos: []
+            tipos: [],
+            origenes:[]
         }
     }
     componentDidMount() {
@@ -53,6 +55,7 @@ class LeadTelefono extends Component {
             empresa: empresa
         })
     }
+
     updateTipoProyecto = value => {
         const { empresa: { tipos } } = this.state
         this.onChange({ target: { value: value, name: 'tipoProyecto' } })
@@ -64,6 +67,9 @@ class LeadTelefono extends Component {
             return false
         })
         this.onChange({ target: { value: tipoProyecto, name: 'tipoProyectoNombre' } })
+    }
+    updateOrigen = value => {
+        this.onChange({ target: { value: value, name: 'origen' } })
     }
 
     onChange = e => {
@@ -243,6 +249,7 @@ class LeadTelefono extends Component {
                                 }
                                 {
                                     form.email !== '' ?
+                                    <>
                                         <div className="col-md-4">
                                             <InputGray
                                                 name='empresa'
@@ -253,10 +260,6 @@ class LeadTelefono extends Component {
                                                 iconclass='fas fa-building'
                                             />
                                         </div>
-                                        : ''
-                                }
-                                {
-                                    form.email !== '' ?
                                         <div className="col-md-4">
                                             <InputPhoneGray
                                                 placeholder="TELÉFONO DE CONTACTO"
@@ -270,10 +273,6 @@ class LeadTelefono extends Component {
                                                 prefix=''
                                             />
                                         </div>
-                                        : ''
-                                }
-                                {
-                                    form.email ?
                                         <div className="col-md-8">
                                             <InputGray
                                                 placeholder="COMENTARIO"
@@ -285,6 +284,17 @@ class LeadTelefono extends Component {
                                                 as='textarea'
                                             />
                                         </div>
+                                        <div className="col-md-4">
+                                            <SelectSearchGray
+                                                options={options.origenes}
+                                                placeholder="SELECCIONA EL ORIGEN PARA EL LEAD"
+                                                name="origen"
+                                                value={form.origen}
+                                                onChange={this.updateOrigen}
+                                                iconclass="fas fa-mail-bulk"
+                                            />
+                                        </div>
+                                    </>
                                         : ''
                                 }
                             </div>
