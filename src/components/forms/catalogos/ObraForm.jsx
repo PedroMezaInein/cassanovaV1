@@ -30,11 +30,11 @@ export default class ObraForm extends Component {
         const { form, addRow, onSubmit, ...props } = this.props
         return (
             <Form 
-                id="form-diseño"
+                id="form-obra"
                 onSubmit={
                     (e) => {
                         e.preventDefault();
-                        validateAlert(onSubmit, e, 'form-diseño')
+                        validateAlert(onSubmit, e, 'form-obra')
                     }
                 }
                 {...props}>
@@ -203,7 +203,7 @@ export default class ObraForm extends Component {
                         onClick={
                             (e) => {
                                 e.preventDefault();
-                                validateAlert(onSubmit, e, 'form-diseño')
+                                validateAlert(onSubmit, e, 'form-obra')
                             }
                         }
                         text="ENVIAR" />
