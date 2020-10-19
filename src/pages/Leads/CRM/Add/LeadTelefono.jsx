@@ -19,7 +19,8 @@ class LeadTelefono extends Component {
             comentario: '',
             diseño: '',
             obra: '',
-            email: ''
+            email: '',
+            tipoProyectoNombre: ''
         },
         tipo: '',
         options: {
@@ -48,26 +49,23 @@ class LeadTelefono extends Component {
             }
             return false
         })
+        console.log(empresa)
         this.setState({
             empresa: empresa
         })
     }
     updateTipoProyecto = value => {
-        const { options: { empresas } } = this.state
+        const { empresa: { tipos } } = this.state
         this.onChange({ target: { value: value, name: 'tipoProyecto' } })
         let tipoProyecto = ''
-        empresas.map((empresa) => {
-            empresa.tipos.map((tipo) => {
-                if (value.toString() === tipo.id.toString() ) {
-                    tipoProyecto = tipo
-                    console.log('Soy', tipoProyecto.tipo)
-                }
-                return false
-            })
+        tipos.map((tipo) => {
+            if (value.toString() === tipo.id.toString()) {
+                tipoProyecto = tipo.tipo
+                console.log('Soy', tipoProyecto.tipo)
+            }
+            return false
         })
-        this.setState({
-            tipoProyecto: tipoProyecto
-        })
+        this.onChange({ target: { value: tipoProyecto, name: 'tipoProyectoNombre' } })
     }
 
     onChange = e => {
@@ -85,7 +83,8 @@ class LeadTelefono extends Component {
     }
 
     updateMessages2 = (name, value) => {
-        const { form, options, empresa: emp, tipoProyecto:tip} = this.state
+        const { form, options, empresa: emp, tipoProyecto: tip } = this.state
+        console.log(tip ? tip.tipo : '')
         const { name: usuario } = this.props.authUser.user
         switch (name) {
             case 'empresa_dirigida':
@@ -100,7 +99,8 @@ class LeadTelefono extends Component {
             case 'name':
                 return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Mucho gusto <span className="font-weight-boldest">{value}, <em>¿Cuál es el motivo de su llamada?</em></span></div>;
             case 'tipoProyecto':
-                return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">En <span className="font-weight-boldest">{emp.name}</span> somos especialistas en el diseño, construcción y remodelación de  <span className="font-weight-boldest">{tip? tip.tipo:''}</span><span className="font-weight-boldest">{form.tipo_proyecto}</span>. <span className="font-weight-boldest"><em>¿Su proyecto se trata de diseño o construcción?</em></span></div>;
+            case 'tipoProyectoNombre':    
+                return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">En <span className="font-weight-boldest">{emp.name}</span> somos especialistas en el diseño, construcción y remodelación de  <span className="font-weight-boldest">{form.tipoProyectoNombre}</span><span className="font-weight-boldest">{form.tipo_proyecto}</span>. <span className="font-weight-boldest"><em>¿Su proyecto se trata de diseño o construcción?</em></span></div>;
             case 'diseño':
             case 'obra':
                 return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Me gustaría conocer más detalles específicos acerca su proyecto <span className="font-weight-boldest"><em>por lo que le solicito me pueda proporcionar su correo electrónico </em></span>para hacerle llegar un cuestionario</div>;

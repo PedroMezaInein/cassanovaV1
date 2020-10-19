@@ -301,6 +301,26 @@ class Crm extends Component {
         })
     }
 
+    sendEmailNewWebLead = async lead => {
+        waitAlert()
+        await axios.put(URL_DEV + 'crm/email/solicitud-llamada/' + lead.id , { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     // changePageAdd = tipo => {
     //     const { history } = this.props
     //     history.push({
@@ -424,6 +444,7 @@ class Crm extends Component {
                                             lead_web={lead_web}
                                             onClickNext={this.nextPageLeadWeb}
                                             onClickPrev={this.prevPageLeadWeb}
+                                            sendEmail = { this.sendEmailNewWebLead }
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="2">
