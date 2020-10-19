@@ -74,7 +74,6 @@ class Contabilidad extends Component {
                 if(empresas){
                     if(empresas.length){
                         empresa = empresas[0]
-                        console.log('empresa', empresa)
                         
                         
                         form.precio_inicial_diseño = empresa.precio_inicial_diseño
