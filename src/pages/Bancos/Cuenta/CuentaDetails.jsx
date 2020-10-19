@@ -94,7 +94,6 @@ class CuentaDetails extends Component {
                     idTraspaso: renderToString(setTextTable(compra.id)),
                     fecha: renderToString(setDateTable(compra.created_at)),
                     monto: renderToString(setMoneyTable(compra.monto)),
-                    balance: renderToString(setMoneyTable(120)),
                     id: compra.id
                 }
             )
@@ -111,7 +110,6 @@ class CuentaDetails extends Component {
                     idTraspaso: renderToString(setTextTable(egreso.id)),
                     fecha: renderToString(setDateTable(egreso.created_at)),
                     monto: renderToString(setMoneyTable(egreso.monto)),
-                    balance: renderToString(setMoneyTable(120)),
                     id: egreso.id
                 }
             )
@@ -128,8 +126,6 @@ class CuentaDetails extends Component {
                     idTraspaso: renderToString(setTextTable(ingreso.id)),
                     fecha: renderToString(setDateTable(ingreso.created_at)),
                     monto: renderToString(setMoneyTable(ingreso.monto)),
-                    balance: renderToString(setMoneyTable(120)),
-                    id: ingreso.id
                 }
             )
             return false
@@ -145,7 +141,6 @@ class CuentaDetails extends Component {
                     idTraspaso: renderToString(setTextTable(traspaso_destino.id)),
                     fecha: renderToString(setDateTable(traspaso_destino.created_at)),
                     monto: renderToString(setMoneyTable(traspaso_destino.cantidad)),
-                    balance: renderToString(setMoneyTable(120)),
                     id: traspaso_destino.id
                 }
             )
@@ -162,7 +157,6 @@ class CuentaDetails extends Component {
                     idTraspaso: renderToString(setTextTable(traspaso_origen.id)),
                     fecha: renderToString(setDateTable(traspaso_origen.created_at)),
                     monto: renderToString(setMoneyTable(traspaso_origen.cantidad)),
-                    balance: renderToString(setMoneyTable(120)),
                     id: traspaso_origen.id
                 }
             )
@@ -179,7 +173,6 @@ class CuentaDetails extends Component {
                     idTraspaso: renderToString(setTextTable(venta.id)),
                     fecha: renderToString(setDateTable(venta.created_at)),
                     monto: renderToString(setMoneyTable(venta.monto)),
-                    balance: renderToString(setMoneyTable(120)),
                     id: venta.id
                 }
             )
