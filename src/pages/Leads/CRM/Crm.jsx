@@ -303,6 +303,7 @@ class Crm extends Component {
 
     sendEmailNewWebLead = async lead => {
         waitAlert()
+        const { access_token } = this.props.authUser
         await axios.put(URL_DEV + 'crm/email/solicitud-llamada/' + lead.id , { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 
