@@ -91,13 +91,26 @@ export default class UltimosContactosCard extends Component {
                                         <div className="timeline-content">
                                             <a href={`tel:+${contacto.telefono}`} className="text-dark-75 font-weight-bolder text-hover-primary mb-1">{contacto.nombre}</a>
                                             {
-                                                contacto.servicios.map((servicio, key1) => {
-                                                    return (
-                                                        // <span key={key1}> - {servicio.servicio.length>0?servicio.servicio:'Sin servicio'}</span>
-                                                        <span key={key1}> - {servicio.servicio}</span>
-                                                    )
-                                                })
+                                                contacto.prospecto ?
+                                                    contacto.prospecto.tipo_proyecto ?
+                                                        <span> 
+                                                            &nbsp;
+                                                            <b>
+                                                                { contacto.empresa ?
+                                                                    contacto.empresa.name : ''}
+                                                            </b>
+                                                            &nbsp;
+                                                        {contacto.prospecto.tipo_proyecto.tipo}</span>
+                                                    :''
+                                                :
+                                                    contacto.servicios.map((servicio, key1) => {
+                                                        return (
+                                                            // <span key={key1}> - {servicio.servicio.length>0?servicio.servicio:'Sin servicio'}</span>
+                                                            <span key={key1}> - {servicio.servicio}</span>
+                                                        )
+                                                    })
                                             }
+                                            
                                         </div>
                                         
                                     </div>

@@ -544,6 +544,10 @@ table#esquemas {
 .text-dark-60 {
     color: #686871 !important;
 }
+
+.timeline-label{
+    font-size: 0.7rem!important;
+}
 div#asideMenuScroll{
     @include screen($xxl) {
         height: 989px!important;

@@ -4,7 +4,7 @@ import Layout from '../../../../components/layout/layout';
 import { Form } from 'react-bootstrap';
 import { InputGray, SelectSearchGray, InputPhoneGray, Button } from '../../../../components/form-components';
 import axios from 'axios'
-import { errorAlert, forbiddenAccessAlert, validateAlert, waitAlert } from '../../../../functions/alert';
+import { doneAlert, errorAlert, forbiddenAccessAlert, validateAlert, waitAlert } from '../../../../functions/alert';
 import swal from 'sweetalert';
 import { setOptions, setSelectOptions } from '../../../../functions/setters';
 import { TEL, URL_DEV, EMAIL } from '../../../../constants';
@@ -147,7 +147,12 @@ class LeadTelefono extends Component {
         const { access_token } = this.props.authUser
         await axios.post(URL_DEV + 'crm/add/lead/telefono', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Actualizaste los permisos.',)
+                const { history } = this.props
+                history.push({
+                    pathname: '/leads/crm',
+                    state: { tipo: 'lead-telefono'}
+                });
             },
             (error) => {
                 console.log(error, 'error')

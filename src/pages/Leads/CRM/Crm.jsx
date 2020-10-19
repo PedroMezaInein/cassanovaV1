@@ -22,6 +22,7 @@ class Crm extends Component {
             total_paginas: 0,
             value: "ultimos_contactados"
         },
+        activeTable: 'web',
         options: {
             empresas: [],
             servicios:[]
@@ -46,6 +47,13 @@ class Crm extends Component {
             total: 0,
             total_paginas: 0,
             value: "ultimos_ingresados"
+        },
+        leads_en_contacto: {
+            data: [],
+            numPage: 0,
+            total: 0,
+            total_paginas: 0,
+            value: "en_contacto"
         }
     }
     componentDidMount() {
@@ -132,6 +140,29 @@ class Crm extends Component {
         }
         this.getLeadsWeb()
     }
+    nextPageLeadEnContacto = (e) => {
+        e.preventDefault()
+        const { leads_en_contacto } = this.state
+        if (leads_en_contacto.numPage < leads_en_contacto.total_paginas - 1) {
+            leads_en_contacto.numPage++
+            this.setState({
+                leads_en_contacto
+            })
+        }
+        this.getLeadsEnContacto()
+    }
+    prevPageLeadEnContacto = ( e ) => {
+        e.preventDefault()
+        const { leads_en_contacto } = this.state
+        if (leads_en_contacto.numPage > 0) {
+            leads_en_contacto.numPage--
+            this.setState({
+                leads_en_contacto
+            })
+            this.getLeadsEnContacto()
+        }
+    }
+    
     prevUltimosContactados = (e) => {
         e.preventDefault()
         const { ultimos_contactados } = this.state
@@ -291,6 +322,37 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
+
+    async getLeadsEnContacto() {
+        const { access_token } = this.props.authUser
+        const { leads_en_contacto } = this.state
+        await axios.get(URL_DEV + 'crm/table/lead-en-contacto/' + leads_en_contacto.numPage , { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { leads, total } = response.data
+                const { leads_en_contacto } = this.state
+                leads_en_contacto.data = leads
+                leads_en_contacto.total = total
+                let total_paginas = Math.ceil(total / 10)
+                leads_en_contacto.total_paginas = total_paginas
+                this.setState({
+                    ...this.state,
+                    leads_en_contacto
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -329,8 +391,24 @@ class Crm extends Component {
     //     });
     // }
 
+    changeActiveTable = key => {
+        switch(key){
+            case 'web':
+                this.getLeadsWeb();
+                break;
+            case 'contacto':
+                this.getLeadsEnContacto();
+                break;
+            default:break;
+        }
+        this.setState({
+            ...this.state,
+            activeTable: key
+        })
+    }
+
     render() {
-        const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados,lead_web } = this.state
+        const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados,lead_web,activeTable, leads_en_contacto } = this.state
         return (
             <Layout active='leads' {...this.props} >
                 <Row>
@@ -357,7 +435,9 @@ class Crm extends Component {
                     </Col>
                 </Row>
                 <Col md={12} className="px-0">
-                    <Tab.Container defaultActiveKey="1">
+                    <Tab.Container defaultActiveKey = "web"
+                        activeKey = { activeTable } 
+                        onSelect = { (select) => { this.changeActiveTable(select) } }>
                         <Card className="card-custom card-stretch gutter-b py-2">
                             <Card.Header className="align-items-center border-0">
                                 <h3 className="card-title align-items-start flex-column">
@@ -366,16 +446,16 @@ class Crm extends Component {
                                 <div className="card-toolbar">
                                     <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0">
                                         <Nav.Item className="nav-item">
-                                            <Nav.Link eventKey="1">PAGINA WEB</Nav.Link>
+                                            <Nav.Link eventKey="web">PAGINA WEB</Nav.Link>
                                         </Nav.Item>
                                         <Nav.Item className="nav-item">
-                                            <Nav.Link eventKey="2">EN CONTACTO</Nav.Link>
+                                            <Nav.Link eventKey="contacto">EN CONTACTO</Nav.Link>
                                         </Nav.Item>
                                         <Nav.Item className="nav-item">
-                                            <Nav.Link eventKey="3">EN NEGOCIACIÓN</Nav.Link>
+                                            <Nav.Link eventKey="negociacion">EN NEGOCIACIÓN</Nav.Link>
                                         </Nav.Item>
                                         <Nav.Item className="nav-item">
-                                            <Nav.Link eventKey="4">CONTRATADOS</Nav.Link>
+                                            <Nav.Link eventKey="contratados">CONTRATADOS</Nav.Link>
                                         </Nav.Item>
                                         <Nav.Item className="nav-item">
                                             <Nav.Link eventKey="5">NO CONTRATADOS</Nav.Link>
@@ -443,7 +523,7 @@ class Crm extends Component {
                                     </div>
                                 </div>
                                 <Tab.Content>
-                                    <Tab.Pane eventKey="1">
+                                    <Tab.Pane eventKey="web">
                                         <LeadNuevo 
                                             lead_web={lead_web}
                                             onClickNext={this.nextPageLeadWeb}
@@ -451,13 +531,15 @@ class Crm extends Component {
                                             sendEmail = { this.sendEmailNewWebLead }
                                         />
                                     </Tab.Pane>
-                                    <Tab.Pane eventKey="2">
-                                        <LeadContacto />
+                                    <Tab.Pane eventKey="contacto">
+                                        <LeadContacto leads = { leads_en_contacto } 
+                                            onClickNext={this.nextPageLeadEnContacto}
+                                            onClickPrev={this.prevPageLeadEnContacto}/>
                                     </Tab.Pane>
-                                    <Tab.Pane eventKey="3">
+                                    <Tab.Pane eventKey="negociacion">
                                         <LeadNegociacion />
                                     </Tab.Pane>
-                                    <Tab.Pane eventKey="4">
+                                    <Tab.Pane eventKey="contratados">
                                         <LeadContrato />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="5">
