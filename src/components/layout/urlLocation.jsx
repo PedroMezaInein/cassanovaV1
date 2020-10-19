@@ -90,11 +90,11 @@ class UrlLocation extends Component {
                                             paths.length > 1 ?
                                                 <ul className="breadcrumb breadcrumb-transparent breadcrumb-dot font-weight-bold p-0 my-2 font-size-sm">
                                                     <li className="breadcrumb-item">
-                                                        <div href="" className="text-muted ml-3">
+                                                        <a href={`/${paths[0]}/${paths[1]}`} className="text-muted ml-3">
                                                             {
                                                                 submodulo_name
                                                             }
-                                                        </div>
+                                                        </a>
                                                     </li>
                                                 </ul>
                                                 : ""
@@ -106,26 +106,17 @@ class UrlLocation extends Component {
                                         url==="leads/crm"?
                                         <>
                                             <Button
+                                                // icon=''
+                                                // onClick={() => { this.changePageAdd('telefono') }}
+                                                // className="btn btn-light-primary mr-2 rounded-0"
+                                                // only_icon="fas fa-phone icon-md mr-2"
+                                                // // tooltip={{ text: 'TELÉFONO' }}
+                                                // text='TELÉFONO'
                                                 icon=''
                                                 onClick={() => { this.changePageAdd('telefono') }}
-                                                className="btn btn-light-primary mr-2 rounded-0"
-                                                only_icon="fas fa-phone icon-md mr-2"
-                                                // tooltip={{ text: 'TELÉFONO' }}
-                                                text='TELÉFONO'
-                                            />
-                                            <Button
-                                                icon=''
-                                                className="btn btn-light-warning mr-2 rounded-0"
-                                                only_icon="flaticon2-black-back-closed-envelope-shape icon-md mr-2"
-                                                // tooltip={{ text: 'CORREO' }}
-                                                text='CORREO'
-                                            />
-                                            <Button
-                                                icon=''
-                                                className="btn btn-light-info mr-2 rounded-0"
-                                                only_icon="fas fa-dove icon-md mr-2"
-                                                // tooltip={{ text: 'TAWK TO' }}
-                                                text='TAWK TO'
+                                                className="btn btn-light-primary mr-2 rounded-0 btn-sm"
+                                                only_icon="fas fa-phone pr-0"
+                                                tooltip={{ text: 'TELÉFONO' }}
                                             />
                                             {/* <Button
                                                 icon=''
