@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { OverlayTrigger, Tooltip, Dropdown, DropdownButton, Button } from 'react-bootstrap'
+import { OverlayTrigger, Tooltip} from 'react-bootstrap'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 class LeadNuevo extends Component {
@@ -30,13 +30,13 @@ class LeadNuevo extends Component {
                         <table className="table table-borderless table-vertical-center">
                             <thead>
                                 <tr className="text-uppercase bg-light-pink text-pink">
-                                    <th style={{ minWidth: "231px" }} className="pl-7">
+                                    <th className="pl-7">
                                         <span>Nombre del cliente y proyecto</span>
                                     </th>
-                                    <th style={{ minWidth: "100px" }}>Empresa</th>
-                                    <th style={{ minWidth: "100px" }} >Servicios</th>
-                                    <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
-                                    <th style={{ minWidth: "80px" }}></th>
+                                    <th>Empresa</th>
+                                    <th>Servicios</th>
+                                    <th className="text-center">Estatus</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
