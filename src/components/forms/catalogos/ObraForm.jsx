@@ -18,7 +18,6 @@ export default class ObraForm extends Component {
     }
 
     onChangeName = (e, tipo, index) => {
-        console.log(tipo, index)
         const { value } = e.target
         const { form, onChange } = this.props
         let aux = form.tipos

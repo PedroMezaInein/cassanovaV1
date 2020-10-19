@@ -2,9 +2,9 @@ import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import Layout from '../../../../components/layout/layout';
 import { Form } from 'react-bootstrap';
-import { InputGray, SelectSearchGray, InputPhoneGray } from '../../../../components/form-components';
+import { InputGray, SelectSearchGray, InputPhoneGray, Button } from '../../../../components/form-components';
 import axios from 'axios'
-import { errorAlert, forbiddenAccessAlert, waitAlert } from '../../../../functions/alert';
+import { errorAlert, forbiddenAccessAlert, validateAlert, waitAlert } from '../../../../functions/alert';
 import swal from 'sweetalert';
 import { setOptions } from '../../../../functions/setters';
 import { TEL, URL_DEV, EMAIL } from '../../../../constants';
@@ -20,12 +20,14 @@ class LeadTelefono extends Component {
             diseño: '',
             obra: '',
             email: '',
-            tipoProyectoNombre: ''
+            tipoProyectoNombre: '',
+            origen:''
         },
         tipo: '',
         options: {
             empresas: [],
-            tipos: []
+            tipos: [],
+            origenes:[]
         }
     }
     componentDidMount() {
@@ -49,11 +51,11 @@ class LeadTelefono extends Component {
             }
             return false
         })
-        console.log(empresa)
         this.setState({
             empresa: empresa
         })
     }
+
     updateTipoProyecto = value => {
         const { empresa: { tipos } } = this.state
         this.onChange({ target: { value: value, name: 'tipoProyecto' } })
@@ -61,11 +63,13 @@ class LeadTelefono extends Component {
         tipos.map((tipo) => {
             if (value.toString() === tipo.id.toString()) {
                 tipoProyecto = tipo.tipo
-                console.log('Soy', tipoProyecto.tipo)
             }
             return false
         })
         this.onChange({ target: { value: tipoProyecto, name: 'tipoProyectoNombre' } })
+    }
+    updateOrigen = value => {
+        this.onChange({ target: { value: value, name: 'origen' } })
     }
 
     onChange = e => {
@@ -84,7 +88,6 @@ class LeadTelefono extends Component {
 
     updateMessages2 = (name, value) => {
         const { form, options, empresa: emp, tipoProyecto: tip } = this.state
-        console.log(tip ? tip.tipo : '')
         const { name: usuario } = this.props.authUser.user
         switch (name) {
             case 'empresa_dirigida':
@@ -136,6 +139,27 @@ class LeadTelefono extends Component {
             console.log(error, 'error')
         })
     }
+
+    onSubmit = async(e) =>{
+        waitAlert();
+        const { form } = this.state
+        const { access_token } = this.props.authUser
+        await axios.post(URL_DEV + 'crm/add/lead/telefono', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401)
+                    forbiddenAccessAlert();
+                else
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
         const { messages, form, options } = this.state
         return (
@@ -148,7 +172,14 @@ class LeadTelefono extends Component {
                     </div>
                     <div className="card-body pt-0">
                         {messages}
-                        <Form>
+                        <Form id="form-lead-telefono"
+                            onSubmit = {
+                                (e) => {
+                                    e.preventDefault();
+                                    validateAlert(this.onSubmit, e, 'form-lead-telefono')
+                                }
+                            }
+                            {...this.props}>
                             <div className="form-group row form-group-marginless mt-4 mb-0">
                                 <div className="col-md-4">
                                     <SelectSearchGray
@@ -246,6 +277,7 @@ class LeadTelefono extends Component {
                                 }
                                 {
                                     form.email !== '' ?
+                                    <>
                                         <div className="col-md-4">
                                             <InputGray
                                                 name='empresa'
@@ -256,10 +288,6 @@ class LeadTelefono extends Component {
                                                 iconclass='fas fa-building'
                                             />
                                         </div>
-                                        : ''
-                                }
-                                {
-                                    form.email !== '' ?
                                         <div className="col-md-4">
                                             <InputPhoneGray
                                                 placeholder="TELÉFONO DE CONTACTO"
@@ -273,10 +301,6 @@ class LeadTelefono extends Component {
                                                 prefix=''
                                             />
                                         </div>
-                                        : ''
-                                }
-                                {
-                                    form.email ?
                                         <div className="col-md-8">
                                             <InputGray
                                                 placeholder="COMENTARIO"
@@ -288,9 +312,33 @@ class LeadTelefono extends Component {
                                                 as='textarea'
                                             />
                                         </div>
+                                        <div className="col-md-4">
+                                            <SelectSearchGray
+                                                options={options.origenes}
+                                                placeholder="SELECCIONA EL ORIGEN PARA EL LEAD"
+                                                name="origen"
+                                                value={form.origen}
+                                                onChange={this.updateOrigen}
+                                                iconclass="fas fa-mail-bulk"
+                                            />
+                                        </div>
+                                    </>
                                         : ''
                                 }
                             </div>
+                            {
+                                form.telefono ?
+                                    <div className="card-footer py-3 pr-1 text-right">
+                                        <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" icon=''
+                                            onClick = {
+                                                (e) => {
+                                                    e.preventDefault();
+                                                    validateAlert(this.onSubmit, e, 'form-lead-telefono')
+                                                }
+                                            }/>
+                                    </div>
+                                :''
+                            }
                         </Form>
                     </div>
                 </div>

@@ -188,7 +188,6 @@ class PermisosForm extends Component {
                 <Accordion activeKey={activeKey} className="accordion accordion-light">
                     {
                         grupos !== null && grupos.map((grupo, key) => {
-                            console.log(grupo, 'grupo')
                             return (
                                 <div key={key}>
                                     <Card>

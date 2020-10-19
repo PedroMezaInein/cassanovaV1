@@ -128,7 +128,6 @@ class ProspectosForm extends Component {
         const { formContacto } = this.state
         const { name, value } = event.target
         formContacto[name] = value
-        console.log(name, value)
         this.setState({
             ...this.state,
             formContacto
