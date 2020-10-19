@@ -73,18 +73,20 @@ class Contabilidad extends Component {
                 options.empresas = setSelectOptions(empresas, 'name')
                 if(empresas){
                     if(empresas.length){
+                        empresa = empresas[0]
                         console.log('empresa', empresa)
-                        if(empresa === '')
-                            empresa = empresas[0]
+                        
+                        
                         form.precio_inicial_diseño = empresa.precio_inicial_diseño
                         form.incremento_esquema_2 = empresa.incremento_esquema_2
                         form.incremento_esquema_3 = empresa.incremento_esquema_3
+                        
                         empresa.variaciones.map((variacion, index)=>{
-                            /* this.addRow() */
                             this.onChangeVariaciones(index, {target:{value:variacion.superior}},'superior')
                             this.onChangeVariaciones(index, {target:{value:variacion.inferior}},'inferior')
                             this.onChangeVariaciones(index, {target:{value:variacion.cambio}},'cambio')
                         })
+                        
                         let aux = []
                         empresa.tipos.map((tipo)=>{
                             aux.push({
@@ -182,9 +184,11 @@ class Contabilidad extends Component {
     }
 
     onChange = e => {
-        const { name, value } = e.target
+        let { name, value } = e.target
         const { form } = this.state
         let { grafica } = this.state
+        if(name === 'incremento_esquema_2' || name === 'incremento_esquema_3')
+            value = value.replace('%', '')
         form[name] = value
         form.precio_esquema_1 = this.getPrecioEsquemas(form, form.m2)
         form.precio_esquema_2 = form.precio_esquema_1 === '-' ? '-' : form.precio_esquema_1 * ( 1 + (form.incremento_esquema_2/100))
@@ -319,29 +323,65 @@ class Contabilidad extends Component {
     changeActiveKey = empresa => {
         const { form } = this.state
         let { grafica } = this.state
-
+        let aux = []
         form.precio_inicial_diseño = empresa.precio_inicial_diseño
         form.incremento_esquema_2 = empresa.incremento_esquema_2
         form.incremento_esquema_3 = empresa.incremento_esquema_3
-        form.variaciones = empresa.variaciones.length ? empresa.variaciones : [{
-            inferior:'',
-            superior:'',
-            cambio:''
-        }]
+
+        empresa.variaciones.map((variacion)=>{
+            aux.push({
+                inferior:variacion.inferior,
+                superior:variacion.superior,
+                cambio:variacion.cambio    
+            })
+        })
         
-        if(form.variaciones.length === 1){
-            if(form.variaciones[0].superior && form.variaciones[0].inferior && form.variaciones[0].cambio){
-                grafica = this.setGrafica(empresa)
-            }else{
-                grafica = ''
-            }
+        if(empresa.variaciones.length === 0){
+            aux.push({
+                inferior:0,
+                superior:0,
+                cambio:0
+            })
         }
-        else{
-           grafica = this.setGrafica(empresa)
+
+        form.variaciones = aux
+
+        grafica = this.setGrafica(form)
+
+        aux = []
+        empresa.tipos.map((tipo)=>{
+            aux.push({
+                name: tipo.tipo,
+                id: tipo.id,
+                parametricos:{
+                    construccion_civil_inf: tipo.pivot.construccion_civil_inf,
+                    construccion_civil_sup: tipo.pivot.construccion_civil_sup,
+                    construccion_interiores_inf: tipo.pivot.construccion_interiores_inf,
+                    construccion_interiores_sup: tipo.pivot.construccion_interiores_sup,
+                    mobiliario_inf: tipo.pivot.mobiliario_inf,
+                    mobiliario_sup: tipo.pivot.mobiliario_sup
+                }
+            })
+        })
+
+        if(empresa.tipos.length === 0){
+            aux.push({
+                name: '',
+                id: '',
+                parametricos:{
+                    construccion_civil_inf: 0,
+                    construccion_civil_sup: 0,
+                    construccion_interiores_inf: 0,
+                    construccion_interiores_sup: 0,
+                    mobiliario_inf: 0,
+                    mobiliario_sup: 0
+                }
+            })
         }
+
+        form.tipos = aux
         
         this.setState({
-            ...this.state,
             empresa: empresa,
             form,
             grafica
@@ -358,13 +398,13 @@ class Contabilidad extends Component {
             let limiteInf = aux[0].inferior
             let limiteSup = aux[aux.length - 1].superior
             for(let i = 0; i <= 39; i ++){
-                let limite = limiteInf + (i * (limiteSup - limiteInf)/40)
+                let limite = (limiteInf + (i * (limiteSup - limiteInf)/40))
                 limite = parseInt(parseFloat(limite).toFixed(2))
                 labels.push(limite)
-                data.push(this.getPrecioEsquemas(form, limite)/limite)
+                data.push(this.getPrecioEsquemas(form, limite))
             }
             labels.push(limiteSup)
-            data.push(this.getPrecioEsquemas(form, limiteSup)/limiteSup)
+            data.push(this.getPrecioEsquemas(form, limiteSup))
             return {
                 labels: labels,
                 datasets: [

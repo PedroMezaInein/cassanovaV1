@@ -169,3 +169,135 @@
     right: 3rem;
     z-index: 10;
 }
+
+
+// btn.btn-light-pink 
+.btn.btn-light-pink {
+    color: #e44e93;
+    background-color: #fbeff7;
+    border-color: transparent;
+}
+
+.btn.btn-light-pink i {
+    color: #e44e93;
+}
+
+.btn.btn-light-pink .svg-icon svg g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+    fill: #e44e93;
+}
+
+.btn.btn-light-pink .svg-icon svg:hover g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+}
+
+.btn.btn-light-pink.dropdown-toggle:after {
+    color: #e44e93;
+}
+
+.btn.btn-light-pink:hover:not(.btn-text),
+.btn.btn-light-pink:focus:not(.btn-text),
+.btn.btn-light-pink.focus:not(.btn-text) {
+    color: #ffffff;
+    background-color: #e44e93;
+    border-color: transparent;
+}
+
+.btn.btn-light-pink:hover:not(.btn-text) i,
+.btn.btn-light-pink:focus:not(.btn-text) i,
+.btn.btn-light-pink.focus:not(.btn-text) i {
+    color: #ffffff;
+}
+
+.btn.btn-light-pink:hover:not(.btn-text) .svg-icon svg g [fill],
+.btn.btn-light-pink:focus:not(.btn-text) .svg-icon svg g [fill],
+.btn.btn-light-pink.focus:not(.btn-text) .svg-icon svg g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+    fill: #ffffff;
+}
+
+.btn.btn-light-pink:hover:not(.btn-text) .svg-icon svg:hover g [fill],
+.btn.btn-light-pink:focus:not(.btn-text) .svg-icon svg:hover g [fill],
+.btn.btn-light-pink.focus:not(.btn-text) .svg-icon svg:hover g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+}
+
+.btn.btn-light-pink:hover:not(.btn-text).dropdown-toggle:after,
+.btn.btn-light-pink:focus:not(.btn-text).dropdown-toggle:after,
+.btn.btn-light-pink.focus:not(.btn-text).dropdown-toggle:after {
+    color: #ffffff;
+}
+
+.btn.btn-light-pink.disabled,
+.btn.btn-light-pink:disabled {
+    color: #e44e93;
+    background-color: #fbeff7;
+    border-color: transparent;
+}
+
+.btn.btn-light-pink.disabled i,
+.btn.btn-light-pink:disabled i {
+    color: #e44e93;
+}
+
+.btn.btn-light-pink.disabled .svg-icon svg g [fill],
+.btn.btn-light-pink:disabled .svg-icon svg g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+    fill: #e44e93;
+}
+
+.btn.btn-light-pink.disabled .svg-icon svg:hover g [fill],
+.btn.btn-light-pink:disabled .svg-icon svg:hover g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+}
+
+.btn.btn-light-pink.disabled.dropdown-toggle:after,
+.btn.btn-light-pink:disabled.dropdown-toggle:after {
+    color: #e44e93;
+}
+
+.btn.btn-light-pink:not(:disabled):not(.disabled):active:not(.btn-text),
+.btn.btn-light-pink:not(:disabled):not(.disabled).active,
+.show>.btn.btn-light-pink.dropdown-toggle,
+.show .btn.btn-light-pink.btn-dropdown {
+    color: #ffffff;
+    background-color: #e44e93;
+    border-color: transparent;
+}
+
+.btn.btn-light-pink:not(:disabled):not(.disabled):active:not(.btn-text) i,
+.btn.btn-light-pink:not(:disabled):not(.disabled).active i,
+.show>.btn.btn-light-pink.dropdown-toggle i,
+.show .btn.btn-light-pink.btn-dropdown i {
+    color: #ffffff;
+}
+
+.btn.btn-light-pink:not(:disabled):not(.disabled):active:not(.btn-text) .svg-icon svg g [fill],
+.btn.btn-light-pink:not(:disabled):not(.disabled).active .svg-icon svg g [fill],
+.show>.btn.btn-light-pink.dropdown-toggle .svg-icon svg g [fill],
+.show .btn.btn-light-pink.btn-dropdown .svg-icon svg g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+    fill: #ffffff;
+}
+
+.btn.btn-light-pink:not(:disabled):not(.disabled):active:not(.btn-text) .svg-icon svg:hover g [fill],
+.btn.btn-light-pink:not(:disabled):not(.disabled).active .svg-icon svg:hover g [fill],
+.show>.btn.btn-light-pink.dropdown-toggle .svg-icon svg:hover g [fill],
+.show .btn.btn-light-pink.btn-dropdown .svg-icon svg:hover g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+}
+
+.btn.btn-light-pink:not(:disabled):not(.disabled):active:not(.btn-text).dropdown-toggle:after,
+.btn.btn-light-pink:not(:disabled):not(.disabled).active.dropdown-toggle:after,
+.show>.btn.btn-light-pink.dropdown-toggle.dropdown-toggle:after,
+.show .btn.btn-light-pink.btn-dropdown.dropdown-toggle:after {
+    color: #ffffff;
+}

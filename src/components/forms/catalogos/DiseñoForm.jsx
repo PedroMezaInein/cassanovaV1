@@ -96,28 +96,23 @@ class DiseñoForm extends Component {
                                                         <td className="px-1">
                                                             <div className="d-flex justify-content-center">
                                                                 <InputNumberSinText
-                                                                    requirevalidation={1}
-                                                                    formeditado={formeditado}
-                                                                    name="incremento_esquema_2"
-                                                                    onChange={onChange}
-                                                                    value={form.incremento_esquema_2}
-                                                                    type="text"
-                                                                    prefix={'%'}
-                                                                    /* customstyle={{ width: "70px" }} */
+                                                                    requirevalidation = { 0 }
+                                                                    name = "incremento_esquema_2"
+                                                                    onChange = { onChange }
+                                                                    value = { form.incremento_esquema_2 }
+                                                                    prefix = '%'
+                                                                    identificador = 'incremento_esquema_2'
                                                                 />
                                                             </div>
                                                         </td>
                                                         <td className="px-1">
                                                             <div className="d-flex justify-content-center">
                                                                 <InputNumberSinText
-                                                                    requirevalidation={1}
-                                                                    formeditado={formeditado}
-                                                                    name="incremento_esquema_3"
-                                                                    onChange={onChange}
-                                                                    value={form.incremento_esquema_3}
-                                                                    type="text"
-                                                                    prefix={'%'}
-                                                                    /* customstyle={{ width: "70px" }} */
+                                                                    requirevalidation = { 0 }
+                                                                    name = "incremento_esquema_3"
+                                                                    onChange = { onChange }
+                                                                    value = { form.incremento_esquema_3 }
+                                                                    prefix = '%'
                                                                 />
                                                             </div>
                                                         </td>
@@ -163,45 +158,41 @@ class DiseñoForm extends Component {
                                                         <td className="px-1 pt-0 pb-2 border-0">
                                                             <div className="d-flex justify-content-center">
                                                                 <InputNumberSinText
-                                                                    requirevalidation={1}
-                                                                    formeditado={formeditado}
-                                                                    name="inferior"
-                                                                    value={form['variaciones'][key]['inferior']}
-                                                                    onChange={e => onChangeVariaciones(key, e, 'inferior')}
-                                                                    type="text"
-                                                                    /* customstyle={{ width: "auto" }} */
+                                                                    requirevalidation = { 1 }
+                                                                    name = "inferior"
+                                                                    formeditado = { 1 }
+                                                                    value = { form['variaciones'][key]['inferior'] }
+                                                                    onChange = { (e) => onChangeVariaciones(key, e, 'inferior')}
                                                                     customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
-                                                                    identificador={"inferior"}
+                                                                    identificador = "inferior"
                                                                 />
                                                             </div>
                                                         </td>
                                                         <td className="px-1 pt-0 pb-2 border-0">
                                                             <div className="d-flex justify-content-center">
                                                                 <InputNumberSinText
-                                                                    requirevalidation={1}
-                                                                    formeditado={formeditado}
-                                                                    name="superior"
-                                                                    value={form['variaciones'][key]['superior']}
-                                                                    onChange={e => onChangeVariaciones(key, e, 'superior')}
-                                                                    type="text"
+                                                                    requirevalidation = { 1 }
+                                                                    formeditado = { 1 }
+                                                                    name = "superior"
+                                                                    value = { form['variaciones'][key]['superior'] }
+                                                                    onChange = { (e) => onChangeVariaciones(key, e, 'superior') }
                                                                     customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
-                                                                    identificador={"superior"}
+                                                                    identificador = "superior"
                                                                 />
                                                             </div>
                                                         </td>
                                                         <td className="px-1 pt-0 pb-2 border-0">
                                                             <div className="d-flex justify-content-center">
                                                                 <InputMoneySinText
-                                                                    requirevalidation={1}
-                                                                    formeditado={formeditado}
-                                                                    name="cambio"
-                                                                    value={form['variaciones'][key]['cambio']}
-                                                                    onChange={e => onChangeVariaciones(key, e, 'cambio')}
+                                                                    requirevalidation = { 1 }
+                                                                    formeditado = { 1 }
+                                                                    name = "cambio"
+                                                                    value = { form['variaciones'][key]['cambio'] }
+                                                                    onChange = { (e) => onChangeVariaciones(key, e, 'cambio') }
                                                                     thousandseparator={true}
-                                                                    prefix={'$'}
-                                                                    /* customstyle={{ width: "auto" }} */
-                                                                    customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
-                                                                    identificador={"cambio"}
+                                                                    prefix = '$'
+                                                                    customstyle = { { width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' } }
+                                                                    identificador = "cambio"
                                                                 />
                                                             </div>
                                                         </td>
