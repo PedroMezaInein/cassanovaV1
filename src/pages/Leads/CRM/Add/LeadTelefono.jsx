@@ -6,7 +6,7 @@ import { InputGray, SelectSearchGray, InputPhoneGray } from '../../../../compone
 import axios from 'axios'
 import { errorAlert, forbiddenAccessAlert, waitAlert } from '../../../../functions/alert';
 import swal from 'sweetalert';
-import { setOptions } from '../../../../functions/setters';
+import { setOptions, setSelectOptions } from '../../../../functions/setters';
 import { TEL, URL_DEV, EMAIL } from '../../../../constants';
 class LeadTelefono extends Component {
     state = {
@@ -119,9 +119,10 @@ class LeadTelefono extends Component {
         await axios.get(URL_DEV + 'crm/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                const { empresas } = response.data
+                const { empresas, origenes} = response.data
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
+                options['origenes'] = setOptions(origenes, 'origen','id')
                 this.setState({
                     ...this.state,
                     options
