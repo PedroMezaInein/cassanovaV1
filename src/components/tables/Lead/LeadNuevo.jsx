@@ -22,7 +22,6 @@ class LeadNuevo extends Component {
     }
     render() {
         const { lead_web, onClickPrev, onClickNext } = this.props
-        console.log(lead_web.data, 'lead_web.data')
         return (
             <>
                 <div className="tab-content">

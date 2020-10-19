@@ -49,7 +49,6 @@ class LeadTelefono extends Component {
             }
             return false
         })
-        console.log(empresa)
         this.setState({
             empresa: empresa
         })
@@ -61,7 +60,6 @@ class LeadTelefono extends Component {
         tipos.map((tipo) => {
             if (value.toString() === tipo.id.toString()) {
                 tipoProyecto = tipo.tipo
-                console.log('Soy', tipoProyecto.tipo)
             }
             return false
         })
@@ -84,7 +82,6 @@ class LeadTelefono extends Component {
 
     updateMessages2 = (name, value) => {
         const { form, options, empresa: emp, tipoProyecto: tip } = this.state
-        console.log(tip ? tip.tipo : '')
         const { name: usuario } = this.props.authUser.user
         switch (name) {
             case 'empresa_dirigida':

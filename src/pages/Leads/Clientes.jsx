@@ -207,7 +207,6 @@ class Leads extends Component {
     setClientes = clientes => {
         let aux = [];
         clientes.map((cliente) => {
-            console.log(cliente)
             aux.push(
                 {
                     actions: this.setActions(cliente),
