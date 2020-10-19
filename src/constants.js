@@ -1998,9 +1998,5 @@ export const DETAILS_CUENTAS = [
     {
         Header: 'Monto',
         accessor: 'monto'
-    },
-    {
-        Header: 'Balance',
-        accessor: 'balance'
-    },
+    }
 ]
