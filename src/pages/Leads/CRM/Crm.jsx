@@ -13,7 +13,6 @@ import LeadContacto from '../../../components/tables/Lead/LeadContacto'
 import LeadNegociacion from '../../../components/tables/Lead/LeadNegociacion'
 import LeadContrato from '../../../components/tables/Lead/LeadContrato'
 import LeadNoContratado from '../../../components/tables/Lead/LeadNoContratado'
-
 /* BORRAR */
 /* 5576910077 */
 class Crm extends Component {
@@ -123,13 +122,22 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
-
     nextUltimosContactados = (e) => {
         e.preventDefault()
         const { ultimos_contactados } = this.state
         if (ultimos_contactados.numPage < ultimos_contactados.total_paginas - 1) {
             this.setState({
                 numPage: ultimos_contactados.numPage++
+            })
+            this.getUltimosContactos()
+        }
+    }
+    prevUltimosContactados = (e) => {
+        e.preventDefault()
+        const { ultimos_contactados } = this.state
+        if (ultimos_contactados.numPage > 0) {
+            this.setState({
+                numPage: ultimos_contactados.numPage--
             })
             this.getUltimosContactos()
         }
@@ -144,6 +152,16 @@ class Crm extends Component {
             this.getSinContactar()
         }
     }
+    prevPageProspectosSinContactar = (e) => {
+        e.preventDefault()
+        const { prospectos_sin_contactar } = this.state
+        if (prospectos_sin_contactar.numPage > 0) {
+            this.setState({
+                numPage: prospectos_sin_contactar.numPage--
+            })
+            this.getSinContactar()
+        }
+    }
     nextPageUltimosIngresados = (e) => {
         e.preventDefault()
         const { ultimos_ingresados } = this.state
@@ -154,6 +172,16 @@ class Crm extends Component {
         }
         this.getUltimosIngresados()
     }
+    prevPageUltimosIngresados = (e) => {
+        e.preventDefault()
+        const { ultimos_ingresados } = this.state
+        if (ultimos_ingresados.numPage > 0) {
+            this.setState({
+                numPage: ultimos_ingresados.numPage--
+            })
+            this.getUltimosIngresados()
+        }
+    }
     nextPageLeadWeb = (e) => {
         e.preventDefault()
         const { lead_web } = this.state
@@ -163,6 +191,16 @@ class Crm extends Component {
             })
         }
         this.getLeadsWeb()
+    }
+    prevPageLeadWeb = (e) => {
+        e.preventDefault()
+        const { lead_web } = this.state
+        if (lead_web.numPage > 0) {
+            this.setState({
+                numPage: lead_web.numPage--
+            })
+            this.getLeadsWeb()
+        }
     }
     nextPageLeadEnContacto = (e) => {
         e.preventDefault()
@@ -208,7 +246,6 @@ class Crm extends Component {
             this.getLeadsCancelados()
         }
     }
-
     nextPageLeadContratados = (e) => {
         e.preventDefault()
         const { leads_contratados } = this.state
@@ -231,7 +268,6 @@ class Crm extends Component {
             this.getLeadsContratados()
         }
     }
-
     nextPageLeadDetenidos = (e) => {
         e.preventDefault()
         const { leads_detenidos } = this.state
@@ -243,7 +279,7 @@ class Crm extends Component {
         }
         this.getLeadsDetenidos()
     }
-    prevPageLeadDetenidos = ( e ) => {
+    prevPageLeadDetenidos = (e) => {
         e.preventDefault()
         const { leads_detenidos } = this.state
         if (leads_detenidos.numPage > 0) {
@@ -254,7 +290,6 @@ class Crm extends Component {
             this.getLeadsDetenidos()
         }
     }
-
     nextPageLeadCancelados = (e) => {
         e.preventDefault()
         const { leads_cancelados } = this.state
@@ -266,7 +301,7 @@ class Crm extends Component {
         }
         this.getLeadsCancelados()
     }
-    prevPageLeadCancelados = ( e ) => {
+    prevPageLeadCancelados = (e) => {
         e.preventDefault()
         const { leads_cancelados } = this.state
         if (leads_cancelados.numPage > 0) {
@@ -275,47 +310,6 @@ class Crm extends Component {
                 leads_cancelados
             })
             this.getLeadsCancelados()
-        }
-    }
-    
-    prevUltimosContactados = (e) => {
-        e.preventDefault()
-        const { ultimos_contactados } = this.state
-        if (ultimos_contactados.numPage > 0) {
-            this.setState({
-                numPage: ultimos_contactados.numPage--
-            })
-            this.getUltimosContactos()
-        }
-    }
-    prevPageProspectosSinContactar = (e) => {
-        e.preventDefault()
-        const { prospectos_sin_contactar } = this.state
-        if (prospectos_sin_contactar.numPage > 0) {
-            this.setState({
-                numPage: prospectos_sin_contactar.numPage--
-            })
-            this.getSinContactar()
-        }
-    }
-    prevPageUltimosIngresados = (e) => {
-        e.preventDefault()
-        const { ultimos_ingresados } = this.state
-        if (ultimos_ingresados.numPage > 0) {
-            this.setState({
-                numPage: ultimos_ingresados.numPage--
-            })
-            this.getUltimosIngresados()
-        }
-    }
-    prevPageLeadWeb = (e) => {
-        e.preventDefault()
-        const { lead_web } = this.state
-        if (lead_web.numPage > 0) {
-            this.setState({
-                numPage: lead_web.numPage--
-            })
-            this.getLeadsWeb()
         }
     }
     async getUltimosContactos() {
@@ -347,7 +341,6 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
-
     async getSinContactar() {
         const { access_token } = this.props.authUser
         const { prospectos_sin_contactar } = this.state
@@ -377,7 +370,6 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
-
     async getUltimosIngresados() {
         const { access_token } = this.props.authUser
         const { ultimos_ingresados } = this.state
@@ -407,7 +399,6 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
-
     async getLeadsWeb() {
         const { access_token } = this.props.authUser
         const { lead_web } = this.state
@@ -437,7 +428,6 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
-
     async getLeadsEnContacto() {
         const { access_token } = this.props.authUser
         const { leads_en_contacto } = this.state
@@ -467,7 +457,6 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
-
     async getLeadsCancelados() {
         const { access_token } = this.props.authUser
         const { leads_cancelados } = this.state
@@ -497,7 +486,6 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
-
     async getLeadsContratados() {
         const { access_token } = this.props.authUser
         const { leads_contratados } = this.state
@@ -527,11 +515,10 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
-
     async getLeadsCancelados() {
         const { access_token } = this.props.authUser
         const { leads_cancelados } = this.state
-        await axios.get(URL_DEV + 'crm/table/lead-cancelados/' + leads_cancelados.numPage , { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'crm/table/lead-cancelados/' + leads_cancelados.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { leads, total } = response.data
                 const { leads_cancelados } = this.state
@@ -557,11 +544,10 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
-
     async getLeadsDetenidos() {
         const { access_token } = this.props.authUser
         const { leads_detenidos } = this.state
-        await axios.get(URL_DEV + 'crm/table/lead-detenidos/' + leads_detenidos.numPage , { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'crm/table/lead-detenidos/' + leads_detenidos.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { leads, total } = response.data
                 const { leads_detenidos } = this.state
@@ -587,7 +573,6 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
-
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -597,13 +582,11 @@ class Crm extends Component {
             form
         })
     }
-
     sendEmailNewWebLead = async lead => {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.put(URL_DEV + 'crm/email/solicitud-llamada/' + lead.id, {}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
             },
             (error) => {
                 console.log(error, 'error')
@@ -618,14 +601,6 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
-
-    // changePageAdd = tipo => {
-    //     const { history } = this.props
-    //     history.push({
-    //         pathname: '/leads/crm/add/' + tipo
-    //     });
-    // }
-
     changeActiveTable = key => {
         switch (key) {
             case 'web':
@@ -643,7 +618,7 @@ class Crm extends Component {
             case 'detenidos':
                 this.getLeadsDetenidos();
                 break;
-            default:break;
+            default: break;
         }
         this.setState({
             ...this.state,
@@ -652,7 +627,7 @@ class Crm extends Component {
     }
 
     render() {
-        const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados,lead_web,activeTable, leads_en_contacto,
+        const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados, lead_web, activeTable, leads_en_contacto,
             leads_contratados, leads_cancelados, leads_detenidos } = this.state
         return (
             <Layout active='leads' {...this.props} >
@@ -703,10 +678,10 @@ class Crm extends Component {
                                             <Nav.Link eventKey="contratados">CONTRATADOS</Nav.Link>
                                         </Nav.Item>
                                         <Nav.Item className="nav-item">
-                                            <Nav.Link eventKey="cancelados">CANCELADOS</Nav.Link>
+                                            <Nav.Link eventKey="detenidos">DETENIDOS</Nav.Link>
                                         </Nav.Item>
                                         <Nav.Item className="nav-item">
-                                            <Nav.Link eventKey="detenidos">DETENIDOS</Nav.Link>
+                                            <Nav.Link eventKey="cancelados">CANCELADOS</Nav.Link>
                                         </Nav.Item>
                                     </Nav>
                                 </div>
@@ -798,17 +773,19 @@ class Crm extends Component {
                                             onClickPrev={this.prevPageLeadContratados}
                                         />
                                     </Tab.Pane>
+                                    <Tab.Pane eventKey="detenidos">
+                                        <LeadNoContratado
+                                            leads={leads_detenidos}
+                                            onClickNext={this.nextPageLeadDetenidos}
+                                            onClickPrev={this.prevPageLeadDetenidos}
+                                        />
+                                    </Tab.Pane>
                                     <Tab.Pane eventKey="cancelados">
                                         <LeadNoContratado
-                                            leads = { leads_cancelados } 
+                                            leads={leads_cancelados}
                                             onClickNext={this.nextPageLeadCancelados}
-                                            onClickPrev={this.prevPageLeadCancelados}  />
-                                    </Tab.Pane>
-                                    <Tab.Pane eventKey="detenidos">
-                                        <LeadNoContratado    
-                                            leads = { leads_detenidos } 
-                                            onClickNext={this.nextPageLeadDetenidos}
-                                            onClickPrev={this.prevPageLeadDetenidos}  /> 
+                                            onClickPrev={this.prevPageLeadCancelados}
+                                        />
                                     </Tab.Pane>
                                 </Tab.Content>
                             </div>
