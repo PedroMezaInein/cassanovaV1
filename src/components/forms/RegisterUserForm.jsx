@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { Input, Button, Select, SelectSearchTrue } from '../form-components'
+import { Input, Button, Select, SelectSearchTrue, RadioGroup} from '../form-components'
 import { EMAIL } from '../../constants'
 class RegisterUserForm extends Component {
     updateDepartamento = value => {
@@ -26,11 +26,47 @@ class RegisterUserForm extends Component {
         onChange({ target: { value: value, name: 'empleado' } })
     }
     render() {
-        const { options, form, onChange, deleteOption, onChangeOptions, formeditado,departamentos_disponibles,proyectos_disponibles, ...props } = this.props 
+        const { options, form, onChange, deleteOption, onChangeOptions, formeditado, departamentos_disponibles, proyectos_disponibles, ...props } = this.props
         return (
             <Form {...props} >
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-4">
+                    <div className="col-md-3 d-flex align-items-center">
+                        <RadioGroup
+                            placeholder = 'SELECCIONA EL TIPO DE SEXO'
+                            formeditado = { formeditado }
+                            name = 'sexo'
+                            onChange = { onChange }
+                            options = {
+                                [
+                                    {
+                                        label: 'Femenino',
+                                        value: 'femenino'
+                                    },
+                                    {
+                                        label: 'Masculino',
+                                        value: 'masculino'
+                                    }
+                                ]
+                            }
+                            value = { form.sexo }
+                        />
+                    </div>
+                    {/* <div className="col-md-3">
+                        <Form.Label className="col-form-label">Selecciona el tipo de sexo</Form.Label>
+                        <div className="input-icon">
+                            <span className="input-icon input-icon-right">
+                                <span>
+                                    <i className="fas fa-venus-mars kt-font-boldest text-primary"></i>
+                                </span>
+                            </span>
+                            <Form.Control className="form-control is-valid text-uppercase" value = {form.sexo} onChange={onChange} name='sexo' formeditado={formeditado} as="select">
+                                <option disabled selected value = {0}> Selecciona el sexo</option>
+                                <option value={"femenino"}>Femenino</option>
+                                <option value={"masculino"}>Masculino</option>
+                            </Form.Control>
+                        </div>
+                    </div> */}
+                    <div className="col-md-3">
                         <Input
                             onChange={onChange}
                             formeditado={formeditado}
@@ -43,7 +79,7 @@ class RegisterUserForm extends Component {
                             messageinc="Incorrecto. Ingresa el nombre."
                         />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <Input
                             onChange={onChange}
                             requirevalidation={1}
@@ -57,7 +93,7 @@ class RegisterUserForm extends Component {
                             patterns={EMAIL}
                         />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <Select
                             requirevalidation={1}
                             formeditado={formeditado}
@@ -71,20 +107,10 @@ class RegisterUserForm extends Component {
                         />
                     </div>
                 </div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
                 {
                     form.tipo > 0 && form.tipo < 3 ?
                         <div className="form-group row form-group-marginless">
-                            <div className="col-md-4">
-                                <SelectSearchTrue
-                                    options={departamentos_disponibles}
-                                    placeholder="SELECCIONA EL(LOS) DEPARTAMENTO(S)"
-                                    name="departamento"
-                                    value={"No hay más departamentos"}
-                                    onChange={this.updateDepartamento}
-                                    iconclass={"fas fa-layer-group"}
-                                    formeditado={formeditado}
-                                />
-                            </div>
                             <div className="col-md-4">
                                 <SelectSearchTrue
                                     options={options.empleados}
@@ -92,6 +118,17 @@ class RegisterUserForm extends Component {
                                     name="empleado"
                                     value={form.empleado}
                                     onChange={this.updateEmpleado}
+                                    iconclass={"fas fa-layer-group"}
+                                    formeditado={formeditado}
+                                />
+                            </div>
+                            <div className="col-md-4">
+                                <SelectSearchTrue
+                                    options={departamentos_disponibles}
+                                    placeholder="SELECCIONA EL(LOS) DEPARTAMENTO(S)"
+                                    name="departamento"
+                                    value={"No hay más departamentos"}
+                                    onChange={this.updateDepartamento}
                                     iconclass={"fas fa-layer-group"}
                                     formeditado={formeditado}
                                 />
@@ -137,7 +174,6 @@ class RegisterUserForm extends Component {
                                     value={form.proyecto}
                                     onChange={this.updateProyecto}
                                     iconclass={"fas fa-layer-group"}
-
                                 />
                             </div>
                             <div className="col-md-8">
