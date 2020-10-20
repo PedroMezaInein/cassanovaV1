@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { OverlayTrigger, Tooltip, Dropdown, DropdownButton } from 'react-bootstrap'
+import { OverlayTrigger, Tooltip, Dropdown } from 'react-bootstrap'
 import { setDateTable } from '../../../functions/setters'
 
 class LeadContacto extends Component {
@@ -42,9 +42,9 @@ class LeadContacto extends Component {
                         </thead>
                         <tbody>
                             {
-                                leads.data.map( ( lead, index ) => {
-                                    return(
-                                        <tr key = { index }>
+                                leads.data.map((lead, index) => {
+                                    return (
+                                        <tr key={index}>
                                             <td className="pl-0 py-8">
                                                 <div className="d-flex align-items-center">
                                                     <div className="symbol symbol-45 symbol-light-primary mr-3">
@@ -73,11 +73,11 @@ class LeadContacto extends Component {
                                             <td className="d-flex justify-content-center">
                                                 <div className="symbol-group symbol-hover">
                                                     {
-                                                        lead.prospecto.vendedores.map((vendedor, index)=>{
-                                                            return(
-                                                                <OverlayTrigger key = {index} overlay={<Tooltip>{vendedor.name}</Tooltip>}>
+                                                        lead.prospecto.vendedores.map((vendedor, index) => {
+                                                            return (
+                                                                <OverlayTrigger key={index} overlay={<Tooltip>{vendedor.name}</Tooltip>}>
                                                                     <div className="symbol symbol-35 symbol-circle">
-                                                                        <img alt="Pic" src={vendedor.avatar ? vendedor.avatar :"/100_1.jpg"} />
+                                                                        <img alt="Pic" src={vendedor.avatar ? vendedor.avatar : "/100_1.jpg"} />
                                                                     </div>
                                                                 </OverlayTrigger>
                                                             )
@@ -91,42 +91,68 @@ class LeadContacto extends Component {
                                                         <span className="text-dark-75 font-weight-bolder d-block font-size-lg text-center">
                                                             {lead.origen.origen}
                                                         </span>
-                                                    :''
+                                                        : ''
                                                 }
-                                                
+
                                             </td>
                                             <td className="text-center">
                                                 {console.log(lead)}
                                                 {
                                                     lead.prospecto ?
                                                         lead.prospecto.estatus_prospecto ?
-                                                            <DropdownButton
-                                                                id="dropdown-basic"
-                                                                variant={"secondary"}
-                                                                title={lead.prospecto.estatus_prospecto.estatus.toUpperCase()}>
-                                                                <Dropdown.Header>
-                                                                    <span className="font-size-sm">Elige una opción</span>
-                                                                </Dropdown.Header>
-                                                                <Dropdown.Divider />
-                                                                <Dropdown.Item eventKey="1" className="p-0">
-                                                                    <span className="navi-link w-100">
-                                                                        <span className="navi-text">
-                                                                            <span className="label label-xl label-inline label-light-success rounded-0 w-100">CONTRATADO</span>
+                                                            // <DropdownButton
+                                                            //     id="dropdown-basic"
+                                                            //     variant={"secondary"}
+                                                            //     title={lead.prospecto.estatus_prospecto.estatus.toUpperCase()}>
+                                                            //     <Dropdown.Header>
+                                                            //         <span className="font-size-sm">Elige una opción</span>
+                                                            //     </Dropdown.Header>
+                                                            //     <Dropdown.Divider />
+                                                            //     <Dropdown.Item eventKey="1" className="p-0">
+                                                            //         <span className="navi-link w-100">
+                                                            //             <span className="navi-text">
+                                                            //                 <span className="label label-xl label-inline label-light-success rounded-0 w-100">CONTRATADO</span>
+                                                            //             </span>
+                                                            //         </span>
+                                                            //     </Dropdown.Item>
+                                                            //     <Dropdown.Item eventKey="2" className="p-0">
+                                                            //         <span className="navi-link w-100">
+                                                            //             <span className="navi-text">
+                                                            //                 <span className="label label-xl label-inline label-light-danger rounded-0 w-100">DETENIDO</span>
+                                                            //             </span>
+                                                            //         </span>
+                                                            //     </Dropdown.Item>
+                                                            // </DropdownButton>
+                                                            <Dropdown>
+                                                                <Dropdown.Toggle style={{ backgroundColor: lead.prospecto.estatus_prospecto.color_fondo, color: lead.prospecto.estatus_prospecto.color_texto, border: 'transparent', padding: '2.8px 5.6px', width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.863rem', fontWeight: 500 }}
+                                                                >
+                                                                    {lead.prospecto.estatus_prospecto.estatus.toUpperCase()}
+                                                                </Dropdown.Toggle>
+                                                                <Dropdown.Menu>
+                                                                    <Dropdown.Header>
+                                                                        <span className="font-size-sm">Elige una opción</span>
+                                                                    </Dropdown.Header>
+                                                                    <Dropdown.Divider />
+                                                                    <Dropdown.Item href="#"  className="p-0">
+                                                                        <span className="navi-link w-100">
+                                                                            <span className="navi-text">
+                                                                                <span className="label label-xl label-inline label-light-success rounded-0 w-100">CONTRATADO</span>
+                                                                            </span>
                                                                         </span>
-                                                                    </span>
-                                                                </Dropdown.Item>
-                                                                <Dropdown.Item eventKey="2" className="p-0">
-                                                                    <span className="navi-link w-100">
-                                                                        <span className="navi-text">
-                                                                            <span className="label label-xl label-inline label-light-danger rounded-0 w-100">DETENIDO</span>
+                                                                    </Dropdown.Item>
+                                                                    <Dropdown.Item href="#"  className="p-0">
+                                                                        <span className="navi-link w-100">
+                                                                            <span className="navi-text">
+                                                                                <span className="label label-xl label-inline label-light-danger rounded-0 w-100">DETENIDO</span>
+                                                                            </span>
                                                                         </span>
-                                                                    </span>
-                                                                </Dropdown.Item>
-                                                            </DropdownButton>
+                                                                    </Dropdown.Item>
+                                                                </Dropdown.Menu>
+                                                            </Dropdown>
+                                                            : ''
                                                         : ''
-                                                    : ''
                                                 }
-                                                
+
                                             </td>
                                             <td className="pr-0 text-right">
                                                 <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
@@ -145,12 +171,12 @@ class LeadContacto extends Component {
                 <div className="d-flex justify-content-end">
                     {
                         this.isActiveButton('prev') ?
-                            <span className="btn btn-icon btn-xs btn-light-pink mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></span>
+                            <span className="btn btn-icon btn-xs btn-light-primary mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></span>
                             : ''
                     }
                     {
                         this.isActiveButton('next') ?
-                            <span className="btn btn-icon btn-xs btn-light-pink mr-2 my-1" onClick={onClickNext}><i className="ki ki-bold-arrow-next icon-xs"></i></span>
+                            <span className="btn btn-icon btn-xs btn-light-primary mr-2 my-1" onClick={onClickNext}><i className="ki ki-bold-arrow-next icon-xs"></i></span>
                             : ''
                     }
                 </div>
