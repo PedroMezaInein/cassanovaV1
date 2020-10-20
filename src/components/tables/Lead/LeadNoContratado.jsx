@@ -22,13 +22,12 @@ class LeadNoContratado extends Component {
     }
     render() {
         const { leads, onClickNext, onClickPrev } = this.props
-        console.log(leads)
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
                     <table className="table table-borderless table-vertical-center">
                         <thead>
-                            <tr className="text-left text-uppercase bg-light-danger text-danger">
+                            <tr className="text-left text-uppercase bg-danger-o-30 text-danger">
                                 <th style={{ minWidth: "100px" }} className="pl-7">
                                     <span>Nombre del cliente y proyecto</span>
                                 </th>
@@ -138,12 +137,12 @@ class LeadNoContratado extends Component {
                 <div className="d-flex justify-content-end">
                     {
                         this.isActiveButton('prev') ?
-                            <span className="btn btn-icon btn-xs btn-light-primary mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></span>
+                            <span className="btn btn-icon btn-xs btn-light-danger mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></span>
                             : ''
                     }
                     {
                         this.isActiveButton('next') ?
-                            <span className="btn btn-icon btn-xs btn-light-primary mr-2 my-1" onClick={onClickNext}><i className="ki ki-bold-arrow-next icon-xs"></i></span>
+                            <span className="btn btn-icon btn-xs btn-light-danger mr-2 my-1" onClick={onClickNext}><i className="ki ki-bold-arrow-next icon-xs"></i></span>
                             : ''
                     }
                 </div>

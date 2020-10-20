@@ -28,7 +28,7 @@ class LeadNuevo extends Component {
                     <div className="table-responsive-lg">
                         <table className="table table-borderless table-vertical-center">
                             <thead>
-                                <tr className="text-uppercase bg-light-info text-info">
+                                <tr className="text-uppercase bg-info-o-30 text-info">
                                     <th className="pl-7">
                                         <span>Nombre del cliente</span>
                                     </th>
@@ -46,7 +46,7 @@ class LeadNuevo extends Component {
                                                 <td className="pl-0 py-8">
                                                     <div className="d-flex align-items-center">
                                                         <div className="symbol symbol-45 mr-3">
-                                                            <span className="symbol-label font-size-h5 bg-light-info text-info">{lead.nombre.charAt(0)}</span>
+                                                            <span className="symbol-label font-size-h5 bg-info-o-20 text-info">{lead.nombre.charAt(0)}</span>
                                                         </div>
                                                         <div>
                                                             <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-info mb-1 font-size-lg">{lead.nombre}</a>
@@ -110,12 +110,12 @@ class LeadNuevo extends Component {
                     <div className="d-flex justify-content-end">
                         {
                             this.isActiveButton('prev') ?
-                                <span className="btn btn-icon btn-xs btn-light-pink mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></span>
+                                <span className="btn btn-icon btn-xs btn-light-info mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></span>
                                 : ''
                         }
                         {
                             this.isActiveButton('next') ?
-                                <span className="btn btn-icon btn-xs btn-light-pink mr-2 my-1" onClick={onClickNext}><i className="ki ki-bold-arrow-next icon-xs"></i></span>
+                                <span className="btn btn-icon btn-xs btn-light-info mr-2 my-1" onClick={onClickNext}><i className="ki ki-bold-arrow-next icon-xs"></i></span>
                                 : ''
                         }
                     </div>

@@ -3,9 +3,25 @@ import { OverlayTrigger, Tooltip, Dropdown, DropdownButton } from 'react-bootstr
 import { setDateTable } from '../../../functions/setters'
 
 class LeadContrato extends Component {
-
-    render() {
+    isActiveButton(direction) {
         const { leads } = this.props
+        if (leads.total_paginas > 1) {
+            if (direction === 'prev') {
+                if (leads.numPage > 0) {
+                    return true;
+                }
+            } else {
+                if (leads.numPage < 10) {
+                    if (leads.numPage < leads.total_paginas - 1) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    render() {
+        const { leads, onClickPrev, onClickNext} = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
@@ -24,9 +40,9 @@ class LeadContrato extends Component {
                         </thead>
                         <tbody>
                             {
-                                leads.data.map((lead, index)=>{
-                                    return(
-                                        <tr key = { index }>
+                                leads.data.map((lead, index) => {
+                                    return (
+                                        <tr key={index}>
                                             <td className="pl-0 py-8">
                                                 <div className="d-flex align-items-center">
                                                     <div className="symbol symbol-45 symbol-light-success mr-3">
@@ -82,14 +98,14 @@ class LeadContrato extends Component {
                                                                         <span className="font-size-sm">Elige una opción</span>
                                                                     </Dropdown.Header>
                                                                     {/* <Dropdown.Divider /> */}
-                                                                    <Dropdown.Item href="#"  className="p-0">
+                                                                    <Dropdown.Item href="#" className="p-0">
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
                                                                                 <span className="label label-xl label-inline bg-light-gray text-gray rounded-0 w-100">DETENIDO</span>
                                                                             </span>
                                                                         </span>
                                                                     </Dropdown.Item>
-                                                                    <Dropdown.Item href="#"  className="p-0">
+                                                                    <Dropdown.Item href="#" className="p-0">
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
                                                                                 <span className="label label-xl label-inline label-light-danger rounded-0 w-100">CANCELADO</span>
@@ -115,6 +131,18 @@ class LeadContrato extends Component {
                             }
                         </tbody>
                     </table>
+                </div>
+                <div className="d-flex justify-content-end">
+                    {
+                        this.isActiveButton('prev') ?
+                            <span className="btn btn-icon btn-xs btn-light-success mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></span>
+                            : ''
+                    }
+                    {
+                        this.isActiveButton('next') ?
+                            <span className="btn btn-icon btn-xs btn-light-success mr-2 my-1" onClick={onClickNext}><i className="ki ki-bold-arrow-next icon-xs"></i></span>
+                            : ''
+                    }
                 </div>
             </div>
         )
