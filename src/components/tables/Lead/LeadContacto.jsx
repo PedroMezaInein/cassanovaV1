@@ -128,11 +128,11 @@ class LeadContacto extends Component {
                                                                 >
                                                                     {lead.prospecto.estatus_prospecto.estatus.toUpperCase()}
                                                                 </Dropdown.Toggle>
-                                                                <Dropdown.Menu>
+                                                                <Dropdown.Menu className="p-0">
                                                                     <Dropdown.Header>
                                                                         <span className="font-size-sm">Elige una opción</span>
                                                                     </Dropdown.Header>
-                                                                    <Dropdown.Divider />
+                                                                    {/* <Dropdown.Divider /> */}
                                                                     <Dropdown.Item href="#"  className="p-0">
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
