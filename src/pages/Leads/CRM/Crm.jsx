@@ -13,6 +13,9 @@ import LeadContacto from '../../../components/tables/Lead/LeadContacto'
 import LeadNegociacion from '../../../components/tables/Lead/LeadNegociacion'
 import LeadContrato from '../../../components/tables/Lead/LeadContrato'
 import LeadNoContratado from '../../../components/tables/Lead/LeadNoContratado'
+
+/* BORRAR */
+/* 5576910077 */
 class Crm extends Component {
     state = {
         ultimos_contactados: {
@@ -54,6 +57,13 @@ class Crm extends Component {
             total: 0,
             total_paginas: 0,
             value: "en_contacto"
+        },
+        leads_contratados: {
+            data: [],
+            numPage: 0,
+            total: 0,
+            total_paginas: 0,
+            value: "contratados"
         }
     }
     componentDidMount() {
@@ -160,6 +170,29 @@ class Crm extends Component {
                 leads_en_contacto
             })
             this.getLeadsEnContacto()
+        }
+    }
+
+    nextPageLeadContratados = (e) => {
+        e.preventDefault()
+        const { leads_contratados } = this.state
+        if (leads_contratados.numPage < leads_contratados.total_paginas - 1) {
+            leads_contratados.numPage++
+            this.setState({
+                leads_contratados
+            })
+        }
+        this.getLeadsContratados()
+    }
+    prevPageLeadContratados = ( e ) => {
+        e.preventDefault()
+        const { leads_contratados } = this.state
+        if (leads_contratados.numPage > 0) {
+            leads_contratados.numPage--
+            this.setState({
+                leads_contratados
+            })
+            this.getLeadsContratados()
         }
     }
     
@@ -353,6 +386,36 @@ class Crm extends Component {
         })
     }
 
+    async getLeadsContratados() {
+        const { access_token } = this.props.authUser
+        const { leads_contratados } = this.state
+        await axios.get(URL_DEV + 'crm/table/lead-contratados/' + leads_contratados.numPage , { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { leads, total } = response.data
+                const { leads_contratados } = this.state
+                leads_contratados.data = leads
+                leads_contratados.total = total
+                let total_paginas = Math.ceil(total / 10)
+                leads_contratados.total_paginas = total_paginas
+                this.setState({
+                    ...this.state,
+                    leads_contratados
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -399,6 +462,9 @@ class Crm extends Component {
             case 'contacto':
                 this.getLeadsEnContacto();
                 break;
+            case 'contratados':
+                this.getLeadsContratados();
+                break;
             default:break;
         }
         this.setState({
@@ -408,7 +474,8 @@ class Crm extends Component {
     }
 
     render() {
-        const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados,lead_web,activeTable, leads_en_contacto } = this.state
+        const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados,lead_web,activeTable, leads_en_contacto,
+            leads_contratados } = this.state
         return (
             <Layout active='leads' {...this.props} >
                 <Row>
@@ -539,10 +606,13 @@ class Crm extends Component {
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="negociacion">
-                                        <LeadNegociacion />
+                                        <LeadNegociacion/>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="contratados">
-                                        <LeadContrato />
+                                        <LeadContrato
+                                            leads = { leads_contratados } 
+                                            onClickNext={this.nextPageLeadContratados}
+                                            onClickPrev={this.prevPageLeadContratados} />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="5">
                                         <LeadNoContratado />
