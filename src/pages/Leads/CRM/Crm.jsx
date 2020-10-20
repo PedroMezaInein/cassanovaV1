@@ -14,8 +14,7 @@ import LeadNegociacion from '../../../components/tables/Lead/LeadNegociacion'
 import LeadContrato from '../../../components/tables/Lead/LeadContrato'
 import LeadNoContratado from '../../../components/tables/Lead/LeadNoContratado'
 import LeadDetenido from '../../../components/tables/Lead/LeadDetenido'
-/* BORRAR */
-/* 5576910077 */
+
 class Crm extends Component {
     state = {
         ultimos_contactados: {
