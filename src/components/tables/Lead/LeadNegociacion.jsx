@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { OverlayTrigger, Tooltip, Dropdown, DropdownButton } from 'react-bootstrap'
+import { OverlayTrigger, Tooltip, Dropdown } from 'react-bootstrap'
 
 class LeadNegociacion extends Component {
 
@@ -34,8 +34,8 @@ class LeadNegociacion extends Component {
                                     </div>
                                 </td>
                                 <td className="font-size-lg text-left font-weight-bolder">
-                                    <span>Ingreso: </span><span className="text-muted font-weight-bold">01/10/2020</span><br />
-                                    <span>Último contacto: </span><span className="text-muted font-weight-bold">09/10/2020</span>
+                                    <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">01/10/2020</span><br />
+                                    <span>Último contacto: </span><span className="text-muted font-weight-bold font-size-sm">09/10/2020</span>
                                 </td>
                                 <td>
                                     <span className="text-dark-75 font-weight-bolder d-block font-size-lg">WEB</span>
