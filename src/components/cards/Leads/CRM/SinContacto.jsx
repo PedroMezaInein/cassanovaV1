@@ -67,7 +67,7 @@ export default class SinContacto extends Component {
             <Card className="card-custom card-stretch gutter-b py-2">
                 <Card.Header className="align-items-center border-0">
                     <div className="card-title align-items-start flex-column">
-                        <span className="font-weight-bolder text-dark">Sin contacto en + 1 semana</span>
+                        <span className="font-weight-bolder text-dark">Sin contacto en + 3 días</span>
                     </div>
                     <div className="card-toolbar">
                         { this.isActiveButton('prev')?
