@@ -108,6 +108,18 @@ class Ventas extends Component {
         if (!ventas)
             history.push('/')
         this.getOptionsAxios()
+        let queryString = this.props.history.location.search
+        if (queryString) {
+            let params = new URLSearchParams(queryString)
+            let id = parseInt(params.get("id"))
+            if (id) {
+                this.setState({
+                    ...this.state,
+                    modalSee: true
+                })
+                this.getVentaAxios(id)
+            }
+        }
     }
     clearForm = () => {
         const { form } = this.state
@@ -916,6 +928,29 @@ class Ventas extends Component {
                     // modalAskFactura: false
                 })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    async getVentaAxios(id){
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'ventas/single/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { venta } = response.data
+                this.setState({
+                    ...this.state,
+                    venta: venta
+                })
             },
             (error) => {
                 console.log(error, 'error')
