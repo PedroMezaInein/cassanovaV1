@@ -9,6 +9,7 @@ import { renderToString } from 'react-dom/server';
 import { setTextTable, setMoneyTable, setDateTable } from '../../../functions/setters'
 import { Tab, Tabs } from 'react-bootstrap';
 import { errorAlert, waitAlert, forbiddenAccessAlert } from '../../../functions/alert'
+import { Small } from '../../../components/texts'
 
 class CuentaDetails extends Component {
     state = {
@@ -86,12 +87,24 @@ class CuentaDetails extends Component {
         })
     }
 
+    setLinks = value => {
+        return (
+            <a href={value.url}>
+                <Small>
+                    {
+                        value.name
+                    }
+                </Small>
+            </a>
+        )
+    }
+
     setCompras = compras => {
         let aux = []
         compras.map((compra) => {
             aux.push(
                 {
-                    idTraspaso: renderToString(setTextTable(compra.id)),
+                    idTraspaso: renderToString(this.setLinks({name: compra.id, url: '/proyectos/compras?id='+compra.id})),
                     fecha: renderToString(setDateTable(compra.created_at)),
                     monto: renderToString(setMoneyTable(compra.monto)),
                     id: compra.id
@@ -107,7 +120,7 @@ class CuentaDetails extends Component {
         egresos.map((egreso) => {
             aux.push(
                 {
-                    idTraspaso: renderToString(setTextTable(egreso.id)),
+                    idTraspaso: renderToString(this.setLinks({name: egreso.id, url: '/administracion/egresos?id='+egreso.id})),
                     fecha: renderToString(setDateTable(egreso.created_at)),
                     monto: renderToString(setMoneyTable(egreso.monto)),
                     id: egreso.id
@@ -123,7 +136,7 @@ class CuentaDetails extends Component {
         ingresos.map((ingreso) => {
             aux.push(
                 {
-                    idTraspaso: renderToString(setTextTable(ingreso.id)),
+                    idTraspaso: renderToString(this.setLinks({name: ingreso.id, url: '/administracion/ingresos?id='+ingreso.id})),
                     fecha: renderToString(setDateTable(ingreso.created_at)),
                     monto: renderToString(setMoneyTable(ingreso.monto)),
                 }
@@ -138,7 +151,7 @@ class CuentaDetails extends Component {
         traspasos_destino.map((traspaso_destino) => {
             aux.push(
                 {
-                    idTraspaso: renderToString(setTextTable(traspaso_destino.id)),
+                    idTraspaso: renderToString(this.setLinks({name: traspaso_destino.id, url: '/bancos/traspasos?id='+traspaso_destino.id})),
                     fecha: renderToString(setDateTable(traspaso_destino.created_at)),
                     monto: renderToString(setMoneyTable(traspaso_destino.cantidad)),
                     id: traspaso_destino.id
@@ -154,7 +167,7 @@ class CuentaDetails extends Component {
         traspasos_origen.map((traspaso_origen) => {
             aux.push(
                 {
-                    idTraspaso: renderToString(setTextTable(traspaso_origen.id)),
+                    idTraspaso: renderToString(this.setLinks({name: traspaso_origen.id, url: '/bancos/traspasos?id='+traspaso_origen.id})),
                     fecha: renderToString(setDateTable(traspaso_origen.created_at)),
                     monto: renderToString(setMoneyTable(traspaso_origen.cantidad)),
                     id: traspaso_origen.id
@@ -170,7 +183,7 @@ class CuentaDetails extends Component {
         ventas.map((venta) => {
             aux.push(
                 {
-                    idTraspaso: renderToString(setTextTable(venta.id)),
+                    idTraspaso: renderToString(this.setLinks({name: venta.id, url: '/proyectos/ventas?id='+venta.id})),
                     fecha: renderToString(setDateTable(venta.created_at)),
                     monto: renderToString(setMoneyTable(venta.monto)),
                     id: venta.id
