@@ -65,9 +65,7 @@ class LeadContacto extends Component {
                                             <td className="font-size-lg text-left font-weight-bolder">
                                                 <span>Ingreso: </span><span className="text-muted font-weight-bold">{setDateTable(lead.created_at)}</span><br />
                                                 <span>Último contacto: </span><span className="text-muted font-weight-bold">
-                                                    {
-                                                        setDateTable(lead.prospecto.contactos[0].created_at)
-                                                    }
+                                                    {setDateTable(lead.prospecto.contactos[0].created_at)}
                                                 </span>
                                             </td>
                                             <td className="d-flex justify-content-center">
@@ -93,7 +91,6 @@ class LeadContacto extends Component {
                                                         </span>
                                                         : ''
                                                 }
-
                                             </td>
                                             <td className="text-center">
                                                 {console.log(lead)}
