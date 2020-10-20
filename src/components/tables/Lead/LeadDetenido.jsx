@@ -22,7 +22,6 @@ class LeadDetenido extends Component {
     }
     render() {
         const { leads, onClickNext, onClickPrev } = this.props
-        console.log(leads)
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
