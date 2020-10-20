@@ -95,22 +95,22 @@ export default class UltimosContactosCard extends Component {
                                             {
                                                 contacto.prospecto ?
                                                     contacto.prospecto.tipo_proyecto ?
-                                                        <span> 
+                                                        <span>
+                                                            <span>
+                                                                {contacto.empresa ? <span className="text-black-50 font-weight-bolder">- <u>{contacto.empresa.name}</u></span>: ''}
+                                                            </span>
                                                             &nbsp;
-                                                            <b>
-                                                                { contacto.empresa ?
-                                                                    contacto.empresa.name : ''}
-                                                            </b>
-                                                            &nbsp;
-                                                        {contacto.prospecto.tipo_proyecto.tipo}</span>
+                                                            - {contacto.prospecto.tipo_proyecto.tipo}
+                                                        </span>
                                                     :''
                                                 :
-                                                    contacto.servicios.map((servicio, key1) => {
-                                                        return (
-                                                            // <span key={key1}> - {servicio.servicio.length>0?servicio.servicio:'Sin servicio'}</span>
-                                                            <span key={key1}> - {servicio.servicio}</span>
-                                                        )
-                                                    })
+                                                    contacto.servicios.length > 0 ?
+                                                        contacto.servicios.map((servicio, key1) => {
+                                                            return (
+                                                                <span key={key1}> - {servicio.servicio}</span>
+                                                            )
+                                                        })
+                                                    :<span> - Sin servicio</span>
                                             }
                                         </div>
                                     </div>

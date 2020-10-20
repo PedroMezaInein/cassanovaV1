@@ -88,29 +88,29 @@ export default class UltimosContactosCard extends Component {
                                     <div className="timeline-item" key={key}>
                                         <div className="timeline-label"> {this.diffCommentDate(contacto)}</div>
                                         <div className="timeline-badge"><span className="bg-primary w-50 h-50"></span></div>
-                                        <div className="timeline-content">
-                                            <a href={`tel:+${contacto.telefono}`} className="text-dark-75 font-weight-bolder text-hover-primary mb-1">{contacto.nombre}</a>
+                                        <div className="timeline-content text-justify">
+                                            <a href={`tel:+${contacto.telefono}`} className="text-dark font-weight-bolder text-hover-primary mb-1">{contacto.nombre}</a>
                                             {
                                                 contacto.prospecto ?
                                                     contacto.prospecto.tipo_proyecto ?
                                                         <span> 
                                                             &nbsp;
-                                                            <b>
-                                                                { contacto.empresa ?
-                                                                    contacto.empresa.name : ''}
-                                                            </b>
+                                                            <span>
+                                                                {contacto.empresa ? <span className="text-black-50 font-weight-bolder">- <u>{contacto.empresa.name}</u> -</span> : ''}
+                                                            </span>
                                                             &nbsp;
-                                                        {contacto.prospecto.tipo_proyecto.tipo}</span>
+                                                            {contacto.prospecto.tipo_proyecto.tipo}
+                                                        </span>
                                                     :''
                                                 :
+                                                contacto.servicios.length > 0 ?
                                                     contacto.servicios.map((servicio, key1) => {
                                                         return (
-                                                            // <span key={key1}> - {servicio.servicio.length>0?servicio.servicio:'Sin servicio'}</span>
                                                             <span key={key1}> - {servicio.servicio}</span>
                                                         )
                                                     })
+                                                :<span> - Sin servicio</span>
                                             }
-                                            
                                         </div>
                                         
                                     </div>
