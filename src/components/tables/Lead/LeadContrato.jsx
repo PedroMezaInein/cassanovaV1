@@ -12,14 +12,14 @@ class LeadContrato extends Component {
                     <table className="table table-borderless table-vertical-center">
                         <thead>
                             <tr className="text-left text-uppercase bg-light-green text-green">
-                                <th style={{ minWidth: "250px" }} className="pl-7">
-                                    <span>Nombre del cliente / Nombre del proyecto</span>
+                                <th style={{ minWidth: "100px" }} className="pl-7">
+                                    <span>Nombre del cliente y proyecto</span>
                                 </th>
-                                <th style={{ minWidth: "100px" }}>Fecha</th>
+                                <th style={{ minWidth: "140px" }}>Fecha</th>
+                                <th style={{ minWidth: "100px" }}>Origen</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Vendedor</th>
-                                <th style={{ minWidth: "100px" }} className="text-center">Origen</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
-                                <th style={{ minWidth: "80px" }}></th>
+                                <th style={{ minWidth: "70px" }}></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -44,6 +44,15 @@ class LeadContrato extends Component {
                                                     {setDateTable(lead.prospecto.contactos[0].created_at)}
                                                 </span>
                                             </td>
+                                            <td>
+                                                {
+                                                    lead.origen ?
+                                                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
+                                                            {lead.origen.origen}
+                                                        </span>
+                                                        : ''
+                                                }
+                                            </td>
                                             <td className="d-flex justify-content-center">
                                                 <div className="symbol-group symbol-hover">
                                                     {
@@ -58,15 +67,6 @@ class LeadContrato extends Component {
                                                         })
                                                     }
                                                 </div>
-                                            </td>
-                                            <td>
-                                                {
-                                                    lead.origen ?
-                                                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg text-center">
-                                                            {lead.origen.origen}
-                                                        </span>
-                                                        : ''
-                                                }
                                             </td>
                                             <td className="text-center">
                                                 {
@@ -85,14 +85,14 @@ class LeadContrato extends Component {
                                                                     <Dropdown.Item href="#"  className="p-0">
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
-                                                                                <span className="label label-xl label-inline label-light-success rounded-0 w-100">CONTRATADO</span>
+                                                                                <span className="label label-xl label-inline bg-light-gray text-gray rounded-0 w-100">DETENIDO</span>
                                                                             </span>
                                                                         </span>
                                                                     </Dropdown.Item>
                                                                     <Dropdown.Item href="#"  className="p-0">
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
-                                                                                <span className="label label-xl label-inline label-light-danger rounded-0 w-100">DETENIDO</span>
+                                                                                <span className="label label-xl label-inline label-light-danger rounded-0 w-100">CANCELADO</span>
                                                                             </span>
                                                                         </span>
                                                                     </Dropdown.Item>
@@ -102,9 +102,9 @@ class LeadContrato extends Component {
                                                         : ''
                                                 }
                                             </td>
-                                            <td className="pr-0 text-right">
+                                            <td className="pr-0 text-center">
                                                 <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
-                                                    <a href='/leads/crm/info/info' className="btn btn-default btn-icon btn-sm mr-2">
+                                                    <a href='/leads/crm/info/info' className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-success">
                                                         <i className="flaticon2-plus icon-nm"></i>
                                                     </a>
                                                 </OverlayTrigger>

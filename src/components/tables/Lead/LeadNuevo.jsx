@@ -4,15 +4,15 @@ import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 class LeadNuevo extends Component {
     isActiveButton(direction) {
-        const { lead_web } = this.props
-        if (lead_web.total_paginas > 1) {
+        const { leads } = this.props
+        if (leads.total_paginas > 1) {
             if (direction === 'prev') {
-                if (lead_web.numPage > 0) {
+                if (leads.numPage > 0) {
                     return true;
                 }
             } else {
-                if (lead_web.numPage < 10) {
-                    if (lead_web.numPage < lead_web.total_paginas - 1) {
+                if (leads.numPage < 10) {
+                    if (leads.numPage < leads.total_paginas - 1) {
                         return true;
                     }
                 }
@@ -21,16 +21,16 @@ class LeadNuevo extends Component {
         return false;
     }
     render() {
-        const { lead_web, onClickPrev, onClickNext, sendEmail } = this.props
+        const { leads, onClickPrev, onClickNext, sendEmail } = this.props
         return (
             <>
                 <div className="tab-content">
                     <div className="table-responsive-lg">
                         <table className="table table-borderless table-vertical-center">
                             <thead>
-                                <tr className="text-uppercase bg-light-pink text-pink">
+                                <tr className="text-uppercase bg-light-info text-info">
                                     <th className="pl-7">
-                                        <span>Nombre del cliente y proyecto</span>
+                                        <span>Nombre del cliente</span>
                                     </th>
                                     <th>Empresa</th>
                                     <th>Servicios</th>
@@ -40,16 +40,16 @@ class LeadNuevo extends Component {
                             </thead>
                             <tbody>
                                 {
-                                    lead_web.data.map((lead, key) => {
+                                    leads.data.map((lead, key) => {
                                         return (
                                             <tr key={key}>
                                                 <td className="pl-0 py-8">
                                                     <div className="d-flex align-items-center">
                                                         <div className="symbol symbol-45 mr-3">
-                                                            <span className="symbol-label font-size-h5 bg-light-pink text-pink">{lead.nombre.charAt(0)}</span>
+                                                            <span className="symbol-label font-size-h5 bg-light-info text-info">{lead.nombre.charAt(0)}</span>
                                                         </div>
                                                         <div>
-                                                            <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-pink mb-1 font-size-lg">{lead.nombre}</a>
+                                                            <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-info mb-1 font-size-lg">{lead.nombre}</a>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -68,7 +68,7 @@ class LeadNuevo extends Component {
                                                     }
                                                 </td>
                                                 <td className="text-center">
-                                                    <span className="label label-md label-light-primary label-inline font-weight-bold">EN ESPERA</span>
+                                                    <span className="label label-md label-light-info label-inline font-weight-bold">EN ESPERA</span>
                                                 </td>
                                                 <td className="pr-0 text-right">
                                                     {/* <OverlayTrigger overlay={<Tooltip>Enviar correo</Tooltip>}>
@@ -79,21 +79,21 @@ class LeadNuevo extends Component {
                                                     */}
                                                     <OverlayTrigger overlay={<Tooltip>ENVIAR CORREO</Tooltip>}>
                                                         <span onClick = { (e) => { sendEmail(lead) } }
-                                                            className="btn btn-icon btn-light btn-hover-secondary btn-sm mr-2">
+                                                            className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info">
                                                             <span className="svg-icon svg-icon-md ">{/* svg-icon-primary */}
                                                                 <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')} />
                                                             </span>
                                                         </span>
                                                     </OverlayTrigger>
                                                     <OverlayTrigger overlay={<Tooltip>AGENDAR LLAMADA</Tooltip>}>
-                                                        <a href="#" className="btn btn-icon btn-light btn-hover-secondary btn-sm mr-2">
+                                                        <a href="#" className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info">
                                                             <span className="svg-icon svg-icon-md">
                                                                 <SVG src={toAbsoluteUrl('/images/svg/Active-call.svg')} />
                                                             </span>
                                                         </a>
                                                     </OverlayTrigger>
                                                     <OverlayTrigger overlay={<Tooltip>SEGUIMIENTO (SCRIPT)</Tooltip>}>
-                                                        <a href="#" className="btn btn-icon btn-light btn-hover-secondary btn-sm mr-2">
+                                                        <a href="#" className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info">
                                                             <span className="svg-icon svg-icon-md">
                                                                 <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
                                                             </span>

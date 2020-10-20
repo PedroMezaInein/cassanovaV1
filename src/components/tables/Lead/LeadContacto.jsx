@@ -30,14 +30,14 @@ class LeadContacto extends Component {
                     <table className="table table-borderless table-vertical-center">
                         <thead>
                             <tr className="text-left text-uppercase bg-primary-o-20 text-primary">
-                                <th style={{ minWidth: "250px" }} className="pl-7">
-                                    <span>Nombre del cliente / Nombre del proyecto</span>
+                                <th style={{ minWidth: "100px" }} className="pl-7">
+                                    <span>Nombre del cliente y proyecto</span>
                                 </th>
-                                <th style={{ minWidth: "100px" }}>Fecha</th>
+                                <th style={{ minWidth: "140px" }}>Fecha</th>
+                                <th style={{ minWidth: "100px" }}>Origen</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Vendedor</th>
-                                <th style={{ minWidth: "100px" }} className="text-center">Origen</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
-                                <th style={{ minWidth: "80px" }}></th>
+                                <th style={{ minWidth: "70px" }}></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -68,6 +68,15 @@ class LeadContacto extends Component {
                                                     {setDateTable(lead.prospecto.contactos[0].created_at)}
                                                 </span>
                                             </td>
+                                            <td>
+                                                {
+                                                    lead.origen ?
+                                                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
+                                                            {lead.origen.origen}
+                                                        </span>
+                                                        : ''
+                                                }
+                                            </td>
                                             <td className="d-flex justify-content-center">
                                                 <div className="symbol-group symbol-hover">
                                                     {
@@ -83,43 +92,11 @@ class LeadContacto extends Component {
                                                     }
                                                 </div>
                                             </td>
-                                            <td>
-                                                {
-                                                    lead.origen ?
-                                                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg text-center">
-                                                            {lead.origen.origen}
-                                                        </span>
-                                                        : ''
-                                                }
-                                            </td>
                                             <td className="text-center">
                                                 {console.log(lead)}
                                                 {
                                                     lead.prospecto ?
                                                         lead.prospecto.estatus_prospecto ?
-                                                            // <DropdownButton
-                                                            //     id="dropdown-basic"
-                                                            //     variant={"secondary"}
-                                                            //     title={lead.prospecto.estatus_prospecto.estatus.toUpperCase()}>
-                                                            //     <Dropdown.Header>
-                                                            //         <span className="font-size-sm">Elige una opción</span>
-                                                            //     </Dropdown.Header>
-                                                            //     <Dropdown.Divider />
-                                                            //     <Dropdown.Item eventKey="1" className="p-0">
-                                                            //         <span className="navi-link w-100">
-                                                            //             <span className="navi-text">
-                                                            //                 <span className="label label-xl label-inline label-light-success rounded-0 w-100">CONTRATADO</span>
-                                                            //             </span>
-                                                            //         </span>
-                                                            //     </Dropdown.Item>
-                                                            //     <Dropdown.Item eventKey="2" className="p-0">
-                                                            //         <span className="navi-link w-100">
-                                                            //             <span className="navi-text">
-                                                            //                 <span className="label label-xl label-inline label-light-danger rounded-0 w-100">DETENIDO</span>
-                                                            //             </span>
-                                                            //         </span>
-                                                            //     </Dropdown.Item>
-                                                            // </DropdownButton>
                                                             <Dropdown>
                                                                 <Dropdown.Toggle style={{ backgroundColor: lead.prospecto.estatus_prospecto.color_fondo, color: lead.prospecto.estatus_prospecto.color_texto, border: 'transparent', padding: '2.8px 5.6px', width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.863rem', fontWeight: 500 }}
                                                                 >
@@ -151,7 +128,7 @@ class LeadContacto extends Component {
                                                 }
 
                                             </td>
-                                            <td className="pr-0 text-right">
+                                            <td className="pr-0 text-center">
                                                 <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
                                                     <a href='/leads/crm/info/info' className="btn btn-default btn-icon btn-sm mr-2">
                                                         <i className="flaticon2-plus icon-nm"></i>

@@ -10,14 +10,14 @@ class LeadNegociacion extends Component {
                     <table className="table table-borderless table-vertical-center">
                         <thead>
                             <tr className="text-left text-uppercase bg-info-o-20 text-info">
-                                <th style={{ minWidth: "250px" }} className="pl-7">
-                                    <span>Nombre del cliente / Nombre del proyecto</span>
+                                <th style={{ minWidth: "100px" }} className="pl-7">
+                                    <span>Nombre del cliente y proyecto</span>
                                 </th>
-                                <th style={{ minWidth: "100px" }}>Fecha</th>
+                                <th style={{ minWidth: "140px" }}>Fecha</th>
+                                <th style={{ minWidth: "100px" }}>Origen</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Vendedor</th>
-                                <th style={{ minWidth: "100px" }} className="text-center">Origen</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
-                                <th style={{ minWidth: "80px" }}></th>
+                                <th style={{ minWidth: "70px" }}></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -37,6 +37,9 @@ class LeadNegociacion extends Component {
                                     <span>Ingreso: </span><span className="text-muted font-weight-bold">01/10/2020</span><br />
                                     <span>Último contacto: </span><span className="text-muted font-weight-bold">09/10/2020</span>
                                 </td>
+                                <td>
+                                    <span className="text-dark-75 font-weight-bolder d-block font-size-lg">WEB</span>
+                                </td>
                                 <td className="d-flex justify-content-center">
                                     <div className="symbol-group symbol-hover">
                                         <OverlayTrigger overlay={<Tooltip>OMAR ABAROA</Tooltip>}>
@@ -55,9 +58,6 @@ class LeadNegociacion extends Component {
                                             </div>
                                         </OverlayTrigger>
                                     </div>
-                                </td>
-                                <td>
-                                    <span className="text-dark-75 font-weight-bolder d-block font-size-lg text-center">WEB</span>
                                 </td>
                                 <td className="text-center">
                                     <DropdownButton
@@ -86,7 +86,7 @@ class LeadNegociacion extends Component {
                                 </td>
                                 <td className="pr-0 text-right">
                                     <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
-                                        <a href='/leads/crm/info/info' className="btn btn-default btn-icon btn-sm mr-2">
+                                        <a href='/leads/crm/info/info' className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info">
                                             <i className="flaticon2-plus icon-nm"></i>
                                         </a>
                                     </OverlayTrigger>
