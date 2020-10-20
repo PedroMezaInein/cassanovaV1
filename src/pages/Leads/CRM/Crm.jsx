@@ -64,6 +64,20 @@ class Crm extends Component {
             total: 0,
             total_paginas: 0,
             value: "contratados"
+        },
+        leads_cancelados: {
+            data: [],
+            numPage: 0,
+            total: 0,
+            total_paginas: 0,
+            value: "cancelados"
+        },
+        leads_detenidos: {
+            data: [],
+            numPage: 0,
+            total: 0,
+            total_paginas: 0,
+            value: "detenidos"
         }
     }
     componentDidMount() {
@@ -193,6 +207,52 @@ class Crm extends Component {
                 leads_contratados
             })
             this.getLeadsContratados()
+        }
+    }
+
+    nextPageLeadDetenidos = (e) => {
+        e.preventDefault()
+        const { leads_detenidos } = this.state
+        if (leads_detenidos.numPage < leads_detenidos.total_paginas - 1) {
+            leads_detenidos.numPage++
+            this.setState({
+                leads_detenidos
+            })
+        }
+        this.getLeadsDetenidos()
+    }
+    prevPageLeadDetenidos = ( e ) => {
+        e.preventDefault()
+        const { leads_detenidos } = this.state
+        if (leads_detenidos.numPage > 0) {
+            leads_detenidos.numPage--
+            this.setState({
+                leads_detenidos
+            })
+            this.getLeadsDetenidos()
+        }
+    }
+
+    nextPageLeadCancelados = (e) => {
+        e.preventDefault()
+        const { leads_cancelados } = this.state
+        if (leads_cancelados.numPage < leads_cancelados.total_paginas - 1) {
+            leads_cancelados.numPage++
+            this.setState({
+                leads_cancelados
+            })
+        }
+        this.getLeadsCancelados()
+    }
+    prevPageLeadCancelados = ( e ) => {
+        e.preventDefault()
+        const { leads_cancelados } = this.state
+        if (leads_cancelados.numPage > 0) {
+            leads_cancelados.numPage--
+            this.setState({
+                leads_cancelados
+            })
+            this.getLeadsCancelados()
         }
     }
     
@@ -416,6 +476,66 @@ class Crm extends Component {
         })
     }
 
+    async getLeadsCancelados() {
+        const { access_token } = this.props.authUser
+        const { leads_cancelados } = this.state
+        await axios.get(URL_DEV + 'crm/table/lead-cancelados/' + leads_cancelados.numPage , { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { leads, total } = response.data
+                const { leads_cancelados } = this.state
+                leads_cancelados.data = leads
+                leads_cancelados.total = total
+                let total_paginas = Math.ceil(total / 10)
+                leads_cancelados.total_paginas = total_paginas
+                this.setState({
+                    ...this.state,
+                    leads_cancelados
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async getLeadsDetenidos() {
+        const { access_token } = this.props.authUser
+        const { leads_detenidos } = this.state
+        await axios.get(URL_DEV + 'crm/table/lead-detenidos/' + leads_detenidos.numPage , { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { leads, total } = response.data
+                const { leads_detenidos } = this.state
+                leads_detenidos.data = leads
+                leads_detenidos.total = total
+                let total_paginas = Math.ceil(total / 10)
+                leads_detenidos.total_paginas = total_paginas
+                this.setState({
+                    ...this.state,
+                    leads_detenidos
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -465,6 +585,12 @@ class Crm extends Component {
             case 'contratados':
                 this.getLeadsContratados();
                 break;
+            case 'cancelados':
+                this.getLeadsCancelados();
+                break;
+            case 'detenidos':
+                this.getLeadsDetenidos();
+                break;
             default:break;
         }
         this.setState({
@@ -475,7 +601,7 @@ class Crm extends Component {
 
     render() {
         const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados,lead_web,activeTable, leads_en_contacto,
-            leads_contratados } = this.state
+            leads_contratados, leads_cancelados, leads_detenidos } = this.state
         return (
             <Layout active='leads' {...this.props} >
                 <Row>
@@ -525,7 +651,10 @@ class Crm extends Component {
                                             <Nav.Link eventKey="contratados">CONTRATADOS</Nav.Link>
                                         </Nav.Item>
                                         <Nav.Item className="nav-item">
-                                            <Nav.Link eventKey="5">NO CONTRATADOS</Nav.Link>
+                                            <Nav.Link eventKey="cancelados">CANCELADOS</Nav.Link>
+                                        </Nav.Item>
+                                        <Nav.Item className="nav-item">
+                                            <Nav.Link eventKey="detenidos">DETENIDOS</Nav.Link>
                                         </Nav.Item>
                                     </Nav>
                                 </div>
@@ -549,7 +678,7 @@ class Crm extends Component {
                                                 </span>
                                             </div>
                                         </div>
-                                        <div className="col-md-2">
+                                        <div className="col-md-3">
                                             <Form.Control
                                                 className="form-control text-uppercase form-control-solid"
                                                 defaultValue = { 0 }
@@ -565,7 +694,7 @@ class Crm extends Component {
                                                 <option value={"linkedin"} className="bg-white">Linkedin</option>
                                             </Form.Control>
                                         </div>
-                                        <div className="col-md-2">
+                                        {/* <div className="col-md-2">
                                             <Form.Control
                                                 className="form-control text-uppercase form-control-solid"
                                                 defaultValue = { 0 }
@@ -580,7 +709,7 @@ class Crm extends Component {
                                                 <option value={"negociacion"} className="bg-white">En negociación</option>
                                                 <option value={"contratado"} className="bg-white">Contratado</option>
                                             </Form.Control>
-                                        </div>
+                                        </div> */}
                                         <div className="col-md-1">
                                             <span className="btn btn-light-primary px-6 font-weight-bold">Buscar</span>
                                         </div>
@@ -614,8 +743,17 @@ class Crm extends Component {
                                             onClickNext={this.nextPageLeadContratados}
                                             onClickPrev={this.prevPageLeadContratados} />
                                     </Tab.Pane>
-                                    <Tab.Pane eventKey="5">
-                                        <LeadNoContratado />
+                                    <Tab.Pane eventKey="cancelados">
+                                        <LeadNoContratado
+                                            leads = { leads_cancelados } 
+                                            onClickNext={this.nextPageLeadCancelados}
+                                            onClickPrev={this.prevPageLeadCancelados}  />
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="detenidos">
+                                        <LeadNoContratado    
+                                            leads = { leads_detenidos } 
+                                            onClickNext={this.nextPageLeadDetenidos}
+                                            onClickPrev={this.prevPageLeadDetenidos}  /> 
                                     </Tab.Pane>
                                 </Tab.Content>
                             </div>

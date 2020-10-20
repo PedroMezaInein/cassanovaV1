@@ -69,38 +69,7 @@ class LeadContrato extends Component {
                                                 }
                                             </td>
                                             <td className="text-center">
-                                                {
-                                                    lead.prospecto ?
-                                                        lead.prospecto.estatus_prospecto ?
-                                                            <Dropdown>
-                                                                <Dropdown.Toggle style={{ backgroundColor: lead.prospecto.estatus_prospecto.color_fondo, color: lead.prospecto.estatus_prospecto.color_texto, border: 'transparent', padding: '2.8px 5.6px', width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.863rem', fontWeight: 500 }}
-                                                                >
-                                                                    {lead.prospecto.estatus_prospecto.estatus.toUpperCase()}
-                                                                </Dropdown.Toggle>
-                                                                <Dropdown.Menu className="p-0">
-                                                                    <Dropdown.Header>
-                                                                        <span className="font-size-sm">Elige una opción</span>
-                                                                    </Dropdown.Header>
-                                                                    {/* <Dropdown.Divider /> */}
-                                                                    <Dropdown.Item href="#"  className="p-0">
-                                                                        <span className="navi-link w-100">
-                                                                            <span className="navi-text">
-                                                                                <span className="label label-xl label-inline label-light-success rounded-0 w-100">CONTRATADO</span>
-                                                                            </span>
-                                                                        </span>
-                                                                    </Dropdown.Item>
-                                                                    <Dropdown.Item href="#"  className="p-0">
-                                                                        <span className="navi-link w-100">
-                                                                            <span className="navi-text">
-                                                                                <span className="label label-xl label-inline label-light-danger rounded-0 w-100">DETENIDO</span>
-                                                                            </span>
-                                                                        </span>
-                                                                    </Dropdown.Item>
-                                                                </Dropdown.Menu>
-                                                            </Dropdown>
-                                                            : ''
-                                                        : ''
-                                                }
+                                                <span className="label label-md label-light-warning label-inline font-weight-bold">CONTRATADOS</span>
                                             </td>
                                             <td className="pr-0 text-right">
                                                 <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
