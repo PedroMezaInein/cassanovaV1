@@ -13,6 +13,7 @@ import LeadContacto from '../../../components/tables/Lead/LeadContacto'
 import LeadNegociacion from '../../../components/tables/Lead/LeadNegociacion'
 import LeadContrato from '../../../components/tables/Lead/LeadContrato'
 import LeadNoContratado from '../../../components/tables/Lead/LeadNoContratado'
+import LeadDetenido from '../../../components/tables/Lead/LeadDetenido'
 /* BORRAR */
 /* 5576910077 */
 class Crm extends Component {
@@ -774,7 +775,7 @@ class Crm extends Component {
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="detenidos">
-                                        <LeadNoContratado
+                                        <LeadDetenido
                                             leads={leads_detenidos}
                                             onClickNext={this.nextPageLeadDetenidos}
                                             onClickPrev={this.prevPageLeadDetenidos}
