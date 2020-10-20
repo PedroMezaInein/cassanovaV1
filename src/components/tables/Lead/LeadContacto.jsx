@@ -75,7 +75,7 @@ class LeadContacto extends Component {
                                                             return (
                                                                 <OverlayTrigger key={index} overlay={<Tooltip>{vendedor.name}</Tooltip>}>
                                                                     <div className="symbol symbol-35 symbol-circle">
-                                                                        <img alt="Pic" src={vendedor.avatar ? vendedor.avatar : "/100_1.jpg"} />
+                                                                        <img alt="Pic" src={vendedor.avatar ? vendedor.avatar : "/default.jpg"} />
                                                                     </div>
                                                                 </OverlayTrigger>
                                                             )
