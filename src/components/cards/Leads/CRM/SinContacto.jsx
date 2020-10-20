@@ -91,12 +91,25 @@ export default class SinContacto extends Component {
                                         <div className="timeline-content">
                                             <a href={`tel:+${contacto.telefono}`} className="text-dark-75 font-weight-bolder text-hover-danger mb-1">{contacto.nombre}</a>
                                             {
-                                                contacto.servicios.map((servicio, key1) => {
-                                                    return (
-                                                        // <span key={key1}> - {servicio.servicio.length>0?servicio.servicio:'Sin servicio'}</span>
-                                                        <span key={key1}> - {servicio.servicio}</span>
-                                                    )
-                                                })
+                                                contacto.prospecto ?
+                                                    contacto.prospecto.tipo_proyecto ?
+                                                        <span> 
+                                                            &nbsp;
+                                                            <span>
+                                                                {contacto.empresa ? <span className="text-black-50 font-weight-bolder">- <u>{contacto.empresa.name}</u> -</span> : ''}
+                                                            </span>
+                                                            &nbsp;
+                                                            {contacto.prospecto.tipo_proyecto.tipo}
+                                                        </span>
+                                                    :''
+                                                :
+                                                contacto.servicios.length > 0 ?
+                                                    contacto.servicios.map((servicio, key1) => {
+                                                        return (
+                                                            <span key={key1}> - {servicio.servicio}</span>
+                                                        )
+                                                    })
+                                                :<span> - Sin servicio</span>
                                             }
                                         </div>
                                     </div>

@@ -3,30 +3,46 @@ import { OverlayTrigger, Tooltip, Dropdown, DropdownButton } from 'react-bootstr
 import { setDateTable } from '../../../functions/setters'
 
 class LeadContrato extends Component {
-
-    render() {
+    isActiveButton(direction) {
         const { leads } = this.props
+        if (leads.total_paginas > 1) {
+            if (direction === 'prev') {
+                if (leads.numPage > 0) {
+                    return true;
+                }
+            } else {
+                if (leads.numPage < 10) {
+                    if (leads.numPage < leads.total_paginas - 1) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    render() {
+        const { leads, onClickPrev, onClickNext} = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
                     <table className="table table-borderless table-vertical-center">
                         <thead>
                             <tr className="text-left text-uppercase bg-light-green text-green">
-                                <th style={{ minWidth: "250px" }} className="pl-7">
-                                    <span>Nombre del cliente / Nombre del proyecto</span>
+                                <th style={{ minWidth: "100px" }} className="pl-7">
+                                    <span>Nombre del cliente y proyecto</span>
                                 </th>
-                                <th style={{ minWidth: "100px" }}>Fecha</th>
+                                <th style={{ minWidth: "140px" }}>Fecha</th>
+                                <th style={{ minWidth: "100px" }}>Origen</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Vendedor</th>
-                                <th style={{ minWidth: "100px" }} className="text-center">Origen</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
-                                <th style={{ minWidth: "80px" }}></th>
+                                <th style={{ minWidth: "70px" }}></th>
                             </tr>
                         </thead>
                         <tbody>
                             {
-                                leads.data.map((lead, index)=>{
-                                    return(
-                                        <tr key = { index }>
+                                leads.data.map((lead, index) => {
+                                    return (
+                                        <tr key={index}>
                                             <td className="pl-0 py-8">
                                                 <div className="d-flex align-items-center">
                                                     <div className="symbol symbol-45 symbol-light-success mr-3">
@@ -44,6 +60,15 @@ class LeadContrato extends Component {
                                                     {setDateTable(lead.prospecto.contactos[0].created_at)}
                                                 </span>
                                             </td>
+                                            <td>
+                                                {
+                                                    lead.origen ?
+                                                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
+                                                            {lead.origen.origen}
+                                                        </span>
+                                                        : ''
+                                                }
+                                            </td>
                                             <td className="d-flex justify-content-center">
                                                 <div className="symbol-group symbol-hover">
                                                     {
@@ -59,15 +84,6 @@ class LeadContrato extends Component {
                                                     }
                                                 </div>
                                             </td>
-                                            <td>
-                                                {
-                                                    lead.origen ?
-                                                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg text-center">
-                                                            {lead.origen.origen}
-                                                        </span>
-                                                        : ''
-                                                }
-                                            </td>
                                             <td className="text-center">
                                                 {
                                                     lead.prospecto ?
@@ -82,17 +98,17 @@ class LeadContrato extends Component {
                                                                         <span className="font-size-sm">Elige una opción</span>
                                                                     </Dropdown.Header>
                                                                     {/* <Dropdown.Divider /> */}
-                                                                    <Dropdown.Item href="#"  className="p-0">
+                                                                    <Dropdown.Item href="#" className="p-0">
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
-                                                                                <span className="label label-xl label-inline label-light-success rounded-0 w-100">CONTRATADO</span>
+                                                                                <span className="label label-xl label-inline bg-light-gray text-gray rounded-0 w-100">DETENIDO</span>
                                                                             </span>
                                                                         </span>
                                                                     </Dropdown.Item>
-                                                                    <Dropdown.Item href="#"  className="p-0">
+                                                                    <Dropdown.Item href="#" className="p-0">
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
-                                                                                <span className="label label-xl label-inline label-light-danger rounded-0 w-100">DETENIDO</span>
+                                                                                <span className="label label-xl label-inline label-light-danger rounded-0 w-100">CANCELADO</span>
                                                                             </span>
                                                                         </span>
                                                                     </Dropdown.Item>
@@ -102,9 +118,9 @@ class LeadContrato extends Component {
                                                         : ''
                                                 }
                                             </td>
-                                            <td className="pr-0 text-right">
+                                            <td className="pr-0 text-center">
                                                 <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
-                                                    <a href='/leads/crm/info/info' className="btn btn-default btn-icon btn-sm mr-2">
+                                                    <a href='/leads/crm/info/info' className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-success">
                                                         <i className="flaticon2-plus icon-nm"></i>
                                                     </a>
                                                 </OverlayTrigger>
@@ -115,6 +131,18 @@ class LeadContrato extends Component {
                             }
                         </tbody>
                     </table>
+                </div>
+                <div className="d-flex justify-content-end">
+                    {
+                        this.isActiveButton('prev') ?
+                            <span className="btn btn-icon btn-xs btn-light-success mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></span>
+                            : ''
+                    }
+                    {
+                        this.isActiveButton('next') ?
+                            <span className="btn btn-icon btn-xs btn-light-success mr-2 my-1" onClick={onClickNext}><i className="ki ki-bold-arrow-next icon-xs"></i></span>
+                            : ''
+                    }
                 </div>
             </div>
         )

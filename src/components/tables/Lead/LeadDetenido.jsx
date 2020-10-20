@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { OverlayTrigger, Tooltip, Dropdown, DropdownButton } from 'react-bootstrap'
 import { setDateTable } from '../../../functions/setters'
 
-class LeadNoContratado extends Component {
+class LeadDetenido extends Component {
     isActiveButton(direction) {
         const { leads } = this.props
         if (leads.total_paginas > 1) {
@@ -27,7 +27,7 @@ class LeadNoContratado extends Component {
                 <div className="table-responsive-lg">
                     <table className="table table-borderless table-vertical-center">
                         <thead>
-                            <tr className="text-left text-uppercase bg-danger-o-30 text-danger">
+                            <tr className="text-left text-uppercase bg-light-gray text-gray">
                                 <th style={{ minWidth: "100px" }} className="pl-7">
                                     <span>Nombre del cliente y proyecto</span>
                                 </th>
@@ -103,14 +103,14 @@ class LeadNoContratado extends Component {
                                                                     <Dropdown.Item href="#"  className="p-0">
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
-                                                                                <span className="label label-xl label-inline label-light-info rounded-0 w-100">En proceso</span>
+                                                                                <span className="label label-xl label-inline label-light-info rounded-0 w-100">EN PROCESO</span>
                                                                             </span>
                                                                         </span>
                                                                     </Dropdown.Item>
                                                                     <Dropdown.Item href="#"  className="p-0">
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
-                                                                                <span className="label label-xl label-inline bg-light-gray text-gray rounded-0 w-100">DETENIDO</span>
+                                                                                <span className="label label-xl label-inline bg-light-danger rounded-0 w-100">CANCELADO</span>
                                                                             </span>
                                                                         </span>
                                                                     </Dropdown.Item>
@@ -122,7 +122,7 @@ class LeadNoContratado extends Component {
                                             </td>
                                             <td className="pr-0 text-center">
                                                 <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
-                                                    <a href='/leads/crm/info/info' className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-danger">
+                                                    <a href='/leads/crm/info/info' className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-gray">
                                                         <i className="flaticon2-plus icon-nm"></i>
                                                     </a>
                                                 </OverlayTrigger>
@@ -137,12 +137,12 @@ class LeadNoContratado extends Component {
                 <div className="d-flex justify-content-end">
                     {
                         this.isActiveButton('prev') ?
-                            <span className="btn btn-icon btn-xs btn-light-danger mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></span>
+                            <span className="btn btn-icon btn-xs btn-light-gray mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></span>
                             : ''
                     }
                     {
                         this.isActiveButton('next') ?
-                            <span className="btn btn-icon btn-xs btn-light-danger mr-2 my-1" onClick={onClickNext}><i className="ki ki-bold-arrow-next icon-xs"></i></span>
+                            <span className="btn btn-icon btn-xs btn-light-gray mr-2 my-1" onClick={onClickNext}><i className="ki ki-bold-arrow-next icon-xs"></i></span>
                             : ''
                     }
                 </div>
@@ -151,4 +151,4 @@ class LeadNoContratado extends Component {
     }
 }
 
-export default LeadNoContratado
+export default LeadDetenido

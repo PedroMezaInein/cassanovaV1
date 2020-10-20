@@ -441,30 +441,48 @@ table.dataTable.display tbody>tr.selected>.sorting_1 {
 .dataTables_wrapper .dataTable tbody tr.selected td {
     background-color: #ECF0F3 !important;
 }
-
+// COLOR PINK
 .bg-light-pink {
     background-color: #fbeff7 !important;
 }
-
 .text-pink {
     color: #e44e93 !important;
 }
-
-// a.text-pink:hover, a.text-pink:focus {
-//     color: #e44e93 !important;
-// }
 a.text-hover-pink:hover,
 .text-hover-pink:hover {
     transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
     color: #e44e93 !important;
 }
-
+// COLOR BROWN
+.bg-light-brown {
+    background-color: #EFEBE9 !important;
+}
+.text-brown {
+    color: #5D4037 !important;
+}
+a.text-hover-brown:hover,
+.text-hover-brown:hover {
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    color: #5D4037 !important;
+}
+// COLOR GREEN
 .bg-light-green {
     background-color: #E8F5E9 !important;
 }
-
 .text-green {
     color: #388E3C !important;
+}
+// COLOR GRAY
+.bg-light-gray {
+    background-color: #ECEFF1 !important;
+}
+.text-gray {
+    color: #5F6A6A !important;
+}
+a.text-hover-gray:hover,
+.text-hover-gray:hover {
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    color: #5F6A6A !important;
 }
 
 .svg-icon.svg-icon-pink svg g [fill] {
@@ -546,7 +564,7 @@ table#esquemas {
 }
 
 .timeline-label{
-    font-size: 0.7rem!important;
+    font-size: 0.759rem!important;
 }
 div#asideMenuScroll{
     @include screen($xxl) {

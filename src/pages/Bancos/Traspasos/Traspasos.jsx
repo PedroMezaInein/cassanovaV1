@@ -28,6 +28,20 @@ class Traspasos extends Component {
         });
         if (!modulo)
             history.push('/')
+        let queryString = this.props.history.location.search
+        if (queryString) {
+            let params = new URLSearchParams(queryString)
+            let id = parseInt(params.get("id"))
+            if (id) {
+                const {modal} = this.state
+                modal.see = true
+                this.setState({
+                    ...this.state,
+                    modal
+                })
+                this.getTraspaso(id)
+            }
+        }
     }
     setTraspasos = traspasos => {
         let aux = []
@@ -148,6 +162,29 @@ class Traspasos extends Component {
     }
     async getTraspasosAxios() {
         $('#kt_datatable_transpasos').DataTable().ajax.reload();
+    }
+    async getTraspaso(id) {
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'traspasos/single/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { traspaso } = response.data
+                this.setState({
+                    ...this.state,
+                    traspaso: traspaso
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
     async exportTraspasosAxios() {
         waitAlert()

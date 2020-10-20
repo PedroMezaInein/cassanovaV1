@@ -114,6 +114,18 @@ class Compras extends Component {
         if (!compras)
             history.push('/')
         this.getOptionsAxios()
+        let queryString = this.props.history.location.search
+        if (queryString) {
+            let params = new URLSearchParams(queryString)
+            let id = parseInt(params.get("id"))
+            if (id) {
+                this.setState({
+                    ...this.state,
+                    modalSee: true
+                })
+                this.getCompraAxios(id)
+            }
+        }
     }
     clearForm = () => {
         const { form } = this.state
@@ -619,6 +631,29 @@ class Compras extends Component {
                     ...this.state,
                     options,
                     data
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    async getCompraAxios(id){
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'compras/single/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { compra } = response.data
+                this.setState({
+                    ...this.state,
+                    compra: compra
                 })
             },
             (error) => {
