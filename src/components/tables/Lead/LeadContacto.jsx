@@ -93,7 +93,6 @@ class LeadContacto extends Component {
                                                 </div>
                                             </td>
                                             <td className="text-center">
-                                                {console.log(lead)}
                                                 {
                                                     lead.prospecto ?
                                                         lead.prospecto.estatus_prospecto ?
