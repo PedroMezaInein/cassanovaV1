@@ -289,29 +289,7 @@ class Crm extends Component {
             })
             this.getLeadsDetenidos()
         }
-    }
-    nextPageLeadCancelados = (e) => {
-        e.preventDefault()
-        const { leads_cancelados } = this.state
-        if (leads_cancelados.numPage < leads_cancelados.total_paginas - 1) {
-            leads_cancelados.numPage++
-            this.setState({
-                leads_cancelados
-            })
-        }
-        this.getLeadsCancelados()
-    }
-    prevPageLeadCancelados = (e) => {
-        e.preventDefault()
-        const { leads_cancelados } = this.state
-        if (leads_cancelados.numPage > 0) {
-            leads_cancelados.numPage--
-            this.setState({
-                leads_cancelados
-            })
-            this.getLeadsCancelados()
-        }
-    }
+    }    
     async getUltimosContactos() {
         const { access_token } = this.props.authUser
         const { ultimos_contactados } = this.state
@@ -514,36 +492,7 @@ class Crm extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
-    }
-    async getLeadsCancelados() {
-        const { access_token } = this.props.authUser
-        const { leads_cancelados } = this.state
-        await axios.get(URL_DEV + 'crm/table/lead-cancelados/' + leads_cancelados.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { leads, total } = response.data
-                const { leads_cancelados } = this.state
-                leads_cancelados.data = leads
-                leads_cancelados.total = total
-                let total_paginas = Math.ceil(total / 10)
-                leads_cancelados.total_paginas = total_paginas
-                this.setState({
-                    ...this.state,
-                    leads_cancelados
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
+    }    
     async getLeadsDetenidos() {
         const { access_token } = this.props.authUser
         const { leads_detenidos } = this.state
