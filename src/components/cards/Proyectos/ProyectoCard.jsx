@@ -21,7 +21,7 @@ export default class ProyectoCard extends Component {
                         <Tab.Pane eventKey="first">
                             {
                                 data.lead ?
-                                    <div className="border-nav mt-4">
+                                    <div className="border-nav mt-0">
                                         <p className="font-size-h5 text-muted font-size-lg mt-0">Nombre:&nbsp;<strong className="font-size-h6"> {data.lead.nombre} </strong></p>
                                         <div className="separator separator-solid mb-3"></div>
                                         <div className="mb-4">
@@ -143,7 +143,7 @@ export default class ProyectoCard extends Component {
                             }
                         </Tab.Pane>
                         <Tab.Pane eventKey="second">
-                            <div className="border-nav mt-4">
+                            <div className="border-nav mt-0">
                                 <p className="font-size-h5 text-muted font-size-lg mt-0">Cliente:&nbsp;<strong className="font-size-h6"> {data.cliente ? data.cliente.empresa : ''} </strong></p>
                                 <div className="separator separator-solid mb-3"></div>
                                 <div className="mb-4">
@@ -158,7 +158,7 @@ export default class ProyectoCard extends Component {
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <div className="font-size-h6 text-dark-75 font-weight-bolder">{data.tipo_proyecto.tipo}</div>
+                                                    <div className="font-size-h6 text-dark-75 font-weight-bolder">{data.tipo_proyecto ? data.tipo_proyecto.tipo : ''}</div>
                                                     <div className="font-size-sm text-muted font-weight-bold mt-1">Tipo</div>
                                                 </div>
                                             </div>
