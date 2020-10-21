@@ -14,7 +14,10 @@ import LeadNegociacion from '../../../components/tables/Lead/LeadNegociacion'
 import LeadContrato from '../../../components/tables/Lead/LeadContrato'
 import LeadNoContratado from '../../../components/tables/Lead/LeadNoContratado'
 import LeadDetenido from '../../../components/tables/Lead/LeadDetenido'
-
+import { TimePicker } from 'antd';
+import 'antd/dist/antd.css';
+import { Modal } from '../../../components/singles'
+import { CalendarDay } from '../../../components/form-components'
 class Crm extends Component {
     state = {
         ultimos_contactados: {
@@ -77,7 +80,14 @@ class Crm extends Component {
             total: 0,
             total_paginas: 0,
             value: "detenidos"
-        }
+        },
+        lead: '',
+        form:{
+            fecha: new Date(),
+            horaInicio: '',
+            horaFin: ''
+        },
+        modal: false
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -625,10 +635,33 @@ class Crm extends Component {
             activeTable: key
         })
     }
+    openModal = lead => {
+        this.setState({
+            ...this.state,
+            modal: true,
+            lead:lead
+        })
+    }
+    handleCloseModal = () => {
+        this.setState({
+            ...this.state,
+            modal: false,
+            lead: ''
+        })
+    }
+    changeHora = value => {
+        const { form } = this.state
+        form.horaInicio = value[0]
+        form.horaFin = value[1]
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
 
     render() {
         const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados, lead_web, activeTable, leads_en_contacto,
-            leads_contratados, leads_cancelados, leads_detenidos } = this.state
+            leads_contratados, leads_cancelados, leads_detenidos, modal, form } = this.state
         return (
             <Layout active='leads' {...this.props} >
                 <Row>
@@ -752,6 +785,7 @@ class Crm extends Component {
                                             onClickNext={this.nextPageLeadWeb}
                                             onClickPrev={this.prevPageLeadWeb}
                                             sendEmail={this.sendEmailNewWebLead}
+                                            openModal = { this.openModal }
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="contacto">
@@ -792,6 +826,16 @@ class Crm extends Component {
                         </Card>
                     </Tab.Container>
                 </Col>
+                <Modal title = 'Agenda una nueva llamada.' show = { modal } handleClose = { this.handleCloseModal }>
+                    <Form>
+                        <div className = 'text-center'>
+                            <CalendarDay />
+                            <TimePicker.RangePicker format = "h:mm" minuteStep = { 5 } allowClear = { true } /* bordered = {false} */
+                            placeholder = {['Inicio','Fin']} showNow = { false } inputReadOnly hideDisabledOptions 
+                            className = "time-picker" onChange = { this.changeHora } value = { [ form.horaInicio, form.horaFin ] }/>
+                        </div>
+                    </Form>
+                </Modal>
             </Layout>
         );
     }
